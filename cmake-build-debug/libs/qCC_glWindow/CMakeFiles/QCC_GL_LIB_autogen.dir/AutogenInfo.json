@@ -1,0 +1,147 @@
+{
+	"BUILD_DIR" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/qCC_glWindow/QCC_GL_LIB_autogen",
+	"CMAKE_BINARY_DIR" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/qCC_glWindow",
+	"CMAKE_CURRENT_SOURCE_DIR" : "C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow",
+	"CMAKE_EXECUTABLE" : "C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/cmake/win/bin/cmake.exe",
+	"CMAKE_LIST_FILES" : 
+	[
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/CMakeLists.txt"
+	],
+	"CMAKE_SOURCE_DIR" : "C:/Users/bramburn/IdeaProject/CloudCompare",
+	"DEP_FILE" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/qCC_glWindow/QCC_GL_LIB_autogen/deps",
+	"DEP_FILE_RULE_NAME" : "QCC_GL_LIB_autogen/timestamp",
+	"HEADERS" : 
+	[
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/include/ccGLUtils.h",
+			"Mu",
+			"6YEA5652QU/moc_ccGLUtils.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/include/ccGLWidget.h",
+			"Mu",
+			"6YEA5652QU/moc_ccGLWidget.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/include/ccGLWindow.h",
+			"Mu",
+			"6YEA5652QU/moc_ccGLWindow.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/include/ccGuiParameters.h",
+			"Mu",
+			"6YEA5652QU/moc_ccGuiParameters.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/include/ccRenderingTools.h",
+			"Mu",
+			"6YEA5652QU/moc_ccRenderingTools.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/include/qCC_glWindow.h",
+			"Mu",
+			"6YEA5652QU/moc_qCC_glWindow.cpp",
+			null
+		]
+	],
+	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
+	"INCLUDE_DIR" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/qCC_glWindow/QCC_GL_LIB_autogen/include",
+	"MOC_COMPILATION_FILE" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/qCC_glWindow/QCC_GL_LIB_autogen/mocs_compilation.cpp",
+	"MOC_DEFINITIONS" : 
+	[
+		"CCGLWINDOW_LIB_BUILD",
+		"CC_CORE_LIB_USES_FLOAT",
+		"CC_CORE_LIB_USES_QT_CONCURRENT",
+		"QCC_GL_LIB_EXPORTS",
+		"QT_CONCURRENT_LIB",
+		"QT_CORE_LIB",
+		"QT_GUI_LIB",
+		"QT_OPENGLEXTENSIONS_LIB",
+		"QT_OPENGL_LIB",
+		"QT_USE_QSTRINGBUILDER",
+		"QT_WIDGETS_LIB"
+	],
+	"MOC_DEPEND_FILTERS" : 
+	[
+		[
+			"Q_PLUGIN_METADATA",
+			"[\n][ \t]*Q_PLUGIN_METADATA[ \t]*\\([^\\)]*FILE[ \t]*\"([^\"]+)\""
+		]
+	],
+	"MOC_INCLUDES" : 
+	[
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/include",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_db/include",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/qCC_db/extern/CCCoreLib/exports",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_db/extern/CCCoreLib/include",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCFbo/include",
+		"C:/Qt/5.15.2/msvc2019_64/include",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtConcurrent",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtCore",
+		"C:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtOpenGL",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtWidgets",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtGui",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtANGLE",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtOpenGLExtensions",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/lib/gcc/x86_64-w64-mingw32/11.2.0/include",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/include",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/x86_64-w64-mingw32/include"
+	],
+	"MOC_MACRO_NAMES" : [ "Q_OBJECT", "Q_GADGET", "Q_NAMESPACE", "Q_NAMESPACE_EXPORT" ],
+	"MOC_OPTIONS" : [],
+	"MOC_PATH_PREFIX" : false,
+	"MOC_PREDEFS_CMD" : 
+	[
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/bin/g++.exe",
+		"-dM",
+		"-E",
+		"-c",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/cmake/win/share/cmake-3.21/Modules/CMakeCXXCompilerABI.cpp"
+	],
+	"MOC_PREDEFS_FILE" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/qCC_glWindow/QCC_GL_LIB_autogen/moc_predefs.h",
+	"MOC_RELAXED_MODE" : false,
+	"MOC_SKIP" : [],
+	"MULTI_CONFIG" : false,
+	"PARALLEL" : 6,
+	"PARSE_CACHE_FILE" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/qCC_glWindow/CMakeFiles/QCC_GL_LIB_autogen.dir/ParseCache.txt",
+	"QT_MOC_EXECUTABLE" : "C:/Qt/5.15.2/msvc2019_64/bin/moc.exe",
+	"QT_UIC_EXECUTABLE" : "",
+	"QT_VERSION_MAJOR" : 5,
+	"QT_VERSION_MINOR" : 15,
+	"SETTINGS_FILE" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/qCC_glWindow/CMakeFiles/QCC_GL_LIB_autogen.dir/AutogenUsed.txt",
+	"SOURCES" : 
+	[
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/src/ccGLUtils.cpp",
+			"Mu",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/src/ccGLWindow.cpp",
+			"Mu",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/src/ccGuiParameters.cpp",
+			"Mu",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/src/ccRenderingTools.cpp",
+			"Mu",
+			null
+		]
+	],
+	"VERBOSITY" : 0
+}

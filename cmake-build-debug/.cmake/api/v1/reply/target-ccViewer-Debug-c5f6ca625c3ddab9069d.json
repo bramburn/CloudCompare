@@ -1,0 +1,620 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "ccViewer/ccViewer.exe"
+		},
+		{
+			"path" : "ccViewer/ccViewer.pdb"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"install",
+			"install_ext",
+			"target_link_libraries",
+			"add_dependencies",
+			"InstallPlugins",
+			"target_compile_definitions",
+			"add_definitions",
+			"include",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"ccViewer/CMakeLists.txt",
+			"cmake/CMakeInclude.cmake",
+			"cmake/Install.cmake",
+			"cmake/CMakeExternalLibs.cmake",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 29,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 87,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 45,
+				"parent" : 2
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 48,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 55,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 129,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 136,
+				"parent" : 6
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 70,
+				"parent" : 0
+			},
+			{
+				"file" : 4
+			},
+			{
+				"command" : 8,
+				"file" : 4,
+				"line" : 75,
+				"parent" : 9
+			},
+			{
+				"file" : 3,
+				"parent" : 10
+			},
+			{
+				"command" : 7,
+				"file" : 3,
+				"line" : 44,
+				"parent" : 11
+			},
+			{
+				"command" : 9,
+				"file" : 0,
+				"line" : 5,
+				"parent" : 0
+			},
+			{
+				"command" : 9,
+				"file" : 0,
+				"line" : 6,
+				"parent" : 0
+			},
+			{
+				"command" : 9,
+				"file" : 0,
+				"line" : 7,
+				"parent" : 0
+			},
+			{
+				"command" : 9,
+				"file" : 0,
+				"line" : 8,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : " -fopenmp -g"
+				},
+				{
+					"fragment" : "-std=c++14"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 4,
+					"define" : "CC_CORE_LIB_USES_FLOAT"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "CC_CORE_LIB_USES_QT_CONCURRENT"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "CC_DXF_SUPPORT"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "CC_SHP_SUPPORT"
+				},
+				{
+					"backtrace" : 8,
+					"define" : "CC_VIEWER"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "QT_CONCURRENT_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "QT_CORE_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "QT_GUI_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "QT_OPENGLEXTENSIONS_LIB"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "QT_OPENGL_LIB"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "QT_USE_QSTRINGBUILDER"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "QT_WIDGETS_LIB"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 0,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/ccViewer/ccViewer_autogen/include"
+				},
+				{
+					"backtrace" : 13,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/plugins"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/ccViewer"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/ccViewer/../qCC"
+				},
+				{
+					"backtrace" : 16,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/ccViewer"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCAppCommon/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginStub/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_db/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/qCC_db/extern/CCCoreLib/exports"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_db/extern/CCCoreLib/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCFbo/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_io/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_io/extern/dxflib/src"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_io/extern/shapelib"
+				},
+				{
+					"backtrace" : 4,
+					"isSystem" : true,
+					"path" : "C:/Qt/5.15.2/msvc2019_64/include"
+				},
+				{
+					"backtrace" : 4,
+					"isSystem" : true,
+					"path" : "C:/Qt/5.15.2/msvc2019_64/include/QtConcurrent"
+				},
+				{
+					"backtrace" : 4,
+					"isSystem" : true,
+					"path" : "C:/Qt/5.15.2/msvc2019_64/include/QtCore"
+				},
+				{
+					"backtrace" : 4,
+					"isSystem" : true,
+					"path" : "C:/Qt/5.15.2/msvc2019_64/./mkspecs/win32-msvc"
+				},
+				{
+					"backtrace" : 4,
+					"isSystem" : true,
+					"path" : "C:/Qt/5.15.2/msvc2019_64/include/QtOpenGL"
+				},
+				{
+					"backtrace" : 4,
+					"isSystem" : true,
+					"path" : "C:/Qt/5.15.2/msvc2019_64/include/QtWidgets"
+				},
+				{
+					"backtrace" : 4,
+					"isSystem" : true,
+					"path" : "C:/Qt/5.15.2/msvc2019_64/include/QtGui"
+				},
+				{
+					"backtrace" : 4,
+					"isSystem" : true,
+					"path" : "C:/Qt/5.15.2/msvc2019_64/include/QtANGLE"
+				},
+				{
+					"backtrace" : 4,
+					"isSystem" : true,
+					"path" : "C:/Qt/5.15.2/msvc2019_64/include/QtOpenGLExtensions"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					4
+				],
+				"standard" : "14"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				4,
+				5,
+				6,
+				9
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 4,
+			"id" : "CCAppCommon::@26f598574133c18a1168"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "CC_FBO_LIB::@ac6d0ab7b10365b95bd0"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "CCPluginAPI::@2f9f92581ca6ea91c183"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "QCC_DB_LIB::@2ca00b815e3ca8dee633"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "CCCoreLib::@42ec691b8e0b3f5e873c"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "QCC_IO_LIB::@f7ba38e89cf41ec4e076"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "QCC_GL_LIB::@0b870fb8fd59128b8813"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "dxflib::@3b0d4c7ad1e26df488a6"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "shapelib::@c4c16f537c8cfc960ba2"
+		},
+		{
+			"backtrace" : 7,
+			"id" : "QCORE_IO_PLUGIN::@281a3865f60465b67bda"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "ccViewer_autogen::@55006f52ab159c25f277"
+		},
+		{
+			"id" : "ccViewer_autogen_timestamp_deps::@55006f52ab159c25f277"
+		}
+	],
+	"id" : "ccViewer::@55006f52ab159c25f277",
+	"install" : 
+	{
+		"destinations" : 
+		[
+			{
+				"backtrace" : 3,
+				"path" : "ccViewer"
+			}
+		],
+		"prefix" : 
+		{
+			"path" : "C:/Program Files (x86)/CloudCompareProjects"
+		}
+	},
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-fopenmp -g",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "libs\\CCAppCommon\\libCCAppCommond.dll.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "libs\\CCPluginAPI\\libCCPluginAPId.dll.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "libs\\qCC_glWindow\\libQCC_GL_LIBd.dll.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "libs\\qCC_io\\libQCC_IO_LIBd.dll.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "libs\\qCC_db\\libQCC_DB_LIBd.dll.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "libs\\qCC_db\\extern\\CCCoreLib\\libCCCoreLibd.dll.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Qt\\5.15.2\\msvc2019_64\\lib\\Qt5Concurrentd.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "libs\\CCFbo\\libCC_FBO_LIBd.dll.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "C:\\Qt\\5.15.2\\msvc2019_64\\lib\\Qt5OpenGLd.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "C:\\Qt\\5.15.2\\msvc2019_64\\lib\\Qt5Widgetsd.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "C:\\Qt\\5.15.2\\msvc2019_64\\lib\\Qt5OpenGLExtensionsd.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "C:\\Qt\\5.15.2\\msvc2019_64\\lib\\Qt5Guid.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "C:\\Qt\\5.15.2\\msvc2019_64\\lib\\Qt5Cored.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "C:\\Qt\\5.15.2\\msvc2019_64\\lib\\\\Qt5Guid.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "C:\\Qt\\5.15.2\\msvc2019_64\\lib\\\\Qt5Cored.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "libs\\qCC_io\\extern\\dxflib\\libdxflibd.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "libs\\qCC_io\\extern\\shapelib\\libshapelibd.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "ccViewer",
+	"nameOnDisk" : "ccViewer.exe",
+	"paths" : 
+	{
+		"build" : "ccViewer",
+		"source" : "ccViewer"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				4,
+				5,
+				6,
+				9
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				1,
+				2,
+				3,
+				7,
+				8
+			]
+		},
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				10,
+				11,
+				12,
+				13
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				14
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/ccViewer/ccViewer_autogen/mocs_compilation.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "ccViewer/ccViewerApplication.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "ccViewer/ccviewer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "ccViewer/ccviewerlog.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "ccViewer/ccViewerApplication.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "ccViewer/ccviewer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "ccViewer/main.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/ccViewer/ui_ccviewer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/ccViewer/ui_ccviewerAbout.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/ccViewer/qrc_icons.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/ccViewer/ccViewer_autogen/timestamp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"path" : "ccViewer/ui_templates/ccviewer.ui",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"path" : "ccViewer/ui_templates/ccviewerAbout.ui",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"path" : "qCC/icons.qrc",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/ccViewer/ccViewer_autogen/timestamp.rule",
+			"sourceGroupIndex" : 3
+		}
+	],
+	"type" : "EXECUTABLE"
+}

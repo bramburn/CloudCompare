@@ -22,12 +22,13 @@
 #include <ccApplicationBase.h>
 
 class ccViewer;
-
+//! ccViewerApplication
 class ccViewerApplication : public ccApplicationBase
 {
 	Q_OBJECT
 	
 public:
+
 	ccViewerApplication( int &argc, char **argv, bool isCommandLine );
 
 	void  setViewer( ccViewer *inViewer );
@@ -36,6 +37,7 @@ protected:
 	bool event( QEvent *inEvent ) override;
 	
 private:
+    //! Associated ccViewer instance
 	ccViewer *mViewer;
 };
 

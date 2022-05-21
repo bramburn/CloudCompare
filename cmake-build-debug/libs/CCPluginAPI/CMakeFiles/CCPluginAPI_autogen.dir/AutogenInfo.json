@@ -1,0 +1,214 @@
+{
+	"BUILD_DIR" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/CCPluginAPI/CCPluginAPI_autogen",
+	"CMAKE_BINARY_DIR" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/CCPluginAPI",
+	"CMAKE_CURRENT_SOURCE_DIR" : "C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI",
+	"CMAKE_EXECUTABLE" : "C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/cmake/win/bin/cmake.exe",
+	"CMAKE_LIST_FILES" : 
+	[
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/CMakeLists.txt",
+		"C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5/Qt5ConfigVersion.cmake",
+		"C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5/Qt5Config.cmake",
+		"C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5/Qt5ModuleLocation.cmake",
+		"C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5Gui/Qt5GuiConfigVersion.cmake",
+		"C:/Qt/5.15.2/msvc2019_64/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake"
+	],
+	"CMAKE_SOURCE_DIR" : "C:/Users/bramburn/IdeaProject/CloudCompare",
+	"DEP_FILE" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/CCPluginAPI/CCPluginAPI_autogen/deps",
+	"DEP_FILE_RULE_NAME" : "CCPluginAPI_autogen/timestamp",
+	"HEADERS" : 
+	[
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include/CCPluginAPI.h",
+			"MU",
+			"6YEA5652QU/moc_CCPluginAPI.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include/ccColorScaleEditorDlg.h",
+			"MU",
+			"6YEA5652QU/moc_ccColorScaleEditorDlg.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include/ccColorScaleEditorWidget.h",
+			"MU",
+			"6YEA5652QU/moc_ccColorScaleEditorWidget.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include/ccColorScaleSelector.h",
+			"MU",
+			"6YEA5652QU/moc_ccColorScaleSelector.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include/ccCommandLineInterface.h",
+			"MU",
+			"6YEA5652QU/moc_ccCommandLineInterface.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include/ccMainAppInterface.h",
+			"MU",
+			"6YEA5652QU/moc_ccMainAppInterface.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include/ccOverlayDialog.h",
+			"MU",
+			"6YEA5652QU/moc_ccOverlayDialog.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include/ccPersistentSettings.h",
+			"MU",
+			"6YEA5652QU/moc_ccPersistentSettings.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include/ccPickingHub.h",
+			"MU",
+			"6YEA5652QU/moc_ccPickingHub.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include/ccPickingListener.h",
+			"MU",
+			"6YEA5652QU/moc_ccPickingListener.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include/ccQtHelpers.h",
+			"MU",
+			"6YEA5652QU/moc_ccQtHelpers.cpp",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include/ccRenderToFileDlg.h",
+			"MU",
+			"6YEA5652QU/moc_ccRenderToFileDlg.cpp",
+			null
+		]
+	],
+	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
+	"INCLUDE_DIR" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/CCPluginAPI/CCPluginAPI_autogen/include",
+	"MOC_COMPILATION_FILE" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/CCPluginAPI/CCPluginAPI_autogen/mocs_compilation.cpp",
+	"MOC_DEFINITIONS" : 
+	[
+		"CCPLUGIN_API_LIBRARY_BUILD",
+		"CCPluginAPI_EXPORTS",
+		"CC_CORE_LIB_USES_FLOAT",
+		"CC_CORE_LIB_USES_QT_CONCURRENT",
+		"CC_DXF_SUPPORT",
+		"CC_SHP_SUPPORT",
+		"QT_CONCURRENT_LIB",
+		"QT_CORE_LIB",
+		"QT_GUI_LIB",
+		"QT_OPENGLEXTENSIONS_LIB",
+		"QT_OPENGL_LIB",
+		"QT_USE_QSTRINGBUILDER",
+		"QT_WIDGETS_LIB"
+	],
+	"MOC_DEPEND_FILTERS" : 
+	[
+		[
+			"Q_PLUGIN_METADATA",
+			"[\n][ \t]*Q_PLUGIN_METADATA[ \t]*\\([^\\)]*FILE[ \t]*\"([^\"]+)\""
+		]
+	],
+	"MOC_INCLUDES" : 
+	[
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/include",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginStub/include",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_glWindow/include",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_db/include",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/qCC_db/extern/CCCoreLib/exports",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_db/extern/CCCoreLib/include",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCFbo/include",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_io/include",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_io/extern/dxflib/src",
+		"C:/Users/bramburn/IdeaProject/CloudCompare/libs/qCC_io/extern/shapelib",
+		"C:/Qt/5.15.2/msvc2019_64/include",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtConcurrent",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtCore",
+		"C:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtOpenGL",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtWidgets",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtGui",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtANGLE",
+		"C:/Qt/5.15.2/msvc2019_64/include/QtOpenGLExtensions",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/lib/gcc/x86_64-w64-mingw32/11.2.0/include",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/include",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/x86_64-w64-mingw32/include"
+	],
+	"MOC_MACRO_NAMES" : [ "Q_OBJECT", "Q_GADGET", "Q_NAMESPACE", "Q_NAMESPACE_EXPORT" ],
+	"MOC_OPTIONS" : [],
+	"MOC_PATH_PREFIX" : false,
+	"MOC_PREDEFS_CMD" : 
+	[
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/bin/g++.exe",
+		"-dM",
+		"-E",
+		"-c",
+		"C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/cmake/win/share/cmake-3.21/Modules/CMakeCXXCompilerABI.cpp"
+	],
+	"MOC_PREDEFS_FILE" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/CCPluginAPI/CCPluginAPI_autogen/moc_predefs.h",
+	"MOC_RELAXED_MODE" : false,
+	"MOC_SKIP" : [],
+	"MULTI_CONFIG" : false,
+	"PARALLEL" : 6,
+	"PARSE_CACHE_FILE" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/CCPluginAPI/CMakeFiles/CCPluginAPI_autogen.dir/ParseCache.txt",
+	"QT_MOC_EXECUTABLE" : "C:/Qt/5.15.2/msvc2019_64/bin/moc.exe",
+	"QT_UIC_EXECUTABLE" : "C:/Qt/5.15.2/msvc2019_64/bin/uic.exe",
+	"QT_VERSION_MAJOR" : 5,
+	"QT_VERSION_MINOR" : 15,
+	"SETTINGS_FILE" : "C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug/libs/CCPluginAPI/CMakeFiles/CCPluginAPI_autogen.dir/AutogenUsed.txt",
+	"SOURCES" : 
+	[
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/src/ccColorScaleEditorDlg.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/src/ccColorScaleEditorWidget.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/src/ccColorScaleSelector.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/src/ccCommandLineInterface.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/src/ccOverlayDialog.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/src/ccPickingHub.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/src/ccRenderToFileDlg.cpp",
+			"MU",
+			null
+		]
+	],
+	"UIC_OPTIONS" : [],
+	"UIC_SEARCH_PATHS" : [ "C:/Users/bramburn/IdeaProject/CloudCompare/libs/CCPluginAPI/ui" ],
+	"UIC_SKIP" : [],
+	"UIC_UI_FILES" : [],
+	"VERBOSITY" : 0
+}

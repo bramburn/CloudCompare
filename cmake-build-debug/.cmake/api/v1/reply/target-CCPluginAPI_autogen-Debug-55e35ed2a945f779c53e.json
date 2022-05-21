@@ -1,0 +1,71 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"libs/CCPluginAPI/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"id" : "CCPluginAPI_autogen_timestamp_deps::@2f9f92581ca6ea91c183"
+		}
+	],
+	"id" : "CCPluginAPI_autogen::@2f9f92581ca6ea91c183",
+	"isGeneratorProvided" : true,
+	"name" : "CCPluginAPI_autogen",
+	"paths" : 
+	{
+		"build" : "libs/CCPluginAPI",
+		"source" : "libs/CCPluginAPI"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/libs/CCPluginAPI/CMakeFiles/CCPluginAPI_autogen",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/libs/CCPluginAPI/CMakeFiles/CCPluginAPI_autogen.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/libs/CCPluginAPI/CCPluginAPI_autogen/timestamp.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

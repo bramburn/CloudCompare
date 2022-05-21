@@ -1,0 +1,70 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"plugins/core/IO/qCoreIO/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"id" : "CCPluginStub::@a677cb67d8b05cd95089"
+		},
+		{
+			"id" : "CCPluginAPI::@2f9f92581ca6ea91c183"
+		},
+		{
+			"id" : "CCCoreLib::@42ec691b8e0b3f5e873c"
+		}
+	],
+	"id" : "QCORE_IO_PLUGIN_autogen_timestamp_deps::@281a3865f60465b67bda",
+	"isGeneratorProvided" : true,
+	"name" : "QCORE_IO_PLUGIN_autogen_timestamp_deps",
+	"paths" : 
+	{
+		"build" : "plugins/core/IO/qCoreIO",
+		"source" : "plugins/core/IO/qCoreIO"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/plugins/core/IO/qCoreIO/CMakeFiles/QCORE_IO_PLUGIN_autogen_timestamp_deps",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/plugins/core/IO/qCoreIO/CMakeFiles/QCORE_IO_PLUGIN_autogen_timestamp_deps.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

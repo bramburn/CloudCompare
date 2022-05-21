@@ -1,0 +1,71 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"libs/qCC_io/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"id" : "QCC_IO_LIB_autogen_timestamp_deps::@f7ba38e89cf41ec4e076"
+		}
+	],
+	"id" : "QCC_IO_LIB_autogen::@f7ba38e89cf41ec4e076",
+	"isGeneratorProvided" : true,
+	"name" : "QCC_IO_LIB_autogen",
+	"paths" : 
+	{
+		"build" : "libs/qCC_io",
+		"source" : "libs/qCC_io"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/libs/qCC_io/CMakeFiles/QCC_IO_LIB_autogen",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/libs/qCC_io/CMakeFiles/QCC_IO_LIB_autogen.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/libs/qCC_io/QCC_IO_LIB_autogen/timestamp.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

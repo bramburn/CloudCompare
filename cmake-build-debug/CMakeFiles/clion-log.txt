@@ -1,0 +1,43 @@
+C:\Users\bramburn\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\213.6777.58\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/ninja/win/ninja.exe -DCMAKE_PREFIX_PATH=C:\Qt\5.15.2\msvc2019_64 -G Ninja C:\Users\bramburn\IdeaProject\CloudCompare
+-- The C compiler identification is GNU 11.2.0
+-- The CXX compiler identification is GNU 11.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/bin/gcc.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Users/bramburn/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/213.6777.58/bin/mingw/bin/g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- OpenMP found
+-- Install shared library: CCAppCommon
+-- Install shared library: CC_FBO_LIB
+-- Install shared library: CCPluginAPI
+-- Performing Test COMPILER_HAS_DEPRECATED_ATTR
+-- Performing Test COMPILER_HAS_DEPRECATED_ATTR - Success
+-- Install shared library: CCCoreLib
+-- Install shared library: QCC_DB_LIB
+-- Install shared library: QCC_GL_LIB
+-- Install shared library: QCC_IO_LIB
+-- Added io plugin: QCORE_IO_PLUGIN
+-- Found submodule plugin: C:/Users/bramburn/IdeaProject/CloudCompare/plugins/core/Standard/qColorimetricSegmenter
+-- Found submodule plugin: C:/Users/bramburn/IdeaProject/CloudCompare/plugins/core/Standard/qMasonry
+-- Found submodule plugin: C:/Users/bramburn/IdeaProject/CloudCompare/plugins/core/Standard/qMPlane
+-- Found submodule plugin: C:/Users/bramburn/IdeaProject/CloudCompare/plugins/core/Standard/qJSonRPCPlugin
+-- Installing CloudCompare to CloudCompare
+-- Install plugins
+--  Types: gl;io;standard
+--  Destination: CloudCompare/plugins
+--  Shader Destination: CloudCompare/shaders
+--  Install QCORE_IO_PLUGIN (io)
+-- Installing ccViewer to ccViewer
+-- Install plugins
+--  Types: gl;io
+--  Destination: ccViewer/plugins
+--  Shader Destination: ccViewer/shaders
+--  Install QCORE_IO_PLUGIN (io)
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/bramburn/IdeaProject/CloudCompare/cmake-build-debug
