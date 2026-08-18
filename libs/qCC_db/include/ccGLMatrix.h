@@ -18,55 +18,79 @@
 #ifndef CC_GL_MATRIX_HEADER
 #define CC_GL_MATRIX_HEADER
 
+/**
+ * @file ccGLMatrix.h
+ *
+ * @brief OpenGL transformation matrix classes
+ *
+ * Provides single-precision (ccGLMatrix) and double-precision (ccGLMatrixd)
+ * 4x4 transformation matrices compatible with OpenGL conventions.
+ *
+ * Matrices use column-major order (OpenGL convention).
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see ccGLMatrixTpl for template implementation
+ */
+
 // Local
 #include "ccGLMatrixTpl.h"
 
 // CCCoreLib
 #include <SquareMatrix.h>
 
-//! Float version of ccGLMatrixTpl
+/**
+ * @brief Single-precision 4x4 OpenGL transformation matrix
+ *
+ * Extends ccGLMatrixTpl<float> with OpenGL-specific constructors.
+ * Uses column-major order consistent with OpenGL conventions.
+ */
 class QCC_DB_LIB_API ccGLMatrix : public ccGLMatrixTpl<float>
 {
   public:
-	//! Default constructor
-	/** Matrix is set to identity (see ccGLMatrixTpl::toIdentity) by default.
-	 **/
+	/**
+	 * @brief Default constructor
+	 * Initializes to identity matrix.
+	 */
 	ccGLMatrix()
 	    : ccGLMatrixTpl<float>()
 	{
 	}
 
-	//! Copy constructor from a ccGLMatrixTpl
-	/** \param mat matrix
-	 **/
+	/**
+	 * @brief Copy constructor
+	 * @param[in] mat Source matrix
+	 */
 	ccGLMatrix(const ccGLMatrixTpl<float>& mat)
 	    : ccGLMatrixTpl<float>(mat)
 	{
 	}
 
-	//! Constructor from a float GL matrix array
-	/** \param mat16f a 16 elements array (column major order)
-	 **/
+	/**
+	 * @brief Constructor from float array
+	 * @param[in] mat16f 16-element array (column-major order)
+	 */
 	explicit ccGLMatrix(const float* mat16f)
 	    : ccGLMatrixTpl<float>(mat16f)
 	{
 	}
 
-	//! Constructor from a double GL matrix array
-	/** \warning Will implicitly cast the elements to float!
-	    \param mat16d a 16 elements array (column major order)
-	**/
+	/**
+	 * @brief Constructor from double array
+	 * @param[in] mat16d 16-element array (column-major order)
+	 * @warning Casts double to float, potentially losing precision
+	 */
 	explicit ccGLMatrix(const double* mat16d)
 	    : ccGLMatrixTpl<float>(mat16d)
 	{
 	}
 
-	//! Constructor from 4 columns (X,Y,Z,Tr)
-	/** \param X 3 first elements of the 1st column (last one is 0)
-	    \param Y 3 first elements of the 2nd column (last one is 0)
-	    \param Z 3 first elements of the 3rd column (last one is 0)
-	    \param Tr 3 first elements of the last column (last one is 1)
-	**/
+	/**
+	 * @brief Constructor from column vectors
+	 * @param[in] X First column (x-axis direction)
+	 * @param[in] Y Second column (y-axis direction)
+	 * @param[in] Z Third column (z-axis direction)
+	 * @param[in] Tr Translation column
+	 */
 	ccGLMatrix(const Vector3Tpl<float>& X, const Vector3Tpl<float>& Y, const Vector3Tpl<float>& Z, const Vector3Tpl<float>& Tr)
 	    : ccGLMatrixTpl<float>(X, Y, Z, Tr)
 	{
