@@ -18,29 +18,50 @@
 #ifndef CC_SNE_HEADER
 #define CC_SNE_HEADER
 
+/**
+ * @file ccSNECloud.h
+ *
+ * @brief SNE cloud class
+ *
+ * Represents normal vectors for strike and dip measurements.
+ */
+
 #include <ccPointCloud.h>
 #include <ccMeasurement.h>
 
-/*
-Class for representing/drawing lineations measured with qCompass.
-*/
+/**
+ * @class ccSNECloud
+ *
+ * @brief SNE cloud
+ *
+ * Represents/draws strike and dip normal vectors.
+ */
 class ccSNECloud : 
 	public ccPointCloud,
 	public ccMeasurement
 {
 public:
-	//ctors
+	/// Constructor
 	ccSNECloud();
+	
+	/**
+	 * @brief Create from point cloud
+	 * @param[in] obj Source cloud
+	 */
 	ccSNECloud(ccPointCloud* obj);
 
-	//write metadata specific to this object
+	/// Update metadata
 	void updateMetadata();
 
-	//returns true if the given ccHObject is/was a ccLineation (as defined by the objects metadata)
+	/**
+	 * @brief Check if object is an SNE cloud
+	 * @param[in] obj Object to check
+	 * @return True if SNE cloud
+	 */
 	static bool isSNECloud(ccHObject* obj);
 
 protected:
-	//overidden from ccHObject
+	/// Draw object
 	virtual void drawMeOnly(CC_DRAW_CONTEXT& context) override;
 };
 #endif
