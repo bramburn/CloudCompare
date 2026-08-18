@@ -18,9 +18,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qAdditionalIO.h
+ *
+ * @brief Additional I/O formats plugin
+ *
+ * Plugin for additional file format support.
+ *
+ * @author CloudCompare project
+ */
+
 #include <ccIOPluginInterface.h>
 
-//! Additional I/O Formats
+/**
+ * @brief Additional I/O formats plugin
+ *
+ * Provides additional file I/O formats.
+ */
 class qAdditionalIO : public QObject
     , public ccIOPluginInterface
 {
@@ -30,13 +44,19 @@ class qAdditionalIO : public QObject
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qAdditionalIO" FILE "../info.json")
 
   public:
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qAdditionalIO(QObject* parent = nullptr);
 
+	/// Destructor
 	~qAdditionalIO() override = default;
 
+	/// Register command line commands
 	void registerCommands(ccCommandLineInterface* cmd) override;
 
-	// inherited from ccIOPluginInterface
+	/// Get list of supported filters
 	FilterList getFilters() override;
 };
 
