@@ -17,30 +17,50 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file facetsExportDlg.h
+ *
+ * @brief Facets export dialog
+ *
+ * Dialog for exporting facets.
+ */
+
 #include <QDialog>
 
 #include "ui_facetsExportDlg.h"
 
-//! Dialog for exporting facets or facets info (qFacets plugin)
+/**
+ * @class FacetsExportDlg
+ *
+ * @brief Facets export dialog
+ *
+ * Dialog for exporting facets or facets info.
+ */
 class FacetsExportDlg : public QDialog, public Ui::FacetsExportDlg
 {
 	Q_OBJECT
 
 public:
 
-	//! Usage mode
+	/**
+	 * @enum IOMode
+	 *
+	 * @brief I/O mode
+	 */
 	enum IOMode { SHAPE_FILE_IO, ASCII_FILE_IO };
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] mode I/O mode
+	 * @param[in] parent Parent widget
+	 */
 	FacetsExportDlg(IOMode mode, QWidget* parent = nullptr);
 
 protected:
-
-	//! Called when the 'browse' tool button is pressed
+	/// Browse for destination
 	void browseDestination();
 
 protected:
-
-	//! Current I/O mode
+	/// Current I/O mode
 	IOMode m_mode;
 };
