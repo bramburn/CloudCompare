@@ -28,14 +28,26 @@
 // system
 #include <vector>
 
+/**
+ * @file ccFastMarchingForNormsDirection.h
+ *
+ * @brief Fast Marching for normals direction
+ *
+ * Fast Marching algorithm for normals direction resolution.
+ */
+
 class ccGenericPointCloud;
 class ccPointCloud;
 class ccOctree;
 class ccProgressDialog;
 
-//! Fast Marching algorithm for normals direction resolution
-/** Extends the FastMarching class.
- **/
+/**
+ * @class ccFastMarchingForNormsDirection
+ *
+ * @brief Fast Marching for normals direction
+ *
+ * Fast Marching algorithm for normals direction resolution.
+ */
 class ccFastMarchingForNormsDirection : public CCCoreLib::FastMarching
 {
 
