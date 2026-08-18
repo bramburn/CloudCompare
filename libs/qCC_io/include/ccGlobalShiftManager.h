@@ -18,6 +18,16 @@
 #ifndef CC_GLOBAL_SHIFT_MANAGER_HEADER
 #define CC_GLOBAL_SHIFT_MANAGER_HEADER
 
+/**
+ * @file ccGlobalShiftManager.h
+ *
+ * @brief Coordinate shift/scale manager
+ *
+ * Handles big coordinates (shift/scale) during file loading.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // CCCoreLib
 #include <CCGeom.h>
 
@@ -32,20 +42,36 @@
 
 class ccHObject;
 
-//! Helper class to handle big coordinates shift/scale (typically while loading entities)
+/**
+ * @brief Coordinate shift/scale manager
+ *
+ * Handles big coordinates during file loading to avoid
+ * floating-point precision issues.
+ */
 class QCC_IO_LIB_API ccGlobalShiftManager
 {
   public:
-	//! Strategy to handle coordinates shift/scale
+	/// Dialog mode for shift handling
 	enum Mode
 	{
-		NO_DIALOG,
-		NO_DIALOG_AUTO_SHIFT,
-		DIALOG_IF_NECESSARY,
-		ALWAYS_DISPLAY_DIALOG
+		NO_DIALOG,           //!< No dialog, no shift
+		NO_DIALOG_AUTO_SHIFT,//!< Auto shift without dialog
+		DIALOG_IF_NECESSARY, //!< Show dialog if needed
+		ALWAYS_DISPLAY_DIALOG//!< Always show dialog
 	};
 
-	//! Handles coordinates shift/scale given the first 3D point and current related parameters
+	/**
+	 * @brief Handle coordinate shift/scale
+	 * @param[in] P First point
+	 * @param[in] diagonal Bounding box diagonal
+	 * @param[in] mode Dialog mode
+	 * @param[in] useInputCoordinatesShiftIfPossible Use existing shift
+	 * @param[out] coordinatesShift Computed shift
+	 * @param[out] _preserveCoordinateShift Preserve shift flag
+	 * @param[out] _coordinatesScale Scale factor
+	 * @param[out] _applyAll Apply to all points flag
+	 * @return true if handled
+	 */
 	static bool Handle(const CCVector3d& P,
 	                   double            diagonal,
 	                   Mode              mode,
@@ -55,53 +81,88 @@ class QCC_IO_LIB_API ccGlobalShiftManager
 	                   double*           _coordinatesScale        = nullptr,
 	                   bool*             _applyAll                = nullptr);
 
-	//! Returns whether a particular point (coordinates) is too big or not
+	/**
+	 * @brief Check if point needs shifting
+	 * @param[in] P Point to check
+	 * @return true if shift needed
+	 */
 	static bool NeedShift(const CCVector3d& P);
-	//! Returns whether a particular point coordinate is too big or not
+	
+	/**
+	 * @brief Check if coordinate needs shifting
+	 * @param[in] d Coordinate value
+	 * @return true if shift needed
+	 */
 	static bool NeedShift(double d);
-	//! Returns whether a particular dimension (e.g. diagonal) is too big or not
+	
+	/**
+	 * @brief Check if dimension needs rescaling
+	 * @param[in] d Dimension value
+	 * @return true if rescale needed
+	 */
 	static bool NeedRescale(double d);
 
-	//! Suggests a shift for a given point expressed in global coordinate space
+	/**
+	 * @brief Get best shift for point
+	 * @param[in] P Point in global coordinates
+	 * @return Recommended shift vector
+	 */
 	static CCVector3d BestShift(const CCVector3d& P);
-	//! Suggests a scale for a given dimension (e.g. diagonal) in global coordinate space
+	
+	/**
+	 * @brief Get best scale for dimension
+	 * @param[in] d Dimension value
+	 * @return Recommended scale factor
+	 */
 	static double BestScale(double d);
 
-	//! Returns the max coordinate (absolute) value
+	/// Get max coordinate absolute value
 	static double MaxCoordinateAbsValue()
 	{
 		return MAX_COORDINATE_ABS_VALUE;
 	}
-	//! Sets the max coordinate (absolute) value
+	
+	/// Set max coordinate absolute value
 	static void SetMaxCoordinateAbsValue(double value)
 	{
 		MAX_COORDINATE_ABS_VALUE = std::max(value, 1.0);
 	}
 
-	//! Returns max bounding-box diagonal
+	/// Get max bounding box diagonal
 	static double MaxBoundgBoxDiagonal()
 	{
 		return MAX_DIAGONAL_LENGTH;
 	}
-	//! Sets the max bounding-box diagonal
+	
+	/// Set max bounding box diagonal
 	static void SetMaxBoundgBoxDiagonal(double value)
 	{
 		MAX_DIAGONAL_LENGTH = value;
 	}
 
-	//! Adds a new shift / scale couple
+	/**
+	 * @brief Store shift/scale pair
+	 * @param[in] shift Shift vector
+	 * @param[in] scale Scale factor
+	 * @param[in] preserve Preserve flag
+	 */
 	static void StoreShift(const CCVector3d& shift, double scale, bool preserve = true);
 
   public: // Shift and scale info
-	//! Shift and scale info
+	/**
+	 * @brief Shift and scale information
+	 */
 	struct ShiftInfo
 	{
-		CCVector3d shift;
-		double     scale;
-		QString    name;
-		bool       preserve;
+		CCVector3d shift;  //!< Shift vector
+		double     scale;   //!< Scale factor
+		QString    name;    //!< Name
+		bool       preserve;//!< Preserve flag
 
-		//! Default constructor
+		/**
+		 * @brief Create shift info
+		 * @param[in] str Name
+		 */
 		ShiftInfo(QString str = QString("unnamed"))
 		    : shift(0, 0, 0)
 		    , scale(1.0)
@@ -109,7 +170,13 @@ class QCC_IO_LIB_API ccGlobalShiftManager
 		    , preserve(true)
 		{
 		}
-		//! Constructor from a vector and a scale value
+		
+		/**
+		 * @brief Create shift info
+		 * @param[in] str Name
+		 * @param[in] T Shift vector
+		 * @param[in] s Scale factor
+		 */
 		ShiftInfo(QString str, const CCVector3d& T, double s = 1.0)
 		    : shift(T)
 		    , scale(s)
@@ -119,21 +186,25 @@ class QCC_IO_LIB_API ccGlobalShiftManager
 		}
 	};
 
-	//! Returns the default and last input shift/scale entries
+	/**
+	 * @brief Get last shift/scale entries
+	 * @return List of shift info
+	 */
 	const static std::vector<ShiftInfo>& GetLast();
 
-	//! Tries to load ShiftInfo data from a (text) file
-	/** \param[in]  filename filename
-	    \param[out] infos read information
-	    \return success
-	**/
+	/**
+	 * @brief Load shift info from file
+	 * @param[in] filename File to read
+	 * @param[out] infos Read information
+	 * @return true on success
+	 */
 	static bool LoadInfoFromFile(QString filename, std::vector<ShiftInfo>& infos);
 
   protected:
-	// Max acceptable coordinate value
+	/// Max acceptable coordinate value
 	static double MAX_COORDINATE_ABS_VALUE;
 
-	// Max acceptable diagonal length
+	/// Max acceptable diagonal length
 	static double MAX_DIAGONAL_LENGTH;
 };
 
