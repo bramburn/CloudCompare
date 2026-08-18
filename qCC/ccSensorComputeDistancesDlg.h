@@ -18,6 +18,16 @@
 #ifndef CC_SF_DISTANCES_DLG_HEADER
 #define CC_SF_DISTANCES_DLG_HEADER
 
+/**
+ * @file ccSensorComputeDistancesDlg.h
+ *
+ * @brief Sensor compute distances dialog
+ *
+ * Dialog for sensor range computation.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <QDialog>
 
 namespace Ui
@@ -25,18 +35,26 @@ namespace Ui
 	class sensorComputeDistancesDlg;
 }
 
-//! Dialog for sensor range computation
+/**
+ * @brief Sensor compute distances dialog
+ *
+ * Configure sensor range computation.
+ */
 class ccSensorComputeDistancesDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccSensorComputeDistancesDlg(QWidget* parent = nullptr);
 
+	/// Destructor
 	~ccSensorComputeDistancesDlg();
 
-	//! Returns whether computed distances should be squared or not
+	/// Get compute squared distances flag
 	bool computeSquaredDistances() const;
 
   private:
