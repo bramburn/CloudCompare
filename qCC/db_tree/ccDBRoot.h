@@ -26,6 +26,15 @@
 // qCC_db
 #include <ccHObject.h>
 
+/**
+ * @file ccDBRoot.h
+ *
+ * @brief Database root
+ *
+ * Database tree management and selection handling.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // System
 #include <unordered_set>
 
@@ -35,7 +44,11 @@ class QStandardItemModel;
 class ccPropertiesTreeDelegate;
 class ccHObject;
 
-//! Precise statistics about current selection
+/**
+ * @brief Selection statistics
+ *
+ * Statistics about current selection.
+ */
 struct dbTreeSelectionInfo
 {
 	size_t selCount          = 0;
