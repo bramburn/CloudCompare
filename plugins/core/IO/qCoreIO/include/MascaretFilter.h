@@ -15,14 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file MascaretFilter.h
+ *
+ * @brief Mascaret filter
+ *
+ * Mascaret profile I/O filter.
+ */
+
 #ifndef CC_MASCARET_FILTER_HEADER
 #define CC_MASCARET_FILTER_HEADER
 
 #include "FileIOFilter.h"
 
-//! Mascaret profile I/O filter
-/** See http://www.opentelemac.org/
- **/
+/**
+ * @class MascaretFilter
+ *
+ * @brief Mascaret filter
+ *
+ * Mascaret profile I/O filter.
+ */
 class MascaretFilter : public FileIOFilter
 {
   public:
