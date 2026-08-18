@@ -13,32 +13,54 @@
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
-// #          COPYRIGHT:  Chris Brown                                       #
+// #          COPYRIGHT: Chris Brown                                        #
 // #                                                                        #
 // ##########################################################################
+
+/**
+ * @file ccPrimitiveDistanceDlg.h
+ *
+ * @brief Primitive distance dialog
+ *
+ * Dialog for cloud-to-primitive distance settings.
+ *
+ * @author Chris Brown
+ */
 
 // Qt
 #include <QDialog>
 #include <ui_primitiveDistanceDlg.h>
 
-//! Dialog for cloud-to-primitive distances setting
+/**
+ * @brief Primitive distance dialog
+ *
+ * Configure cloud-to-primitive distance settings.
+ */
 class ccPrimitiveDistanceDlg : public QDialog
     , public Ui::primitiveDistanceDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	ccPrimitiveDistanceDlg(QWidget* parent = nullptr);
 
+	/// Get signed distances flag
 	inline bool signedDistances() const
 	{
 		return signedDistCheckBox->isChecked();
 	}
+	
+	/// Get flip normals flag
 	inline bool flipNormals() const
 	{
 		return flipNormalsCheckBox->isChecked();
 	}
+	
+	/// Get treat planes as bounded flag
 	inline bool treatPlanesAsBounded() const
 	{
 		return treatPlanesAsBoundedCheckBox->isChecked();
