@@ -17,28 +17,47 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccMeasurement.h
+ *
+ * @brief Measurement base class
+ *
+ * Base class for compass measurements.
+ */
+
 #include <ccHObject.h>
 #include <ccPointCloud.h>
 #include <ccMainAppInterface.h>
 
-/*
-A template class for all "measurements" made with ccCompass. Contains basic stuff like highligts, draw colours etc.
-*/
+/**
+ * @class ccMeasurement
+ *
+ * @brief Measurement base class
+ *
+ * Base class for geological measurements with drawing states.
+ */
 class ccMeasurement
 {
 public:
-
+	/// Constructor
 	ccMeasurement() {}
 
+	/// Destructor
 	virtual ~ccMeasurement() {}
 
-	//drawing stuff
+	/// Set default color
 	void setDefaultColor  (const ccColor::Rgb& col) { m_normal_colour    = col; }
+	
+	/// Set highlight color
 	void setHighlightColor(const ccColor::Rgb& col) { m_highlight_colour = col; }
+	
+	/// Set active color
 	void setActiveColor   (const ccColor::Rgb& col) { m_active_colour    = col; }
+	
+	/// Set alternate color
 	void setAlternateColor(const ccColor::Rgb& col) { m_alternate_colour = col; }
 
-	//returns the colour of this measurment object given the active/highlighted state
+	/// Get measurement color based on state
 	ccColor::Rgb getMeasurementColour() const
 	{
 		if (m_isActive)
@@ -56,14 +75,16 @@ public:
 		return m_normal_colour;
 	}
 
-	//set draw state of this measurment
+	/// Set active state
 	void setActive   (bool isActive) { m_isActive      = isActive; }
+	/// Set highlight state
 	void setHighlight(bool isActive) { m_isHighlighted = isActive; }
+	/// Set alternate state
 	void setAlternate(bool isActive) { m_isAlternate   = isActive;  }
+	/// Set normal state
 	void setNormal() { m_isActive = false; m_isHighlighted = false; m_isAlternate = false; }
 
 protected:
-	//drawing variables
 	bool m_isActive = false;
 	bool m_isHighlighted = false;
 	bool m_isAlternate = false;
