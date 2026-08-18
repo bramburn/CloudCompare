@@ -18,6 +18,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccAboutDialog.h
+ *
+ * @brief About dialog
+ *
+ * Dialog showing application information.
+ *
+ * @author CloudCompare project
+ */
+
 #include <QDialog>
 
 namespace Ui
@@ -25,15 +35,29 @@ namespace Ui
 	class AboutDialog;
 }
 
+/**
+ * @brief About dialog
+ *
+ * Shows application version and credits.
+ */
 class ccAboutDialog : public QDialog
 {
 	Q_OBJECT
 
   public:
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	ccAboutDialog(QWidget* parent = nullptr);
+	
+	/**
+	 * @brief Destructor
+	 */
 	~ccAboutDialog();
 
   private:
+	/// UI
 	Ui::AboutDialog* mUI;
 };
 
