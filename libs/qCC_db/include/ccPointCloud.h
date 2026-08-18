@@ -44,56 +44,121 @@ class ccPointCloudLOD;
                 ccPointCloud
 ***************************************************/
 
-//! Max number of points per cloud (point cloud will be chunked above this limit)
+/**
+ * @file ccPointCloud.h
+ *
+ * @brief Point cloud data structure
+ *
+ * ccPointCloud represents a 3D point cloud with associated features.
+ * It is one of the fundamental data types in CloudCompare, storing
+ * geometric points and their associated attributes.
+ *
+ * @section Point Cloud Features
+ * A point cloud can store multiple features:
+ * - Positions (3D coordinates)
+ * - Colors (RGB)
+ * - Normals (compressed)
+ * - Scalar fields (per-point measurements)
+ * - Octree structure (for spatial indexing)
+ * - Per-point visibility (for hiding/displaying subsets)
+ * - Child objects (meshes, pictures, etc.)
+ *
+ * @section Memory Management
+ * For very large point clouds (>128M points on 32-bit, >2B points on 64-bit),
+ * the cloud is automatically chunked to avoid memory issues.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see ccGenericPointCloud for the interface
+ * @see ccPolyline for polyline entities
+ * @see ccMesh for mesh entities
+ */
+
+/**
+ * @brief Maximum number of points per cloud
+ *
+ * Point clouds exceeding this limit are automatically chunked.
+ * - 32-bit builds: 128 million points
+ * - 64-bit builds: 2 billion points
+ */
 #if defined(CC_ENV_32)
 const unsigned CC_MAX_NUMBER_OF_POINTS_PER_CLOUD = 128000000;
 #else // CC_ENV_64 (but maybe CC_ENV_128 one day ;)
 const unsigned CC_MAX_NUMBER_OF_POINTS_PER_CLOUD = 2000000000; // we must keep it below MAX_INT to avoid probable issues ;)
 #endif
 
-//! A 3D cloud and its associated features (color, normals, scalar fields, etc.)
-/** A point cloud can have multiple features:
-    - colors (RGB)
-    - normals (compressed)
-    - scalar fields
-    - an octree structure
-    - per-point visibility information (to hide/display subsets of points)
-    - other children objects (meshes, calibrated pictures, etc.)
-**/
+/**
+ * @brief A 3D point cloud with associated features
+ *
+ * ccPointCloud is the fundamental data structure for storing 3D point data.
+ * It extends the template base class with CloudCompare-specific functionality.
+ *
+ * @par Features:
+ * - Colors (RGB per point)
+ * - Compressed normals
+ * - Scalar fields (per-point measurements)
+ * - Octree spatial indexing
+ * - Per-point visibility
+ * - Child entities (meshes, calibrated pictures)
+ *
+ * @par Example:
+ * @code
+ * ccPointCloud* cloud = new ccPointCloud("My Cloud");
+ * cloud->reserve(10000);
+ * for (int i = 0; i < 10000; ++i) {
+ *     CCVector3 point(i * 0.01, i * 0.02, i * 0.03);
+ *     cloud->addPoint(point);
+ * }
+ * @endcode
+ */
 class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>
 {
   public:
 	//! Base class (shortcut)
 	using BaseClass = CCCoreLib::PointCloudTpl<ccGenericPointCloud, QString>;
 
-	//! Default constructor
-	/** Creates an empty cloud without any feature. Each of them should be
-	    specifically instantiated/created (once the points have been
-	    added to this cloud, at least partially).
-	    \param name cloud name (optional)
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create an empty point cloud
+	 *
+	 * Creates a new point cloud with no points. Use reserve() before
+	 * adding points for better performance.
+	 *
+	 * @param[in] name Optional name for the cloud
+	 * @param[in] uniqueID Optional unique ID (use with care)
+	 *
+	 * @note Each feature (colors, normals, scalar fields) must be
+	 *       explicitly created/allocated after adding points.
+	 *
+	 * @see reserve() to pre-allocate memory
+	 * @see addPoint() to add individual points
+	 */
 	ccPointCloud(QString name = QString(), unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID) throw();
 
 	//! Default destructor
 	~ccPointCloud() override;
 
-	//! Returns class ID
+	/**
+	 * @brief Get the class type identifier
+	 * @return CC_TYPES::POINT_CLOUD
+	 */
 	CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::POINT_CLOUD;
 	}
 
   public: // clone, copy, etc.
-	//! Creates a new point cloud object from a GenericIndexedCloud
-	/** "GenericIndexedCloud" is an extension of GenericCloud (from CCCoreLib)
-	    which provides a const random accessor to points.
-	    See CClib documentation for more information about GenericIndexedCloud.
-	    As the GenericIndexedCloud interface is very simple, only points are imported.
-	    Note: throws an 'int' exception in case of error (see CTOR_ERRORS)
-	    \param cloud a GenericIndexedCloud structure
-	    \param sourceCloud cloud from which main parameters will be imported (optional)
-	**/
+	/**
+	 * @brief Create a point cloud from a generic indexed cloud
+	 *
+	 * Converts any GenericIndexedCloud (from CCCoreLib) into a ccPointCloud.
+	 * Only geometric points are imported from the source.
+	 *
+	 * @param[in] cloud The source cloud structure
+	 * @param[in] sourceCloud Optional cloud to import metadata from
+	 * @return New ccPointCloud, or nullptr on error
+	 * @throws int Exception with CTOR_ERRORS code on failure
+	 *
+	 * @see From() for GenericCloud variant
+	 */
 	static ccPointCloud* From(const CCCoreLib::GenericIndexedCloud* cloud, const ccGenericPointCloud* sourceCloud = nullptr);
 
 	//! Creates a new point cloud object from a GenericCloud
