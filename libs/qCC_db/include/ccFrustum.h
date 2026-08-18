@@ -18,12 +18,25 @@
 #ifndef CC_FRUSTUM_HEADER
 #define CC_FRUSTUM_HEADER
 
+/**
+ * @file ccFrustum.h
+ *
+ * @brief View frustum and related geometry
+ *
+ * Defines view frustum, planes, and bounding boxes
+ * for visibility tests.
+ *
+ * @author CloudCompare project
+ */
 // CCCoreLib
 #include <RayAndBox.h>
 
 // Local
 #include "ccGLMatrix.h"
 
+/**
+ * @brief 3D plane
+ */
 class Plane
 {
   public:
@@ -64,6 +77,9 @@ class Plane
 	float      constCoef;
 };
 
+/**
+ * @brief Axis-aligned box
+ */
 class AABox : public CCCoreLib::AABB<float>
 {
   public:
@@ -126,6 +142,11 @@ class AACube
 	float      d;
 };
 
+/**
+ * @brief View frustum
+ *
+ * View frustum for visibility testing.
+ */
 class Frustum
 {
   public:
