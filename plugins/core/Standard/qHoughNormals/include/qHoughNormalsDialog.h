@@ -18,22 +18,45 @@
 #ifndef QHOUGH_NORMALS_HEADER
 #define QHOUGH_NORMALS_HEADER
 
+/**
+ * @file qHoughNormalsDialog.h
+ *
+ * @brief Hough normals dialog
+ *
+ * Dialog for Hough normals parameters.
+ */
+
 #include <QDialog>
 
 namespace Ui {
 	class HoughNormalsDialog;
 }
 
+/**
+ * @class qHoughNormalsDialog
+ *
+ * @brief Hough normals dialog
+ *
+ * Dialog for configuring Hough normals parameters.
+ */
 class qHoughNormalsDialog : public QDialog
 {
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit qHoughNormalsDialog( QWidget* parent = nullptr );
 	
+	/// Destructor
 	~qHoughNormalsDialog();
 
-	//Settings
+	/**
+	 * @struct Parameters
+	 *
+	 * @brief Hough normals parameters
+	 */
 	struct Parameters
 	{
 		int K = 100;
@@ -45,10 +68,20 @@ public:
 		int k_density = 5;
 	};
 	
+	/**
+	 * @brief Set parameters
+	 * @param[in] params Parameters
+	 */
 	void setParameters( const Parameters& params );
+	
+	/**
+	 * @brief Get parameters
+	 * @param[out] params Parameters
+	 */
 	void getParameters( Parameters& params );
 	
 private:
+	/// UI
 	Ui::HoughNormalsDialog* m_ui;
 };
 
