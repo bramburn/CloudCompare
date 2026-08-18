@@ -17,6 +17,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccHObjectCaster.h
+ *
+ * @brief HObject type casting utilities
+ *
+ * Provides type-safe casting from ccHObject to
+ * specific derived types.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "qCC_db.h"
 
@@ -56,7 +66,11 @@ class ccSubMesh;
 class ccTorus;
 class ccCoordinateSystem;
 
-//! Useful class to (try to) statically cast a basic ccHObject to a given type
+/**
+ * @brief HObject type caster
+ *
+ * Type-safe casting utilities for ccHObject hierarchy.
+ */
 class QCC_DB_LIB_API ccHObjectCaster
 {
   public:
