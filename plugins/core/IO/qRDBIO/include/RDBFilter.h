@@ -7,7 +7,7 @@
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
 // #  it under the terms of the GNU General Public License as published by  #
-// #  the Free Software Foundation; version 2 of the License.               #
+// #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
 // #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
@@ -18,16 +18,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file RDBFilter.h
+ *
+ * @brief RDB file filter
+ *
+ * I/O filter for RIEGL RDB files.
+ *
+ * @author RIEGL Laser Measurement Systems GmbH
+ */
+
 #include <FileIOFilter.h>
 
+/**
+ * @brief RDB file filter
+ *
+ * Read RDB files.
+ */
 class RDBFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	RDBFilter();
 
-	// inherited from FileIOFilter
+	/// Load file
 	CC_FILE_ERROR loadFile(const QString& fileName, ccHObject& container, LoadParameters& parameters) override;
 
+	/// Check if can save
 	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
 };
 
