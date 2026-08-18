@@ -1,5 +1,16 @@
 #pragma once
 
+/**
+ * @file ccPolyline.h
+ *
+ * @brief Polyline (connected line segments) class
+ *
+ * Represents a polyline (connected line segments) in 3D space.
+ * Used for ground lines, profiles, annotations, and mesh boundaries.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // ##########################################################################
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
@@ -26,25 +37,32 @@
 class ccPointCloud;
 class ccGenericPointCloud;
 
-//! Colored polyline
-/** Extends the CCCoreLib::Polyline class
- **/
+/**
+ * @brief Polyline (connected line segments) class
+ *
+ * Represents a polyline in 3D space. Used for ground lines,
+ * profiles, annotations, and mesh boundaries.
+ */
 class QCC_DB_LIB_API ccPolyline : public CCCoreLib::Polyline
     , public ccShiftedObject
 {
   public:
-	//! Default constructor
-	/** \param associatedCloud the associated point cloud (i.e. the vertices)
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a polyline
+	 * @param[in] associatedCloud Point cloud with vertices
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	explicit ccPolyline(GenericIndexedCloudPersist* associatedCloud, unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
-	//! Copy constructor
-	/** \param poly polyline to copy/clone
-	 **/
+	/**
+	 * @brief Copy constructor
+	 * @param[in] poly Polyline to copy
+	 */
 	ccPolyline(const ccPolyline& poly);
 
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	~ccPolyline() override = default;
 
 	//! Returns class ID
