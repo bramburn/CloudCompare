@@ -23,6 +23,15 @@
 // CCCoreLib
 #include <CCTypes.h>
 
+/**
+ * @file ccSubsamplingDlg.h
+ *
+ * @brief Subsampling dialog
+ *
+ * Dialog for point cloud subsampling.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // System
 #include <array>
 
@@ -39,7 +48,11 @@ namespace Ui
 	class SubsamplingDialog;
 }
 
-//! Subsampling cloud dialog
+/**
+ * @brief Subsampling dialog
+ *
+ * Point cloud subsampling methods.
+ */
 class ccSubsamplingDlg : public QDialog
 {
 	Q_OBJECT
