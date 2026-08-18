@@ -21,7 +21,7 @@
 #include "FileIOFilter.h"
 #include "rply.h"
 
-//! PLY format types
+/// PLY format types
 static const char e_ply_type_names[][12] = {
     "PLY_INT8",
     "PLY_UINT8",
@@ -41,11 +41,13 @@ static const char e_ply_type_names[][12] = {
     "PLY_DOUBLE",
     "PLY_LIST"};
 
-//! PLY format storage modes
+/// PLY storage modes
 static const char e_ply_storage_mode_names[][24] =
     {"PLY_BIG_ENDIAN", "PLY_LITTLE_ENDIAN", "PLY_ASCII", "PLY_DEFAULT"};
 
-//! PLY file properties
+/**
+ * @brief PLY property
+ */
 struct plyProperty
 {
 	p_ply_property prop;
@@ -56,7 +58,9 @@ struct plyProperty
 	int            elemIndex;
 };
 
-//! PLY file nuclear element
+/**
+ * @brief PLY element
+ */
 struct plyElement
 {
 	p_ply_element            elem;
@@ -67,7 +71,11 @@ struct plyElement
 	bool                     isFace;
 };
 
-//! Stanford PLY file I/O filter
+/**
+ * @brief PLY filter
+ *
+ * Stanford PLY file filter.
+ */
 class QCC_IO_LIB_API PlyFilter : public FileIOFilter
 {
   public:
