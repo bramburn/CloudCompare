@@ -18,6 +18,16 @@
 #ifndef CC_OBJECT_HEADER
 #define CC_OBJECT_HEADER
 
+/**
+ * @file ccObject.h
+ *
+ * @brief Base object class and type definitions
+ *
+ * Defines the base object class (ccObject) and all entity
+ * type constants (CC_TYPES) used throughout CloudCompare.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccSerializableObject.h"
 
@@ -25,53 +35,101 @@
 #include <QSharedPointer>
 #include <QVariant>
 
-//! Object state flag
+/**
+ * @brief Object state flags
+ */
 enum CC_OBJECT_FLAG
 { // CC_UNUSED			= 1, //DGM: not used anymore (former CC_FATHER_DEPENDENT)
-	CC_ENABLED = 2,
-	CC_LOCKED  = 4,
+	CC_ENABLED = 2, //!< Object is enabled
+	CC_LOCKED  = 4,  //!< Object is locked
 };
 
-// Bits for object type flags (64 bits)
-#define CC_HIERARCH_BIT 0x00000000000001          // Hierarchical object
-#define CC_LEAF_BIT 0x00000000000002              // Tree leaf (no children)
-#define CC_GROUP_BIT 0x00000000000004             // Group (no data, aggregation only)
-#define CC_PRIMITIVE_BIT 0x00000000000008         // Primitive (sphere, plane, torus, cylinder, etc.)
-#define CC_ARRAY_BIT 0x00000000000010             // Array
-#define CC_LABEL_BIT 0x00000000000020             // 2D label
-#define CC_VIEWPORT_BIT 0x00000000000040          // 2D viewport
-#define CC_CUSTOM_BIT 0x00000000000080            // For custom (plugin defined) objects
-#define CC_CLOUD_BIT 0x00000000000100             // Point Cloud
-#define CC_MESH_BIT 0x00000000000200              // Mesh
-#define CC_OCTREE_BIT 0x00000000000400            // Octree
-#define CC_POLYLINE_BIT 0x00000000000800          // Polyline
-#define CC_IMAGE_BIT 0x00000000001000             // Picture
-#define CC_SENSOR_BIT 0x00000000002000            // Sensor def.
-#define CC_PLANE_BIT 0x00000000004000             // Plane (primitive)
-#define CC_SPHERE_BIT 0x00000000008000            // Sphere (primitive)
-#define CC_TORUS_BIT 0x00000000010000             // Torus (primitive)
-#define CC_CYLINDER_BIT 0x00000000020000          // Cylinder (primitive)
-#define CC_CONE_BIT 0x00000000040000              // Cone (primitive)
-#define CC_BOX_BIT 0x00000000080000               // Box (primitive)
-#define CC_DISH_BIT 0x00000000100000              // Dish (primitive)
-#define CC_EXTRU_BIT 0x00000000200000             // Extrusion (primitive)
-#define CC_KDTREE_BIT 0x00000000400000            // Kd-tree
-#define CC_FACET_BIT 0x00000000800000             // Facet (composite object: cloud + 2D1/2 mesh + 2D1/2 polyline)
-#define CC_MATERIAL_BIT 0x00000001000000          // Material
-#define CC_CLIP_BOX_BIT 0x00000002000000          // Clipping box
-#define CC_TRANS_BUFFER_BIT 0x00000004000000      // Indexed transformation buffer
-#define CC_GROUND_BASED_BIT 0x00000008000000      // For Ground Based Lidar Sensors
-#define CC_RGB_COLOR_BIT 0x00000010000000         // Color (R,G,B)
-#define CC_NORMAL_BIT 0x00000020000000            // Normal (Nx,Ny,Nz)
-#define CC_COMPRESSED_NORMAL_BIT 0x00000040000000 // Compressed normal (index)
-#define CC_TEX_COORDS_BIT 0x00000080000000        // Texture coordinates (u,v)
-#define CC_CAMERA_BIT 0x00000100000000            // For camera sensors (projective sensors)
-#define CC_QUADRIC_BIT 0x00000200000000           // Quadric (primitive)
-#define CC_RGBA_COLOR_BIT 0x00000400000000        // Color (R,G,B,A)
-#define CC_COORDINATESYSTEM_BIT 0x00000800000000  // CoordinateSystem (primitive)
-#define CC_CLIP_BOX_PART_BIT 0x00001000000000     // Cliping-box component
-#define CC_CIRCLE_BIT 0x00002000000000            //'3D' circle (polyline)
-#define CC_DISC_BIT 0x00004000000000              // Disc (primitive)
+/**
+ * @name Entity type bit flags
+ *
+ * These 64-bit flags identify the type of each entity.
+ * Multiple flags can be set for composite entities.
+ */
+/** @{ */
+/// Hierarchical object
+#define CC_HIERARCH_BIT 0x00000000000001
+/// Tree leaf (no children)
+#define CC_LEAF_BIT 0x00000000000002
+/// Group (aggregation only)
+#define CC_GROUP_BIT 0x00000000000004
+/// Primitive (sphere, plane, etc.)
+#define CC_PRIMITIVE_BIT 0x00000000000008
+/// Array
+#define CC_ARRAY_BIT 0x00000000000010
+/// 2D label
+#define CC_LABEL_BIT 0x00000000000020
+/// 2D viewport
+#define CC_VIEWPORT_BIT 0x00000000000040
+/// Custom (plugin defined)
+#define CC_CUSTOM_BIT 0x00000000000080
+/// Point Cloud
+#define CC_CLOUD_BIT 0x00000000000100
+/// Mesh
+#define CC_MESH_BIT 0x00000000000200
+/// Octree
+#define CC_OCTREE_BIT 0x00000000000400
+/// Polyline
+#define CC_POLYLINE_BIT 0x00000000000800
+/// Picture
+#define CC_IMAGE_BIT 0x00000000001000
+/// Sensor definition
+#define CC_SENSOR_BIT 0x00000000002000
+/// Plane primitive
+#define CC_PLANE_BIT 0x00000000004000
+/// Sphere primitive
+#define CC_SPHERE_BIT 0x00000000008000
+/// Torus primitive
+#define CC_TORUS_BIT 0x00000000010000
+/// Cylinder primitive
+#define CC_CYLINDER_BIT 0x00000000020000
+/// Cone primitive
+#define CC_CONE_BIT 0x00000000040000
+/// Box primitive
+#define CC_BOX_BIT 0x00000000080000
+/// Dish primitive
+#define CC_DISH_BIT 0x00000000100000
+/// Extrusion primitive
+#define CC_EXTRU_BIT 0x00000000200000
+/// Kd-tree
+#define CC_KDTREE_BIT 0x00000000400000
+/// Facet (composite)
+#define CC_FACET_BIT 0x00000000800000
+/// Material
+#define CC_MATERIAL_BIT 0x00000001000000
+/// Clipping box
+#define CC_CLIP_BOX_BIT 0x00000002000000
+/// Indexed transformation buffer
+#define CC_TRANS_BUFFER_BIT 0x00000004000000
+/// Ground Based Lidar
+#define CC_GROUND_BASED_BIT 0x00000008000000
+/// Color (R,G,B)
+#define CC_RGB_COLOR_BIT 0x00000010000000
+/// Normal (Nx,Ny,Nz)
+#define CC_NORMAL_BIT 0x00000020000000
+/// Compressed normal (index)
+#define CC_COMPRESSED_NORMAL_BIT 0x00000040000000
+/// Texture coordinates (u,v)
+#define CC_TEX_COORDS_BIT 0x00000080000000
+/// Camera sensor
+#define CC_CAMERA_BIT 0x00000100000000
+/// Quadric primitive
+#define CC_QUADRIC_BIT 0x00000200000000
+/// Color (R,G,B,A)
+#define CC_RGBA_COLOR_BIT 0x00000400000000
+/// Coordinate system primitive
+#define CC_COORDINATESYSTEM_BIT 0x00000800000000
+/// Clipping box component
+#define CC_CLIP_BOX_PART_BIT 0x00001000000000
+/// 3D circle (polyline)
+#define CC_CIRCLE_BIT 0x00002000000000
+/// Disc primitive
+#define CC_DISC_BIT 0x00004000000000
+/** @} */
 // #define CC_FREE_BIT					0x00004000000000
 // #define CC_FREE_BIT					0x00008000000000
 // #define CC_FREE_BIT					0x00010000000000
