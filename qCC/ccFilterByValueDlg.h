@@ -18,34 +18,58 @@
 #ifndef CC_FILTER_BY_VALUE_DIALOG_HEADER
 #define CC_FILTER_BY_VALUE_DIALOG_HEADER
 
+/**
+ * @file ccFilterByValueDlg.h
+ *
+ * @brief Filter by value dialog
+ *
+ * Dialog for filtering points by scalar value.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 #include <ui_filterByValueDlg.h>
 
 // Qt
 #include <QDialog>
 
-//! Dialog to sepcify a range of SF values and how the corresponding points should be extracted
+/**
+ * @brief Filter by value dialog
+ *
+ * Filter points by scalar value range.
+ */
 class ccFilterByValueDlg : public QDialog
     , public Ui::FilterByValueDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] minRange Minimum range value
+	 * @param[in] maxRange Maximum range value
+	 * @param[in] minVal Minimum scalar value
+	 * @param[in] maxVal Maximum scalar value
+	 * @param[in] parent Parent widget
+	 */
 	ccFilterByValueDlg(double   minRange,
 	                   double   maxRange,
 	                   double   minVal = -1.0e9,
 	                   double   maxVal = 1.0e9,
 	                   QWidget* parent = nullptr);
 
-	//! Mode
+	/// Mode
 	enum Mode
 	{
-		EXPORT,
-		SPLIT,
-		CANCEL
+		EXPORT, //!< Export filtered
+		SPLIT,  //!< Split at boundaries
+		CANCEL   //!< Cancel
 	};
 
-	//! Returns the selected mode
+	/**
+	 * @brief Get mode
+	 * @return Mode
+	 */
 	Mode mode() const
 	{
 		return m_mode;
