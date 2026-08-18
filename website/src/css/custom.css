@@ -1,10 +1,20 @@
 /**
  * CloudCompare docs — global styles.
- * Primary palette: muted slate blue (sober, technical, surveying-friendly).
- * The Infima variables below override the classic-template defaults.
+ * Palette:
+ *   --cc-bg           = deep navy (page background tint in dark mode)
+ *   --cc-surface      = card / surface tint
+ *   --cc-fg           = primary foreground
+ *   --cc-accent       = bright cyan (point cloud highlight)
+ *   --cc-accent-soft  = washed cyan (hover / subtle accents)
+ *   --cc-border       = hairline border tint
+ *
+ * The palette is built on top of Infima's CSS variables so every
+ * Infima-themed component (buttons, admonitions, code, navbar,
+ * pagination) automatically picks it up.
  */
 
 :root {
+  /* Primary brand */
   --ifm-color-primary: #2563eb;
   --ifm-color-primary-dark: #1d4ed8;
   --ifm-color-primary-darker: #1e40af;
@@ -12,11 +22,37 @@
   --ifm-color-primary-light: #3b82f6;
   --ifm-color-primary-lighter: #60a5fa;
   --ifm-color-primary-lightest: #93c5fd;
-  --ifm-code-font-size: 92%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.08);
+
+  /* Accent (cyan) for highlight moments */
+  --cc-accent: #06b6d4;
+  --cc-accent-soft: #67e8f9;
+  --cc-accent-deep: #0e7490;
+
+  /* Surface / foreground (light mode) */
+  --cc-bg: #ffffff;
+  --cc-surface: #f8fafc;
+  --cc-fg: #0f172a;
+  --cc-muted: #475569;
+  --cc-border: #e2e8f0;
+
+  /* Typography */
   --ifm-font-family-base:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
     Arial, 'Noto Sans', sans-serif;
+  --ifm-font-family-monospace:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    'Liberation Mono', monospace;
+  --ifm-code-font-size: 92%;
+  --ifm-heading-font-weight: 700;
+  --ifm-line-height-base: 1.65;
+
+  /* Layout */
+  --ifm-container-width: 1240px;
+  --ifm-global-radius: 8px;
+  --ifm-card-border-radius: 12px;
+
+  /* Code block */
+  --docusaurus-highlighted-code-line-bg: rgba(37, 99, 235, 0.08);
 }
 
 [data-theme='dark'] {
@@ -27,16 +63,280 @@
   --ifm-color-primary-light: #93c5fd;
   --ifm-color-primary-lighter: #bfdbfe;
   --ifm-color-primary-lightest: #dbeafe;
-  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.08);
+
+  --cc-bg: #0b1220;
+  --cc-surface: #0f172a;
+  --cc-fg: #e2e8f0;
+  --cc-muted: #94a3b8;
+  --cc-border: #1e293b;
+
+  --docusaurus-highlighted-code-line-bg: rgba(96, 165, 250, 0.1);
+  --ifm-background-color: var(--cc-bg);
+  --ifm-background-surface-color: var(--cc-surface);
 }
 
-/* Slightly tighter hero padding so the home page reads as a docs site, not a marketing page. */
+/* ---------- Page surface ---------- */
+
+html,
+body {
+  background: var(--cc-bg);
+  color: var(--cc-fg);
+}
+
+/* Slightly tighter line-height in code so blocks read denser on Windows. */
+pre,
+code {
+  line-height: 1.5;
+}
+
+pre {
+  border: 1px solid var(--cc-border);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+}
+
+[data-theme='dark'] pre {
+  background: #0a0f1c;
+}
+
+/* ---------- Navbar ---------- */
+
+.navbar {
+  box-shadow: 0 1px 0 var(--cc-border);
+  backdrop-filter: saturate(180%) blur(8px);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .navbar {
+  background: rgba(11, 18, 32, 0.85);
+  box-shadow: 0 1px 0 #1e293b;
+}
+
+.navbar__title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Hero ---------- */
+
 .hero--primary {
-  --ifm-hero-background-color: var(--ifm-color-primary-darkest);
+  --ifm-hero-background-color: #0f172a;
   --ifm-hero-text-color: #fff;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Tighten code block line-height for a denser feel on Windows-rendered docs. */
-pre code {
-  line-height: 1.45;
+.hero--primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 20% 30%,
+      rgba(6, 182, 212, 0.18) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 70% 60% at 80% 80%,
+      rgba(37, 99, 235, 0.22) 0%,
+      transparent 60%
+    );
+  background-color: #0b1220;
+  z-index: 0;
+}
+
+.hero--primary .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Buttons ---------- */
+
+.button {
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.button--primary {
+  background: linear-gradient(180deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-dark) 100%);
+  border: none;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.15) inset,
+    0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.button--primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 8px 20px rgba(37, 99, 235, 0.35);
+}
+
+.button--secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  backdrop-filter: blur(6px);
+}
+
+.button--secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+
+.button--outline {
+  border: 1px solid var(--cc-border);
+  color: var(--cc-fg);
+}
+
+.button--outline:hover {
+  background: var(--cc-surface);
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+}
+
+/* ---------- Cards (used in home + features) ---------- */
+
+.card,
+.theme-doc-footer,
+.pagination-nav__link {
+  border: 1px solid var(--cc-border);
+  border-radius: var(--ifm-card-border-radius);
+  background: var(--cc-surface);
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover,
+.pagination-nav__link:hover {
+  border-color: var(--ifm-color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+/* ---------- Admonitions ---------- */
+
+.admonition {
+  border-radius: 8px;
+  border-left-width: 4px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+[data-theme='dark'] .admonition {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+/* ---------- Code (inline) ---------- */
+
+code {
+  background: rgba(15, 23, 42, 0.06);
+  border: 1px solid var(--cc-border);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-size: 0.92em;
+}
+
+[data-theme='dark'] code {
+  background: rgba(96, 165, 250, 0.1);
+  border-color: rgba(96, 165, 250, 0.2);
+}
+
+/* ---------- Tables ---------- */
+
+table {
+  border: 1px solid var(--cc-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th {
+  background: var(--cc-surface);
+  font-weight: 600;
+}
+
+/* ---------- Sidebar ---------- */
+
+.theme-doc-sidebar-container {
+  border-right: 1px solid var(--cc-border);
+}
+
+.menu__link--active:not(.menu__link--sublist) {
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+  border-left: 3px solid var(--ifm-color-primary);
+  padding-left: calc(var(--ifm-menu-link-padding-horizontal) - 3px);
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+  background: var(--cc-surface);
+  border-top: 1px solid var(--cc-border);
+}
+
+.footer__title {
+  color: var(--cc-fg);
+  font-weight: 700;
+}
+
+.footer__link-item {
+  color: var(--cc-muted);
+}
+
+.footer__link-item:hover {
+  color: var(--ifm-color-primary);
+}
+
+/* ---------- Headings (tighten + color) ---------- */
+
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.015em;
+}
+
+h1 {
+  background: linear-gradient(120deg, #2563eb 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+[data-theme='dark'] h1 {
+  background: linear-gradient(120deg, #60a5fa 0%, #67e8f9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ---------- Selection ---------- */
+
+::selection {
+  background: rgba(6, 182, 212, 0.25);
+  color: var(--cc-fg);
+}
+
+/* ---------- Scrollbar (subtle) ---------- */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 23, 42, 0.18) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.2);
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.32);
 }

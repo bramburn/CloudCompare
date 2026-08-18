@@ -57,6 +57,17 @@ const config = {
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
+        // Sitemap is bundled into preset-classic; configure its options
+        // here instead of registering a second plugin instance at the
+        // top level (that would collide on the plugin ID "default").
+        //   changefreq/priority are Sitemap-protocol fields.
+        //   ignorePatterns keeps tag-archive noise out of the crawl
+        //   surface so search engines don't index /tags/**/...
+        sitemap: {
+          changefreq: 'daily',
+          priority: 0.5,
+          ignorePatterns: ['/tags/**'],
+        },
         docs: {
           sidebarPath: './sidebars.js',
           // Docs live at /docs — the standard Docusaurus convention.
@@ -94,13 +105,24 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Social card / OG image: falls back to a generated text card
-      // when no static/img/social-card.* is shipped. Leave undefined for now.
-      image: undefined,
+      // Open Graph / Twitter card image. Served at the site root for
+      // share previews on Twitter, LinkedIn, Slack, etc.
+      image: 'img/social-card.png',
       colorMode: {
         defaultMode: 'light',
         respectPrefersColorScheme: true,
       },
+      metadata: [
+        {name: 'twitter:card', content: 'summary_large_image'},
+        {name: 'twitter:site', content: '@bramburn'},
+        {name: 'twitter:title', content: 'CloudCompare'},
+        {
+          name: 'twitter:description',
+          content:
+            'Open-source 3D point cloud and mesh processing. C++17 / Qt 6 / OpenGL 2.1+ / CMake 3.10+.',
+        },
+        {name: 'twitter:image', content: 'https://bramburn.github.io/CloudCompare/img/social-card.png'},
+      ],
       docs: {
         sidebar: {
           hideable: true,
@@ -111,7 +133,10 @@ const config = {
         title: 'CloudCompare',
         logo: {
           alt: 'CloudCompare logo',
-          src: 'img/logo.svg',
+          src: 'img/logo.png',
+          srcDark: 'img/logo.png',
+          width: 32,
+          height: 32,
         },
         items: [
           {
@@ -180,7 +205,19 @@ const config = {
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
-        additionalLanguages: ['bash', 'cmake', 'powershell', 'json', 'diff'],
+        // `cpp` is the critical addition for a C++ codebase — every code
+        // block tagged `cpp` (the default for `.cpp`/`.h`/`.cc` files)
+        // gets full C++17 syntax highlighting under both light and dark
+        // themes. The other languages cover the build / shell / config
+        // surface of the repo (CMake, PowerShell, bash, JSON, diff).
+        additionalLanguages: [
+          'bash',
+          'cmake',
+          'cpp',
+          'diff',
+          'json',
+          'powershell',
+        ],
       },
     }),
 };
