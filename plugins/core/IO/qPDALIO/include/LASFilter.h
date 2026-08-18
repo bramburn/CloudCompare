@@ -18,18 +18,36 @@
 #ifndef CC_LAS_FILTER_HEADER
 #define CC_LAS_FILTER_HEADER
 
+/**
+ * @file LASFilter.h
+ *
+ * @brief LAS file filter
+ *
+ * I/O filter for ASPRS LAS point cloud files via PDAL.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! ASPRS LAS point cloud file I/O filter
+/**
+ * @brief LAS file filter
+ *
+ * Read/write ASPRS LAS point cloud files.
+ */
 class LASFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	LASFilter();
 
-	// inherited from FileIOFilter
+	/// Load file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/// Check if can save
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	
+	/// Save file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 
