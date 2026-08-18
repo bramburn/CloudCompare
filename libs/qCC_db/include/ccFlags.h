@@ -18,20 +18,32 @@
 #ifndef CC_FLAGS_HEADER
 #define CC_FLAGS_HEADER
 
+/**
+ * @file ccFlags.h
+ *
+ * @brief Bit flags container
+ *
+ * Simple 8-bit flags container.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // System
 #include <cstring>
 
-//! Flags
+/**
+ * @brief 8-bit flags container
+ */
 class ccFlags
 {
   public:
-	//! Sets all bits to 0
+	/// Reset all flags to 0
 	void reset()
 	{
 		memset(table, 0, sizeof(bool) * 8);
 	}
 
-	//! Converts a byte to this structure
+	/// Set from byte
 	void fromByte(unsigned char byte)
 	{
 		unsigned char i, mask = 1;
@@ -42,7 +54,7 @@ class ccFlags
 		}
 	}
 
-	//! Converts this structure to a byte
+	/// Convert to byte
 	unsigned char toByte() const
 	{
 		unsigned char i, byte = 0, mask = 1;
@@ -56,7 +68,7 @@ class ccFlags
 		return byte;
 	}
 
-	//! Table of 8 booleans (one per bit)
+	/// Flag bits
 	bool table[8];
 };
 
