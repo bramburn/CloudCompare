@@ -35,6 +35,21 @@ class ccPointCloud;
 class ccMainAppInterface;
 class RGBAColorsTableType;
 
+/**
+ * @file ccCloudLayersHelper.h
+ *
+ * @brief Cloud layers helper
+ *
+ * Helper class for cloud layers management.
+ */
+
+/**
+ * @class ccCloudLayersHelper
+ *
+ * @brief Cloud layers helper
+ *
+ * Helper for managing point cloud layers.
+ */
 class ccCloudLayersHelper
 {
 public:
