@@ -16,6 +16,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccTranslationManager.h
+ *
+ * @brief Translation/internationalization manager
+ *
+ * Manages Qt translation (.ts) files and language switching.
+ *
+ * @author CloudCompare project
+ */
+
 #include "CCAppCommon.h"
 
 // Qt
@@ -23,59 +33,84 @@
 #include <QPair>
 #include <QVector>
 
-//! Translation manager
+/**
+ * @brief Translation manager singleton
+ *
+ * Manages language translations for the application.
+ */
 class CCAPPCOMMON_LIB_API ccTranslationManager : public QObject
 {
 	Q_OBJECT
 
   public:
+	/**
+	 * @brief Get singleton instance
+	 * @return Translation manager
+	 */
 	static ccTranslationManager& Get();
 
+	/**
+	 * @brief Destructor
+	 */
 	~ccTranslationManager() override = default;
 
-	//! Register a file prefix for translation files.
-	/** The files should be named <prefix>_<lang>.ts where <lang> is the 2-letter ISO 639
-	    language code in lowercase.
-	     e.g. CloudCompare_fr.ts
-	    \param prefix	The prefix of the file to register
-	    \param path		The path to look for the files in
-	**/
+	/**
+	 * @brief Register translator file prefix
+	 * @param[in] prefix File prefix (e.g. "CloudCompare")
+	 * @param[in] path Path to translation files
+	 */
 	void registerTranslatorFile(const QString& prefix, const QString& path);
 
-	//! Using the translation file prefixes that were registered, load the actual translations
+	/**
+	 * @brief Load translations for current language
+	 */
 	inline void loadTranslations()
 	{
 		loadTranslation(languagePref());
 	}
 
-	//! Using the translation file prefixes that were registered, load the actual
-	//! translation by the 2-letter ISO 639 language code in lowercase.
+	/**
+	 * @brief Load translations for specific language
+	 * @param[in] language 2-letter ISO 639 language code
+	 */
 	void loadTranslation(QString language);
 
-	//! Populate the menu with a list of languages found using files in 'pathToTranslationFiles'
+	/**
+	 * @brief Populate menu with available languages
+	 * @param[in] menu Menu to populate
+	 * @param[in] pathToTranslationFiles Path to translation files
+	 */
 	void populateMenu(QMenu* menu, const QString& pathToTranslationFiles);
 
   protected:
+	/**
+	 * @brief Create translation manager
+	 */
 	explicit ccTranslationManager() = default;
 
   private: // methods
+	/**
+	 * @brief Translator file info
+	 */
 	struct CCAPPCOMMON_LIB_API TranslatorFile
 	{
-		QString prefix;
-		QString path;
+		QString prefix; //!< File prefix
+		QString path;    //!< Path
 	};
 	using TranslatorFileList = QVector<TranslatorFile>;
 
 	using TranslationInfo = QPair<QString, QString>;
 	using LanguageList    = QVector<TranslationInfo>;
 
+	/// Get language preference
 	QString languagePref() const;
 
-	//! Generate a list of available languages based on the files in the "translation" directory.
+	/// Get available languages
 	LanguageList availableLanguages(const QString& appName, const QString& pathToTranslationFiles) const;
 
+	/// Set language preference
 	void setLanguagePref(const QString& languageCode);
 
   private: // members
+	/// Registered translator files
 	TranslatorFileList mTranslatorFileInfo;
-};
