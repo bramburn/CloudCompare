@@ -16,6 +16,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccInfoDlg.h
+ *
+ * @brief Information dialog widget
+ *
+ * Simple dialog for displaying informational messages.
+ *
+ * @author CloudCompare project
+ */
+
 #include "CCPluginAPI.h"
 
 // Qt
@@ -26,19 +36,32 @@ namespace Ui
 	class InfoDialog;
 }
 
-//! Dialog to display some pieces of information in
+/**
+ * @brief Information dialog
+ *
+ * Simple dialog for showing text information.
+ */
 class CCPLUGIN_LIB_API ccInfoDlg : public QDialog
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Create info dialog
+	 * @param[in] parent Parent widget
+	 */
 	ccInfoDlg(QWidget* parent);
 
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	~ccInfoDlg() override;
 
-	//! Shows a text in the info dialog
+	/**
+	 * @brief Show text in dialog
+	 * @param[in] text Text to display
+	 */
 	void showText(const QString& text);
 
   private:
+	/// UI
 	Ui::InfoDialog* m_ui;
 };
