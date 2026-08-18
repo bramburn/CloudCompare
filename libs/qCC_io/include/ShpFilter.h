@@ -29,11 +29,23 @@
 // system
 #include <vector>
 
+/**
+ * @file ShpFilter.h
+ *
+ * @brief Shapefile filter
+ *
+ * ESRI Shapefile file filter.
+ */
+
 class GenericDBFField;
 
-//! ESRI Shapefile file filter
-/** See http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf
- **/
+/**
+ * @class ShpFilter
+ *
+ * @brief Shapefile filter
+ *
+ * ESRI Shapefile file filter.
+ */
 class QCC_IO_LIB_API ShpFilter : public FileIOFilter
 {
   public:
