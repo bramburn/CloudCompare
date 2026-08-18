@@ -17,6 +17,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccLibAlgorithms.h
+ *
+ * @brief Library algorithms
+ *
+ * Common algorithms for point cloud processing.
+ *
+ * @author CloudCompare project
+ */
+
 #include "ccHObject.h"
 
 #include <GeometricalAnalysisTools.h>
@@ -26,6 +36,11 @@ class QWidget;
 class ccGenericPointCloud;
 class ccProgressDialog;
 
+/**
+ * @brief Library algorithms namespace
+ *
+ * Common algorithms for processing.
+ */
 namespace ccLibAlgorithms
 {
 	//! Returns a default first guess for algorithms kernel size (one cloud)
