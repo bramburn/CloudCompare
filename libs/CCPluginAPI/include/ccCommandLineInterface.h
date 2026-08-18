@@ -17,6 +17,17 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccCommandLineInterface.h
+ *
+ * @brief Command line interface definitions
+ *
+ * Defines entities and structures for command-line
+ * processing in CloudCompare.
+ *
+ * @author CloudCompare project
+ */
+
 #include "CCPluginAPI.h"
 
 // qCC_db
@@ -40,6 +51,7 @@ class ccProgressDialog;
 
 class QDialog;
 
+/// Entity type for command line
 enum class CL_ENTITY_TYPE
 {
 	GROUP,
@@ -47,7 +59,9 @@ enum class CL_ENTITY_TYPE
 	MESH
 };
 
-//! Loaded entity description
+/**
+ * @brief Loaded entity description
+ */
 struct CCPLUGIN_LIB_API CLEntityDesc
 {
 	QString basename;
@@ -65,7 +79,9 @@ struct CCPLUGIN_LIB_API CLEntityDesc
 	virtual CL_ENTITY_TYPE   getCLEntityType() const = 0;
 };
 
-//! Loaded group description
+/**
+ * @brief Loaded group description
+ */
 struct CCPLUGIN_LIB_API CLGroupDesc : CLEntityDesc
 {
 	ccHObject* groupEntity;
@@ -81,7 +97,9 @@ struct CCPLUGIN_LIB_API CLGroupDesc : CLEntityDesc
 	CL_ENTITY_TYPE   getCLEntityType() const override;
 };
 
-//! Loaded cloud description
+/**
+ * @brief Loaded cloud description
+ */
 struct CCPLUGIN_LIB_API CLCloudDesc : CLEntityDesc
 {
 	ccPointCloud* pc;
@@ -104,7 +122,9 @@ struct CCPLUGIN_LIB_API CLCloudDesc : CLEntityDesc
 	CL_ENTITY_TYPE   getCLEntityType() const override;
 };
 
-//! Loaded mesh description
+/**
+ * @brief Loaded mesh description
+ */
 struct CCPLUGIN_LIB_API CLMeshDesc : CLEntityDesc
 {
 	ccGenericMesh* mesh;
