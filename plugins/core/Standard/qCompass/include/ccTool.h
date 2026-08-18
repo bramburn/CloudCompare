@@ -17,12 +17,26 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccTool.h
+ *
+ * @brief Base tool class
+ *
+ * Base class for compass tools.
+ */
+
 #include <ccHObject.h>
 #include <ccPointCloud.h>
 #include <ccMainAppInterface.h>
 #include <ccGLWindowInterface.h>
 
-//! Template class that defining the basic functionality of qCompass "tools". 
+/**
+ * @class ccTool
+ *
+ * @brief Base tool class
+ *
+ * Base class for compass tools.
+ */
 class ccTool
 {
 public:
