@@ -17,12 +17,28 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qSRA.h
+ *
+ * @brief Surface of Revolution Analysis plugin
+ *
+ * Analyze surfaces of revolution by comparing point clouds to reference profiles.
+ *
+ * @author EDF
+ */
+
 #include "ccStdPluginInterface.h"
 
 class ccPointCloud;
 class ccPolyline;
 
-//! Surface of Revolution Analysis plugin
+/**
+ * @class qSRA
+ *
+ * @brief Surface of Revolution Analysis plugin
+ *
+ * Analyze point clouds against revolution surfaces.
+ */
 class qSRA : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -32,38 +48,39 @@ class qSRA : public QObject, public ccStdPluginInterface
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qSRA(QObject* parent = nullptr);
 
+	/// Destructor
 	virtual ~qSRA() = default;
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	virtual void onNewSelection(const ccHObject::Container& selectedEntities) override;
+	
+	/// Get plugin actions
 	virtual QList<QAction *> getActions() override;
 
 protected:
-
-	//! Loads profile from a dedicated file
+	/// Load profile from file
 	void loadProfile() const;
 
-	//! Computes cloud-to-profile radial distances
+	/// Compute cloud-to-profile radial distances
 	void computeCloud2ProfileRadialDist() const;
 
-	//! Projects the cloud distances into a 2D grid
+	/// Project distances into 2D grid
 	void projectCloudDistsInGrid() const;
 
 protected:
-
-	//! Projects the cloud distances into a 2D grid (needs the revolution profile)
+	/// Project distances into 2D grid
 	void doProjectCloudDistsInGrid(ccPointCloud* cloud, ccPolyline* polyline) const;
 
-	//! Computes cloud-to-profile radial distances
+	/// Compute radial distances
 	bool doComputeRadialDists(ccPointCloud* cloud, ccPolyline* polyline) const;
 
-	//! Associated action
 	QAction* m_doLoadProfile;
-	//! Associated action
 	QAction* m_doCompareCloudToProfile;
-	//! Associated action
 	QAction* m_doProjectCloudDists;
 };
