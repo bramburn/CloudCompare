@@ -23,40 +23,61 @@
 
 #include <CCGeom.h>
 
+/**
+ * @file ccDepthBuffer.h
+ *
+ * @brief Depth buffer (depth map) class
+ *
+ * Represents a depth map from a range sensor. Contains depth values
+ * along with scan parameters (pitch/yaw steps) for projecting
+ * back to 3D coordinates.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // System
 #include <vector>
 
-//! Sensor "depth map"
-/** Contains an array of depth values (along each scanned direction) and its dimensions.
-    This array corresponds roughly to what have been "seen" by the sensor during
-    acquisition (the 3D points are simply projected in the sensor frame).
-**/
+/**
+ * @brief Depth buffer (depth map)
+ *
+ * Stores depth values from a range sensor with scan parameters.
+ * Used for terrestrial LiDAR depth maps.
+ */
 class QCC_DB_LIB_API ccDepthBuffer
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Default constructor
+	 */
 	ccDepthBuffer();
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	virtual ~ccDepthBuffer();
 
-	//! Z-Buffer grid
+	//! Z-buffer grid (depth values)
 	std::vector<PointCoordinateType> zBuff;
-	//! Pitch step (may differ from the sensor's)
+	//! Pitch step (radians)
 	PointCoordinateType deltaPhi;
-	//! Yaw step (may differ from the sensor's)
+	//! Yaw step (radians)
 	PointCoordinateType deltaTheta;
-	//! Buffer width
+	//! Buffer width (columns)
 	unsigned width;
-	//! Buffer height
+	//! Buffer height (rows)
 	unsigned height;
 
-	//! Clears the buffer
+	/**
+	 * @brief Clear the buffer
+	 */
 	void clear();
 
-	//! Applies a mean filter to fill small holes (= lack of information) of the depth map.
-	/**	The depth buffer must have been created before (see GroundBasedLidarSensor::computeDepthBuffer).
-	\return a negative value if an error occurs, 0 otherwise
-	**/
+	/**
+	 * @brief Fill small holes in the depth map
+	 *
+	 * Applies a mean filter to fill small gaps.
+	 * @return 0 on success, negative on error
+	 */
 	int fillHoles();
 };
 
