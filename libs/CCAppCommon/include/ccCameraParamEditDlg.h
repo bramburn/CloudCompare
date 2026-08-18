@@ -18,6 +18,15 @@
 
 #include "CCAppCommon.h"
 
+/**
+ * @file ccCameraParamEditDlg.h
+ *
+ * @brief Camera parameter edit dialog
+ *
+ * Interactive dialog for editing camera pose parameters.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccOverlayDialog.h"
 #include "ccPickingListener.h"
@@ -40,14 +49,22 @@ namespace Ui
 	class CameraParamDlg;
 }
 
-//! Dialog to interactively edit the camera pose parameters
+/**
+ * @brief Camera parameter edit dialog
+ *
+ * Interactive dialog for editing camera pose.
+ */
 class CCAPPCOMMON_LIB_API ccCameraParamEditDlg : public ccOverlayDialog
     , public ccPickingListener
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 * @param[in] pickingHub Picking hub
+	 */
 	explicit ccCameraParamEditDlg(QWidget* parent, ccPickingHub* pickingHub);
 
 	//! Destructor
