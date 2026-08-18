@@ -18,6 +18,16 @@
 #ifndef CC_OCTREE_SPIN_BOX_HEADER
 #define CC_OCTREE_SPIN_BOX_HEADER
 
+/**
+ * @file ccOctreeSpinBox.h
+ *
+ * @brief Octree level spin box
+ *
+ * Spin box for selecting octree subdivision level.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Local
 #include "qCC_db.h"
 
@@ -29,31 +39,40 @@
 
 class ccGenericPointCloud;
 
-//! Octree level editor dialog
+/**
+ * @brief Octree level spin box
+ *
+ * Spin box for selecting octree subdivision level.
+ */
 class QCC_DB_LIB_API ccOctreeSpinBox : public QSpinBox
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create spin box
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccOctreeSpinBox(QWidget* parent = nullptr);
 
-	//! Inits the dialog with a cloud (on which the octree has been or will be computed)
-	/** Alternative to ccOctreeSpinBox::setOctree
-	 **/
+	/**
+	 * @brief Set cloud
+	 * @param[in] cloud Point cloud
+	 */
 	void setCloud(ccGenericPointCloud* cloud);
 
-	//! Inits the dialog with an octree
-	/** Alternative to ccOctreeSpinBox::setCloud
-	 **/
+	/**
+	 * @brief Set octree
+	 * @param[in] octree Octree
+	 */
 	void setOctree(CCCoreLib::DgmOctree* octree);
 
   protected:
-	//! Called each time the spinbox value changes
+	/// Handle value change
 	void onValueChange(int);
 
   protected:
-	//! Corresponding octree base size
+	/// Octree box width
 	double m_octreeBoxWidth;
 };
 
