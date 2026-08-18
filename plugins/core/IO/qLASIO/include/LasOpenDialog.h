@@ -29,11 +29,24 @@
 #include <string>
 #include <vector>
 
+/**
+ * @file LasOpenDialog.h
+ *
+ * @brief LAS open dialog
+ *
+ * Dialog for opening LAS/LAZ files.
+ *
+ * @author Thomas Montaigu
+ */
 // CCCoreLib
 #include <CCGeom.h>
 #include <ccLog.h>
 
-/// Dialog shown to the user when opening a LAS file
+/**
+ * @brief LAS open dialog
+ *
+ * Configure LAS/LAZ file import options.
+ */
 class LasOpenDialog : public QDialog
     , public Ui::LASOpenDialog
 {
