@@ -17,6 +17,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccViewportParameters.h
+ *
+ * @brief Viewport parameters for 3D views
+ *
+ * Stores all camera and view parameters for 3D visualization
+ * including pivot point, camera center, rotation, and zoom.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccGLMatrix.h"
 #include "ccSerializableObject.h"
@@ -26,14 +36,23 @@
 
 class QRect;
 
-//! Standard parameters for GL displays/viewports
+/**
+ * @brief Viewport parameters
+ *
+ * Stores camera and view parameters for 3D views.
+ */
 class QCC_DB_LIB_API ccViewportParameters : public ccSerializableObject
 {
   public: // functions
-	//! Default constructor
+	/**
+	 * @brief Default constructor
+	 */
 	ccViewportParameters();
 
-	//! Copy constructor
+	/**
+	 * @brief Copy constructor
+	 * @param[in] params Source parameters
+	 */
 	ccViewportParameters(const ccViewportParameters& params);
 
 	// inherited from ccSerializableObject
