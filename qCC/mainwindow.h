@@ -64,6 +64,37 @@ namespace Ui
 }
 
 //! Main window
+/**
+ * @file mainwindow.h
+ *
+ * @brief CloudCompare Main Window class
+ *
+ * MainWindow is the central UI component of CloudCompare, implementing the
+ * MDI (Multiple Document Interface) paradigm for managing multiple 3D views.
+ *
+ * This class serves three main roles:
+ * - Main application window with menus, toolbars, and dock widgets
+ * - ccMainAppInterface implementation for plugin communication
+ * - ccPickingListener for 3D point picking operations
+ *
+ * @section Window Management
+ * MainWindow manages multiple ccGLWindow instances as MDI sub-windows,
+ * allowing users to work with multiple 3D scenes simultaneously.
+ *
+ * @section Database Tree
+ * The DB (Database) tree on the left side displays all loaded entities
+ * (point clouds, meshes, primitives, etc.) in a hierarchical structure.
+ *
+ * @section Plugins
+ * Plugins integrate through ccPluginUIManager and can add:
+ * - Menu items and toolbar buttons
+ * - Custom actions and processing algorithms
+ * - Overlay dialogs for interactive operations
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see ccMainAppInterface for the interface used by plugins
+ * @see ccGLWindowInterface for 3D rendering windows
+ */
 class MainWindow : public QMainWindow
     , public ccMainAppInterface
     , public ccPickingListener
@@ -78,81 +109,216 @@ class MainWindow : public QMainWindow
 	~MainWindow() override;
 
   public:
-	//! Returns the unique instance of this object
+	/**
+	 * @brief Get the singleton instance of MainWindow
+	 *
+	 * MainWindow follows a singleton pattern with one global instance.
+	 * Use this method to access the main window from anywhere in the application.
+	 *
+	 * @return Pointer to the MainWindow instance, or nullptr if not yet created
+	 *
+	 * @note In test environments or headless mode, this may return nullptr.
+	 * @see DestroyInstance() to clean up
+	 */
 	static MainWindow* TheInstance();
 
-	//! Static shortcut to MainWindow::getActiveGLWindow
+	/**
+	 * @brief Get the currently active 3D view
+	 *
+	 * Convenience static method that delegates to the singleton instance.
+	 *
+	 * @return Pointer to the active ccGLWindowInterface, or nullptr if no window is active
+	 * @see getActiveGLWindow()
+	 */
 	static ccGLWindowInterface* GetActiveGLWindow();
 
-	//! Returns a given GL sub-window (determined by its title)
-	/** \param title window title
-	 **/
+	/**
+	 * @brief Find a 3D view by its window title
+	 *
+	 * Searches all MDI sub-windows for one with the specified title.
+	 *
+	 * @param[in] title The window title to search for
+	 * @return Pointer to the matching ccGLWindowInterface, or nullptr if not found
+	 */
 	static ccGLWindowInterface* GetGLWindow(const QString& title);
 
-	//! Returns all GL sub-windows
-	/** \param[in,out] glWindows vector to store all sub-windows
-	 **/
+	/**
+	 * @brief Get all open 3D views
+	 *
+	 * Populates a vector with pointers to all open 3D view windows.
+	 *
+	 * @param[in,out] glWindows Vector to populate with GL window pointers
+	 */
 	static void GetGLWindows(std::vector<ccGLWindowInterface*>& glWindows);
 
-	//! Static shortcut to MainWindow::refreshAll
+	/**
+	 * @brief Refresh all 3D views
+	 *
+	 * Forces a repaint of all open 3D windows.
+	 *
+	 * @param[in] only2D If true, only refresh 2D displays (faster)
+	 * @see refreshAll()
+	 */
 	static void RefreshAllGLWindow(bool only2D = false);
 
-	//! Static shortcut to MainWindow::updateUI
+	/**
+	 * @brief Update all UI elements
+	 *
+	 * Refreshes menus, toolbars, and other UI components to reflect
+	 * the current state (e.g., selection changes).
+	 *
+	 * @see updateUI()
+	 */
 	static void UpdateUI();
 
-	//! Deletes current main window instance
+	/**
+	 * @brief Destroy the singleton instance
+	 *
+	 * Called during application shutdown to clean up the MainWindow.
+	 * All MDI sub-windows should be closed before calling this.
+	 *
+	 * @see TheInstance()
+	 */
 	static void DestroyInstance();
 
-	//! Returns active GL sub-window (if any)
+	/**
+	 * @brief Get the currently active 3D view
+	 * @return Pointer to the active ccGLWindowInterface, or nullptr if none is active
+	 */
 	ccGLWindowInterface* getActiveGLWindow() override;
 
-	//! Returns MDI area subwindow corresponding to a given 3D view
+	/**
+	 * @brief Get the MDI wrapper for a 3D view
+	 * @param[in] win The 3D view window
+	 * @return Pointer to the QMdiSubWindow wrapping this view, or nullptr
+	 */
 	QMdiSubWindow* getMDISubWindow(ccGLWindowInterface* win);
 
-	//! Returns a given views
+	/**
+	 * @brief Get a 3D view by index
+	 * @param[in] index Zero-based index of the view to retrieve
+	 * @return Pointer to the ccGLWindowInterface, or nullptr if index out of range
+	 */
 	ccGLWindowInterface* getGLWindow(int index) const;
 
-	//! Returns the number of 3D views
+	/**
+	 * @brief Get the number of open 3D views
+	 * @return Count of currently open MDI sub-windows
+	 */
 	int getGLWindowCount() const;
 
-	//! Tries to load several files (and then pushes them into main DB)
-	/** \param filenames list of all filenames
-	    \param fileFilter selected file filter (i.e. type)
-	    \param destWin destination window (0 = active one)
-	**/
+	/**
+	 * @brief Load files into the database
+	 * @param[in] filenames List of file paths to load
+	 * @param[in] fileFilter Optional file type filter
+	 * @param[in] destWin Optional destination 3D window for immediate display
+	 * @see loadFile() for loading a single file
+	 */
 	virtual void addToDB(const QStringList&   filenames,
 	                     QString              fileFilter = QString(),
 	                     ccGLWindowInterface* destWin    = nullptr);
 
-	// inherited from ccMainAppInterface
+	/**
+	 * @brief Add an entity to the database
+	 * @param[in] obj The entity to add
+	 * @param[in] updateZoom Adjust camera to fit the new entity
+	 * @param[in] autoExpandDBTree Expand tree to show the new entity
+	 * @param[in] checkDimensions Warn if entity dimensions are unusual
+	 * @param[in] autoRedraw Refresh 3D views after adding
+	 */
 	void addToDB(ccHObject* obj,
 	             bool       updateZoom       = false,
 	             bool       autoExpandDBTree = true,
 	             bool       checkDimensions  = false,
 	             bool       autoRedraw       = true) override;
 
-	void                registerOverlayDialog(ccOverlayDialog* dlg, Qt::Corner pos) override;
-	void                unregisterOverlayDialog(ccOverlayDialog* dlg) override;
-	void                updateOverlayDialogsPlacement() override;
-	void                removeFromDB(ccHObject* obj, bool autoDelete = true) override;
-	void                setSelectedInDB(ccHObject* obj, bool selected) override;
-	void                dispToConsole(QString message, ConsoleMessageLevel level = STD_CONSOLE_MESSAGE) override;
-	void                forceConsoleDisplay() override;
-	ccHObject*          dbRootObject() override;
+	/**
+	 * @brief Register an overlay dialog
+	 * @param[in] dlg The overlay dialog to register
+	 * @param[in] pos The screen corner to anchor the dialog
+	 */
+	void registerOverlayDialog(ccOverlayDialog* dlg, Qt::Corner pos) override;
+	/**
+	 * @brief Remove an overlay dialog
+	 * @param[in] dlg The overlay dialog to unregister
+	 */
+	void unregisterOverlayDialog(ccOverlayDialog* dlg) override;
+	/**
+	 * @brief Reposition all overlay dialogs (called on resize)
+	 */
+	void updateOverlayDialogsPlacement() override;
+	/**
+	 * @brief Remove an entity from the database
+	 * @param[in] obj The entity to remove
+	 * @param[in] autoDelete Delete the entity immediately if true
+	 */
+	void removeFromDB(ccHObject* obj, bool autoDelete = true) override;
+	/**
+	 * @brief Set the selection state of an entity
+	 * @param[in] obj The entity to select/deselect
+	 * @param[in] selected True to select, false to deselect
+	 */
+	void setSelectedInDB(ccHObject* obj, bool selected) override;
+	/**
+	 * @brief Display a message in the console
+	 * @param[in] message The message to display
+	 * @param[in] level Message severity (INFO, WARNING, ERROR)
+	 */
+	void dispToConsole(QString message, ConsoleMessageLevel level = STD_CONSOLE_MESSAGE) override;
+	/**
+	 * @brief Force the console to become visible
+	 */
+	void forceConsoleDisplay() override;
+	/**
+	 * @brief Get the database root object
+	 * @return Pointer to the root ccHObject
+	 */
+	ccHObject* dbRootObject() override;
 	inline QMainWindow* getMainWindow() override
 	{
 		return this;
 	}
-	ccHObject*                         loadFile(QString filename, bool silent) override;
+	/**
+	 * @brief Load a single file into the database
+	 * @param[in] filename Path to the file to load
+	 * @param[in] silent Suppress error dialogs if true
+	 * @return Pointer to the loaded entity, or nullptr on failure
+	 */
+	ccHObject* loadFile(QString filename, bool silent) override;
 	inline const ccHObject::Container& getSelectedEntities() const override
 	{
 		return m_selectedEntities;
 	}
-	void                        createGLWindow(ccGLWindowInterface*& window, QWidget*& widget) const override;
-	void                        destroyGLWindow(ccGLWindowInterface*) const override;
+	/**
+	 * @brief Create a new 3D rendering window
+	 * @param[out] window Pointer to store the new GL window interface
+	 * @param[out] widget Pointer to store the Qt widget
+	 */
+	void createGLWindow(ccGLWindowInterface*& window, QWidget*& widget) const override;
+	/**
+	 * @brief Destroy a 3D rendering window
+	 * @param[in] window The window to destroy
+	 */
+	void destroyGLWindow(ccGLWindowInterface*) const override;
+	/**
+	 * @brief Get the unique ID generator for entities
+	 * @return Shared pointer to the unique ID generator
+	 */
 	ccUniqueIDGenerator::Shared getUniqueIDGenerator() override;
-	ccColorScalesManager*       getColorScalesManager() override;
-	void                        spawnHistogramDialog(const std::vector<unsigned>& histoValues,
+	/**
+	 * @brief Get the color scales manager
+	 * @return Pointer to the color scales manager singleton
+	 */
+	ccColorScalesManager* getColorScalesManager() override;
+	/**
+	 * @brief Display a histogram dialog
+	 * @param[in] histoValues Histogram data (bin counts)
+	 * @param[in] minVal Minimum value for the x-axis
+	 * @param[in] maxVal Maximum value for the x-axis
+	 * @param[in] title Dialog window title
+	 * @param[in] xAxisLabel Label for the x-axis
+	 */
+	void spawnHistogramDialog(const std::vector<unsigned>& histoValues,
 	                                                 double                       minVal,
 	                                                 double                       maxVal,
 	                                                 QString                      title,
@@ -161,32 +327,79 @@ class MainWindow : public QMainWindow
 	{
 		return m_pickingHub;
 	}
+	/**
+	 * @brief Temporarily remove an entity from the DB tree
+	 *
+	 * Used during drag-and-drop or when an entity needs to be hidden
+	 * temporarily without losing its tree state.
+	 *
+	 * @param[in] obj The entity to remove
+	 * @return Context object needed to restore the entity later
+	 * @see putObjectBackIntoDBTree()
+	 */
 	ccHObjectContext removeObjectTemporarilyFromDBTree(ccHObject* obj) override;
-	void             putObjectBackIntoDBTree(ccHObject* obj, const ccHObjectContext& context) override;
+	/**
+	 * @brief Restore an entity to the DB tree
+	 * @param[in] obj The entity to restore
+	 * @param[in] context Context from removeObjectTemporarilyFromDBTree()
+	 * @see removeObjectTemporarilyFromDBTree()
+	 */
+	void putObjectBackIntoDBTree(ccHObject* obj, const ccHObjectContext& context) override;
 
-	//! Inherited from ccPickingListener
+	/**
+	 * @brief Handle picked item from 3D view
+	 * @param[in] pi Information about the picked item
+	 */
 	void onItemPicked(const PickedItem& pi) override;
 
-	//! Similar to getSelectedEntities, but makes sure no children of another selected entity is in the output selection
+	/**
+	 * @brief Get top-level selected entities only
+	 *
+	 * Unlike getSelectedEntities(), this filters out any entities that are
+	 * children of another selected entity, returning only the highest-level
+	 * selected items in the hierarchy.
+	 *
+	 * @return Container of selected top-level entity pointers
+	 */
 	ccHObject::Container getTopLevelSelectedEntities() const;
 
-	//! Returns real 'dbRoot' object
+	/**
+	 * @brief Get the database tree widget
+	 * @return Pointer to the ccDBRoot object managing the DB tree
+	 */
 	virtual ccDBRoot* db();
 
-	//! Adds the "Edit Plane" action to the given menu.
 	/**
+	 * @brief Add "Edit Plane" action to a menu
+	 *
+	 * Adds the plane editing action to the specified menu.
 	 * This is the only MainWindow UI action used externally (by ccDBRoot).
-	 **/
+	 *
+	 * @param[in,out] menu The menu to add the action to
+	 */
 	void addEditPlaneAction(QMenu& menu) const;
 
-	//! Sets up the UI (menus and toolbars) based on loaded plugins
+	/**
+	 * @brief Initialize plugins
+	 *
+	 * Sets up menus, toolbars, and other UI elements provided by
+	 * loaded plugins. Called after the main window is created.
+	 */
 	void initPlugins();
 
-	//! Updates the 'Properties' view
+	/**
+	 * @brief Update the Properties panel
+	 *
+	 * Refreshes the properties dock widget to show information
+	 * about the currently selected entity.
+	 */
 	void updatePropertiesView() override;
 
   private:
-	//! Creates a new 3D GL sub-window
+	/**
+	 * @brief Create a new 3D view window
+	 * @return Pointer to the new 3D view
+	 */
 	ccGLWindowInterface* new3DView()
 	{
 		return new3DViewInternal(true, false);
@@ -215,9 +428,14 @@ class MainWindow : public QMainWindow
 	//! Clones currently selected entities
 	void doActionClone();
 
-	//! Updates entities display target when a gl sub-window is deleted
-	/** \param glWindow the window that is going to be delete
-	 **/
+	/**
+	 * @brief Prepare for window deletion
+	 *
+	 * Called before a GL window is destroyed to update entities
+	 * that may be displaying in it.
+	 *
+	 * @param[in] glWindow The window being deleted
+	 */
 	void prepareWindowDeletion(ccGLWindowInterface* glWindow);
 
 	//! Slot called when the exclusive fullscreen mode is toggled on a window
