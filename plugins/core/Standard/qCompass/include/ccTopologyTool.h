@@ -18,6 +18,14 @@
 #ifndef CC_TOPOLOGYTOOL_HEADER
 #define CC_TOPOLOGYTOOL_HEADER
 
+/**
+ * @file ccTopologyTool.h
+ *
+ * @brief Topology tool
+ *
+ * Tool for assigning topology relationships between GeoObjects.
+ */
+
 #include "ccTool.h"
 #include "ccGeoObject.h"
 #include "ccTopologyRelation.h"
@@ -25,34 +33,45 @@
 #include <ccColorTypes.h>
 #include <DistanceComputationTools.h>
 
-/*
-Tool used to assign topology (timing) relationships between different GeoObjects.
-*/
+/**
+ * @class ccTopologyTool
+ *
+ * @brief Topology tool
+ *
+ * Tool for assigning timing relationships between GeoObjects.
+ */
 class ccTopologyTool :
 	public ccTool
 {
 public:
+	/// Constructor
 	ccTopologyTool();
+	
+	/// Destructor
 	virtual ~ccTopologyTool() = default;
 
-	//called when the tool is set to active (for initialization)
+	/// Tool activated
 	virtual void toolActivated() override;
 
-	//called when the tool is set to disactive (for cleanup)
+	/// Tool disactivated
 	virtual void toolDisactivated() override;
 
-	//called when the selection is changed while this tool is active
+	/// Selection changed callback
 	virtual void onNewSelection(const ccHObject::Container& selectedEntities) override;
 
-	//called when "Return" or "Space" is pressed, or the "Accept Button" is clicked
-	void accept() override; //do nothing
+	/// Accept action
+	void accept() override;
 
-	//called when the "Escape" is pressed, or the "Cancel" button is clicked
-	void cancel() override; //do nothing
+	/// Cancel action
+	void cancel() override;
+
 protected:
-	int m_firstPick = -1; //first object of a (pairwise) topology relationship
+	/// First object of topology pair
+	int m_firstPick = -1;
+
 public:
-	static int RELATIONSHIP; //used to define the topology relationship being assigned (possible values are in ccTopologyRelation)
+	/// Relationship type being assigned
+	static int RELATIONSHIP;
 };
 
 #endif
