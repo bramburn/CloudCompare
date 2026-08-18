@@ -22,6 +22,15 @@
 #include <ccArray.h>
 #include <ccPointCloud.h>
 
+/**
+ * @file ccPropertiesTreeDelegate.h
+ *
+ * @brief Properties tree delegate
+ *
+ * Delegate for displaying object properties.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Qt
 #include <QStyledItemDelegate>
 
@@ -50,7 +59,11 @@ class QAbstractItemView;
 class QStandardItem;
 class QStandardItemModel;
 
-//! GUI properties list dialog element
+/**
+ * @brief Properties tree delegate
+ *
+ * Delegate for GUI properties list.
+ */
 class ccPropertiesTreeDelegate : public QStyledItemDelegate
 {
 	Q_OBJECT
