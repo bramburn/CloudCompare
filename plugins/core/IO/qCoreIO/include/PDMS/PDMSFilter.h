@@ -18,15 +18,30 @@
 #ifndef CC_PDMS_FILTER_HEADER
 #define CC_PDMS_FILTER_HEADER
 
+/**
+ * @file PDMSFilter.h
+ *
+ * @brief PDMS file filter
+ *
+ * I/O filter for PDMS .mac files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! PDMS .mac file I/O filter
+/**
+ * @brief PDMS file filter
+ *
+ * Read PDMS .mac files.
+ */
 class PDMSFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	PDMSFilter();
 
-	// inherited from FileIOFilter
+	/// Load PDMS file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 };
 
