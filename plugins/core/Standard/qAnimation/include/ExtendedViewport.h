@@ -17,10 +17,24 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ExtendedViewport.h
+ *
+ * @brief Extended viewport with custom light information
+ *
+ * Viewport parameters for animation with custom light support.
+ */
+
 //qCC_db
 #include <cc2DViewportObject.h>
 
-//! Viewport parameters + custom light info
+/**
+ * @struct ExtendedViewportParameters
+ *
+ * @brief Extended viewport parameters
+ *
+ * Viewport parameters with custom light info.
+ */
 struct ExtendedViewportParameters
 {
 	ExtendedViewportParameters()
@@ -40,7 +54,13 @@ struct ExtendedViewportParameters
 	CCVector3f customLightPos;
 };
 
-//! Extended viewport with custom light information
+/**
+ * @struct ExtendedViewport
+ *
+ * @brief Extended viewport
+ *
+ * Viewport with custom light information for animation.
+ */
 struct ExtendedViewport
 {
 	//! Default constructor
