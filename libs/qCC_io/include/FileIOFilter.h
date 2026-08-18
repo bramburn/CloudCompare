@@ -25,29 +25,52 @@
 
 class QWidget;
 
-//! Typical I/O filter errors
+/**
+ * @brief File I/O error codes
+ *
+ * Standard error codes returned by file I/O operations.
+ * Used throughout the file loading and saving process.
+ */
 enum CC_FILE_ERROR
 {
-	CC_FERR_NO_ERROR,
-	CC_FERR_BAD_ARGUMENT,
-	CC_FERR_UNKNOWN_FILE,
-	CC_FERR_WRONG_FILE_TYPE,
-	CC_FERR_WRITING,
-	CC_FERR_READING,
-	CC_FERR_NO_SAVE,
-	CC_FERR_NO_LOAD,
-	CC_FERR_BAD_ENTITY_TYPE,
-	CC_FERR_CANCELED_BY_USER,
-	CC_FERR_NOT_ENOUGH_MEMORY,
-	CC_FERR_MALFORMED_FILE,
-	CC_FERR_CONSOLE_ERROR,
-	CC_FERR_BROKEN_DEPENDENCY_ERROR,
-	CC_FERR_FILE_WAS_WRITTEN_BY_UNKNOWN_PLUGIN,
-	CC_FERR_THIRD_PARTY_LIB_FAILURE,
-	CC_FERR_THIRD_PARTY_LIB_EXCEPTION,
-	CC_FERR_NOT_IMPLEMENTED,
-	CC_FERR_INTERNAL
+	CC_FERR_NO_ERROR,                       //!< No error
+	CC_FERR_BAD_ARGUMENT,                   //!< Invalid argument provided
+	CC_FERR_UNKNOWN_FILE,                   //!< File not found
+	CC_FERR_WRONG_FILE_TYPE,                //!< File type mismatch
+	CC_FERR_WRITING,                        //!< Error writing file
+	CC_FERR_READING,                        //!< Error reading file
+	CC_FERR_NO_SAVE,                        //!< Cannot save (e.g., no data)
+	CC_FERR_NO_LOAD,                        //!< Cannot load (e.g., empty file)
+	CC_FERR_BAD_ENTITY_TYPE,                 //!< Entity type not supported
+	CC_FERR_CANCELED_BY_USER,               //!< User cancelled operation
+	CC_FERR_NOT_ENOUGH_MEMORY,              //!< Out of memory
+	CC_FERR_MALFORMED_FILE,                 //!< File format error
+	CC_FERR_CONSOLE_ERROR,                  //!< Console error occurred
+	CC_FERR_BROKEN_DEPENDENCY_ERROR,        //!< Missing dependency
+	CC_FERR_FILE_WAS_WRITTEN_BY_UNKNOWN_PLUGIN, //!< File from unknown source
+	CC_FERR_THIRD_PARTY_LIB_FAILURE,        //!< Third-party library error
+	CC_FERR_THIRD_PARTY_LIB_EXCEPTION,     //!< Third-party library exception
+	CC_FERR_NOT_IMPLEMENTED,                //!< Feature not implemented
+	CC_FERR_INTERNAL                        //!< Internal error
 };
+
+/**
+ * @file FileIOFilter.h
+ *
+ * @brief File I/O filter system
+ *
+ * Defines the file import/export filter system for CloudCompare.
+ * Supports multiple file formats through a plugin-based architecture.
+ *
+ * @section Supported Formats
+ * - Point clouds: PLY, LAS, E57, XYZ, PCD, etc.
+ * - Meshes: OBJ, STL, OFF, PLY, etc.
+ * - Projects: BIN, BIN.SF (CloudCompare native format)
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see FileIOFilter for filter management
+ * @see ccGlobalShiftManager for coordinate handling
+ */
 
 //! Generic file I/O filter
 /** Gives static access to file loader.
@@ -58,10 +81,22 @@ class FileIOFilter
   public:
 	virtual ~FileIOFilter() = default;
 
-	//! Generic loading parameters
+	/**
+	 * @brief Parameters for file loading operations
+	 *
+	 * Controls how files are loaded, including coordinate shift handling
+	 * and UI options.
+	 */
 	struct LoadParameters
 	{
-		//! Default constructor
+		/**
+		 * @brief Default constructor
+		 *
+		 * Initializes with sensible defaults:
+		 * - Shift handling: DIALOG_IF_NECESSARY
+		 * - Always show dialog: true
+		 * - Auto-compute normals: false
+		 */
 		LoadParameters()
 		    : shiftHandlingMode(ccGlobalShiftManager::DIALOG_IF_NECESSARY)
 		    , alwaysDisplayLoadDialog(true)
@@ -75,9 +110,9 @@ class FileIOFilter
 		{
 		}
 
-		//! How to handle big coordinates
+		//! How to handle big coordinates (shift to avoid precision loss)
 		ccGlobalShiftManager::Mode shiftHandlingMode;
-		//! Wether to always display a dialog (if any), even if automatic guess is possible
+		//! Whether to always display a dialog, even if automatic guess is possible
 		bool alwaysDisplayLoadDialog;
 		//! Whether shift on load has been applied after loading (optional)
 		bool* _coordinatesShiftEnabled;
@@ -87,27 +122,31 @@ class FileIOFilter
 		CCVector3d* _coordinatesShift;
 		//! If applicable, whether shift should be preserved or not (optional)
 		bool preserveShiftOnSave;
-		//! Whether normals should be computed at loading time (if possible - e.g. for gridded clouds) or not
+		//! Whether normals should be computed at loading time (for gridded clouds)
 		bool autoComputeNormals;
-		//! Parent widget (if any)
+		//! Parent widget for dialogs (optional)
 		QWidget* parentWidget;
-		//! Session start (whether the load action is the first of a session)
+		//! Whether this is the first load of a session
 		bool sessionStart;
 	};
 
-	//! Generic saving parameters
+	/**
+	 * @brief Parameters for file saving operations
+	 */
 	struct SaveParameters
 	{
-		//! Default constructor
+		/**
+		 * @brief Default constructor
+		 */
 		SaveParameters()
 		    : alwaysDisplaySaveDialog(true)
 		    , parentWidget(nullptr)
 		{
 		}
 
-		//! Wether to always display a dialog (if any), even if automatic guess is possible
+		//! Whether to always display a dialog, even if automatic guess is possible
 		bool alwaysDisplaySaveDialog;
-		//! Parent widget (if any)
+		//! Parent widget for dialogs (optional)
 		QWidget* parentWidget;
 	};
 
