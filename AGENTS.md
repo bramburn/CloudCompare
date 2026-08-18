@@ -18,8 +18,22 @@ This is the **root index**. Deep dives live in topic-split siblings so each one 
 | The 7 vendored libraries & their ownership boundaries | [`AGENTS-libs.md`](AGENTS-libs.md) | `CCCoreLib`, `qCC_db`, `qCC_io`, `qCC_glWindow`, `CCAppCommon`, `CCPluginAPI`, `CCPluginStub`, `CCFbo` — what each owns, what each exposes, who links to whom. |
 | UI patterns (dialogs, MDI, console, db-tree) | [`AGENTS-ui.md`](AGENTS-ui.md) | Qt conventions used in `qCC/`, where `.ui` files live, how the db-tree works, how `ccOverlayDialog` plugs in. |
 | Coding standards (naming, headers, formatting, includes, clang-format) | [`AGENTS-coding-standards.md`](AGENTS-coding-standards.md) | The rules from `CONTRIBUTING.md` + the .clang-format rules + the unwritten conventions in the codebase. |
+| **Human-facing docs site** | [`website/`](website/) | Docusaurus site at [`bramburn.github.io/CloudCompare`](https://bramburn.github.io/CloudCompare/), deployed by `.github/workflows/deploy-docs.yml`. Start there for the build cookbook, plugin inventory, and architecture map. |
+| **Active feature goals** (in-flight projects with their own context) | [`AGENTS_REGISTRATION.md`](AGENTS_REGISTRATION.md) | Manual dual-screen point-cloud registration (Faro Scene Classic-style). Includes §11 with five copy-pasteable agent prompts (recon → PRD → AGENTS → README → milestones). One of N such docs; add more as goals emerge. |
 
-Each sub-folder has its own short `AGENTS.md` pointing at the right topical file. Read **AGENTS-architecture.md first** if you're new to the codebase; jump to **AGENTS-plugin-dev.md** if you're here to add a feature.
+Each sub-folder has its own short `AGENTS.md` pointing at the right topical file. Read **AGENTS-architecture.md first** if you're new to the codebase; jump to **AGENTS-plugin-dev.md** if you're here to add a feature. The active goals at the top level are themselves a kind of per-feature index — see **AGENTS_REGISTRATION.md** for the manual-registration work.
+
+---
+
+## 0b. Active feature goals
+
+Goal-level docs (`AGENTS_*.md` at the repo root) describe **in-flight projects** that span multiple subsystems and don't fit cleanly into the topical files. They each come with a [`docs/context/`](docs/) folder of layered context docs.
+
+| Goal | Doc | Status | Subsystems touched |
+|---|---|---|---|
+| **Manual dual-screen point-cloud registration** (Faro Scene Classic-style: two synchronized 3D viewports, manual point-pair picking, live transform preview) | [`AGENTS_REGISTRATION.md`](AGENTS_REGISTRATION.md) + [`docs/context/registration/`](docs/context/registration/) | Goal & design only — no plugin yet. Planned as a Standard plugin at `plugins/core/Standard/qManualRegistration/`. | Plugin system (`CCPluginAPI`, `ccMainAppInterface`), GL viewport (`qCC_glWindow`, `ccGLWindow`), picking (`ccPickingHub`, `ccPickingListener`), registration math (`CCCoreLib::HornRegistrationTools` + Umeyama), transform application (`ccDrawableObject::setGLTransformation` vs `ccPointCloud::applyRigidTransformation`). |
+
+**Convention:** if you start a new goal that touches 3+ subsystems and deserves its own context folder, name the doc `AGENTS_<GOAL>.md` and put layered context under `docs/context/<goal>/`. Add a row to the table above.
 
 ---
 
@@ -100,15 +114,50 @@ CloudCompare is a 3D point-cloud & triangular-mesh processing tool. It ships as 
 
 Everything else is a **library** (`libs/`) or **CMake glue** (`cmake/`). New features almost always land as a **plugin**; the core repos change rarely. See [`AGENTS-plugin-dev.md`](AGENTS-plugin-dev.md) for the recipe.
 
+### Documentation site
+
+The fork publishes a human-facing Docusaurus site to GitHub Pages at
+**[bramburn.github.io/CloudCompare](https://bramburn.github.io/CloudCompare/)**.
+It is built from the [`website/`](website/) directory by
+[`.github/workflows/deploy-docs.yml`](.github/workflows/deploy-docs.yml) on
+every push to `master` that touches `website/**` or the workflow file
+itself. The site mirrors this fork's configuration: the local toolchain
+pins, the 18-plugin local set, the disabled-priority recipe, the slim CI
+matrix, and the architecture map.
+
+The **agent-facing** reference (this file + `AGENTS-*.md`) and the
+**human-facing** docs site are intentionally different audiences:
+
+- This file and `AGENTS-*.md` are for AI coding agents and humans
+  reading source code. They live in the repo and are read in-tree.
+- The docs site is for end users (and humans who want the rendered
+  version of the agent-facing material). It is built from `website/`
+  and lives at a public URL.
+
+If you are **writing code** in this repo, read `AGENTS-architecture.md`
+first and `AGENTS-plugin-dev.md` for anything that touches `plugins/`.
+If you are **deploying or building**, the docs site's
+[Build on Windows](https://bramburn.github.io/CloudCompare/docs/build/windows)
+is the most up-to-date reference for the local toolchain.
+
+To preview docs changes locally:
+
+```bash
+cd website
+npm install
+npm start          # http://localhost:3000/CloudCompare/
+```
+
 ### Project layout
 
-- `libs/` — vendored dependencies (`CCCoreLib`, `qCC_db`, `qCC_io`, `qCC_gl`, `CCAppCommon`, `CCPluginAPI`, `CC_FBO_LIB`) — see [`AGENTS-libs.md`](AGENTS-libs.md)
+- `libs/` — vendored dependencies (`CCCoreLib`, `qCC_db`, `qCC_io`, `qCC_gl`, `CCAppCommon`, `CCPluginAPI`, `CC_FBO_LIB`) — see [`libs/AGENTS.md`](libs/AGENTS.md) and [`AGENTS-libs.md`](AGENTS-libs.md)
 - `qCC/` — main `CloudCompare.exe` app + UI — see [`qCC/AGENTS.md`](qCC/AGENTS.md) and [`AGENTS-ui.md`](AGENTS-ui.md)
 - `ccViewer/` — minimal viewer (`ccViewer.exe`) — see [`ccViewer/AGENTS.md`](ccViewer/AGENTS.md)
-- `plugins/core/IO/` — file-format I/O plugins (LAS, E57, OBJ, PLY, …) — see [`plugins/core/AGENTS.md`](plugins/core/AGENTS.md)
-- `plugins/core/Standard/` — analysis tools (qCSF, qM3C2, qPCL, qPoissonRecon, …)
-- `plugins/core/GL/` — OpenGL shaders (qEDL, qSSAO)
-- `plugins/example/` — copy-paste templates for new plugins (Standard / IO / GL)
+- `plugins/` — loadable plugin shared libraries (Standard / I/O / GL) — see [`plugins/AGENTS.md`](plugins/AGENTS.md) and [`AGENTS-plugin-dev.md`](AGENTS-plugin-dev.md)
+  - `plugins/core/IO/` — file-format I/O plugins (LAS, E57, OBJ, PLY, …) — see [`plugins/core/AGENTS.md`](plugins/core/AGENTS.md)
+  - `plugins/core/Standard/` — analysis tools (qCSF, qM3C2, qPCL, qPoissonRecon, …)
+  - `plugins/core/GL/` — OpenGL shaders (qEDL, qSSAO)
+  - `plugins/example/` — copy-paste templates for new plugins — see [`plugins/example/AGENTS.md`](plugins/example/AGENTS.md)
 - `cmake/` — CMake helpers (Qt detection, compiler options, deployqt logic) — see [`cmake/AGENTS.md`](cmake/AGENTS.md)
 - `.ci/` — CI scripts (reference for canonical build invocations)
 

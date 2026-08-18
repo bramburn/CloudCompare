@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" aria-label="Windows, macOS, and Linux">
+  <g fill="#2563eb">
+    <rect x="10" y="12" width="28" height="28" rx="2" />
+    <rect x="42" y="12" width="28" height="28" rx="2" />
+    <rect x="10" y="44" width="60" height="24" rx="2" />
+  </g>
+  <g fill="#dbeafe">
+    <path d="M16 16h6v6h-6zM26 16h6v6h-6zM16 26h6v6h-6zM26 26h6v6h-6z" />
+    <path d="M48 18c2 0 4 1 4 4 0 2-2 3-4 3-1 0-2 0-3-1l1-2c1 1 4 1 4-1 0-1-1-2-2-2s-2 1-2 2h-2c0-2 2-3 4-3z" />
+    <ellipse cx="50" cy="32" rx="3" ry="1.5" />
+    <circle cx="56" cy="56" r="3" />
+    <circle cx="64" cy="60" r="2" />
+    <circle cx="56" cy="64" r="2" />
+    <path d="M58 60h4M60 58v4" stroke="#dbeafe" stroke-width="1.4" />
+  </g>
+</svg>

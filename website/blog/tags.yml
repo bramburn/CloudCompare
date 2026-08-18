@@ -1,0 +1,19 @@
+release:
+  label: Release
+  permalink: /release
+  description: CloudCompare fork release notes.
+
+plugins:
+  label: Plugins
+  permalink: /plugins
+  description: Plugin enable/disable, dependencies, and authoring notes.
+
+build:
+  label: Build
+  permalink: /build
+  description: Build configuration, toolchain, and CI changes.
+
+surveying:
+  label: Surveying
+  permalink: /surveying
+  description: Surveying-company workflows that use this fork.

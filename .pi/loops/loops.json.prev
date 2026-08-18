@@ -1,0 +1,19 @@
+{
+  "nextId": 2,
+  "loops": [
+    {
+      "id": "1",
+      "prompt": "please add doxygen comments throughout the application code, pick one file at a time, work on a file called doxygen-state.md to manage your state. you have to go through all the files and add it. you can use lsp mcp from `http://127.0.0.1:9527/mcp` to help. commit as you go, no push.",
+      "trigger": {
+        "type": "cron",
+        "schedule": "*/5 * * * *"
+      },
+      "status": "active",
+      "recurring": true,
+      "createdAt": 1787079158932,
+      "updatedAt": 1787082903508,
+      "expiresAt": 1787683958932,
+      "fireCount": 13
+    }
+  ]
+}

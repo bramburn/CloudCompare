@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" aria-label="Plug-in puzzle pieces">
+  <g fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M10 12h22v12a4 4 0 0 0 8 0V12h22v22h-12a4 4 0 0 0 0 8h12v22H32V52a4 4 0 0 0-8 0v12H10V42h12a4 4 0 0 0 0-8H10Z" />
+  </g>
+  <g fill="#60a5fa" opacity="0.4">
+    <rect x="20" y="22" width="40" height="36" rx="3" />
+  </g>
+</svg>

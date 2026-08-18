@@ -1,0 +1,65 @@
+/**
+ * Home page hero — overrides the default marketing-tone hero with a sober
+ * technical layout that fits a docs site.
+ */
+
+.heroBanner {
+  padding: 6rem 0 4rem;
+  text-align: left;
+  background: linear-gradient(
+    135deg,
+    var(--ifm-color-primary-darkest) 0%,
+    var(--ifm-color-primary-darker) 60%,
+    var(--ifm-color-primary) 100%
+  );
+  color: #fff;
+}
+
+.heroTitle {
+  font-size: 3.25rem;
+  margin-bottom: 0.4rem;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.heroSubtitle {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 1.4rem;
+}
+
+.heroLead {
+  max-width: 760px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 2.4rem;
+}
+
+.heroInlineLink {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+  .heroBanner {
+    padding: 4rem 0 2.5rem;
+    text-align: left;
+  }
+  .heroTitle {
+    font-size: 2.25rem;
+  }
+  .heroSubtitle {
+    font-size: 1.2rem;
+  }
+}
