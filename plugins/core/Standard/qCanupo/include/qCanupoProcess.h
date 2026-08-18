@@ -27,11 +27,25 @@
 //Qt
 #include <QString>
 
+/**
+ * @file qCanupoProcess.h
+ *
+ * @brief CANUPO process
+ *
+ * CANUPO classification process.
+ */
+
 class ccMainAppInterface;
 class ccPointCloud;
 class QWidget;
 
-//! CANUPO process (classify)
+/**
+ * @class qCanupoProcess
+ *
+ * @brief CANUPO process
+ *
+ * CANUPO classification process.
+ */
 class qCanupoProcess
 {
 public:
