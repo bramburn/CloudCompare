@@ -6,7 +6,7 @@
 //#                                                                        #
 //#  This program is free software; you can redistribute it and/or modify  #
 //#  it under the terms of the GNU General Public License as published by  #
-//#  the Free Software Foundation; version 2 of the License.               #
+//#  the Free Software Foundation; version 2 or later of the License.      #
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
 //#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
@@ -17,14 +17,29 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qPCV.h
+ *
+ * @brief Potentially Visible Set (PCV) plugin
+ *
+ * Ambient occlusion computation using the ShadeVis algorithm.
+ *
+ * Reference: "Visibility based methods and assessment for detail-recovery",
+ * M. Tarini, P. Cignoni, R. Scopigno, Visualization 2003.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 #include "ccStdPluginInterface.h"
 #include "PCVCommand.h"
 
-//! Wrapper to the ShadeVis algorithm for computing Ambient Occlusion on meshes and point clouds
-/** "Visibility based methods and assessment for detail-recovery", M. Tarini, P. Cignoni, R. Scopigno
-	Proc. of Visualization 2003, October 19-24, Seattle, USA.
-	http://vcg.sourceforge.net/index.php/ShadeVis
-**/
+/**
+ * @class qPCV
+ *
+ * @brief Potentially Visible Set plugin
+ *
+ * Compute ambient occlusion using ShadeVis algorithm.
+ */
 class qPCV : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -33,20 +48,27 @@ class qPCV : public QObject, public ccStdPluginInterface
 	Q_PLUGIN_METADATA( IID "cccorp.cloudcompare.plugin.qPCV" FILE "../info.json" )
 
 public:
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qPCV(QObject* parent = nullptr);
 	
+	/// Destructor
 	~qPCV()override  = default;
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	void onNewSelection(const ccHObject::Container& selectedEntities) override;
+	
+	/// Get plugin actions
 	QList<QAction *> getActions() override;
+	
+	/// Register command line commands
 	void registerCommands(ccCommandLineInterface *cmd) override;
 
 private:
-	//! Slot called when associated ation is triggered
+	/// Execute PCV action
 	void doAction();
 
-	//! Associated action
 	QAction* m_action;
 };
