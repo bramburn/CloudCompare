@@ -18,6 +18,16 @@
 #ifndef CC_SF_ARITMETHIC_DLG_HEADER
 #define CC_SF_ARITMETHIC_DLG_HEADER
 
+/**
+ * @file ccScalarFieldArithmeticsDlg.h
+ *
+ * @brief Scalar field arithmetics dialog
+ *
+ * Dialog for scalar field arithmetic operations.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <QDialog>
 
 class ccPointCloud;
@@ -27,7 +37,11 @@ namespace Ui
 	class SFArithmeticsDlg;
 }
 
-//! Dialog to choose 2 scalar fields (SF) and one operation for arithmetics processing
+/**
+ * @brief Scalar field arithmetics dialog
+ *
+ * Perform arithmetic operations on scalar fields.
+ */
 class ccScalarFieldArithmeticsDlg : public QDialog
 {
 	Q_OBJECT
