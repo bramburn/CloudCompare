@@ -18,19 +18,37 @@
 #ifndef Q_CANUPO_CLASSIF_DIALOG_HEADER
 #define Q_CANUPO_CLASSIF_DIALOG_HEADER
 
+/**
+ * @file qCanupoClassifDialog.h
+ *
+ * @brief CANUPO classification dialog
+ *
+ * Classification dialog for CANUPO.
+ */
+
 #include <ui_qCanupoClassifDialog.h>
 
 class ccMainAppInterface;
 class ccPointCloud;
 
-//! CANUPO plugin's classification dialog
+/**
+ * @class qCanupoClassifDialog
+ *
+ * @brief CANUPO classification dialog
+ *
+ * Classification dialog for CANUPO.
+ */
 class qCanupoClassifDialog : public QDialog, public Ui::CanupoClassifDialog
 {
 	Q_OBJECT
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] cloud Point cloud
+	 * @param[in] app Main application interface
+	 */
 	qCanupoClassifDialog(ccPointCloud* cloud, ccMainAppInterface* app);
 
 	//! "Sources" of core points
