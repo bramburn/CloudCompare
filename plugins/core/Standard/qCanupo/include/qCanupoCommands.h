@@ -18,15 +18,33 @@
 #ifndef CANUPO_PLUGIN_COMMANDS_HEADER
 #define CANUPO_PLUGIN_COMMANDS_HEADER
 
+/**
+ * @file qCanupoCommands.h
+ *
+ * @brief CANUPO CLI commands
+ *
+ * Command line interface commands for CANUPO.
+ */
+
 //CloudCompare
 #include "ccCommandLineInterface.h"
 
 //Local
 #include "qCanupoProcess.h"
 
+/// CANUPO classify command identifier
 static const char COMMAND_CANUPO_CALSSIFY[] = "CANUPO_CLASSIFY";
+
+/// Use confidence command
 static const char COMMAND_CANUPO_CONFIDENCE[] = "USE_CONFIDENCE";
 
+/**
+ * @struct CommandCanupoClassif
+ *
+ * @brief CANUPO classify command
+ *
+ * CLI command for CANUPO classification.
+ */
 struct CommandCanupoClassif : public ccCommandLineInterface::Command
 {
 	CommandCanupoClassif() : ccCommandLineInterface::Command("Canupo Classify", COMMAND_CANUPO_CALSSIFY) {}
