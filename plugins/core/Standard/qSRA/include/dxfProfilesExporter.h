@@ -18,6 +18,14 @@
 #ifndef QSRA_DXF_PROFILES_EXPORTER_HEADER
 #define QSRA_DXF_PROFILES_EXPORTER_HEADER
 
+/**
+ * @file dxfProfilesExporter.h
+ *
+ * @brief DXF profiles exporter
+ *
+ * Export surface of revolution profiles to DXF format.
+ */
+
 //Local
 #include "distanceMapGenerationTool.h"
 
@@ -28,9 +36,13 @@
 class ccPolyline;
 class ccMainAppInterface;
 
-//! DXF profiles (of a surface of revolution) exporter
-/** Requires DXF lib support!
-**/
+/**
+ * @class DxfProfilesExporter
+ *
+ * @brief DXF profiles exporter
+ *
+ * Export profiles to DXF format.
+ */
 class DxfProfilesExporter
 {
 public:
