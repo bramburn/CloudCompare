@@ -25,13 +25,25 @@
 #include <stdint.h>
 #include <vector>
 
+/**
+ * @file PCVContext.h
+ *
+ * @brief PCV context
+ *
+ * PCV OpenGL context for ambient occlusion.
+ */
+
 class QSurface;
 class QOpenGLBuffer;
 class QOpenGLContext;
 
-//! PCV (Portion de Ciel Visible / Ambient occlusion) OpenGL context
-/** Similar to Cignoni's ShadeVis
-**/
+/**
+ * @class PCVContext
+ *
+ * @brief PCV OpenGL context
+ *
+ * Portion de Ciel Visible / Ambient occlusion OpenGL context.
+ */
 class PCVContext
 {
 	public:
