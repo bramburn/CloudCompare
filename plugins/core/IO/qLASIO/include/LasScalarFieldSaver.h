@@ -23,8 +23,13 @@
 
 struct laszip_point;
 
-/// Class with the logic to save a point clouds
-/// scalar field into a LAS file.
+/**
+ * @class LasScalarFieldSaver
+ *
+ * @brief LAS scalar field saver
+ *
+ * Save point cloud scalar fields to LAS files.
+ */
 class LasScalarFieldSaver
 {
   public:
