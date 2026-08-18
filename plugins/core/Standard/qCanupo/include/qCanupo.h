@@ -18,16 +18,30 @@
 #ifndef Q_CANUPO_PLUGIN_HEADER
 #define Q_CANUPO_PLUGIN_HEADER
 
-//qCC
+/**
+ * @file qCanupo.h
+ *
+ * @brief CANUPO point cloud classification plugin
+ *
+ * Multi-scale dimensionality classification for 3D terrestrial lidar data.
+ *
+ * Reference: "3D Terrestrial lidar data classification of complex natural scenes
+ * using a multi-scale dimensionality criterion", N. Brodu, D. Lague, 2012.
+ *
+ * @author Universite Europeenne de Bretagne / CNRS
+ */
+
 #include <ccStdPluginInterface.h>
 
-//qCC_db
 #include <ccHObject.h>
 
-//! CANUPO plugin
-/** See "3D Terrestrial lidar data classification of complex natural scenes using a multi-scale dimensionality criterion:
-	applications in geomorphology", N. Brodu, D. Lague, 2012, Computer Vision and Pattern Recognition
-**/
+/**
+ * @class qCanupoPlugin
+ *
+ * @brief CANUPO plugin
+ *
+ * Multi-scale point cloud classification.
+ */
 class qCanupoPlugin : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -37,27 +51,32 @@ class qCanupoPlugin : public QObject, public ccStdPluginInterface
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	qCanupoPlugin(QObject* parent = nullptr);
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	void onNewSelection(const ccHObject::Container& selectedEntities) override;
+	
+	/// Get plugin actions
 	virtual QList<QAction*> getActions() override;
+	
+	/// Register command line commands
 	virtual void registerCommands(ccCommandLineInterface* cmd) override;
 
 protected:
-
+	/// Execute classification action
 	void doClassifyAction();
+	
+	/// Execute training action
 	void doTrainAction();
 
 protected:
-
-	//! Calssift action
 	QAction* m_classifyAction;
-	//! Train action
 	QAction* m_trainAction;
 
-	//! Currently selected entities
 	ccHObject::Container m_selectedEntities;
 };
 
