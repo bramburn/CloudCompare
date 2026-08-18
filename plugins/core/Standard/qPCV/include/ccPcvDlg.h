@@ -17,12 +17,30 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccPcvDlg.h
+ *
+ * @brief PCV dialog
+ *
+ * Dialog for PCV/ShadeVis plugin.
+ */
+
 #include <ui_pcvDlg.h>
 
-//! Dialog for the PCV/ShadeVis plugin
+/**
+ * @class ccPcvDlg
+ *
+ * @brief PCV dialog
+ *
+ * Dialog for the PCV/ShadeVis plugin.
+ */
 class ccPcvDlg : public QDialog, public Ui::PCVDialog
 {
 public:
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccPcvDlg(QWidget* parent = nullptr)
 		: QDialog(parent, Qt::Tool)
 		, Ui::PCVDialog()
