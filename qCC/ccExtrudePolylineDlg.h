@@ -16,21 +16,43 @@
 #ifndef CC_EXTRUDE_POLYLINE_DLG_HEADER
 #define CC_EXTRUDE_POLYLINE_DLG_HEADER
 
+/**
+ * @file ccExtrudePolylineDlg.h
+ *
+ * @brief Extrude polyline dialog
+ *
+ * Dialog for extruding polylines into meshes.
+ *
+ * @author CloudCompare project
+ */
+
 #include <ui_extrudePolylineDlg.h>
 
-//! Dialog for extruding a polyline along Z into a zero-thickness mesh surface
+/**
+ * @brief Extrude polyline dialog
+ *
+ * Configure polyline extrusion parameters.
+ */
 class ccExtrudePolylineDlg : public QDialog
     , public Ui::ExtrudePolylineDialog
 {
 	Q_OBJECT
 
   public:
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccExtrudePolylineDlg(QWidget* parent = nullptr);
 
+	/// Get height above
 	double heightAbove() const;
+	/// Get depth below
 	double depthBelow() const;
 
+	/// Set height above
 	void setHeightAbove(double value);
+	/// Set depth below
 	void setDepthBelow(double value);
 };
 
