@@ -18,32 +18,41 @@
 #ifndef CC_TORUS_PRIMITIVE_HEADER
 #define CC_TORUS_PRIMITIVE_HEADER
 
+/**
+ * @file ccTorus.h
+ *
+ * @brief Torus primitive
+ *
+ * 3D torus (doughnut) primitive with circular or rectangular cross-section.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccGenericPrimitive.h"
 
-//! Torus (primitive)
-/** 3D torus primitive (with circular or rectangular section)
- **/
+/**
+ * @brief Torus primitive
+ *
+ * 3D torus with configurable section type.
+ */
 class QCC_DB_LIB_API ccTorus : public ccGenericPrimitive
 {
   public:
-	//! Default drawing precision
-	/** \warning Never pass a 'constant initializer' by reference
-	 **/
+	//! Default drawing precision (angular steps)
 	static const unsigned DEFAULT_DRAWING_PRECISION = 24;
 
-	//! Default constructor
-	/** Torus is defined in the XY plane by default
-	    \param insideRadius inside radius
-	    \param outsideRadius outside radius
-	    \param angle_rad subtended angle (in radians)
-	    \param rectangularSection whether section is rectangular or round
-	    \param rectSectionHeight section height (if rectangular torus)
-	    \param transMat optional 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
-	    \param name name
-	    \param precision drawing precision (main loop angular step = 360/(4*precision), circular section angular step = 360/precision)
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a torus
+	 * @param[in] insideRadius Inner radius
+	 * @param[in] outsideRadius Outer radius
+	 * @param[in] angle_rad Subtended angle (radians)
+	 * @param[in] rectangularSection Rectangular cross-section
+	 * @param[in] rectSectionHeight Section height (if rectangular)
+	 * @param[in] transMat Optional transformation
+	 * @param[in] name Torus name
+	 * @param[in] precision Drawing precision
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	ccTorus(PointCoordinateType insideRadius,
 	        PointCoordinateType outsideRadius,
 	        double              angle_rad          = 2.0 * M_PI,
