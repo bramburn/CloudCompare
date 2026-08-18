@@ -20,6 +20,14 @@
 
 #include <QDir>
 
+/**
+ * @file qRANSAC_SD_Commands.h
+ *
+ * @brief RANSAC SD CLI commands
+ *
+ * Command line interface commands for RANSAC SD.
+ */
+
 //CloudCompare
 #include "ccCommandLineInterface.h"
 #include <ccMesh.h>
@@ -28,6 +36,7 @@
 //Local
 #include "qRANSAC_SD.h"
 
+/// RANSAC command identifier
 constexpr char COMMAND_RANSAC[] = "RANSAC";
 constexpr char EPSILON_ABSOLUTE[] = "EPSILON_ABSOLUTE";
 constexpr char EPSILON_PERCENTAGE_OF_SCALE[] = "EPSILON_PERCENTAGE_OF_SCALE";
@@ -54,6 +63,13 @@ constexpr char PRIM_CONE[] = "CONE";
 constexpr char PRIM_TORUS[] = "TORUS";
 
 
+/**
+ * @struct CommandRANSAC
+ *
+ * @brief RANSAC command
+ *
+ * CLI command for RANSAC shape detection.
+ */
 struct CommandRANSAC : public ccCommandLineInterface::Command
 {
 	CommandRANSAC() : ccCommandLineInterface::Command(QObject::tr("RANSAC"), COMMAND_RANSAC) {}
