@@ -17,61 +17,108 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccMaterialSet.h
+ *
+ * @brief Material set (library) for mesh textures
+ *
+ * Manages a collection of materials for mesh rendering.
+ * Supports MTL file format (Wavefront .mtl).
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "CCShareable.h"
 #include "ccHObject.h"
 
 class ccGenericGLDisplay;
 
-//! Mesh (triangle) material
+/**
+ * @brief Material set/library
+ *
+ * Collection of materials with MTL file support.
+ */
 class QCC_DB_LIB_API ccMaterialSet : public std::vector<ccMaterial::CShared>
     , public CCShareable
     , public ccHObject
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Create a material set
+	 * @param[in] name Set name
+	 */
 	ccMaterialSet(const QString& name = QString());
 
 	// inherited from ccHObject
+	/**
+	 * @brief Get class type
+	 * @return CC_TYPES::MATERIAL_SET
+	 */
 	CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::MATERIAL_SET;
 	}
+	/**
+	 * @brief Check if shareable
+	 * @return true
+	 */
 	bool isShareable() const override
 	{
 		return true;
 	}
 
-	//! Finds material by name
-	/** \return material index or -1 if not found
-	 **/
+	/**
+	 * @brief Find material by name
+	 * @param[in] mtlName Material name
+	 * @return Material index, or -1 if not found
+	 */
 	int findMaterialByName(const QString& mtlName);
 
-	//! Finds material by unique identifier
-	/** \return material index or -1 if not found
-	 **/
+	/**
+	 * @brief Find material by unique ID
+	 * @param[in] uniqueID Unique identifier
+	 * @return Material index, or -1 if not found
+	 */
 	int findMaterialByUniqueID(const QString& uniqueID);
 
-	//! Adds a material
-	/** Ensures unicity of material names.
-	    \param mat material
-	    \param allowDuplicateNames whether to allow duplicate names for materials or not (in which case the returned index is the one of the material with the same name)
-	    \return material index
-	**/
+	/**
+	 * @brief Add a material
+	 * @param[in] mat Material to add
+	 * @param[in] allowDuplicateNames Allow duplicate names
+	 * @return Material index
+	 */
 	int addMaterial(ccMaterial::CShared mat, bool allowDuplicateNames = false);
 
-	//! MTL (material) file parser
-	/** Inspired from KIXOR.NET "objloader" (http://www.kixor.net/dev/objloader/)
-	 **/
+	/**
+	 * @brief Parse MTL file
+	 * @param[in] path Base path
+	 * @param[in] filename MTL filename
+	 * @param[out] materials Parsed materials
+	 * @param[out] errors Error messages
+	 * @return true on success
+	 */
 	static bool ParseMTL(const QString& path, const QString& filename, ccMaterialSet& materials, QStringList& errors);
 
-	//! Saves to an MTL file (+ associated texture images)
+	/**
+	 * @brief Save to MTL file
+	 * @param[in] path Output path
+	 * @param[in] baseFilename Base filename
+	 * @param[out] errors Error messages
+	 * @return true on success
+	 */
 	bool saveAsMTL(const QString& path, const QString& baseFilename, QStringList& errors) const;
 
-	//! Clones materials set
+	/**
+	 * @brief Clone the material set
+	 * @return New material set
+	 */
 	ccMaterialSet* clone() const;
 
-	//! Appends materials from another set
+	/**
+	 * @brief Append materials from another set
+	 * @param[in] source Source set
+	 * @return true on success
+	 */
 	bool append(const ccMaterialSet& source);
 
 	// inherited from ccSerializableObject
