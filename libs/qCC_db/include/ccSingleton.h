@@ -18,21 +18,37 @@
 #ifndef CC_SINGLETON_HEADER
 #define CC_SINGLETON_HEADER
 
-//! Generic singleton encapsulation structure
+/**
+ * @file ccSingleton.h
+ *
+ * @brief Singleton template
+ *
+ * Generic singleton encapsulation template.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
+/**
+ * @brief Singleton wrapper template
+ *
+ * Simple singleton wrapper for managing single instances.
+ */
 template <class T>
 struct ccSingleton
 {
-	//! Default constructor
+	/// Default constructor
 	ccSingleton()
 	    : instance(nullptr)
 	{
 	}
-	//! Destructor
+	
+	/// Destructor
 	~ccSingleton()
 	{
 		release();
 	}
-	//! Releases the current instance
+	
+	/// Release the instance
 	inline void release()
 	{
 		if (instance)
@@ -42,7 +58,7 @@ struct ccSingleton
 		}
 	}
 
-	//! Current instance
+	/// Current instance
 	T* instance;
 };
 
