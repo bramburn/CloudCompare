@@ -6,16 +6,26 @@
 //#                                                                        #
 //#  This program is free software; you can redistribute it and/or modify  #
 //#  it under the terms of the GNU General Public License as published by  #
-//#  the Free Software Foundation; version 2 of the License.               #
+//#  the Free Software Foundation; version 2 or later of the License.      #
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
 //#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the         #
 //#  GNU General Public License for more details.                          #
 //#                                                                        #
 //#                     COPYRIGHT: WigginsTech 2022                        #
 //#                                                                        #
 //##########################################################################
+
+/**
+ * @file ccCloudLayersDlg.h
+ *
+ * @brief Cloud layers dialog
+ *
+ * Dialog for managing point cloud layers (ASPRS classification).
+ *
+ * @author WigginsTech 2022
+ */
 
 // local
 #include <ui_ccCloudLayersDlg.h>
@@ -28,75 +38,85 @@
 class ccPointCloud;
 class ccMouseCircle;
 
+/**
+ * @class ccCloudLayersDlg
+ *
+ * @brief Cloud layers dialog
+ *
+ * Manage point cloud layers with ASPRS classification.
+ */
 class ccCloudLayersDlg : public ccOverlayDialog, public Ui::ccCloudLayersDlg
 {
 	Q_OBJECT
 
 public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] app Main application interface
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccCloudLayersDlg(ccMainAppInterface* app, QWidget* parent = nullptr);
 
-	//! Destructor
+	/// Destructor
 	virtual ~ccCloudLayersDlg();
 
-	//! inherited from ccOverlayDialog
+	/// Start dialog
 	bool start() override;
+	
+	/// Stop dialog
 	void stop(bool accepted) override;
 	
+	/**
+	 * @brief Set point cloud
+	 * @param[in] cloud Point cloud
+	 * @return Success
+	 */
 	bool setPointCloud(ccPointCloud* cloud);
 	
 private:
+	/// Reset UI state
 	void resetUI();
+	
+	/// Initialize table view
 	void initTableView();
 
+	/// Save settings
 	void saveSettings();
+	
+	/// Load settings
 	void loadSettings();
 
+	/// Event filter
 	bool eventFilter(QObject* obj, QEvent* event) override;
+	
+	/// Reject dialog
 	void reject() override;
 
 private Q_SLOTS:
 
-	//! add new asprs item
+	/// Add new ASPRS item
 	void addClicked();
 
-	//! delete select(ed) asprs item(s)
+	/// Delete selected ASPRS items
 	void deleteClicked();
 
-	//! draw mouse circle
+	/// Start drawing mouse circle
 	void startClicked();
 
-	//! stop drawing mouse cirlce
+	/// Pause drawing mouse circle
 	void pauseClicked();
 
-	//! apply changes and close dialog
+	/// Apply changes and close
 	void applyClicked();
 
-	//! restore changes and close dialog
+	/// Close dialog
 	void closeClicked() { reject(); }
 	
+	/// Scalar field index changed
 	void scalarFieldIndexChanged(int index);
+	
+	/// Input class index changed
 	void inputClassIndexChanged(int index);
+	
+	/// Output class index changed
 	void outputClassIndexChanged(int index);
-
-	//! asprs model signals
-	void codeChanged(ccAsprsModel::AsprsItem item, int oldCode);
-	void colorChanged(ccAsprsModel::AsprsItem item);
-	void classNameChanged(int row, QString newName);
-
-	//! show color picker dialog
-	void tableViewDoubleClicked(const QModelIndex &index);
-
-	//! update input and output comboboxes
-	void updateInputOutput();
-	void swapInputOutput();
-
-	void mouseMoved(int x, int y, Qt::MouseButtons buttons);
-
-private:
-	ccMainAppInterface* m_app;
-	ccAsprsModel m_asprsModel;
-	ccCloudLayersHelper* m_helper;
-	ccMouseCircle* m_mouseCircle;
-};
-
