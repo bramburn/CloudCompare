@@ -18,18 +18,33 @@
 #ifndef CC_DXF_FILTER_HEADER
 #define CC_DXF_FILTER_HEADER
 
+/**
+ * @file DxfFilter.h
+ *
+ * @brief DXF file filter
+ *
+ * Filter for AutoCAD DXF files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! Autocad DXF file I/O filter
+/**
+ * @brief DXF filter
+ *
+ * AutoCAD DXF file filter.
+ */
 class QCC_IO_LIB_API DxfFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	DxfFilter();
 
 	// inherited from FileIOFilter
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 
