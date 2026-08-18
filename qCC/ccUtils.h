@@ -17,18 +17,38 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccUtils.h
+ *
+ * @brief Utility functions
+ *
+ * Common utility functions for CloudCompare.
+ *
+ * @author CloudCompare project
+ */
+
 class QString;
 
 // CCCoreLib
 #include <CCGeom.h>
 
+/**
+ * @brief Utility functions namespace
+ */
 namespace ccUtils
 {
-	//! Display a warning or error for locked verts
+	/**
+	 * @brief Display locked vertices warning
+	 * @param[in] meshName Mesh name
+	 * @param[in] displayAsError Display as error
+	 */
 	void DisplayLockedVerticesWarning(const QString& meshName, bool displayAsError);
 
-	//! Tries to convert the current contents of the clipboard into a vector (3 values)
-	/** Supported separators: white spaces, comma or semicolon
-	 **/
+	/**
+	 * @brief Get vector from clipboard
+	 * @param[out] vector Vector result
+	 * @param[in] sendErrors Send errors to console
+	 * @return true if successful
+	 */
 	bool GetVectorFromClipboard(CCVector3d& vector, bool sendErrors = true);
 } // namespace ccUtils
