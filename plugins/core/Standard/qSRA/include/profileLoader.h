@@ -18,6 +18,14 @@
 #ifndef PROFILE_LOADER_HEADER
 #define PROFILE_LOADER_HEADER
 
+/**
+ * @file profileLoader.h
+ *
+ * @brief Profile loader
+ *
+ * Load 2D profiles from ASCII files.
+ */
+
 class ccPolyline;
 class ccMainAppInterface;
 
@@ -27,21 +35,27 @@ class ccMainAppInterface;
 //CCCoreLib
 #include <CCGeom.h>
 
-//! Loads a 2D profile form a custom (ASCII) file
+/**
+ * @class ProfileLoader
+ *
+ * @brief Profile loader
+ *
+ * Load 2D profiles from custom ASCII files.
+ */
 class ProfileLoader
 {
 public:
 
-	//! Loads a 2D profile from a file
-	/** The file must have a particular organization (see the code for more details).
-		Notably the profile is associated to a 3D origin.
-		Only the X and Y coordinates of the polyline's vertices will be used:
-		X = radius and Y = height (Z = 0).
-		\param[in] filename filename
-		\param[out] origin profile origin
-		\param[in] app main application handle for displaying messages (optional)
-		\return loaded polyline (or 0 if an error occurred)
-	**/
+	/**
+	 * @brief Load profile from file
+	 * @param[in] filename Filename
+	 * @param[out] origin Profile origin
+	 * @param[in] app Main application interface
+	 * @return Loaded polyline or nullptr
+	 *
+	 * File must have a particular organization.
+	 * X = radius, Y = height, Z = 0.
+	 */
 	static ccPolyline* Load(QString filename, CCVector3& origin, ccMainAppInterface* app = nullptr);
 
 };
