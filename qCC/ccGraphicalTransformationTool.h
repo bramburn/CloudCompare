@@ -18,6 +18,14 @@
 #ifndef CC_GRAPHICAL_TRANSFORMATION_TOOL_HEADER
 #define CC_GRAPHICAL_TRANSFORMATION_TOOL_HEADER
 
+/**
+ * @file ccGraphicalTransformationTool.h
+ *
+ * @brief Graphical transformation tool
+ *
+ * Mouse-driven transformation of entities.
+ */
+
 // Local
 #include <ccOverlayDialog.h>
 #include <ui_graphicalTransformationDlg.h>
@@ -27,9 +35,13 @@
 
 class ccGLWindowInterface;
 
-//! Dialog + mechanism for graphical transformation of entities
-/** Mouse driven rotation and translation of selected entities at screen.
- **/
+/**
+ * @class ccGraphicalTransformationTool
+ *
+ * @brief Graphical transformation tool
+ *
+ * Dialog + mechanism for graphical transformation of entities.
+ */
 class ccGraphicalTransformationTool : public ccOverlayDialog
     , public Ui::GraphicalTransformationDlg
 {
