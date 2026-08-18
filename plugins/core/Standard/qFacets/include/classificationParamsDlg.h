@@ -18,16 +18,33 @@
 #ifndef QFACET_CLASSIFICATION_PARAMS_DLG_HEADER
 #define QFACET_CLASSIFICATION_PARAMS_DLG_HEADER
 
+/**
+ * @file classificationParamsDlg.h
+ *
+ * @brief Classification parameters dialog
+ *
+ * Dialog for orientation-based classification of facets.
+ */
+
 #include <QDialog>
 
 #include "ui_classificationParamsDlg.h"
 
-//! Dialog for orientation-based classification of facets (qFacets plugin)
+/**
+ * @class ClassificationParamsDlg
+ *
+ * @brief Classification parameters dialog
+ *
+ * Dialog for configuring facet classification parameters.
+ */
 class ClassificationParamsDlg : public QDialog, public Ui::ClassificationParamsDlg
 {
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	ClassificationParamsDlg(QWidget* parent = nullptr)
 		: QDialog(parent, Qt::Tool)
 		, Ui::ClassificationParamsDlg()
