@@ -18,57 +18,82 @@
 #ifndef CC_GENERIC_PRIMITIVE_HEADER
 #define CC_GENERIC_PRIMITIVE_HEADER
 
+/**
+ * @file ccGenericPrimitive.h
+ *
+ * @brief Generic primitive interface
+ *
+ * Base interface for geometric primitives like spheres, cylinders,
+ * boxes, planes, etc. Primitives are mesh-based objects
+ * with associated transformation matrices.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccMesh.h"
 
 class ccPointCloud;
 
-//! Generic primitive interface
+/**
+ * @brief Generic geometric primitive interface
+ */
 class QCC_DB_LIB_API ccGenericPrimitive : public ccMesh
 {
   public:
-	//! Default constructor
-	/** Warning: the associated transformation is purely for display purpose by default.
-	    Use 'ccHObject::applyGLTransformation_recursive' to 'apply' it to the mesh).
-	    \param name name
-	    \param transMat optional 3D transformation applied to the primitive vertices (can be set afterwards with ccDrawableObject::setGLTransformation + ccDrawableObject::applyGLTransformation_recursive)
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a primitive
+	 * @param[in] name Primitive name
+	 * @param[in] transMat Optional transformation (display only, use applyGLTransformation_recursive to apply)
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	ccGenericPrimitive(QString           name     = QString(),
 	                   const ccGLMatrix* transMat = nullptr,
 	                   unsigned          uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
-	//! Returns type name (sphere, cylinder, etc.)
+	/**
+	 * @brief Get type name
+	 * @return "Sphere", "Box", etc.
+	 */
 	virtual QString getTypeName() const = 0;
 
-	//! Clones primitive
+	/**
+	 * @brief Clone the primitive
+	 * @return New primitive instance
+	 */
 	virtual ccGenericPrimitive* clone() const = 0;
 
-	//! Returns class ID
+	/**
+	 * @brief Get class type
+	 * @return CC_TYPES::PRIMITIVE
+	 */
 	inline CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::PRIMITIVE;
 	}
 
-	//! Sets primitive color (shortcut)
-	/** \param col rgb color
-	 **/
+	/**
+	 * @brief Set color
+	 * @param[in] col RGB color
+	 */
 	virtual void setColor(const ccColor::Rgb& col);
 
-	//! Add operator
-	/** Warning: simply copies the input primitive vertices/triangles to this primitive mesh!
-	 **/
+	/**
+	 * @brief Add operator
+	 * @param[in] prim Primitive to add
+	 * @return Reference to this
+	 */
 	const ccGenericPrimitive& operator+=(const ccGenericPrimitive& prim);
 
-	//! Whether drawing is dependent on 'precision' parameter
+	/**
+	 * @brief Check if has drawing precision parameter
+	 * @return true if drawing quality depends on precision
+	 */
 	virtual inline bool hasDrawingPrecision() const
 	{
 		return false;
 	}
 
-	//! Minimum drawing precision
-	/** \warning Never pass a 'constant initializer' by reference
-	 **/
+	//! Minimum drawing precision (angular steps)
 	static const int MIN_DRAWING_PRECISION = 4;
 
 	//! Sets drawing precision
