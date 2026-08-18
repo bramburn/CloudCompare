@@ -21,6 +21,18 @@
 // common
 #include <ccOverlayDialog.h>
 
+/**
+ * @file ccClippingBoxTool.h
+ *
+ * @brief Clipping box tool
+ *
+ * Tool for managing clipping box operations.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+// common
+#include <ccOverlayDialog.h>
+
 // local
 #include "ccEnvelopeExtractor.h"
 
@@ -41,16 +53,23 @@ class ccClipBox;
 class ccPolyline;
 class ccBBox;
 
-//! Dialog for managing a clipping box
+/**
+ * @brief Clipping box tool
+ *
+ * Manage clipping box for entity slicing.
+ */
 class ccClippingBoxTool : public ccOverlayDialog
     , public Ui::ClippingBoxDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create tool
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccClippingBoxTool(QWidget* parent);
-	//! Default destructor
+	/// Destructor
 	virtual ~ccClippingBoxTool();
 
 	// inherited from ccOverlayDialog
