@@ -17,31 +17,50 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file SaveDracoFileDlg.h
+ *
+ * @brief Save Draco file dialog
+ *
+ * Dialog for configuring Draco file export options.
+ *
+ * @author CloudCompare project
+ */
+
 #include "ui_saveDracoFileDlg.h"
 
 #include <QDialog>
 #include <qCC_io.h>
 
-//! DRACO file (https://github.com/google/draco) saving dialog
+/**
+ * @class SaveDracoFileDlg
+ *
+ * @brief Save Draco file dialog
+ *
+ * Configure Draco file export options.
+ */
 class SaveDracoFileDlg : public QDialog
     , public Ui::SaveDracoFileDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit SaveDracoFileDlg(QWidget* parent = nullptr);
 
-	//! Destructor
+	/// Destructor
 	virtual ~SaveDracoFileDlg() = default;
 
-	//! Resets default values
+	/// Reset to defaults
 	void reset();
 
   protected:
-	//! Inits dialog state from persistent settings
+	/// Initialize from settings
 	void initFromPersistentSettings();
 
-	//! Saves dialog state from persistent settings
+	/// Save to settings
 	void saveToPersistentSettings();
 };
