@@ -18,15 +18,30 @@
 #ifndef CC_SOI_FILTER_HEADER
 #define CC_SOI_FILTER_HEADER
 
+/**
+ * @file SoiFilter.h
+ *
+ * @brief Soisic file filter
+ *
+ * I/O filter for Mensi Soisic point cloud files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! Mensi Soisic point cloud file I/O filter
+/**
+ * @brief Soisic file filter
+ *
+ * Read Mensi Soisic point cloud files.
+ */
 class SoiFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	SoiFilter();
 
-	// inherited from FileIOFilter
+	/// Load Soisic file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 };
 
