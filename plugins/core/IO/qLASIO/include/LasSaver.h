@@ -31,6 +31,13 @@
 
 class ccPointCloud;
 
+/**
+ * @class LasSaver
+ *
+ * @brief LAS file saver
+ *
+ * Save point clouds to LAS/LAZ files.
+ */
 class LasSaver
 {
   public:
