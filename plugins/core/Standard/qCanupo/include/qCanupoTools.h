@@ -32,12 +32,23 @@ class ccHObject;
 class ccMainAppInterface;
 class ccScalarField;
 
+/**
+ * @file qCanupoTools.h
+ *
+ * @brief CANUPO tools
+ *
+ * Helper functions for CANUPO classification.
+ */
 namespace CCCoreLib {
 	class GenericProgressCallback;
 	class DgmOctree;
 }
 
-//! Helper: pre-computed cos and sin values between 0 and Pi
+/**
+ * @struct CosSinTable
+ *
+ * @brief Pre-computed cos and sin values
+ */
 template<unsigned Count> struct CosSinTable
 {
 	float cosines[Count];
@@ -53,7 +64,13 @@ template<unsigned Count> struct CosSinTable
 	}
 };
 
-//! CANUPO generic tools
+/**
+ * @class qCanupoTools
+ *
+ * @brief CANUPO tools
+ *
+ * Helper functions for CANUPO classification.
+ */
 class qCanupoTools
 {
 public:
