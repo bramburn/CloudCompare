@@ -20,6 +20,15 @@
 #include <ccHObject.h>
 #include <ccScalarField.h>
 
+/**
+ * @file ccScalarFieldsManagerDlg.h
+ *
+ * @brief Scalar fields manager dialog
+ *
+ * Dialog for managing scalar fields.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Qt
 #include <QDialog>
 
@@ -31,7 +40,11 @@ namespace Ui
 	class ScalarFieldsManagerDlg;
 }
 
-//! Dialog to edit/create scalar fields
+/**
+ * @brief Scalar fields manager dialog
+ *
+ * Edit and create scalar fields.
+ */
 class ccScalarFieldsManagerDialog : public QDialog
 {
 	Q_OBJECT
