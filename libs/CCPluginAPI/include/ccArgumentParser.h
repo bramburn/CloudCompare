@@ -16,6 +16,14 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccArgumentParser.h
+ *
+ * @brief Argument parser
+ *
+ * Command line argument parser.
+ */
+
 #include "CCPluginAPI.h"
 
 #include <ccLog.h>
@@ -29,10 +37,13 @@
 #include <optional>
 #include <utility>
 
-//! Argument parser for command line arguments
-/** Meant to simplify parsing.
-    Functions will log errors when necessary
-**/
+/**
+ * @class ccArgumentParser
+ *
+ * @brief Argument parser
+ *
+ * Argument parser for command line arguments.
+ */
 class CCPLUGIN_LIB_API ccArgumentParser
 {
   public:
