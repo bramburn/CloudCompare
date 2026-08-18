@@ -16,6 +16,14 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qCC_glWindow.h
+ *
+ * @brief GL Window library export definitions
+ *
+ * Defines the CCGLWINDOW_LIB_API macro for library export/import.
+ */
+
 #include <QtCore/QtGlobal>
 
 #if defined(CCGLWINDOW_LIB_BUILD)
