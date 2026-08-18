@@ -23,6 +23,15 @@
 // Qt
 #include <QDialog>
 
+/**
+ * @file ccHistogramWindow.h
+ *
+ * @brief Histogram widget
+ *
+ * Widget for displaying histograms.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // qCC_db
 #include <ccScalarField.h>
 
@@ -37,7 +46,11 @@ class QCPTextElement;
 
 class Ui_HistogramDialog;
 
-//! Histogram widget
+/**
+ * @brief Histogram widget
+ *
+ * Widget for displaying scalar field histograms.
+ */
 class ccHistogramWindow : public QCustomPlot
 {
 	Q_OBJECT
