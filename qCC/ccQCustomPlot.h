@@ -15,6 +15,14 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccQCustomPlot.h
+ *
+ * @brief Custom QCustomPlot widgets
+ *
+ * Custom QCustomPlot extensions.
+ */
+
 #ifndef CC_QCUSTOMPLOT_HEADER
 #define CC_QCUSTOMPLOT_HEADER
 
@@ -36,7 +44,13 @@
 /*** Custom QCustomPlot wigets ***/
 /*********************************/
 
-//! QCustomPlot: vertical bar with text along side
+/**
+ * @class QCPBarsWithText
+ *
+ * @brief QCustomPlot bars with text
+ *
+ * Vertical bar with text.
+ */
 class QCPBarsWithText : public QCPBars
 {
 	Q_OBJECT
