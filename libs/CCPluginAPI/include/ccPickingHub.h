@@ -18,6 +18,16 @@
 
 #include "CCPluginAPI.h"
 
+/**
+ * @file ccPickingHub.h
+ *
+ * @brief Picking hub for managing pick listeners
+ *
+ * Manages registration of picking listeners (tools that
+ * respond to point/triangle clicks in 3D views).
+ *
+ * @author CloudCompare project
+ */
 // Local
 #include "ccPickingListener.h"
 
@@ -34,38 +44,51 @@ class QMdiSubWindow;
 class ccHObject;
 class ccMainAppInterface;
 
-//! Point/triangle picking hub
+/**
+ * @brief Picking hub
+ *
+ * Manages picking listeners for 3D view interactions.
+ */
 class CCPLUGIN_LIB_API ccPickingHub : public QObject
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create a picking hub
+	 * @param[in] app Application interface
+	 * @param[in] parent Parent object
+	 */
 	ccPickingHub(ccMainAppInterface* app, QObject* parent = nullptr);
 	~ccPickingHub() override = default;
 
-	//! Returns the number of currently registered listeners
+	/**
+	 * @brief Get listener count
+	 * @return Number of registered listeners
+	 */
 	inline size_t listenerCount() const
 	{
 		return m_listeners.size();
 	}
 
-	//! Adds a listener
-	/** \param listener listener to be registered
-	    \param exclusive prevents new listeners from registering
-	    \param autoStartPicking automatically enables the picking mode on the active window (if any)
-	    \param mode sets the picking mode (warning: may be rejected if another listener is currently registered with another mode)
-	    \return success
-	***/
+	/**
+	 * @brief Add a picking listener
+	 * @param[in] listener Listener to add
+	 * @param[in] exclusive Prevent new listeners
+	 * @param[in] autoStartPicking Start picking mode on window
+	 * @param[in] mode Picking mode
+	 * @return true on success
+	 */
 	bool addListener(ccPickingListener*                listener,
 	                 bool                              exclusive        = false,
 	                 bool                              autoStartPicking = true,
 	                 ccGLWindowInterface::PICKING_MODE mode             = ccGLWindowInterface::POINT_OR_TRIANGLE_PICKING);
 
-	//! Removes a listener
-	/** \param listener listener to be removed
-	    \param autoStopPickingIfLast automatically disables the picking mode on the active window (if any) if no other listener is registered
-	***/
+	/**
+	 * @brief Remove a picking listener
+	 * @param[in] listener Listener to remove
+	 * @param[in] autoStopPickingIfLast Stop if last listener
+	 */
 	void removeListener(ccPickingListener* listener, bool autoStopPickingIfLast = true);
 
 	//	//! Sets the default picking mode
