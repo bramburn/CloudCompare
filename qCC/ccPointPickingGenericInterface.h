@@ -29,13 +29,26 @@
 // system
 #include <vector>
 
+/**
+ * @file ccPointPickingGenericInterface.h
+ *
+ * @brief Point picking interface
+ *
+ * Generic interface for point picking dialogs.
+ */
+
 class ccGLWindowInterface;
 class ccPointCloud;
 class ccHObject;
 class ccPickingHub;
 
-/** Generic interface for any dialog/graphical interactor that relies on point picking.
- **/
+/**
+ * @class ccPointPickingGenericInterface
+ *
+ * @brief Point picking interface
+ *
+ * Generic interface for any dialog/graphical interactor that relies on point picking.
+ */
 class ccPointPickingGenericInterface : public ccOverlayDialog
     , public ccPickingListener
 {
