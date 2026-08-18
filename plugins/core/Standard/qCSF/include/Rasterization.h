@@ -28,11 +28,33 @@
 //#                                                                                     #
 //#######################################################################################
 
+/**
+ * @file Rasterization.h
+ *
+ * @brief Cloth rasterization
+ *
+ * Rasterization utilities for cloth simulation.
+ */
+
 #include "Cloth.h"
 #include "wlPointCloud.h"
 
+/**
+ * @class Rasterization
+ *
+ * @brief Rasterization
+ *
+ * Cloth rasterization utilities.
+ */
 class Rasterization
 {
 public:
+	/**
+	 * @brief Raster terrain
+	 * @param[in] cloth Cloth
+	 * @param[in] pc Point cloud
+	 * @param[in] KNN Number of nearest neighbors
+	 * @return Success
+	 */
 	static bool RasterTerrain(Cloth& cloth, const wl::PointCloud& pc, unsigned KNN = 1);
 };
