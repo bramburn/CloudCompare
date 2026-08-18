@@ -18,24 +18,41 @@
 #ifndef CSV_MATRIX_OPEN_DIALOG_HEADER
 #define CSV_MATRIX_OPEN_DIALOG_HEADER
 
+/**
+ * @file CSVMatrixOpenDialog.h
+ *
+ * @brief CSV Matrix open dialog
+ *
+ * Dialog for opening CSV matrix files.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 // Qt
 #include <QDialog>
 
 // GUI
 #include "ui_openCSVMatrixDlg.h"
 
-//! CSV Matrix Open dialog
+/**
+ * @brief CSV Matrix open dialog
+ *
+ * Configure CSV matrix file import options.
+ */
 class CSVMatrixOpenDialog : public QDialog
     , public Ui::CSVMatrixOpenDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit CSVMatrixOpenDialog(QWidget* parent = 0);
 
   protected:
-	//! Bowse texture file
+	/// Browse for texture file
 	void browseTextureFile();
 };
 
