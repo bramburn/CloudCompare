@@ -17,28 +17,37 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccDisc.h
+ *
+ * @brief Disc primitive class
+ *
+ * Represents a 3D disc (filled circle) primitive.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include <ccGenericPrimitive.h>
 
-//! Disc (primitive)
-/** 3D disc primitive
- **/
+/**
+ * @brief Disc primitive
+ *
+ * A 3D filled disc (disk) primitive.
+ */
 class QCC_DB_LIB_API ccDisc : public ccGenericPrimitive
 {
   public:
-	//! Default drawing precision
-	/** \warning Never pass a 'constant initializer' by reference
-	 **/
+	//! Default drawing precision (angular steps)
 	static const unsigned DEFAULT_DRAWING_PRECISION = 72;
 
-	//! Default constructor
-	/** Simple disc constructor
-	    \param radius disc radius
-	    \param transMat optional 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
-	    \param name name
-	    \param precision drawing precision (angular step = 360/precision)
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a disc
+	 * @param[in] radius Disc radius
+	 * @param[in] transMat Optional transformation matrix
+	 * @param[in] name Disc name
+	 * @param[in] precision Drawing precision
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	ccDisc(PointCoordinateType radius,
 	       const ccGLMatrix*   transMat  = nullptr,
 	       QString             name      = QString("Disc"),
