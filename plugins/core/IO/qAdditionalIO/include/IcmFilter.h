@@ -18,18 +18,34 @@
 #ifndef CC_ICM_FILTER_HEADER
 #define CC_ICM_FILTER_HEADER
 
+/**
+ * @file IcmFilter.h
+ *
+ * @brief ICM file filter
+ *
+ * I/O filter for calibrated images and cloud meta-files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! Calibrated images and cloud meta-file I/O filter
+/**
+ * @brief ICM file filter
+ *
+ * Read calibrated images and cloud meta-files.
+ */
 class IcmFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	IcmFilter();
 
-	// inherited from FileIOFilter
+	/// Load ICM file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
   private:
+	/// Load calibrated images
 	static int LoadCalibratedImages(ccHObject* entities, const QString& path, const QString& imageDescFilename, const ccBBox& globalBBox);
 };
 
