@@ -18,20 +18,39 @@
 #ifndef Q_M3C2_PROCESS_HEADER
 #define Q_M3C2_PROCESS_HEADER
 
-//Local
+/**
+ * @file qM3C2Process.h
+ *
+ * @brief M3C2 process
+ *
+ * M3C2 computation process.
+ */
+
 #include "qM3C2Dialog.h"
 
 class ccMainAppInterface;
 
-//! M3C2 process
-/** See "Accurate 3D comparison of complex topography with terrestrial laser scanner:
-	application to the Rangitikei canyon (N-Z)", Lague, D., Brodu, N. and Leroux, J.,
-	2013, ISPRS journal of Photogrammmetry and Remote Sensing
-**/
+/**
+ * @class qM3C2Process
+ *
+ * @brief M3C2 process
+ *
+ * M3C2 computation process.
+ */
 class qM3C2Process
 {
 public:
 	
+	/**
+	 * @brief Compute M3C2
+	 * @param[in] dlg M3C2 dialog
+	 * @param[out] errorMessage Error message
+	 * @param[out] outputCloud Output point cloud
+	 * @param[in] allowDialogs Allow dialogs
+	 * @param[in] parentWidget Parent widget
+	 * @param[in] app Main application interface
+	 * @return Success
+	 */
 	static bool Compute(const qM3C2Dialog& dlg,
 						QString& errorMessage,
 						ccPointCloud*& outputCloud,
