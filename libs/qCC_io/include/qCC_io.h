@@ -19,6 +19,14 @@
 #ifndef CC_IO_HEADER
 #define CC_IO_HEADER
 
+/**
+ * @file qCC_io.h
+ *
+ * @brief qCC_io library export definitions
+ *
+ * Defines the QCC_IO_LIB_API macro for library export/import.
+ */
+
 #include <QtCore/QtGlobal>
 
 #if defined(QCC_IO_LIBRARY_BUILD)
