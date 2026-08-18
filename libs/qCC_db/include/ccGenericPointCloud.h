@@ -34,40 +34,66 @@ namespace CCCoreLib
 
 class ccOctreeProxy;
 
+/**
+ * @file ccGenericPointCloud.h
+ *
+ * @brief Generic point cloud interface
+ *
+ * Base interface for all point clouds in CloudCompare.
+ * Provides access to geometric points and associated features
+ * like colors, normals, and octree structure.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see ccPointCloud for concrete implementation
+ */
+
 /***************************************************
                 ccGenericPointCloud
 ***************************************************/
 
-// default material for clouds (with normals)
+/// Default ambient color for clouds with normals
 #define CC_DEFAULT_CLOUD_AMBIENT_COLOR ccColor::bright
+/// Default specular color for clouds with normals
 #define CC_DEFAULT_CLOUD_SPECULAR_COLOR ccColor::bright
+/// Default diffuse color for clouds with normals
 #define CC_DEFAULT_CLOUD_DIFFUSE_COLOR ccColor::bright
+/// Default emission color for clouds with normals
 #define CC_DEFAULT_CLOUD_EMISSION_COLOR ccColor::night
+/// Default shininess for clouds with normals
 #define CC_DEFAULT_CLOUD_SHININESS 50.0f
 
-//! A 3D cloud interface with associated features (color, normals, octree, etc.)
-/** A generic point cloud can have multiples features:
-    - colors (RGB)
-    - normals (compressed)
-    - an octree structure
-    - visibility information per point (to hide/display subsets of points)
-**/
+/**
+ * @brief Generic point cloud interface
+ *
+ * Base interface for all point cloud types. Provides geometric
+ * point access with associated features:
+ * - Colors (RGB)
+ * - Normals (compressed)
+ * - Octree spatial index
+ * - Per-point visibility
+ */
 class QCC_DB_LIB_API ccGenericPointCloud : public ccShiftedObject
     , public CCCoreLib::GenericIndexedCloudPersist
 {
 	friend class ccMesh;
 
   public:
-	//! Default constructor
-	/** \param name cloud name (optional)
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a point cloud
+	 * @param[in] name Cloud name
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	ccGenericPointCloud(QString name = QString(), unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
-	//! Copy constructor
+	/**
+	 * @brief Copy constructor
+	 * @param[in] cloud Source cloud
+	 */
 	ccGenericPointCloud(const ccGenericPointCloud& cloud);
 
-	//! Default destructor
+	/**
+	 * @brief Destructor
+	 */
 	~ccGenericPointCloud() override;
 
 	/***************************************************
