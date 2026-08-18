@@ -18,6 +18,17 @@
 #ifndef CC_CLIP_BOX_HEADER
 #define CC_CLIP_BOX_HEADER
 
+/**
+ * @file ccClipBox.h
+ *
+ * @brief Clipping box for interactive cropping
+ *
+ * Provides an interactive 3D box that can be used to clip
+ * or crop point clouds and meshes. Supports inside/outside
+ * clipping modes.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccBBox.h"
 #include "ccGenericPointCloud.h"
@@ -29,7 +40,11 @@
 
 class ccClipBoxPart;
 
-//! Clipping box
+/**
+ * @brief Interactive clipping box
+ *
+ * 3D box for clipping/cropping point clouds and meshes.
+ */
 class QCC_DB_LIB_API ccClipBox : public QObject
     , public ccHObject
     , public ccInteractor
@@ -37,10 +52,11 @@ class QCC_DB_LIB_API ccClipBox : public QObject
 	Q_OBJECT
 
   public:
-	//! Default constructor
-	/** \param name entity name (optional)
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a clipping box
+	 * @param[in] name Entity name
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	ccClipBox(QString name = QString("Clipping box"), unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
 	//! Destructor
