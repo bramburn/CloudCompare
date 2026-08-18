@@ -17,6 +17,18 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qFacets.h
+ *
+ * @brief Facet detection plugin
+ *
+ * BRGM: Bureau de Recherches Geologiques et Minieres
+ *
+ * Detect and extract planar facets from point clouds.
+ *
+ * @author Thomas Dewez, BRGM
+ */
+
 // Local
 #include "cellsFusionDlg.h"
 
@@ -43,9 +55,15 @@ class ccFacet;
 
 class StereogramDialog;
 
-//! Facet detection plugin (BRGM)
-/** BRGM: BUREAU DE RECHERCHES GEOLOGIQUES ET MINIERES - http://www.brgm.fr/
- **/
+/**
+ * @class qFacets
+ *
+ * @brief Facet detection plugin
+ *
+ * BRGM: Bureau de Recherches Geologiques et Minieres
+ *
+ * Detect and extract planar facets from point clouds.
+ */
 class qFacets : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -54,7 +72,10 @@ class qFacets : public QObject, public ccStdPluginInterface
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qFacets" FILE "../info.json")
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	qFacets(QObject* parent = nullptr);
 
 	//! Destructor
