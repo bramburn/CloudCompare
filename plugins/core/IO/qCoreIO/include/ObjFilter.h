@@ -17,17 +17,35 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ObjFilter.h
+ *
+ * @brief OBJ file filter
+ *
+ * Wavefront OBJ mesh file I/O filter.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! Wavefront meshes file I/O filter
+/**
+ * @brief OBJ file filter
+ *
+ * Read/write Wavefront OBJ mesh files.
+ */
 class ObjFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	ObjFilter();
 
-	// inherited from FileIOFilter
+	/// Load file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/// Check if can save
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	
+	/// Save file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
