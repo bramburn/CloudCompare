@@ -1,6 +1,14 @@
 #ifndef CC_WAVEFORM_HEADER
 #define CC_WAVEFORM_HEADER
 
+/**
+ * @file ccWaveform.h
+ *
+ * @brief Waveform
+ *
+ * Waveform descriptor and data.
+ */
+
 // Local
 #include "ccGLMatrix.h"
 #include "ccSerializableObject.h"
@@ -13,7 +21,11 @@
 #include <cstdint>
 #include <cstdlib>
 
-//! Waveform descriptor
+/**
+ * @class WaveformDescriptor
+ *
+ * @brief Waveform descriptor
+ */
 class QCC_DB_LIB_API WaveformDescriptor : public ccSerializableObject
 {
   public:
@@ -45,9 +57,13 @@ class QCC_DB_LIB_API WaveformDescriptor : public ccSerializableObject
 	uint8_t  bitsPerSample;   //!< Number of bits per sample
 };
 
-//! Waveform
-/** \warning Waveforms do not own their data!
- **/
+/**
+ * @class ccWaveform
+ *
+ * @brief Waveform
+ *
+ * @warning Waveforms do not own their data!
+ */
 class QCC_DB_LIB_API ccWaveform : public ccSerializableObject
 {
   public:
