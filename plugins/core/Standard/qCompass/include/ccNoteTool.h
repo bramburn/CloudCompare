@@ -18,25 +18,40 @@
 #ifndef CC_NOTETOOL_HEADER
 #define CC_NOTETOOL_HEADER
 
+/**
+ * @file ccNoteTool.h
+ *
+ * @brief Note tool
+ *
+ * Tool for creating notes and associating them with points.
+ */
+
 #include "ccTool.h"
 #include "ccNote.h"
 
 #include <QInputDialog>
 #include <QMainWindow>
 
-//! Tool used to create notes and associated them with points in a cloud.
+/**
+ * @class ccNoteTool
+ *
+ * @brief Note tool
+ *
+ * Tool for creating notes and associating them with points in a cloud.
+ */
 class ccNoteTool : public ccTool
 {
 public:
+	/// Constructor
 	ccNoteTool();
 
-	//! Called when the tool is set to active (for initialization)
+	/// Tool activated
 	void toolActivated() override;
 
-	//! Called when the tool is set to disactive (for cleanup)
+	/// Tool disactivated
 	void toolDisactivated() override;
 
-	//! Called when a point in a point cloud gets picked while this tool is active
+	/// Point picked callback
 	void pointPicked(ccHObject* insertPoint, unsigned itemIdx, ccPointCloud* cloud, const CCVector3& P) override;
 };
 
