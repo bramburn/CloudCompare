@@ -18,11 +18,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccViewerApplication.h
+ *
+ * @brief Viewer application
+ *
+ * ccViewer Qt Application class.
+ */
+
 // Common
 #include <ccApplicationBase.h>
 
 class ccViewer;
 
+/**
+ * @class ccViewerApplication
+ *
+ * @brief Viewer application
+ *
+ * ccViewer Qt Application class.
+ */
 class ccViewerApplication : public ccApplicationBase
 {
 	Q_OBJECT
