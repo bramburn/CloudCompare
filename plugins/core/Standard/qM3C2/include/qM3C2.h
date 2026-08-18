@@ -18,18 +18,31 @@
 #ifndef Q_M3C2_PLUGIN_HEADER
 #define Q_M3C2_PLUGIN_HEADER
 
-//qCC
+/**
+ * @file qM3C2.h
+ *
+ * @brief M3C2 plugin
+ *
+ * Multiscale Model to Model Cloud Comparison (M3C2) algorithm.
+ *
+ * Reference: "Accurate 3D comparison of complex topography with terrestrial laser scanner:
+ * application to the Rangitikei canyon (N-Z)", Lague, D., Brodu, N. and Leroux, J.,
+ * ISPRS journal of Photogrammetry and Remote Sensing, 2013.
+ *
+ * @author Universite Europeenne de Bretagne
+ */
+
 #include "ccStdPluginInterface.h"
 
-//qCC_db
 #include <ccHObject.h>
 
-
-//! M3C2 plugin
-/** See "Accurate 3D comparison of complex topography with terrestrial laser scanner:
-	application to the Rangitikei canyon (N-Z)", Lague, D., Brodu, N. and Leroux, J.,
-	2013, ISPRS journal of Photogrammmetry and Remote Sensing
-**/
+/**
+ * @class qM3C2Plugin
+ *
+ * @brief M3C2 plugin
+ *
+ * Multiscale Model to Model Cloud Comparison algorithm.
+ */
 class qM3C2Plugin : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -39,24 +52,29 @@ class qM3C2Plugin : public QObject, public ccStdPluginInterface
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	qM3C2Plugin(QObject* parent = nullptr);
 
+	/// Destructor
 	virtual ~qM3C2Plugin() = default;
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	virtual void onNewSelection(const ccHObject::Container& selectedEntities) override;
+	
+	/// Get plugin actions
 	virtual QList<QAction *> getActions() override;
+	
+	/// Register command line commands
 	virtual void registerCommands(ccCommandLineInterface* cmd) override;
 
 private:
-
+	/// Execute M3C2 action
 	void doAction();
 
-	//! Default action
 	QAction* m_action;
-
-	//! Currently selected entities
 	ccHObject::Container m_selectedEntities;
 };
 
