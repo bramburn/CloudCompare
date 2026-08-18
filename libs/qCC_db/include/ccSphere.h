@@ -18,22 +18,35 @@
 #ifndef CC_SPHERE_PRIMITIVE_HEADER
 #define CC_SPHERE_PRIMITIVE_HEADER
 
+/**
+ * @file ccSphere.h
+ *
+ * @brief Sphere primitive class
+ *
+ * Represents a 3D sphere primitive for visualization and fitting.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Local
 #include "ccGenericPrimitive.h"
 
-//! Sphere (primitive)
-/** 3D sphere primitive
- **/
+/**
+ * @brief Sphere primitive
+ *
+ * A 3D sphere for visualization and geometric fitting.
+ */
 class QCC_DB_LIB_API ccSphere : public ccGenericPrimitive
 {
   public:
-	//! Default constructor
-	/** \param radius sphere radius
-	    \param transMat optional 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
-	    \param name name
-	    \param precision drawing precision (angular step = 360/precision)
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a sphere
+	 * @param[in] radius Sphere radius
+	 * @param[in] transMat Optional transformation matrix
+	 * @param[in] name Sphere name
+	 * @param[in] precision Drawing precision (angular steps)
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	ccSphere(PointCoordinateType radius,
 	         const ccGLMatrix*   transMat  = nullptr,
 	         QString             name      = QString("Sphere"),
