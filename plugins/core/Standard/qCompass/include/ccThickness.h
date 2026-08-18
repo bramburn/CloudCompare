@@ -18,24 +18,48 @@
 #ifndef CC_THICKNESS_HEADER
 #define CC_THICKNESS_HEADER
 
+/**
+ * @file ccThickness.h
+ *
+ * @brief Thickness measurement class
+ *
+ * Represents thickness measurements.
+ */
+
 #include "ccPointPair.h"
 
 #include <ccPointCloud.h>
 
-/*
-Objects representing thickness measurements
-*/
+/**
+ * @class ccThickness
+ *
+ * @brief Thickness measurement
+ *
+ * Represents thickness measurements.
+ */
 class ccThickness : public ccPointPair
 {
 public:
-	//ctors
+	/**
+	 * @brief Create thickness measurement
+	 * @param[in] associatedCloud Associated point cloud
+	 */
 	ccThickness(ccPointCloud* associatedCloud);
+	
+	/**
+	 * @brief Create from polyline
+	 * @param[in] obj Source polyline
+	 */
 	ccThickness(ccPolyline* obj);
 
-	//write metadata specific to this object
+	/// Update metadata
 	void updateMetadata() override;
 
-	//returns true if obj was/is a thickness measurement (as defined by the objects metadata)
+	/**
+	 * @brief Check if object is a thickness measurement
+	 * @param[in] obj Object to check
+	 * @return True if thickness
+	 */
 	static bool isThickness(ccHObject* obj);
 };
 
