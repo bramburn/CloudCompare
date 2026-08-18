@@ -18,6 +18,14 @@
 #ifndef QSRA_DISTANCE_MAP_GENERATION_DIALOG
 #define QSRA_DISTANCE_MAP_GENERATION_DIALOG
 
+/**
+ * @file distanceMapGenerationDlg.h
+ *
+ * @brief Distance map generation dialog
+ *
+ * Dialog for generating distance maps for surface of revolution analysis.
+ */
+
 //Local
 #include "distanceMapGenerationTool.h"
 
@@ -42,7 +50,13 @@ class ccColorScaleSelector;
 class ccSymbolCloud;
 class ccMapWindow;
 
-//! Dialog for generating a distance map (surface of revolution)
+/**
+ * @class DistanceMapGenerationDlg
+ *
+ * @brief Distance map generation dialog
+ *
+ * Dialog for generating distance maps.
+ */
 class DistanceMapGenerationDlg : public QDialog, public Ui::DistanceMapGenerationDlg
 {
 	Q_OBJECT
