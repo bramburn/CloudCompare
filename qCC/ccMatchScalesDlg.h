@@ -18,30 +18,49 @@
 #ifndef CC_MATCH_SCALES_DIALOG_HEADER
 #define CC_MATCH_SCALES_DIALOG_HEADER
 
+/**
+ * @file ccMatchScalesDlg.h
+ *
+ * @brief Match scales dialog
+ *
+ * Dialog for scale matching algorithm selection.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_matchScalesDlg.h>
 
 // Local
 #include "ccLibAlgorithms.h"
 
-//! Scales matching tool dialog
+/**
+ * @brief Match scales dialog
+ *
+ * Select scale matching algorithm.
+ */
 class ccMatchScalesDlg : public QDialog
     , public Ui::MatchScalesDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] entities Available entities
+	 * @param[in] defaultSelectedIndex Default selected index
+	 * @param[in] parent Parent widget
+	 */
 	ccMatchScalesDlg(const ccHObject::Container& entities,
 	                 int                         defaultSelectedIndex = 0,
 	                 QWidget*                    parent               = nullptr);
 
-	//! Returns selected index
+	/// Get selected index
 	int getSelectedIndex() const;
 
-	//! Sets the selected matching algorithm
+	/// Set selected algorithm
 	void setSelectedAlgorithm(ccLibAlgorithms::ScaleMatchingAlgorithm algorithm);
 
-	//! Returns the selected matching algorithm
+	/// Get selected algorithm
 	ccLibAlgorithms::ScaleMatchingAlgorithm getSelectedAlgorithm() const;
 };
 
