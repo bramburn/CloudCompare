@@ -16,6 +16,14 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccBilateralFilter.h
+ *
+ * @brief Bilateral filter
+ *
+ * Cross Bilateral Filter implementation.
+ */
+
 /***************************************************************/
 //
 //		FILTERBILATERAL
@@ -38,9 +46,13 @@
 // system
 #include <vector>
 
-//! Bilateral filer (shader)
-/** See http://en.wikipedia.org/wiki/Bilateral_filter
- **/
+/**
+ * @class ccBilateralFilter
+ *
+ * @brief Bilateral filter
+ *
+ * Cross Bilateral Filter shader.
+ */
 class CCFBO_LIB_API ccBilateralFilter : public ccGlFilter
 {
   public:
