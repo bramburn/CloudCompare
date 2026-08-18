@@ -18,34 +18,56 @@
 #ifndef CC_GRAPHICAL_SEGMENTATION_OPTIONS_DLG_HEADER
 #define CC_GRAPHICAL_SEGMENTATION_OPTIONS_DLG_HEADER
 
+/**
+ * @file ccGraphicalSegmentationOptionsDlg.h
+ *
+ * @brief Segmentation options dialog
+ *
+ * Dialog for segmentation tool options.
+ *
+ * @author CloudCompare project
+ */
+
 // Qt
 #include <QString>
 
 // GUI
 #include <ui_graphicalSegmentationOptionsDlg.h>
 
+/**
+ * @brief Segmentation options dialog
+ *
+ * Configure segmentation tool options.
+ */
 class ccGraphicalSegmentationOptionsDlg : public QDialog
     , public Ui::GraphicalSegmentationOptionsDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] windowTitle Window title
+	 * @param[in] parent Parent widget
+	 */
 	ccGraphicalSegmentationOptionsDlg(const QString windowTitle = QString(), QWidget* parent = nullptr);
 
+	/// Accept dialog
 	void accept();
 
-	//! Returns the QSettings key to store the segmentation tool options
+	/// Segmentation tool options key
 	static QString SegmentationToolOptionsKey()
 	{
 		return "SegmentationToolOptions";
 	}
-	//! Returns the QSettings key to store the 'remaining entity' suffix
+	
+	/// Remaining suffix key
 	static QString RemainingSuffixKey()
 	{
 		return "Remaining";
 	}
-	//! Returns the QSettings key to store the 'segmented entity' suffix
+	
+	/// Segmented suffix key
 	static QString SegmentedSuffixKey()
 	{
 		return "Segmented";
