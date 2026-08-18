@@ -1,3 +1,11 @@
+/**
+ * @file rply.h
+ *
+ * @brief RPly library
+ *
+ * Read/write PLY files library by Diego Nehab.
+ */
+
 #ifndef PLY_H
 #define PLY_H
 /* ----------------------------------------------------------------------
