@@ -18,6 +18,14 @@
 #ifndef Q_M3C2_TOOLS_HEADER
 #define Q_M3C2_TOOLS_HEADER
 
+/**
+ * @file qM3C2Tools.h
+ *
+ * @brief M3C2 tools
+ *
+ * M3C2 normals computation and statistical tools.
+ */
+
 //CCCoreLib
 #include <GenericIndexedCloud.h>
 #include <GenericProgressCallback.h>
@@ -29,14 +37,22 @@ class ccScalarField;
 class ccPointCloud;
 class ccMainAppInterface;
 
-//! M3C2 normals computation related tools
+/**
+ * @class qM3C2Normals
+ *
+ * @brief M3C2 normals tools
+ *
+ * Normals computation related tools for M3C2.
+ */
 class qM3C2Normals
 {
 public:
 
-	//! Normals computation mode
-	/** \warning Don't change the associated values! (for parameter files)
-	**/
+	/**
+	 * @enum ComputationMode
+	 *
+	 * @brief Normals computation mode
+	 */
 	enum ComputationMode
 	{
 		DEFAULT_MODE			= 0, //compute normals on core points
@@ -72,7 +88,13 @@ public:
 	static void MakeNormalsHorizontal(NormsIndexesTableType& normsCodes);
 };
 
-//! M3C2 generic tools
+/**
+ * @class qM3C2Tools
+ *
+ * @brief M3C2 tools
+ *
+ * Generic tools for M3C2 processing.
+ */
 class qM3C2Tools
 {
 public:
