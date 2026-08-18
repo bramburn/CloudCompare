@@ -17,6 +17,15 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file AsciiFilter.h
+ *
+ * @brief ASCII file filter
+ *
+ * Filter for ASCII text-based point cloud files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 #include "FileIOFilter.h"
 
 // dialogs
@@ -27,10 +36,15 @@
 #include <QByteArray>
 #include <QTextStream>
 
-//! ASCII point cloud I/O filter
+/**
+ * @brief ASCII filter
+ *
+ * Filter for ASCII point cloud files (.txt, .asc, .xyz, etc.).
+ */
 class QCC_IO_LIB_API AsciiFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	AsciiFilter();
 
 	// static accessors
