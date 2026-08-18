@@ -18,16 +18,41 @@
 #ifndef CC_ASK_TWO_DOUBLE_VALUES_DIALOG_HEADER
 #define CC_ASK_TWO_DOUBLE_VALUES_DIALOG_HEADER
 
+/**
+ * @file ccAskTwoDoubleValuesDlg.h
+ *
+ * @brief Ask two values dialog
+ *
+ * Generic dialog for entering two double values.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_askTwoDoubleValuesDlg.h>
 
-//! Dialog to input 2 values with custom labels
+/**
+ * @brief Ask two double values dialog
+ *
+ * Generic dialog for entering two double values with bounds.
+ */
 class ccAskTwoDoubleValuesDlg : public QDialog
     , public Ui::AskTwoDoubleValuesDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] vName1 Name of first value
+	 * @param[in] vName2 Name of second value
+	 * @param[in] minVal Minimum value
+	 * @param[in] maxVal Maximum value
+	 * @param[in] defaultVal1 Default value 1
+	 * @param[in] defaultVal2 Default value 2
+	 * @param[in] precision Decimal precision
+	 * @param[in] windowTitle Window title
+	 * @param[in] parent Parent widget
+	 */
 	ccAskTwoDoubleValuesDlg(const QString& vName1,
 	                        const QString& vName2,
 	                        double         minVal,
