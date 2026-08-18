@@ -18,23 +18,48 @@
 #ifndef CC_NOTE_HEADER
 #define CC_NOTE_HEADER
 
+/**
+ * @file ccNote.h
+ *
+ * @brief Note class
+ *
+ * Simple class for representing notes.
+ */
+
 #include "ccPointPair.h"
 
 #include <ccPointCloud.h>
 
-/*
-Simple class used to represent notes created with qCompass
-*/
+/**
+ * @class ccNote
+ *
+ * @brief Note
+ *
+ * Represents notes created with qCompass.
+ */
 class ccNote : public ccPointPair
 {
 public:
-	//ctors
+	/**
+	 * @brief Create note
+	 * @param[in] associatedCloud Associated point cloud
+	 */
 	ccNote(ccPointCloud* associatedCloud);
+	
+	/**
+	 * @brief Create from polyline
+	 * @param[in] obj Source polyline
+	 */
 	ccNote(ccPolyline* obj);
 
-	//write metadata specific to this object
+	/// Update metadata
 	void updateMetadata() override;
 
+	/**
+	 * @brief Check if object is a note
+	 * @param[in] obj Object to check
+	 * @return True if note
+	 */
 	static bool isNote(ccHObject* obj);
 };
 
