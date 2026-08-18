@@ -18,55 +18,81 @@
 #ifndef CC_TRACETOOL_HEADER
 #define CC_TRACETOOL_HEADER
 
+/**
+ * @file ccTraceTool.h
+ *
+ * @brief Trace tool
+ *
+ * Tool for digitizing traces.
+ */
+
 #include "ccTool.h"
 #include "ccTrace.h"
 
-//! Tool used to digitise traces
+/**
+ * @class ccTraceTool
+ *
+ * @brief Trace tool
+ *
+ * Tool for digitizing fracture traces.
+ */
 class ccTraceTool :	public ccTool
 {
 public:
+	/// Constructor
 	ccTraceTool();
 
-	//! Called when the tool is set to active (for initialization)
+	/// Tool activated
 	void toolActivated() override;
 
-	//! Called when the tool is disactivated by a tool change or similar
+	/// Tool disactivated
 	void toolDisactivated() override;
 
-	//! Called when a point in a point cloud gets picked while this tool is active
+	/// Point picked callback
 	void pointPicked(ccHObject* insertPoint, unsigned itemIdx, ccPointCloud* cloud, const CCVector3& P) override;
 
-	//! Called when a new selection is made
+	/// Selection changed callback
 	void onNewSelection(const ccHObject::Container& selectedEntities) override;
 
-	//! Called when "Return" or "Space" is pressed, or the "Accept Button" is clicked
+	/// Accept action
 	void accept() override;
 
-	//! Called when the "Escape" is pressed, or the "Cancel" button is clicked
+	/// Cancel action
 	void cancel() override;
 
-	//! IKf this returns true, the undo button is enabled in the gui
+	/// Check if undo is available
 	bool canUndo() override;
 
-	//! Called when the undo button is clicked
+	/// Undo last action
 	void undo() override;
 
 protected:
-	//! Finishes and finalises the trace currently being digitised to
+	/// Finish current trace
 	void finishCurrentTrace();
-	//! If obj is a ccTrace, it becomes the active trace. Returns true if succesfull
+	
+	/// Pick up existing trace
 	bool pickupTrace(ccHObject* obj);
 	
-	//properties of the active trace
-	int m_trace_id = -1; //!< Active trace id (stored rather than a pointer to avoid dead pointers after users delete objects in the DB_Tree)
-	bool m_preExisting = false; //!< Set to true when a trace is picked up from a selection (so we don't delete it on cancel).
-	bool m_changed = false; //!< Becomes true if changes have been made. Used to update fit planes
+	/// Active trace id
+	int m_trace_id = -1;
+	
+	/// True if trace was picked up (not created)
+	bool m_preExisting = false;
+	
+	/// True if changes were made
+	bool m_changed = false;
 
-	bool m_parentPlaneDeleted = false; //!< True if parent plane was deleted
-	bool m_childPlaneDeleted = false; //!< True if child plane was deleted
+	/// True if parent plane was deleted
+	bool m_parentPlaneDeleted = false;
+	
+	/// True if child plane was deleted
+	bool m_childPlaneDeleted = false;
 
-	bool m_precompute_gradient = true; //!< Do we want to precompute gradient for cost function?
-	bool m_precompute_curvature = true; //!< Do we want to precompute curvature for cost functions?
+	/// Precompute gradient for cost function
+	bool m_precompute_gradient = true;
+	
+	/// Precompute curvature for cost functions
+	bool m_precompute_curvature = true;
 };
 
 #endif
