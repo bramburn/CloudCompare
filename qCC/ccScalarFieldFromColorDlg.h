@@ -18,33 +18,50 @@
 #ifndef CC_SF_FROM_COLOR_DLG_HEADER
 #define CC_SF_FROM_COLOR_DLG_HEADER
 
+/**
+ * @file ccScalarFieldFromColorDlg.h
+ *
+ * @brief Scalar field from color dialog
+ *
+ * Dialog for extracting scalar fields from color channels.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_scalarFieldFromColorDlg.h>
 
 class ccPointCloud;
 
-//! Dialog to choose 2 scalar fields (SF) and one operation for arithmetics processing
+/**
+ * @brief Scalar field from color dialog
+ *
+ * Extract scalar fields from color channels.
+ */
 class ccScalarFieldFromColorDlg : public QDialog
     , public Ui::scalarFieldFromColorDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccScalarFieldFromColorDlg(QWidget* parent = nullptr);
 
-	//! Returns if to export R channel as SF
+	/// Get R channel flag
 	bool getRStatus() const;
 
-	//! Returns if to export G channel as SF
+	/// Get G channel flag
 	bool getGStatus() const;
 
-	//! Returns if to export B channel as SF
+	/// Get B channel flag
 	bool getBStatus() const;
 
-	//! Returns if to export Alpha channel as SF
+	/// Get Alpha channel flag
 	bool getAlphaStatus() const;
 
-	//! Returns if to export Composite channel as SF
+	/// Get Composite channel flag
 	bool getCompositeStatus() const;
 };
 
