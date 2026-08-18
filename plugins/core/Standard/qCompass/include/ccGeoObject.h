@@ -19,6 +19,14 @@
 #ifndef CC_GEOOBJECT_HEADER
 #define CC_GEOOBJECT_HEADER
 
+/**
+ * @file ccGeoObject.h
+ *
+ * @brief Geological object class
+ *
+ * Data organization structure for geological objects.
+ */
+
 #include <ccHObject.h>
 #include <ccPointCloud.h>
 #include <ccMainAppInterface.h>
@@ -29,15 +37,30 @@
 
 class ccTopologyRelation;
 
-/*
-ccGeoObjects are a data-organisation structure comprised of four ccHObjects, a parent (representing the "GeoObject") and 3 children,
-representing the "upper boundary", "lower boundary" and "interior" of the GeoObject.
-*/
-
+/**
+ * @class ccGeoObject
+ *
+ * @brief Geological object
+ *
+ * Data organization structure for geological objects with
+ * upper boundary, lower boundary and interior.
+ */
 class ccGeoObject : public ccHObject
 {
 public:
+	/**
+	 * @brief Create geo object
+	 * @param[in] name Object name
+	 * @param[in] app Main application interface
+	 * @param[in] singleSurface Single surface flag
+	 */
 	ccGeoObject(QString name, ccMainAppInterface* app, bool singleSurface);
+	
+	/**
+	 * @brief Create from HObject
+	 * @param[in] obj Source object
+	 * @param[in] app Main application interface
+	 */
 	ccGeoObject(ccHObject* obj, ccMainAppInterface* app);
 
 	//returns the pointCloud associated with this ccGeoObject's interior (or null if the interior is undefined)
