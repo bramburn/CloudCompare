@@ -25,8 +25,13 @@
 // System
 #include <cstdint>
 
-/// class used to link a LAS field defined by the LAS standard to the CloudCompare
-/// scalar field that stores or will store the values.
+/**
+ * @struct LasScalarField
+ *
+ * @brief LAS scalar field mapping
+ *
+ * Links a LAS standard field to a CloudCompare scalar field.
+ */
 struct LasScalarField
 {
 	/// Enum used to uniquely identify LAS fields
