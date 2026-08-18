@@ -18,29 +18,46 @@
 #ifndef CC_FITPLANETOOL_HEADER
 #define CC_FITPLANETOOL_HEADER
 
+/**
+ * @file ccFitPlaneTool.h
+ *
+ * @brief Fit plane tool
+ *
+ * Tool for creating fit planes from point picks.
+ */
+
 #include <DgmOctreeReferenceCloud.h>
 
 #include "ccTool.h"
 #include "ccMouseCircle.h"
 #include "ccFitPlane.h"
 
-//! Tool that is activated during "Plane Mode", generating fit planes from point-picks
+/**
+ * @class ccFitPlaneTool
+ *
+ * @brief Fit plane tool
+ *
+ * Tool for creating fit planes during "Plane Mode".
+ */
 class ccFitPlaneTool : public ccTool
 {
 public:
+	/// Constructor
 	ccFitPlaneTool();
+	
+	/// Destructor
 	~ccFitPlaneTool() override;
 
-	//! Called when the tool is set to active (for initialization)
+	/// Tool activated
 	void toolActivated() override;
 
-	//! Called when the tool is set to disactive (for cleanup)
+	/// Tool disactivated
 	void toolDisactivated() override;
 
-	//! Called when a point in a point cloud gets picked while this tool is active
+	/// Point picked callback
 	void pointPicked(ccHObject* insertPoint, unsigned itemIdx, ccPointCloud* cloud, const CCVector3& P) override;
 
-	//! Mouse circle element used for the selection
+	/// Mouse circle for selection
 	ccMouseCircle* m_mouseCircle = nullptr;
 };
 
