@@ -18,19 +18,36 @@
 #ifndef Q_CANUPO_TRAINING_DIALOG_HEADER
 #define Q_CANUPO_TRAINING_DIALOG_HEADER
 
+/**
+ * @file qCanupoTrainingDialog.h
+ *
+ * @brief CANUPO training dialog
+ *
+ * Training dialog for CANUPO classifier.
+ */
+
 #include <ui_qCanupoTrainingDialog.h>
 
 class ccMainAppInterface;
 class ccPointCloud;
 
-//! CANUPO plugin's training dialog
+/**
+ * @class qCanupoTrainingDialog
+ *
+ * @brief CANUPO training dialog
+ *
+ * Training dialog for CANUPO classifier.
+ */
 class qCanupoTrainingDialog : public QDialog, public Ui::CanupoTrainingDialog
 {
 	Q_OBJECT
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] app Main application interface
+	 */
 	qCanupoTrainingDialog(ccMainAppInterface* app);
 
 	//! Get origin point cloud
