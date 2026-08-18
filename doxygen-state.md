@@ -4,14 +4,14 @@
 **Total files:** ~7964 source files (excluding build/.git/)
 **Started:** 2025-01-XX
 
-## Progress - 78 commits so far
+## Progress - 94 commits so far
 
 ### qCC/ (Main application)
 - [x] main.cpp, ccApplication.h/cpp, ccCommon.h
 - [x] mainwindow.h, ccCommandLineParser.h
 
 ### libs/ (Core libraries)
-**qCC_db (60+ headers):** ccObject, ccHObject, ccSerializableObject, ccDrawableObject, ccInteractor
+**qCC_db (65+ headers):** ccObject, ccHObject, ccSerializableObject, ccDrawableObject, ccInteractor
 **Entities:** ccPointCloud, ccGenericPointCloud, ccMesh, ccGenericMesh, ccPolyline, ccImage, ccFacet
 **Geometry:** ccBox, ccSphere, ccCylinder, ccCone, ccCircle, ccDisc, ccPlane, ccTorus, ccQuadric, ccExtru, ccDish, ccGenericPrimitive
 **Sensors:** ccSensor, ccCameraSensor, ccGBLSensor, ccDepthBuffer, ccNormalVectors
@@ -20,16 +20,24 @@
 **Materials:** ccMaterial, ccMaterialSet, ccNormalCompressor
 **UI/Interaction:** ccLog, ccProgressDialog, cc2DLabel, ccClipBox, ccShiftedObject
 **I/O:** FileIOFilter, ccFileUtils, ccGlobalShiftManager
-**Types:** ccCoordinateSystem, ccBasicTypes
+**Types:** ccCoordinateSystem, ccBasicTypes, ccFlags
+**Transform:** ccIndexedTransformation, ccIndexedTransformationBuffer
+**Utilities:** ccHObjectCaster, ccFrustum
 
 **qCC_glWindow:** ccGLWindowInterface, ccGLWindowSignalEmitter, ccGLWindow, ccGLUtils
 
-**CCFbo:** ccGlFilter, ccShader, ccFrameBufferObject
+**CCFbo:** ccGlFilter, ccShader, ccFrameBufferObject, CCFbo.h
 
 **CCAppCommon:** ccApplicationBase, ccPluginManager, ccOptions, ccTranslationManager
+**Dialogs:** ccCameraParamEditDlg, ccDisplaySettingsDlg, ccPickOneElementDlg, ccStereoModeDlg
+**Export:** CCAppCommon.h
 
 **CCPluginAPI:** ccPluginInterface, ccMainAppInterface, ccPersistentSettings
-**Plugin UI:** ccPickingHub, ccPickingListener, ccOverlayDialog, ccInfoDlg, ccRenderToFileDlg, ccQtHelpers
+**Plugin UI:** ccPickingHub, ccPickingListener, ccOverlayDialog, ccInfoDlg, ccRenderToFileDlg, ccQtHelpers, ccColorScaleEditorDlg
+**CLI:** ccCommandLineInterface
+**Export:** CCPluginAPI.h
+
+**CCPluginStub:** ccPluginInterface, ccDefaultPluginInterface
 
 ### plugins/ (Plugin system)
 - [ ] plugins/core/
