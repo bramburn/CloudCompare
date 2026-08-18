@@ -17,6 +17,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccMainAppInterface.h
+ *
+ * @brief Main application interface for plugins
+ *
+ * Defines the interface that plugins use to interact with the
+ * CloudCompare application. This includes:
+ * - Window and display management
+ * - Entity database operations
+ * - Overlay dialog registration
+ * - Selection handling
+ * - Logging and console output
+ *
+ * Plugins receive a pointer to this interface via their start() method.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see ccPluginInterface for plugin interface
+ * @see ccOverlayDialog for overlay dialog implementation
+ */
+
 // Qt
 #include <QString>
 
@@ -33,22 +53,41 @@ class ccColorScalesManager;
 class ccOverlayDialog;
 class ccPickingHub;
 
-//! Main application interface (for plugins)
+/**
+ * @brief Main application interface for plugins
+ *
+ * Provides access to CloudCompare's core functionality from plugins.
+ * This interface is passed to plugins during initialization and provides
+ * methods for window management, entity manipulation, and UI operations.
+ */
 class ccMainAppInterface
 {
   public:
 	virtual ~ccMainAppInterface() = default;
 
-	//! Returns main window
+	/**
+	 * @brief Get the main application window
+	 * @return Pointer to the QMainWindow
+	 */
 	virtual QMainWindow* getMainWindow() = 0;
 
-	//! Returns active GL sub-window (if any)
+	/**
+	 * @brief Get the currently active 3D view
+	 * @return Pointer to active GL window, or nullptr
+	 */
 	virtual ccGLWindowInterface* getActiveGLWindow() = 0;
 
-	//! Creates a new instance of GL window (with its encapsulating widget)
-	/** \warning This instance must be destroyed by the application as well (see destroyGLWindow)
-	    Note that the encapsulating widget is the window instance itself if 'stereo' mode is disabled
-	**/
+	/**
+	 * @brief Create a new 3D view window
+	 *
+	 * @param[out] window Created GL window interface
+	 * @param[out] widget Encapsulating Qt widget
+	 *
+	 * @warning The window must be destroyed via destroyGLWindow(), not directly
+	 * @note In non-stereo mode, widget is the same as window
+	 *
+	 * @see destroyGLWindow()
+	 */
 	virtual void createGLWindow(ccGLWindowInterface*& window, QWidget*& widget) const
 	{
 		window = nullptr;
@@ -60,17 +99,21 @@ class ccMainAppInterface
 	{
 	}
 
-	//! Registers a MDI area 'overlay' dialog
-	/** Overlay dialogs are displayed in the central MDI area, above the 3D views.
-	The position (pos) is defined relatively to the MDI area (as one of its 4 corners).
-	And it is automatically updated when the main window is moved or resized.
-	Registered dialogs are automatically released when CloudCompare stops.
-
-	Notes:
-	- it may be necessary to call 'updateOverlayDialogsPlacement' after calling this method
-	- it's a good idea to freeez the UI when the tool starts to avoid other overlay dialogs
-	to appear (don't forget to unfreeze the UI afterwards)
-	**/
+	/**
+	 * @brief Register an overlay dialog
+	 *
+	 * Overlay dialogs float above 3D views and are automatically
+	 * repositioned when the main window is resized.
+	 *
+	 * @param[in] dlg Dialog to register
+	 * @param[in] pos Position relative to MDI area corner
+	 *
+	 * @note Call updateOverlayDialogsPlacement() after registering
+	 * @note Consider freezing the UI while an overlay is active
+	 * @note Dialogs are automatically deleted when CloudCompare exits
+	 *
+	 * @see unregisterOverlayDialog()
+	 */
 	virtual void registerOverlayDialog(ccOverlayDialog* dlg, Qt::Corner pos)
 	{
 	}
