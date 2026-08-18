@@ -18,9 +18,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qCSVMatrixIO.h
+ *
+ * @brief CSV Matrix I/O plugin
+ *
+ * Plugin for CSV matrix file (2.5D cloud) I/O.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 #include <ccIOPluginInterface.h>
 
-//! CSV Matrix file (2.5D cloud)
+/**
+ * @brief CSV Matrix I/O plugin
+ *
+ * Read/write CSV matrix files (2.5D clouds).
+ */
 class qCSVMatrixIO : public QObject
     , public ccIOPluginInterface
 {
@@ -30,11 +44,16 @@ class qCSVMatrixIO : public QObject
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qCSVMatrixIO" FILE "../info.json")
 
   public:
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qCSVMatrixIO(QObject* parent = nullptr);
 
+	/// Destructor
 	~qCSVMatrixIO() override = default;
 
-	// inherited from ccIOPluginInterface
+	/// Get list of supported filters
 	FilterList getFilters() override;
 };
 
