@@ -18,30 +18,39 @@
 #ifndef CC_QUADRIC_PRIMITIVE_HEADER
 #define CC_QUADRIC_PRIMITIVE_HEADER
 
+/**
+ * @file ccQuadric.h
+ *
+ * @brief Quadric primitive
+ *
+ * 2.5D quadric surface primitive for fitting curved surfaces.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccGenericPrimitive.h"
 
-//! Quadric (primitive)
-/** 2D1/2 quadric primitive
- **/
+/**
+ * @brief Quadric primitive
+ *
+ * 2.5D quadric surface (Z = a + bX + cY + dX^2 + eXY + fY^2).
+ */
 class QCC_DB_LIB_API ccQuadric : public ccGenericPrimitive
 {
   public:
 	//! Default drawing precision
-	/** \warning Never pass a 'constant initializer' by reference
-	 **/
 	static const unsigned DEFAULT_DRAWING_PRECISION = 24;
 
-	//! Default constructor
-	/** Quadric orthogonal dimension is 'Z' by default
-	    \param minCorner min corner of the 'representation' base area
-	    \param maxCorner max corner of the 'representation' base area
-	    \param eq equation coefficients ( Z = a + b.X + c.Y + d.X^2 + e.X.Y + f.Y^2)
-	    \param toLocalOrientation optional local orientation matrix
-	    \param transMat optional 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
-	    \param name name
-	    \param precision drawing precision
-	**/
+	/**
+	 * @brief Create a quadric
+	 * @param[in] minCorner Min corner of base area
+	 * @param[in] maxCorner Max corner of base area
+	 * @param[in] eq Coefficients [a,b,c,d,e,f]
+	 * @param[in] toLocalOrientation Local orientation matrix
+	 * @param[in] transMat Transformation matrix
+	 * @param[in] name Quadric name
+	 * @param[in] precision Drawing precision
+	 */
 	ccQuadric(CCVector2                      minCorner,
 	          CCVector2                      maxCorner,
 	          const PointCoordinateType      eq[6],
