@@ -18,6 +18,26 @@
 #ifndef CC_OCTREE_HEADER
 #define CC_OCTREE_HEADER
 
+/**
+ * @file ccOctree.h
+ *
+ * @brief Octree spatial index structure
+ *
+ * An octree is a hierarchical spatial data structure that recursively
+ * subdivides 3D space into octants. It provides efficient spatial
+ * queries for:
+ * - K-nearest neighbor searches
+ * - Point location queries
+ * - Range searches
+ * - Ray intersection tests
+ *
+ * Octrees are automatically computed for point clouds and used extensively
+ * in CloudCompare for spatial analysis and rendering optimization.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see CCCoreLib::DgmOctree for base implementation
+ */
+
 // Local
 #include "ccGenericGLDisplay.h"
 #include "ccHObject.h"
@@ -33,44 +53,61 @@ class ccGenericPointCloud;
 class ccOctreeFrustumIntersector;
 class ccCameraSensor;
 
-//! Octree structure
-/** Extends the CCCoreLib::DgmOctree class.
- **/
+/**
+ * @brief Octree spatial index
+ *
+ * Extends CCCoreLib::DgmOctree with CloudCompare-specific
+ * features like OpenGL rendering and Qt signals.
+ */
 class QCC_DB_LIB_API ccOctree : public QObject
     , public CCCoreLib::DgmOctree
 {
 	Q_OBJECT
 
   public: // GENERAL METHODS
-	//! Shared pointer
+	//! Shared pointer type
 	typedef QSharedPointer<ccOctree> Shared;
 
-	//! Default constructor
-	/** \param cloud a point cloud
-	 **/
+	/**
+	 * @brief Create octree for a point cloud
+	 * @param[in] cloud Point cloud to index
+	 */
 	explicit ccOctree(ccGenericPointCloud* cloud);
 
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	virtual ~ccOctree();
 
-	//! Multiplies the bounding-box of the octree
-	/** If the cloud coordinates are simply multiplied by the same factor,
-	    there is no use in recomputing the octree structure. It's sufficient
-	    to update its bounding-box.
-	    \param  multFactor multiplication factor
-	**/
+	/**
+	 * @brief Scale the octree bounding box
+	 *
+	 * If the cloud is scaled uniformly, the octree structure
+	 * doesn't need to be recomputed - just update the bounding box.
+	 *
+	 * @param[in] multFactor Scale factor
+	 */
 	void multiplyBoundingBox(const PointCoordinateType multFactor);
 
-	//! Translates the bounding-box of the octree
-	/** If the cloud has been simply translated, there is no use to recompute
-	    the octree structure. It's sufficient to update its bounding-box.
-	    \param T translation vector
-	**/
+	/**
+	 * @brief Translate the octree bounding box
+	 *
+	 * If the cloud is translated, the octree structure
+	 * doesn't need to be recomputed - just update the bounding box.
+	 *
+	 * @param[in] T Translation vector
+	 */
 	void translateBoundingBox(const CCVector3& T);
 
-	//! Returns the octree (square) bounding-box
+	/**
+	 * @brief Get the octree square bounding box
+	 * @return Square bounding box containing the octree
+	 */
 	ccBBox getSquareBB() const;
-	//! Returns the points bounding-box
+	/**
+	 * @brief Get the points bounding box
+	 * @return Bounding box of actual points
+	 */
 	ccBBox getPointsBB() const;
 
 	// inherited from DgmOctree
