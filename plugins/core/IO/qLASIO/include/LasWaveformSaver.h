@@ -6,7 +6,7 @@
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
 // #  it under the terms of the GNU General Public License as published by  #
-// #  the Free Software Foundation; version 2 of the License.               #
+// #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
 // #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
@@ -17,6 +17,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file LasWaveformSaver.h
+ *
+ * @brief LAS waveform saver
+ *
+ * Save waveform data to LAS files.
+ *
+ * @author Thomas Montaigu
+ */
+
 // Qt
 #include <QByteArray>
 #include <QDataStream>
@@ -25,10 +35,26 @@
 
 class ccPointCloud;
 
+/**
+ * @struct LasWaveformSaver
+ *
+ * @brief LAS waveform saver
+ *
+ * Save waveform data to LAS files.
+ */
 struct LasWaveformSaver
 {
+	/**
+	 * @brief Create waveform saver
+	 * @param[in] pointCloud Point cloud with waveform data
+	 */
 	LasWaveformSaver(const ccPointCloud& pointCloud) noexcept;
 
+	/**
+	 * @brief Handle point waveform
+	 * @param[in] index Point index
+	 * @param[out] point LAS point
+	 */
 	void handlePoint(size_t index, laszip_point& point);
 
   private:
