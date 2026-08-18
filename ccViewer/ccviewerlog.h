@@ -24,10 +24,24 @@
 #include <QMainWindow>
 #include <QMessageBox>
 
+/**
+ * @file ccviewerlog.h
+ *
+ * @brief Viewer log
+ *
+ * Minimalist logger for ccViewer.
+ */
+
 // qCC_db
 #include <ccLog.h>
 
-//! Minimalist logger (only displays error messages)
+/**
+ * @class ccViewerLog
+ *
+ * @brief Viewer log
+ *
+ * Minimalist logger (only displays error messages).
+ */
 class ccViewerLog : public ccLog
 {
   public:
