@@ -18,9 +18,23 @@
 #ifndef Q_BROOM_PLUGIN_HEADER
 #define Q_BROOM_PLUGIN_HEADER
 
+/**
+ * @file qBroom.h
+ *
+ * @brief Broom plugin
+ *
+ * Virtual broom plugin for removing noise from point clouds.
+ *
+ * @author Wesley Grimes (Collision Engineering Associates)
+ */
+
 #include "ccStdPluginInterface.h"
 
-//! CEA virtual broom plugin
+/**
+ * @brief Broom plugin
+ *
+ * Virtual broom tool for cleaning point clouds.
+ */
 class qBroom : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -30,23 +44,26 @@ class qBroom : public QObject, public ccStdPluginInterface
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qBroom(QObject* parent = nullptr);
 
+	/// Destructor
 	virtual ~qBroom() = default;
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	virtual void onNewSelection(const ccHObject::Container& selectedEntities) override;
+
+	/// Get plugin actions
 	virtual QList<QAction *> getActions() override;
 
 protected:
-
-	//! Slot called when associated ation is triggered
+	/// Execute broom action
 	void doAction();
 
 protected:
-
-	//! Associated action
 	QAction* m_action;
 };
 
