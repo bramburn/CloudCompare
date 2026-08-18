@@ -20,23 +20,37 @@
 
 #include <ui_normalComputationDlg.h>
 
+/**
+ * @file ccNormalComputationDlg.h
+ *
+ * @brief Normal computation dialog
+ *
+ * Dialog for configuring normal computation parameters.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // qCC_db
 #include <ccNormalVectors.h>
 
 class ccPointCloud;
 
-//! Dialog for normal computation
+/**
+ * @brief Normal computation dialog
+ *
+ * Configure normal computation parameters.
+ */
 class ccNormalComputationDlg : public QDialog
     , public Ui::NormalComputationDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
-	/** \param withScanGrid whether the selection contains some structured point clouds
-	 *  \param withSensor whether the selection contains some sensors associated to the point clouds
-	    \param parent parent widget
-	**/
+	/**
+	 * @brief Create dialog
+	 * @param[in] withScanGrid Whether selection has structured clouds
+	 * @param[in] withSensor Whether selection has sensors
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccNormalComputationDlg(bool withScanGrid, bool withSensor, QWidget* parent = nullptr);
 
 	//! Returns the local model chosen for normal computation
