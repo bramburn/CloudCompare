@@ -18,6 +18,16 @@
 #ifndef CC_ORDER_CHOICE_DIALOG_HEADER
 #define CC_ORDER_CHOICE_DIALOG_HEADER
 
+/**
+ * @file ccOrderChoiceDlg.h
+ *
+ * @brief Order choice dialog
+ *
+ * Dialog for assigning roles to two entities.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Qt
 #include <QDialog>
 
@@ -25,33 +35,44 @@ class ccHObject;
 class ccMainAppInterface;
 class Ui_RoleChoiceDialog;
 
-//! Dialog to assign roles to two entities (e.g. compared/reference)
+/**
+ * @brief Order choice dialog
+ *
+ * Assign roles to two entities (e.g. compared/reference).
+ */
 class ccOrderChoiceDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] firstEntity First entity
+	 * @param[in] firstRole Role of first entity
+	 * @param[in] secondEntity Second entity
+	 * @param[in] secondRole Role of second entity
+	 * @param[in] app Application interface
+	 */
 	ccOrderChoiceDlg(ccHObject*          firstEntity,
 	                 QString             firstRole,
 	                 ccHObject*          secondEntity,
 	                 QString             secondRole,
 	                 ccMainAppInterface* app = 0);
 
-	//! Destructor
+	/// Destructor
 	virtual ~ccOrderChoiceDlg();
 
-	//! Returns the first entity (new order)
+	/// Get first entity
 	ccHObject* getFirstEntity();
-	//! Returns the second entity (new order)
+	/// Get second entity
 	ccHObject* getSecondEntity();
 
   protected:
-	//! Swaps the entities
+	/// Swap entities
 	void swap();
 
   protected:
-	//! Sets the right colors to the entities and updates the dialog
+	/// Set colors and labels
 	void setColorsAndLabels();
 
 	Ui_RoleChoiceDialog* m_gui;
