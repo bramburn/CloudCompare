@@ -17,6 +17,15 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccRasterizeTool.h
+ *
+ * @brief Rasterize tool
+ *
+ * Tool for converting point clouds to raster grids.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "cc2.5DimEditor.h"
 
@@ -33,7 +42,11 @@ namespace Ui
 	class RasterizeToolDialog;
 }
 
-//! Rasterize tool (dialog)
+/**
+ * @brief Rasterize tool
+ *
+ * Convert point clouds to raster grids.
+ */
 class ccRasterizeTool : public QDialog
     , public cc2Point5DimEditor
 {
