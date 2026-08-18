@@ -18,6 +18,16 @@
 #ifndef CC_SCALE_DLG_HEADER
 #define CC_SCALE_DLG_HEADER
 
+/**
+ * @file ccScaleDlg.h
+ *
+ * @brief Scale dialog
+ *
+ * Dialog for scaling entities.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 // CC_Lib
 #include <CCGeom.h>
 
@@ -29,31 +39,41 @@ namespace Ui
 	class ScaleDialog;
 }
 
-//! Scale / multiply dialog
+/**
+ * @brief Scale dialog
+ *
+ * Scale or multiply entities.
+ */
 class ccScaleDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccScaleDlg(QWidget* parent = nullptr);
 
+	/// Destructor
 	~ccScaleDlg();
 
-	//! Returns scales
+	/// Get scales
 	CCVector3d getScales() const;
 
-	//! Whether the entity should be 'kept in place' or not
+	/// Get keep in place flag
 	bool keepInPlace() const;
 
-	//! Whether the Global shift should be rescaled as well
+	/// Get rescale global shift flag
 	bool rescaleGlobalShift() const;
 
-	//! Saves state
+	/// Save state
 	void saveState();
 
   private:
+	/// Handle all dims toggled
 	void allDimsAtOnceToggled(bool);
+	/// Handle fx updated
 	void fxUpdated(double);
 
 	Ui::ScaleDialog* m_ui;
