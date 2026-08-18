@@ -18,6 +18,16 @@
 #ifndef CC_SELECT_CHILDREN_DLG_HEADER
 #define CC_SELECT_CHILDREN_DLG_HEADER
 
+/**
+ * @file ccSelectChildrenDlg.h
+ *
+ * @brief Select children dialog
+ *
+ * Dialog for selecting children by type and name.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Qt
 #include <QDialog>
 
@@ -29,38 +39,52 @@ namespace Ui
 	class SelectChildrenDialog;
 }
 
-//! Minimal dialog to pick one element in a list (combo box)
+/**
+ * @brief Select children dialog
+ *
+ * Select children by type and name.
+ */
 class ccSelectChildrenDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccSelectChildrenDlg(QWidget* parent = nullptr);
+	
+	/// Destructor
 	~ccSelectChildrenDlg() override;
 
-	//! Add an element to the 'type' combo box
+	/**
+	 * @brief Add type to combo box
+	 * @param[in] typeName Type name
+	 * @param[in] type Type enum
+	 */
 	void addType(QString typeName, CC_CLASS_ENUM type);
 
-	//! Returns the selected type
+	/// Get selected type
 	CC_CLASS_ENUM getSelectedType();
-	//! Returns the selected name (if any)
+	
+	/// Get selected name
 	QString getSelectedName();
-	//! Returns the state of the strict type checkbox
+	
+	/// Get strict match state
 	bool getStrictMatchState() const;
 
-	//! if the type checkbox is checked the children are filtered
-	//! before checking the name for matches
+	/// Get type is used flag
 	bool getTypeIsUsed() const;
 
-	//! if the name must be considered as regex
+	/// Get name is regex flag
 	bool getNameIsRegex() const;
 
-	//! if performing name-match (regex or not)
+	/// Get name match is used flag
 	bool getNameMatchIsUsed() const;
 
   protected:
-	//! Called when the dialog is accepted
+	/// Handle accept
 	void onAccept();
 
   private:
