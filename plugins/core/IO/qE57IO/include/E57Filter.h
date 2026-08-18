@@ -18,19 +18,37 @@
 #ifndef CC_E57_FILTER_HEADER
 #define CC_E57_FILTER_HEADER
 
+/**
+ * @file E57Filter.h
+ *
+ * @brief E57 file filter
+ *
+ * I/O filter for E57 point cloud files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // qCC_IO
 #include <FileIOFilter.h>
 
-//! E57 filter (relies on E57format lib)
+/**
+ * @brief E57 file filter
+ *
+ * Read/write E57 point cloud files.
+ */
 class E57Filter : public FileIOFilter
 {
   public:
+	/// Constructor
 	E57Filter();
 
-	// inherited from FileIOFilter
+	/// Load file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/// Check if can save
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	
+	/// Save file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 
