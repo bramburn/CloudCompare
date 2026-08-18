@@ -18,6 +18,16 @@
 #ifndef CC_MATERIAL_HEADER
 #define CC_MATERIAL_HEADER
 
+/**
+ * @file ccMaterial.h
+ *
+ * @brief Material class for mesh textures
+ *
+ * Represents a material with colors, textures, and
+ * lighting properties for mesh rendering.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccColorTypes.h"
 #include "ccSerializableObject.h"
@@ -30,53 +40,86 @@
 class QImage;
 class QOpenGLContext;
 
-//! Mesh (triangle) material
+/**
+ * @brief Mesh material
+ *
+ * Material with colors, textures, and lighting properties.
+ */
 class QCC_DB_LIB_API ccMaterial : public ccSerializableObject
 {
   public:
-	//! Const + Shared type
+	//! Shared pointer type (const)
 	using CShared = QSharedPointer<const ccMaterial>;
-	//! Shared type
+	//! Shared pointer type
 	using Shared = QSharedPointer<ccMaterial>;
 
-	//! Default constructor
+	/**
+	 * @brief Create a material
+	 * @param[in] name Material name
+	 */
 	ccMaterial(const QString& name = QString("default"));
 
-	//! Copy constructor
+	/**
+	 * @brief Copy constructor
+	 * @param[in] mtl Source material
+	 */
 	ccMaterial(const ccMaterial& mtl);
 
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	~ccMaterial();
 
-	//! Returns the material name
+	/**
+	 * @brief Get material name
+	 * @return Material name
+	 */
 	inline const QString& getName() const
 	{
 		return m_name;
 	}
-	//! Returns the texture filename (if any)
+	/**
+	 * @brief Get texture filename
+	 * @return Texture path, or empty if none
+	 */
 	inline const QString& getTextureFilename() const
 	{
 		return m_textureFilename;
 	}
-	//! Sets the material name
+	/**
+	 * @brief Set material name
+	 * @param[in] name New name
+	 */
 	inline void setName(const QString& name)
 	{
 		m_name = name;
 	}
 
-	//! Sets diffuse color (both front and back)
+	/**
+	 * @brief Set diffuse color (both sides)
+	 * @param[in] color Diffuse color
+	 */
 	void setDiffuse(const ccColor::Rgbaf& color);
-	//! Sets diffuse color (front)
+	/**
+	 * @brief Set front diffuse color
+	 * @param[in] color Front diffuse color
+	 */
 	inline void setDiffuseFront(const ccColor::Rgbaf& color)
 	{
 		m_diffuseFront = color;
 	}
-	//! Sets diffuse color (back)
+	/**
+	 * @brief Set back diffuse color
+	 * @param[in] color Back diffuse color
+	 */
 	inline void setDiffuseBack(const ccColor::Rgbaf& color)
 	{
 		m_diffuseBack = color;
 	}
-	//! Returns front diffuse color
+	/**
+	 * @brief Get front diffuse color
+	 * @return Front diffuse color
+	 */
 	inline const ccColor::Rgbaf& getDiffuseFront() const
 	{
 		return m_diffuseFront;
