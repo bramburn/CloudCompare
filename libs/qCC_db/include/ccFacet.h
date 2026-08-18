@@ -18,6 +18,22 @@
 #ifndef CC_FACET_HEADER
 #define CC_FACET_HEADER
 
+/**
+ * @file ccFacet.h
+ *
+ * @brief Facet class for planar surface extraction
+ *
+ * A facet is a composite object representing a planar surface:
+ * - Point cloud (origin points)
+ * - 2.5D contour polyline
+ * - 2.5D surface mesh
+ *
+ * Facets are created from point clouds and represent flat surfaces
+ * like ground planes, walls, or other planar structures.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Local
 #include "ccHObject.h"
 #include "ccPlanarEntityInterface.h"
@@ -31,50 +47,67 @@ class ccMesh;
 class ccPolyline;
 class ccPointCloud;
 
-//! Facet
-/** Composite object: point cloud + 2D1/2 contour polyline + 2D1/2 surface mesh
- **/
+/**
+ * @brief Facet (planar surface)
+ *
+ * Composite object: point cloud + 2.5D contour + 2.5D surface mesh.
+ * Represents a planar surface extracted from point cloud data.
+ */
 class QCC_DB_LIB_API ccFacet : public ccHObject
     , public ccPlanarEntityInterface
 {
   public:
-	//! Default constructor
-	/** \param maxEdgeLength max edge length (if possible - ignored if 0)
-	    \param name name
-	**/
+	/**
+	 * @brief Create a facet
+	 * @param[in] maxEdgeLength Max edge length (0 = no limit)
+	 * @param[in] name Facet name
+	 */
 	ccFacet(PointCoordinateType maxEdgeLength = 0,
 	        const QString&      name          = QString("Facet"));
 
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	~ccFacet() override = default;
 
-	//! Creates a facet from a set of points
-	/** The facet boundary can either be the convex hull (maxEdgeLength = 0)
-	    or the concave hull (maxEdgeLength > 0).
-	    \param cloud cloud from which to create the facet
-	    \param maxEdgeLength max edge length (if possible - ignored if 0)
-	    \param transferOwnership if true and the input cloud is a ccPointCloud, it will be 'kept' as 'origin points'
-	    \param planeEquation to input a custom plane equation
-	    \return a facet (or 0 if an error occurred)
-	**/
+	/**
+	 * @brief Create a facet from points
+	 *
+	 * Creates a planar facet from a point cloud.
+	 * The boundary can be convex hull (maxEdgeLength=0) or concave hull.
+	 *
+	 * @param[in] cloud Source point cloud
+	 * @param[in] maxEdgeLength Max edge length (0 = convex hull)
+	 * @param[in] transferOwnership Keep source cloud as origin points
+	 * @param[in] planeEquation Custom plane equation (optional)
+	 * @return New facet, or nullptr on failure
+	 */
 	static ccFacet* Create(CCCoreLib::GenericIndexedCloudPersist* cloud,
 	                       PointCoordinateType                    maxEdgeLength     = 0,
 	                       bool                                   transferOwnership = false,
 	                       const PointCoordinateType*             planeEquation     = nullptr);
 
-	//! Returns class ID
+	/**
+	 * @brief Get class type
+	 * @return CC_TYPES::FACET
+	 */
 	CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::FACET;
 	}
+	/**
+	 * @brief Check if serializable
+	 * @return true
+	 */
 	bool isSerializable() const override
 	{
 		return true;
 	}
 
-	//! Sets the facet unique color
-	/** \param rgb RGB color
-	 **/
+	/**
+	 * @brief Set facet color
+	 * @param[in] rgb RGB color
+	 */
 	void setColor(const ccColor::Rgb& rgb);
 
 	// inherited from ccPlanarEntityInterface
