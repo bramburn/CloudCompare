@@ -16,6 +16,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPickOneElementDlg.h
+ *
+ * @brief Pick one element dialog
+ *
+ * Simple dialog with a combobox for selecting one item.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "CCAppCommon.h"
 
 // Qt
@@ -23,28 +33,50 @@
 
 class Ui_PickOneElementDialog;
 
-//! Minimal dialog to pick one element in a list (combox box)
+/**
+ * @brief Pick one element dialog
+ *
+ * Simple dialog for selecting one item from a list.
+ */
 class CCAPPCOMMON_LIB_API ccPickOneElementDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] label Label text
+	 * @param[in] windowTitle Window title
+	 * @param[in] parent Parent widget
+	 */
 	ccPickOneElementDlg(const QString& label,
 	                    const QString& windowTitle = QString(),
 	                    QWidget*       parent      = nullptr);
 
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	~ccPickOneElementDlg() override;
 
-	//! Add an element to the combo box
+	/**
+	 * @brief Add element to list
+	 * @param[in] elementName Element name
+	 */
 	void addElement(const QString& elementName);
-	//! Sets the combo box default index
+	
+	/**
+	 * @brief Set default selection
+	 * @param[in] index Default index
+	 */
 	void setDefaultIndex(int index);
-	//! Returns the combo box current index (after completion)
+	
+	/**
+	 * @brief Get selected index
+	 * @return Selected index
+	 */
 	int getSelectedIndex();
 
   private:
-	//! Associated UI
+	/// UI
 	Ui_PickOneElementDialog* m_ui;
 };
