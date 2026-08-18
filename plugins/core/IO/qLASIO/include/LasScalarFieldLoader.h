@@ -31,10 +31,13 @@
 // LASzip
 #include <laszip/laszip_api.h>
 
-/// Class with the logic on how to load LAS dimensions values
-/// from the LAS file into a ccPointCloud's scalar field.
-///
-/// This also handles LAS extra scalar fields, as well as RGB.
+/**
+ * @class LasScalarFieldLoader
+ *
+ * @brief LAS scalar field loader
+ *
+ * Load LAS dimensions into CloudCompare scalar fields.
+ */
 class LasScalarFieldLoader
 {
   public:
