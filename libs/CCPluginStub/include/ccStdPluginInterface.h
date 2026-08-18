@@ -28,17 +28,26 @@
 #include "ccDefaultPluginInterface.h"
 #include "ccMainAppInterface.h"
 
+/**
+ * @file ccStdPluginInterface.h
+ *
+ * @brief Standard plugin interface
+ *
+ * Standard CloudCompare plugin interface.
+ */
+
 // UI Modification flags
 #define CC_PLUGIN_REFRESH_GL_WINDOWS 0x00000001
 #define CC_PLUGIN_REFRESH_ENTITY_BROWSER 0x00000002
 #define CC_PLUGIN_EXPAND_DB_TREE 0x00000004
 
-//! Standard CC plugin interface
-/** Version 1.5
-    The plugin is now responsible for its own actions (QAction ;)
-    and the associated ccMainAppInterface member should give it
-    access to everything it needs in the main application.
-**/
+/**
+ * @class ccStdPluginInterface
+ *
+ * @brief Standard plugin interface
+ *
+ * Standard CC plugin interface (Version 1.5).
+ */
 class ccStdPluginInterface : public ccDefaultPluginInterface
 {
   public:
