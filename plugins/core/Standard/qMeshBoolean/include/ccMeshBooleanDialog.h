@@ -17,36 +17,72 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccMeshBooleanDialog.h
+ *
+ * @brief Mesh boolean dialog
+ *
+ * Dialog for mesh boolean operations using libIGL.
+ */
+
 #include "ui_meshBooleanDlg.h"
 
-//! Dialog for qCork plugin
+/**
+ * @class ccMeshBooleanDialog
+ *
+ * @brief Mesh boolean dialog
+ *
+ * Dialog for configuring mesh boolean operations.
+ */
 class ccMeshBooleanDialog : public QDialog, public Ui::MeshBooleanDialog
 {
 	Q_OBJECT
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccMeshBooleanDialog(QWidget* parent = nullptr);
 
-	//! Supported CSG operations
+	/**
+	 * @enum CSG_OPERATION
+	 *
+	 * @brief CSG operation types
+	 */
 	enum CSG_OPERATION { UNION, INTERSECT, DIFF, SYM_DIFF };
 
-	//! Set meshes names
+	/**
+	 * @brief Set mesh names
+	 * @param[in] A First mesh name
+	 * @param[in] B Second mesh name
+	 */
 	void setNames(const QString& A, const QString& B);
 
-	//! Returns the selected operation
+	/**
+	 * @brief Get selected operation
+	 * @return Selected CSG operation
+	 */
 	CSG_OPERATION getSelectedOperation() const { return m_selectedOperation; }
 
-	//! Returns whether mesh order has been swappped or not
+	/**
+	 * @brief Check if meshes are swapped
+	 * @return True if swapped
+	 */
 	bool isSwapped() const { return m_isSwapped; }
 
 protected Q_SLOTS:
 
+	/// Union selected
 	void unionSelected();
+	/// Intersect selected
 	void intersectSelected();
+	/// Difference selected
 	void diffSelected();
+	/// Symmetric difference selected
 	void symDiffSelected();
+	/// Swap mesh order
 	void swap();
 
 protected:
