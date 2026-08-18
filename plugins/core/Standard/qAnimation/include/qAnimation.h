@@ -17,13 +17,27 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qAnimation.h
+ *
+ * @brief Animation plugin
+ *
+ * Animation capture plugin for CloudCompare.
+ *
+ * @author Ryan Wicks, 2G Robotics Inc.
+ */
+
 //qCC
 #include "ccStdPluginInterface.h"
 
 //Qt
 #include <QObject>
 
-// Animation plugin
+/**
+ * @brief Animation plugin
+ *
+ * Capture animations from CloudCompare.
+ */
 class qAnimation : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -32,18 +46,23 @@ class qAnimation : public QObject, public ccStdPluginInterface
 	Q_PLUGIN_METADATA( IID "cccorp.cloudcompare.plugin.qAnimation" FILE "../info.json" )
 
 public:
-
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	qAnimation(QObject* parent = nullptr);
 
+	/// Destructor
 	virtual ~qAnimation() = default;
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	void onNewSelection(const ccHObject::Container& selectedEntities) override;
+
+	/// Get plugin actions
 	virtual QList<QAction *> getActions() override;
 
 private:
-
+	/// Execute animation action
 	void doAction();
 
 	QAction* m_action;
