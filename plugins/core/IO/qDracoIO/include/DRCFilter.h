@@ -18,18 +18,36 @@
 #ifndef CC_DRC_FILTER_HEADER
 #define CC_DRC_FILTER_HEADER
 
+/**
+ * @file DRCFilter.h
+ *
+ * @brief Draco file filter
+ *
+ * I/O filter for Google Draco compressed files.
+ *
+ * @author CloudCompare project
+ */
+
 #include <FileIOFilter.h>
 
-//! Draco compressed cloud and mesh file I/O filter
+/**
+ * @brief Draco file filter
+ *
+ * Read/write Google Draco compressed files.
+ */
 class DRCFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	DRCFilter();
 
-	// inherited from FileIOFilter
+	/// Load file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/// Check if can save
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	
+	/// Save file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 
