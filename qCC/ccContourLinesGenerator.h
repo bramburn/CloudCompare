@@ -17,6 +17,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccContourLinesGenerator.h
+ *
+ * @brief Contour lines generator
+ *
+ * Generator for contour lines from raster grids.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 struct ccRasterGrid;
 class ccPolyline;
 class ccScalarField;
@@ -28,31 +38,40 @@ class QWidget;
 // system
 #include <vector>
 
-//! Contour lines generator
+/**
+ * @brief Contour lines generator
+ *
+ * Generate contour lines from raster grids.
+ */
 class ccContourLinesGenerator
 {
   public:
-	//! Contour lines generation parameters
+	/**
+	 * @brief Generation parameters
+	 */
 	struct Parameters
 	{
 		double         startAltitude             = 0.0;
 		double         maxAltitude               = 0.0;
-		double         step                      = 0.0;     // gap between levels
-		ccScalarField* altitudes                 = nullptr; // optional scalar field that stores the 'altitudes' (may be null, in which case the grid 'h' values are used directly)
-		int            minVertexCount            = 3;       // minimum number of vertices per contour line
+		double         step                      = 0.0;
+		ccScalarField* altitudes                 = nullptr;
+		int            minVertexCount            = 3;
 		bool           projectContourOnAltitudes = false;
 		double         emptyCellsValue           = std::numeric_limits<double>::quiet_NaN();
-
-		/* The parameters below are only required if GDAL is not required */
-		QWidget* parentWidget  = nullptr; // for progress dialog
+		QWidget* parentWidget  = nullptr;
 		bool     ignoreBorders = false;
 	};
 
-	//! Generates contour lines
-	/** \warning contour lines are always generated in the XY plane
-	 **/
+	/**
+	 * @brief Generate contour lines
+	 * @param[in] rasterGrid Raster grid
+	 * @param[in] gridMinCornerXY Grid min corner
+	 * @param[in] params Generation parameters
+	 * @param[out] contourLines Generated contour lines
+	 * @return true on success
+	 */
 	static bool GenerateContourLines(ccRasterGrid*             rasterGrid,
-	                                 const CCVector2d&         gridMinCornerXY, // grid min corner (2D)
+	                                 const CCVector2d&         gridMinCornerXY,
 	                                 const Parameters&         params,
 	                                 std::vector<ccPolyline*>& contourLines);
 };
