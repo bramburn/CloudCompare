@@ -32,11 +32,25 @@
 // System
 #include <set>
 
+/**
+ * @file ccviewer.h
+ *
+ * @brief ccViewer main window
+ *
+ * ccViewer application main window.
+ */
+
 class ccGLWindowInterface;
 class ccHObject;
 class Mouse3DInput;
 
-//! Application main window
+/**
+ * @class ccViewer
+ *
+ * @brief ccViewer main window
+ *
+ * Application main window for ccViewer.
+ */
 class ccViewer : public QMainWindow
     , public ccMainAppInterface
 {
