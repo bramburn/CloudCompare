@@ -18,6 +18,18 @@
 #ifndef CC_IMAGE_HEADER
 #define CC_IMAGE_HEADER
 
+/**
+ * @file ccImage.h
+ *
+ * @brief Image class for texture and photo management
+ *
+ * Represents an image (texture, photo, or depth map) associated
+ * with 3D geometry. Images can be linked to sensors for
+ * texture mapping and photogrammetry.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Local
 #include "ccHObject.h"
 
@@ -26,36 +38,59 @@
 
 class ccCameraSensor;
 
-//! Generic image
+/**
+ * @brief Image entity
+ *
+ * Represents an image that can be associated with 3D geometry
+ * for textures, textures, or depth maps.
+ */
 class QCC_DB_LIB_API ccImage : public ccHObject
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Default constructor
+	 */
 	ccImage();
 
-	//! Constructor from QImage
+	/**
+	 * @brief Create from QImage
+	 * @param[in] image Source image
+	 * @param[in] name Optional name
+	 */
 	ccImage(const QImage& image, const QString& name = QString("unknown"));
 
-	//! Copy constructor
+	/**
+	 * @brief Copy constructor
+	 * @param[in] image Source image
+	 * @param[in] keepSensorLink Preserve sensor association
+	 */
 	ccImage(const ccImage& image, bool keepSensorLink = true);
 
 	// inherited methods (ccHObject)
+	/**
+	 * @brief Check if serializable
+	 * @return true
+	 */
 	virtual bool isSerializable() const override
 	{
 		return true;
 	}
 
-	//! Returns unique class ID
+	/**
+	 * @brief Get class type
+	 * @return CC_TYPES::IMAGE
+	 */
 	virtual CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::IMAGE;
 	}
 
-	//! Loads image from file
-	/** \param filename image filename
-	    \param error a human readable description of what went wrong (if method fails)
-	    \return success
-	**/
+	/**
+	 * @brief Load image from file
+	 * @param[in] filename Path to image file
+	 * @param[out] error Error message if loading fails
+	 * @return true if successful
+	 */
 	bool load(const QString& filename, QString& error);
 
 	//! Returns image data
