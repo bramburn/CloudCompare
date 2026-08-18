@@ -15,14 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file BundlerFilter.h
+ *
+ * @brief Bundler filter
+ *
+ * Noah Snavely's Bundler output file filter.
+ */
+
 #ifndef CC_BUNDLER_FILTER_HEADER
 #define CC_BUNDLER_FILTER_HEADER
 
 #include "FileIOFilter.h"
 
-//! Noah Snavely's Bundler output file filter
-/** See http://phototour.cs.washington.edu/
- **/
+/**
+ * @class BundlerFilter
+ *
+ * @brief Bundler filter
+ *
+ * Noah Snavely's Bundler output file filter.
+ */
 class BundlerFilter : public FileIOFilter
 {
   public:
