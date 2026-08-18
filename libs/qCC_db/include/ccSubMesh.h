@@ -22,11 +22,23 @@
 #include "ccBBox.h"
 #include "ccGenericMesh.h"
 
+/**
+ * @file ccSubMesh.h
+ *
+ * @brief Sub-mesh
+ *
+ * Sub-mesh equivalent to ReferenceCloud for meshes.
+ */
+
 class ccMesh;
 
-//! A sub-mesh
-/** Equivalent to a CCCoreLib::ReferenceCloud for a mesh
- **/
+/**
+ * @class ccSubMesh
+ *
+ * @brief Sub-mesh
+ *
+ * Equivalent to a CCCoreLib::ReferenceCloud for a mesh.
+ */
 class QCC_DB_LIB_API ccSubMesh : public ccGenericMesh
 {
   public:
