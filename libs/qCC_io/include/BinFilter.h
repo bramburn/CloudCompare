@@ -17,37 +17,56 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file BinFilter.h
+ *
+ * @brief Binary file filter
+ *
+ * CloudCompare native binary format filter.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! CloudCompare dedicated binary point cloud I/O filter
+/**
+ * @brief Binary filter
+ *
+ * CloudCompare native .bin format filter.
+ */
 class QCC_IO_LIB_API BinFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	BinFilter();
 
-	// static accessors
+	/// Get file filter string
 	static inline QString GetFileFilter()
 	{
 		return "CloudCompare entities (*.bin)";
 	}
+	
+	/// Get default extension
 	static inline QString GetDefaultExtension()
 	{
 		return "bin";
 	}
+	
+	/// Get last saved file version
 	static short GetLastSavedFileVersion();
 
 	// inherited from FileIOFilter
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 
-	//! old style BIN loading
+	/// Load old format
 	static CC_FILE_ERROR LoadFileV1(QFile& in, ccHObject& container, unsigned nbScansTotal, const LoadParameters& parameters);
 
-	//! new style BIN loading
+	/// Load new format
 	static CC_FILE_ERROR LoadFileV2(QFile& in, ccHObject& container, int flags, bool parallel, QWidget* parentWidget = nullptr);
 
-	//! new style BIN saving
+	/// Save new format
 	static CC_FILE_ERROR SaveFileV2(QFile& out, ccHObject* object);
 };
