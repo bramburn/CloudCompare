@@ -17,6 +17,14 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file facetsClassifier.h
+ *
+ * @brief Facets classifier
+ *
+ * Classification of geological facets.
+ */
+
 //Qt
 #include <QProgressDialog>
 #include <QApplication>
