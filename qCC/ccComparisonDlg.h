@@ -18,6 +18,16 @@
 #ifndef CC_COMPARISON_DIALOG_HEADER
 #define CC_COMPARISON_DIALOG_HEADER
 
+/**
+ * @file ccComparisonDlg.h
+ *
+ * @brief Comparison dialog
+ *
+ * Dialog for cloud/cloud or cloud/mesh comparison.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // qCC_db
 #include <ccOctree.h>
 
@@ -31,42 +41,63 @@ class ccPointCloud;
 class ccGenericPointCloud;
 class ccGenericMesh;
 
-//! Dialog for cloud/cloud or cloud/mesh comparison setting
+/**
+ * @brief Comparison dialog
+ *
+ * Configure cloud/cloud or cloud/mesh comparison.
+ */
 class ccComparisonDlg : public QDialog
     , public Ui::ComparisonDialog
 {
 	Q_OBJECT
 
   public:
-	//! Comparison type
+	/// Comparison type
 	enum CC_COMPARISON_TYPE
 	{
 		CLOUDCLOUD_DIST = 0,
 		CLOUDMESH_DIST  = 1,
 	};
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] compEntity Entity to compare
+	 * @param[in] refEntity Reference entity
+	 * @param[in] cpType Comparison type
+	 * @param[in] parent Parent widget
+	 * @param[in] noDisplay No display mode
+	 */
 	ccComparisonDlg(ccHObject*         compEntity,
 	                ccHObject*         refEntity,
 	                CC_COMPARISON_TYPE cpType,
 	                QWidget*           parent    = nullptr,
 	                bool               noDisplay = false);
 
-	//! Default destructor
+	/// Destructor
 	~ccComparisonDlg();
 
-	//! Should be called once after the dialog is created
+	/**
+	 * @brief Initialize dialog
+	 * @return true on success
+	 */
 	inline bool initDialog()
 	{
 		return computeApproxDistances();
 	}
 
-	//! Returns compared entity
+	/**
+	 * @brief Get compared entity
+	 * @return Compared entity
+	 */
 	ccHObject* getComparedEntity() const
 	{
 		return m_compEnt;
 	}
-	//! Returns compared entity
+	
+	/**
+	 * @brief Get reference entity
+	 * @return Reference entity
+	 */
 	ccHObject* getReferenceEntity()
 	{
 		return m_refEnt;
@@ -78,58 +109,3 @@ class ccComparisonDlg : public QDialog
 	void cancelAndExit();
 
   protected:
-	void showHisto();
-	void locaModelChanged(int);
-	void maxDistUpdated();
-	void enableCompute2D(bool);
-
-  protected:
-	bool isValid();
-	bool prepareEntitiesForComparison();
-	bool computeApproxDistances();
-	int  getBestOctreeLevel();
-	int  determineBestOctreeLevel(double);
-	void updateDisplay(bool showSF, bool hideRef);
-	void releaseOctrees();
-
-	//! Compared entity
-	ccHObject* m_compEnt;
-	//! Compared entity equivalent cloud
-	ccPointCloud* m_compCloud;
-	//! Compared entity's octree
-	ccOctree::Shared m_compOctree;
-	//! Whether the compared entity octree is partial or not
-	bool m_compOctreeIsPartial;
-	//! Initial compared entity visibility
-	bool m_compSFVisibility;
-
-	//! Reference entity
-	ccHObject* m_refEnt;
-	//! Reference entity equivalent cloud (if any)
-	ccGenericPointCloud* m_refCloud;
-	//! Reference entity equivalent mesh (if any)
-	ccGenericMesh* m_refMesh;
-	//! Reference entity's octree
-	ccOctree::Shared m_refOctree;
-	//! Whether the reference entity octree is partial or not
-	bool m_refOctreeIsPartial;
-	//! Initial reference entity visibility
-	bool m_refVisibility;
-
-	//! Comparison type
-	CC_COMPARISON_TYPE m_compType;
-
-	//! last computed scalar field name
-	QString m_sfName;
-
-	//! Initial SF name enabled on the compared entity
-	QString m_oldSfName;
-
-	//! Whether a display is active (and should be refreshed) or not
-	bool m_noDisplay;
-
-	//! Best octree level (or 0 if none has been guessed already)
-	int m_bestOctreeLevel;
-};
-
-#endif
