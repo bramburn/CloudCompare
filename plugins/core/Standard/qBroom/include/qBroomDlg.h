@@ -43,24 +43,36 @@ class ccGenericGLDisplay;
 class ccMainAppInterface;
 class RGBAColorsTableType;
 
-//! Dialog for the qBroom plugin
+/**
+ * @class qBroomDlg
+ *
+ * @brief Broom dialog
+ *
+ * Configure and control the virtual broom tool.
+ */
 class qBroomDlg : public QDialog, public Ui::BroomDialog
 {
 	Q_OBJECT
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] app Main application interface
+	 */
 	explicit qBroomDlg(ccMainAppInterface* app = nullptr);
 
 	//! Destructor
 	virtual ~qBroomDlg();
 
-	//! Sets associated point cloud
-	/** \warning The cloud should already have an associated octree structure.
-		If not, the octree will be computed and the method may return false (if
-		an error occurs).
-	**/
+	/**
+	 * @brief Set associated point cloud
+	 * @param[in] cloud Point cloud
+	 * @param[in] ownCloud Whether dialog owns the cloud
+	 * @param[in] autoRedraw Auto redraw after set
+	 * @return Success
+	 * @warning Cloud should have an associated octree structure.
+	 */
 	bool setCloud(ccPointCloud* cloud, bool ownCloud = false, bool autoRedraw = true);
 
 protected:
