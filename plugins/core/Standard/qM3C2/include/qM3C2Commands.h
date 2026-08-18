@@ -18,14 +18,30 @@
 #ifndef M3C2_PLUGIN_COMMANDS_HEADER
 #define M3C2_PLUGIN_COMMANDS_HEADER
 
+/**
+ * @file qM3C2Commands.h
+ *
+ * @brief M3C2 CLI commands
+ *
+ * Command line interface commands for M3C2.
+ */
+
 //CloudCompare
 #include "ccCommandLineInterface.h"
 
 //Local
 #include "qM3C2Process.h"
 
+/// M3C2 command identifier
 static const char COMMAND_M3C2[] = "M3C2";
 
+/**
+ * @struct CommandM3C2
+ *
+ * @brief M3C2 command
+ *
+ * CLI command for M3C2 processing.
+ */
 struct CommandM3C2 : public ccCommandLineInterface::Command
 {
 	CommandM3C2() : ccCommandLineInterface::Command("M3C2", COMMAND_M3C2) {}
