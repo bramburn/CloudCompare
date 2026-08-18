@@ -15,12 +15,24 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccReservedIDs.h
+ *
+ * @brief Reserved IDs
+ *
+ * Unique IDs reserved for special entities.
+ */
+
 #ifndef CC_RESERVED_IDS_HEADER
 #define CC_RESERVED_IDS_HEADER
 
-//! Unique IDs reserved by CloudCompare for special entities (display elements, etc.)
-/** They should all remain below ccUniqueIDGenerator::MinUniqueID (256)
- **/
+/**
+ * @enum ReservedIDs
+ *
+ * @brief Reserved IDs
+ *
+ * Unique IDs reserved by CloudCompare for special entities.
+ */
 enum class ReservedIDs : unsigned
 {
 	CLIPPING_BOX                                    = 1,
