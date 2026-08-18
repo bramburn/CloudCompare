@@ -15,6 +15,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccMaterialDB.h
+ *
+ * @brief Material/texture database
+ *
+ * Smart texture database with file watching for
+ * hot-reloading textures.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Always first
 // #include "ccIncludeGL.h"
 #include "ccLog.h"
@@ -25,7 +35,11 @@
 #include <QImage>
 #include <QOpenGLTexture>
 
-//! Smart texture database
+/**
+ * @brief Material/texture database
+ *
+ * Smart texture manager with file watching.
+ */
 class ccMaterialDB : public QObject
 {
 	Q_OBJECT
