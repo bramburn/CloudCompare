@@ -15,17 +15,34 @@
 //#                                                                        #
 //#                     COPYRIGHT: WigginsTech 2022                        #
 //#                                                                        #
-//##########################################################################
+/**
+ * @file ccAsprsModel.h
+ *
+ * @brief ASPRS classification model
+ *
+ * Table model for ASPRS point cloud classification.
+ */
 
 //Qt
 #include <QAbstractTableModel>
 #include <QColor>
 
+/**
+ * @class ccAsprsModel
+ *
+ * @brief ASPRS classification model
+ *
+ * Table model for ASPRS classification codes.
+ */
 class ccAsprsModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
 public:
+	/**
+	 * @brief Create model
+	 * @param[in] parent Parent object
+	 */
 	ccAsprsModel(QObject* parent = nullptr);
 
 	int rowCount(const QModelIndex& parent) const;
@@ -44,6 +61,11 @@ public:
 	// save asprs items data to qsettings
 	void save() const;
 
+	/**
+	 * @enum Column
+	 *
+	 * @brief Table columns
+	 */
 	enum Column
 	{
 		VISIBLE,
@@ -54,6 +76,11 @@ public:
 		LAST
 	};
 
+	/**
+	 * @struct AsprsItem
+	 *
+	 * @brief ASPRS classification item
+	 */
 	struct AsprsItem
 	{
 		bool visible = false;
