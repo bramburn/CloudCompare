@@ -18,29 +18,60 @@
 #ifndef CC_FITPLANE_HEADER
 #define CC_FITPLANE_HEADER
 
+/**
+ * @file ccFitPlane.h
+ *
+ * @brief Fit plane class
+ *
+ * Plane of best fit for compass measurements.
+ */
+
 #include <ccPlane.h>
 #include <ccNormalVectors.h>
 
 #include "ccMeasurement.h"
 
-/*
-ccFitPlane is a class that wraps around ccPlane and is used for storing the planes-of-best-fit created using qCompass.
-*/
+/**
+ * @class ccFitPlane
+ *
+ * @brief Fit plane
+ *
+ * Plane of best fit for geological measurements.
+ */
 class ccFitPlane :
 	public ccPlane, 
 	public ccMeasurement
 {
 public:
+	/**
+	 * @brief Create from plane
+	 * @param[in] p Input plane
+	 */
 	ccFitPlane(ccPlane* p);
+	
+	/// Destructor
 	~ccFitPlane() = default;
 
-	//update the metadata attributes of this plane
+	/**
+	 * @brief Update plane attributes
+	 * @param[in] rms Root mean square error
+	 * @param[in] search_r Search radius
+	 */
 	void updateAttributes(float rms, float search_r);
 
-	//create a FitPlane object from a point cloud
+	/**
+	 * @brief Fit plane to point cloud
+	 * @param[in] cloud Point cloud
+	 * @param[out] rms Root mean square error
+	 * @return Fitted plane or nullptr
+	 */
 	static ccFitPlane* Fit(CCCoreLib::GenericIndexedCloudPersist* cloud, double *rms);
 
-	//returns true if object is a plane created by ccCompass (has the associated data)
+	/**
+	 * @brief Check if object is a fit plane
+	 * @param[in] object Object to check
+	 * @return True if fit plane
+	 */
 	static bool isFitPlane(ccHObject* object);
 };
 
