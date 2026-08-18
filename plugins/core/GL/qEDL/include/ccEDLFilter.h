@@ -45,10 +45,24 @@
 // Qt
 #include <QOpenGLFunctions_2_1>
 
+/**
+ * @file ccEDLFilter.h
+ *
+ * @brief Eye Dome Lighting filter
+ *
+ * EyeDome Lighting post-processing filter.
+ */
+
 class ccShader;
 class ccFrameBufferObject;
 
-//!	EyeDome Lighting
+/**
+ * @class ccEDLFilter
+ *
+ * @brief Eye Dome Lighting filter
+ *
+ * EyeDome Lighting post-processing filter.
+ */
 class ccEDLFilter : public ccGlFilter
 {
   public:
