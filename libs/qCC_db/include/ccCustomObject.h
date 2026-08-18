@@ -18,13 +18,24 @@
 #ifndef CC_CUSTOM_OBJECT_HEADER
 #define CC_CUSTOM_OBJECT_HEADER
 
+/**
+ * @file ccCustomObject.h
+ *
+ * @brief Custom hierarchy object
+ *
+ * Custom hierarchy object for plugin-defined objects.
+ */
+
 // Local
 #include "ccHObject.h"
 
-//! Custom hierarchy object
-/** Used internally for deserialization of plugin-defined hierarchy objects
-    (see CC_TYPES::CUSTOM_H_OBJECT).
-**/
+/**
+ * @class ccCustomHObject
+ *
+ * @brief Custom hierarchy object
+ *
+ * Used internally for deserialization of plugin-defined hierarchy objects.
+ */
 class QCC_DB_LIB_API ccCustomHObject : public ccHObject
 {
   public:
