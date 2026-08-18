@@ -18,9 +18,13 @@
 //##########################################################################
 
 /**
-This is a custom 2DViewportLabel which takes up the entire viewport but is entirely transparent,
-except for a circle with radius r around the mouse. 
-*/
+ * @file ccMouseCircle.h
+ *
+ * @brief Mouse circle overlay
+ *
+ * Visual circle around mouse cursor for compass measurements.
+ */
+
 #include <ccStdPluginInterface.h>
 #include <ccGLWindowInterface.h>
 #include <cc2DViewportObject.h>
@@ -29,38 +33,46 @@ except for a circle with radius r around the mouse.
 #include <QPoint>
 #include <QObject>
 
+/**
+ * @class ccMouseCircle
+ *
+ * @brief Mouse circle overlay
+ *
+ * Transparent overlay that draws a circle around the mouse cursor.
+ */
 class ccMouseCircle : public cc2DViewportObject, public QObject
 {
 public:
-	//constructor
+	/**
+	 * @brief Create mouse circle
+	 * @param[in] owner Owner window
+	 * @param[in] name Circle name
+	 */
 	explicit ccMouseCircle(ccGLWindowInterface* owner, QString name = QString("MouseCircle"));
 
-	//deconstructor
+	/// Destructor
 	~ccMouseCircle() override;
 
-	//get the circle radius in px
+	/// Get circle radius in pixels
 	inline int getRadiusPx() const { return m_radius; }
 
-	//get the circle radius in world coordinates
+	/// Get circle radius in world coordinates
 	float getRadiusWorld();
 
-	//removes the link with the owner (no cleanup)
+	/// Mark owner as dead
 	inline void ownerIsDead() { m_owner = nullptr; }
 
 protected:
-	//draws a circle of radius r around the mouse
+	/// Draw circle
 	void draw(CC_DRAW_CONTEXT& context) override;
 
 private:
-	//event to get mouse-move updates & trigger repaint
+	/// Event filter for mouse updates
 	bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
-	//ccGLWindowInterface this overlay is attached to -> used to get mouse position & events
 	ccGLWindowInterface* m_owner;
-
 	float m_pixelSize;
-
 	int m_radius;
 	int m_radiusStep;
 };
