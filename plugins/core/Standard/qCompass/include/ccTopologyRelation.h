@@ -18,67 +18,94 @@
 #ifndef CC_TOPOLOGY_HEADER
 #define CC_TOPOLOGY_HEADER
 
+/**
+ * @file ccTopologyRelation.h
+ *
+ * @brief Topology relation class
+ *
+ * Defines topological relationships between GeoObjects.
+ */
+
 #include "ccPointPair.h"
 
 #include <ccPointCloud.h>
 
 class ccGeoObject;
 
-/*
-Class/object used to define topological (timing) relationships between different ccGeoObjects [WIP]
-*/
+/**
+ * @class ccTopologyRelation
+ *
+ * @brief Topology relation
+ *
+ * Defines topological/timing relationships between GeoObjects.
+ */
 class ccTopologyRelation : public ccPointPair
 {
 public:
-	//ctors
+	/**
+	 * @brief Create topology relation
+	 * @param[in] associatedCloud Associated cloud
+	 * @param[in] older_id ID of older object
+	 * @param[in] younger_id ID of younger object
+	 * @param[in] type Relationship type
+	 */
 	ccTopologyRelation(ccPointCloud* associatedCloud, int older_id, int younger_id, int type);
+	
+	/**
+	 * @brief Create from polyline
+	 * @param[in] obj Source polyline
+	 */
 	ccTopologyRelation(ccPolyline* obj);
 
-	//call this function to build a visible representation of this relationship
+	/**
+	 * @brief Build visible graphic representation
+	 * @param[in] older Older object
+	 * @param[in] younger Younger object
+	 */
 	void constructGraphic(ccGeoObject* older, ccGeoObject* younger);
 
-	//write metadata specific to this object
+	/// Update metadata
 	void updateMetadata() override;
 
-	//returns the youuger GeoObject
+	/// Get younger object ID
 	int getYoungerID();
 
-	//returns the older GeoObject
+	/// Get older object ID
 	int getOlderID();
 	
-	//return the type of this relationship
+	/// Get relationship type
 	int getType();
 
-	//set the type of this relationship
+	/// Set relationship type
 	void setType(int topologyType);
 
+	/**
+	 * @brief Check if object is topology relation
+	 * @param[in] obj Object to check
+	 * @return True if topology relation
+	 */
 	static bool isTopologyRelation(ccHObject* obj);
 
-	//inverts a topology relation (i.e older_than becomes younger_than)
+	/// Invert relationship type
 	static int invertType(int type);
-private:
-	int m_older_id = -1; //the older object of this relationship (notation is arbitrary for "equivalence" relations)
-	int m_younger_id = -1; //the younger object of this relationship
 
-	int m_type; //the type of this relationship
+private:
+	int m_older_id = -1;
+	int m_younger_id = -1;
+	int m_type;
 
 public:
-	//x-cutting relationships and similar
+	/// X-cutting relationships
 	static const int YOUNGER_THAN = 2;
-	static const int 	OLDER_THAN = 4;
+	static const int OLDER_THAN = 4;
 
-	//conformable relationships and similar
-	static const int IMMEDIATELY_FOLLOWS = 8 | YOUNGER_THAN; //(younger than bit set also!)
-	static const int IMMEDIATELY_PRECEDES = 16 | OLDER_THAN; //(older than bit set also!)
+	/// Conformable relationships
+	static const int IMMEDIATELY_FOLLOWS = 8 | YOUNGER_THAN;
+	static const int IMMEDIATELY_PRECEDES = 16 | OLDER_THAN;
 
-	//equivalence
+	/// Equivalence
 	static const int EQUIVALENCE = 32;
 
-	//other (rare relations)
-	static const int NOT_OLDER_THAN = 64; //equivalent to or younger
-	static const int NOT_YOUNGER_THAN = 128; //equivalent to or older
-
-	static const int UNKNOWN = 2048; //unknown...
-};
-
-#endif
+	/// Other relationships
+	static const int NOT_OLDER_THAN = 64;
+	static const int NOT_YOUNGER_THAN = 128;
