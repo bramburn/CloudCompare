@@ -16,75 +16,83 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccFrameBufferObject.h
+ *
+ * @brief Framebuffer object encapsulation
+ *
+ * OpenGL framebuffer object with color and depth attachments.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 #include "CCFbo.h"
 
 // Qt
 #include <QOpenGLExtraFunctions>
 #include <QOpenGLFunctions_2_1>
 
-//! F.B.O. encapsulation
-/** Compared to the QOpenGLFramebufferObject class, this one offers the possibility to:
-    - get the attached depth texture ID
-    - attach a custom COLOR texture
-**/
+/**
+ * @brief Framebuffer object
+ *
+ * Encapsulates OpenGL FBO with color and depth textures.
+ */
 class CCFBO_LIB_API ccFrameBufferObject
 {
   public:
+	/**\brief Create a framebuffer object */
 	ccFrameBufferObject();
+	/**\brief Destructor */
 	~ccFrameBufferObject();
 
+	/**\brief Initialize FBO\param w Width\param h Height\return true on success */
 	bool init(unsigned w, unsigned h);
+	/**\brief Reset FBO */
 	void reset();
+	/**\brief Start using FBO\return true on success */
 	bool start();
+	/**\brief Stop using FBO */
 	void stop();
 
+	/**\brief Check if FBO is valid\return true if valid */
 	inline bool isValid() const
 	{
 		return m_fboId;
 	}
 
+	/**\brief Initialize color texture\param internalformat GL internal format\param format GL format\param type GL type\param minMagFilter Min/mag filter\param target GL target\return true on success */
 	bool initColor(GLint  internalformat = GL_RGBA,
 	               GLenum format         = GL_RGBA,
 	               GLenum type           = GL_UNSIGNED_BYTE,
 	               GLint  minMagFilter   = GL_NEAREST,
 	               GLenum target         = GL_TEXTURE_2D);
 
+	/**\brief Attach color texture\param texID Texture ID\param ownTexture Whether FBO owns texture\param target GL target\return true on success */
 	bool attachColor(GLuint texID,
 	                 bool   ownTexture = false,
 	                 GLenum target     = GL_TEXTURE_2D);
 
+	/**\brief Initialize depth texture\param wrapParam Wrap parameter\param internalFormat Internal format\param minMagFilter Min/mag filter\param textureTarget GL target\return true on success */
 	bool initDepth(GLint  wrapParam      = GL_CLAMP_TO_BORDER,
 	               GLenum internalFormat = GL_DEPTH_COMPONENT32F,
 	               GLint  minMagFilter   = GL_NEAREST,
 	               GLenum textureTarget  = GL_TEXTURE_2D);
 
+	/**\brief Attach depth texture\param texID Texture ID\param ownTexture Whether FBO owns texture\param target GL target\return true on success */
 	bool attachDepth(GLuint texID,
 	                 bool   ownTexture = false,
 	                 GLenum target     = GL_TEXTURE_2D);
 
-	inline GLuint getID() const
-	{
-		return m_fboId;
-	}
-	inline GLuint getColorTexture() const
-	{
-		return m_colorTexture;
-	}
-	inline GLuint getDepthTexture() const
-	{
-		return m_depthTexture;
-	}
+	/// Get FBO ID
+	inline GLuint getID() const { return m_fboId; }
+	/// Get color texture ID
+	inline GLuint getColorTexture() const { return m_colorTexture; }
+	/// Get depth texture ID
+	inline GLuint getDepthTexture() const { return m_depthTexture; }
 
-	//! Returns width
-	inline unsigned width() const
-	{
-		return m_width;
-	}
-	//! Returns height
-	inline unsigned height() const
-	{
-		return m_height;
-	}
+	/// Get width
+	inline unsigned width() const { return m_width; }
+	/// Get height
+	inline unsigned height() const { return m_height; }
 
   protected: // methods
 	//! Deletes/releases the color texture
