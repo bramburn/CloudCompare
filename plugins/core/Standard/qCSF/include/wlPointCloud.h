@@ -28,12 +28,24 @@
 //#                                                                                     #
 //#######################################################################################
 
+/**
+ * @file wlPointCloud.h
+ *
+ * @brief Point cloud types
+ *
+ * Point cloud types for cloth simulation.
+ */
+
 //system
 #include <vector>
 
 namespace wl
 {
-	//! Point type
+	/**
+	 * @struct Point
+	 *
+	 * @brief Point type
+	 */
 	struct Point
 	{
 		union
