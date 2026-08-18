@@ -18,6 +18,15 @@
 #ifndef CC_ASCII_OPEN_DIALOG_HEADER
 #define CC_ASCII_OPEN_DIALOG_HEADER
 
+/**
+ * @file AsciiOpenDlg.h
+ *
+ * @brief ASCII open dialog
+ *
+ * Dialog for loading ASCII point cloud files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // local
 #include "qCC_io.h"
 
@@ -28,6 +37,7 @@
 // system
 #include <vector>
 
+/// ASCII column types
 enum CC_ASCII_OPEN_DLG_TYPES
 {
 	ASCII_OPEN_DLG_None   = 0,
