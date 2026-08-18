@@ -18,9 +18,23 @@
 #ifndef Q_SSAO_PLUGIN_HEADER
 #define Q_SSAO_PLUGIN_HEADER
 
+/**
+ * @file qSSAO.h
+ *
+ * @brief Screen Space Ambient Occlusion plugin
+ *
+ * SSAO shader plugin for ambient occlusion effects.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "ccGLPluginInterface.h"
 
-//! SSAO shader (Screen Space Ambient Occlusion)
+/**
+ * @brief SSAO shader plugin
+ *
+ * Screen Space Ambient Occlusion shader.
+ */
 class qSSAO : public QObject
     , public ccGLPluginInterface
 {
@@ -30,11 +44,16 @@ class qSSAO : public QObject
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qSSAO" FILE "../info.json")
 
   public:
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qSSAO(QObject* parent = nullptr);
 
+	/// Destructor
 	~qSSAO() override = default;
 
-	// inherited from ccGLFilterPluginInterface
+	/// Get SSAO filter
 	ccGlFilter* getFilter() override;
 };
 
