@@ -18,17 +18,35 @@
 #ifndef QSRA_SYMBOL_CLOUD_HEADER
 #define QSRA_SYMBOL_CLOUD_HEADER
 
+/**
+ * @file ccSymbolCloud.h
+ *
+ * @brief Symbol cloud
+ *
+ * Point cloud with per-point labels for SRA.
+ */
+
 //Qt
 #include <QString>
 
 //qCC_db
 #include <ccPointCloud.h>
 
+/**
+ * @class ccSymbolCloud
+ *
+ * @brief Symbol cloud
+ *
+ * Point cloud with per-point labels and symbols.
+ */
 class ccSymbolCloud : public ccPointCloud
 {
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create symbol cloud
+	 * @param[in] name Cloud name
+	 */
 	ccSymbolCloud(QString name = QString());
 
 	//! Reserves memory for storing per-point labels
