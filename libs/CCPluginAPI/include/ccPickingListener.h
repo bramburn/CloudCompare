@@ -18,6 +18,16 @@
 
 #include "CCPluginAPI.h"
 
+/**
+ * @file ccPickingListener.h
+ *
+ * @brief Picking listener interface
+ *
+ * Interface for tools that respond to point/triangle
+ * clicks in 3D views.
+ *
+ * @author CloudCompare project
+ */
 // CCCoreLib
 #include <CCGeom.h>
 
@@ -26,15 +36,27 @@
 
 class ccHObject;
 
-//! Point/triangle picking listener interface
+/**
+ * @brief Picking listener interface
+ *
+ * Interface for handling point/triangle picks in 3D views.
+ */
 class CCPLUGIN_LIB_API ccPickingListener
 {
   public:
+	/**
+	 * @brief Destructor
+	 */
 	virtual ~ccPickingListener() = default;
 
-	//! Picked item
+	/**
+	 * @brief Information about a picked item
+	 */
 	struct PickedItem
 	{
+		/**
+		 * @brief Default constructor
+		 */
 		PickedItem()
 		    : entity(nullptr)
 		    , itemIndex(0)
@@ -42,14 +64,17 @@ class CCPLUGIN_LIB_API ccPickingListener
 		{
 		}
 
-		QPoint     clickPoint;   // position of the user click
-		ccHObject* entity;       // picked entity (if any)
-		unsigned   itemIndex;    // e.g. point or triangle index
-		CCVector3  P3D;          // picked point in 3D (if any)
-		CCVector3d uvw;          // picked point barycentric coordinates (if picked on a triangle)
-		bool       entityCenter; // the point doesn't correspond to a real 'item' but to the entity center
+		QPoint     clickPoint;   //!< Mouse click position
+		ccHObject* entity;       //!< Picked entity
+		unsigned   itemIndex;    //!< Point or triangle index
+		CCVector3  P3D;          //!< 3D picked point
+		CCVector3d uvw;          //!< Barycentric coords (for triangles)
+		bool       entityCenter; //!< True if entity center was picked
 	};
 
-	//! Method called whenever an item is picked
+	/**
+	 * @brief Handle picked item
+	 * @param[in] pi Information about the pick
+	 */
 	virtual void onItemPicked(const PickedItem& pi) = 0;
 };
