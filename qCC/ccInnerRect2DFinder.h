@@ -18,11 +18,24 @@
 #ifndef CC_INNER_RECT_2D_FINDER_HEADER
 #define CC_INNER_RECT_2D_FINDER_HEADER
 
+/**
+ * @file ccInnerRect2DFinder.h
+ *
+ * @brief Inner rectangle finder
+ *
+ * Find largest enclosed rectangle in 2D point cloud.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // qCC_db
 #include <ccBox.h>
 #include <ccGenericPointCloud.h>
 
-//! Finds a the biggets enclosed rectangle in a point cloud (2D)
+/**
+ * @brief Inner rectangle finder
+ *
+ * Find largest enclosed rectangle in 2D point cloud.
+ */
 class ccInnerRect2DFinder
 {
 
