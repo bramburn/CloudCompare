@@ -1,6 +1,15 @@
 #ifndef CC_RECENTER_CLOUD_DIALOG
 #define CC_RECENTER_CLOUD_DIALOG
 
+/**
+ * @file ccShiftAndScaleCloudDlg.h
+ *
+ * @brief Shift and scale dialog
+ *
+ * Dialog for configuring coordinate shift and scale.
+ *
+ * @author CloudCompare project
+ */
 // local
 #include "ccGlobalShiftManager.h"
 #include "qCC_io.h"
@@ -14,17 +23,22 @@
 class Ui_GlobalShiftAndScaleDlg;
 class QAbstractButton;
 
-//! Dialog for selection of cloud center
+/**
+ * @brief Shift and scale dialog
+ *
+ * Dialog for configuring coordinate shift/scale.
+ */
 class QCC_IO_LIB_API ccShiftAndScaleCloudDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
-	/** \param Pg a point expressed in the original coordinate system
-	    \param Dg bounding box diagonal in the original coordinate system (or <= 0 to ignore)
-	    \param parent parent widget
-	**/
+	/**
+	 * @brief Create dialog
+	 * @param[in] Pg Point in original coordinates
+	 * @param[in] Dg Bounding box diagonal
+	 * @param[in] parent Parent widget
+	 */
 	ccShiftAndScaleCloudDlg(const CCVector3d& Pg, double Dg = 0, QWidget* parent = nullptr);
 
 	//! Reverse mode constructor
