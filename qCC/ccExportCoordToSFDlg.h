@@ -18,23 +18,40 @@
 #ifndef CC_EXPORT_COORD_TO_SF_DLG_HEADER
 #define CC_EXPORT_COORD_TO_SF_DLG_HEADER
 
+/**
+ * @file ccExportCoordToSFDlg.h
+ *
+ * @brief Export coordinate to SF dialog
+ *
+ * Dialog for exporting coordinates to scalar fields.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_exportCoordToSFDlg.h>
 
-//! Dialog to choose which dimension(s) (X, Y or Z) should be exported as SF(s)
+/**
+ * @brief Export coordinate to SF dialog
+ *
+ * Choose which coordinates to export as scalar fields.
+ */
 class ccExportCoordToSFDlg : public QDialog
     , public Ui::ExportCoordToSFDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccExportCoordToSFDlg(QWidget* parent = nullptr);
 
-	//! Returns whether X dimension should be exported
+	/// Export X
 	bool exportX() const;
-	//! Returns whether Y dimension should be exported
+	/// Export Y
 	bool exportY() const;
-	//! Returns whether Z dimension should be exported
+	/// Export Z
 	bool exportZ() const;
 };
 
