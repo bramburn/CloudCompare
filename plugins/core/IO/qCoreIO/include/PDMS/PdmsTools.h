@@ -18,6 +18,14 @@
 #ifndef PDMS_TOOLS_HEADER
 #define PDMS_TOOLS_HEADER
 
+/**
+ * @file PdmsTools.h
+ *
+ * @brief PDMS parsing tools
+ *
+ * Tools for parsing PDMS CAD files.
+ */
+
 // CCCoreLib
 #include <CCConst.h>
 #include <CCGeom.h>
@@ -28,11 +36,21 @@
 #include <ostream>
 #include <vector>
 
+/**
+ * @namespace PdmsTools
+ *
+ * @brief PDMS parsing namespace
+ */
 namespace PdmsTools
 {
+	/// Maximum string length
 	const int c_max_str_length = 2048;
 
-	//! Tokens (entities ID)
+	/**
+	 * @enum Token
+	 *
+	 * @brief PDMS tokens
+	 */
 	enum Token
 	{
 		// DO NOT MODIFIY TOKENS ORDER !!!!!!!
