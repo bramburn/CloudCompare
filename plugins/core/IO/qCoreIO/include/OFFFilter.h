@@ -15,14 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file OFFFilter.h
+ *
+ * @brief OFF filter
+ *
+ * OFF file I/O filter.
+ */
+
 #ifndef CC_OFF_FILTER_HEADER
 #define CC_OFF_FILTER_HEADER
 
 #include "FileIOFilter.h"
 
-//! OFF file I/O filter
-/** See http://people.sc.fsu.edu/~jburkardt/data/off/off.html
- **/
+/**
+ * @class OFFFilter
+ *
+ * @brief OFF filter
+ *
+ * OFF file I/O filter.
+ */
 class OFFFilter : public FileIOFilter
 {
   public:
