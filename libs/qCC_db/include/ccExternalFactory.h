@@ -18,17 +18,27 @@
 #ifndef CC_EXTERNAL_FACTORY_HEADER
 #define CC_EXTERNAL_FACTORY_HEADER
 
+/**
+ * @file ccExternalFactory.h
+ *
+ * @brief External factory
+ *
+ * Provides external factory for plugin-defined objects.
+ */
+
 // Local
 #include "ccHObject.h"
 
 // Qt
 #include <QMap>
 
-/**  Provides new objects with an external factory
- *  This is intended to be used into plugins.
- *  Each plugin may define a new factory by subclassing this class.
- *  Factories are then stored in a unique container and used to load custom types.
- **/
+/**
+ * @class ccExternalFactory
+ *
+ * @brief External factory
+ *
+ * Provides new objects with an external factory for plugins.
+ */
 class QCC_DB_LIB_API ccExternalFactory
 {
   public:
