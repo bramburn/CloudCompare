@@ -18,35 +18,61 @@
 #ifndef QSRA_PROFILE_IMPORT_DLG_HEADER
 #define QSRA_PROFILE_IMPORT_DLG_HEADER
 
+/**
+ * @file profileImportDlg.h
+ *
+ * @brief Profile import dialog
+ *
+ * Dialog for importing 2D revolution profiles.
+ */
+
 #include "ui_profileImportDlg.h"
 
-//! Dialog for importing a 2D revolution profile (qSRA plugin)
+/**
+ * @class ProfileImportDlg
+ *
+ * @brief Profile import dialog
+ *
+ * Dialog for importing 2D revolution profiles.
+ */
 class ProfileImportDlg : public QDialog, public Ui::ProfileImportDlg
 {
 	Q_OBJECT
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
     explicit ProfileImportDlg(QWidget* parent = nullptr);
 
-	//! Returns revolution axis dimension index
-	/** \return 0(X), 1(Y) or 2(Z).
-	**/
+	/**
+	 * @brief Get axis dimension
+	 * @return 0(X), 1(Y) or 2(Z)
+	 */
 	int getAxisDimension() const;
 
-	//! Sets default filename
+	/**
+	 * @brief Set default filename
+	 * @param[in] filename Default filename
+	 */
 	void setDefaultFilename(QString filename);
 
-	//! Returns input filename (on completion)
+	/**
+	 * @brief Get filename
+	 * @return Input filename
+	 */
 	QString getFilename() const;
 
-	//! Returns whether the profile heights are absolute or not (i.e. relative to the center)
+	/**
+	 * @brief Check if heights are absolute
+	 * @return True if heights are absolute
+	 */
 	bool absoluteHeightValues() const;
 
 protected:
-
-	//! Called when the 'browse' tool button is pressed
+	/// Browse for file
 	void browseFile();
 
 };
