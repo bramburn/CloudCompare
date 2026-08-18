@@ -24,6 +24,15 @@
 // qCC_db
 #include <ccGenericGLDisplay.h>
 
+/**
+ * @file ccTracePolylineTool.h
+ *
+ * @brief Trace polyline tool
+ *
+ * Tool for graphical polyline tracing.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // system
 #include <vector>
 
@@ -37,7 +46,11 @@ namespace Ui
 	class TracePolyLineDlg;
 }
 
-//! Graphical Polyline Tracing tool
+/**
+ * @brief Trace polyline tool
+ *
+ * Graphical polyline tracing tool.
+ */
 class ccTracePolylineTool : public ccOverlayDialog
     , public ccPickingListener
 {
