@@ -28,12 +28,26 @@
 //#                                                                                     #
 //#######################################################################################
 
+/**
+ * @file Particle.h
+ *
+ * @brief Particle class
+ *
+ * Particle for cloth simulation.
+ */
+
 #include <vector>
 #include <limits>
 
 #include "Vec3.h"
 
-/* The particle class represents a particle that can move around in 3D space*/
+/**
+ * @class Particle
+ *
+ * @brief Particle
+ *
+ * Particle that can move around in 3D space.
+ */
 class Particle
 {
 private:
