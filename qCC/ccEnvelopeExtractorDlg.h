@@ -17,6 +17,15 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccEnvelopeExtractorDlg.h
+ *
+ * @brief Envelope extractor debug dialog
+ *
+ * Debug dialog for envelope extraction.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Qt
 #include <QDialog>
 #include <QEventLoop>
@@ -30,7 +39,11 @@
 class ccGLWindowInterface;
 class ccHObject;
 
-//! Dialog for debugging envelope extraction
+/**
+ * @brief Envelope extractor debug dialog
+ *
+ * Debug visualization for envelope extraction.
+ */
 class ccEnvelopeExtractorDlg : public QDialog
     , public Ui::EnvelopeExtractorDlg
 {
