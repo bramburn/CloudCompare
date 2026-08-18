@@ -17,19 +17,46 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccAskThreeDoubleValuesDlg.h
+ *
+ * @brief Ask three values dialog
+ *
+ * Generic dialog for entering three double values.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_askThreeDoubleValuesDlg.h>
 
 // Qt
 #include <QString>
 
-//! Generic dialog to query 3 (double) values
+/**
+ * @brief Ask three double values dialog
+ *
+ * Generic dialog for entering three double values with bounds.
+ */
 class ccAskThreeDoubleValuesDlg : public QDialog
     , public Ui::AskThreeDoubleValuesDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] vName1 Name of first value
+	 * @param[in] vName2 Name of second value
+	 * @param[in] vName3 Name of third value
+	 * @param[in] minVal Minimum value
+	 * @param[in] maxVal Maximum value
+	 * @param[in] defaultVal1 Default value 1
+	 * @param[in] defaultVal2 Default value 2
+	 * @param[in] defaultVal3 Default value 3
+	 * @param[in] precision Decimal precision
+	 * @param[in] windowTitle Window title
+	 * @param[in] parent Parent widget
+	 */
 	ccAskThreeDoubleValuesDlg(const QString& vName1,
 	                          const QString& vName2,
 	                          const QString& vName3,
@@ -42,9 +69,17 @@ class ccAskThreeDoubleValuesDlg : public QDialog
 	                          const QString  windowTitle = QString(),
 	                          QWidget*       parent      = nullptr);
 
-	//! Enable the checkbox (bottom-left)
+	/**
+	 * @brief Show checkbox
+	 * @param[in] label Checkbox label
+	 * @param[in] state Initial state
+	 * @param[in] tooltip Tooltip text
+	 */
 	void showCheckbox(const QString& label, bool state, QString tooltip = QString());
 
-	//! Returns the checkbox state
+	/**
+	 * @brief Get checkbox state
+	 * @return Checkbox state
+	 */
 	bool getCheckboxState() const;
 };
