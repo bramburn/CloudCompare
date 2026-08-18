@@ -16,6 +16,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccRenderToFileDlg.h
+ *
+ * @brief Render to file dialog
+ *
+ * Dialog for exporting 3D view to image file.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "CCPluginAPI.h"
 
 // Qt
@@ -28,41 +38,83 @@ namespace Ui
 
 class ccGLWindowInterface;
 
-//! Dialog for screen to file rendering
+/**
+ * @brief Render to file dialog
+ *
+ * Export 3D view to image file.
+ */
 class CCPLUGIN_LIB_API ccRenderToFileDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create render dialog
+	 * @param[in] win Window to render
+	 * @param[in] parent Parent widget
+	 */
 	ccRenderToFileDlg(ccGLWindowInterface* win, QWidget* parent = nullptr);
 
+	/**
+	 * @brief Destructor
+	 */
 	~ccRenderToFileDlg() override;
 
-	//! Disable and hide the scale and overlay checkboxes
+	/**
+	 * @brief Hide scale and overlay options
+	 */
 	void hideOptions();
 
-	//! On dialog acceptance, returns requested zoom
+	/**
+	 * @brief Get requested zoom
+	 * @return Zoom factor
+	 */
 	float getZoom() const;
-	//! On dialog acceptance, returns requested output filename
+	
+	/**
+	 * @brief Get output filename
+	 * @return Filename
+	 */
 	QString getFilename() const;
-	//! On dialog acceptance, returns whether points should be scaled or not
+	
+	/**
+	 * @brief Get scale setting
+	 * @return true if points should not be scaled
+	 */
 	bool dontScalePoints() const;
-	//! Whether overlay items should be rendered
+	
+	/**
+	 * @brief Get overlay setting
+	 * @return true if overlay items should be rendered
+	 */
 	bool renderOverlayItems() const;
 
   private:
+	/// Choose output file
 	void chooseFile();
+	
+	/// Update info display
 	void updateInfo();
+	
+	/// Save settings
 	void saveSettings();
+	
+	/// Show output info
 	void showOutputInfo();
 
   private:
+	/// Window to render
 	ccGLWindowInterface* m_associatedWindow;
 
+	/// Selected file filter
 	QString m_selectedFilter;
+	
+	/// Current path
 	QString m_currentPath;
+	
+	/// File filters
 	QString m_filters;
 
+	/// UI
 	Ui::RenderToFileDialog* m_ui;
 };
