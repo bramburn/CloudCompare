@@ -18,6 +18,15 @@
 
 #include "CCAppCommon.h"
 
+/**
+ * @file ccDisplaySettingsDlg.h
+ *
+ * @brief Display settings dialog
+ *
+ * Dialog for configuring display appearance and behavior.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccOptions.h"
 
@@ -32,13 +41,24 @@ namespace Ui
 	class DisplaySettingsDlg;
 }
 
-//! Dialog to setup display settings
+/**
+ * @brief Display settings dialog
+ *
+ * Configure colors, fonts, and display options.
+ */
 class CCAPPCOMMON_LIB_API ccDisplaySettingsDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccDisplaySettingsDlg(QWidget* parent);
+	/**
+	 * @brief Destructor
+	 */
 	~ccDisplaySettingsDlg() override;
 
   Q_SIGNALS:
