@@ -18,15 +18,48 @@
 #ifndef CCCOMPASSEXPORT_H
 #define CCCOMPASSEXPORT_H
 
+/**
+ * @file ccCompassExport.h
+ *
+ * @brief Compass export functions
+ *
+ * Export compass measurements to various formats.
+ */
+
 #include <QString>
 
 class ccMainAppInterface;
 
+/**
+ * @class ccCompassExport
+ *
+ * @brief Compass export
+ *
+ * Export geological measurements to various formats.
+ */
 class ccCompassExport
 {
 public:
+	/**
+	 * @brief Save to CSV
+	 * @param[in] app Main application interface
+	 * @param[in] filename Output filename
+	 */
 	static void SaveCSV(ccMainAppInterface* app, const QString& filename);
+	
+	/**
+	 * @brief Save to SVG
+	 * @param[in] app Main application interface
+	 * @param[in] filename Output filename
+	 * @param[in] zoom Zoom level
+	 */
 	static void SaveSVG(ccMainAppInterface* app, const QString& filename, float zoom);
+	
+	/**
+	 * @brief Save to XML
+	 * @param[in] app Main application interface
+	 * @param[in] filename Output filename
+	 */
 	static void SaveXML(ccMainAppInterface* app, const QString& filename);
 };
 
