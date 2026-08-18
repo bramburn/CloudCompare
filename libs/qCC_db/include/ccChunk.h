@@ -18,15 +18,32 @@
 #ifndef CC_CHUNK_HEADER
 #define CC_CHUNK_HEADER
 
+/**
+ * @file ccChunk.h
+ *
+ * @brief Chunk management for large arrays
+ *
+ * Provides utilities for managing chunked arrays with
+ * fixed-size chunks (64KB) for efficient memory handling.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // System
 #include <vector>
 
-//! Fake chunked array management
+/**
+ * @brief Chunk management utilities
+ *
+ * Provides static methods for managing chunked arrays.
+ * Each chunk is 64KB (2^16 elements).
+ */
 class ccChunk
 {
   public:
+	//! Chunk size power of 2 (16 = 65536)
 	static const size_t SIZE_POWER = 16;
-	static const size_t SIZE       = (1 << SIZE_POWER); //~ 64K
+	//! Chunk size (64KB)
+	static const size_t SIZE       = (1 << SIZE_POWER);
 
 	inline static size_t Count(size_t elementCount)
 	{
