@@ -17,6 +17,14 @@
 
 #pragma once
 
+/**
+ * @file CCAppCommon.h
+ *
+ * @brief App Common library export definitions
+ *
+ * Defines the CCAPPCOMMON_LIB_API macro for library export/import.
+ */
+
 #include <QtCore/QtGlobal>
 
 #if defined(CCAPPCOMMON_LIBRARY_BUILD)
