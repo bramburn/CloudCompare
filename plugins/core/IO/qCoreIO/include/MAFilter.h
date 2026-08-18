@@ -18,16 +18,33 @@
 #ifndef CC_MA_FILTER_HEADER
 #define CC_MA_FILTER_HEADER
 
+/**
+ * @file MAFilter.h
+ *
+ * @brief Maya ASCII file filter
+ *
+ * I/O filter for Maya ASCII mesh files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! Maya ASCII meshes file I/O filter
+/**
+ * @brief Maya ASCII file filter
+ *
+ * Write Maya ASCII mesh files.
+ */
 class MAFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	MAFilter();
 
-	// inherited from FileIOFilter
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/// Check if can save
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	
+	/// Save to Maya ASCII file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 
