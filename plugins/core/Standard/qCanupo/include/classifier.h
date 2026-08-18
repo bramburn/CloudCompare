@@ -22,6 +22,14 @@ original CANUPO project, by N. Brodu and D. Lague.
 #ifndef QCANUPO_CLASSIFIER_HEADER
 #define QCANUPO_CLASSIFIER_HEADER
 
+/**
+ * @file classifier.h
+ *
+ * @brief CANUPO classifier
+ *
+ * Multi-scale point cloud classification.
+ */
+
 //Local
 #include "ccPointDescriptor.h"
 
@@ -34,7 +42,13 @@ original CANUPO project, by N. Brodu and D. Lague.
 //system
 #include <vector>
 
-//! Classifier
+/**
+ * @class Classifier
+ *
+ * @brief CANUPO classifier
+ *
+ * Multi-scale point cloud classifier.
+ */
 class Classifier
 {
 public: //methods
