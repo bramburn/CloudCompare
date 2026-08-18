@@ -18,14 +18,26 @@
 #ifndef CC_ADJUST_ZOOM_DIALOG_HEADER
 #define CC_ADJUST_ZOOM_DIALOG_HEADER
 
+/**
+ * @file ccAdjustZoomDlg.h
+ *
+ * @brief Adjust zoom dialog
+ *
+ * Dialog for setting focal distance in orthographic mode.
+ */
+
 #include <QDialog>
 #include <ui_adjustZoomDlg.h>
 
 class ccGLWindowInterface;
 
-//! Dialog to set the current focal of a 3D view (or equivalently the pixel size)
-/** Orthographic mode only.
- **/
+/**
+ * @class ccAdjustZoomDlg
+ *
+ * @brief Adjust zoom dialog
+ *
+ * Dialog to set the current focal of a 3D view.
+ */
 class ccAdjustZoomDlg : public QDialog
     , public Ui::AdjustZoomDialog
 {
