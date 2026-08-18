@@ -32,12 +32,24 @@
 // system
 #include <vector>
 
+/**
+ * @file ShpDBFFields.h
+ *
+ * @brief Shapefile DBF fields
+ *
+ * Shapefile DBF field definitions.
+ */
+
 // Shapelib
 #include <shapefil.h>
 
-//! Generic shapefile 'field'
-/** Fields contain one value per record (i.e. primitive)
- **/
+/**
+ * @class GenericDBFField
+ *
+ * @brief Generic DBF field
+ *
+ * Generic shapefile field (contains one value per record).
+ */
 class QCC_IO_LIB_API GenericDBFField
 {
   public:
