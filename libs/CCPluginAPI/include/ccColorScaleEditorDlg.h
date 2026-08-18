@@ -18,6 +18,15 @@
 
 #include "CCPluginAPI.h"
 
+/**
+ * @file ccColorScaleEditorDlg.h
+ *
+ * @brief Color scale editor dialog
+ *
+ * Dialog for creating and editing color scales.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // qCC_db
 #include <ccColorScale.h>
 
@@ -34,13 +43,23 @@ namespace Ui
 	class ColorScaleEditorDlg;
 }
 
-//! Dialog to edit/create color scales
+/**
+ * @brief Color scale editor dialog
+ *
+ * Create and edit color scales for scalar fields.
+ */
 class CCPLUGIN_LIB_API ccColorScaleEditorDialog : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] manager Color scales manager
+	 * @param[in] mainApp Main application interface
+	 * @param[in] currentScale Current scale to edit
+	 * @param[in] parent Parent widget
+	 */
 	ccColorScaleEditorDialog(ccColorScalesManager* manager,
 	                         ccMainAppInterface*   mainApp,
 	                         ccColorScale::Shared  currentScale = ccColorScale::Shared(nullptr),
