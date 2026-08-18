@@ -14,9 +14,19 @@
 //#                        COPYRIGHT: Luca Penasa                          #
 //#                                                                        #
 //##########################################################################
-//
+
 #ifndef Q_PCL_PLUGIN_HEADER
 #define Q_PCL_PLUGIN_HEADER
+
+/**
+ * @file qPCL.h
+ *
+ * @brief Point Cloud Library (PCL) bridge plugin
+ *
+ * Bridge to the Point Cloud Library for advanced point cloud processing.
+ *
+ * @author Luca Penasa
+ */
 
 #include "ccStdPluginInterface.h"
 
@@ -26,7 +36,13 @@
 
 class BaseFilter;
 
-//! PCL bridge plugin
+/**
+ * @class qPCL
+ *
+ * @brief PCL bridge plugin
+ *
+ * Bridge to PCL for point cloud processing.
+ */
 class qPCL : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -36,31 +52,39 @@ class qPCL : public QObject, public ccStdPluginInterface
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	qPCL(QObject* parent = nullptr);
-	//! Destructor
+	
+	/// Destructor
 	virtual ~qPCL();
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	virtual void onNewSelection(const ccHObject::Container& selectedEntities) override;
+	
+	/// Get plugin actions
 	virtual QList<QAction *> getActions() override;
 
-	//! Adds a filter
+	/**
+	 * @brief Add a filter
+	 * @param[in] filter Filter to add
+	 * @return Filter index
+	 */
 	int addFilter(BaseFilter* filter);
 
 public:
-	//! Handles new entity
+	/// Handle new entity
 	void handleNewEntity(ccHObject*);
 
-	//! Handles entity (visual) modification
+	/// Handle entity modification
 	void handleEntityChange(ccHObject*);
 
-	//! Handles new error message
+	/// Handle error message
 	void handleErrorMessage(QString);
 
 protected:
-
-	//! Loaded filters
 	std::vector<BaseFilter*> m_filters;
 };
 
