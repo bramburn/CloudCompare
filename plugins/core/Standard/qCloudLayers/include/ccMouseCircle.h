@@ -17,6 +17,14 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccMouseCircle.h
+ *
+ * @brief Mouse circle overlay
+ *
+ * Visual circle around mouse cursor for measurements.
+ */
+
 #include <ccGLWindowInterface.h>
 #include <cc2DViewportObject.h>
 
@@ -25,42 +33,47 @@ class QEvent;
 //Qt
 #include <QObject>
 
-//! This is a custom 2DViewportLabel which takes up the entire viewport but is entirely transparent,
-//! except for a circle with radius r around the mouse.
+/**
+ * @class ccMouseCircle
+ *
+ * @brief Mouse circle overlay
+ *
+ * Transparent overlay that draws a circle around the mouse cursor.
+ */
 class ccMouseCircle : public cc2DViewportObject, public QObject
 {
 public:
-	//! Constructor
+	/**
+	 * @brief Create mouse circle
+	 * @param[in] owner Owner window
+	 * @param[in] name Circle name
+	 */
 	explicit ccMouseCircle(ccGLWindowInterface* owner, QString name = QString("MouseCircle"));
 
-	//! Destructor
+	/// Destructor
 	~ccMouseCircle() override;
 
-	//! Returns the circle radius in px
+	/// Get circle radius in pixels
 	inline int getRadiusPx() const { return m_radius; }
 
-	//! Sets whether scroll is allowed or not
+	/**
+	 * @brief Set allow scroll
+	 * @param[in] state Allow state
+	 */
 	inline void setAllowScroll(bool state) { m_allowScroll = state; }
 	
 protected:
-	//! Draws a circle around the mouse cursor
+	/// Draw circle
 	void draw(CC_DRAW_CONTEXT& context) override;
 
 private:
-	//! Event filter to get mouse move and repaint events
+	/// Event filter for mouse updates
 	bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
-	//! The ccGLWindowInterface instance this overlay object is attached to
 	ccGLWindowInterface* m_owner;
-
-	//! Pixel size
 	float m_pixelSize;
-	//! Circle radius
 	int m_radius;
-	//! Increments of circle radius (when changed with the mouse wheel)
 	int m_radiusStep;
-	//! Whether to allow 'scrolling' (i.e. changing the circle radius)
 	bool m_allowScroll;
 };
-
