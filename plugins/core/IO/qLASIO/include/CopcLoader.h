@@ -40,8 +40,20 @@
 
 using namespace LasDetails;
 
+/**
+ * @namespace copc
+ *
+ * @brief COPC (Cloud Optimized Point Cloud) support
+ */
 namespace copc
 {
+	/**
+	 * @class CopcLoader
+	 *
+	 * @brief COPC file loader
+	 *
+	 * Load COPC (Cloud Optimized Point Cloud) files.
+	 */
 	class CopcLoader
 	{
 	  public: // methods
