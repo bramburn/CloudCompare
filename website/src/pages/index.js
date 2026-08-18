@@ -3,6 +3,8 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Heading from '@theme/Heading';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import Workflow from '@site/src/components/Workflow';
+import PluginSet from '@site/src/components/PluginSet';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 
 import styles from './index.module.css';
@@ -126,7 +128,9 @@ export default function Home() {
       description="Documentation for the Icelabz fork of CloudCompare: build, plugins, architecture, and CI for 3D point cloud and mesh processing.">
       <HomepageHeader />
       <main>
+        <Workflow />
         <HomepageFeatures />
+        <PluginSet />
       </main>
     </Layout>
   );

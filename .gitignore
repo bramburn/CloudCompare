@@ -105,6 +105,11 @@ Desktop.ini
 *.egg-info
 dist
 build
+# Allow the Docusaurus `website/docs/build/` subfolder (per-OS build
+# guides). The bare `build` rule above was matching it at depth and
+# silently ignoring all the build/ docs — that broke the deploy because
+# the sidebar referenced IDs that never made it to git.
+!/website/docs/build/
 eggs
 parts
 bin
