@@ -17,15 +17,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccNoiseFilterDlg.h
+ *
+ * @brief Noise filter dialog
+ *
+ * Dialog for configuring noise filtering parameters.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_noiseFilterDlg.h>
 
-//! Dialog for noise filtering (based on the distance to the implicit local surface)
+/**
+ * @brief Noise filter dialog
+ *
+ * Configure noise filtering parameters.
+ */
 class ccNoiseFilterDlg : public QDialog
     , public Ui::NoiseFilterDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccNoiseFilterDlg(QWidget* parent = nullptr);
 };
