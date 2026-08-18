@@ -18,40 +18,74 @@
 #ifndef CC_COLOR_GRADIENT_DLG_HEADER
 #define CC_COLOR_GRADIENT_DLG_HEADER
 
+/**
+ * @file ccColorGradientDlg.h
+ *
+ * @brief Color gradient dialog
+ *
+ * Dialog for configuring color gradients.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Qt
 #include <QColor>
 #include <ui_colorGradientDlg.h>
 
-//! Dialog to define a color gradient (default, with 2 colors, banding, etc.)
+/**
+ * @brief Color gradient dialog
+ *
+ * Configure color gradient settings.
+ */
 class ccColorGradientDlg : public QDialog
     , public Ui::ColorGradientDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccColorGradientDlg(QWidget* parent);
 
-	//! Gradient types
+	/// Gradient type
 	enum GradientType
 	{
-		Default,
-		TwoColors,
-		Banding
+		Default,   //!< Default gradient
+		TwoColors, //!< Two colors
+		Banding    //!< Banding mode
 	};
 
-	//! Returns selected gradient type
+	/**
+	 * @brief Get gradient type
+	 * @return Gradient type
+	 */
 	GradientType getType() const;
-	//! Sets the currently activated type
+	
+	/**
+	 * @brief Set gradient type
+	 * @param[in] type Gradient type
+	 */
 	void setType(GradientType type);
 
-	//! Returns the two colors of the gradient ('TwoColors' mode)
+	/**
+	 * @brief Get gradient colors
+	 * @param[out] first First color
+	 * @param[out] second Second color
+	 */
 	void getColors(QColor& first, QColor& second) const;
 
-	//! Returns the frequency of the gradient ('Banding' mode)
+	/**
+	 * @brief Get banding frequency
+	 * @return Banding frequency
+	 */
 	double getBandingFrequency() const;
 
-	//! Returns the ramp dimension
+	/**
+	 * @brief Get dimension
+	 * @return Ramp dimension
+	 */
 	unsigned char getDimension() const;
 
   protected:
