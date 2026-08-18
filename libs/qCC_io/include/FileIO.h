@@ -18,22 +18,47 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file FileIO.h
+ *
+ * @brief File I/O metadata
+ *
+ * Metadata for file I/O operations.
+ *
+ * @author CloudCompare project
+ */
+
 #include "qCC_io.h"
 
 #include <QString>
 
+/**
+ * @brief File I/O metadata
+ *
+ * Stores metadata for file writers.
+ */
 class FileIO
 {
   public:
+	/// Deleted default constructor
 	FileIO() = delete;
 
-	QCC_IO_LIB_API static void    setWriterInfo(const QString& applicationName, const QString& version);
+	/// Set writer info
+	QCC_IO_LIB_API static void setWriterInfo(const QString& applicationName, const QString& version);
+
+	/// Get writer info string
 	QCC_IO_LIB_API static QString writerInfo();
 
+	/// Get application name
 	QCC_IO_LIB_API static QString applicationName();
+
+	/// Get version
 	QCC_IO_LIB_API static QString version();
 
+	/// Get created by string
 	QCC_IO_LIB_API static QString createdBy();
+
+	/// Get created date/time string
 	QCC_IO_LIB_API static QString createdDateTime();
 
   private:
