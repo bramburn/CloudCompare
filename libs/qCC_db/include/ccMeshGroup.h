@@ -18,13 +18,24 @@
 #ifndef CC_MESH_GROUP_HEADER
 #define CC_MESH_GROUP_HEADER
 
+/**
+ * @file ccMeshGroup.h
+ *
+ * @brief Mesh group
+ *
+ * [DEPRECATED] A group of meshes sharing vertices.
+ */
+
 // Local
 #include "ccGenericMesh.h"
 
-//! [DEPRECATED] A group of meshes sharing vertices (and associated properties) in a unique cloud
-/** This is an empty shell for backward compatibility.
-    Shouldn't be used anymore.
-**/
+/**
+ * @class ccMeshGroup
+ *
+ * @brief Mesh group
+ *
+ * [DEPRECATED] A group of meshes sharing vertices.
+ */
 class QCC_DB_LIB_API ccMeshGroup : public ccGenericMesh
 {
   public:
