@@ -17,6 +17,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccKrigingParamsDialog.h
+ *
+ * @brief Kriging parameters dialog
+ *
+ * Dialog for configuring Kriging interpolation parameters.
+ *
+ * @author CloudCompare project
+ */
+
 // Qt
 #include <QDialog>
 
@@ -25,25 +35,38 @@
 
 class Ui_KrigingParamsDialog;
 
-//! Dialog to set the Kriging parameters
+/**
+ * @brief Kriging parameters dialog
+ *
+ * Configure Kriging interpolation parameters.
+ */
 class ccKrigingParamsDialog : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	ccKrigingParamsDialog(QWidget* parent = nullptr);
 
-	//! Destructor
+	/// Destructor
 	virtual ~ccKrigingParamsDialog();
 
-	//! Sets the parameters
+	/**
+	 * @brief Set parameters
+	 * @param[in] krigingParams Parameters
+	 */
 	void setParameters(const ccRasterGrid::KrigingParams& krigingParams);
 
-	//! Gets the parameters
+	/**
+	 * @brief Get parameters
+	 * @param[out] krigingParams Parameters
+	 */
 	void getParameters(ccRasterGrid::KrigingParams& krigingParams);
 
   protected:
-	//! Associated ui
+	/// UI
 	Ui_KrigingParamsDialog* m_ui;
 };
