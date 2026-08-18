@@ -18,16 +18,31 @@
 #ifndef LAS_FWF_IO_PLUGIN_COMMANDS_HEADER
 #define LAS_FWF_IO_PLUGIN_COMMANDS_HEADER
 
+/**
+ * @file qLASFWFIOCommands.h
+ *
+ * @brief LAS FWF CLI commands
+ *
+ * Command line interface commands for LAS FWF.
+ */
 #include "ccCommandLineInterface.h"
 
 // Local
 #include "LASFWFFilter.h"
 
+/// Load FWF command identifier
 static const char COMMAND_LOAD_FWF[]        = "FWF_O";
 static const char COMMAND_SAVE_CLOUDS_FWF[] = "FWF_SAVE_CLOUDS";
 static const char OPTION_ALL_AT_ONCE[]      = "ALL_AT_ONCE";
 static const char OPTION_COMPRESSED[]       = "COMPRESSED";
 
+/**
+ * @struct CommandLoadLASFWF
+ *
+ * @brief Load LAS FWF command
+ *
+ * CLI command to load LAS Full WaveForm files.
+ */
 struct CommandLoadLASFWF : public ccCommandLineInterface::Command
 {
 	CommandLoadLASFWF()
