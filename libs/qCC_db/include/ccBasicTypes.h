@@ -18,12 +18,19 @@
 #ifndef CC_BASIC_TYPES_HEADER
 #define CC_BASIC_TYPES_HEADER
 
+/**
+ * @file ccBasicTypes.h
+ *
+ * @brief Basic type definitions
+ *
+ * Basic CloudCompare type aliases and definitions.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // CCCoreLib
 #include <CCTypes.h>
 
-//! Compressed normals type
-/** Should be set accordingly to ccNormalCompressor::QUANTIZE_LEVEL
- **/
+/// Compressed normal type (index into normal table)
 using CompressedNormType = unsigned int;
 
 #endif // CC_BASIC_TYPES_HEADER
