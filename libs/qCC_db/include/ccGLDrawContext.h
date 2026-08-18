@@ -17,6 +17,15 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGLDrawContext.h
+ *
+ * @brief OpenGL drawing context and flags
+ *
+ * Defines drawing context and flags for 3D rendering.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 #include "ccColorBasedEntityPicking.h"
 #include "ccIncludeGL.h"
 
@@ -31,7 +40,9 @@ class ccScalarField;
 class ccColorRampShader;
 class ccShader;
 
-//! Display parameters of a 3D entity
+/**
+ * @brief Display parameters for 3D entity
+ */
 struct glDrawParams
 {
 	//! Display scalar field (prioritary on colors)
@@ -42,7 +53,7 @@ struct glDrawParams
 	bool showNorms;
 };
 
-// Drawing flags (type: short)
+/// Drawing flags
 enum CC_DRAWING_FLAGS
 {
 	CC_DRAW_2D         = 0x0001,
@@ -73,7 +84,9 @@ enum CC_DRAWING_FLAGS
 #define MACRO_LODActivated(context) (context.drawingFlags & CC_LOD_ACTIVATED)
 #define MACRO_VirtualTransEnabled(context) (context.drawingFlags & CC_VIRTUAL_TRANS_ENABLED)
 
-//! Display context
+/**
+ * @brief OpenGL drawing context
+ */
 struct ccGLDrawContext
 {
 	//! Drawing options (see below)
