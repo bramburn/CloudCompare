@@ -18,16 +18,31 @@
 #ifndef Q_HPR_PLUGIN_HEADER
 #define Q_HPR_PLUGIN_HEADER
 
+/**
+ * @file qHPR.h
+ *
+ * @brief Hidden Point Removal plugin
+ *
+ * Hidden Point Removal algorithm for approximating points visibility.
+ *
+ * Reference: "Direct Visibility of Point Sets", Katz, Tal, Basri.
+ * SIGGRAPH 2007
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 #include "ccStdPluginInterface.h"
 
 //CCCoreLib
 #include <ReferenceCloud.h>
 
-//! Wrapper to the "Hidden Point Removal" algorithm for approximating points visibility in an N dimensional point cloud, as seen from a given viewpoint
-/** "Direct Visibility of Point Sets", Sagi Katz, Ayellet Tal, and Ronen Basri.
-	SIGGRAPH 2007
-	http://www.mathworks.com/matlabcentral/fileexchange/16581-hidden-point-removal
-**/
+/**
+ * @class qHPR
+ *
+ * @brief Hidden Point Removal plugin
+ *
+ * Approximate points visibility using the HPR algorithm.
+ */
 class qHPR : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -37,26 +52,35 @@ class qHPR : public QObject, public ccStdPluginInterface
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qHPR(QObject* parent = nullptr);
 
+	/// Destructor
 	virtual ~qHPR() = default;
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	virtual void onNewSelection(const ccHObject::Container& selectedEntities) override;
+	
+	/// Get plugin actions
 	virtual QList<QAction *> getActions() override;
 
 protected:
-
-	//! Slot called when associated ation is triggered
+	/// Execute HPR action
 	void doAction();
 
-protected:
-
-	//! Katz et al. algorithm
+	/**
+	 * @brief Remove hidden points
+	 * @param[in] theCloud Input point cloud
+	 * @param[in] viewPoint Viewpoint
+	 * @param[in] fParam HPR parameter
+	 * @return Visible points
+	 */
 	CCCoreLib::ReferenceCloud* removeHiddenPoints(CCCoreLib::GenericIndexedCloudPersist* theCloud, const CCVector3d& viewPoint, double fParam);
 
-	//! Associated action
+protected:
 	QAction* m_action;
 };
 
