@@ -18,9 +18,23 @@
 #ifndef Q_EDL_PLUGIN_HEADER
 #define Q_EDL_PLUGIN_HEADER
 
+/**
+ * @file qEDL.h
+ *
+ * @brief Eye Dome Lighting plugin
+ *
+ * EDL (Eye Dome Lighting) shader plugin.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "ccGLPluginInterface.h"
 
-//! EDL shader (Eye Dome Lighting)
+/**
+ * @brief EDL shader plugin
+ *
+ * Eye Dome Lighting shader for enhanced depth perception.
+ */
 class qEDL : public QObject
     , public ccGLPluginInterface
 {
@@ -30,11 +44,16 @@ class qEDL : public QObject
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qEDL" FILE "../info.json")
 
   public:
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qEDL(QObject* parent = nullptr);
 
+	/// Destructor
 	~qEDL() override = default;
 
-	// inherited from ccGLFilterPluginInterface
+	/// Get EDL filter
 	ccGlFilter* getFilter() override;
 };
 
