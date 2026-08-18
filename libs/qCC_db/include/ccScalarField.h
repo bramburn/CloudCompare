@@ -17,33 +17,64 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccScalarField.h
+ *
+ * @brief Scalar field class for per-point measurements
+ *
+ * A scalar field stores a single numerical value per point in a point cloud.
+ * Common uses include:
+ * - Distance measurements (C2C, C2M distances)
+ * - Curvature values
+ * - Intensity values from LiDAR
+ * - Classification labels
+ * - Any custom per-point measurement
+ *
+ * Scalar fields can be visualized with color ramps and used for filtering,
+ * segmentation, and analysis operations.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see ccPointCloud for point cloud implementation
+ * @see ccColorScale for color ramp implementation
+ */
+
 // CCCoreLib
 #include <ScalarField.h>
 
 // qCC_db
 #include "ccColorScale.h"
 
-//! A scalar field associated to display-related parameters
-/** Extends the CCCoreLib::ScalarField object.
- **/
+/**
+ * @brief Scalar field with display parameters
+ *
+ * Extends CCCoreLib::ScalarField with CloudCompare-specific
+ * display settings like color scales and value ranges.
+ */
 class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
     , public ccSerializableObject
 {
   public:
-	//! Default constructor
-	/** \param name scalar field name
-	 **/
+	/**
+	 * @brief Create a scalar field
+	 * @param[in] name Name for this scalar field
+	 */
 	explicit ccScalarField(const std::string& name = std::string());
 
-	//! Copy constructor
-	/** \param sf scalar field to copy
-	    \warning May throw a std::bad_alloc exception
-	**/
+	/**
+	 * @brief Copy constructor
+	 * @param[in] sf Scalar field to copy
+	 * @warning May throw std::bad_alloc on failure
+	 */
 	ccScalarField(const ccScalarField& sf);
 
 	/*** Scalar values display handling ***/
 
-	//! Scalar field range structure
+	/**
+	 * @brief Scalar field display range structure
+	 *
+	 * Manages the min/max bounds and current display range
+	 * for visualizing scalar field values.
+	 */
 	class QCC_DB_LIB_API Range
 	{
 	  public:
