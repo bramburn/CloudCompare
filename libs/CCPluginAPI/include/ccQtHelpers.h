@@ -16,14 +16,31 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccQtHelpers.h
+ *
+ * @brief Qt helper utilities
+ *
+ * Utility functions for Qt widgets and threading.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Qt
 #include <QAbstractButton>
 #include <QThread>
 
+/**
+ * @brief Qt helper functions
+ */
 class ccQtHelpers
 {
   public:
-	//! Sets a button background color
+	/**
+	 * @brief Set button background color
+	 * @param[in] button Button to modify
+	 * @param[in] col Color to set
+	 */
 	static void SetButtonColor(QAbstractButton* button, const QColor& col)
 	{
 		if (button != nullptr)
@@ -35,7 +52,11 @@ class ccQtHelpers
 		}
 	}
 
-	//! Returns the ideal number of threads/cores
+	/**
+	 * @brief Get ideal thread count
+	 * @param[in] idealThreadCount Base thread count
+	 * @return Adjusted thread count
+	 */
 	static int GetMaxThreadCount(int idealThreadCount)
 	{
 		if (idealThreadCount <= 4)
@@ -52,7 +73,10 @@ class ccQtHelpers
 		}
 	}
 
-	//! Returns the ideal number of threads/cores with Qt Concurrent
+	/**
+	 * @brief Get ideal thread count (uses Qt)
+	 * @return Ideal thread count for this machine
+	 */
 	static int GetMaxThreadCount()
 	{
 		return GetMaxThreadCount(QThread::idealThreadCount());
