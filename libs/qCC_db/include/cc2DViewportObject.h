@@ -18,37 +18,65 @@
 #ifndef CC_2D_VIEWPORT_OBJECT_HEADER
 #define CC_2D_VIEWPORT_OBJECT_HEADER
 
+/**
+ * @file cc2DViewportObject.h
+ *
+ * @brief 2D viewport object
+ *
+ * Base class for 2D viewport overlays.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Local
 #include "ccGenericGLDisplay.h"
 #include "ccHObject.h"
 
-//! 2D viewport object
+/**
+ * @brief 2D viewport object
+ *
+ * Base class for 2D viewport overlays and labels.
+ */
 class QCC_DB_LIB_API cc2DViewportObject : public ccHObject
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Create viewport object
+	 * @param[in] name Object name
+	 */
 	cc2DViewportObject(QString name = QString());
 
-	//! Copy constructor
+	/**
+	 * @brief Copy constructor
+	 * @param[in] viewport Source object
+	 */
 	cc2DViewportObject(const cc2DViewportObject& viewport);
 
 	// inherited from ccHObject
+	/// Get class type
 	virtual CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::VIEWPORT_2D_OBJECT;
 	}
+	/// Is serializable
 	virtual bool isSerializable() const override
 	{
 		return true;
 	}
 
-	//! Sets perspective view state
+	/**
+	 * @brief Set parameters
+	 * @param[in] params Viewport parameters
+	 */
 	void setParameters(const ccViewportParameters& params)
 	{
 		m_params = params;
 	}
 
-	//! Gets parameters
+	/**
+	 * @brief Get parameters
+	 * @return Viewport parameters
+	 */
 	const ccViewportParameters& getParameters() const
 	{
 		return m_params;
@@ -60,7 +88,7 @@ class QCC_DB_LIB_API cc2DViewportObject : public ccHObject
 	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
 
-	//! Viewport parameters
+	/// Viewport parameters
 	ccViewportParameters m_params;
 };
 
