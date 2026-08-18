@@ -28,10 +28,25 @@
 //#                                                                                     #
 //#######################################################################################
 
+/**
+ * @file Vec3.h
+ *
+ * @brief 3D vector
+ *
+ * Minimal 3D vector class.
+ */
+
 //system
 #include <cmath>
 
-class Vec3 // a minimal vector class of 3 doubles and overloaded math operators
+/**
+ * @class Vec3
+ *
+ * @brief 3D vector
+ *
+ * Minimal vector class of 3 doubles with overloaded operators.
+ */
+class Vec3
 {
 public:
 
