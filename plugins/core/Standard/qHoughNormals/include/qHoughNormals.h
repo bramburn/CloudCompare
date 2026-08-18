@@ -18,12 +18,28 @@
 #ifndef QHOUGH_NORMALS_PLUGIN_HEADER
 #define QHOUGH_NORMALS_PLUGIN_HEADER
 
+/**
+ * @file qHoughNormals.h
+ *
+ * @brief Hough normals plugin
+ *
+ * Normal estimation using the Hough transform method.
+ *
+ * Reference: "Deep Learning for Robust Normal Estimation in Unstructured Point Clouds"
+ * by Alexandre Boulch and Renaud Marlet, SGP 2016.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 #include "ccStdPluginInterface.h"
 
-//! Wrapper to the 'normals_Hough' library (https://github.com/aboulch/normals_Hough)
-/** "Deep Learning for Robust Normal Estimation in Unstructured Point Clouds"
-	by Alexandre Boulch and Renaud Marlet, Symposium of Geometry Processing 2016, Computer Graphics Forum
-**/
+/**
+ * @class qHoughNormals
+ *
+ * @brief Hough normals plugin
+ *
+ * Normal estimation using deep learning and Hough transform.
+ */
 class qHoughNormals : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -33,23 +49,26 @@ class qHoughNormals : public QObject, public ccStdPluginInterface
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qHoughNormals(QObject* parent = nullptr);
 
+	/// Destructor
 	virtual ~qHoughNormals() = default;
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	virtual void onNewSelection(const ccHObject::Container& selectedEntities) override;
+	
+	/// Get plugin actions
 	virtual QList<QAction *> getActions() override;
 
 protected:
-
-	//! Slot called when associated ation is triggered
+	/// Execute action
 	void doAction();
 
 protected:
-
-	//! Associated action
 	QAction* m_action;
 };
 
