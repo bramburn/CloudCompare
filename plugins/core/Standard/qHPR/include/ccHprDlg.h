@@ -18,14 +18,31 @@
 #ifndef CC_HPR_DLG_HEADER
 #define CC_HPR_DLG_HEADER
 
+/**
+ * @file ccHprDlg.h
+ *
+ * @brief HPR dialog
+ *
+ * Dialog for Hidden Point Removal parameters.
+ */
+
 #include "ui_hprDlg.h"
 
-//! Dialog for the qHPR plugin
+/**
+ * @class ccHprDlg
+ *
+ * @brief HPR dialog
+ *
+ * Dialog for HPR parameters.
+ */
 class ccHprDlg : public QDialog, public Ui::HPRDialog
 {
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccHprDlg(QWidget* parent = nullptr);
 };
 
