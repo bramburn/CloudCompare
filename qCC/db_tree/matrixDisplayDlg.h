@@ -18,6 +18,16 @@
 #ifndef CC_MATRIX_DISPLAY_DIALOG_HEADER
 #define CC_MATRIX_DISPLAY_DIALOG_HEADER
 
+/**
+ * @file matrixDisplayDlg.h
+ *
+ * @brief Matrix display dialog
+ *
+ * Widget for displaying 4x4 transformation matrices.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Qt
 #include <QWidget>
 
@@ -29,38 +39,52 @@ namespace Ui
 	class MatrixDisplayDlg;
 }
 
-//! Simple widget to display a 4x4 matrix in various formats
+/**
+ * @brief Matrix display dialog
+ *
+ * Display 4x4 matrices in various formats.
+ */
 class MatrixDisplayDlg : public QWidget
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create widget
+	 * @param[in] parent Parent widget
+	 */
 	explicit MatrixDisplayDlg(QWidget* parent = nullptr);
 
+	/// Destructor
 	~MatrixDisplayDlg();
 
-	//! Clears widget
+	/// Clear widget
 	void clear();
 
-	//! Updates dialog with a given (float) matrix
+	/**
+	 * @brief Fill with float matrix
+	 * @param[in] mat Matrix
+	 */
 	void fillDialogWith(const ccGLMatrix& mat);
-	//! Updates dialog with a given (double) matrix
+	
+	/**
+	 * @brief Fill with double matrix
+	 * @param[in] mat Matrix
+	 */
 	void fillDialogWith(const ccGLMatrixd& mat);
 
   public:
-	//! Exports current matrix to an ASCII file
-	/** Will display a file selection dialog!
-	 **/
+	/// Export to ASCII file
 	void exportToASCII();
-	//! Exports current matrix to the clipboard
+	
+	/// Export to clipboard
 	void exportToClipboard();
 
   protected:
-	//! Fills the second part of the dialog
+	/// Fill with axis-angle and translation
 	void fillDialogWith(const CCVector3d& axis, double angle_rad, const CCVector3d& T, int precision);
 
-	//! Matrix
+	/// Matrix
 	ccGLMatrixd m_mat;
 
 	Ui::MatrixDisplayDlg* m_ui;
