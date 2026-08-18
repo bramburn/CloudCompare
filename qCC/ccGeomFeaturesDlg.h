@@ -18,6 +18,16 @@
 #ifndef CC_GEOM_FEATURES_DIALOG_HEADER
 #define CC_GEOM_FEATURES_DIALOG_HEADER
 
+/**
+ * @file ccGeomFeaturesDlg.h
+ *
+ * @brief Geometry features dialog
+ *
+ * Dialog for selecting geometric features to compute.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 // Local
 #include "ccLibAlgorithms.h"
 
@@ -25,29 +35,59 @@
 #include <QDialog>
 #include <ui_geomFeaturesDlg.h>
 
-//! Dialog for computing the density of a point clouds
+/**
+ * @brief Geometry features dialog
+ *
+ * Select geometric features to compute.
+ */
 class ccGeomFeaturesDlg : public QDialog
     , public Ui::GeomFeaturesDialog
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccGeomFeaturesDlg(QWidget* parent = nullptr);
 
-	//! Sets selected features
+	/**
+	 * @brief Set selected features
+	 * @param[in] features Features to select
+	 */
 	void setSelectedFeatures(const ccLibAlgorithms::GeomCharacteristicSet& features);
-	//! Returns selected features
+	
+	/**
+	 * @brief Get selected features
+	 * @param[out] features Selected features
+	 * @return true if selection is valid
+	 */
 	bool getSelectedFeatures(ccLibAlgorithms::GeomCharacteristicSet& features) const;
-	//! Sets the default kernel radius (for 'precise' mode only)
+	
+	/**
+	 * @brief Set radius
+	 * @param[in] r Radius
+	 */
 	void setRadius(double r);
-	//! Returns	the kernel radius (for 'precise' mode only)
+	
+	/**
+	 * @brief Get radius
+	 * @return Radius
+	 */
 	double getRadius() const;
 
-	//! Sets the 'up direction' (and enables the group at the same time)
+	/**
+	 * @brief Set up direction
+	 * @param[in] upDir Up direction
+	 */
 	void setUpDirection(const CCVector3& upDir);
-	//! Returns the 'up direction' if any is defined (nullptr otherwise)
+	
+	/**
+	 * @brief Get up direction
+	 * @return Up direction, or nullptr
+	 */
 	CCVector3* getUpDirection() const;
 
-	//! Reset the whole dialog
+	/// Reset dialog
 	void reset();
 
   protected:
