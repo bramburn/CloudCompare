@@ -18,6 +18,14 @@
 #ifndef Q_M3C2_DIALOG_HEADER
 #define Q_M3C2_DIALOG_HEADER
 
+/**
+ * @file qM3C2Dialog.h
+ *
+ * @brief M3C2 dialog
+ *
+ * Main dialog for M3C2 processing.
+ */
+
 #include <ui_qM3C2Dialog.h>
 
 //Local
@@ -29,14 +37,26 @@
 class ccMainAppInterface;
 class ccPointCloud;
 
-//! M3C2 plugin's main dialog
+/**
+ * @class qM3C2Dialog
+ *
+ * @brief M3C2 dialog
+ *
+ * Main dialog for M3C2 processing parameters.
+ */
 class qM3C2Dialog : public QDialog, public Ui::M3C2Dialog
 {
 	Q_OBJECT
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] cloud1 First point cloud
+	 * @param[in] cloud2 Second point cloud
+	 * @param[in] app Main application interface
+	 * @param[in] corePointsCloud Core points cloud (optional)
+	 */
 	qM3C2Dialog(ccPointCloud* cloud1, ccPointCloud* cloud2, ccMainAppInterface* app, ccPointCloud* corePointsCloud=nullptr);
 
 	//! Returns cloud #1
