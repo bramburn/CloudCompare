@@ -18,17 +18,39 @@
 #ifndef QFACET_CELLS_FUSION_DLG_HEADER
 #define QFACET_CELLS_FUSION_DLG_HEADER
 
+/**
+ * @file cellsFusionDlg.h
+ *
+ * @brief Cells fusion dialog
+ *
+ * Dialog for cell-fusion strategy in facets extraction.
+ */
+
 #include "ui_cellsFusionDlg.h"
 
-//! Dialog for the extraction of facets based on a cell-fusion strategy (qFacets plugin)
+/**
+ * @class CellsFusionDlg
+ *
+ * @brief Cells fusion dialog
+ *
+ * Dialog for extracting facets based on cell-fusion strategy.
+ */
 class CellsFusionDlg : public QDialog, public Ui::CellsFusionDlg
 {
 public:
 
-	//! Cell fusion algorithm
+	/**
+	 * @enum Algorithm
+	 *
+	 * @brief Cell fusion algorithm
+	 */
 	enum Algorithm { ALGO_KD_TREE, ALGO_FAST_MARCHING };
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] algo Algorithm type
+	 * @param[in] parent Parent widget
+	 */
 	CellsFusionDlg(Algorithm algo, QWidget* parent = nullptr)
 		: QDialog(parent, Qt::Tool)
 		, Ui::CellsFusionDlg()
