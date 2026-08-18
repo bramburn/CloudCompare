@@ -23,6 +23,16 @@
 // CCCoreLib
 #include <CCMath.h>
 
+/**
+ * @file ccIncludeGL.h
+ *
+ * @brief OpenGL utility functions and includes
+ *
+ * Provides type-safe wrappers for OpenGL functions
+ * and common OpenGL includes.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccColorTypes.h"
 #include "ccGLMatrix.h"
@@ -30,7 +40,11 @@
 // Qt
 #include <QOpenGLFunctions_2_1>
 
-//! Shortcuts to OpenGL commands independent on the input type
+/**
+ * @brief OpenGL utility functions
+ *
+ * Type-safe wrappers for OpenGL commands.
+ */
 class ccGL
 {
   public:
