@@ -18,6 +18,15 @@
 #ifndef CC_ASCII_SAVE_DIALOG_HEADER
 #define CC_ASCII_SAVE_DIALOG_HEADER
 
+/**
+ * @file AsciiSaveDlg.h
+ *
+ * @brief ASCII save dialog
+ *
+ * Dialog for configuring ASCII file export.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // local
 #include "qCC_io.h"
 
@@ -26,13 +35,20 @@
 
 class Ui_AsciiSaveDialog;
 
-//! Dialog for configuration of ASCII files saving sequence
+/**
+ * @brief ASCII save dialog
+ *
+ * Configure ASCII file export settings.
+ */
 class QCC_IO_LIB_API AsciiSaveDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit AsciiSaveDlg(QWidget* parent = nullptr);
 
 	//! Destructor
