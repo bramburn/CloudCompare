@@ -21,48 +21,94 @@
 // Local
 #include "ccGenericPointCloud.h"
 
+/**
+ * @file ccNormalVectors.h
+ *
+ * @brief Normal vector compression and lookup
+ *
+ * Handles pre-computed normal vectors for efficient storage and lookup.
+ * Normals are stored in a compressed format and indexed for fast access.
+ * The singleton provides access to a table of pre-computed normals
+ * for surface orientation calculations.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // System
 #include <vector>
 
-//! Compressed normal vectors handler
+/**
+ * @brief Normal vector compression and lookup
+ *
+ * Singleton class providing access to a pre-computed table of
+ * normal vectors. Normals are stored in a table and indexed
+ * for efficient storage and retrieval.
+ */
 class QCC_DB_LIB_API ccNormalVectors
 {
   public:
-	//! Returns unique instance
+	/**
+	 * @brief Get the singleton instance
+	 * @return Pointer to the unique instance
+	 */
 	static ccNormalVectors* GetUniqueInstance();
 
-	//! Releases unique instance
-	/** Call to this method is now optional.
-	 **/
+	/**
+	 * @brief Release the singleton instance
+	 * @note Call is now optional (cleanup on exit)
+	 */
 	static void ReleaseUniqueInstance();
 
-	//! Returns the number of compressed normal vectors
+	/**
+	 * @brief Get number of pre-computed normals
+	 * @return Size of the normal vector table
+	 */
 	static inline unsigned GetNumberOfVectors()
 	{
 		return static_cast<unsigned>(GetUniqueInstance()->m_theNormalVectors.size());
 	}
 
-	//! Static access to ccNormalVectors::getNormal
+	/**
+	 * @brief Get a normal by index (static)
+	 * @param[in] normIndex Index into normal table
+	 * @return The normal vector
+	 */
 	static inline const CCVector3& GetNormal(unsigned normIndex)
 	{
 		return GetUniqueInstance()->getNormal(normIndex);
 	}
 
-	//! Returns the precomputed normal corresponding to a given compressed index
+	/**
+	 * @brief Get a normal by index
+	 * @param[in] normIndex Index into normal table
+	 * @return The normal vector
+	 */
 	inline const CCVector3& getNormal(unsigned normIndex) const
 	{
 		return m_theNormalVectors[normIndex];
 	}
 
-	//! Returns the compressed index corresponding to a normal vector
+	/**
+	 * @brief Compute index for a normal vector
+	 * @param[in] N Normal vector components
+	 * @return Compressed normal index
+	 */
 	static CompressedNormType GetNormIndex(const PointCoordinateType N[]);
-	//! Returns the compressed index corresponding to a normal vector (shortcut)
+	/**
+	 * @brief Compute index for a normal vector
+	 * @param[in] N Normal vector
+	 * @return Compressed normal index
+	 */
 	static inline CompressedNormType GetNormIndex(const CCVector3& N)
 	{
 		return GetNormIndex(N.u);
 	}
 
-	//! 'Default' orientations
+	/**
+	 * @brief Default orientation types
+	 *
+	 * Predefined orientations for automatic normal direction adjustment.
+	 */
 	enum Orientation
 	{
 
