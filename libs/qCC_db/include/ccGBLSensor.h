@@ -18,6 +18,18 @@
 #ifndef CC_GROUND_LIDAR_SENSOR_HEADER
 #define CC_GROUND_LIDAR_SENSOR_HEADER
 
+/**
+ * @file ccGBLSensor.h
+ *
+ * @brief Ground-based LiDAR sensor class
+ *
+ * Represents a ground-based laser scanner with two rotation axes
+ * (yaw and pitch). Handles depth maps from terrestrial LiDAR
+ * surveys.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Local
 #include "ccDepthBuffer.h"
 #include "ccSensor.h"
@@ -27,28 +39,32 @@
 
 class ccPointCloud;
 
-//! Ground-based Laser sensor
-/** An implementation of the ccSensor interface that can be used to represent a depth sensor
-    relying on 2 rotations relatively to two perpendicular axes, such as ground based laser
-    scanners typically.
-**/
+/**
+ * @brief Ground-based Laser scanner sensor
+ *
+ * Represents a terrestrial laser scanner with two perpendicular
+ * rotation axes (typically yaw and pitch).
+ */
 class QCC_DB_LIB_API ccGBLSensor : public ccSensor
 {
   public:
-	//! The order of inner-rotations of the sensor (body/mirrors)
-	/** Either the first rotation is made around the Z axis (yaw) then around the lateral
-	    axis (pitch) as most scanners do today (Leica, Riegl, Faro, etc.). Otherwise the
-	    opposite order is used (as the very old Mensi Soisic).
-	**/
+	/**
+	 * @brief Rotation order for the sensor axes
+	 *
+	 * Defines the order of yaw/pitch rotations:
+	 * - YAW_THEN_PITCH: Most scanners (Leica, Riegl, Faro)
+	 * - PITCH_THEN_YAW: Old Mensi Soisic
+	 */
 	enum ROTATION_ORDER
 	{
-		YAW_THEN_PITCH = 0,
-		PITCH_THEN_YAW = 1
+		YAW_THEN_PITCH = 0, //!< Yaw then pitch (most modern scanners)
+		PITCH_THEN_YAW = 1  //!< Pitch then yaw (legacy scanners)
 	};
 
-	//! Default constructor
-	/** \param rotOrder inner rotations order
-	 **/
+	/**
+	 * @brief Create a GBL sensor
+	 * @param[in] rotOrder Rotation order of axes
+	 */
 	explicit ccGBLSensor(ROTATION_ORDER rotOrder = YAW_THEN_PITCH);
 
 	//! Copy constructor
