@@ -18,6 +18,14 @@
 #ifndef Q_CANUPO_2DVIEW_DIALOG_HEADER
 #define Q_CANUPO_2DVIEW_DIALOG_HEADER
 
+/**
+ * @file qCanupo2DViewDialog.h
+ *
+ * @brief CANUPO 2D view dialog
+ *
+ * 2D view dialog for CANUPO classification.
+ */
+
 #include <ui_qCanupo2DViewDialog.h>
 
 //Local
@@ -32,14 +40,30 @@ class ccHObject;
 class ccPointCloud;
 class ccPolyline;
 
-//! CANUPO plugin's 2D view dialog
+/**
+ * @class qCanupo2DViewDialog
+ *
+ * @brief CANUPO 2D view dialog
+ *
+ * 2D view dialog for CANUPO classification.
+ */
 class qCanupo2DViewDialog : public QDialog, public Ui::Canupo2DViewDialog
 {
 	Q_OBJECT
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] descriptors1 First descriptor set
+	 * @param[in] descriptors2 Second descriptor set
+	 * @param[in] cloud1Name First cloud name
+	 * @param[in] cloud2Name Second cloud name
+	 * @param[in] class1 Class 1 index
+	 * @param[in] class2 Class 2 index
+	 * @param[in] evaluationDescriptors Evaluation descriptors
+	 * @param[in] app Main application interface
+	 */
 	qCanupo2DViewDialog(const CorePointDescSet* descriptors1,
 						const CorePointDescSet* descriptors2,
 						QString cloud1Name,
