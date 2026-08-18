@@ -18,18 +18,36 @@
 #ifndef CC_PN_FILTER_HEADER
 #define CC_PN_FILTER_HEADER
 
+/**
+ * @file PNFilter.h
+ *
+ * @brief Point+Normal file filter
+ *
+ * Binary point cloud file I/O with point and normal data.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! Point+Normal binary point cloud file I/O filter
+/**
+ * @brief Point+Normal file filter
+ *
+ * Read/write binary point cloud files with normals.
+ */
 class PNFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	PNFilter();
 
-	// inherited from FileIOFilter
+	/// Load file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/// Check if can save
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	
+	/// Save file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 
