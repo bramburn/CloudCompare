@@ -27,11 +27,23 @@
 // System
 #include <unordered_set>
 
+/**
+ * @file ccKdTree.h
+ *
+ * @brief KD-tree structure
+ *
+ * KD-tree for point cloud operations.
+ */
+
 class ccGenericPointCloud;
 
-//! KD-tree structure
-/** Extends the CCCoreLib::TrueKdTree class.
- **/
+/**
+ * @class ccKdTree
+ *
+ * @brief KD-tree structure
+ *
+ * Extends the CCCoreLib::TrueKdTree class.
+ */
 class QCC_DB_LIB_API ccKdTree : public CCCoreLib::TrueKdTree
     , public ccHObject
 {
