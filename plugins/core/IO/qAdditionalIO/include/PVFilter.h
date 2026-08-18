@@ -18,18 +18,36 @@
 #ifndef CC_PV_FILTER_HEADER
 #define CC_PV_FILTER_HEADER
 
+/**
+ * @file PVFilter.h
+ *
+ * @brief Point+Value file filter
+ *
+ * Binary point cloud file I/O with point and scalar value data.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! Point+Scalar value binary point cloud file I/O filter
+/**
+ * @brief Point+Value file filter
+ *
+ * Read/write binary point cloud files with scalar values.
+ */
 class PVFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	PVFilter();
 
-	// inherited from FileIOFilter
+	/// Load file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/// Check if can save
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	
+	/// Save file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 
