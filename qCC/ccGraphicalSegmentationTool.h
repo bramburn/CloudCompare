@@ -17,6 +17,15 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGraphicalSegmentationTool.h
+ *
+ * @brief Graphical segmentation tool
+ *
+ * Tool for segmenting entities by drawing polylines.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include <ccOverlayDialog.h>
 
@@ -35,7 +44,11 @@ class ccPointCloud;
 class ccGLWindowInterface;
 class ccMainAppInterface;
 
-//! Graphical segmentation mechanism (with polyline)
+/**
+ * @brief Graphical segmentation tool
+ *
+ * Segment entities by drawing polylines.
+ */
 class ccGraphicalSegmentationTool : public ccOverlayDialog
     , public Ui::GraphicalSegmentationDlg
 {
