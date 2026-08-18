@@ -18,6 +18,16 @@
 #ifndef CC_ADVANCED_TYPES_HEADER
 #define CC_ADVANCED_TYPES_HEADER
 
+/**
+ * @file ccAdvancedTypes.h
+ *
+ * @brief Advanced container types
+ *
+ * Defines specialized array types for storing normals,
+ * colors, and other per-point/per-triangle data.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccArray.h"
 #include "ccColorTypes.h"
@@ -27,7 +37,12 @@
       Advanced cloudCompare types (containers)
 ***************************************************/
 
-//! Array of compressed 3D normals (single index)
+/**
+ * @brief Array of compressed normal indexes
+ *
+ * Stores compressed normal indices for efficient
+ * normal storage per point.
+ */
 class NormsIndexesTableType : public ccArray<CompressedNormType, 1, CompressedNormType>
 {
   public:
