@@ -18,6 +18,14 @@
 #ifndef CC_POINT_DESCRIPTOR_HEADER
 #define CC_POINT_DESCRIPTOR_HEADER
 
+/**
+ * @file ccPointDescriptor.h
+ *
+ * @brief Point descriptor
+ *
+ * Multi-scale point descriptors for CANUPO.
+ */
+
 //Qt
 #include <QByteArray>
 #include <QString>
@@ -30,11 +38,6 @@
 #include <math.h>
 
 // Descriptors' ID must be declared here and then implemented in 'ccPointDescriptor.cpp'.
-// 
-// WARNING: the ID must be unique and must not be changed once set!
-// 
-// Once declared (and implemented) in ccPointDescriptor.cpp, the descriptor must be added
-// to the static 'vault' (see ScaleParamsComputerVault's constructor).
 
 static const unsigned DESC_INVALID				=	0;	// Unknown descritpr
 static const unsigned DESC_DIMENSIONALITY		=	1;	// Original CANUPO's "Dimensionality" descriptor
@@ -42,9 +45,13 @@ static const unsigned DESC_DIMENSIONALITY_SF	=	2;	// "Dimensionality" + scalar f
 static const unsigned DESC_CURVATURE			=	3;	// Test: Gaussian curvature descriptor
 //static const unsigned DESC_CUSTOM				=	?;	// Example of custom descriptor (to be reimplemented)
 
-//! Generic parameters 'computer' class (at a given scale)
-/** Must be inherited by any custom computer.
-**/
+/**
+ * @class ScaleParamsComputer
+ *
+ * @brief Scale parameters computer
+ *
+ * Generic parameters computer at a given scale.
+ */
 class ScaleParamsComputer
 {
 public:
