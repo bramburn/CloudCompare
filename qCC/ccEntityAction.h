@@ -17,6 +17,15 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccEntityAction.h
+ *
+ * @brief Entity actions
+ *
+ * Actions that can be performed on entities.
+ *
+ * @author CloudCompare project
+ */
 // qCC_db
 #include <ccMesh.h>
 #include <ccPointCloud.h>
@@ -26,6 +35,11 @@ class QWidget;
 
 class ccMainAppInterface;
 
+/**
+ * @brief Entity actions namespace
+ *
+ * Actions for modifying and processing entities.
+ */
 namespace ccEntityAction
 {
 
