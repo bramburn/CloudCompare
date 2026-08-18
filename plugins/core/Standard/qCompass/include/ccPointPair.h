@@ -18,6 +18,14 @@
 #ifndef CC_POINTPAIR_HEADER
 #define CC_POINTPAIR_HEADER
 
+/**
+ * @file ccPointPair.h
+ *
+ * @brief Point pair base class
+ *
+ * Base class for measurements comprising point pairs.
+ */
+
 #include <ccPolyline.h>
 #include <ccSphere.h>
 #include <ccCylinder.h>
@@ -25,37 +33,54 @@
 #include <GenericIndexedCloudPersist.h>
 #include <ccPointCloud.h>
 
-
 #include "ccMeasurement.h"
 
-/*
-Template class, based around ccPolyline, that measurements comprising individual or pairs of points can derive from.
-*/
+/**
+ * @class ccPointPair
+ *
+ * @brief Point pair base class
+ *
+ * Base class for measurements comprising individual or pairs of points.
+ */
 class ccPointPair : 
 	public ccPolyline, 
 	public ccMeasurement
 {
 public:
+	/**
+	 * @brief Create point pair
+	 * @param[in] associatedCloud Associated point cloud
+	 */
 	ccPointPair(ccPointCloud* associatedCloud);
-	ccPointPair(ccPolyline* obj); //used to construct from a polyline with the correct data
+	
+	/**
+	 * @brief Create from polyline
+	 * @param[in] obj Source polyline
+	 */
+	ccPointPair(ccPolyline* obj);
 
+	/// Destructor
 	virtual ~ccPointPair() {}
 
+	/// Update metadata
 	virtual void updateMetadata() { };
 
-	//get the direction of this pair (not normalized) 
+	/// Get direction (not normalized)
 	CCVector3 getDirection();
 
 protected:
-	//size that the point-markers are drawn
+	/// Marker scale for drawing
 	float m_relMarkerScale = 5.0f;
 
-	//overidden from ccHObject
+	/// Draw object
 	virtual void drawMeOnly(CC_DRAW_CONTEXT& context) override;
 
-//static functions
 public:
-	//returns true if object is/was a ccPointPair (as defined by its MetaData)
+	/**
+	 * @brief Check if object is a point pair
+	 * @param[in] object Object to check
+	 * @return True if point pair
+	 */
 	static bool isPointPair(ccHObject* object);
 };
 
