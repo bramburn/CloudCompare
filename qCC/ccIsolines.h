@@ -2,6 +2,14 @@
 #define ISOLINES_HEADER
 
 /**
+ * @file ccIsolines.h
+ *
+ * @brief Marching squares isolines
+ *
+ * Fast implementation of marching squares algorithm.
+ */
+
+/**
  *  Transcription of FindIsolines.java for C++
  *
  *  Fast implementation of marching squares
@@ -30,11 +38,6 @@
  *
  */
 
-/**
- * This is a fast implementation of the marching squares algorithm for finding isolines (lines of equal color) in an image.
- *
- */
-
 // qCC_db
 #include <ccLog.h>
 
@@ -43,6 +46,13 @@
 #include <cmath>
 #include <vector>
 
+/**
+ * @class Isolines
+ *
+ * @brief Marching squares isolines
+ *
+ * Fast implementation of marching squares algorithm for finding isolines.
+ */
 template <typename T>
 class Isolines
 {
