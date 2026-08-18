@@ -17,6 +17,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file cc2DLabel.h
+ *
+ * @brief 2D Label class for annotations
+ *
+ * Represents a 2D text label that can be attached to 3D points.
+ * Labels display information like coordinates, distances, or custom text.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccGenericGLDisplay.h"
 #include "ccHObject.h"
@@ -30,15 +40,26 @@
 class ccGenericPointCloud;
 class ccGenericMesh;
 
-//! 2D label (typically attached to points)
+/**
+ * @brief 2D label for annotations
+ *
+ * Text label that can be attached to 3D points.
+ */
 class QCC_DB_LIB_API cc2DLabel : public ccHObject
     , public ccInteractor
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Create a label
+	 * @param[in] name Label name
+	 */
 	cc2DLabel(QString name = QString("label"));
 
-	//! Copy constructor
+	/**
+	 * @brief Copy constructor
+	 * @param[in] label Source label
+	 * @param[in] copyPoints Whether to copy associated points
+	 */
 	cc2DLabel(const cc2DLabel& label, bool copyPoints = true);
 
 	// inherited from ccObject
