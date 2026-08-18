@@ -18,6 +18,14 @@
 #ifndef QSRA_DISTANCE_MAP_GENERATION_TOOL_HEADER
 #define QSRA_DISTANCE_MAP_GENERATION_TOOL_HEADER
 
+/**
+ * @file distanceMapGenerationTool.h
+ *
+ * @brief Distance map generation tool
+ *
+ * Tool for generating distance maps for surface of revolution analysis.
+ */
+
 //Qt
 #include <QSharedPointer>
 #include <QImage>
@@ -38,12 +46,19 @@ class ccPolyline;
 class ccScalarField;
 class ccMainAppInterface;
 
-//Default radial distance scalar field name
+/// Radial distance scalar field name
 const char RADIAL_DIST_SF_NAME[] = "Radial distance";
-//Default radii scalar field name
+
+/// Radii scalar field name
 const char RADII_SF_NAME[] = "Radius";
 
-//! Distance map generation tool (surface of revolution)
+/**
+ * @class DistanceMapGenerationTool
+ *
+ * @brief Distance map generation tool
+ *
+ * Tool for generating distance maps for surface of revolution analysis.
+ */
 class DistanceMapGenerationTool
 {
 public:
