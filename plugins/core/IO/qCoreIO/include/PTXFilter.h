@@ -18,15 +18,30 @@
 #ifndef CC_PTX_FILTER_HEADER
 #define CC_PTX_FILTER_HEADER
 
+/**
+ * @file PTXFilter.h
+ *
+ * @brief PTX file filter
+ *
+ * I/O filter for PTX point cloud files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! PTX point cloud I/O filter
+/**
+ * @brief PTX file filter
+ *
+ * Read PTX point cloud files.
+ */
 class PTXFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	PTXFilter();
 
-	// inherited from FileIOFilter
+	/// Load PTX file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 };
 
