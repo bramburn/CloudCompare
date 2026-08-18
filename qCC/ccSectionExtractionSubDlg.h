@@ -17,6 +17,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSectionExtractionSubDlg.h
+ *
+ * @brief Section extraction sub-dialog
+ *
+ * Dialog for section generation parameters.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Local
 #include "ccEnvelopeExtractor.h"
 
@@ -24,51 +34,58 @@
 #include <QDialog>
 #include <ui_sectionExtractionSubDlg.h>
 
-//! Dialog for generating sections along one or several 2D polylines (Section Extraction Tool)
+/**
+ * @brief Section extraction sub-dialog
+ *
+ * Configure section generation parameters.
+ */
 class ccSectionExtractionSubDlg : public QDialog
     , public Ui::SectionExtractionSubDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccSectionExtractionSubDlg(QWidget* parent = nullptr);
 
-	//! Sets the number of active section(s)
+	/// Set active section count
 	void setActiveSectionCount(int count);
 
-	//! Sets the default section thickness
+	/// Set section thickness
 	void setSectionThickness(double t);
-	//! Returns the section thickness
+	/// Get section thickness
 	double getSectionThickness() const;
 
-	//! Returns the max edge length (for envelope generation)
+	/// Get max edge length
 	double getMaxEdgeLength() const;
-	//! Sets the max edge length (for envelope generation)
+	/// Set max edge length
 	void setMaxEdgeLength(double l);
 
-	//! Returns the envelope type (for envelope generation)
+	/// Get envelope type
 	ccEnvelopeExtractor::EnvelopeType getEnvelopeType() const;
 
-	//! Whether to generate clouds or not
+	/// Get extract clouds flag
 	bool extractClouds() const;
-	//! Sets whether to generate clouds or not
+	/// Set extract clouds
 	void doExtractClouds(bool state);
-	//! Whether to generate envelopes or not
+	/// Get extract envelopes flag
 	bool extractEnvelopes() const;
-	//! Sets whether to generate envelopes or not
+	/// Set extract envelopes
 	void doExtractEnvelopes(bool state, ccEnvelopeExtractor::EnvelopeType type);
 
-	//! Whether to split the envelopes or not
+	/// Get split envelopes flag
 	bool splitEnvelopes() const;
-	//! Sets whether to split the envelopes or not
+	/// Set split envelopes
 	void doSplitEnvelopes(bool state);
 
-	//! Whether to use multipass or not
+	/// Get multipass flag
 	bool useMultiPass() const;
-	//! Sets whether to use multipass or not
+	/// Set multipass
 	void doUseMultiPass(bool state);
 
-	//! Whether visual debug mode is enabled or not
+	/// Get visual debug mode
 	bool visualDebugMode() const;
 };
