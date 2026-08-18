@@ -18,43 +18,61 @@
 #ifndef CC_ORTHO_SECTION_GENERATION_DIALOG_HEADER
 #define CC_ORTHO_SECTION_GENERATION_DIALOG_HEADER
 
+/**
+ * @file ccOrthoSectionGenerationDlg.h
+ *
+ * @brief Ortho section generation dialog
+ *
+ * Dialog for generating orthogonal sections.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Qt
 #include <QDialog>
 #include <ui_orthoSectionGenerationDlg.h>
 
-//! Dialog for generating orthogonal sections along a path (Section Extraction Tool)
+/**
+ * @brief Ortho section generation dialog
+ *
+ * Generate orthogonal sections along a path.
+ */
 class ccOrthoSectionGenerationDlg : public QDialog
     , public Ui::OrthoSectionGenerationDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccOrthoSectionGenerationDlg(QWidget* parent = nullptr);
 
-	//! Sets the path legnth
+	/// Set path length
 	void setPathLength(double l);
 
-	//! Sets whether the generatrix should be automatically saved and removed
+	/// Set auto save and remove
 	void setAutoSaveAndRemove(bool state);
-	//! Returns whether the generatrix should be automatically saved and removed
+	/// Get auto save and remove
 	bool autoSaveAndRemove() const;
 
-	//! Sets the generation step
+	/// Set generation step
 	void setGenerationStep(double s);
-	//! Sets he sections width
+	/// Set sections width
 	void setSectionsWidth(double w);
 
-	//! Returns the generation step
+	/// Get generation step
 	double getGenerationStep() const;
-	//! Returns the sections width
+	/// Get sections width
 	double getSectionsWidth() const;
 
   protected:
+	/// Handle step changed
 	void onStepChanged(double);
 
   protected:
-	//! Path length
+	/// Path length
 	double m_pathLength;
 };
 
