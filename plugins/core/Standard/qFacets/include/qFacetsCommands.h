@@ -17,6 +17,14 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qFacetsCommands.h
+ *
+ * @brief Facets CLI commands
+ *
+ * Command line interface commands for facets.
+ */
+
 // CloudCompare
 #include "ccCommandLineInterface.h"
 
@@ -27,6 +35,7 @@
 #include <QDir>
 #include <QFileInfo>
 
+/// Facets command identifier
 static const char COMMAND_FACETS[] = "FACETS";
 
 constexpr char EXTRACT_FACETS[]     = "-EXTRACT_FACETS";
