@@ -18,40 +18,53 @@
 #ifndef CC_COLOR_TYPES_HEADER
 #define CC_COLOR_TYPES_HEADER
 
+/**
+ * @file ccColorTypes.h
+ *
+ * @brief Color type definitions
+ *
+ * Defines color types and utilities including RGB,
+ * RGBA, and predefined color constants.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "qCC_db.h"
 
 // Qt
 #include <QColor>
 
-//! Default color components type (R,G and B)
+/// Color component type (0-255)
 using ColorCompType = unsigned char;
 
-//! Colors namespace
+/**
+ * @brief Color utilities namespace
+ */
 namespace ccColor
 {
-	//! Max value of a single color component (default type)
+	//! Max color component value
 	constexpr ColorCompType MAX  = 255;
 	constexpr int           MAXi = 255;
 
-	//! RGB color structure
+	/**
+	 * @brief RGB color template
+	 *
+	 * @tparam Type Component type (e.g., unsigned char)
+	 */
 	template <typename Type>
 	class RgbTpl
 	{
 	  public:
-		//! 3-tuple as a union
+		//! RGB components union
 		union
 		{
-			struct
-			{
-				Type r, g, b;
-			};
+			struct { Type r, g, b; };
 			Type rgb[3];
 		};
 
-		//! Default constructor
-		/** Inits color to (0,0,0).
-		 **/
+		/**
+		 * @brief Default constructor (black)
+		 */
 		constexpr inline RgbTpl()
 		    : r(0)
 		    , g(0)
