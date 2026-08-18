@@ -15,6 +15,14 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file RasterGridFilter.h
+ *
+ * @brief Raster grid filter
+ *
+ * Raster grid format file I/O filter using GDAL.
+ */
+
 #ifndef CC_RASTER_FILTER_HEADER
 #define CC_RASTER_FILTER_HEADER
 
@@ -22,9 +30,13 @@
 
 #ifdef CC_GDAL_SUPPORT
 
-//! Raster grid format file I/O filter
-/** Multiple formats are handled: see GDAL (http://www.gdal.org/)
- **/
+/**
+ * @class RasterGridFilter
+ *
+ * @brief Raster grid filter
+ *
+ * Raster grid format file I/O filter.
+ */
 class QCC_IO_LIB_API RasterGridFilter : public FileIOFilter
 {
   public:
