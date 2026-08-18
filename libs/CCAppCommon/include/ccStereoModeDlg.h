@@ -16,6 +16,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccStereoModeDlg.h
+ *
+ * @brief Stereo mode dialog
+ *
+ * Dialog for configuring 3D stereo display settings.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "CCAppCommon.h"
 
 // qCC_gl
@@ -29,29 +39,50 @@ namespace Ui
 	class StereoModeDialog;
 }
 
-//! Dialog to define the parameters of the stereo mode (for 3D views)
+/**
+ * @brief Stereo mode dialog
+ *
+ * Configure stereo/3D display parameters.
+ */
 class CCAPPCOMMON_LIB_API ccStereoModeDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccStereoModeDlg(QWidget* parent);
+	
+	/**
+	 * @brief Destructor
+	 */
 	~ccStereoModeDlg() override;
 
-	//! Returns the current parameters
+	/**
+	 * @brief Get current stereo parameters
+	 * @return Stereo parameters
+	 */
 	ccGLWindowInterface::StereoParams getParameters() const;
 
-	//! Sets the current parameters
+	/**
+	 * @brief Set stereo parameters
+	 * @param[in] params Parameters to set
+	 */
 	void setParameters(const ccGLWindowInterface::StereoParams& params);
 
-	//! Returns whether the FOV should be updated or not
+	/**
+	 * @brief Check if FOV should be updated
+	 * @return true if FOV update needed
+	 */
 	bool updateFOV() const;
 
   protected:
-	//! Slot called when the glass type is modified
+	/// Called when glass type changes
 	void glassTypeChanged(int);
 
   private:
+	/// UI
 	Ui::StereoModeDialog* m_ui;
 };
