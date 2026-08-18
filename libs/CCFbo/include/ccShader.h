@@ -16,6 +16,17 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccShader.h
+ *
+ * @brief GLSL shader program wrapper
+ *
+ * Encapsulates QOpenGLShaderProgram with helper functions
+ * for loading vertex and fragment shaders from files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "CCFbo.h"
 
 // Qt
@@ -24,35 +35,43 @@
 
 class QObject;
 
-//! Shader program
-/** Now a simple encapsulation of QOpenGLShaderProgram providing two helper functions.
- **/
+/**
+ * @brief GLSL shader program
+ *
+ * Wrapper around QOpenGLShaderProgram for loading
+ * and managing GLSL shaders.
+ */
 class CCFBO_LIB_API ccShader : public QOpenGLShaderProgram
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create a shader program
+	 * @param[in] parent Parent object
+	 */
 	ccShader(QObject* parent = 0);
 
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	virtual ~ccShader() = default;
 
-	//! Creates program from two shader files with same base filename
-	/** Path and extensions (.vert and .frag) are automatically
-	    added to shader base filename (shortcut to ccShader::loadProgram).
-	    \param shaderBasePath shader files path
-	    \param shaderBaseFilename shader base filename
-	    \param error error string (if any error occurred)
-	    \return success
-	**/
+	/**
+	 * @brief Load shader from file (auto .vert/.frag)
+	 * @param[in] shaderBasePath Path to shader files
+	 * @param[in] shaderBaseFilename Base filename (no extension)
+	 * @param[out] error Error message if failed
+	 * @return true on success
+	 */
 	virtual bool fromFile(QString shaderBasePath, QString shaderBaseFilename, QString& error);
 
-	//! Creates program from one or two shader files
-	/** Filenames must be absolute (full path).
-	    \param vertShaderFile vertex shader filename
-	    \param fragShaderFile fragment shader filename
-	    \param error error string (if any error occurred)
-	**/
+	/**
+	 * @brief Load shader from explicit files
+	 * @param[in] vertShaderFile Vertex shader path
+	 * @param[in] fragShaderFile Fragment shader path
+	 * @param[out] error Error message if failed
+	 * @return true on success
+	 */
 	virtual bool loadProgram(QString vertShaderFile, QString fragShaderFile, QString& error);
 };
