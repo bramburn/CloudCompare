@@ -17,33 +17,50 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccLabelingDlg.h
+ *
+ * @brief Labeling dialog
+ *
+ * Dialog for connected components labeling parameters.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_labelingDlg.h>
 
-//! Dialog to define connected components labelinng parameters
+/**
+ * @brief Labeling dialog
+ *
+ * Configure connected components labeling parameters.
+ */
 class ccLabelingDlg : public QDialog
     , public Ui::LabelingDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccLabelingDlg(QWidget* parent = nullptr);
 
-	//! Returns octree level (defines grid step)
+	/// Get octree level
 	int getOctreeLevel();
 
-	//! Returns min number of points per extracted CC
+	/// Get min points per component
 	int getMinPointsNb();
 
-	//! Specifies whether each extracted CC should get a random color
+	/// Get random colors flag
 	bool randomColors();
 
-	//! Sets the octree level (defines grid step)
+	/// Set octree level
 	void setOctreeLevel(int octreeLevel);
 
-	//! Sets the min number of points per extracted CC
+	/// Set min points per component
 	void setMinPointsNb(int minPointsNb);
 
-	//! Specifies whether each extracted CC should get a random color
+	/// Set random colors flag
 	void setRandomColors(bool state);
 };
