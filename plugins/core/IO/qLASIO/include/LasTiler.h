@@ -21,6 +21,11 @@
 #include <QString>
 #include <laszip/laszip_api.h>
 
+/**
+ * @enum LasTilingDimensions
+ *
+ * @brief Tiling dimensions
+ */
 enum class LasTilingDimensions
 {
 	XY = 0,
