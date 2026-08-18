@@ -22,20 +22,38 @@
 // local
 #include "ccGLWindowInterface.h"
 
+/**
+ * @file ccGLWindowStereo.h
+ *
+ * @brief Stereo GL window
+ *
+ * OpenGL window with stereo 3D display support.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 #include <QHBoxLayout>
 #include <QWidget>
 #include <QWindow>
 
 class QOpenGLPaintDevice;
 
-//! OpenGL 3D view
+/**
+ * @brief Stereo GL window
+ *
+ * OpenGL window with stereo 3D support.
+ */
 class CCGLWINDOW_LIB_API ccGLWindowStereo : public QWindow
     , public ccGLWindowInterface
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create stereo window
+	 * @param[in] format Surface format
+	 * @param[in] parent Parent window
+	 * @param[in] silentInitialization Skip init messages
+	 */
 	ccGLWindowStereo(QSurfaceFormat* format = nullptr, QWindow* parent = nullptr, bool silentInitialization = false);
 
 	//! Destructor
