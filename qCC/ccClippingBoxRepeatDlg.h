@@ -18,31 +18,53 @@
 #ifndef CC_CLIPPING_BOX_REPEAT_DIALOG_HEADER
 #define CC_CLIPPING_BOX_REPEAT_DIALOG_HEADER
 
+/**
+ * @file ccClippingBoxRepeatDlg.h
+ *
+ * @brief Clipping box repeat dialog
+ *
+ * Dialog for managing clipping box repeated processes.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_clippingBoxRepeatDlg.h>
 
 // Qt
 #include <QDialog>
 
-//! Dialog for managing clipping box based repeated processes
+/**
+ * @brief Clipping box repeat dialog
+ *
+ * Configure clipping box for repeated processes.
+ */
 class ccClippingBoxRepeatDlg : public QDialog
     , public Ui::ClippingBoxRepeatDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] singleSliceMode Single slice mode
+	 * @param[in] parent Parent widget
+	 */
 	ccClippingBoxRepeatDlg(bool singleSliceMode = false, QWidget* parent = nullptr);
 
-	//! Sets flat dimension (single slice mode only!)
+	/**
+	 * @brief Set flat dimension
+	 * @param[in] dim Flat dimension (single slice mode)
+	 */
 	void setFlatDim(unsigned char dim);
-	//! Sets repeat dimension (multiple slices mode only!)
+	
+	/**
+	 * @brief Set repeat dimension
+	 * @param[in] dim Repeat dimension (multi-slice mode)
+	 */
 	void setRepeatDim(unsigned char dim);
 
   protected:
-	// multi-slices mode
 	void onDimChecked(bool);
-
-	// single-slice mode
 	void onDimXChecked(bool);
 	void onDimYChecked(bool);
 	void onDimZChecked(bool);
