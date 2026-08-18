@@ -11,36 +11,21 @@
 - [x] mainwindow.h, ccCommandLineParser.h
 
 ### libs/ (Core libraries) - qCC_db
-**Entities:**
-- [x] ccPointCloud.h, ccHObject.h, ccGenericPointCloud.h
-- [x] ccMesh.h, ccGenericMesh.h, ccPolyline.h
-- [x] ccImage.h, ccFacet.h
+**Entities:** ccPointCloud, ccHObject, ccGenericPointCloud, ccMesh, ccGenericMesh, ccPolyline, ccImage, ccFacet
+**Geometry:** ccBox, ccSphere, ccCylinder, ccCone, ccCircle, ccDisc, ccPlane
+**Sensors:** ccSensor, ccCameraSensor, ccGBLSensor, ccDepthBuffer, ccNormalVectors
+**Math/Display:** ccBBox, ccGLMatrix, ccOctree, ccScalarField, ccColorScale, ccColorScalesManager
+**UI/Interaction:** ccLog, ccProgressDialog, cc2DLabel, ccClipBox
+**Core:** ccShiftedObject, ccDrawableObject, ccGenericGLDisplay, ccViewportParameters
+**I/O:** FileIOFilter
 
-**Sensors:**
-- [x] ccSensor.h, ccCameraSensor.h, ccGBLSensor.h
-- [x] ccDepthBuffer.h, ccNormalVectors.h
-
-**Math/Geometry:**
-- [x] ccBBox.h, ccGLMatrix.h, ccOctree.h
-- [x] ccScalarField.h, ccColorScale.h
-
-**Primitives:**
-- [x] ccBox.h, ccSphere.h, ccCylinder.h, ccPlane.h
-
-**Utilities:**
-- [x] ccLog.h, ccProgressDialog.h
-
-### libs/ (Core libraries) - Other
-- [x] CCPluginStub/ccPluginInterface.h
-- [x] CCPluginAPI/ccMainAppInterface.h
-- [x] qCC_io/FileIOFilter.h
-- [x] qCC_glWindow/ccGLWindowInterface.h
+**Other libs:** ccPluginInterface, ccMainAppInterface, ccGLWindowInterface
 
 ### plugins/ (Plugin system)
 - [ ] plugins/core/
 - [ ] plugins/standard/
 
-## Commits Made (33 Doxygen commits so far)
+## Commits Made (43 Doxygen commits so far)
 
 ## Notes
 - Focus on user-facing, high-level files first
