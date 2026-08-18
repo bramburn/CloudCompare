@@ -18,24 +18,33 @@
 #ifndef CC_EXTRU_PRIMITIVE_HEADER
 #define CC_EXTRU_PRIMITIVE_HEADER
 
+/**
+ * @file ccExtru.h
+ *
+ * @brief Extrusion primitive
+ *
+ * 3D extrusion from a 2D profile (polyline) along the Z axis.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccGenericPrimitive.h"
 
-//! Profile extrusion (primitive)
-/** It is defined by sweeping a profile representing the extrusion's shape (polyline)
-    through a given distance (equivalent to the extrusion thickness).
-**/
+/**
+ * @brief Extrusion primitive
+ *
+ * 3D mesh created by extruding a 2D profile along Z.
+ */
 class QCC_DB_LIB_API ccExtru : public ccGenericPrimitive
 {
   public:
-	//! Default constructor
-	/** Input (2D) polyline represents the profile in (X,Y) plane.
-	    Extrusion is always done ine the 'Z' dimension.
-	    \param profile 2D profile to extrude
-	    \param height extrusion thickness
-	    \param transMat optional 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
-	    \param name name
-	**/
+	/**
+	 * @brief Create an extrusion
+	 * @param[in] profile 2D profile in XY plane
+	 * @param[in] height Extrusion height along Z
+	 * @param[in] transMat Transformation matrix
+	 * @param[in] name Extrusion name
+	 */
 	ccExtru(const std::vector<CCVector2>& profile,
 	        PointCoordinateType           height,
 	        const ccGLMatrix*             transMat = nullptr,
