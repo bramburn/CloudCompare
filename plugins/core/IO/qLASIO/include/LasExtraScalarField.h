@@ -30,7 +30,13 @@ struct laszip_header;
 struct laszip_vlr;
 typedef laszip_vlr laszip_vlr_struct;
 
-/// This serves the same purpose as LasScalarField but for extra bytes
+/**
+ * @class LasExtraScalarField
+ *
+ * @brief Extra scalar field in LAS files
+ *
+ * Represents extra bytes dimensions in LAS files.
+ */
 class LasExtraScalarField
 {
   public:
