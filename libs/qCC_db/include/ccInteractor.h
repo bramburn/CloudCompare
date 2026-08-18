@@ -18,6 +18,16 @@
 #ifndef CC_INTERACTOR_HEADER
 #define CC_INTERACTOR_HEADER
 
+/**
+ * @file ccInteractor.h
+ *
+ * @brief Interactor interface for 3D interaction
+ *
+ * Interface for entities that can respond to mouse interactions
+ * in 3D views (clicking, dragging).
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "CCGeom.h"
 #include "qCC_db.h"
@@ -25,29 +35,52 @@
 // Qt
 #include <Qt>
 
-//! Interactor interface (entity that can be dragged or clicked in a 3D view)
+/**
+ * @brief Interactor interface
+ *
+ * Interface for entities that can be interacted with
+ * in 3D views (labels, clipping planes, etc.).
+ */
 class QCC_DB_LIB_API ccInteractor
 {
   public:
+	/**
+	 * @brief Destructor
+	 */
 	virtual ~ccInteractor() = default;
 
-	//! Called on mouse click
+	/**
+	 * @brief Handle mouse click
+	 * @param[in] x Mouse X position
+	 * @param[in] y Mouse Y position
+	 * @param[in] button Mouse button
+	 * @return true if click was handled
+	 */
 	virtual bool acceptClick(int x, int y, Qt::MouseButton button)
 	{
 		return false;
 	}
 
-	//! Called on mouse move (for 2D interactors)
-	/** \return true if a movement occurs
-	 **/
+	/**
+	 * @brief Handle 2D mouse movement
+	 * @param[in] x New mouse X position
+	 * @param[in] y New mouse Y position
+	 * @param[in] dx X movement delta
+	 * @param[in] dy Y movement delta
+	 * @param[in] screenWidth Screen width
+	 * @param[in] screenHeight Screen height
+	 * @return true if movement occurred
+	 */
 	virtual bool move2D(int x, int y, int dx, int dy, int screenWidth, int screenHeight)
 	{
 		return false;
 	}
 
-	//! Called on mouse move (for 3D interactors)
-	/** \return true if a movement occurs
-	 **/
+	/**
+	 * @brief Handle 3D mouse movement
+	 * @param[in] u Movement vector
+	 * @return true if movement occurred
+	 */
 	virtual bool move3D(const CCVector3d& u)
 	{
 		return false;
