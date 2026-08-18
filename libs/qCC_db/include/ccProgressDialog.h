@@ -26,28 +26,39 @@
 #include <QProgressDialog>
 #include <QTimer>
 
+/**
+ * @file ccProgressDialog.h
+ *
+ * @brief Progress dialog for long-running operations
+ *
+ * Thread-safe progress dialog that implements GenericProgressCallback
+ * for use with CCCoreLib algorithms. Displays progress bars and
+ * optional cancel buttons for interrupting operations.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // CCCoreLib
 #include <GenericProgressCallback.h>
 
-//! Graphical progress indicator (thread-safe)
-/** Implements the GenericProgressCallback interface, in order
-    to be passed to the CCCoreLib algorithms (check the
-    CCCoreLib documentation for more information about the
-    inherited methods).
-**/
+/**
+ * @brief Graphical progress indicator (thread-safe)
+ *
+ * Implements GenericProgressCallback for integration with
+ * CCCoreLib algorithms. Provides a progress bar with optional
+ * cancel button.
+ */
 class QCC_DB_LIB_API ccProgressDialog : public QProgressDialog
     , public CCCoreLib::GenericProgressCallback
 {
   public:
-	//! Default constructor
-	/** By default, a cancel button is always displayed on the
-	    progress interface. It is only possible to activate or
-	    deactivate this button. Sadly, the fact that this button is
-	    activated doesn't mean it will be possible to stop the ongoing
-	    process: it depends only on the client algorithm implementation.
-	    \param cancelButton activates or deactivates the cancel button
-	    \param parent parent widget
-	**/
+	/**
+	 * @brief Create a progress dialog
+	 * @param[in] cancelButton Enable/disable cancel button
+	 * @param[in] parent Parent widget
+	 *
+	 * @note Cancel button can be enabled but operation may not support cancellation
+	 */
 	ccProgressDialog(bool     cancelButton = false,
 	                 QWidget* parent       = nullptr);
 
