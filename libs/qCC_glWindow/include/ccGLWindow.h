@@ -16,6 +16,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGLWindow.h
+ *
+ * @brief OpenGL 3D view widget
+ *
+ * Main 3D rendering widget for CloudCompare.
+ * Provides OpenGL rendering with interaction support.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 #include "qCC_glWindow.h"
 
 // local
@@ -24,14 +34,23 @@
 // Qt
 #include <QOpenGLWidget>
 
-//! OpenGL 3D view
+/**
+ * @brief OpenGL 3D view
+ *
+ * Main 3D rendering widget with GL display support.
+ */
 class CCGLWINDOW_LIB_API ccGLWindow : public QOpenGLWidget
     , public ccGLWindowInterface
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create a GL window
+	 * @param[in] format Surface format
+	 * @param[in] parent Parent widget
+	 * @param[in] silentInitialization Skip initialization messages
+	 */
 	ccGLWindow(QSurfaceFormat* format = nullptr, QOpenGLWidget* parent = nullptr, bool silentInitialization = false);
 
 	//! Destructor
