@@ -18,6 +18,16 @@
 #ifndef CC_COMPUTE_OCTREE_DLG_HEADER
 #define CC_COMPUTE_OCTREE_DLG_HEADER
 
+/**
+ * @file ccComputeOctreeDlg.h
+ *
+ * @brief Compute octree dialog
+ *
+ * Dialog for configuring octree computation.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_computeOctreeDlg.h>
 
 // qCC_db
@@ -25,37 +35,55 @@
 
 class ccBoundingBoxEditorDlg;
 
-//! Dialog for octree computation
+/**
+ * @brief Compute octree dialog
+ *
+ * Configure octree computation parameters.
+ */
 class ccComputeOctreeDlg : public QDialog
     , public Ui::ComputeOctreeDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] baseBBox Base bounding box
+	 * @param[in] minCellSize Minimum cell size
+	 * @param[in] parent Parent widget
+	 */
 	ccComputeOctreeDlg(const ccBBox& baseBBox,
 	                   double        minCellSize,
 	                   QWidget*      parent = nullptr);
 
-	//! Computation mode
+	/// Computation mode
 	enum ComputationMode
 	{
-		DEFAULT,
-		MIN_CELL_SIZE,
-		CUSTOM_BBOX
+		DEFAULT,      //!< Default mode
+		MIN_CELL_SIZE, //!< Minimum cell size
+		CUSTOM_BBOX    //!< Custom bbox
 	};
 
-	//! Returns octree computation mode
+	/**
+	 * @brief Get computation mode
+	 * @return Mode
+	 */
 	ComputationMode getMode() const;
 
-	//! Returns cell size at max level
+	/**
+	 * @brief Get minimum cell size
+	 * @return Cell size
+	 */
 	double getMinCellSize() const;
 
-	//! Returns custom bbox
+	/**
+	 * @brief Get custom bounding box
+	 * @return Custom bbox
+	 */
 	ccBBox getCustomBBox() const;
 
   protected:
-	//! Associated dialog
+	/// Bounding box editor
 	ccBoundingBoxEditorDlg* m_bbEditorDlg;
 };
 
