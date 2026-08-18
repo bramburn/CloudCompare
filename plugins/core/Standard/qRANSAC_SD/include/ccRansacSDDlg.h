@@ -18,21 +18,37 @@
 #ifndef CC_RANSAC_SD_DLG_HEADER
 #define CC_RANSAC_SD_DLG_HEADER
 
+/**
+ * @file ccRansacSDDlg.h
+ *
+ * @brief RANSAC SD dialog
+ *
+ * Dialog for RANSAC shape detection parameters.
+ */
+
 #include "ui_ransacSDDlg.h"
 
-//! Dialog for qRansacSD plugin
+/**
+ * @class ccRansacSDDlg
+ *
+ * @brief RANSAC SD dialog
+ *
+ * Dialog for configuring RANSAC shape detection parameters.
+ */
 class ccRansacSDDlg : public QDialog, public Ui::RansacSDDialog
 {
 	Q_OBJECT
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccRansacSDDlg(QWidget* parent = nullptr);
 
 protected:
-
-	//! Saves (temporarily) the dialog parameters on acceptation
+	/// Save settings on accept
 	void saveSettings();
 
 };
