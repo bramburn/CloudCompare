@@ -4,11 +4,10 @@
 **Total files:** ~7964 source files (excluding build/.git/)
 **Started:** 2025-01-XX
 
-## Progress - 115 commits so far
+## Progress - 141 commits so far
 
-### qCC/ (Main application)
-- [x] main.cpp, ccApplication.h/cpp, ccCommon.h
-- [x] mainwindow.h, ccCommandLineParser.h
+### qCC/ (Main application) - 20+ dialogs documented
+**UI Dialogs:** ccAboutDialog, ccAlignDlg, ccApplyTransformationDlg, ccAskThreeDoubleValuesDlg, ccAskTwoDoubleValuesDlg, ccBoundingBoxEditorDlg, cc2.5DimEditor, ccCamSensorProjectionDlg, ccClippingBoxRepeatDlg, ccClippingBoxTool, ccColorFromScalarDlg, ccColorGradientDlg, ccColorLevelsDlg, ccComparisonDlg, ccComputeOctreeDlg, ccConsole, ccContourLinesGenerator
 
 ### libs/ (Core libraries)
 **qCC_db (70+ headers):** ccObject, ccHObject, ccSerializableObject, ccDrawableObject, ccInteractor
@@ -45,7 +44,8 @@
 
 **CCPluginStub:** ccPluginInterface, ccDefaultPluginInterface
 
-**qCC_io:** FileIOFilter, ccGlobalShiftManager, FileIO, ccShiftAndScaleCloudDlg, AsciiFilter
+**qCC_io:** FileIOFilter, ccGlobalShiftManager, FileIO, ccShiftAndScaleCloudDlg, AsciiFilter, AsciiOpenDlg, AsciiSaveDlg, BinFilter, ImageFileFilter, DxfFilter, DepthMapFileFilter, PlyFilter, PlyOpenDlg
+**Export:** qCC_io.h
 
 ### plugins/ (Plugin system)
 - [ ] plugins/core/
