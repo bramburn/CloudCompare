@@ -16,6 +16,14 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccColorScaleEditorWidget.h
+ *
+ * @brief Color scale editor widget
+ *
+ * Widget for editing color scales.
+ */
+
 // Inspired from ccColorScaleEditorWidget by Richard Steffen (LGPL 2.1)
 
 #include "CCPluginAPI.h"
@@ -26,7 +34,11 @@
 // qCC_db
 #include <ccColorScale.h>
 
-//! Color scale element as a widget
+/**
+ * @class ColorScaleElementSlider
+ *
+ * @brief Color scale element as a widget
+ */
 class CCPLUGIN_LIB_API ColorScaleElementSlider : public QWidget
     , public ccColorScaleElement
 {
