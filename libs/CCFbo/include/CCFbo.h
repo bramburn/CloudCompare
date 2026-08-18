@@ -16,6 +16,14 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file CCFbo.h
+ *
+ * @brief Framebuffer Object library export definitions
+ *
+ * Defines the CCFBO_LIB_API macro for library export/import.
+ */
+
 #include <QtCore/QtGlobal>
 
 #if defined(CCFBO_LIBRARY_BUILD)
