@@ -4,27 +4,33 @@
 **Total files:** ~7964 source files (excluding build/.git/)
 **Started:** 2025-01-XX
 
-## Progress - 94 commits so far
+## Progress - 115 commits so far
 
 ### qCC/ (Main application)
 - [x] main.cpp, ccApplication.h/cpp, ccCommon.h
 - [x] mainwindow.h, ccCommandLineParser.h
 
 ### libs/ (Core libraries)
-**qCC_db (65+ headers):** ccObject, ccHObject, ccSerializableObject, ccDrawableObject, ccInteractor
+**qCC_db (70+ headers):** ccObject, ccHObject, ccSerializableObject, ccDrawableObject, ccInteractor
 **Entities:** ccPointCloud, ccGenericPointCloud, ccMesh, ccGenericMesh, ccPolyline, ccImage, ccFacet
 **Geometry:** ccBox, ccSphere, ccCylinder, ccCone, ccCircle, ccDisc, ccPlane, ccTorus, ccQuadric, ccExtru, ccDish, ccGenericPrimitive
 **Sensors:** ccSensor, ccCameraSensor, ccGBLSensor, ccDepthBuffer, ccNormalVectors
 **Math/Display:** ccBBox, ccGLMatrix, ccOctree, ccScalarField, ccColorScale, ccColorScalesManager
 **Display:** ccViewportParameters, ccGenericGLDisplay, ccChunk, ccArray, ccAdvancedTypes, ccColorTypes
-**Materials:** ccMaterial, ccMaterialSet, ccNormalCompressor
+**Materials:** ccMaterial, ccMaterialSet, ccNormalCompressor, ccMaterialDB
 **UI/Interaction:** ccLog, ccProgressDialog, cc2DLabel, ccClipBox, ccShiftedObject
 **I/O:** FileIOFilter, ccFileUtils, ccGlobalShiftManager
 **Types:** ccCoordinateSystem, ccBasicTypes, ccFlags
 **Transform:** ccIndexedTransformation, ccIndexedTransformationBuffer
-**Utilities:** ccHObjectCaster, ccFrustum
+**Utilities:** ccHObjectCaster, ccFrustum, ccIncludeGL, ccGLDrawContext
+**Rendering:** ccColorRampShader, ccColorBasedEntityPicking
+**Grid:** ccGriddedTools, ccPointCloudLOD, ccRasterGrid
+**Viewports:** cc2DViewportObject, cc2DViewportLabel
+**Tools:** ccSingleton, ccPlanarEntityInterface, ccOctreeSpinBox, ccPointCloudInterpolator
+**Export:** qCC_db.h
 
-**qCC_glWindow:** ccGLWindowInterface, ccGLWindowSignalEmitter, ccGLWindow, ccGLUtils
+**qCC_glWindow:** ccGLWindowInterface, ccGLWindowSignalEmitter, ccGLWindow, ccGLUtils, ccGLWindowStereo, ccRenderingTools
+**Export:** qCC_glWindow.h
 
 **CCFbo:** ccGlFilter, ccShader, ccFrameBufferObject, CCFbo.h
 
@@ -38,6 +44,8 @@
 **Export:** CCPluginAPI.h
 
 **CCPluginStub:** ccPluginInterface, ccDefaultPluginInterface
+
+**qCC_io:** FileIOFilter, ccGlobalShiftManager, FileIO, ccShiftAndScaleCloudDlg, AsciiFilter
 
 ### plugins/ (Plugin system)
 - [ ] plugins/core/
