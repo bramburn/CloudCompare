@@ -22,11 +22,23 @@
 // qCC_io
 #include "ccDefaultPluginInterface.h"
 
+/**
+ * @file ccIOPluginInterface.h
+ *
+ * @brief IO plugin interface
+ *
+ * I/O filter plugin interface.
+ */
+
 #include <FileIOFilter.h>
 
-//! I/O filter plugin interface
-/** Version 1.3
- **/
+/**
+ * @class ccIOPluginInterface
+ *
+ * @brief IO plugin interface
+ *
+ * I/O filter plugin interface (Version 1.3).
+ */
 class ccIOPluginInterface : public ccDefaultPluginInterface
 {
   public:
