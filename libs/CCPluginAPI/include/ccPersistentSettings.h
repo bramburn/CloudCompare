@@ -16,10 +16,25 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPersistentSettings.h
+ *
+ * @brief Persistent settings key constants
+ *
+ * Provides standardized key strings for QSettings to persist
+ * application preferences, window geometry, and recent files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Qt
 #include <QString>
 
-//! Persistent settings key (to be used with QSettings)
+/**
+ * @brief Persistent settings keys
+ *
+ * Standardized key strings for application settings.
+ */
 namespace ccPS
 {
 	inline const QString LoadFile()
