@@ -18,6 +18,16 @@
 #ifndef CC_PRIMITIVE_FACTORY_DLG_HEADER
 #define CC_PRIMITIVE_FACTORY_DLG_HEADER
 
+/**
+ * @file ccPrimitiveFactoryDlg.h
+ *
+ * @brief Primitive factory dialog
+ *
+ * Dialog for creating primitive shapes.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_primitiveFactoryDlg.h>
 
 // Qt
@@ -26,37 +36,47 @@
 class MainWindow;
 class ccGLMatrix;
 
-//! Primitive factory
+/**
+ * @brief Primitive factory dialog
+ *
+ * Create primitive shapes.
+ */
 class ccPrimitiveFactoryDlg : public QDialog
     , public Ui::PrimitiveFactoryDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] win Main window
+	 */
 	explicit ccPrimitiveFactoryDlg(MainWindow* win);
 
   protected:
-	//! Creates currently defined primitive
+	/// Create primitive
 	void createPrimitive();
 
-  protected:
-	//! Set sphere position from clipboard
+	/// Set sphere position from clipboard
 	void setSpherePositionFromClipboard();
 
-	//! Set sphere position to origin
+	/// Set sphere position to origin
 	void setSpherePositionToOrigin();
 
+	/// Set coordinate system based on selected object
 	void setCoordinateSystemBasedOnSelectedObject();
 
+	/// Handle matrix text change
 	void onMatrixTextChange();
 
+	/// Set CS matrix to identity
 	void setCSMatrixToIdentity();
 
+	/// Get CS matrix
 	ccGLMatrix getCSMatrix(bool& valid);
 
   protected:
-	//! Associated main window
+	/// Main window
 	MainWindow* m_win;
 };
 
