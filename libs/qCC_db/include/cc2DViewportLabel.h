@@ -18,40 +18,69 @@
 #ifndef CC_2D_VIEWPORT_LABEL_HEADER
 #define CC_2D_VIEWPORT_LABEL_HEADER
 
+/**
+ * @file cc2DViewportLabel.h
+ *
+ * @brief 2D viewport label
+ *
+ * Label overlay for 2D viewports.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Local
 #include "cc2DViewportObject.h"
 // System
 #include <array>
 
-//! 2D viewport label
+/**
+ * @brief 2D viewport label
+ *
+ * Label overlay with ROI for 2D viewports.
+ */
 class QCC_DB_LIB_API cc2DViewportLabel : public cc2DViewportObject
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Create label
+	 * @param[in] name Label name
+	 */
 	explicit cc2DViewportLabel(QString name = QString());
 
-	//! Copy constructor
+	/**
+	 * @brief Copy constructor
+	 * @param[in] viewportLabel Source label
+	 */
 	explicit cc2DViewportLabel(const cc2DViewportLabel& viewportLabel);
 
 	// inherited from ccHObject
+	/// Get class type
 	virtual CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::VIEWPORT_2D_LABEL;
 	}
+	/// Is serializable
 	virtual bool isSerializable() const override
 	{
 		return true;
 	}
 
+	/// ROI type (x, y, width, height)
 	typedef std::array<float, 4> ROI;
 
-	//! Returns ROI (relative to screen)
+	/**
+	 * @brief Get ROI
+	 * @return ROI (relative to screen)
+	 */
 	inline const ROI& roi() const
 	{
 		return m_roi;
 	}
 
-	//! Sets ROI (relative to screen)
+	/**
+	 * @brief Set ROI
+	 * @param[in] roi New ROI
+	 */
 	inline void setRoi(const ROI& roi)
 	{
 		m_roi = roi;
@@ -63,12 +92,10 @@ class QCC_DB_LIB_API cc2DViewportLabel : public cc2DViewportObject
 	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
 
-	//! Draws the entity only (not its children)
+	/// Draw the entity
 	virtual void drawMeOnly(CC_DRAW_CONTEXT& context) override;
 
-	//! label ROI
-	/** ROI is relative to the 3D display
-	 **/
+	/// Label ROI
 	ROI m_roi;
 };
 
