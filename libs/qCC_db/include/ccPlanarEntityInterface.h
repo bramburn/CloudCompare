@@ -1,40 +1,62 @@
 #ifndef PLANAR_ENTITY_INTERFACE_HEADER
 #define PLANAR_ENTITY_INTERFACE_HEADER
 
+/**
+ * @file ccPlanarEntityInterface.h
+ *
+ * @brief Planar entity interface
+ *
+ * Interface for entities that lie on a plane.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // CCCoreLib
 #include <CCGeom.h>
 
 // qCC_gl
 #include <ccGLDrawContext.h>
 
-//! Interface for a planar entity
+/**
+ * @brief Planar entity interface
+ *
+ * Interface for entities with a planar geometry.
+ */
 class ccPlanarEntityInterface
 {
   public:
-	//! Default constructor
+	/// Default constructor
 	ccPlanarEntityInterface();
 
-	//! Show normal vector
+	/**
+	 * @brief Show/hide normal vector
+	 * @param[in] state Show state
+	 */
 	inline void showNormalVector(bool state)
 	{
 		m_showNormalVector = state;
 	}
-	//! Whether normal vector is shown or not
+	
+	/**
+	 * @brief Check if normal is shown
+	 * @return true if shown
+	 */
 	inline bool normalVectorIsShown() const
 	{
 		return m_showNormalVector;
 	}
 
-	//! Returns the entity normal
+	/// Get entity normal
 	virtual CCVector3 getNormal() const = 0;
 
+	/// Destructor
 	virtual ~ccPlanarEntityInterface() = default;
 
   protected: // members
-	//! Draws a normal vector (OpenGL)
+	/// Draw normal vector (OpenGL)
 	void glDrawNormal(CC_DRAW_CONTEXT& context, const CCVector3& pos, float scale, const ccColor::Rgb* color = 0);
 
-	//! Whether the facet normal vector should be displayed or not
+	/// Show normal vector
 	bool m_showNormalVector;
 };
 
