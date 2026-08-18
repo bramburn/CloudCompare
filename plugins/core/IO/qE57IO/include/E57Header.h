@@ -1,11 +1,23 @@
+/**
+ * @file E57Header.h
+ *
+ * @brief E57 header
+ *
+ * E57 point format structures.
+ */
+
 #ifndef CC_E57_HEADER_HEADER
 #define CC_E57_HEADER_HEADER
 
 #include <cstdint>
 
-//! Point prototype (structure use to interrogate if standardized fields are available)
-/** Taken from "E57 Simple API" by Stan Coleby
- **/
+/**
+ * @class PointStandardizedFieldsAvailable
+ *
+ * @brief Point standardized fields
+ *
+ * Point prototype for E57 standardized fields.
+ */
 class PointStandardizedFieldsAvailable
 {
   public:
