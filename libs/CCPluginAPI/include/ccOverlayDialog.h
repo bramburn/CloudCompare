@@ -18,50 +18,76 @@
 
 #include "CCPluginAPI.h"
 
+/**
+ * @file ccOverlayDialog.h
+ *
+ * @brief Overlay dialog interface
+ *
+ * Base class for floating dialogs that appear above
+ * 3D views during interactive operations.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Qt
 #include <QDialog>
 #include <QList>
 
 class ccGLWindowInterface;
 
-//! Generic overlay dialog interface
+/**
+ * @brief Overlay dialog interface
+ *
+ * Floating dialogs that appear above 3D views.
+ */
 class CCPLUGIN_LIB_API ccOverlayDialog : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create an overlay dialog
+	 * @param[in] parent Parent widget
+	 * @param[in] flags Window flags
+	 */
 	explicit ccOverlayDialog(QWidget* parent = nullptr, Qt::WindowFlags flags = Qt::FramelessWindowHint | Qt::Tool);
 
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	~ccOverlayDialog() override;
 
-	//! Links the overlay dialog with a MDI window
-	/** Warning: link can't be modified while dialog is displayed/process is running!
-	    \return success
-	**/
+	/**
+	 * @brief Link with a 3D window
+	 * @param[in] win Window to link with
+	 * @return true on success
+	 */
 	virtual bool linkWith(ccGLWindowInterface* win);
 
-	//! Starts process
-	/** \return success
-	 **/
+	/**
+	 * @brief Start the process/dialog
+	 * @return true on success
+	 */
 	virtual bool start();
 
-	//! Stops process/dialog
-	/** Automatically emits the 'processFinished' signal (with input state as argument).
-	    \param accepted process/dialog result
-	**/
+	/**
+	 * @brief Stop the process/dialog
+	 * @param[in] accepted Process result
+	 */
 	virtual void stop(bool accepted);
 
 	// reimplemented from QDialog
 	void reject() override;
 
-	//! Adds a keyboard shortcut (single key) that will be overridden from the associated window
-	/** When an overridden key is pressed, the shortcutTriggered(int) signal is emitted.
-	 **/
+	/**
+	 * @brief Add overridden keyboard shortcut
+	 * @param[in] key Key to override
+	 */
 	void addOverriddenShortcut(Qt::Key key);
 
-	//! Returns whether the tool is currently started or not
+	/**
+	 * @brief Check if started
+	 * @return true if process is active
+	 */
 	bool started() const
 	{
 		return m_processing;
@@ -69,14 +95,16 @@ class CCPLUGIN_LIB_API ccOverlayDialog : public QDialog
 
   Q_SIGNALS:
 
-	//! Signal emitted when process is finished
-	/** \param accepted specifies how the process finished (accepted or not)
-	 **/
+	/**
+	 * @brief Process finished signal
+	 * @param[in] accepted Result state
+	 */
 	void processFinished(bool accepted);
 
-	//! Signal emitted when an overridden key shortcut is pressed
-	/** See ccOverlayDialog::addOverriddenShortcut
-	 **/
+	/**
+	 * @brief Shortcut triggered signal
+	 * @param[in] key Key that was triggered
+	 */
 	void shortcutTriggered(int key);
 
 	//! Signal emitted when a 'show' event is detected
