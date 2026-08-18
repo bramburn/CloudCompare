@@ -18,6 +18,16 @@
 #ifndef CC_STATISTICAL_TEST_DLG_HEADER
 #define CC_STATISTICAL_TEST_DLG_HEADER
 
+/**
+ * @file ccStatisticalTestDlg.h
+ *
+ * @brief Statistical test dialog
+ *
+ * Dialog for local statistical test tool.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <QDialog>
 
 namespace Ui
@@ -25,29 +35,41 @@ namespace Ui
 	class StatisticalTestDialog;
 }
 
-//! Dialog for the Local Statistical Test tool
+/**
+ * @brief Statistical test dialog
+ *
+ * Configure local statistical test parameters.
+ */
 class ccStatisticalTestDlg : public QDialog
 {
   public:
-	//! Default constructor (for distributions with up to 3 parameters)
+	/**
+	 * @brief Create dialog
+	 * @param[in] param1Label Label for parameter 1
+	 * @param[in] param2Label Label for parameter 2
+	 * @param[in] param3Label Label for parameter 3
+	 * @param[in] windowTitle Window title
+	 * @param[in] parent Parent widget
+	 */
 	ccStatisticalTestDlg(QString  param1Label,
 	                     QString  param2Label,
 	                     QString  param3Label = QString(),
 	                     QString  windowTitle = QString(),
 	                     QWidget* parent      = nullptr);
 
+	/// Destructor
 	~ccStatisticalTestDlg();
 
-	//! Returns 1st parameter value
+	/// Get parameter 1
 	double getParam1() const;
-	//! Returns 2nd parameter value
+	/// Get parameter 2
 	double getParam2() const;
-	//! Returns 3rd parameter value
+	/// Get parameter 3
 	double getParam3() const;
 
-	//! Returns the number of neighbors
+	/// Get neighbors number
 	int getNeighborsNumber() const;
-	//! Returns the associated probability
+	/// Get probability
 	double getProbability() const;
 
   private:
