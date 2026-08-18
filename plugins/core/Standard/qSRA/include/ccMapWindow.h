@@ -17,33 +17,49 @@
 //#                                                                        #
 //##########################################################################
 
-//qCC
+/**
+ * @file ccMapWindow.h
+ *
+ * @brief Map window
+ *
+ * 2D map display window for SRA.
+ */
+
 #include <ccGLWindow.h>
 
-//qCC_db
 #include <ccScalarField.h>
 
-//! 2D map display window
+/**
+ * @class ccMapWindow
+ *
+ * @brief 2D map display window
+ *
+ * 2D map display window with scalar field color ramp.
+ */
 class ccMapWindow : public ccGLWindow
 {
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create window
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccMapWindow(QOpenGLWidget* parent = nullptr)
 		: ccGLWindow(nullptr, parent, true)
 		, m_sfForRampDisplay(nullptr)
 		, m_showSF(true)
 	{}
 
-	//! Destructor
+	/// Destructor
 	virtual ~ccMapWindow()
 	{
 		setAssociatedScalarField(nullptr);
 	}
 
-	//! Sets associated scalar-field
-	/** This scalar field will be used for color ramp display.
-	**/
+	/**
+	 * @brief Set associated scalar field
+	 * @param[in] sf Scalar field for color ramp display
+	 */
 	void setAssociatedScalarField(ccScalarField* sf)
 	{
 		if (m_sfForRampDisplay != sf)
@@ -58,32 +74,25 @@ public:
 		}
 	}
 
-	//! Whether to show associated SF or not
+	/**
+	 * @brief Show/hide scalar field
+	 * @param[in] state Show state
+	 */
 	void showSF(bool state) { m_showSF = state; }
 
-	//! Returns whether associated SF should be shown or not
+	/// Check if SF is shown
 	bool sfShown() const { return m_showSF; }
 
-	//! Returns associated scalar field
+	/// Get associated scalar field
 	ccScalarField* getAssociatedScalarField() const { return m_sfForRampDisplay; }
 
-	//inherited from ccGLWindow
+	/// Get OpenGL context
 	void getContext(CC_DRAW_CONTEXT& context) override
 	{
 		ccGLWindow::getContext(context);
 
 		if (m_showSF)
 		{
-			//override sf that will be used for color ramp display
 			context.sfColorScaleToDisplay = m_sfForRampDisplay;
 		}
 	}
-
-protected:
-
-	//! Associated scalar field
-	ccScalarField* m_sfForRampDisplay;
-
-	//! Whether to show or not the associated SF
-	bool m_showSF;
-};
