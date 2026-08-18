@@ -18,18 +18,36 @@
 #ifndef CC_SINUSX_FILTER_HEADER
 #define CC_SINUSX_FILTER_HEADER
 
+/**
+ * @file SinusxFilter.h
+ *
+ * @brief Sinusx file filter
+ *
+ * I/O filter for Sinusx curve files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! Sinusx curve I/O filter
+/**
+ * @brief Sinusx file filter
+ *
+ * Read/write Sinusx curve files.
+ */
 class SinusxFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	SinusxFilter();
 
-	// inherited from FileIOFilter
+	/// Load file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/// Check if can save
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	
+	/// Save file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 
