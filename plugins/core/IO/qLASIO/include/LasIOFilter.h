@@ -22,9 +22,23 @@
 #include "LasExtraScalarField.h"
 #include "LasOpenDialog.h"
 
+/**
+ * @file LasIOFilter.h
+ *
+ * @brief LAS/LAZ file filter
+ *
+ * I/O filter for LAS/LAZ LiDAR files.
+ *
+ * @author Thomas Montaigu
+ */
 // System
 #include <memory>
 
+/**
+ * @brief LAS/LAZ file filter
+ *
+ * Read/write LAS/LAZ LiDAR point cloud files.
+ */
 class LasIOFilter : public FileIOFilter
 {
   public:
