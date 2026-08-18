@@ -17,23 +17,41 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file kdTreeForFacetExtraction.h
+ *
+ * @brief KD-tree for facet extraction
+ *
+ * KD-tree utilities for facet extraction.
+ */
+
 //qCC_db
 #include <ccKdTree.h>
 
+/**
+ * @class ccKdTreeForFacetExtraction
+ *
+ * @brief KD-tree for facet extraction
+ *
+ * KD-tree utilities for facet extraction.
+ */
 class ccKdTreeForFacetExtraction
 {
 public:
-
-	//! Fuses cells
-	/** Creates a new scalar fields with the groups indexes.
-		\param kdTree Kd-tree
-		\param maxError max error after fusion (see errorMeasure)
-		\param errorMeasure error measure type
-		\param maxAngle_deg maximum angle between two sets to allow fusion (in degrees)
-		\param overlapCoef maximum relative distance between two sets to accept fusion (1 = no distance, < 1 = overlap, > 1 = gap)
-		\param closestFirst
-		\param progressCb for progress notifications (optional)
-	**/
+	/**
+	 * @brief Fuse cells
+	 *
+	 * Creates a new scalar fields with the groups indexes.
+	 *
+	 * @param kdTree KD-tree
+	 * @param maxError Max error after fusion
+	 * @param errorMeasure Error measure type
+	 * @param maxAngle_deg Maximum angle between two sets to allow fusion (degrees)
+	 * @param overlapCoef Maximum relative distance between two sets
+	 * @param closestFirst Use closest first strategy
+	 * @param progressCb Progress callback
+	 * @return Success
+	 */
 	static bool FuseCells(	ccKdTree* kdTree,
 							double maxError,
 							CCCoreLib::DistanceComputationTools::MEASURE_TYPE errorMeasure,
