@@ -18,34 +18,49 @@
 #ifndef CC_MAP_DIALOG_HEADER
 #define CC_MAP_DIALOG_HEADER
 
-//Qt
+/**
+ * @file ccMapDlg.h
+ *
+ * @brief Map dialog
+ *
+ * Map mode overlay dialog for compass.
+ */
+
 #include <QDialog>
 #include <QList>
 #include <QAction>
 
-//CC
 #include <ccOverlayDialog.h>
 
-//Local
 #include <ui_mapDlg.h>
 #include "ccTrace.h"
 
-//class encapsulating the map-mode overlay dialog
+/**
+ * @class ccMapDlg
+ *
+ * @brief Map dialog
+ *
+ * Map mode overlay dialog for creating GeoObjects.
+ */
 class ccMapDlg : public ccOverlayDialog, public Ui::mapDlg
 {
 	Q_OBJECT
 
 public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccMapDlg(QWidget* parent = nullptr);
 
-	//menus
+	/// Create object menu
 	QMenu *m_createObject_menu;
 
-	//actions
-	QAction *m_create_geoObject; //create a normal GeoObject
-	QAction *m_create_geoObjectSS; //create a single surface GeoObject
-
+	/// Create GeoObject action
+	QAction *m_create_geoObject;
+	
+	/// Create single surface GeoObject action
+	QAction *m_create_geoObjectSS;
 };
 
 #endif
