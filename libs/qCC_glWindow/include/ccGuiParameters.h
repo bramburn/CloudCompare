@@ -16,6 +16,14 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGuiParameters.h
+ *
+ * @brief GUI parameters
+ *
+ * Persistent display parameters.
+ */
+
 #include "qCC_glWindow.h"
 
 // Qt
@@ -29,10 +37,13 @@
                 GUI parameters
 ***************************************************/
 
-//! This class manages some persistent parameters (mostly for display)
-/** Values of persistent parameters are stored by the system
-    (either in the registry or in a separate file depending on the OS).
-**/
+/**
+ * @class ccGui
+ *
+ * @brief GUI parameters
+ *
+ * This class manages some persistent parameters (mostly for display).
+ */
 class CCGLWINDOW_LIB_API ccGui
 {
   public:
