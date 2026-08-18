@@ -13,12 +13,19 @@
 //                              (combines the per-OS build guides with the
 //                               CI/deployment documentation, since both
 //                               are about getting the fork out the door)
-//   4. Plugins               — "what is the plugin model, what's enabled,
+//   4. Workflows             — "what does a real surveying-company job look
+//                                like, end to end?" (the four canonical
+//                                pipelines: topo, monitoring, stockpile,
+//                                as-built vs design)
+//   5. Cookbook              — "how do I do X?" task recipes
+//                                (alignment, distance, cropping, scalar
+//                                fields, measurements, batch CLI)
+//   6. Plugins               — "what is the plugin model, what's enabled,
 //                                how do I author one?" (the subsystem
 //                                deep-dive — fills the report's "Modules"
 //                                slot for this fork)
-//   5. Reference             — "where do I look up naming, build flags,
-//                                and FAQ?"
+//   7. Reference             — "where do I look up naming, build flags,
+//                                DB tree, performance, formats, and FAQ?"
 //
 // Every .md under website/docs/ EXCEPT intro.md must appear here, or
 // Docusaurus won't render it in the sidebar. intro.md is the explicit
@@ -68,6 +75,25 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: 'Workflows',
+      collapsed: true,
+      link: {type: 'doc', id: 'workflows/index'},
+      items: [
+        'workflows/topo',
+        'workflows/monitoring',
+        'workflows/stockpile',
+        'workflows/as-built',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Cookbook',
+      collapsed: true,
+      link: {type: 'doc', id: 'cookbook/index'},
+      items: [],
+    },
+    {
+      type: 'category',
       label: 'Plugins',
       collapsed: true,
       link: {type: 'doc', id: 'plugins/overview'},
@@ -89,6 +115,9 @@ const sidebars = {
         'reference/naming',
         'reference/build-flags',
         'reference/faq',
+        'reference/db-tree',
+        'reference/performance',
+        'reference/formats',
       ],
     },
   ],
