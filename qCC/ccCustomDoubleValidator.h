@@ -18,17 +18,34 @@
 #ifndef CC_CUSTOM_DOUBLE_VALIDATOR_HEADER
 #define CC_CUSTOM_DOUBLE_VALIDATOR_HEADER
 
+/**
+ * @file ccCustomDoubleValidator.h
+ *
+ * @brief Custom double validator
+ *
+ * Validator for double numbers (accepts comma as decimal separator).
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Qt
 #include <QString>
 #include <QValidator>
 
-//! Validator class (accepts only double numbers and replaces the comma by a point automatically)
+/**
+ * @brief Custom double validator
+ *
+ * Accepts double numbers, auto-replaces comma with period.
+ */
 class ccCustomDoubleValidator : public QValidator
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create validator
+	 * @param[in] parent Parent
+	 */
 	explicit ccCustomDoubleValidator(QObject* parent = 0)
 	    : QValidator(parent)
 	{
@@ -58,4 +75,3 @@ class ccCustomDoubleValidator : public QValidator
 	}
 };
 
-#endif // CC_CUSTOM_DOUBLE_VALIDATOR_HEADER
