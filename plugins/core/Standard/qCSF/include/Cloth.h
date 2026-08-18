@@ -45,6 +45,14 @@
 //using discrete steps (drop and pull) to approximate the physical process
 //Finding the max height value in nearest N points aroud every particles, as the lowest position where the particles can get.
 
+/**
+ * @file Cloth.h
+ *
+ * @brief Cloth simulation
+ *
+ * Cloth simulation for ground filtering.
+ */
+
 //local
 #include "Vec3.h"
 #include "Particle.h"
@@ -54,6 +62,13 @@
 
 class ccMesh;
 
+/**
+ * @class Cloth
+ *
+ * @brief Cloth simulation
+ *
+ * Cloth simulation for ground/terrain filtering.
+ */
 class Cloth
 {
 private:
