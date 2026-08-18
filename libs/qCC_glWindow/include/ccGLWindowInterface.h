@@ -56,48 +56,75 @@ class ccShader;
 
 struct HotZone;
 
+/**
+ * @file ccGLWindowInterface.h
+ *
+ * @brief OpenGL 3D view interface
+ *
+ * Defines the interface for 3D rendering windows in CloudCompare.
+ * ccGLWindow implements this interface using Qt's OpenGL module.
+ *
+ * This interface handles:
+ * - 3D rendering with OpenGL
+ * - Camera control (rotation, pan, zoom)
+ * - Point/entity picking
+ * - Interactive transformations
+ * - GL filters and shaders
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see ccGLWindow for the concrete implementation
+ */
+
 //! OpenGL 3D view interface
 class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 {
   public:
-	//! Picking mode
+	/**
+	 * @brief Picking mode for 3D interaction
+	 *
+	 * Defines what type of object can be picked in the 3D view.
+	 */
 	enum PICKING_MODE
 	{
-		NO_PICKING,
-		ENTITY_PICKING,
-		ENTITY_RECT_PICKING,
-		FAST_PICKING,
-		POINT_PICKING,
-		TRIANGLE_PICKING,
-		POINT_OR_TRIANGLE_PICKING,
-		POINT_OR_TRIANGLE_OR_LABEL_PICKING,
-		LABEL_PICKING,
-		DEFAULT_PICKING,
+		NO_PICKING,                         //!< No picking
+		ENTITY_PICKING,                      //!< Pick entire entities
+		ENTITY_RECT_PICKING,                 //!< Pick entities in rectangular region
+		FAST_PICKING,                        //!< Fast entity picking
+		POINT_PICKING,                       //!< Pick individual points
+		TRIANGLE_PICKING,                    //!< Pick mesh triangles
+		POINT_OR_TRIANGLE_PICKING,           //!< Pick points or triangles
+		POINT_OR_TRIANGLE_OR_LABEL_PICKING,  //!< Pick points, triangles, or labels
+		LABEL_PICKING,                       //!< Pick labels
+		DEFAULT_PICKING,                     //!< Default picking mode
 	};
 
-	//! Interaction flags (mostly with the mouse)
+	/**
+	 * @brief Interaction flags for mouse/camera control
+	 *
+	 * These flags control what interactions are enabled in the view.
+	 * They can be combined with bitwise OR.
+	 */
 	enum INTERACTION_FLAG
 	{
-		// no interaction
-		INTERACT_NONE = 0,
+		INTERACT_NONE = 0,                     //!< No interaction
 
-		// camera interactions
-		INTERACT_ROTATE          = 1,
-		INTERACT_PAN             = 2,
-		INTERACT_CTRL_PAN        = 4,
-		INTERACT_ZOOM_CAMERA     = 8,
-		INTERACT_2D_ITEMS        = 16, // labels, etc.
-		INTERACT_CLICKABLE_ITEMS = 32, // hot zone
+		// Camera interactions
+		INTERACT_ROTATE          = 1,          //!< Enable rotation with mouse
+		INTERACT_PAN             = 2,          //!< Enable pan with mouse
+		INTERACT_CTRL_PAN        = 4,          //!< Enable pan with Ctrl+drag
+		INTERACT_ZOOM_CAMERA     = 8,          //!< Enable zoom with mouse wheel
+		INTERACT_2D_ITEMS        = 16,         //!< Enable 2D item manipulation (labels)
+		INTERACT_CLICKABLE_ITEMS = 32,         //!< Enable clickable items (hot zone)
 
-		// options / modifiers
-		INTERACT_TRANSFORM_ENTITIES = 64,
+		// Options / modifiers
+		INTERACT_TRANSFORM_ENTITIES = 64,       //!< Enable entity transformation
 
-		// signals
-		INTERACT_SIG_RB_CLICKED      = 128,  // right button clicked
-		INTERACT_SIG_LB_CLICKED      = 256,  // left button clicked
-		INTERACT_SIG_MOUSE_MOVED     = 512,  // mouse moved (only if a button is clicked)
-		INTERACT_SIG_BUTTON_RELEASED = 1024, // mouse button released
-		INTERACT_SIG_MB_CLICKED      = 2048, // middle button clicked
+		// Signals
+		INTERACT_SIG_RB_CLICKED      = 128,    //!< Right button clicked signal
+		INTERACT_SIG_LB_CLICKED      = 256,    //!< Left button clicked signal
+		INTERACT_SIG_MOUSE_MOVED     = 512,    //!< Mouse moved signal
+		INTERACT_SIG_BUTTON_RELEASED = 1024,    //!< Button released signal
+		INTERACT_SIG_MB_CLICKED      = 2048,   //!< Middle button clicked signal
 		INTERACT_SEND_ALL_SIGNALS    = INTERACT_SIG_RB_CLICKED | INTERACT_SIG_LB_CLICKED | INTERACT_SIG_MB_CLICKED | INTERACT_SIG_MOUSE_MOVED | INTERACT_SIG_BUTTON_RELEASED,
 
 		// default modes
