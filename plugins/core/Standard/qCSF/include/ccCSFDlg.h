@@ -28,21 +28,37 @@
 //#                                                                                     #
 //#######################################################################################
 
+/**
+ * @file ccCSFDlg.h
+ *
+ * @brief CSF dialog
+ *
+ * Dialog for Cloth Simulation Filter parameters.
+ */
+
 #include "ui_CSFDlg.h"
 
-//! Dialog for qCSF plugin
+/**
+ * @class ccCSFDlg
+ *
+ * @brief CSF dialog
+ *
+ * Configure CSF ground filtering parameters.
+ */
 class ccCSFDlg : public QDialog, public Ui::CSFDialog
 {
 	Q_OBJECT
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccCSFDlg(QWidget* parent = nullptr);
 
 protected:
-
-	//! Saves (temporarily) the dialog parameters on acceptation
+	/// Save settings on accept
 	void saveSettings();
 
 };
