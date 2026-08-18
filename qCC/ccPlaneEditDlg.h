@@ -18,6 +18,16 @@
 #ifndef CC_PLANE_EDIT_DLG_HEADER
 #define CC_PLANE_EDIT_DLG_HEADER
 
+/**
+ * @file ccPlaneEditDlg.h
+ *
+ * @brief Plane edit dialog
+ *
+ * Dialog for creating or editing plane parameters.
+ *
+ * @author SAGE Ingenierie
+ */
+
 // Local
 #include "ccPickingListener.h"
 
@@ -34,7 +44,11 @@ class ccPlane;
 class ccHObject;
 class ccPickingHub;
 
-//! Dialog to create (or edit the parameters) of a plane
+/**
+ * @brief Plane edit dialog
+ *
+ * Create or edit plane parameters.
+ */
 class ccPlaneEditDlg : public QDialog
     , public ccPickingListener
     , public Ui::PlaneEditDlg
@@ -42,38 +56,53 @@ class ccPlaneEditDlg : public QDialog
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] pickingHub Picking hub
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccPlaneEditDlg(ccPickingHub* pickingHub, QWidget* parent);
 
-	//! Destructor
+	/// Destructor
 	virtual ~ccPlaneEditDlg();
 
-	//! Links this dialog with an existing plane
+	/**
+	 * @brief Initialize with existing plane
+	 * @param[in] plane Plane to edit
+	 */
 	void initWithPlane(ccPlane* plane);
 
-	//! Updates a plane with the current parameters
+	/**
+	 * @brief Update plane with current parameters
+	 * @param[in] plane Plane to update
+	 */
 	void updatePlane(ccPlane* plane);
 
-	//! Inherited from ccPickingListener
-	virtual void onItemPicked(const PickedItem& pi);
+	/// Handle item picked
+	virtual void onItemPicked(const PickedItem& pi) override;
 
   public:
+	/// Pick point as center
 	void pickPointAsCenter(bool);
+	/// Handle dip direction changed
 	void onDipDirChanged(double);
+	/// Handle dip direction modified
 	void onDipDirModified(bool);
+	/// Handle normal changed
 	void onNormalChanged(double);
 
   protected:
+	/// Save params and accept
 	void saveParamsAndAccept();
 
   protected: // members
-	//! Picking window (if any)
+	/// Picking window
 	ccGLWindowInterface* m_pickingWin;
 
-	//! Associated plane (if any)
+	/// Associated plane
 	ccPlane* m_associatedPlane;
 
-	//! Picking hub
+	/// Picking hub
 	ccPickingHub* m_pickingHub;
 };
 
