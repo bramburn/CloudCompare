@@ -18,16 +18,31 @@
 #ifndef CC_PHOTOSCAN_FILTER_HEADER
 #define CC_PHOTOSCAN_FILTER_HEADER
 
+/**
+ * @file PhotoScanFilter.h
+ *
+ * @brief PhotoScan file filter
+ *
+ * I/O filter for PhotoScan/Zeply files.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 // qCC_io
 #include <FileIOFilter.h>
 
-//! Photoscan (PSZ) file I/O filter
+/**
+ * @brief PhotoScan file filter
+ *
+ * Read PhotoScan/Zeply files.
+ */
 class PhotoScanFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	PhotoScanFilter();
 
-	// inherited from FileIOFilter
+	/// Load file
 	virtual CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters);
 };
 
