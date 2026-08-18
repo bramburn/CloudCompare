@@ -18,6 +18,14 @@
 #ifndef CC_THICKNESSTOOL_HEADER
 #define CC_THICKNESSTOOL_HEADER
 
+/**
+ * @file ccThicknessTool.h
+ *
+ * @brief Thickness tool
+ *
+ * Tool for creating thickness measurements.
+ */
+
 #include "ccTool.h"
 #include "ccThickness.h"
 #include "ccPlane.h"
@@ -25,55 +33,69 @@
 #include <ccColorTypes.h>
 #include <DistanceComputationTools.h>
 
-//! Tool used to create thickness measurements in qCompass
+/**
+ * @class ccThicknessTool
+ *
+ * @brief Thickness tool
+ *
+ * Tool for creating thickness measurements in qCompass.
+ */
 class ccThicknessTool :	public ccTool
 {
 public:
+	/// Constructor
 	ccThicknessTool();
 
-	//! Called when the tool is set to active (for initialization)
+	/// Tool activated
 	void toolActivated() override;
 
-	//! Called when the tool is set to disactive (for cleanup)
+	/// Tool disactivated
 	void toolDisactivated() override;
 
-	//! Called when the selection is changed while this tool is active
+	/// Selection changed callback
 	void onNewSelection(const ccHObject::Container& selectedEntities) override;
 
-	//! Called when a point in a point cloud gets picked while this tool is active
+	/// Point picked callback (HObject version)
 	bool pointPicked(ccHObject* insertPoint, unsigned itemIdx, ccHObject* pickedObject, const CCVector3& P) override;
 
-	//! Called when a point in a point cloud gets picked while this tool is active
+	/// Point picked callback
 	void pointPicked(ccHObject* insertPoint, unsigned itemIdx, ccPointCloud* cloud, const CCVector3& P) override;
 
-	//! Called when "Return" or "Space" is pressed, or the "Accept Button" is clicked
-	void accept() override; //do nothing
+	/// Accept action
+	void accept() override;
 
-	//! Called when the "Escape" is pressed, or the "Cancel" button is clicked
-	void cancel() override; //do nothing
+	/// Cancel action
+	void cancel() override;
 
 protected:
-	ccPlane* m_referencePlane = nullptr; //!< Plane used to calculate thickness
-	CCVector3* m_startPoint = nullptr; //!< First point used to calculate thickness in two-point mode
-	std::vector<int> m_hiddenObjects; //!< Used to hide all point clouds (first), then all planes (second).
-	int m_graphic_id = -1; //!< Used to store partially completed lineation graphics
+	/// Reference plane for thickness calculation
+	ccPlane* m_referencePlane = nullptr;
+	
+	/// Start point for two-point mode
+	CCVector3* m_startPoint = nullptr;
+	
+	/// Hidden objects during measurement
+	std::vector<int> m_hiddenObjects;
+	
+	/// Partially completed graphic
+	int m_graphic_id = -1;
 
 private:
-	//! Calculates point-to-plane distances
+	/// Calculate point-to-plane distance
 	float planeToPointDistance(ccPlane* plane, CCVector3 P);
 
-	//! Builds a "thickness" graphic
+	/// Build thickness graphic
 	ccHObject* buildGraphic(CCVector3 endPoint, float thickness);
 
-	//! Recurses children looking for point clouds & making them invisible
+	/// Recurse children for visibility
 	void recurseChildren(ccHObject* obj, bool hidePointClouds, bool hidePlanes);
 
-	//! Gets the interior part of the currently selected GeoObject (or returns the insertPoint if it's not a GeoObject)
+	/// Get interior of GeoObject
 	ccHObject* getInsertInterior(ccHObject* insertPoint);
 
 public:
-	static bool TWO_POINT_MODE; //if true, two points + planar orientation used to calculate thickness. If false, then point-to-plane distance
-	                            //is calculated for each point
+	/// Two-point mode flag
+	static bool TWO_POINT_MODE;
 };
 
 #endif
