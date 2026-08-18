@@ -18,6 +18,19 @@
 #ifndef CC_CAMERA_SENSOR_HEADER
 #define CC_CAMERA_SENSOR_HEADER
 
+/**
+ * @file ccCameraSensor.h
+ *
+ * @brief Camera sensor class
+ *
+ * Represents a camera or depth sensor (e.g., Kinect) for:
+ * - Projective geometry (intrinsic/extrinsic parameters)
+ * - Image-to-3D registration
+ * - Depth map processing
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // local
 #include "ccOctree.h"
 #include "ccSensor.h"
@@ -31,28 +44,42 @@ class ccPointCloud;
 
 class QDir;
 
-//! Camera (projective) sensor
+/**
+ * @brief Camera (projective) sensor
+ *
+ * Models camera geometry including intrinsic parameters
+ * (focal length, principal point, distortion) and
+ * extrinsic parameters (position, orientation).
+ */
 class QCC_DB_LIB_API ccCameraSensor : public ccSensor
 {
   public: // general
-	//! Intrinsic parameters of the camera sensor
+	/**
+	 * @brief Intrinsic camera parameters
+	 *
+	 * Defines the internal camera geometry including focal length,
+	 * sensor size, and distortion parameters.
+	 */
 	struct QCC_DB_LIB_API IntrinsicParameters
 	{
 		//! Default initializer
 		IntrinsicParameters();
 
-		//! Helper: initializes a IntrinsicParameters structure with the default Kinect parameters
+		/**
+		 * @brief Initialize with Kinect defaults
+		 * @param[out] params Parameters to initialize
+		 */
 		static void GetKinectDefaults(IntrinsicParameters& params);
 
-		float vertFocal_pix;      /**< focal length (in pixels) - vertical dimension by default**/
-		float pixelSize_mm[2];    /**< sensor pixel size (in real dimension, e.g. mm) **/
-		float skew;               /**< skew **/
-		float vFOV_rad;           /**< vertical field of view (in Radians) **/
-		float zNear_mm;           /**< Near plane position **/
-		float zFar_mm;            /**< Far plane position **/
-		int   arrayWidth;         /**< Pixel array width (in pixels) **/
-		int   arrayHeight;        /**< Pixel array height (in pixels) **/
-		float principal_point[2]; /**< Principal point (in pixels) **/
+		float vertFocal_pix;      //!< Vertical focal length (pixels)
+		float pixelSize_mm[2];    //!< Pixel size (mm)
+		float skew;               //!< Skew factor
+		float vFOV_rad;           //!< Vertical field of view (radians)
+		float zNear_mm;           //!< Near clipping plane (mm)
+		float zFar_mm;            //!< Far clipping plane (mm)
+		int   arrayWidth;         //!< Image width (pixels)
+		int   arrayHeight;        //!< Image height (pixels)
+		float principal_point[2]; //!< Principal point (pixels)
 
 		//! Returns the horizontal focal pix
 		/** \warning Be sure the pixel size values are correct!
@@ -64,13 +91,15 @@ class QCC_DB_LIB_API ccCameraSensor : public ccSensor
 		}
 	};
 
-	//! Supported distortion models
+	/**
+	 * @brief Lens distortion model types
+	 */
 	enum DistortionModel
 	{
-		NO_DISTORTION_MODEL        = 0, /**< no distortion model **/
-		SIMPLE_RADIAL_DISTORTION   = 1, /**< simple radial distortion model (k1, k2) **/
-		BROWN_DISTORTION           = 2, /**< Brown's distortion model (k1, k2, k3, etc.) **/
-		EXTENDED_RADIAL_DISTORTION = 3  /**< extended radial distortion model (k1, k2, k3) **/
+		NO_DISTORTION_MODEL        = 0, //!< No distortion
+		SIMPLE_RADIAL_DISTORTION   = 1, //!< Simple radial (k1, k2)
+		BROWN_DISTORTION           = 2, //!< Brown's model (k1, k2, k3, ...)
+		EXTENDED_RADIAL_DISTORTION = 3  //!< Extended radial (k1, k2, k3)
 	};
 
 	//! Lens distortion parameters (interface)
