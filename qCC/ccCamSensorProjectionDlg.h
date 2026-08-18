@@ -18,21 +18,47 @@
 #ifndef CC_CAMERA_SENSOR_PROJECTION_DIALOG_HEADER
 #define CC_CAMERA_SENSOR_PROJECTION_DIALOG_HEADER
 
+/**
+ * @file ccCamSensorProjectionDlg.h
+ *
+ * @brief Camera sensor projection dialog
+ *
+ * Dialog for camera sensor projection parameters.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_camSensorProjectDlg.h>
 
 class ccCameraSensor;
 
-//! Camera sensor parameters dialog
+/**
+ * @brief Camera sensor projection dialog
+ *
+ * Configure camera sensor projection parameters.
+ */
 class ccCamSensorProjectionDlg : public QDialog
     , public Ui::CamSensorProjectDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccCamSensorProjectionDlg(QWidget* parent = nullptr);
 
+	/**
+	 * @brief Initialize with camera sensor
+	 * @param[in] sensor Camera sensor
+	 */
 	void initWithCamSensor(const ccCameraSensor* sensor);
+
+	/**
+	 * @brief Update camera sensor
+	 * @param[in] sensor Camera sensor
+	 */
 	void updateCamSensor(ccCameraSensor* sensor);
 };
 
