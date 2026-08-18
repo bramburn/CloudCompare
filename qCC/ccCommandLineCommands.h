@@ -1,10 +1,21 @@
 #ifndef COMMAND_LINE_COMMANDS_HEADER
 #define COMMAND_LINE_COMMANDS_HEADER
 
+/**
+ * @file ccCommandLineCommands.h
+ *
+ * @brief Command line commands
+ *
+ * Command line interface commands.
+ *
+ * @author CloudCompare project
+ */
+
 #include "ccCommandLineInterface.h"
 
 #include <QStringList>
 
+/// Change output format command
 struct CommandChangeOutputFormat : public ccCommandLineInterface::Command
 {
 	CommandChangeOutputFormat(const QString& name, const QString& keyword);
