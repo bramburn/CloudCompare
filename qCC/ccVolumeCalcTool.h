@@ -21,6 +21,15 @@
 // Local
 #include "cc2.5DimEditor.h"
 
+/**
+ * @file ccVolumeCalcTool.h
+ *
+ * @brief Volume calculation tool
+ *
+ * Tool for calculating volume between two clouds.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Qt
 #include <QDialog>
 
@@ -33,7 +42,11 @@ namespace Ui
 	class VolumeCalcDialog;
 }
 
-//! Volume calculation tool (dialog)
+/**
+ * @brief Volume calculation tool
+ *
+ * Calculate volume between two clouds.
+ */
 class ccVolumeCalcTool : public QDialog
     , public cc2Point5DimEditor
 {
