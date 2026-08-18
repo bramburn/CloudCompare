@@ -20,6 +20,19 @@
 // CCCoreLib
 #include <GenericIndexedMesh.h>
 
+/**
+ * @file ccGenericMesh.h
+ *
+ * @brief Generic mesh interface
+ *
+ * Base interface for all mesh types in CloudCompare.
+ * Provides access to mesh geometry (vertices and triangles)
+ * and associated features (materials, textures, normals).
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see ccMesh for concrete implementation
+ */
+
 // Local
 #include "ccAdvancedTypes.h"
 #include "ccGenericGLDisplay.h"
@@ -35,16 +48,22 @@ class ccGenericPointCloud;
 class ccPointCloud;
 class ccMaterialSet;
 
-//! Generic mesh interface
+/**
+ * @brief Generic mesh interface
+ *
+ * Base interface for mesh types. Provides access to vertices,
+ * triangles, materials, and textures.
+ */
 class QCC_DB_LIB_API ccGenericMesh : public CCCoreLib::GenericIndexedMesh
     , public ccShiftedObject
 {
 
   public:
-	//! Default constructor
-	/** \param name object name
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a mesh
+	 * @param[in] name Mesh name
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	ccGenericMesh(QString name = QString(), unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
 	//! Destructor
