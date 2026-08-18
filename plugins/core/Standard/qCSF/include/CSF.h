@@ -26,7 +26,13 @@
 //#                                                                                     #
 //#                      contact us: 2009zwm@gmail.com; wpqjbzwm@126.com                #
 //#                                                                                     #
-//#######################################################################################
+/**
+ * @file CSF.h
+ *
+ * @brief Cloth Simulation Filter
+ *
+ * Cloth simulation for ground filtering.
+ */
 
 #include "wlPointCloud.h"
 #include "Cloth.h"
@@ -39,6 +45,13 @@ class ccPointCloud;
 class QWidget;
 class ccMesh;
 
+/**
+ * @class CSF
+ *
+ * @brief Cloth Simulation Filter
+ *
+ * Cloth simulation for ground/terrain filtering.
+ */
 class CSF
 {
 public:
