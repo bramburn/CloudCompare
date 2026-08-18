@@ -18,6 +18,16 @@
 #ifndef CC_SOR_FILTER_DLG_HEADER
 #define CC_SOR_FILTER_DLG_HEADER
 
+/**
+ * @file ccSORFilterDlg.h
+ *
+ * @brief SOR filter dialog
+ *
+ * Dialog for Statistical Outlier Removal filter.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <QDialog>
 
 namespace Ui
@@ -25,25 +35,39 @@ namespace Ui
 	class SorFilterDialog;
 }
 
-//! Dialog to choose which dimension(s) (X, Y or Z) should be exported as SF(s)
+/**
+ * @brief SOR filter dialog
+ *
+ * Configure Statistical Outlier Removal filter.
+ */
 class ccSORFilterDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccSORFilterDlg(QWidget* parent = nullptr);
 
+	/// Destructor
 	~ccSORFilterDlg();
 
-	int  KNN() const;
+	/// Get K nearest neighbors
+	int KNN() const;
+	/// Set K nearest neighbors
 	void setKNN(int knn);
 
+	/// Get n sigma
 	double nSigma() const;
-	void   setNSigma(double nSigma);
+	/// Set n sigma
+	void setNSigma(double nSigma);
 
+	/// Set max thread count
 	void setMaxThreadCount(int count);
-	int  maxThreadCount() const;
+	/// Get max thread count
+	int maxThreadCount() const;
 
   private:
 	Ui::SorFilterDialog* m_ui;
