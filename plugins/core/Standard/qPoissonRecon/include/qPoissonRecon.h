@@ -18,13 +18,28 @@
 #ifndef Q_POISSON_RECON_PLUGIN_HEADER
 #define Q_POISSON_RECON_PLUGIN_HEADER
 
+/**
+ * @file qPoissonRecon.h
+ *
+ * @brief Poisson surface reconstruction plugin
+ *
+ * Surface reconstruction using the Poisson surface reconstruction algorithm.
+ *
+ * Reference: "Poisson Surface Reconstruction", M. Kazhdan, M. Bolitho, and H. Hoppe,
+ * Symposium on Geometry Processing 2006.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 #include "ccStdPluginInterface.h"
 
-//! Wrapper to the "Poisson Surface Reconstruction (Version 9)" algorithm
-/** "Poisson Surface Reconstruction", M. Kazhdan, M. Bolitho, and H. Hoppe
-	Symposium on Geometry Processing (June 2006), pages 61--70
-	http://www.cs.jhu.edu/~misha/Code/PoissonRecon/
-**/
+/**
+ * @class qPoissonRecon
+ *
+ * @brief Poisson surface reconstruction plugin
+ *
+ * Surface reconstruction from point clouds using Poisson algorithm.
+ */
 class qPoissonRecon : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -34,23 +49,26 @@ class qPoissonRecon : public QObject, public ccStdPluginInterface
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qPoissonRecon(QObject* parent = nullptr);
 
+	/// Destructor
 	virtual ~qPoissonRecon() = default;
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	virtual void onNewSelection(const ccHObject::Container& selectedEntities) override;
+	
+	/// Get plugin actions
 	virtual QList<QAction *> getActions() override;
 
 protected:
-
-	//! Slot called when associated ation is triggered
+	/// Execute reconstruction action
 	void doAction();
 
 protected:
-
-	//! Associated action
 	QAction* m_action;
 
 };
