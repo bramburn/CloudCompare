@@ -22,6 +22,14 @@ original CANUPO project, by N. Brodu and D. Lague.
 #ifndef QCANUPO_TRAINER_HEADER
 #define QCANUPO_TRAINER_HEADER
 
+/**
+ * @file trainer.h
+ *
+ * @brief CANUPO trainer
+ *
+ * LDA trainer for CANUPO classification.
+ */
+
 //system
 #include <vector>
 
@@ -29,6 +37,13 @@ original CANUPO project, by N. Brodu and D. Lague.
 #include <dlib/matrix.h>
 #include <dlib/svm.h>
 
+/**
+ * @class LDATrainer
+ *
+ * @brief LDA trainer
+ *
+ * Linear Discriminant Analysis trainer.
+ */
 class LDATrainer
 {
 public:
