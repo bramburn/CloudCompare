@@ -18,6 +18,16 @@
 #ifndef CC_REGISTRATION_TOOLS_HEADER
 #define CC_REGISTRATION_TOOLS_HEADER
 
+/**
+ * @file ccRegistrationTools.h
+ *
+ * @brief Registration tools
+ *
+ * Wrapper for ICP registration tools.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // CCCoreLib
 #include <RegistrationTools.h>
 
@@ -27,14 +37,29 @@
 class QWidget;
 class ccHObject;
 
-//! Registration tools wrapper
+/**
+ * @brief Registration tools
+ *
+ * Wrapper for ICP registration operations.
+ */
 class ccRegistrationTools
 {
 
   public:
-	//! Applies ICP registration on two entities
-	/** \warning Automatically samples points on meshes if necessary (see code for magic numbers ;)
-	 **/
+	/**
+	 * @brief Apply ICP registration
+	 * @param[in] data Data entity
+	 * @param[in] model Model entity
+	 * @param[out] transMat Result transformation matrix
+	 * @param[out] finalScale Final scale
+	 * @param[out] finalRMS Final RMS
+	 * @param[out] finalPointCount Final point count
+	 * @param[in] inputParameters ICP parameters
+	 * @param[in] useDataSFAsWeights Use data SF as weights
+	 * @param[in] useModelSFAsWeights Use model SF as weights
+	 * @param[in] parent Parent widget
+	 * @return true if successful
+	 */
 	static bool ICP(ccHObject*                                         data,
 	                ccHObject*                                         model,
 	                ccGLMatrix&                                        transMat,
