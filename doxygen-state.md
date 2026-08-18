@@ -12,24 +12,13 @@
 - [x] ccCommon.h
 - [x] mainwindow.h
 - [x] ccCommandLineParser.h
-- [ ] mainwindow.cpp
-- [ ] ... (continues)
 
 ### libs/ (Core libraries) - qCC_db
-- [x] ccPointCloud.h
-- [x] ccHObject.h
-- [x] ccLog.h
-- [x] ccBBox.h
-- [x] ccGLMatrix.h
-- [x] ccScalarField.h
-- [x] ccMesh.h
-- [x] ccOctree.h
-- [x] ccPolyline.h
-- [x] ccSensor.h
-- [x] ccCameraSensor.h
-- [x] ccNormalVectors.h
-- [x] ccColorScale.h
-- [x] ccProgressDialog.h
+- [x] ccPointCloud.h, ccHObject.h, ccLog.h, ccBBox.h
+- [x] ccGLMatrix.h, ccScalarField.h, ccMesh.h, ccOctree.h
+- [x] ccPolyline.h, ccSensor.h, ccCameraSensor.h
+- [x] ccNormalVectors.h, ccColorScale.h, ccProgressDialog.h
+- [x] ccImage.h, ccFacet.h, ccGBLSensor.h, ccDepthBuffer.h
 
 ### libs/ (Core libraries) - Other
 - [x] CCPluginStub/ccPluginInterface.h
@@ -41,34 +30,8 @@
 - [ ] plugins/core/
 - [ ] plugins/standard/
 
-## Commits Made (29 so far)
-1. docs: Add Doxygen comments to qCC/main.cpp
-2. docs: Add Doxygen comments to ccApplication.h/cpp
-3. docs: Add Doxygen comments to ccCommon.h
-4. docs: Add Doxygen comments to mainwindow.h
-5. docs: Add Doxygen comments to ccPluginInterface.h
-6. docs: Add Doxygen comments to ccPointCloud.h
-7. docs: Add Doxygen comments to ccGLWindowInterface.h
-8. docs: Add Doxygen comments to ccCommandLineParser.h
-9. docs: Add Doxygen comments to ccHObject.h
-10. docs: Add Doxygen comments to FileIOFilter.h
-11. docs: Add Doxygen comments to ccLog.h
-12. docs: Add Doxygen comments to ccBBox.h
-13. docs: Add Doxygen comments to ccGLMatrix.h
-14. docs: Add Doxygen comments to ccMainAppInterface.h
-15. docs: Add Doxygen comments to ccScalarField.h
-16. docs: Add Doxygen comments to ccMesh.h
-17. docs: Add Doxygen comments to ccOctree.h
-18. docs: Add Doxygen comments to ccPolyline.h
-19. docs: Add Doxygen comments to ccCameraSensor.h
-20. docs: Add Doxygen comments to ccSensor.h
-21. docs: Add Doxygen comments to ccNormalVectors.h
-22. docs: Add Doxygen comments to ccColorScale.h
-23. docs: Add Doxygen comments to ccProgressDialog.h
-(+6 state file updates)
-
-## Current File
-Working through qCC_db core classes
+## Commits Made (28 Doxygen commits so far)
+Headers documented: main.cpp, ccApplication, ccCommon, mainwindow.h, ccPluginInterface, ccPointCloud, ccGLWindowInterface, ccCommandLineParser, ccHObject, FileIOFilter, ccLog, ccBBox, ccGLMatrix, ccMainAppInterface, ccScalarField, ccMesh, ccOctree, ccPolyline, ccCameraSensor, ccSensor, ccNormalVectors, ccColorScale, ccProgressDialog, ccImage, ccFacet, ccGBLSensor, ccDepthBuffer
 
 ## Notes
 - Focus on user-facing, high-level files first
