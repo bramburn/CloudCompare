@@ -17,30 +17,40 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccCylinder.h
+ *
+ * @brief Cylinder primitive class
+ *
+ * Represents a 3D cylinder primitive. Internally implemented as a
+ * cone with equal top and bottom radii.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Local
 #include "ccCone.h"
 
-//! Cylinder (primitive)
-/** 3D cylinder primitive
- **/
+/**
+ * @brief Cylinder primitive
+ *
+ * A 3D cylinder. Axis is along the Z dimension.
+ */
 class QCC_DB_LIB_API ccCylinder : public ccCone
 {
   public:
-	//! Default drawing precision
-	/** \warning Never pass a 'constant initializer' by reference
-	 **/
+	//! Default drawing precision (angular steps)
 	static const unsigned DEFAULT_DRAWING_PRECISION = 48;
 
-	//! Default constructor
-	/** Cylinder axis corresponds to the 'Z' dimension.
-	    Internally represented by a cone with the same top and bottom radius.
-	    \param radius cylinder radius
-	    \param height cylinder height (transformation should point to the axis center)
-	    \param transMat optional 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
-	    \param name name
-	    \param precision drawing precision (angular step = 360/precision)
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a cylinder
+	 * @param[in] radius Cylinder radius
+	 * @param[in] height Cylinder height
+	 * @param[in] transMat Optional transformation matrix
+	 * @param[in] name Cylinder name
+	 * @param[in] precision Drawing precision
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	ccCylinder(PointCoordinateType radius,
 	           PointCoordinateType height,
 	           const ccGLMatrix*   transMat  = nullptr,
