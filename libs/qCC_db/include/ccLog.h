@@ -17,6 +17,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccLog.h
+ *
+ * @brief Logging interface for CloudCompare
+ *
+ * Provides a thread-safe logging interface used throughout CloudCompare
+ * for console output, warnings, and error messages.
+ *
+ * @section Usage
+ * @code
+ * ccLog::Print("Loading file: %s", filename);
+ * ccLog::Warning("Low memory warning");
+ * ccLog::Error("Failed to open file: %s", filename);
+ * @endcode
+ *
+ * @section Thread Safety
+ * All logging methods are thread-safe.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Local
 #include "qCC_db.h"
 
@@ -27,127 +48,199 @@
 // Qt
 #include <QString>
 
-//! Main log interface
-/** This interface is meant to be used as a unique (static) instance.
-    It should be thread safe!
-**/
+/**
+ * @brief Main log interface
+ *
+ * Thread-safe logging interface meant to be used as a singleton.
+ * All methods must be thread-safe as logging can occur from
+ * multiple threads during processing operations.
+ */
 class QCC_DB_LIB_API ccLog
 {
   public:
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	virtual ~ccLog()
 	{
 	}
 
-	//! Returns the static and unique instance
+	/**
+	 * @brief Get the singleton instance
+	 * @return Pointer to the current logging instance
+	 */
 	static ccLog* TheInstance();
 
-	//! Registers a unique instance
+	/**
+	 * @brief Register a logging instance
+	 * @param[in] logInstance Instance to register
+	 */
 	static void RegisterInstance(ccLog* logInstance);
 
-	//! Enables the message backup system
-	/** Stores the messages until a valid logging instance is registered.
-	 **/
+	/**
+	 * @brief Enable message backup system
+	 *
+	 * When enabled, messages are stored until a logging instance
+	 * is registered. Useful during early initialization.
+	 *
+	 * @param[in] state true to enable backup, false to disable
+	 */
 	static void EnableMessageBackup(bool state);
 
-	//! Message level
+	/**
+	 * @brief Message severity levels
+	 */
 	enum MessageLevelFlags
 	{
-		LOG_VERBOSE   = 0, /**< Verbose message (Debug) **/
-		LOG_STANDARD  = 1, /**< Standard message (Print) **/
-		LOG_IMPORTANT = 2, /**< Important messages (PrintHigh) **/
-		LOG_WARNING   = 3, /**< Warning message (Warning) **/
-		LOG_ERROR     = 4, /**< Error message (Error) **/
+		LOG_VERBOSE   = 0, //!< Verbose/debug message
+		LOG_STANDARD  = 1, //!< Standard informational message
+		LOG_IMPORTANT = 2, //!< Important message (highlighted)
+		LOG_WARNING   = 3, //!< Warning message
+		LOG_ERROR     = 4, //!< Error message
 
-		DEBUG_FLAG = 8 /**< Debug flag (reserved) **/
+		DEBUG_FLAG = 8 //!< Debug flag (reserved)
 	};
 
-	//! Returns the current verbosity level
+	/**
+	 * @brief Get the current verbosity level
+	 * @return Current verbosity level
+	 */
 	static int VerbosityLevel();
 
-	//! Sets the verbosity level
+	/**
+	 * @brief Set the verbosity level
+	 * @param[in] level New verbosity level
+	 */
 	static void SetVerbosityLevel(int level);
 
-	//! Static shortcut to ccLog::logMessage
+	/**
+	 * @brief Log a message directly
+	 * @param[in] message Message to log
+	 * @param[in] level Message severity level
+	 */
 	static void LogMessage(const QString& message, int level);
 
-	//! Generic message logging method
-	/** To be implemented by child class.
-	    \warning MUST BE THREAD SAFE!
-	    \param message message
-	    \param level message severity (see MessageLevelFlags)
-	**/
+	/**
+	 * @brief Core logging method
+	 *
+	 * Pure virtual method that must be implemented by concrete classes.
+	 *
+	 * @param[in] message The message to log
+	 * @param[in] level Message severity (see MessageLevelFlags)
+	 *
+	 * @warning MUST BE THREAD SAFE!
+	 */
 	virtual void logMessage(const QString& message, int level) = 0;
 
-	//! Prints out a verbose formatted message in console
-	/** Works just like the 'printf' command.
-	    \return always 'true'
-	**/
+	/**
+	 * @brief Print verbose message (printf-style)
+	 * @param[in] format Printf-style format string
+	 * @return Always true
+	 */
 	static bool PrintVerbose(const char* format, ...);
 
-	//! QString version of ccLog::PrintVerbose
+	/**
+	 * @brief Print verbose message (QString version)
+	 * @param[in] message Message to print
+	 * @return Always true
+	 */
 	static bool PrintVerbose(const QString& message);
 
-	//! Prints out a formatted message in console
-	/** Works just like the 'printf' command.
-	    \return always 'true'
-	**/
+	/**
+	 * @brief Print standard message (printf-style)
+	 * @param[in] format Printf-style format string
+	 * @return Always true
+	 */
 	static bool Print(const char* format, ...);
 
-	//! QString version of ccLog::Print
+	/**
+	 * @brief Print standard message (QString version)
+	 * @param[in] message Message to print
+	 * @return Always true
+	 */
 	static bool Print(const QString& message);
 
-	//! Prints out an important formatted message in console
-	/** Works just like the 'printf' command.
-	    \return always 'true'
-	**/
+	/**
+	 * @brief Print important message (printf-style)
+	 * @param[in] format Printf-style format string
+	 * @return Always true
+	 */
 	static bool PrintHigh(const char* format, ...);
 
-	//! QString version of ccLog::PrintHigh
+	/**
+	 * @brief Print important message (QString version)
+	 * @param[in] message Message to print
+	 * @return Always true
+	 */
 	static bool PrintHigh(const QString& message);
 
-	//! Same as Print, but works only in Debug mode
-	/** Works just like the 'printf' command.
-	    \return always 'true'
-	**/
+	/**
+	 * @brief Print debug message (printf-style)
+	 * @param[in] format Printf-style format string
+	 * @return Always true
+	 */
 	static bool PrintDebug(const char* format, ...);
 
-	//! QString version of ccLog::PrintDebug
+	/**
+	 * @brief Print debug message (QString version)
+	 * @param[in] message Message to print
+	 * @return Always true
+	 */
 	static bool PrintDebug(const QString& message);
 
-	//! Prints out a formatted warning message in console
-	/** Works just like the 'printf' command.
-	    \return always 'false'
-	**/
+	/**
+	 * @brief Print warning (printf-style)
+	 * @param[in] format Printf-style format string
+	 * @return Always false (for chaining)
+	 */
 	static bool Warning(const char* format, ...);
 
-	//! QString version of ccLog::Warning
+	/**
+	 * @brief Print warning (QString version)
+	 * @param[in] message Warning message
+	 * @return Always false (for chaining)
+	 */
 	static bool Warning(const QString& message);
 
-	//! Same as Warning, but works only in Debug mode
-	/** Works just like the 'printf' command.
-	    \return always 'false'
-	**/
+	/**
+	 * @brief Print debug warning (printf-style)
+	 * @param[in] format Printf-style format string
+	 * @return Always false (for chaining)
+	 */
 	static bool WarningDebug(const char* format, ...);
 
-	//! QString version of ccLog::WarningDebug
+	/**
+	 * @brief Print debug warning (QString version)
+	 * @param[in] message Warning message
+	 * @return Always false (for chaining)
+	 */
 	static bool WarningDebug(const QString& message);
 
-	//! Display an error dialog with formatted message
-	/** Works just like the 'printf' command.
-	    \return always 'false'
-	**/
+	/**
+	 * @brief Print error (printf-style)
+	 * @param[in] format Printf-style format string
+	 * @return Always false (for chaining)
+	 */
 	static bool Error(const char* format, ...);
 
-	//! QString version of 'Error'
+	/**
+	 * @brief Print error (QString version)
+	 * @param[in] message Error message
+	 * @return Always false (for chaining)
+	 */
 	static bool Error(const QString& message);
 
-	//! Same as Error, but works only in Debug mode
-	/** Works just like the 'printf' command.
-	    \return always 'false'
-	**/
+	/**
+	 * @brief Print debug error (printf-style)
+	 * @param[in] format Printf-style format string
+	 * @return Always false (for chaining)
+	 */
 	static bool ErrorDebug(const char* format, ...);
 
-	//! QString version of ccLog::ErrorDebug
+	/**
+	 * @brief Print debug error (QString version)
+	 * @param[in] message Error message
+	 * @return Always false (for chaining)
+	 */
 	static bool ErrorDebug(const QString& message);
 };
