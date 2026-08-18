@@ -18,15 +18,35 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file FBXCommand.h
+ *
+ * @brief FBX command
+ *
+ * Command line interface command for FBX import.
+ *
+ * @author CloudCompare project
+ */
+
 #include "ccCommandLineInterface.h"
 
+/**
+ * @class FBXCommand
+ *
+ * @brief FBX CLI command
+ *
+ * CLI command for importing FBX files.
+ */
 class FBXCommand : public ccCommandLineInterface::Command
 {
   public:
+	/// Constructor
 	FBXCommand();
 
+	/// Destructor
 	~FBXCommand() override = default;
 
+	/// Process command
 	bool process(ccCommandLineInterface& cmd) override;
 };
 
