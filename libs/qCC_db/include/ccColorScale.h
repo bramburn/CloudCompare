@@ -26,48 +26,79 @@
 #include <QList>
 #include <QSharedPointer>
 
+/**
+ * @file ccColorScale.h
+ *
+ * @brief Color scale for scalar field visualization
+ *
+ * Color scales map scalar values to colors for visualization.
+ * Used to display distances, intensities, and other scalar fields
+ * on point clouds and meshes.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // System
 #include <set>
 
-//! Color scale element: one value + one color
+/**
+ * @brief A single element in a color scale
+ *
+ * Represents a position-color pair in a color gradient.
+ */
 class ccColorScaleElement
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Default constructor
+	 * Creates element at position 0.0 with black color.
+	 */
 	ccColorScaleElement()
 	    : m_relativePos(0.0)
 	    , m_color(Qt::black)
 	{
 	}
 
-	//! Constructor from a (relative) position and a color
+	/**
+	 * @brief Create an element
+	 * @param[in] relativePos Position in scale (0.0 to 1.0)
+	 * @param[in] color Color at this position
+	 */
 	ccColorScaleElement(double relativePos, const QColor& color)
 	    : m_relativePos(relativePos)
 	    , m_color(color)
 	{
 	}
 
-	//! Sets associated value (relative to scale boundaries)
-	/** \param pos relative position (always between 0.0 and 1.0!)
-	 **/
+	/**
+	 * @brief Set position
+	 * @param[in] pos Relative position (0.0 to 1.0)
+	 */
 	inline void setRelativePos(double pos)
 	{
 		m_relativePos = pos;
 	}
-	//! Returns step position (relative to scale boundaries)
-	/** \return relative position (always between 0.0 and 1.0!)
-	 **/
+	/**
+	 * @brief Get position
+	 * @return Relative position (0.0 to 1.0)
+	 */
 	inline double getRelativePos() const
 	{
 		return m_relativePos;
 	}
 
-	//! Sets color
+	/**
+	 * @brief Set color
+	 * @param[in] color Color value
+	 */
 	inline void setColor(const QColor& color)
 	{
 		m_color = color;
 	}
-	//! Returns color
+	/**
+	 * @brief Get color
+	 * @return Color value
+	 */
 	inline const QColor& getColor() const
 	{
 		return m_color;
