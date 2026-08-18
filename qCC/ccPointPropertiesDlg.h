@@ -19,6 +19,15 @@
 
 #include "ccPointPickingGenericInterface.h"
 
+/**
+ * @file ccPointPropertiesDlg.h
+ *
+ * @brief Point properties dialog
+ *
+ * Dialog for point picking, distance, angle measurement.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include <ui_pointPropertiesDlg.h>
 
@@ -26,7 +35,11 @@ class cc2DLabel;
 class cc2DViewportLabel;
 class ccHObject;
 
-//! Dialog for simple point picking (information, distance, etc.)
+/**
+ * @brief Point properties dialog
+ *
+ * Point picking, distance, and angle measurement.
+ */
 class ccPointPropertiesDlg : public ccPointPickingGenericInterface
     , public Ui::PointPropertiesDlg
 {
