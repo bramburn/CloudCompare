@@ -16,21 +16,35 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccShiftedObject.h
+ *
+ * @brief Shifted entity interface
+ *
+ * Interface for entities that support coordinate shift/scale
+ * for handling large coordinates. When loading files with
+ * very large coordinates, CloudCompare shifts them to avoid
+ * floating-point precision issues.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccHObject.h"
 
-//! Shifted entity interface
-/** Shifted entities are entities which coordinates can be
-    (optionally) shifted so as to reduce their amplitude and
-    therefore display or accuracy issues.
-**/
+/**
+ * @brief Shifted entity interface
+ *
+ * Entities that support coordinate shift/scale for
+ * handling large coordinate values.
+ */
 class QCC_DB_LIB_API ccShiftedObject : public ccHObject
 {
   public:
-	//! Default constructor
-	/** \param name cloud name (optional)
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a shifted object
+	 * @param[in] name Object name
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	ccShiftedObject(QString name = QString(), unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
 	//! Copy constructor
