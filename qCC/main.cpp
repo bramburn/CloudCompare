@@ -1,3 +1,17 @@
+/**
+ * @file main.cpp
+ *
+ * @brief CloudCompare main entry point
+ *
+ * CloudCompare is an advanced 3D point cloud and mesh processing software.
+ * This file contains the application entry point (main function) and
+ * initialization routines for the Qt-based GUI application.
+ *
+ * \author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * \copyright GNU General Public License v2 or later
+ * \date Initial release: 2005
+ */
+
 // ##########################################################################
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
@@ -57,6 +71,17 @@
 #include <Windows.h>
 #endif
 
+/**
+ * @brief Determines if the application is running in command-line mode
+ *
+ * On macOS, the Finder sometimes adds a "process serial number" argument
+ * (-psn_*) when double-clicking the application. This function filters out
+ * such system-generated arguments to accurately detect CLI mode.
+ *
+ * @param argc Number of command-line arguments
+ * @param argv Array of command-line argument strings
+ * @return true if command-line mode is detected, false otherwise
+ */
 static bool IsCommandLine(int argc, char** argv)
 {
 #ifdef Q_OS_MAC
@@ -80,6 +105,22 @@ static bool IsCommandLine(int argc, char** argv)
 #endif
 }
 
+/**
+ * @brief CloudCompare application entry point
+ *
+ * Initializes the Qt application, sets up OpenGL context, loads plugins,
+ * and either enters GUI mode (with MainWindow) or command-line processing mode.
+ *
+ * @param argc Number of command-line arguments
+ * @param argv Array of command-line argument strings
+ * @return Application exit code (0 for success, non-zero for failure)
+ *
+ * @note On Windows, automatically attaches to parent console for stdout/stderr
+ *       redirection if launched from command line.
+ * @note Handles special commands: -LANG for translation loading, -VERBOSITY for log level
+ * @see ccCommandLineParser::Parse() for CLI mode processing
+ * @see MainWindow for GUI mode initialization
+ */
 int main(int argc, char** argv)
 {
 #ifdef _WIN32 // This will allow printf to function on windows when opened from command line
@@ -174,12 +215,21 @@ int main(int argc, char** argv)
 	// store the log message until a valid logging instance is registered
 	ccLog::EnableMessageBackup(true);
 
-	// splash screen
+	// splash screen - initialized to nullptr for now
 	QScopedPointer<QSplashScreen> splash(nullptr);
 
-	// standard mode
+	// GUI mode initialization
 	if (!commandLine)
 	{
+		/**
+		 * @brief OpenGL Context Validation
+		 *
+		 * CloudCompare requires OpenGL 2.1 or higher for 3D rendering.
+		 * This code creates a temporary OpenGL context to verify hardware support
+		 * before proceeding with the full application initialization.
+		 *
+		 * @see ccGLWindow for the main rendering window
+		 */
 		QOpenGLContext context;
 		if (!context.create())
 		{
@@ -195,18 +245,39 @@ int main(int argc, char** argv)
 			return EXIT_FAILURE;
 		}
 
-		// init splash screen
+		// init splash screen - displays logo while application loads
 		QPixmap pixmap(QString::fromUtf8(":/CC/images/imLogoV2Qt.png"));
 		splash.reset(new QSplashScreen(pixmap, Qt::WindowStaysOnTopHint));
 		splash->show();
 	}
 
-	// global structures initialization
+	/**
+	 * @brief Global Structures Initialization
+	 *
+	 * Initializes core subsystems that must be available throughout the
+	 * application lifetime. These are singleton instances that are lazily
+	 * created but forced here to ensure they're ready before any UI operations.
+	 *
+	 * @note FileIOFilter::InitInternalFilters() loads built-in file format
+	 *       handlers. Plugin-based I/O handlers are loaded separately by
+	 *       ccPluginManager::loadPlugins()
+	 * @see ccNormalVectors for normal vector computation utilities
+	 * @see ccColorScalesManager for color scale management
+	 */
 	FileIOFilter::InitInternalFilters();       // load all known I/O filters (plugins will come later!)
 	ccNormalVectors::GetUniqueInstance();      // force pre-computed normals array initialization
 	ccColorScalesManager::GetUniqueInstance(); // force pre-computed color tables initialization
 
-	// load the plugins
+	/**
+	 * @brief Plugin System Initialization
+	 *
+	 * Loads all registered plugins from the plugins/ directory.
+	 * Plugins extend CloudCompare's functionality with additional
+	 * file formats, processing algorithms, and UI components.
+	 *
+	 * @see ccPluginManager for plugin discovery and management
+	 * @see ccPluginInterface for plugin interface definition
+	 */
 	ccPluginManager& pluginManager = ccPluginManager::Get();
 	pluginManager.loadPlugins();
 
@@ -226,14 +297,43 @@ int main(int argc, char** argv)
 
 	int result = 0;
 
+	/**
+	 * @brief Application Execution Path
+	 *
+	 * CloudCompare can run in two modes:
+	 * - Command-line mode: batch processing without GUI (faster for scripts)
+	 * - GUI mode: interactive 3D visualization and editing
+	 */
 	// command line mode
 	if (commandLine)
 	{
-		// command line processing (no GUI)
+		/**
+		 * @brief Command-Line Processing
+		 *
+		 * Parses and executes command-line arguments for batch processing.
+		 * Supported commands include file loading, export, and various
+		 * point cloud processing operations.
+		 *
+		 * @param[in] argumentsLocal8Bit Command-line arguments as QStringList
+		 * @param[in] pluginManager Reference to loaded plugins for extended functionality
+		 * @return Exit code from command processing
+		 * @see ccCommandLineParser::Parse()
+		 */
 		result = ccCommandLineParser::Parse(argumentsLocal8Bit, pluginManager.pluginList());
 	}
 	else
 	{
+		/**
+		 * @brief GUI Mode Initialization
+		 *
+		 * Creates and displays the main application window (MainWindow).
+		 * Initializes plugin UI components, shows the window, and processes
+		 * any additional command-line arguments as filenames to open.
+		 *
+		 * @see MainWindow::TheInstance()
+		 * @see MainWindow::initPlugins()
+		 * @see MainWindow::addToDB()
+		 */
 		// main window initialization
 		MainWindow* mainWindow = MainWindow::TheInstance();
 		if (!mainWindow)
@@ -300,6 +400,17 @@ int main(int argc, char** argv)
 			mainWindow->addToDB(filenames);
 		}
 
+		/**
+		 * @brief Working Directory Setup
+		 *
+		 * Sets the application's working directory to its own location.
+		 * On macOS, navigates up from the MacOS bundle directory to the
+		 * application root, as macOS bundles place executables in a
+		 * non-standard location.
+		 *
+		 * @note This is done AFTER processing command-line arguments to ensure
+		 *       relative paths in arguments are resolved correctly.
+		 */
 		// change the default path to the application one (do this AFTER processing the command line)
 		QDir workingDir = QCoreApplication::applicationDirPath();
 
@@ -315,6 +426,16 @@ int main(int argc, char** argv)
 
 		QDir::setCurrent(workingDir.absolutePath());
 
+		/**
+		 * @brief Main Event Loop
+		 *
+		 * Enters Qt's event loop. All GUI interactions and plugin operations
+		 * are processed here. Exceptions are caught and displayed to the user
+		 * with a crash notification dialog.
+		 *
+		 * @return Exit code returned from the event loop
+		 * @note Plugins are stopped gracefully when the event loop exits
+		 */
 		// let's rock!
 		try
 		{
@@ -329,13 +450,23 @@ int main(int argc, char** argv)
 			QMessageBox::warning(nullptr, "CC crashed!", "Hum, it seems that CC has crashed... Sorry about that :)");
 		}
 
-		// release the plugins
+		// release the plugins - gracefully shut down all loaded plugins
 		for (ccPluginInterface* plugin : pluginManager.pluginList())
 		{
 			plugin->stop(); // just in case
 		}
 	}
 
+	/**
+	 * @brief Cleanup and Shutdown
+	 *
+	 * Releases all global resources before application exit:
+	 * - ccPointCloud::ReleaseShaders() must be called before OpenGL context destruction
+	 * - MainWindow::DestroyInstance() cleans up the main window singleton
+	 * - FileIOFilter::UnregisterAll() releases file format handlers
+	 *
+	 * @note Order matters! Shaders must be released while OpenGL context is still valid.
+	 */
 	// release global structures
 	ccPointCloud::ReleaseShaders(); // must be done before the OpenGL context is released (i.e. before the windows is destroyed)
 	MainWindow::DestroyInstance();
