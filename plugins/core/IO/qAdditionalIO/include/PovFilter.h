@@ -18,18 +18,36 @@
 #ifndef POV_FILTER_HEADER
 #define POV_FILTER_HEADER
 
+/**
+ * @file PovFilter.h
+ *
+ * @brief POV file filter
+ *
+ * I/O filter for POV-Ray meta-files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! P.O.V. meta-file I/O filter
+/**
+ * @brief POV file filter
+ *
+ * Read/write POV-Ray meta-files.
+ */
 class PovFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	PovFilter();
 
-	// inherited from FileIOFilter
+	/// Load file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/// Check if can save
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	
+	/// Save file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 
