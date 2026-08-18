@@ -18,6 +18,16 @@
 #ifndef CC_SF_SCATTERING_DLG_HEADER
 #define CC_SF_SCATTERING_DLG_HEADER
 
+/**
+ * @file ccSensorComputeScatteringAnglesDlg.h
+ *
+ * @brief Sensor scattering angles dialog
+ *
+ * Dialog for scattering angles computation.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <QDialog>
 
 namespace Ui
@@ -25,18 +35,26 @@ namespace Ui
 	class sensorComputeScatteringAnglesDlg;
 }
 
-//! Dialog for scattering angles computation
+/**
+ * @brief Sensor scattering angles dialog
+ *
+ * Configure scattering angles computation.
+ */
 class ccSensorComputeScatteringAnglesDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccSensorComputeScatteringAnglesDlg(QWidget* parent = nullptr);
 
+	/// Destructor
 	~ccSensorComputeScatteringAnglesDlg();
 
-	//! Returns whether angles should be converted to degrees
+	/// Get angles in degrees flag
 	bool anglesInDegrees() const;
 
   private:
