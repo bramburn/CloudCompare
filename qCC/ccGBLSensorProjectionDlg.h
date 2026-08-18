@@ -17,23 +17,52 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGBLSensorProjectionDlg.h
+ *
+ * @brief GBL sensor projection dialog
+ *
+ * Dialog for GBL (ground-based lidar) sensor parameters.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_gblSensorProjectDlg.h>
 
 class ccGBLSensor;
 
-//! Ground-based (lidar) sensor parameters dialog
+/**
+ * @brief GBL sensor projection dialog
+ *
+ * Configure GBL sensor projection parameters.
+ */
 class ccGBLSensorProjectionDlg : public QDialog
     , public Ui::GBLSensorProjectDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccGBLSensorProjectionDlg(QWidget* parent = nullptr);
 
+	/// Initialize with previous values
 	void initWithPrevious();
+	
+	/// Save values for next time
 	void saveForNextTime();
 
+	/**
+	 * @brief Initialize with GBL sensor
+	 * @param[in] sensor GBL sensor
+	 */
 	void initWithGBLSensor(const ccGBLSensor* sensor);
+
+	/**
+	 * @brief Update GBL sensor
+	 * @param[in] sensor GBL sensor
+	 */
 	void updateGBLSensor(ccGBLSensor* sensor);
 };
