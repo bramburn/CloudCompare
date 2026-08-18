@@ -15,14 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file SalomeHydroFilter.h
+ *
+ * @brief SALOME Hydro filter
+ *
+ * SALOME hydro polylines I/O filter.
+ */
+
 #ifndef CC_SALOME_HYDRO_HEADER
 #define CC_SALOME_HYDRO_HEADER
 
 #include "FileIOFilter.h"
 
-//! SALOME hydro polylines I/O filter
-/** See http://chercheurs.edf.com/logiciels/salome-41218.html
- **/
+/**
+ * @class SalomeHydroFilter
+ *
+ * @brief SALOME Hydro filter
+ *
+ * SALOME hydro polylines I/O filter.
+ */
 class SalomeHydroFilter : public FileIOFilter
 {
   public:
