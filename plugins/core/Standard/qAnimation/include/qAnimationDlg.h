@@ -36,14 +36,24 @@ class ccPolyline;
 class cc2DViewportObject;
 class QListWidgetItem;
 
-//! Dialog for qAnimation plugin
+/**
+ * @class qAnimationDlg
+ *
+ * @brief Animation dialog
+ *
+ * Configure animation capture settings.
+ */
 class qAnimationDlg : public QDialog, public Ui::AnimationDialog
 {
 	Q_OBJECT
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] view3d 3D view
+	 * @param[in] parent Parent widget
+	 */
 	qAnimationDlg(ccGLWindowInterface* view3d,  QWidget* parent = nullptr);
 
 	//! Destrcuctor
