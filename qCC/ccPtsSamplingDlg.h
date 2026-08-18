@@ -18,29 +18,56 @@
 #ifndef CC_POINTS_SAMPLING_DLG_HEADER
 #define CC_POINTS_SAMPLING_DLG_HEADER
 
+/**
+ * @file ccPtsSamplingDlg.h
+ *
+ * @brief Points sampling dialog
+ *
+ * Dialog for sampling points on a mesh.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include <ui_ptsSamplingDlg.h>
 
-//! Dialog: points sampling on a mesh
+/**
+ * @brief Points sampling dialog
+ *
+ * Configure point sampling parameters on mesh.
+ */
 class ccPtsSamplingDlg : public QDialog
     , public Ui::PointsSamplingDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccPtsSamplingDlg(QWidget* parent = nullptr);
 
+	/// Get generate normals flag
 	bool generateNormals() const;
+	/// Get interpolate RGB flag
 	bool interpolateRGB() const;
+	/// Get interpolate texture flag
 	bool interpolateTexture() const;
 
-	bool     useDensity() const;
-	double   getDensityValue() const;
+	/// Get use density flag
+	bool useDensity() const;
+	/// Get density value
+	double getDensityValue() const;
+	/// Get points number
 	unsigned getPointsNumber() const;
 
+	/// Set points number
 	void setPointsNumber(int count);
+	/// Set density value
 	void setDensityValue(double density);
+	/// Set generate normals
 	void setGenerateNormals(bool state);
+	/// Set use density
 	void setUseDensity(bool state);
 };
 
