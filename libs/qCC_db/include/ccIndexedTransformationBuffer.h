@@ -18,6 +18,16 @@
 #ifndef CC_INDEXED_TRANSFORMATION_BUFFER_HEADER
 #define CC_INDEXED_TRANSFORMATION_BUFFER_HEADER
 
+/**
+ * @file ccIndexedTransformationBuffer.h
+ *
+ * @brief Transformation buffer
+ *
+ * Buffer of indexed transformations for temporal
+ * interpolation (e.g. sensor trajectories).
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccHObject.h"
 #include "ccIndexedTransformation.h"
@@ -25,57 +35,65 @@
 // system
 #include <cfloat>
 
-//! Indexed Transformation buffer
+/**
+ * @brief Transformation buffer
+ *
+ * Buffer of indexed transformations with temporal
+ * interpolation support.
+ */
 class QCC_DB_LIB_API ccIndexedTransformationBuffer : public ccHObject
     , public std::vector<ccIndexedTransformation>
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Create buffer
+	 * @param[in] name Buffer name
+	 */
 	ccIndexedTransformationBuffer(const QString& name = QString("Trans. buffer"));
-	//! Copy constructor
+	
+	/**
+	 * @brief Copy constructor
+	 * @param[in] buffer Source buffer
+	 */
 	ccIndexedTransformationBuffer(const ccIndexedTransformationBuffer& buffer);
 
 	// inherited from ccHObject
+	/// Get class type
 	CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::TRANS_BUFFER;
 	}
+	/// Is serializable
 	bool isSerializable() const override
 	{
 		return true;
 	}
 
-	//! Sorts transformations based on their index
-	/** Ascending sort.
-	 **/
+	/// Sort transformations by index
 	void sort();
 
-	//! Returns the nearest indexed transformation(s) to a given index
-	/** This method returns the preceding and following transformations.
-
-	    \warning Binary search: buffer must be sorted! (see ccIndexedTransformationBuffer::sort)
-
-	    \param index query index (e.g. timestamp)
-	    \param trans1 directly preceding transformation (if any - null otherwise)
-	    \param trans2 directly following transformation (if any - null otherwise)
-	    \param trans1IndexInBuffer (optional) index of trans1 in buffer
-	    \param trans2IndexInBuffer (optional) index of trans2 in buffer
-	    \return success
-	**/
+	/**
+	 * @brief Find nearest transformations
+	 * @param[in] index Query index
+	 * @param[out] trans1 Preceding transformation
+	 * @param[out] trans2 Following transformation
+	 * @param[out] trans1IndexInBuffer Index of trans1
+	 * @param[out] trans2IndexInBuffer Index of trans2
+	 * @return true on success
+	 */
 	bool findNearest(double                          index,
 	                 const ccIndexedTransformation*& trans1,
 	                 const ccIndexedTransformation*& trans2,
 	                 size_t*                         trans1IndexInBuffer = nullptr,
 	                 size_t*                         trans2IndexInBuffer = nullptr) const;
 
-	//! Returns the indexed transformation at a given index (interpolates it if necessary)
-	/** \warning Binary search: buffer must be sorted! (see ccIndexedTransformationBuffer::sort)
-
-	    \param index query index (e.g. timestamp)
-	    \param trans output transformation (if successful)
-	    \param maxIndexDistForInterpolation max 'distance' between query index and existing indexes to actually interpolate/output a transformation
-	    \return success
-	**/
+	/**
+	 * @brief Get interpolated transformation
+	 * @param[in] index Query index
+	 * @param[out] trans Output transformation
+	 * @param[in] maxIndexDistForInterpolation Max distance for interpolation
+	 * @return true on success
+	 */
 	bool getInterpolatedTransformation(double                   index,
 	                                   ccIndexedTransformation& trans,
 	                                   double                   maxIndexDistForInterpolation = DBL_MAX) const;
