@@ -18,6 +18,14 @@
 #ifndef CC_COMPASS_DIALOG_HEADER
 #define CC_COMPASS_DIALOG_HEADER
 
+/**
+ * @file ccCompassDlg.h
+ *
+ * @brief Compass dialog
+ *
+ * Main dialog for the Compass plugin.
+ */
+
 //Qt
 #include <QDialog>
 #include <QList>
@@ -30,12 +38,22 @@
 #include <ui_compassDlg.h>
 #include "ccTrace.h"
 
+/**
+ * @class ccCompassDlg
+ *
+ * @brief Compass dialog
+ *
+ * Main dialog for the Compass plugin.
+ */
 class ccCompassDlg : public ccOverlayDialog, public Ui::compassDlg
 {
 	Q_OBJECT
 
 public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccCompassDlg(QWidget* parent/*=nullptr*/);
 
 	/*
