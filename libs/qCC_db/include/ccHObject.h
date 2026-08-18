@@ -23,56 +23,97 @@
 
 class QIcon;
 
+/**
+ * @file ccHObject.h
+ *
+ * @brief Hierarchical Object base class
+ *
+ * ccHObject is the base class for all objects in CloudCompare's
+ * hierarchical scene graph. It provides:
+ * - Parent-child relationships for organizing objects
+ * - Display capabilities (ccDrawableObject)
+ * - Metadata and properties
+ *
+ * Objects like point clouds, meshes, primitives, and groups
+ * all inherit from ccHObject.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see ccGenericPointCloud for point cloud implementation
+ * @see ccMesh for mesh implementation
+ * @see ccPolyline for polyline implementation
+ */
+
 //! Hierarchical CloudCompare Object
 class QCC_DB_LIB_API ccHObject : public ccObject
     , public ccDrawableObject
 {
   public: // construction
-	//! Default constructor
-	/** \param name object name (optional)
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a new hierarchical object
+	 * @param[in] name Optional name for the object
+	 * @param[in] uniqueID Optional unique ID (use with care)
+	 */
 	ccHObject(const QString& name = QString(), unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
-	//! Copy constructor
+	/**
+	 * @brief Copy constructor
+	 * @param[in] object Object to copy
+	 */
 	ccHObject(const ccHObject& object);
 
 	//! Default destructor
 	~ccHObject() override;
 
-	//! Static factory
-	/** \warning Objects depending on other structures (such as meshes
-	    or polylines that should be linked with point clouds playing the
-	    role of vertices) are returned 'naked'.
-	    \param objectType object type
-	    \param name object name (optional)
-	    \return instantiated object (if type is valid) or 0
-	**/
+	/**
+	 * @brief Create an object by type
+	 *
+	 * Factory method to instantiate objects by their class type.
+	 *
+	 * @param[in] objectType Type of object to create
+	 * @param[in] name Optional name for the object
+	 * @return New object instance, or nullptr if type is invalid
+	 *
+	 * @warning Objects with dependencies (meshes, polylines) are
+	 *          returned 'naked' - caller must link them properly.
+	 */
 	static ccHObject* New(CC_CLASS_ENUM objectType, const char* name = nullptr);
 
-	//! Static factory (version to be used by external plugin factories)
-	/** Two strings are used as keys, one for the plugin name and one for the class name.
-	    Those strings will typically be saved as metadata of a custom object
-	**/
+	/**
+	 * @brief Create a custom object from a plugin factory
+	 *
+	 * Factory method for plugin-created custom objects.
+	 *
+	 * @param[in] pluginId Plugin identifier
+	 * @param[in] classId Class identifier within the plugin
+	 * @param[in] name Optional name for the object
+	 * @return New object instance, or nullptr if not found
+	 *
+	 * @note These strings are stored as metadata for serialization.
+	 */
 	static ccHObject* New(const QString& pluginId, const QString& classId, const char* name = nullptr);
 
   public: // base members access
-	//! Returns class ID
-	/** \return class unique ID
-	 **/
+	/**
+	 * @brief Get the class type identifier
+	 * @return CC_TYPES::HIERARCHY_OBJECT
+	 */
 	inline CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::HIERARCHY_OBJECT;
 	}
 
-	//! Returns whether the instance is a group
+	/**
+	 * @brief Check if this object is a group
+	 * @return true if this is a group container
+	 */
 	inline bool isGroup() const
 	{
 		return getClassID() == static_cast<CC_CLASS_ENUM>(CC_TYPES::HIERARCHY_OBJECT);
 	}
 
-	//! Returns parent object
-	/** \return parent object (nullptr if no parent)
-	 **/
+	/**
+	 * @brief Get the parent object
+	 * @return Parent object, or nullptr if this is a root object
+	 */
 	inline ccHObject* getParent() const
 	{
 		return m_parent;
