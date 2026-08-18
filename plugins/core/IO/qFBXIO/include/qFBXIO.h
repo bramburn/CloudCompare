@@ -18,8 +18,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qFBXIO.h
+ *
+ * @brief FBX I/O plugin
+ *
+ * Plugin for Autodesk FBX file I/O.
+ *
+ * @author CloudCompare project
+ */
+
 #include <ccIOPluginInterface.h>
 
+/**
+ * @brief FBX I/O plugin
+ *
+ * Read/write FBX files.
+ */
 class qFBXIO : public QObject
     , public ccIOPluginInterface
 {
@@ -29,10 +44,16 @@ class qFBXIO : public QObject
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qFBXIO" FILE "../info.json")
 
   public:
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qFBXIO(QObject* parent = nullptr);
 
+	/// Register command line commands
 	void registerCommands(ccCommandLineInterface* cmd) override;
 
+	/// Get list of supported filters
 	FilterList getFilters() override;
 };
 
