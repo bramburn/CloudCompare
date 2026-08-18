@@ -17,10 +17,25 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qCloudLayers.h
+ *
+ * @brief Cloud layers plugin
+ *
+ * Plugin for managing point cloud layers with ASPRS classification.
+ */
+
 #include <ccStdPluginInterface.h>
 
 class ccCloudLayersDlg;
 
+/**
+ * @class qCloudLayers
+ *
+ * @brief Cloud layers plugin
+ *
+ * Manage point cloud layers with ASPRS classification.
+ */
 class qCloudLayers : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -28,22 +43,27 @@ class qCloudLayers : public QObject, public ccStdPluginInterface
 	Q_PLUGIN_METADATA( IID "cccorp.cloudcompare.plugin.qCloudLayers" FILE "../info.json" )
 
 public:
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qCloudLayers( QObject* parent = nullptr );
+	
+	/// Destructor
 	~qCloudLayers() override = default;
 
-	// Inherited from ccStdPluginInterface
+	/// Handle new selection
 	void onNewSelection( const ccHObject::Container& selectedEntities ) override;
+	
+	/// Get plugin actions
 	QList<QAction*> getActions() override;
 
 protected:
-
-	//! Slot called when associated action is triggered
+	/// Execute cloud layers action
 	void doAction();
 
 private:
-	//! Default action
 	QAction* m_action;
 
 	ccCloudLayersDlg* m_cloudLayersDlg;
 };
-
