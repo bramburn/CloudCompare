@@ -17,6 +17,15 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccAlignDlg.h
+ *
+ * @brief Alignment dialog
+ *
+ * Dialog for rough point cloud registration.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 #include <QDialog>
 
 class ccGenericPointCloud;
@@ -31,7 +40,11 @@ namespace Ui
 	class AlignDialog;
 }
 
-//! Rough registration dialog
+/**
+ * @brief Alignment dialog
+ *
+ * Rough point cloud registration dialog.
+ */
 class ccAlignDlg : public QDialog
 {
 	Q_OBJECT
