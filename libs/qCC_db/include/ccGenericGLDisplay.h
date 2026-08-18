@@ -21,6 +21,16 @@
 // Always first
 #include "ccIncludeGL.h"
 
+/**
+ * @file ccGenericGLDisplay.h
+ *
+ * @brief Generic OpenGL display interface
+ *
+ * Defines interfaces for OpenGL rendering and display capabilities.
+ * Used by entities that can render themselves in 3D views.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccColorTypes.h"
 #include "ccViewportParameters.h"
@@ -31,7 +41,12 @@
 class QWidget;
 class ccDrawableObject;
 
-//! OpenGL camera parameters
+/**
+ * @brief OpenGL camera parameters
+ *
+ * Stores camera parameters for 3D projection including
+ * view/projection matrices and clipping planes.
+ */
 struct ccGLCameraParameters
 {
 	ccGLCameraParameters()
