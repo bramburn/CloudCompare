@@ -28,14 +28,36 @@
 //#                                                                                     #
 //#######################################################################################
 
+/**
+ * @file Cloud2CloudDist.h
+ *
+ * @brief Cloud to cloud distance
+ *
+ * Computing distance between cloth and point cloud.
+ */
+
 #include "Cloth.h"
 #include "wlPointCloud.h"
 
-//computing distance between clouds
+/**
+ * @class Cloud2CloudDist
+ *
+ * @brief Cloud to cloud distance
+ *
+ * Computing distance between cloth and point cloud.
+ */
 class Cloud2CloudDist
 {
 public:
 	
+	/**
+	 * @brief Compute ground classification
+	 * @param[in] cloth Cloth
+	 * @param[in] pc Point cloud
+	 * @param[in] class_threshold Classification threshold
+	 * @param[out] isGround Ground classification result
+	 * @return Success
+	 */
 	static bool Compute(const Cloth& cloth,
 						const wl::PointCloud& pc,
 						double class_threshold,
