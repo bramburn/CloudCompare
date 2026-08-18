@@ -28,12 +28,26 @@
 //#                                                                                     #
 //#######################################################################################
 
-// A mex version for programming in Matlab is at File Exchange of Mathworks website:
-// http://www.mathworks.com/matlabcentral/fileexchange/58139-csf--ground-filtering-of-point-cloud-based-on-cloth-simulation
+/**
+ * @file qCSF.h
+ *
+ * @brief Cloth Simulation Filter plugin
+ *
+ * Point cloud filtering using Cloth Simulation Filter (CSF) algorithm
+ * for ground/terrain filtering in LiDAR data.
+ *
+ * Reference: Zhang W, Qi J, Wan P, Wang H, Xie D, Wang X, Yan G.
+ * An Easy-to-Use Airborne LiDAR Data Filtering Method Based on Cloth Simulation.
+ * Remote Sensing. 2016; 8(6):501.
+ */
 
 #include "ccStdPluginInterface.h"
 
-//! A point-clouds filtering algorithm utilize cloth simulation process.
+/**
+ * @brief Cloth Simulation Filter plugin
+ *
+ * Ground filtering algorithm using cloth simulation.
+ */
 class qCSF : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -43,23 +57,28 @@ class qCSF : public QObject, public ccStdPluginInterface
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qCSF(QObject* parent = nullptr);
 
+	/// Destructor
 	virtual ~qCSF() = default;
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	virtual void onNewSelection(const ccHObject::Container& selectedEntities) override;
+
+	/// Get plugin actions
 	virtual QList<QAction *> getActions() override;
+
+	/// Register command line commands
 	virtual void registerCommands(ccCommandLineInterface* cmd) override;
 
 protected:
-
-	//! Slot called when associated ation is triggered
+	/// Execute CSF action
 	void doAction();
 
 protected:
-
-	//! Associated action
 	QAction* m_action;
 };
