@@ -18,8 +18,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qE57IO.h
+ *
+ * @brief E57 I/O plugin
+ *
+ * Plugin for E57 point cloud file I/O.
+ *
+ * @author CloudCompare project
+ */
+
 #include <ccIOPluginInterface.h>
 
+/**
+ * @brief E57 I/O plugin
+ *
+ * Read/write E57 point cloud files.
+ */
 class qE57IO : public QObject
     , public ccIOPluginInterface
 {
@@ -29,10 +44,16 @@ class qE57IO : public QObject
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qE57IO" FILE "../info.json")
 
   public:
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qE57IO(QObject* parent = nullptr);
 
+	/// Register command line commands
 	void registerCommands(ccCommandLineInterface* cmd) override;
 
+	/// Get list of supported filters
 	FilterList getFilters() override;
 };
 
