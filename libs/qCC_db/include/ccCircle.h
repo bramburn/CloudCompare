@@ -17,20 +17,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccCircle.h
+ *
+ * @brief Circle primitive (as polyline) class
+ *
+ * Represents a circle as a polyline for visualization and fitting.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccPolyline.h"
 
-//! Circle (as a polyline)
-/** Extends the ccPolyline class
- **/
+/**
+ * @brief Circle primitive
+ *
+ * A circle represented as a polyline for visualization.
+ */
 class QCC_DB_LIB_API ccCircle : public ccPolyline
 {
   public:
-	//! Default constructor
-	/** \param radius circle radius
-	    \param resolution circle displayed resolution
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a circle
+	 * @param[in] radius Circle radius
+	 * @param[in] resolution Number of segments
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	explicit ccCircle(double   radius     = 0.0,
 	                  unsigned resolution = 48,
 	                  unsigned uniqueID   = ccUniqueIDGenerator::InvalidUniqueID);
