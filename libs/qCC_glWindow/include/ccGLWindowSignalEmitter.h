@@ -17,6 +17,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGLWindowSignalEmitter.h
+ *
+ * @brief GL Window signal emitter
+ *
+ * Provides Qt signals for 3D view interactions including
+ * entity picking, selection, and camera changes.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // local
 #include "qCC_glWindow.h"
 
@@ -32,16 +42,27 @@
 
 class ccGLWindowInterface;
 
-//! ccGLWindow Signal emitter
+/**
+ * @brief GL Window signal emitter
+ *
+ * Emits signals for 3D view interactions.
+ */
 class CCGLWINDOW_LIB_API ccGLWindowSignalEmitter : public QObject
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create signal emitter
+	 * @param[in] associatedWindow Window to emit signals for
+	 * @param[in] parent Parent object
+	 */
 	ccGLWindowSignalEmitter(ccGLWindowInterface* associatedWindow, QObject* parent);
 
-	//! Returns the associated window
+	/**
+	 * @brief Get associated window
+	 * @return Pointer to the window
+	 */
 	inline ccGLWindowInterface* getAssociatedWindow()
 	{
 		return m_associatedWindow;
@@ -49,27 +70,35 @@ class CCGLWINDOW_LIB_API ccGLWindowSignalEmitter : public QObject
 
   Q_SIGNALS:
 
-	//! Signal emitted when an entity is selected in the 3D view
+	/**
+	 * @brief Entity selection changed
+	 * @param[in] entity Selected entity
+	 */
 	void entitySelectionChanged(ccHObject* entity);
-	//! Signal emitted when multiple entities are selected in the 3D view
+	/**
+	 * @brief Multiple entities selection changed
+	 * @param[in] entIDs Set of selected entity IDs
+	 */
 	void entitiesSelectionChanged(std::unordered_set<int> entIDs);
 
-	//! Signal emitted when a point (or a triangle) is picked
-	/** \param entity 'picked' entity
-	    \param subEntityID point or triangle index in entity
-	    \param x mouse cursor x position
-	    \param y mouse cursor y position
-	    \param P the picked point
-	    \param uvw barycentric coordinates of the point (if picked on a mesh)
-	**/
+	/**
+	 * @brief Item picked (point or triangle)
+	 * @param[in] entity Picked entity
+	 * @param[in] subEntityID Point or triangle index
+	 * @param[in] x Mouse X position
+	 * @param[in] y Mouse Y position
+	 * @param[in] P Picked 3D point
+	 * @param[in] uvw Barycentric coordinates (for mesh triangles)
+	 */
 	void itemPicked(ccHObject* entity, unsigned subEntityID, int x, int y, const CCVector3& P, const CCVector3d& uvw);
 
-	//! Signal emitted when an item is picked (FAST_PICKING mode only)
-	/** \param entity entity
-	    \param subEntityID point or triangle index in entity
-	    \param x mouse cursor x position
-	    \param y mouse cursor y position
-	**/
+	/**
+	 * @brief Item picked (FAST_PICKING mode)
+	 * @param[in] entity Picked entity
+	 * @param[in] subEntityID Point or triangle index
+	 * @param[in] x Mouse X position
+	 * @param[in] y Mouse Y position
+	 */
 	void itemPickedFast(ccHObject* entity, int subEntityID, int x, int y);
 
 	//! Signal emitted when fast picking is finished (FAST_PICKING mode only)
