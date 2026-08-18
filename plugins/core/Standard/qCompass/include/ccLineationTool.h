@@ -18,29 +18,45 @@
 #ifndef CC_LINEATIONTOOL_HEADER
 #define CC_LINEATIONTOOL_HEADER
 
+/**
+ * @file ccLineationTool.h
+ *
+ * @brief Lineation tool
+ *
+ * Tool for creating and measuring lineations.
+ */
+
 #include "ccTool.h"
 #include "ccLineation.h"
 
-//! Tool used to create/measure lineations
+/**
+ * @class ccLineationTool
+ *
+ * @brief Lineation tool
+ *
+ * Tool for creating/measuring lineations.
+ */
 class ccLineationTool :	public ccTool
 {
 public:
+	/// Constructor
 	ccLineationTool();
 
-	//! Called when the tool is set to disactive (for cleanup)
+	/// Tool disactivated
 	void toolDisactivated() override;
 
-	//! Called when a point in a point cloud gets picked while this tool is active
+	/// Point picked callback
 	void pointPicked(ccHObject* insertPoint, unsigned itemIdx, ccPointCloud* cloud, const CCVector3& P) override;
 
-	//! Called when "Return" or "Space" is pressed, or the "Accept Button" is clicked
-	void accept() override; //do nothing
+	/// Accept action
+	void accept() override;
 
-	//! Called when the "Escape" is pressed, or the "Cancel" button is clicked
-	void cancel() override; //do nothing
+	/// Cancel action
+	void cancel() override;
 
 protected:
-	int m_lineation_id = -1; //ID of the lineation object being written to 
+	/// ID of lineation being written
+	int m_lineation_id = -1;
 };
 
 #endif
