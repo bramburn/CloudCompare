@@ -18,6 +18,15 @@
 #ifndef CC_WAVEFORM_DIALOG_HEADER
 #define CC_WAVEFORM_DIALOG_HEADER
 
+/**
+ * @file ccWaveformDialog.h
+ *
+ * @brief Waveform dialog
+ *
+ * Dialog for waveform visualization.
+ *
+ * @author CNRS / OSUR
+ */
 // Local
 #include "cc2DLabel.h"
 #include "ccPickingListener.h"
@@ -38,7 +47,11 @@ class Ui_WaveDialog;
 class ccPointCloud;
 class ccPickingHub;
 
-//! Waveform widget
+/**
+ * @brief Waveform widget
+ *
+ * Widget for displaying waveform data.
+ */
 class ccWaveWidget : public QCustomPlot
 {
 	Q_OBJECT
