@@ -18,36 +18,58 @@
 #ifndef QSRA_DXF_PROFILE_IMPORT_DLG_HEADER
 #define QSRA_DXF_PROFILE_IMPORT_DLG_HEADER
 
+/**
+ * @file dxfProfilesExportDlg.h
+ *
+ * @brief DXF profiles export dialog
+ *
+ * Dialog for exporting profiles to DXF format.
+ */
+
 #include "ui_dxfProfilesExportDlg.h"
 
-//! Dialog for export multiple 2D profiles in a single DXF file (qSRA plugin)
+/**
+ * @class DxfProfilesExportDlg
+ *
+ * @brief DXF profiles export dialog
+ *
+ * Export profiles to DXF format.
+ */
 class DxfProfilesExportDlg : public QDialog, public Ui::DxfProfilesExportDlg
 {
 	Q_OBJECT
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit DxfProfilesExportDlg(QWidget* parent = nullptr);
 
-	//! Returns vert. profiles output filename (on completion)
+	/**
+	 * @brief Get vertical profiles filename
+	 * @return Output filename
+	 */
 	QString getVertFilename() const;
-	//! Returns horiz. profiles output filename (on completion)
+	
+	/**
+	 * @brief Get horizontal profiles filename
+	 * @return Output filename
+	 */
 	QString getHorizFilename() const;
 
 protected:
-
-	//! Called when the vert. 'browse' tool button is pressed
+	/// Browse vertical file
 	void browseVertFile();
-	//! Called when the horiz. 'browse' tool button is pressed
+	/// Browse horizontal file
 	void browseHorizFile();
 
-	//! Saves dialog state to persistent settings
+	/// Accept and save settings
 	void acceptAndSaveSettings();
 
 protected:
-
-	//! Inits dialog state from persistent settings
+	/// Initialize from settings
 	void initFromPersistentSettings();
 
 };
