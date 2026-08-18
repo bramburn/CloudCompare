@@ -18,6 +18,14 @@
 #ifndef M3C2_DISCLAIMER_DIALOG_HEADER
 #define M3C2_DISCLAIMER_DIALOG_HEADER
 
+/**
+ * @file qM3C2DisclaimerDialog.h
+ *
+ * @brief M3C2 disclaimer dialog
+ *
+ * Disclaimer dialog for M3C2 plugin.
+ */
+
 #include <QDialog>
 
 class ccMainAppInterface;
@@ -26,19 +34,37 @@ namespace Ui {
 	class DisclaimerDialog;
 }
 
-//! Dialog for displaying the M3C2/UEB disclaimer
+/**
+ * @class DisclaimerDialog
+ *
+ * @brief M3C2 disclaimer dialog
+ *
+ * Display plugin disclaimer to user.
+ */
 class DisclaimerDialog : public QDialog
 {
 public:
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	DisclaimerDialog(QWidget* parent = nullptr);
+	
+	/// Destructor
 	~DisclaimerDialog();
 	
+	/**
+	 * @brief Show disclaimer
+	 * @param[in] app Main application interface
+	 * @return Whether disclaimer was accepted
+	 */
 	static bool show(ccMainAppInterface* app);
 	
 private:
-	//whether disclaimer has already been displayed (and accepted) or not	
+	/// Disclaimer accepted flag
 	static bool s_disclaimerAccepted;
 	
+	/// UI
 	Ui::DisclaimerDialog* m_ui;
 };
 
