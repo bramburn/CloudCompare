@@ -18,6 +18,16 @@
 #ifndef CC_ARRAY_HEADER
 #define CC_ARRAY_HEADER
 
+/**
+ * @file ccArray.h
+ *
+ * @brief Shareable array template
+ *
+ * Template for arrays that can be shared between entities
+ * and inserted in the DB tree hierarchy.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccHObject.h"
 
@@ -27,17 +37,29 @@
 // System
 #include <vector>
 
-//! Shareable array that can be properly inserted in the DB tree
+/**
+ * @brief Shareable array template
+ *
+ * Template class for arrays that can be shared between
+ * entities and integrated into the DB tree.
+ *
+ * @tparam Type Element type
+ * @tparam N Number of components per element
+ * @tparam ComponentType Component data type
+ */
 template <class Type, int N, class ComponentType>
 class ccArray : public std::vector<Type>
     , public CCShareable
     , public ccHObject
 {
   public:
-	//! Base type
+	//! Base type alias
 	typedef ccArray<Type, N, ComponentType> Base;
 
-	//! Default constructor
+	/**
+	 * @brief Create an array
+	 * @param[in] name Array name
+	 */
 	ccArray(QString name = QString())
 	    : ccHObject(name)
 	{
