@@ -18,6 +18,16 @@
 #ifndef CC_COLOR_LEVELS_DLG_HEADER
 #define CC_COLOR_LEVELS_DLG_HEADER
 
+/**
+ * @file ccColorLevelsDlg.h
+ *
+ * @brief Color levels dialog
+ *
+ * Dialog for adjusting color levels.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Qt
 #include <QColor>
 #include <ui_colorLevelsDlg.h>
@@ -25,25 +35,41 @@
 class ccHistogramWindow;
 class ccGenericPointCloud;
 
-//! Dialog to change the color levels
+/**
+ * @brief Color levels dialog
+ *
+ * Adjust color levels with histogram display.
+ */
 class ccColorLevelsDlg : public QDialog
     , public Ui::ColorLevelsDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 * @param[in] pointCloud Point cloud
+	 */
 	ccColorLevelsDlg(QWidget* parent, ccGenericPointCloud* pointCloud);
 
-	//! Scales some RGB fields of the input cloud
+	/**
+	 * @brief Scale color fields
+	 * @param[in] cloud Point cloud
+	 * @param[in] inputLevelMin Input minimum
+	 * @param[in] inputLevelMax Input maximum
+	 * @param[in] outputLevelMin Output minimum
+	 * @param[in] outputLevelMax Output maximum
+	 * @param[in] applyRGB Apply flags
+	 * @return true on success
+	 */
 	static bool ScaleColorFields(ccGenericPointCloud* cloud, int inputLevelMin, int inputLevelMax, int outputLevelMin, int outputLevelMax, const bool applyRGB[3]);
 
   protected:
 	void onChannelChanged(int);
 	void onApply();
 
-  protected:
-	//! Channels
+	/// Channel
 	enum CHANNELS
 	{
 		RGB   = 0,
@@ -52,13 +78,13 @@ class ccColorLevelsDlg : public QDialog
 		BLUE  = 3
 	};
 
-	//! Updates histogram
+	/// Update histogram
 	void updateHistogram();
 
-	//! Associated histogram view
+	/// Histogram view
 	ccHistogramWindow* m_histogram;
 
-	//! Associated point cloud (color source)
+	/// Point cloud
 	ccGenericPointCloud* m_cloud;
 };
 
