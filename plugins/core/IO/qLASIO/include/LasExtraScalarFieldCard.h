@@ -18,8 +18,22 @@
 // ##########################################################################
 
 #include "LasExtraScalarField.h"
+/**
+ * @file LasExtraScalarFieldCard.h
+ *
+ * @brief Extra scalar field card widget
+ *
+ * Widget for configuring extra scalar field parameters.
+ *
+ * @author Thomas Montaigu
+ */
 #include "ui_extra_scarlar_field_card.h"
 
+/**
+ * @class LasExtraScalarFieldCard
+ *
+ * @brief Extra scalar field configuration card
+ */
 class LasExtraScalarFieldCard : public QWidget
     , public Ui::ExtraScalarFieldCard
 {
