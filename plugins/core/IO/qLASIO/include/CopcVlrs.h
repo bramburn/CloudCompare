@@ -32,9 +32,14 @@
 #include <cstddef>
 #include <cstdint>
 
-/// COPC structs as defined in the specs
-/// We kept COPC naming convention (snake case)
-/// this is based on COPC v1 specs. See https://copc.io for documentation
+/**
+ * @namespace copc
+ *
+ * @brief COPC VLR structures
+ *
+ * COPC structs as defined in the specs.
+ * Based on COPC v1 specs. See https://copc.io for documentation.
+ */
 namespace copc
 {
 	struct Info
