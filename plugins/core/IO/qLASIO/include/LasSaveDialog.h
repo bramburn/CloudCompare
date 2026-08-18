@@ -35,8 +35,13 @@ class ccPointCloud;
 class MappingLabel;
 class LasExtraScalarFieldCard;
 
-/// This dialog is responsible for presenting to the user
-/// the different options when saving a point cloud to a LAS/LAZ file.
+/**
+ * @class LasSaveDialog
+ *
+ * @brief LAS save dialog
+ *
+ * Configure LAS/LAZ file export options.
+ */
 class LasSaveDialog : public QDialog
     , public Ui::LASSaveDialog
 {
