@@ -18,6 +18,16 @@
 #ifndef CC_COLOR_RAMP_SHADER_HEADER
 #define CC_COLOR_RAMP_SHADER_HEADER
 
+/**
+ * @file ccColorRampShader.h
+ *
+ * @brief Color ramp shader
+ *
+ * GLSL shader for color ramp rendering.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Always on top!
 #include "ccIncludeGL.h"
 
@@ -27,30 +37,43 @@
 // Local
 #include "ccColorScale.h"
 
+/**
+ * @brief Color ramp shader
+ *
+ * GLSL shader for rendering color ramps.
+ */
 class QCC_DB_LIB_API ccColorRampShader : public ccShader
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create shader
+	 */
 	ccColorRampShader();
 
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	virtual ~ccColorRampShader()
 	{
 	}
 
-	//! Setups shader
-	/** Shader must have already been stared!
-	 **/
+	/**
+	 * @brief Setup shader
+	 * @param[in] glFunc OpenGL functions
+	 * @param[in] minSatRel Min saturation
+	 * @param[in] maxSatRel Max saturation
+	 * @param[in] colorSteps Number of color steps
+	 * @param[in] colorScale Color scale to use
+	 * @return true on success
+	 */
 	bool setup(QOpenGLFunctions_2_1* glFunc, float minSatRel, float maxSatRel, unsigned colorSteps, const ccColorScale::Shared& colorScale);
 
-	//! Returns the maximum color ramp size
+	/// Get maximum color ramp size
 	static unsigned MaxColorRampSize();
 
-	//! Returns the minimum memory required on the shader side
-	/** See GL_MAX_FRAGMENT_UNIFORM_COMPONENTS
-	 **/
+	/// Get minimum required shader memory
 	static GLint MinRequiredBytes();
 };
 
