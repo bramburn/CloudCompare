@@ -18,6 +18,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccRecentFiles.h
+ *
+ * @brief Recent files manager
+ *
+ * Manages recently opened files menu.
+ *
+ * @author CloudCompare project
+ */
+
 #include <QObject>
 #include <QSettings>
 
@@ -25,43 +35,54 @@ class QAction;
 class QMenu;
 class QString;
 
+/**
+ * @brief Recent files manager
+ *
+ * Manages the recently opened files menu.
+ */
 class ccRecentFiles : public QObject
 {
 	Q_OBJECT
 
   public:
+	/**
+	 * @brief Create recent files manager
+	 * @param[in] parent Parent widget
+	 */
 	ccRecentFiles(QWidget* parent);
 
-	//! Returns a "most recently used file" menu
+	/// Get recent files menu
 	QMenu* menu();
 
-	//! Adds a file path to the recently used menu
+	/// Add file to recent files
 	void addFilePath(const QString& filePath);
 
   private:
-	//! Updates the contents of the menu
+	/// Update menu
 	void updateMenu();
 
-	//! Opens a file based on the action that was triggered
+	/// Open file from action
 	void openFileFromAction();
 
-	//! Returns a list of file paths from the QSettings
-	//! This will also remove any file from the list that does not exist
+	/// List recent files
 	QStringList listRecent();
 
-	//! Contracts the path by substituting '~' for the user's home directory
+	/// Contract file path
 	QString contractFilePath(const QString& filePath);
 
-	//! Expands the path by substituting the user's home directory for '~'
+	/// Expand file path
 	QString expandFilePath(const QString& filePath);
 
-	//! The key in the QSettings where we store the file list
+	/// Settings key
 	static QString s_settingKey;
 
+	/// Settings
 	QSettings m_settings;
 
+	/// Menu
 	QMenu* m_menu;
 
+	/// Clear menu action
 	QAction* m_actionClearMenu;
 };
 
