@@ -23,13 +23,25 @@
 // Qt
 #include <QFile>
 
+/**
+ * @file STLFilter.h
+ *
+ * @brief STL filter
+ *
+ * StereoLithography file I/O filter.
+ */
+
 class ccGenericMesh;
 class ccMesh;
 class ccPointCloud;
 
-//! StereoLithography file I/O filter
-/** See http://www.ennex.com/~fabbers/StL.asp
- **/
+/**
+ * @class STLFilter
+ *
+ * @brief STL filter
+ *
+ * StereoLithography file I/O filter.
+ */
 class STLFilter : public FileIOFilter
 {
   public:
