@@ -18,18 +18,36 @@
 #ifndef CC_SIMPLE_BIN_FILTER_HEADER
 #define CC_SIMPLE_BIN_FILTER_HEADER
 
+/**
+ * @file SimpleBinFilter.h
+ *
+ * @brief Simple binary file filter
+ *
+ * Simple binary file I/O with attached text meta-file.
+ *
+ * @author CNRS / OSUR
+ */
+
 #include "FileIOFilter.h"
 
-//! Simple binary file (with attached text meta-file)
+/**
+ * @brief Simple binary file filter
+ *
+ * Read/write simple binary files with meta-data.
+ */
 class SimpleBinFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	SimpleBinFilter();
 
-	// inherited from FileIOFilter
+	/// Load file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/// Check if can save
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	
+	/// Save file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 
