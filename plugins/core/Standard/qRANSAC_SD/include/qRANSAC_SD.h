@@ -18,10 +18,29 @@
 #ifndef Q_RANSAC_SD_PLUGIN_HEADER
 #define Q_RANSAC_SD_PLUGIN_HEADER
 
+/**
+ * @file qRANSAC_SD.h
+ *
+ * @brief RANSAC shape detection plugin
+ *
+ * Automatic shape detection using RANSAC algorithm.
+ *
+ * Reference: "Efficient RANSAC for Point-Cloud Shape Detection",
+ * Ruwen Schnabel, Roland Wahl, and Reinhard Klein, Computer Graphics Forum 2007.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 #include "ccStdPluginInterface.h"
 
-
-//! Wrapper to Schnabel et al. library for automatic shape detection in point cloud
+/**
+ * @class qRansacSD
+ *
+ * @brief RANSAC shape detection plugin
+ *
+ * Automatic shape detection using RANSAC algorithm.
+ */
+class qRansacSD : public QObject, public ccStdPluginInterface
 /** "Efficient RANSAC for Point-Cloud Shape Detection", Ruwen Schnabel, Roland Wahl, 
 	and Reinhard Klein, in Computer Graphics Forum (June 2007), 26:2(214-226)
 	http://cg.cs.uni-bonn.de/en/publications/paper-details/schnabel-2007-efficient/
@@ -34,6 +53,11 @@ class qRansacSD : public QObject, public ccStdPluginInterface
 	Q_PLUGIN_METADATA( IID "cccorp.cloudcompare.plugin.qRansacSD" FILE "../info.json" )
 
 public:
+	/**
+	 * @enum RANSAC_PRIMITIVE_TYPES
+	 *
+	 * @brief Primitive types for RANSAC detection
+	 */
 	enum RANSAC_PRIMITIVE_TYPES
 	{
 		RPT_PLANE = 0,
