@@ -17,7 +17,15 @@
 // #                                                                        #
 // ##########################################################################
 
-class ccPointCloud;
+/**
+ * @file ccPointCloudInterpolator.h
+ *
+ * @brief Point cloud interpolation
+ *
+ * Scalar field interpolation between point clouds.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
 
 // Local
 #include "qCC_db.h"
@@ -30,18 +38,28 @@ namespace CCCoreLib
 	class GenericProgressCallback;
 }
 
+/**
+ * @brief Point cloud interpolator
+ *
+ * Interpolation utilities for point clouds.
+ */
 class QCC_DB_LIB_API ccPointCloudInterpolator
 {
   public:
-	//! Generic interpolation parameters
+	/**
+	 * @brief Interpolation parameters
+	 */
 	struct Parameters
 	{
+		/// Interpolation method
 		enum Method
 		{
 			NEAREST_NEIGHBOR,
 			K_NEAREST_NEIGHBORS,
 			RADIUS
 		};
+		
+		/// Interpolation algorithm
 		enum Algo
 		{
 			AVERAGE,
@@ -57,7 +75,16 @@ class QCC_DB_LIB_API ccPointCloudInterpolator
 		bool     noNormalization = false;
 	};
 
-	//! Interpolate scalar fields from another cloud
+	/**
+	 * @brief Interpolate scalar fields
+	 * @param[in] destCloud Destination cloud
+	 * @param[in] srcCloud Source cloud
+	 * @param[in] sfIndexes Scalar field indexes
+	 * @param[in] params Interpolation parameters
+	 * @param[in] progressCb Progress callback
+	 * @param[in] octreeLevel Octree level
+	 * @return true on success
+	 */
 	static bool InterpolateScalarFieldsFrom(ccPointCloud*                       destCloud,
 	                                        ccPointCloud*                       srcCloud,
 	                                        const std::vector<int>&             sfIndexes,
