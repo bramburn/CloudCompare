@@ -18,8 +18,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qPDALIO.h
+ *
+ * @brief PDAL I/O plugin
+ *
+ * Plugin for PDAL-based file I/O.
+ *
+ * @author CloudCompare project
+ */
+
 #include <ccIOPluginInterface.h>
 
+/**
+ * @brief PDAL I/O plugin
+ *
+ * Read/write files using PDAL library.
+ */
 class qPDALIO : public QObject
     , public ccIOPluginInterface
 {
@@ -29,10 +44,16 @@ class qPDALIO : public QObject
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qPDALIO" FILE "../info.json")
 
   public:
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qPDALIO(QObject* parent = nullptr);
 
+	/// Register command line commands
 	void registerCommands(ccCommandLineInterface* cmd) override;
 
+	/// Get list of supported filters
 	FilterList getFilters() override;
 };
 
