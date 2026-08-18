@@ -20,17 +20,33 @@
 
 #include <ui_applyTransformationDlg.h>
 
+/**
+ * @file ccApplyTransformationDlg.h
+ *
+ * @brief Apply transformation dialog
+ *
+ * Dialog for entering transformation matrices.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // qCC_db
 #include <ccGLMatrix.h>
 
-//! Dialog to input a 4x4 matrix
+/**
+ * @brief Apply transformation dialog
+ *
+ * Enter 4x4 transformation matrix.
+ */
 class ccApplyTransformationDlg : public QDialog
     , public Ui::ApplyTransformationDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccApplyTransformationDlg(QWidget* parent = nullptr);
 
 	//! Returns input matrix
