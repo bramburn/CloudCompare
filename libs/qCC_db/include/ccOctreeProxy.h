@@ -18,15 +18,27 @@
 #ifndef CC_OCTREE_PROXY_HEADER
 #define CC_OCTREE_PROXY_HEADER
 
+/**
+ * @file ccOctreeProxy.h
+ *
+ * @brief Octree proxy
+ *
+ * Octree structure proxy.
+ */
+
 // Local
 #include "ccHObject.h"
 
 // CCCoreLib
 #include <ccOctree.h>
 
-//! Octree structure proxy
-/** Implements ccHObject while holding a (shared) pointer on the octree instance (--> safer)
- **/
+/**
+ * @class ccOctreeProxy
+ *
+ * @brief Octree proxy
+ *
+ * Implements ccHObject while holding a (shared) pointer on the octree instance.
+ */
 class QCC_DB_LIB_API ccOctreeProxy : public ccHObject
 {
   public:
