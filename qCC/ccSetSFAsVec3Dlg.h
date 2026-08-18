@@ -17,6 +17,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSetSFAsVec3Dlg.h
+ *
+ * @brief Set scalar fields as Vec3 dialog
+ *
+ * Dialog for mapping scalar fields to Vec3 components.
+ *
+ * @author CloudCompare project
+ */
+
 #include <ui_setSFAsVec3Dlg.h>
 
 // Qt
@@ -24,14 +34,26 @@
 
 class ccPointCloud;
 
-//! Let the user choose up to 3 scalar fields (to be used as Normal components)
+/**
+ * @brief Set scalar fields as Vec3 dialog
+ *
+ * Choose up to 3 scalar fields to use as Normal components.
+ */
 class ccSetSFsAsVec3Dialog : public QDialog
     , public Ui::SetSFsAsVec3Dialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] cloud Point cloud
+	 * @param[in] xLabel Label for X component
+	 * @param[in] yLabel Label for Y component
+	 * @param[in] zLabel Label for Z component
+	 * @param[in] allowUnchanged Allow unchanged option
+	 * @param[in] parent Parent widget
+	 */
 	ccSetSFsAsVec3Dialog(const ccPointCloud* cloud,
 	                     const QString&      xLabel,
 	                     const QString&      yLabel,
@@ -39,28 +61,28 @@ class ccSetSFsAsVec3Dialog : public QDialog
 	                     bool                allowUnchanged,
 	                     QWidget*            parent = nullptr);
 
-	//! No SF index
+	/// No SF index
 	static const int SF_INDEX_NO = -1;
-	//! 'Zero' SF index
+	/// Zero SF index
 	static const int SF_INDEX_ZERO = -2;
-	//! 'One' SF index
+	/// One SF index
 	static const int SF_INDEX_ONE = -3;
-	//! 'Unchanged' index
+	/// Unchanged index
 	static const int SF_INDEX_UNCHANGED = -4;
 
-	//! Sets the 3 SF indexes
+	/// Set SF indexes
 	void setSFIndexes(int sf1Index, int sf2Index, int sf3Index);
 
-	//! Returns the 3 SF indexes
+	/// Get SF indexes
 	void getSFIndexes(int& sf1Index, int& sf2Index, int& sf3Index) const;
 
   protected:
-	//! Converts an input 'SF' index to a combo-box index
+	/// Convert SF index to combo box index
 	int toComboBoxIndex(int index) const;
 
-	//! Converts a combo-box index to a 'SF' index
+	/// Convert combo box index to SF index
 	int fromComboBoxIndex(int index) const;
 
-	//! Number of constant fields at the beginning of each combo-box
+	/// Number of constant fields at beginning
 	int m_constFields;
 };
