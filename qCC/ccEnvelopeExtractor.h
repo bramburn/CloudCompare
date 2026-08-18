@@ -17,22 +17,35 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccEnvelopeExtractor.h
+ *
+ * @brief Envelope extractor
+ *
+ * Extract envelopes from point clouds.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // qCC_db
 #include <ccPolyline.h>
 
 // CCCoreLib
 #include <PointProjectionTools.h>
 
-//! Envelope extractor (with debug GUI)
+/**
+ * @brief Envelope extractor
+ *
+ * Extract envelopes from point clouds.
+ */
 class ccEnvelopeExtractor
 {
   public:
-	//! Envelope type
+	/// Envelope type
 	enum EnvelopeType
 	{
-		LOWER,
-		UPPER,
-		FULL
+		LOWER, //!< Lower envelope
+		UPPER, //!< Upper envelope
+		FULL   //!< Full envelope
 	};
 
 	//! Extracts a unique closed (2D) envelope polyline of a point cloud
