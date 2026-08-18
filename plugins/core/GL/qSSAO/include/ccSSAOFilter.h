@@ -43,10 +43,25 @@
 // system
 #include <vector>
 
+/**
+ * @file ccSSAOFilter.h
+ *
+ * @brief SSAO filter
+ *
+ * Screen Space Ambient Occlusion filter.
+ */
+
 class ccShader;
 class ccBilateralFilter;
 class ccFrameBufferObject;
 
+/**
+ * @class ccSSAOFilter
+ *
+ * @brief SSAO filter
+ *
+ * Screen Space Ambient Occlusion filter.
+ */
 class ccSSAOFilter : public ccGlFilter
 {
   public:
