@@ -21,49 +21,74 @@
 // Local
 #include "ccGLMatrix.h"
 
-//! A 4x4 'transformation' matrix (column major order) associated to an index (typically a timestamp)
+/**
+ * @file ccIndexedTransformation.h
+ *
+ * @brief Transformation matrix with index
+ *
+ * A 4x4 transformation matrix associated with an index
+ * (typically a timestamp) for interpolation.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
+/**
+ * @brief Transformation matrix with index
+ *
+ * A 4x4 transformation matrix with an associated index
+ * for temporal interpolation (e.g. sensor poses over time).
+ */
 class QCC_DB_LIB_API ccIndexedTransformation : public ccGLMatrix
 {
   public:
-	//! Default constructor
-	/** Matrix is set to identity (see ccGLMatrix::toIdentity) by default.
-	    Index is set to zero by default.
-	**/
+	/**
+	 * @brief Default constructor
+	 *
+	 * Matrix is set to identity, index to zero.
+	 */
 	ccIndexedTransformation();
 
-	//! Constructor from a transformation matrix
-	/** Index is set to zero by default.
-	    \param matrix transformation matrix
-	**/
+	/**
+	 * @brief Create from matrix
+	 * @param[in] matrix Transformation matrix
+	 */
 	ccIndexedTransformation(const ccGLMatrix& matrix);
 
-	//! Constructor from a transformation matrix and an index
-	/** \param matrix transformation matrix
-	    \param index associated index (e.g. timestamp)
-	**/
+	/**
+	 * @brief Create from matrix with index
+	 * @param[in] matrix Transformation matrix
+	 * @param[in] index Associated index (e.g. timestamp)
+	 */
 	ccIndexedTransformation(const ccGLMatrix& matrix, double index);
 
-	//! Copy constructor
+	/// Copy constructor
 	ccIndexedTransformation(const ccIndexedTransformation& trans) = default;
 
-	//! Returns associated index (e.g. timestamp)
+	/**
+	 * @brief Get index
+	 * @return Index value
+	 */
 	inline double getIndex() const
 	{
 		return m_index;
 	}
 
-	//! Sets associated index (e.g. timestamp)
+	/**
+	 * @brief Set index
+	 * @param[in] index New index value
+	 */
 	inline void setIndex(double index)
 	{
 		m_index = index;
 	}
 
-	//! Interpolates two transformations at an absolute position (index)
-	/** Warning: interpolation index must lie between the two input matrices indexes!
-	    \param interpIndex interpolation position (should be between trans1 and trans2 indexes).
-	    \param trans1 first transformation
-	    \param trans2 second transformation
-	**/
+	/**
+	 * @brief Interpolate between two transformations
+	 * @param[in] interpIndex Interpolation position
+	 * @param[in] trans1 First transformation
+	 * @param[in] trans2 Second transformation
+	 * @return Interpolated transformation
+	 */
 	static ccIndexedTransformation Interpolate(double interpIndex, const ccIndexedTransformation& trans1, const ccIndexedTransformation& trans2);
 
 	//! Multiplication by a ccGLMatrix operator
