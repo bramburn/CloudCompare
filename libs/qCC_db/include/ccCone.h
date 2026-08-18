@@ -17,32 +17,42 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccCone.h
+ *
+ * @brief Cone primitive class
+ *
+ * Represents a 3D cone (or truncated cone / frustum) primitive.
+ * The cone axis corresponds to the Z dimension.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccGenericPrimitive.h"
 
-//! Cone (primitive)
-/** 3D cone primitive
- **/
+/**
+ * @brief Cone primitive
+ *
+ * A 3D cone or truncated cone (frustum) with axis along Z.
+ */
 class QCC_DB_LIB_API ccCone : public ccGenericPrimitive
 {
   public:
-	//! Default drawing precision
-	/** \warning Never pass a 'constant initializer' by reference
-	 **/
+	//! Default drawing precision (angular steps)
 	static const unsigned DEFAULT_DRAWING_PRECISION = 24;
 
-	//! Default constructor
-	/** Cone axis corresponds to the 'Z' dimension by default
-	    \param bottomRadius cone bottom radius
-	    \param topRadius cone top radius
-	    \param height cone height (transformation should point to the axis center)
-	    \param xOff displacement of axes along X-axis (Snout mode)
-	    \param yOff displacement of axes along Y-axis (Snout mode)
-	    \param transMat optional 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
-	    \param name name
-	    \param precision drawing precision (angular step = 360/precision)
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a cone
+	 * @param[in] bottomRadius Bottom radius
+	 * @param[in] topRadius Top radius (0 = pointed tip)
+	 * @param[in] height Cone height
+	 * @param[in] xOff X-axis offset (snout mode)
+	 * @param[in] yOff Y-axis offset (snout mode)
+	 * @param[in] transMat Optional transformation matrix
+	 * @param[in] name Cone name
+	 * @param[in] precision Drawing precision
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	ccCone(PointCoordinateType bottomRadius,
 	       PointCoordinateType topRadius,
 	       PointCoordinateType height,
