@@ -18,6 +18,14 @@
 #ifndef QFACET_DISCLAIMER_DIALOG_HEADER
 #define QFACET_DISCLAIMER_DIALOG_HEADER
 
+/**
+ * @file disclaimerDialog.h
+ *
+ * @brief Disclaimer dialog
+ *
+ * Disclaimer dialog for qFacets plugin.
+ */
+
 #include <ui_disclaimerDlg.h>
 
 //qCC_plugins
@@ -26,11 +34,20 @@
 //Qt
 #include <QMainWindow>
 
-//! Dialog for displaying the BRGM disclaimer
+/**
+ * @class DisclaimerDialog
+ *
+ * @brief Disclaimer dialog
+ *
+ * Display plugin disclaimer to user.
+ */
 class DisclaimerDialog : public QDialog, public Ui::DisclaimerDialog
 {
 public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	DisclaimerDialog(QWidget* parent = nullptr)
 		: QDialog(parent)
 		, Ui::DisclaimerDialog()
@@ -39,14 +56,18 @@ public:
 	}
 };
 
-//whether disclaimer has already been displayed (and accepted) or not
+/// Disclaimer accepted flag
 static bool s_disclaimerAccepted = false;
 
+/**
+ * @brief Show disclaimer
+ * @param[in] app Main application interface
+ * @return Whether disclaimer was accepted
+ */
 static bool ShowDisclaimer(ccMainAppInterface* app)
 {
 	if (!s_disclaimerAccepted)
 	{
-		//if the user "cancels" it, then he refuses the diclaimer!
 		s_disclaimerAccepted = DisclaimerDialog(app ? app->getMainWindow() : 0).exec();
 	}
 	
