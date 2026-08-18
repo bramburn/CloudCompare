@@ -17,6 +17,14 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGLMatrixTpl.h
+ *
+ * @brief 4x4 transformation matrix
+ *
+ * Template for 4x4 transformation matrices.
+ */
+
 // Local
 #include "ccSerializableObject.h"
 
@@ -27,7 +35,7 @@
 // Qt
 #include <QTextStream>
 
-//! Model view matrix size (OpenGL)
+/// Model view matrix size (OpenGL)
 static const unsigned OPENGL_MATRIX_SIZE = 16;
 
 // Matrix element shortcuts in (line,column) order
@@ -51,10 +59,13 @@ static const unsigned OPENGL_MATRIX_SIZE = 16;
 #define CC_MAT_R34 m_mat[14]
 #define CC_MAT_R44 m_mat[15]
 
-//! A 4x4 'transformation' matrix (column major order)
-/** Transformation (M) is composed by a rotation (R) and a translation (T):
-    M*X = R*X + T
-**/
+/**
+ * @class ccGLMatrixTpl
+ *
+ * @brief 4x4 transformation matrix
+ *
+ * A 4x4 transformation matrix (column major order).
+ */
 template <typename T>
 class ccGLMatrixTpl : public ccSerializableObject
 {
