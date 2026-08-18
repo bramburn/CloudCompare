@@ -29,6 +29,13 @@ class ccPointCloud;
 // LASzip
 #include <laszip/laszip_api.h>
 
+/**
+ * @namespace LasMetadata
+ *
+ * @brief LAS metadata handling
+ *
+ * Functions for saving and loading LAS metadata.
+ */
 namespace LasMetadata
 {
 	constexpr const char X_SCALE[]           = "LAS.scale.x";
