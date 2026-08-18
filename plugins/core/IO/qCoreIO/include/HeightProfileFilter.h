@@ -15,14 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file HeightProfileFilter.h
+ *
+ * @brief Height profile filter
+ *
+ * Polyline height profile I/O filter.
+ */
+
 #ifndef CC_HEIGHT_PROFILE_HEADER
 #define CC_HEIGHT_PROFILE_HEADER
 
 #include "FileIOFilter.h"
 
-//! Polyline height profile I/O filter
-/** This file format contains a 2D series: (curvilinear absisca ; height)
- **/
+/**
+ * @class HeightProfileFilter
+ *
+ * @brief Height profile filter
+ *
+ * Polyline height profile I/O filter.
+ */
 class HeightProfileFilter : public FileIOFilter
 {
   public:
