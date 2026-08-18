@@ -28,6 +28,15 @@
 // qCC_db
 #include <ccPointCloud.h>
 
+/**
+ * @file ccPointPairRegistrationDlg.h
+ *
+ * @brief Point pair registration dialog
+ *
+ * Dialog for Horn's point-pair registration algorithm.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Qt generated dialog
 #include <ui_pointPairRegistrationDlg.h>
 
@@ -37,7 +46,11 @@ class ccGLWindowInterface;
 class cc2DLabel;
 class ccPickingHub;
 
-// Dialog for the point-pair registration algorithm (Horn)
+/**
+ * @brief Point pair registration dialog
+ *
+ * Horn's point-pair registration algorithm.
+ */
 class ccPointPairRegistrationDlg : public ccOverlayDialog
     , public ccPickingListener
     , Ui::pointPairRegistrationDlg
