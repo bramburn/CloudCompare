@@ -17,6 +17,15 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccRasterGrid.h
+ *
+ * @brief Raster grid
+ *
+ * Raster grid representation for point clouds.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // local
 #include "ccBBox.h"
 #include "qCC_db.h"
@@ -31,7 +40,9 @@ class ccGenericPointCloud;
 class ccPointCloud;
 class ccProgressDialog;
 
-//! Raster grid cell
+/**
+ * @brief Raster grid cell
+ */
 struct QCC_DB_LIB_API ccRasterCell
 {
 	//! Default constructor
@@ -68,7 +79,11 @@ struct QCC_DB_LIB_API ccRasterCell
 	void** pointRefTail;
 };
 
-//! Raster grid type
+/**
+ * @brief Raster grid
+ *
+ * Raster grid representation for 2.5D data.
+ */
 struct QCC_DB_LIB_API ccRasterGrid
 {
 	//! Default constructor
