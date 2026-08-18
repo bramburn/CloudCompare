@@ -17,34 +17,46 @@
 
 #pragma once
 
+/**
+ * @file ccCoordinateSystem.h
+ *
+ * @brief Coordinate system primitive
+ *
+ * Visualizes a 3D coordinate system (X/Y/Z axes)
+ * with optional transformation matrix.
+ *
+ * @author Chris Brown
+ */
 // Local
 #include "ccGenericPrimitive.h"
 
 class ccPlane;
 
-//! Coordinate System (primitive)
-/** Coordinate System primitive
- **/
+/**
+ * @brief Coordinate system primitive
+ *
+ * Visualizes a transformation as RGB axes.
+ */
 class QCC_DB_LIB_API ccCoordinateSystem : public ccGenericPrimitive
 {
   public:
-	//! Default constructor
-	/** Coordinate System is essentially just a way to visualize a transform matrix.
-	    \param displayScale global scale/size
-	    \param axisWidth axes width
-	    \param transMat optional 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
-	    \param name name
-	**/
+	/**
+	 * @brief Create a coordinate system
+	 * @param[in] displayScale Axis length
+	 * @param[in] axisWidth Axis width
+	 * @param[in] transMat Optional transformation matrix
+	 * @param[in] name System name
+	 */
 	ccCoordinateSystem(PointCoordinateType displayScale,
 	                   PointCoordinateType axisWidth,
 	                   const ccGLMatrix*   transMat = nullptr,
 	                   QString             name     = QString("CoordinateSystem"));
 
-	//! Default constructor
-	/** Coordinate System is essentially just a way to visualize a transform matrix.
-	    \param transMat optional 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
-	    \param name name
-	**/
+	/**
+	 * @brief Create a coordinate system
+	 * @param[in] transMat Optional transformation matrix
+	 * @param[in] name System name
+	 */
 	ccCoordinateSystem(const ccGLMatrix* transMat,
 	                   QString           name = QString("CoordinateSystem"));
 
