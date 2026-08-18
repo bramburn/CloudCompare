@@ -1,4 +1,31 @@
-#pragma once
+/**
+ * @file ccCommandLineParser.h
+ *
+ * @brief Command-line parser for CloudCompare
+ *
+ * This module handles CloudCompare's command-line interface for batch
+ * processing. It allows executing various operations on point clouds
+ * and meshes without the GUI.
+ *
+ * @section Command Line Usage
+ *
+ * Basic syntax:
+ * @code
+ * CloudCompare -SILENT -CMD -O input.ply -COMPUTE_GRID -SAVE
+ * @endcode
+ *
+ * Common commands:
+ * - -O: Open file
+ * - -SAVE: Save current entities
+ * - -C_EXPORT_FMT: Set export format
+ * - -AUTO_SAVE: Enable auto-save
+ * - -STAT_TEST: Statistical test
+ * - -FILTER_CLOUD: Filter point cloud
+ *
+ * @author CloudCompare project
+ * @see ccCommandLineInterface for the interface definition
+ * @see ccCommandLineCommands for available commands
+ */
 
 // ##########################################################################
 // #                                                                        #
@@ -26,51 +53,144 @@
 class ccProgressDialog;
 class QDialog;
 
-//! Command line parser
+/**
+ * @brief Command-line parser for CloudCompare batch processing
+ *
+ * Extends ccCommandLineInterface with concrete implementation
+ * for parsing and executing command-line operations.
+ */
 class ccCommandLineParser : public ccCommandLineInterface
 {
   public:
-	//! Parses the input command
+	/**
+	 * @brief Parse and execute command-line arguments
+	 *
+	 * @param[in] arguments List of command-line arguments
+	 * @param[in] plugins List of available plugins for extended commands
+	 * @return Exit code (0 for success, non-zero for error)
+	 *
+	 * @see ccCommandLineParser::Parse() for the actual implementation
+	 */
 	static int Parse(const QStringList& arguments, ccPluginInterfaceList& plugins);
 
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	~ccCommandLineParser() override;
 
 	// inherited from ccCommandLineInterface
+	/**
+	 * @brief Generate export filename for an entity
+	 * @param[in] entityDesc Entity to export
+	 * @param[in] extension File extension (auto-detected if empty)
+	 * @param[in] suffix Optional suffix to add to filename
+	 * @param[out] baseOutputFilename Base output path (if specified)
+	 * @param[in] forceNoTimestamp Don't add timestamp to filename
+	 * @return Generated filename
+	 */
 	QString      getExportFilename(const CLEntityDesc& entityDesc,
 	                               QString             extension          = QString(),
 	                               QString             suffix             = QString(),
 	                               QString*            baseOutputFilename = nullptr,
 	                               bool                forceNoTimestamp   = false) const override;
+	/**
+	 * @brief Export an entity to file
+	 * @param[in,out] entityDesc Entity to export
+	 * @param[in] suffix Optional filename suffix
+	 * @param[out] baseOutputFilename Base output path
+	 * @param[in] options Export options
+	 * @return Export filename, or empty string on error
+	 */
 	QString      exportEntity(CLEntityDesc&                         entityDesc,
 	                          const QString&                        suffix             = QString(),
 	                          QString*                              baseOutputFilename = nullptr,
 	                          ccCommandLineInterface::ExportOptions options            = ExportOption::NoOptions) override;
+	/**
+	 * @brief Remove clouds from the working list
+	 * @param[in] onlyLast If true, remove only the most recently added cloud
+	 */
 	void         removeClouds(bool onlyLast = false) override;
+	/**
+	 * @brief Remove meshes from the working list
+	 * @param[in] onlyLast If true, remove only the most recently added mesh
+	 */
 	void         removeMeshes(bool onlyLast = false) override;
+	/**
+	 * @brief Select clouds based on criteria
+	 * @param[in] options Selection criteria
+	 * @return true if selection was successful
+	 */
 	bool         selectClouds(const SelectEntitiesOptions& options) override;
+	/**
+	 * @brief Select meshes based on criteria
+	 * @param[in] options Selection criteria
+	 * @return true if selection was successful
+	 */
 	bool         selectMeshes(const SelectEntitiesOptions& options) override;
 	QStringList& arguments() override
 	{
 		return m_arguments;
 	}
+	/**
+	 * @brief Get the command-line arguments (const)
+	 * @return Reference to arguments list
+	 */
 	const QStringList& arguments() const override
 	{
 		return m_arguments;
 	}
+	/**
+	 * @brief Register a custom command
+	 * @param[in] command Command to register
+	 * @return true if registration succeeded
+	 */
 	bool     registerCommand(Command::Shared command) override;
 	QDialog* widgetParent() override
 	{
 		return m_parentWidget;
 	}
+	/**
+	 * @brief Print verbose message
+	 * @param[in] message Message to print
+	 */
 	void    printVerbose(const QString& message) const override;
+	/**
+	 * @brief Print info message
+	 * @param[in] message Message to print
+	 */
 	void    print(const QString& message) const override;
+	/**
+	 * @brief Print highlighted message
+	 * @param[in] message Message to print
+	 */
 	void    printHigh(const QString& message) const override;
+	/**
+	 * @brief Print debug message
+	 * @param[in] message Message to print
+	 */
 	void    printDebug(const QString& message) const override;
+	/**
+	 * @brief Print warning message
+	 * @param[in] message Warning message
+	 */
 	void    warning(const QString& message) const override;
+	/**
+	 * @brief Print debug warning message
+	 * @param[in] message Warning message
+	 */
 	void    warningDebug(const QString& message) const override;
-	bool    error(const QString& message) const override;      // must always return false!
-	bool    errorDebug(const QString& message) const override; // must always return false!
+	/**
+	 * @brief Print error message (always returns false)
+	 * @param[in] message Error message
+	 * @return Always false (for chaining in conditional expressions)
+	 */
+	bool    error(const QString& message) const override;
+	/**
+	 * @brief Print debug error message (always returns false)
+	 * @param[in] message Error message
+	 * @return Always false (for chaining in conditional expressions)
+	 */
+	bool    errorDebug(const QString& message) const override;
 	bool    saveClouds(QString suffix = QString(), bool allAtOnce = false, const QString* allAtOnceFileName = nullptr) override;
 	bool    saveMeshes(QString suffix = QString(), bool allAtOnce = false, const QString* allAtOnceFileName = nullptr) override;
 	bool    importFile(QString filename, const GlobalShiftOptions& globalShiftOptions, FileIOFilter::Shared filter = FileIOFilter::Shared(nullptr)) override;
