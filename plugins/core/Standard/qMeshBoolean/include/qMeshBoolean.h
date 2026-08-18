@@ -17,6 +17,18 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qMeshBoolean.h
+ *
+ * @brief Mesh boolean operations plugin
+ *
+ * Mesh boolean operations (CSG) using libIGL.
+ *
+ * Reference: https://libigl.github.io/
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 //Qt
 #include <QObject>
 
@@ -24,9 +36,13 @@
 
 class QAction;
 
-//! Mes Boolean Operations (CSG) plugin
-/** This plugin is based on ligIGL: https://libigl.github.io/
-**/
+/**
+ * @class qMeshBoolean
+ *
+ * @brief Mesh boolean operations plugin
+ *
+ * Perform boolean operations on meshes using libIGL.
+ */
 class qMeshBoolean : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -36,20 +52,22 @@ class qMeshBoolean : public QObject, public ccStdPluginInterface
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qMeshBoolean(QObject* parent = nullptr);
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	virtual void onNewSelection(const ccHObject::Container& selectedEntities);
+	
+	/// Get plugin actions
 	virtual QList<QAction *> getActions() override;
 
 protected:
-
-	//! Starts main action
+	/// Execute boolean operation
 	void doAction();
 
 protected:
-
-	//! Associated action
 	QAction* m_action;
 };
