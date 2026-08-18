@@ -18,6 +18,16 @@
 #ifndef CC_COMPASS_HEADER
 #define CC_COMPASS_HEADER
 
+/**
+ * @file ccCompass.h
+ *
+ * @brief Compass plugin
+ *
+ * Geological compass plugin for structural geology measurements.
+ *
+ * @author Sam Thiele
+ */
+
 //qCC
 #include <ccStdPluginInterface.h>
 #include <ccPickingListener.h>
@@ -35,6 +45,13 @@ class ccTopologyTool;
 class ccTraceTool;
 class ccSNECloud;
 
+/**
+ * @class ccCompass
+ *
+ * @brief Compass plugin
+ *
+ * Geological compass plugin for structural geology measurements.
+ */
 class ccCompass : public QObject, public ccStdPluginInterface, public ccPickingListener
 {
 	Q_OBJECT
@@ -43,7 +60,10 @@ class ccCompass : public QObject, public ccStdPluginInterface, public ccPickingL
 	Q_PLUGIN_METADATA( IID "cccorp.cloudcompare.plugin.ccCompass" FILE "../info.json" )
 
 public:
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit ccCompass(QObject* parent = nullptr);
 
 	//deconstructor
@@ -57,8 +77,7 @@ public:
 	QList<QAction *> getActions() override;
 
 protected:
-
-	//initialise the plugin
+	/// Initialize plugin
 	void doAction();
 
 	//start picking mode
