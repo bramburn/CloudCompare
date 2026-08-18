@@ -18,29 +18,38 @@
 #ifndef CC_DISH_PRIMITIVE_HEADER
 #define CC_DISH_PRIMITIVE_HEADER
 
+/**
+ * @file ccDish.h
+ *
+ * @brief Dish primitive
+ *
+ * 3D dish shape (section of sphere or ellipsoid).
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccGenericPrimitive.h"
 
-//! Dish
-/** Either a section of a sphere, or half of an ellipsoid!
- **/
+/**
+ * @brief Dish primitive
+ *
+ * Section of sphere or half ellipsoid.
+ */
 class QCC_DB_LIB_API ccDish : public ccGenericPrimitive
 {
   public:
 	//! Default drawing precision
-	/** \warning Never pass a 'constant initializer' by reference
-	 **/
 	static const unsigned DEFAULT_DRAWING_PRECISION = 24;
 
-	//! Default constructor
-	/** The origin of the Dish is at the centre of the base, and the Z-axis lies along the normal to the base.
-	    \param radius base radius
-	    \param height maximum height of dished surface above base
-	    \param radius2 If radius2 is zero, dish is drawn as a section of sphere. If radius2 is >0, dish is defined as half of an ellipsoid.
-	    \param transMat optional 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
-	    \param name name
-	    \param precision drawing precision (angular step = 360/precision)
-	**/
+	/**
+	 * @brief Create a dish
+	 * @param[in] radius Base radius
+	 * @param[in] height Height above base
+	 * @param[in] radius2 0 = spherical, >0 = ellipsoidal
+	 * @param[in] transMat Transformation matrix
+	 * @param[in] name Dish name
+	 * @param[in] precision Drawing precision
+	 */
 	ccDish(PointCoordinateType radius,
 	       PointCoordinateType height,
 	       PointCoordinateType radius2   = 0,
