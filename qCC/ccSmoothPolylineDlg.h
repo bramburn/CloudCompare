@@ -17,6 +17,16 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSmoothPolylineDlg.h
+ *
+ * @brief Smooth polyline dialog
+ *
+ * Dialog for smoothing polylines using Chaikin algorithm.
+ *
+ * @author CloudCompare project
+ */
+
 // qCC_db
 #include <ccHObject.h>
 
@@ -25,29 +35,36 @@
 
 class Ui_SmoothPolylineDialog;
 
-//! Dialog to smooth a polyline (Chaikin algorithm)
+/**
+ * @brief Smooth polyline dialog
+ *
+ * Smooth polylines using Chaikin algorithm.
+ */
 class ccSmoothPolylineDialog : public QDialog
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	ccSmoothPolylineDialog(QWidget* parent = nullptr);
 
-	//! Destructor
+	/// Destructor
 	virtual ~ccSmoothPolylineDialog();
 
-	//! Sets the number of iterations
+	/// Set iteration count
 	void setIerationCount(int count);
 
-	//! Sets the smoothing ratio
+	/// Set smoothing ratio
 	void setRatio(double ratio);
 
-	//! Returns the number of iterations
+	/// Get iteration count
 	int getIerationCount() const;
 
-	//! Returns the smoothing ratio
+	/// Get smoothing ratio
 	double getRatio() const;
 
   protected:
-	//! Associated ui
+	/// UI
 	Ui_SmoothPolylineDialog* m_ui;
 };
