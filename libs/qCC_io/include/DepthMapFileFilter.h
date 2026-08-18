@@ -18,27 +18,42 @@
 #ifndef CC_DEPTH_MAP_FILE_FILTER_HEADER
 #define CC_DEPTH_MAP_FILE_FILTER_HEADER
 
+/**
+ * @file DepthMapFileFilter.h
+ *
+ * @brief Depth map file filter
+ *
+ * Filter for depth map files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
 class ccGBLSensor;
 
-//! Depth map I/O filter
+/**
+ * @brief Depth map filter
+ *
+ * Filter for depth map file I/O.
+ */
 class QCC_IO_LIB_API DepthMapFileFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	DepthMapFileFilter();
 
-	// static accessors
+	/// Get file filter string
 	static inline QString GetFileFilter()
 	{
 		return "Depth Map [ascii] (*.txt *.asc)";
 	}
 
 	// inherited from FileIOFilter
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 
-	// direct method to save a sensor (depth map)
+	/// Save depth map directly
 	CC_FILE_ERROR saveToFile(const QString& filename, ccGBLSensor* sensor);
 };
 
