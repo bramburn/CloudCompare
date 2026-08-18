@@ -27,6 +27,13 @@
 #include <QMetaType>
 #include <QString>
 
+/**
+ * @struct LasVlr
+ *
+ * @brief LAS Variable Length Record
+ *
+ * Represents VLR data and extra scalar fields.
+ */
 struct LasVlr
 {
 	LasVlr() = default;
