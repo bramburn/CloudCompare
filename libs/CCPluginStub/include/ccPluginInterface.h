@@ -30,114 +30,174 @@
 class ccExternalFactory;
 class ccCommandLineInterface;
 
-//! Plugin type
+/**
+ * @brief Plugin type flags
+ *
+ * Defines the category of functionality a plugin provides.
+ * A plugin can have multiple types by combining flags with OR.
+ */
 enum CC_PLUGIN_TYPE
 {
-	CC_STD_PLUGIN       = 1,
-	CC_GL_FILTER_PLUGIN = 2,
-	CC_IO_FILTER_PLUGIN = 4,
+	CC_STD_PLUGIN       = 1, //!< Standard processing plugin (algorithms, tools)
+	CC_GL_FILTER_PLUGIN = 2, //!< OpenGL rendering filter/effect
+	CC_IO_FILTER_PLUGIN = 4, //!< File I/O handler plugin
 };
 
-//! Standard CC plugin interface
-/** Version 3.2
- **/
+/**
+ * @brief Base interface for all CloudCompare plugins
+ *
+ * This abstract class defines the contract that all CloudCompare plugins
+ * must implement. It provides metadata access (name, description, authors)
+ * and lifecycle management (start/stop).
+ *
+ * Plugins can also provide:
+ * - Custom object factories for handling custom entity types
+ * - Command-line commands for batch processing
+ *
+ * @note This is version 3.2 of the plugin interface
+ *
+ * @par Plugin Types:
+ * - Standard plugins (CC_STD_PLUGIN) provide processing algorithms
+ * - GL filter plugins (CC_GL_FILTER_PLUGIN) provide post-processing effects
+ * - I/O plugins (CC_IO_FILTER_PLUGIN) provide file format support
+ *
+ * @see ccStdPluginInterface for standard plugin base class
+ * @see ccPluginManager for plugin discovery and loading
+ */
 class ccPluginInterface
 {
   public:
-	// Contact represents a person and is used for authors and maintainer lists
+	/**
+	 * @brief Represents a person associated with the plugin
+	 * Used to represent authors, maintainers, or other contributors.
+	 */
 	struct Contact
 	{
-		QString name;
-		QString email;
+		QString name;  //!< Person's name
+		QString email; //!< Email address
 	};
 
+	//! List of contacts (authors, maintainers, etc.)
 	using ContactList = QList<Contact>;
 
-	// Reference represents a journal article or online post about the plugin where
-	// the user can find more information.
+	/**
+	 * @brief Reference to documentation about the plugin
+	 * Represents a journal article, paper, or online resource.
+	 */
 	struct Reference
 	{
-		QString article;
-		QString url;
+		QString article; //!< Article title or citation
+		QString url;     //!< URL to the resource (if online)
 	};
 
+	//! List of references
 	using ReferenceList = QList<Reference>;
 
   public:
-	//! Virtual destructor
+	/**
+	 * @brief Virtual destructor
+	 */
 	virtual ~ccPluginInterface() = default;
 
-	//! Returns plugin type (standard or OpenGL filter)
+	/**
+	 * @brief Get the plugin type
+	 * @return Plugin type (CC_STD_PLUGIN, CC_GL_FILTER_PLUGIN, etc.)
+	 */
 	virtual CC_PLUGIN_TYPE getType() const = 0;
 
-	//! Is this plugin a core plugin?
+	/**
+	 * @brief Check if this is a core plugin
+	 * Core plugins are bundled with CloudCompare and cannot be disabled.
+	 * @return true if this is a core plugin, false otherwise
+	 */
 	virtual bool isCore() const = 0;
 
-	//! Returns (short) name (for menu entry, etc.)
+	/**
+	 * @brief Get the plugin's short name
+	 * Used for menu entries, plugin lists, and identification.
+	 * @return The plugin's short name
+	 */
 	virtual QString getName() const = 0;
 
-	//! Returns long name/description (for tooltip, etc.)
+	/**
+	 * @brief Get the plugin's description
+	 * Provides a longer description for tooltips and help dialogs.
+	 * @return The plugin's description
+	 */
 	virtual QString getDescription() const = 0;
 
-	//! Returns icon
-	/** Should be reimplemented if necessary
-	 **/
+	/**
+	 * @brief Get the plugin's icon
+	 * Returns an icon to display in the UI (menus, toolbar, etc.).
+	 * Return a default/null icon if not needed.
+	 * @return The plugin's icon
+	 */
 	virtual QIcon getIcon() const = 0;
 
-	//! Returns a list of references (articles and websites) for the plugin
-	//! This is optional.
-	//! See qDummyPlugin for a real example.
-	//! Added in v3.1 of the plugin interface.
+	/**
+	 * @brief Get literature references for the plugin
+	 * Returns a list of articles, papers, or websites that document
+	 * the algorithms or methods used in this plugin.
+	 * @return List of references (can be empty)
+	 */
 	virtual ReferenceList getReferences() const = 0;
 
-	//! Returns a list of the authors' names and email addresses
-	//! This is optional.
-	//! See qDummyPlugin for a real example.
-	//! Added in v3.1 of the plugin interface.
+	/**
+	 * @brief Get the plugin's authors
+	 * @return List of author contacts
+	 */
 	virtual ContactList getAuthors() const = 0;
 
-	//! Returns a list of the maintainers' names and email addresses
-	//! This is optional.
-	//! See qDummyPlugin for a real example.
-	//! Added in v3.1 of the plugin interface.
+	/**
+	 * @brief Get the plugin's maintainers
+	 * @return List of maintainer contacts
+	 */
 	virtual ContactList getMaintainers() const = 0;
 
-	//! Starts the plugin
-	/** Should be reimplemented if necessary.
-	    Used when 'starting' a plugin from the command line
-	    (to start a background service, a thread, etc.)
-	**/
+	/**
+	 * @brief Start the plugin
+	 * Called when the plugin should begin operation.
+	 * Initialize any resources, start threads, or register commands here.
+	 * @return true if startup succeeded, false otherwise
+	 */
 	virtual bool start() = 0;
 
-	//! Stops the plugin
-	/** Should be reimplemented if necessary.
-	    Used to stop a plugin previously started (see ccPluginInterface::start).
-	**/
+	/**
+	 * @brief Stop the plugin
+	 * Called when the plugin should clean up and stop operation.
+	 * Release resources, stop threads, and unregister commands here.
+	 */
 	virtual void stop() = 0;
 
-	//! Returns the plugin's custom object factory (if any)
-	/** Plugins may provide a factory to build custom objects.
-	    This allows qCC_db to properly code and decode the custom
-	    objects stream in BIN files. Custom objects must inherit the
-	    ccCustomHObject or ccCustomLeafObject interfaces.
-	**/
+	/**
+	 * @brief Get the custom objects factory
+	 * If the plugin defines custom entity types, it can provide
+	 * a factory for serializing/deserializing them in BIN files.
+	 * @return Pointer to a custom factory, or nullptr if not applicable
+	 */
 	virtual ccExternalFactory* getCustomObjectsFactory() const = 0;
 
-	//! Optional: registers commands (for the command line mode)
-	/** Does nothing by default.
-	    \warning: don't use keywords that are already used by the main application or other plugins!
-	        (use a unique prefix for all commands if possible)
-	**/
+	/**
+	 * @brief Register command-line commands
+	 * Allows plugins to add custom commands for batch processing.
+	 * @param[in,out] cmd The command-line interface for registration
+	 * @warning Avoid command names that conflict with core CloudCompare
+	 */
 	virtual void registerCommands(ccCommandLineInterface* cmd) = 0;
 
   protected:
 	friend class ccPluginManager;
 
-	//! Set the IID of the plugin (which comes from Q_PLUGIN_METADATA).
-	//! It is used to uniquely identify the plugin.
+	/**
+	 * @brief Set the plugin's IID (internal use)
+	 * @param[in] iid The interface identifier from Q_PLUGIN_METADATA
+	 */
 	virtual void setIID(const QString& iid) = 0;
 
-	//! Get the IID of the plugin.
+	/**
+	 * @brief Get the plugin's IID (internal use)
+	 * @return The plugin's interface identifier
+	 */
 	virtual const QString& IID() const = 0;
 };
 
