@@ -17,6 +17,15 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccConsole.h
+ *
+ * @brief Console/logging widget
+ *
+ * Console widget and logging infrastructure.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // qCC_db
 #include <ccLog.h>
 
@@ -29,7 +38,9 @@
 class MainWindow;
 class QTextStream;
 
-//! Custom QListWidget to allow for the copy of all selected elements when using CTRL+C
+/**
+ * @brief Custom list widget with copy support
+ */
 class ccCustomQListWidget : public QListWidget
 {
 	Q_OBJECT
@@ -41,7 +52,11 @@ class ccCustomQListWidget : public QListWidget
 	void keyPressEvent(QKeyEvent* event) override;
 };
 
-//! Console
+/**
+ * @brief Console
+ *
+ * Logging console with widget output.
+ */
 class ccConsole : public QObject
     , public ccLog
 {
