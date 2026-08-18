@@ -4,21 +4,23 @@
 **Total files:** ~7964 source files (excluding build/.git/)
 **Started:** 2025-01-XX
 
-## Progress - 54 commits so far
+## Progress - 63 commits so far
 
 ### qCC/ (Main application)
 - [x] main.cpp, ccApplication.h/cpp, ccCommon.h
 - [x] mainwindow.h, ccCommandLineParser.h
 
-### libs/ (Core libraries) - qCC_db (50+ headers documented)
-**Core:** ccObject, ccHObject, ccSerializableObject, ccDrawableObject
+### libs/ (Core libraries) - qCC_db (60+ headers documented)
+**Core:** ccObject, ccHObject, ccSerializableObject, ccDrawableObject, ccInteractor
 **Entities:** ccPointCloud, ccGenericPointCloud, ccMesh, ccGenericMesh, ccPolyline, ccImage, ccFacet
-**Geometry:** ccBox, ccSphere, ccCylinder, ccCone, ccCircle, ccDisc, ccPlane, ccGenericPrimitive
+**Geometry:** ccBox, ccSphere, ccCylinder, ccCone, ccCircle, ccDisc, ccPlane, ccTorus, ccQuadric, ccExtru, ccDish, ccGenericPrimitive
 **Sensors:** ccSensor, ccCameraSensor, ccGBLSensor, ccDepthBuffer, ccNormalVectors
 **Math/Display:** ccBBox, ccGLMatrix, ccOctree, ccScalarField, ccColorScale, ccColorScalesManager
 **Display:** ccViewportParameters, ccGenericGLDisplay, ccChunk, ccArray, ccAdvancedTypes, ccColorTypes
+**Materials:** ccMaterial, ccMaterialSet, ccNormalCompressor
 **UI/Interaction:** ccLog, ccProgressDialog, cc2DLabel, ccClipBox, ccShiftedObject
 **I/O:** FileIOFilter, ccFileUtils
+**Types:** ccCoordinateSystem
 
 **qCC_glWindow:** ccGLWindowInterface, ccGLWindowSignalEmitter
 **CCFbo:** ccGlFilter
