@@ -18,8 +18,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qCoreIO.h
+ *
+ * @brief Core I/O plugin
+ *
+ * Core file I/O plugin for CloudCompare.
+ *
+ * @author CloudCompare project
+ */
+
 #include <ccIOPluginInterface.h>
 
+/**
+ * @brief Core I/O plugin
+ *
+ * Core file I/O handlers (OBJ, PLY, BIN, etc.)
+ */
 class qCoreIO : public QObject
     , public ccIOPluginInterface
 {
@@ -29,10 +44,16 @@ class qCoreIO : public QObject
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qCoreIO" FILE "../info.json")
 
   public:
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qCoreIO(QObject* parent = nullptr);
 
+	/// Register command line commands
 	void registerCommands(ccCommandLineInterface* inCmdLine) override;
 
+	/// Get list of supported filters
 	FilterList getFilters() override;
 };
 
