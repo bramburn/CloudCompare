@@ -18,16 +18,35 @@
 #ifndef CC_MST_FOR_NORMS_DIRECTION_HEADER
 #define CC_MST_FOR_NORMS_DIRECTION_HEADER
 
+/**
+ * @file ccMinimumSpanningTreeForNormsDirection.h
+ *
+ * @brief Minimum Spanning Tree for normals direction
+ *
+ * MST-based normal orientation algorithm.
+ */
+
 class ccPointCloud;
 class ccProgressDialog;
 
-//! Minimum Spanning Tree for normals direction resolution
-/** See http://people.maths.ox.ac.uk/wendland/research/old/reconhtml/node3.html
- **/
+/**
+ * @class ccMinimumSpanningTreeForNormsDirection
+ *
+ * @brief Minimum Spanning Tree for normals direction
+ *
+ * Minimum Spanning Tree for normals direction resolution.
+ * See http://people.maths.ox.ac.uk/wendland/research/old/reconhtml/node3.html
+ */
 class ccMinimumSpanningTreeForNormsDirection
 {
   public:
-	//! Main entry point
+	/**
+	 * @brief Orient normals
+	 * @param[in] cloud Point cloud
+	 * @param[in] kNN Number of nearest neighbors
+	 * @param[in] progressDlg Progress dialog
+	 * @return Success
+	 */
 	static bool OrientNormals(ccPointCloud*     cloud,
 	                          unsigned          kNN         = 6,
 	                          ccProgressDialog* progressDlg = nullptr);
