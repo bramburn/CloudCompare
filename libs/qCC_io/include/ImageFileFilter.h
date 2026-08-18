@@ -18,26 +18,54 @@
 #ifndef CC_IMAGE_FILE_FILTER_HEADER
 #define CC_IMAGE_FILE_FILTER_HEADER
 
+/**
+ * @file ImageFileFilter.h
+ *
+ * @brief Image file filter
+ *
+ * Filter for loading and saving images.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! Filter to load or save an image (all types supported by Qt)
+/**
+ * @brief Image file filter
+ *
+ * Filter for image file I/O.
+ */
 class QCC_IO_LIB_API ImageFileFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	ImageFileFilter();
 
 	// inherited from FileIOFilter
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 
-	//! Helper: select an input image filename
+	/**
+	 * @brief Get load filename
+	 * @param[in] dialogTitle Dialog title
+	 * @param[in] imageLoadPath Default path
+	 * @param[in] parentWidget Parent widget
+	 * @return Selected filename
+	 */
 	static QString GetLoadFilename(const QString& dialogTitle,
 	                               const QString& imageLoadPath,
 	                               QWidget*       parentWidget = nullptr);
 
-	//! Helper: select an output image filename
+	/**
+	 * @brief Get save filename
+	 * @param[in] dialogTitle Dialog title
+	 * @param[in] baseName Default filename
+	 * @param[in] imageSavePath Default path
+	 * @param[in] parentWidget Parent widget
+	 * @return Selected filename
+	 */
 	static QString GetSaveFilename(const QString& dialogTitle,
 	                               const QString& baseName,
 	                               const QString& imageSavePath,
