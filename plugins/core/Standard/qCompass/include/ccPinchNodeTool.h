@@ -18,6 +18,14 @@
 #ifndef CC_NODETOOL_HEADER
 #define CC_NODETOOL_HEADER
 
+/**
+ * @file ccPinchNodeTool.h
+ *
+ * @brief Pinch node tool
+ *
+ * Tool for creating pinch nodes.
+ */
+
 #include "ccTool.h"
 #include "ccGeoObject.h"
 #include "ccPinchNode.h"
@@ -25,19 +33,26 @@
 #include <qinputdialog.h>
 #include <qmainwindow.h>
 
-//! Tool used to create PinchNodes
+/**
+ * @class ccPinchNodeTool
+ *
+ * @brief Pinch node tool
+ *
+ * Tool for creating pinch nodes.
+ */
 class ccPinchNodeTool :	public ccTool
 {
 public:
+	/// Constructor
 	ccPinchNodeTool();
 
-	//! Called when the tool is set to active (for initialization)
+	/// Tool activated
 	void toolActivated() override;
 
-	//! Called when the tool is set to disactive (for cleanup)
+	/// Tool disactivated
 	void toolDisactivated() override;
 
-	//! Called when a point in a point cloud gets picked while this tool is active
+	/// Point picked callback
 	void pointPicked(ccHObject* insertPoint, unsigned itemIdx, ccPointCloud* cloud, const CCVector3& P) override;
 };
 
