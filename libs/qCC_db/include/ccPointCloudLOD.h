@@ -17,6 +17,15 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPointCloudLOD.h
+ *
+ * @brief Point cloud Level of Detail
+ *
+ * Level of Detail management for point clouds.
+ *
+ * @author CloudCompare project
+ */
 // qCC_db
 #include <ccFrustum.h>
 #include <ccOctree.h>
@@ -32,7 +41,9 @@
 class ccPointCloud;
 class ccPointCloudLODThread;
 
-//! Level descriptor
+/**
+ * @brief LOD level descriptor
+ */
 struct LODLevelDesc
 {
 	//! Default constructor
@@ -53,10 +64,14 @@ struct LODLevelDesc
 	unsigned count;
 };
 
-//! L.O.D. indexes set
+/// L.O.D. indexes set
 typedef std::vector<unsigned> LODIndexSet;
 
-//! L.O.D. (Level of Detail) structure
+/**
+ * @brief Point cloud LOD
+ *
+ * Level of Detail structure for point clouds.
+ */
 class ccPointCloudLOD
 {
   public:
