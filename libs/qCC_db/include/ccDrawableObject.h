@@ -18,6 +18,17 @@
 #ifndef CC_DRAWABLE_OBJECT_HEADER
 #define CC_DRAWABLE_OBJECT_HEADER
 
+/**
+ * @file ccDrawableObject.h
+ *
+ * @brief Drawable object interface
+ *
+ * Base interface for entities that can render themselves
+ * in 3D views. Provides visibility, color, and drawing
+ * management.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccGLDrawContext.h"
 
@@ -26,53 +37,76 @@
 
 class ccGenericGLDisplay;
 
-//! Simple (clipping) plane equation
+/**
+ * @brief Clipping plane equation
+ */
 struct ccClipPlane
 {
 	Tuple4Tpl<double> equation;
 };
 using ccClipPlaneSet = std::vector<ccClipPlane>;
 
-//! Generic interface for (3D) drawable entities
+/**
+ * @brief Generic interface for drawable entities
+ */
 class QCC_DB_LIB_API ccDrawableObject
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Default constructor
+	 */
 	ccDrawableObject();
-	//! Copy constructor
+	/**
+	 * @brief Copy constructor
+	 * @param[in] object Source object
+	 */
 	ccDrawableObject(const ccDrawableObject& object);
 
 	virtual ~ccDrawableObject() = default;
 
   public: // drawing and drawing options
-	//! Draws entity and its children
+	/**
+	 * @brief Draw the entity
+	 * @param[in] context Drawing context
+	 */
 	virtual void draw(CC_DRAW_CONTEXT& context) = 0;
 
-	//! Returns whether entity is visible or not
+	/**
+	 * @brief Check if visible
+	 * @return true if entity is visible
+	 */
 	inline virtual bool isVisible() const
 	{
 		return m_visible;
 	}
-	//! Sets entity visibility
+	/**
+	 * @brief Set visibility
+	 * @param[in] state Visibility state
+	 */
 	inline virtual void setVisible(bool state)
 	{
 		m_visible = state;
 	}
-	//! Toggles visibility
+	/**
+	 * @brief Toggle visibility
+	 */
 	inline virtual void toggleVisibility()
 	{
 		setVisible(!isVisible());
 	}
 
-	//! Returns whether visibility is locked or not
+	/**
+	 * @brief Check if visibility is locked
+	 * @return true if locked
+	 */
 	inline virtual bool isVisibilityLocked() const
 	{
 		return m_lockedVisibility;
 	}
-	//! Locks/unlocks visibility
-	/** If visibility is locked, the user won't be able to modify it
-	    (via the properties tree for instance).
-	**/
+	/**
+	 * @brief Lock/unlock visibility
+	 * @param[in] state Lock state
+	 */
 	inline virtual void lockVisibility(bool state)
 	{
 		m_lockedVisibility = state;
