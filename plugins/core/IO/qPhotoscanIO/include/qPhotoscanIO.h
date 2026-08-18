@@ -18,9 +18,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qPhotoscanIO.h
+ *
+ * @brief PhotoScan I/O plugin
+ *
+ * Plugin for Agisoft PhotoScan/Zeply files.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 #include <ccIOPluginInterface.h>
 
-//! PhotoScan
+/**
+ * @brief PhotoScan I/O plugin
+ *
+ * Read PhotoScan/Zeply files.
+ */
 class qPhotoscanIO : public QObject
     , public ccIOPluginInterface
 {
@@ -30,11 +44,16 @@ class qPhotoscanIO : public QObject
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qPhotoscanIO" FILE "../info.json")
 
   public:
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qPhotoscanIO(QObject* parent = nullptr);
 
+	/// Destructor
 	~qPhotoscanIO() override = default;
 
-	// inherited from ccIOPluginInterface
+	/// Get list of supported filters
 	FilterList getFilters() override;
 };
 
