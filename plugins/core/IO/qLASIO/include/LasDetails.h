@@ -42,11 +42,13 @@ typedef laszip_vlr laszip_vlr_struct;
 constexpr size_t LAS_VLR_HEADER_SIZE = 54;
 constexpr double SCAN_ANGLE_SCALE    = 0.006;
 
-/// This namespace regroups constants for all the names we use
-/// in CloudCompare's ScalarField system for the standard dimensions defined by the LAS Spec.
-///
-/// Notice that RGB and Waveforms are missing, that is normal as they
-/// are not treated as scalar fields within CloudCompare.
+/**
+ * @namespace LasNames
+ *
+ * @brief Scalar field names for LAS standard dimensions
+ *
+ * Standard dimension names as defined by the LAS specification.
+ */
 namespace LasNames
 {
 	constexpr const char* Intensity         = "Intensity";
