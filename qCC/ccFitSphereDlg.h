@@ -17,31 +17,52 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccFitSphereDlg.h
+ *
+ * @brief Fit sphere dialog
+ *
+ * Dialog for sphere fitting parameters.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 #include <ui_fitShereDlg.h>
 
 // Qt
 #include <QDialog>
 
-//! Dialog to input the 'Fit Sphere' tool parameters
+/**
+ * @brief Fit sphere dialog
+ *
+ * Configure sphere fitting parameters.
+ */
 class ccFitSphereDlg : public QDialog
     , public Ui::FitSphereDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] maxOutliersRatio Max outliers ratio
+	 * @param[in] confidence Confidence level
+	 * @param[in] autoDetectSphereRadius Auto detect radius
+	 * @param[in] sphereRadius Sphere radius
+	 * @param[in] parent Parent widget
+	 */
 	ccFitSphereDlg(double   maxOutliersRatio,
 	               double   confidence,
 	               bool     autoDetectSphereRadius,
 	               double   sphereRadius,
 	               QWidget* parent = nullptr);
 
-	//! Returns the max outliers ratio
+	/// Get max outliers ratio
 	double maxOutliersRatio() const;
-	//! Returns the confidence
+	/// Get confidence
 	double confidence() const;
-	//! Returns whether the sphere radius should be automatically detected
+	/// Get auto detect sphere radius
 	bool autoDetectSphereRadius() const;
-	//! Returns the sphere radius (or 0.0 if it should be automatically detected)
+	/// Get sphere radius
 	double sphereRadius() const;
 };
