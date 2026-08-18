@@ -20,13 +20,26 @@
 
 #include <QDialog>
 
+/**
+ * @file BundlerImportDlg.h
+ *
+ * @brief Bundler import dialog
+ *
+ * Dialog for importing Snavely's Bundler files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // local
 #include "qCC_io.h"
 #include "ui_openBundlerFileDlg.h"
 
 class ccGLMatrix;
 
-//! Dialog for importation of Snavely's Bundler files
+/**
+ * @brief Bundler import dialog
+ *
+ * Import Snavely's Bundler structure-from-motion files.
+ */
 class /*QCC_IO_LIB_API*/ BundlerImportDlg : public QDialog
     , public Ui::BundlerImportDlg
 {
