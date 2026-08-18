@@ -17,50 +17,82 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ViewInterpolate.h
+ *
+ * @brief View interpolation for animations
+ *
+ * Interpolate between two viewport positions for smooth animations.
+ */
 
 #include "ExtendedViewport.h"
 
 class ccPolyline;
 
-//! The ViewInterpolate class
-/** This class takes pointers to two viewport objects, and returns intermediate viewports between over a set number of steps.
-**/
+/**
+ * @class ViewInterpolate
+ *
+ * @brief View interpolator
+ *
+ * Interpolate between two viewports over a set number of steps.
+ */
 class ViewInterpolate
 {
 public:
 
-	//! Constructor from two viewports and a number of steps
+	/**
+	 * @brief Create interpolator
+	 * @param[in] view1 First viewport
+	 * @param[in] view2 Second viewport
+	 * @param[in] stepCount Number of interpolation steps
+	 */
     ViewInterpolate( const ExtendedViewportParameters& view1,  const ExtendedViewportParameters& view2, unsigned int stepCount = 0 );
 
-	//! Sets the smooth trajectory (optional)
+	/**
+	 * @brief Set smooth trajectory
+	 * @param[in] smoothTrajectory Smoothed trajectory
+	 * @param[in] smoothTrajectoryReversed Reversed trajectory
+	 * @param[in] i1 Start index
+	 * @param[in] i2 Stop index
+	 * @param[in] length Segment length
+	 */
 	void setSmoothTrajectory(	ccPolyline* smoothTrajectory,
 								ccPolyline* smoothTrajectoryReversed,
 								unsigned i1,
 								unsigned i2,
 								PointCoordinateType length);
 
-    //! Returns the first viewport object
+	/// Get first viewport
 	inline const ccViewportParameters& view1 () const { return m_view1.params; }
-    // Returns the second viewport object
+	/// Get second viewport
 	inline const ccViewportParameters& view2 () const { return m_view2.params; }
 
-	//! Interpolates the 2 viewports at a given (relative) position
+	/**
+	 * @brief Interpolate at ratio
+	 * @param[out] viewport Interpolated viewport
+	 * @param[in] ratio Interpolation ratio (0-1)
+	 * @return Success
+	 */
 	bool interpolate(ExtendedViewportParameters& viewport, double ratio ) const;
 	
-	//! Returns the next viewport
+	/**
+	 * @brief Get next viewport
+	 * @param[out] viewport Next viewport
+	 * @return Success
+	 */
     bool nextView (ExtendedViewportParameters& viewport );
 
-    //! Returns the current step
+	/// Get current step
 	inline unsigned int currentStep () { return m_currentStep; }
-    //! Sets the current step
+	/// Set current step
 	inline void setCurrentStep ( unsigned int step ) { m_currentStep = step; }
 
-    //! Returns the max number of steps
+	/// Get max steps
 	inline unsigned int maxStep() { return m_totalSteps; }
-    //! Sets the max number of steps
+	/// Set max steps
 	inline void setMaxStep ( unsigned int stepCount ) { m_totalSteps = stepCount; }
 
-	//! Resets the interpolator
+	/// Reset interpolator
 	inline void reset() { m_currentStep = 0; }
 
 private:
