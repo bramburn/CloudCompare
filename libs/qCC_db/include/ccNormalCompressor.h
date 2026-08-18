@@ -18,31 +18,56 @@
 #ifndef CC_NORMAL_COMPRESSOR_HEADER
 #define CC_NORMAL_COMPRESSOR_HEADER
 
+/**
+ * @file ccNormalCompressor.h
+ *
+ * @brief Normal vector compression/decompression
+ *
+ * Provides efficient compression of 3D normal vectors using
+ * spherical quantization. Supports 2M+ unique normal directions.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccBasicTypes.h"
 #include "qCC_db.h"
 
-//! Normal compressor
+/**
+ * @brief Normal vector compressor
+ *
+ * Compresses/decompresses 3D normal vectors using
+ * spherical quantization.
+ */
 class QCC_DB_LIB_API ccNormalCompressor
 {
   public:
-	//! Compressed normals quantization level (number of directions: 2^(2*N+3))
-	/** \warning Never pass a 'constant initializer' by reference
-	 **/
-	static const unsigned char QUANTIZE_LEVEL = 9; // 2097152 normals * 12 bytes = 24 Mb of memory
+	//! Quantization level (2^19 = 524288 directions)
+	static const unsigned char QUANTIZE_LEVEL = 9;
 
-	//! Last valid normal code
+	//! Maximum valid normal code
 	static const unsigned MAX_VALID_NORM_CODE = (1 << (QUANTIZE_LEVEL * 2 + 3)) - 1;
-	//! Null normal code
+	//! Null normal code (invalid)
 	static const unsigned NULL_NORM_CODE = MAX_VALID_NORM_CODE + 1;
 
-	//! Compression algorithm
+	/**
+	 * @brief Compress a normal vector
+	 * @param[in] N Normal components [Nx, Ny, Nz]
+	 * @return Compressed normal code
+	 */
 	static unsigned Compress(const PointCoordinateType N[3]);
 
-	//! Decompression algorithm
+	/**
+	 * @brief Decompress a normal code
+	 * @param[in] index Compressed normal code
+	 * @param[out] N Normal components [Nx, Ny, Nz]
+	 * @param[in] level Quantization level
+	 */
 	static void Decompress(unsigned index, PointCoordinateType N[3], unsigned char level = QUANTIZE_LEVEL);
 
-	//! Inverts a (compressed) normal
+	/**
+	 * @brief Invert a compressed normal
+	 * @param[in,out] code Normal code to invert
+	 */
 	static void InvertNormal(CompressedNormType& code);
 };
 
