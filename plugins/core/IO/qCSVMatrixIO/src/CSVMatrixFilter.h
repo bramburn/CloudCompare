@@ -18,16 +18,31 @@
 #ifndef CC_CSV_MATRIX_FILTER_HEADER
 #define CC_CSV_MATRIX_FILTER_HEADER
 
+/**
+ * @file CSVMatrixFilter.h
+ *
+ * @brief CSV Matrix file filter
+ *
+ * I/O filter for CSV matrix files (2.5D clouds).
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 // qCC_io
 #include <FileIOFilter.h>
 
-//! CSV matrix I/O filter
+/**
+ * @brief CSV Matrix file filter
+ *
+ * Read CSV matrix files.
+ */
 class CSVMatrixFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	CSVMatrixFilter();
 
-	// inherited from FileIOFilter
+	/// Load file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 };
 
