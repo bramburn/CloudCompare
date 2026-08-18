@@ -18,47 +18,69 @@
 
 #include "CCFbo.h"
 
+/**
+ * @file ccGlFilter.h
+ *
+ * @brief OpenGL filter interface
+ *
+ * Base interface for post-processing filters applied to
+ * the 3D scene using framebuffer objects (FBOs) and shaders.
+ * Examples: SSAO, EDL, etc.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Qt
 #include <QString>
 
-//! Default GL filter interface
-/** A GL filter is a combination of shaders applied to
-    textures (typically the rendered scene), typically
-    through intensive use of Frame Buffer Objects.
-**/
+/**
+ * @brief OpenGL post-processing filter
+ *
+ * Shader-based filter applied to the rendered scene.
+ */
 class CCFBO_LIB_API ccGlFilter
 {
   public:
-	//! Default constructor
+	/**
+	 * @brief Create a filter
+	 * @param[in] description Filter description
+	 */
 	ccGlFilter(QString description)
 	    : m_isValid(false)
 	    , m_description(description)
 	{
 	}
 
-	//! Default destructor
+	/**
+	 * @brief Destructor
+	 */
 	virtual ~ccGlFilter()
 	{
 	}
 
-	//! Returns filter name
+	/**
+	 * @brief Get filter description
+	 * @return Description string
+	 */
 	inline virtual QString getDescription() const
 	{
 		return m_description;
 	}
 
-	//! Cloning mechanism
+	/**
+	 * @brief Clone the filter
+	 * @return New filter instance
+	 */
 	virtual ccGlFilter* clone() const = 0;
 
-	//! Initializes GL filter
-	/** Must support reinit!
-	    \param width texture/screen width
-	    \param height texture/screen height
-	    \param shadersPath path where shader files are stored
-	    \param error error string (if an error occurred)
-	    \param silence whether initialization of the filter is silent (= no dialog, etc.)
-	    \return success
-	    **/
+	/**
+	 * @brief Initialize the filter
+	 * @param[in] width Viewport width
+	 * @param[in] height Viewport height
+	 * @param[in] shadersPath Path to shader files
+	 * @param[out] error Error message if failed
+	 * @param[in] silent Suppress dialogs
+	 * @return true on success
+	 */
 	virtual bool init(unsigned       width,
 	                  unsigned       height,
 	                  const QString& shadersPath,
