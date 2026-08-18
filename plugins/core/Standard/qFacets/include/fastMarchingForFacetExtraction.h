@@ -28,9 +28,13 @@
 class ccGenericPointCloud;
 class ccPointCloud;
 
-//! Fast Marching algorithm for planar facets extraction (qFacets plugin)
-/** Extends the FastMarching class.
-**/
+/**
+ * @class FastMarchingForFacetExtraction
+ *
+ * @brief Fast Marching for facet extraction
+ *
+ * Fast Marching algorithm for planar facets extraction.
+ */
 class FastMarchingForFacetExtraction : public CCCoreLib::FastMarching
 {
 public:
