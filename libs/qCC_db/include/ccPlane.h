@@ -18,24 +18,37 @@
 #ifndef CC_PLANE_PRIMITIVE_HEADER
 #define CC_PLANE_PRIMITIVE_HEADER
 
+/**
+ * @file ccPlane.h
+ *
+ * @brief Plane primitive class
+ *
+ * Represents a finite 3D plane primitive. Used for ground fitting,
+ * clipping planes, and geometric primitives.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Local
 #include "ccGenericPrimitive.h"
 #include "ccPlanarEntityInterface.h"
 
-//! Plane (primitive)
-/** 3D plane primitive
- **/
+/**
+ * @brief Plane primitive
+ *
+ * A finite 3D plane with width and height dimensions.
+ */
 class QCC_DB_LIB_API ccPlane : public ccGenericPrimitive
     , public ccPlanarEntityInterface
 {
   public:
-	//! Default constructor
-	/** Plane normal corresponds to 'Z' dimension
-	    \param xWidth plane width along 'X' dimension
-	    \param yWidth plane width along 'Y' dimension
-	    \param transMat optional 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
-	    \param name name
-	**/
+	/**
+	 * @brief Create a plane
+	 * @param[in] xWidth Width along X dimension
+	 * @param[in] yWidth Width along Y dimension
+	 * @param[in] transMat Optional transformation matrix
+	 * @param[in] name Plane name
+	 */
 	ccPlane(PointCoordinateType xWidth,
 	        PointCoordinateType yWidth,
 	        const ccGLMatrix*   transMat = nullptr,
