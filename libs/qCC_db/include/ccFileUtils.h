@@ -1,3 +1,12 @@
+/**
+ * @file ccFileUtils.h
+ *
+ * @brief File utility functions
+ *
+ * Provides file system utilities like standard directory paths.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 #ifndef CCFILEUTILS_H
 #define CCFILEUTILS_H
 // ##########################################################################
@@ -21,7 +30,10 @@
 
 namespace ccFileUtils
 {
-	//! Shortcut for getting the documents location path
+	/**
+	 * @brief Get default documents directory
+	 * @return Path to user's documents folder
+	 */
 	inline QString defaultDocPath()
 	{
 		// note that according to the docs the QStandardPaths::DocumentsLocation path is never empty
