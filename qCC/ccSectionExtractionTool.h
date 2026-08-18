@@ -17,6 +17,15 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSectionExtractionTool.h
+ *
+ * @brief Section extraction tool
+ *
+ * Tool for extracting sections from point clouds.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Local
 #include "ccEnvelopeExtractor.h"
 #include "ccOverlayDialog.h"
@@ -33,7 +42,11 @@ namespace Ui
 	class SectionExtractionDlg;
 }
 
-//! Section extraction tool
+/**
+ * @brief Section extraction tool
+ *
+ * Extract sections from point clouds.
+ */
 class ccSectionExtractionTool : public ccOverlayDialog
 {
 	Q_OBJECT
