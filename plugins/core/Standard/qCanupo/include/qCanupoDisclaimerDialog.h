@@ -27,11 +27,20 @@
 //Qt
 #include <QMainWindow>
 
-//! Dialog for displaying the CANUPO/UEB disclaimer
+/**
+ * @class TrainDisclaimerDialog
+ *
+ * @brief Training disclaimer dialog
+ *
+ * Display training disclaimer to user.
+ */
 class TrainDisclaimerDialog : public QDialog, public Ui::TrainDisclaimerDialog
 {
 public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	TrainDisclaimerDialog(QWidget* parent = nullptr)
 		: QDialog(parent)
 		, Ui::TrainDisclaimerDialog()
@@ -40,9 +49,14 @@ public:
 	}
 };
 
-//whether disclaimer has already been displayed (and accepted) or not
+/// Train disclaimer accepted flag
 static bool s_trainDisclaimerAccepted = false;
 
+/**
+ * @brief Show train disclaimer
+ * @param[in] app Main application interface
+ * @return Whether disclaimer was accepted
+ */
 static bool ShowTrainDisclaimer(ccMainAppInterface* app)
 {
 	if (!s_trainDisclaimerAccepted)
@@ -54,7 +68,13 @@ static bool ShowTrainDisclaimer(ccMainAppInterface* app)
 	return s_trainDisclaimerAccepted;
 }
 
-//! Dialog for displaying the CANUPO/UEB disclaimer
+/**
+ * @class ClassifyDisclaimerDialog
+ *
+ * @brief Classification disclaimer dialog
+ *
+ * Display classification disclaimer to user.
+ */
 class ClassifyDisclaimerDialog : public QDialog, public Ui::ClassifyDisclaimerDialog
 {
 public:
