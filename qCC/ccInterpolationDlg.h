@@ -17,28 +17,51 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccInterpolationDlg.h
+ *
+ * @brief Interpolation dialog
+ *
+ * Dialog for configuring interpolation parameters.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 #include <ui_interpolationDlg.h>
 
 // qCC_db
 #include <ccPointCloudInterpolator.h>
 
-//! Dialog for generic interpolation algorithms
+/**
+ * @brief Interpolation dialog
+ *
+ * Configure interpolation method and algorithm.
+ */
 class ccInterpolationDlg : public QDialog
     , public Ui::InterpolationDlg
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
+	 */
 	explicit ccInterpolationDlg(QWidget* parent = nullptr);
 
+	/// Get interpolation method
 	ccPointCloudInterpolator::Parameters::Method getInterpolationMethod() const;
-	void                                         setInterpolationMethod(ccPointCloudInterpolator::Parameters::Method method);
+	/// Set interpolation method
+	void setInterpolationMethod(ccPointCloudInterpolator::Parameters::Method method);
 
+	/// Get interpolation algorithm
 	ccPointCloudInterpolator::Parameters::Algo getInterpolationAlgorithm() const;
-	void                                       setInterpolationAlgorithm(ccPointCloudInterpolator::Parameters::Algo algo);
+	/// Set interpolation algorithm
+	void setInterpolationAlgorithm(ccPointCloudInterpolator::Parameters::Algo algo);
 
+	/// Set no normalization
 	void setNoNormalization(bool state);
+	/// Get no normalization
 	bool noNormalization() const;
 
   protected:
