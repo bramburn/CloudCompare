@@ -31,7 +31,13 @@
 // CCCoreLib
 #include <CCGeom.h>
 
-//! Dialog to choose the LAS fields to load
+/**
+ * @class LASOpenDlg
+ *
+ * @brief LAS open dialog
+ *
+ * Choose LAS fields to load.
+ */
 class LASOpenDlg : public QDialog
     , public Ui::OpenLASFileDialog
 {
