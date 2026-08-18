@@ -18,6 +18,14 @@
 #ifndef CC_POINT_PICKING_LIST_DIALOG_HEADER
 #define CC_POINT_PICKING_LIST_DIALOG_HEADER
 
+/**
+ * @file ccPointListPickingDlg.h
+ *
+ * @brief Point list picking dialog
+ *
+ * Dialog for picking a list of points.
+ */
+
 // GUI
 #include <ui_pointListPickingDlg.h>
 
@@ -29,9 +37,13 @@
 
 class cc2DLabel;
 
-//! Dialog/interactor to graphically pick a list of points
-/** Options let the user export the list to an ASCII file, a new cloud, a polyline, etc.
- **/
+/**
+ * @class ccPointListPickingDlg
+ *
+ * @brief Point list picking dialog
+ *
+ * Dialog/interactor to graphically pick a list of points.
+ */
 class ccPointListPickingDlg : public ccPointPickingGenericInterface
     , public Ui::PointListPickingDlg
 {
