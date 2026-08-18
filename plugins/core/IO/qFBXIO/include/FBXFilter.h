@@ -15,14 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file FBXFilter.h
+ *
+ * @brief FBX filter
+ *
+ * Autodesk FBX format I/O filter.
+ */
+
 #ifndef CC_FBX_FILTER_HEADER
 #define CC_FBX_FILTER_HEADER
 
 #include "FileIOFilter.h"
 
-//! Autodesk FBX format I/O filter
-/** http://www.autodesk.com/products/fbx/overview
- **/
+/**
+ * @class FBXFilter
+ *
+ * @brief FBX filter
+ *
+ * Autodesk FBX format I/O filter.
+ */
 class FBXFilter : public FileIOFilter
 {
   public:
