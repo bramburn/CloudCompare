@@ -6,6 +6,10 @@
 
 ## Progress - 413 commits so far
 
+**Status:** Core CloudCompare headers documented. Remaining undocumented files are in:
+- Submodule plugins (qMPlane, q3DMASC, qColorimetricSegmenter, qG3Point, qJSonRPCPlugin, qMasonry, qTreeIso, qVoxFall, cc3DFin)
+- Third-party libraries (eigen, TBB, spdlog, nanoflann, hidapi, dlib)
+
 ### qCC/ (Main application) - 75+ dialogs/tools documented
 **UI Dialogs:** ccAboutDialog, ccAlignDlg, ccApplyTransformationDlg, ccAskThreeDoubleValuesDlg, ccAskTwoDoubleValuesDlg, ccBoundingBoxEditorDlg, cc2.5DimEditor, ccCamSensorProjectionDlg, ccClippingBoxRepeatDlg, ccClippingBoxTool, ccColorFromScalarDlg, ccColorGradientDlg, ccColorLevelsDlg, ccComparisonDlg, ccComputeOctreeDlg, ccConsole, ccContourLinesGenerator, ccEntitySelectionDlg, ccEnvelopeExtractor, ccEnvelopeExtractorDlg, ccEntityAction, ccExportCoordToSFDlg, ccExtrudePolylineDlg, ccFilterByValueDlg, ccFitSphereDlg, ccGBLSensorProjectionDlg, ccHistogramWindow, ccCustomDoubleValidator, ccGeomFeaturesDlg, ccItemSelectionDlg, ccKrigingParamsDialog, ccInterpolationDlg, ccNoiseFilterDlg, ccNormalComputationDlg, ccLabelingDlg, ccOrderChoiceDlg, ccMatchScalesDlg, ccLibAlgorithms, ccInnerRect2DFinder, ccGraphicalSegmentationOptionsDlg, ccGraphicalSegmentationTool, ccRecentFiles, ccRegistrationDlg, ccRasterizeTool, ccPtsSamplingDlg, ccPrimitiveFactoryDlg, ccPrimitiveDistanceDlg, ccPointPropertiesDlg, ccPlaneEditDlg, ccScalarFieldArithmeticsDlg, ccScaleDlg, ccSectionExtractionTool, ccSectionExtractionSubDlg, ccOrthoSectionGenerationDlg, ccPointPairRegistrationDlg, ccScalarFieldFromColorDlg, ccScalarFieldsManagerDialog, ccRegistrationTools, ccSelectChildrenDlg, ccSensorComputeDistancesDlg, ccSmoothPolylineDialog, ccSORFilterDlg, ccStatisticalTestDlg, ccSubsamplingDlg, ccTracePolylineTool, ccUnrollDlg, ccVolumeCalcTool, ccUtils, ccSensorComputeScatteringAnglesDlg, ccSetSFsAsVec3Dialog, ccShortcutDialog, ccWaveformDialog, ccDBRoot, ccPropertiesTreeDelegate, matrixDisplayDlg, sfEditDlg, ccPluginInfoDlg, ccPluginUIManager
 
