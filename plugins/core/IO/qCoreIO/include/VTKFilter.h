@@ -18,18 +18,36 @@
 #ifndef CC_VTK_FILTER_HEADER
 #define CC_VTK_FILTER_HEADER
 
+/**
+ * @file VTKFilter.h
+ *
+ * @brief VTK file filter
+ *
+ * I/O filter for VTK point cloud and mesh files.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 #include "FileIOFilter.h"
 
-//! VTK point cloud or mesh I/O filter
+/**
+ * @brief VTK file filter
+ *
+ * Read/write VTK point cloud and mesh files.
+ */
 class VTKFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	VTKFilter();
 
-	// inherited from FileIOFilter
+	/// Load VTK file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/// Check if can save
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	
+	/// Save to VTK file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 
