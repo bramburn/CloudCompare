@@ -18,8 +18,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qLASFWFIO.h
+ *
+ * @brief LAS FWF (Full Waveform) I/O plugin
+ *
+ * Plugin for LAS Full Waveform data I/O.
+ *
+ * @author CNRS / OSUR
+ */
+
 #include <ccIOPluginInterface.h>
 
+/**
+ * @brief LAS FWF I/O plugin
+ *
+ * Read LAS Full Waveform data.
+ */
 class qLASFWFIO : public QObject
     , public ccIOPluginInterface
 {
@@ -29,13 +44,16 @@ class qLASFWFIO : public QObject
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qLAS_FWF_IO" FILE "../info.json")
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qLASFWFIO(QObject* parent = nullptr);
 
-	// inherited from ccPluginInterface
+	/// Register command line commands
 	void registerCommands(ccCommandLineInterface* cmd) override;
 
-	// inherited from ccIOPluginInterface
+	/// Get list of supported filters
 	FilterList getFilters() override;
 };
 
