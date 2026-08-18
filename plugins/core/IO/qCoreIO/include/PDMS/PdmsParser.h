@@ -28,9 +28,13 @@
 
 using namespace PdmsTools;
 
-//! PDMS Lexer
-/** PDMS sessions are made to provide an input stream to the parser (file, keyboard, pipe, ...)
- **/
+/**
+ * @class PdmsLexer
+ *
+ * @brief PDMS Lexer
+ *
+ * PDMS Lexer for parsing PDMS files.
+ */
 class PdmsLexer
 {
   public:
