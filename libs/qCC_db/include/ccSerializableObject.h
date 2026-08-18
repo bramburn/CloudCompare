@@ -29,29 +29,50 @@
 #include <cassert>
 #include <cstdint>
 
+/**
+ * @file ccSerializableObject.h
+ *
+ * @brief Serializable object interface
+ *
+ * Base interface for objects that can be serialized to
+ * CloudCompare's binary file format (.bin).
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 // Qt
 #include <QDataStream>
 #include <QFile>
 #include <QMultiMap>
 
-//! Serializable object interface
+/**
+ * @brief Serializable object interface
+ *
+ * Interface for objects that support serialization
+ * to CloudCompare's .bin format.
+ */
 class ccSerializableObject
 {
   public:
-	//! Destructor
+	/**
+	 * @brief Destructor
+	 */
 	virtual ~ccSerializableObject() = default;
 
-	//! Returns whether object is serializable of not
+	/**
+	 * @brief Check if serializable
+	 * @return true if can be serialized
+	 */
 	virtual bool isSerializable() const
 	{
 		return false;
 	}
 
-	//! Saves data to binary stream
-	/** \param out			output file (already opened)
-	    \param dataVersion	target file version
-	    \return success
-	**/
+	/**
+	 * @brief Save to file
+	 * @param[in] out Output file
+	 * @param[in] dataVersion Target file version
+	 * @return true on success
+	 */
 	virtual bool toFile(QFile& out, short dataVersion) const
 	{
 		return false;
