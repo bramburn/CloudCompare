@@ -4,10 +4,10 @@
 **Total files:** ~7964 source files (excluding build/.git/)
 **Started:** 2025-01-XX
 
-## Progress - 141 commits so far
+## Progress - 175 commits so far
 
-### qCC/ (Main application) - 20+ dialogs documented
-**UI Dialogs:** ccAboutDialog, ccAlignDlg, ccApplyTransformationDlg, ccAskThreeDoubleValuesDlg, ccAskTwoDoubleValuesDlg, ccBoundingBoxEditorDlg, cc2.5DimEditor, ccCamSensorProjectionDlg, ccClippingBoxRepeatDlg, ccClippingBoxTool, ccColorFromScalarDlg, ccColorGradientDlg, ccColorLevelsDlg, ccComparisonDlg, ccComputeOctreeDlg, ccConsole, ccContourLinesGenerator
+### qCC/ (Main application) - 35+ dialogs documented
+**UI Dialogs:** ccAboutDialog, ccAlignDlg, ccApplyTransformationDlg, ccAskThreeDoubleValuesDlg, ccAskTwoDoubleValuesDlg, ccBoundingBoxEditorDlg, cc2.5DimEditor, ccCamSensorProjectionDlg, ccClippingBoxRepeatDlg, ccClippingBoxTool, ccColorFromScalarDlg, ccColorGradientDlg, ccColorLevelsDlg, ccComparisonDlg, ccComputeOctreeDlg, ccConsole, ccContourLinesGenerator, ccEntitySelectionDlg, ccEnvelopeExtractor, ccEnvelopeExtractorDlg, ccEntityAction, ccExportCoordToSFDlg, ccExtrudePolylineDlg, ccFilterByValueDlg, ccFitSphereDlg, ccGBLSensorProjectionDlg, ccHistogramWindow, ccCustomDoubleValidator, ccGeomFeaturesDlg, ccItemSelectionDlg, ccKrigingParamsDialog, ccInterpolationDlg, ccNoiseFilterDlg, ccNormalComputationDlg, ccLabelingDlg, ccOrderChoiceDlg, ccMatchScalesDlg, ccLibAlgorithms, ccInnerRect2DFinder, ccGraphicalSegmentationOptionsDlg, ccGraphicalSegmentationTool, ccRecentFiles, ccRegistrationDlg, ccRasterizeTool, ccPtsSamplingDlg, ccPrimitiveFactoryDlg, ccPrimitiveDistanceDlg, ccPointPropertiesDlg
 
 ### libs/ (Core libraries)
 **qCC_db (70+ headers):** ccObject, ccHObject, ccSerializableObject, ccDrawableObject, ccInteractor
