@@ -18,44 +18,88 @@
 #ifndef CC_ITEM_SELECTION_DIALOG_HEADER
 #define CC_ITEM_SELECTION_DIALOG_HEADER
 
+/**
+ * @file ccItemSelectionDlg.h
+ *
+ * @brief Item selection dialog
+ *
+ * Generic dialog for selecting items from a list.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 #include <ui_itemSelectionDlg.h>
 
 // qCC_db
 #include <ccHObject.h>
 
-//! Dialog to select one or multiple items
+/**
+ * @brief Item selection dialog
+ *
+ * Select one or multiple items from a list.
+ */
 class ccItemSelectionDlg : public QDialog
     , public Ui::ItemSelectionDlg
 {
 	Q_OBJECT
 
   public: // static shortcuts
-	//! Static shortcut: unique selection mode
+	/**
+	 * @brief Select single entity
+	 * @param[in] entities Available entities
+	 * @param[in] defaultSelectedIndex Default selected index
+	 * @param[in] parent Parent widget
+	 * @param[in] label Dialog label
+	 * @return Selected index
+	 */
 	static int SelectEntity(const ccHObject::Container& entities,
 	                        int                         defaultSelectedIndex = 0,
 	                        QWidget*                    parent               = nullptr,
 	                        QString                     label                = QString());
 
-	//! Static shortcut: multi-selection mode
+	/**
+	 * @brief Select multiple entities
+	 * @param[in] entities Available entities
+	 * @param[out] indexes Selected indexes
+	 * @param[in] parent Parent widget
+	 * @param[in] label Dialog label
+	 * @return true if selection was made
+	 */
 	static bool SelectEntities(const ccHObject::Container& entities,
 	                           std::vector<int>&           indexes,
 	                           QWidget*                    parent = nullptr,
 	                           QString                     label  = QString());
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog
+	 * @param[in] multiSelectionEnabled Allow multiple selection
+	 * @param[in] parent Parent widget
+	 * @param[in] itemName Item name
+	 * @param[in] label Dialog label
+	 */
 	ccItemSelectionDlg(bool     multiSelectionEnabled,
 	                   QWidget* parent   = nullptr,
 	                   QString  itemName = "entities",
 	                   QString  label    = QString());
 
-	//! Sets the list of items
+	/**
+	 * @brief Set items
+	 * @param[in] items List of items
+	 * @param[in] defaultSelectedIndex Default selected index
+	 */
 	void setItems(const QStringList& items, int defaultSelectedIndex = 0);
 
-	//! Returns selected index (unique selection mode)
+	/**
+	 * @brief Get selected index (single selection)
+	 * @return Selected index
+	 */
 	int getSelectedIndex() const;
 
-	//! Returns selected indexes (multi-selection mode)
+	/**
+	 * @brief Get selected indexes (multi selection)
+	 * @param[out] indexes Selected indexes
+	 */
 	void getSelectedIndexes(std::vector<int>& indexes) const;
 };
 
