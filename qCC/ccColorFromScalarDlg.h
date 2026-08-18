@@ -21,6 +21,15 @@
 // Qt
 #include <QColor>
 
+/**
+ * @file ccColorFromScalarDlg.h
+ *
+ * @brief Color from scalar dialog
+ *
+ * Dialog for mapping scalar fields to colors.
+ *
+ * @author CloudCompare project
+ */
 // CC
 #include <ccColorScale.h>
 #include <ccHistogramWindow.h>
@@ -33,7 +42,11 @@ namespace Ui
 	class ColorFromScalarDialog;
 }
 
-//! Dialog to change the color levels
+/**
+ * @brief Color from scalar dialog
+ *
+ * Map scalar fields to colors.
+ */
 class ccColorFromScalarDlg : public QDialog
 {
 	Q_OBJECT
