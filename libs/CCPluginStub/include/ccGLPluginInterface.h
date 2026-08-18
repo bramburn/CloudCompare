@@ -20,11 +20,23 @@
 // CC_FBO_LIB
 #include "ccDefaultPluginInterface.h"
 
+/**
+ * @file ccGLPluginInterface.h
+ *
+ * @brief GL plugin interface
+ *
+ * GL Filter plugin interface.
+ */
+
 #include <ccGlFilter.h>
 
-//! GL Filter plugin interface
-/** Version 1.4
- **/
+/**
+ * @class ccGLPluginInterface
+ *
+ * @brief GL plugin interface
+ *
+ * GL Filter plugin interface (Version 1.4).
+ */
 class ccGLPluginInterface : public ccDefaultPluginInterface
 {
   public:
