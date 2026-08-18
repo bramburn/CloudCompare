@@ -24,21 +24,36 @@
 
 class ccHObject;
 
-//! RGB color based entity picking mechanism
+/**
+ * @file ccColorBasedEntityPicking.h
+ *
+ * @brief Color-based entity picking
+ *
+ * RGB color-based entity picking mechanism.
+ *
+ * @author CloudCompare project
+ */
+
+/**
+ * @brief Color-based entity picker
+ *
+ * Maps entities to RGB colors for picking.
+ */
 class ccColorBasedEntityPicking
 {
   public:
-	//! Unique ID to flag entities
-	/** With 24 bits RGB, we can uniquely color up to 2^24 (= 16 777 216) different entities **/
+	/// Unique ID type (24-bit RGB colors)
 	typedef uint32_t ID_TYPE;
 
-	//! Default constructor
+	/**
+	 * @brief Default constructor
+	 */
 	ccColorBasedEntityPicking()
 	    : lastID(0)
 	{
 	}
 
-	//! Reset the structure
+	/// Reset picker
 	void reset()
 	{
 		entities.clear();
@@ -46,7 +61,11 @@ class ccColorBasedEntityPicking
 		lastID = 0;
 	}
 
-	//! Converts a unique ID to a RGB color
+	/**
+	 * @brief Convert ID to color
+	 * @param[in] id Entity ID
+	 * @return RGB color
+	 */
 	static inline ccColor::Rgb IDToColor(ID_TYPE id)
 	{
 		assert(id < (1 << 24));
@@ -55,7 +74,11 @@ class ccColorBasedEntityPicking
 		                    static_cast<unsigned char>((id >> 16) & 255));
 	}
 
-	//! Converts a RGB color to a unique ID
+	/**
+	 * @brief Convert color to ID
+	 * @param[in] col RGB color
+	 * @return Entity ID
+	 */
 	static inline ID_TYPE ColorToID(const ccColor::Rgb& col)
 	{
 		return (static_cast<ID_TYPE>(col.r))
@@ -63,7 +86,11 @@ class ccColorBasedEntityPicking
 		       | (static_cast<ID_TYPE>(col.b) << 16);
 	}
 
-	//! Registeres an entity an returns its corresponding color
+	/**
+	 * @brief Register entity
+	 * @param[in] obj Entity to register
+	 * @return Assigned color
+	 */
 	ccColor::Rgb registerEntity(ccHObject* obj)
 	{
 		if (ids.contains(obj))
