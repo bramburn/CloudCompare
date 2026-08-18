@@ -24,13 +24,25 @@
 // qCC_db
 #include <ccColorScale.h>
 
+/**
+ * @file ccColorScaleSelector.h
+ *
+ * @brief Color scale selector
+ *
+ * Advanced editor for color scales.
+ */
+
 class QComboBox;
 class QToolButton;
 class ccColorScalesManager;
 
-//! Advanced editor for color scales
-/** Combo-box + shortcut to color scale editor
- **/
+/**
+ * @class ccColorScaleSelector
+ *
+ * @brief Color scale selector
+ *
+ * Advanced editor for color scales.
+ */
 class CCPLUGIN_LIB_API ccColorScaleSelector : public QFrame
 {
 	Q_OBJECT
