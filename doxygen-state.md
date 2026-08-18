@@ -4,10 +4,10 @@
 **Total files:** ~7964 source files (excluding build/.git/)
 **Started:** 2025-01-XX
 
-## Progress - 204 commits so far
+## Progress - 209 commits so far
 
-### qCC/ (Main application) - 70+ dialogs/tools documented
-**UI Dialogs:** ccAboutDialog, ccAlignDlg, ccApplyTransformationDlg, ccAskThreeDoubleValuesDlg, ccAskTwoDoubleValuesDlg, ccBoundingBoxEditorDlg, cc2.5DimEditor, ccCamSensorProjectionDlg, ccClippingBoxRepeatDlg, ccClippingBoxTool, ccColorFromScalarDlg, ccColorGradientDlg, ccColorLevelsDlg, ccComparisonDlg, ccComputeOctreeDlg, ccConsole, ccContourLinesGenerator, ccEntitySelectionDlg, ccEnvelopeExtractor, ccEnvelopeExtractorDlg, ccEntityAction, ccExportCoordToSFDlg, ccExtrudePolylineDlg, ccFilterByValueDlg, ccFitSphereDlg, ccGBLSensorProjectionDlg, ccHistogramWindow, ccCustomDoubleValidator, ccGeomFeaturesDlg, ccItemSelectionDlg, ccKrigingParamsDialog, ccInterpolationDlg, ccNoiseFilterDlg, ccNormalComputationDlg, ccLabelingDlg, ccOrderChoiceDlg, ccMatchScalesDlg, ccLibAlgorithms, ccInnerRect2DFinder, ccGraphicalSegmentationOptionsDlg, ccGraphicalSegmentationTool, ccRecentFiles, ccRegistrationDlg, ccRasterizeTool, ccPtsSamplingDlg, ccPrimitiveFactoryDlg, ccPrimitiveDistanceDlg, ccPointPropertiesDlg, ccPlaneEditDlg, ccScalarFieldArithmeticsDlg, ccScaleDlg, ccSectionExtractionTool, ccSectionExtractionSubDlg, ccOrthoSectionGenerationDlg, ccPointPairRegistrationDlg, ccScalarFieldFromColorDlg, ccScalarFieldsManagerDialog, ccRegistrationTools, ccSelectChildrenDlg, ccSensorComputeDistancesDlg, ccSmoothPolylineDialog, ccSORFilterDlg, ccStatisticalTestDlg, ccSubsamplingDlg, ccTracePolylineTool, ccUnrollDlg, ccVolumeCalcTool, ccUtils, ccSensorComputeScatteringAnglesDlg, ccSetSFsAsVec3Dialog, ccShortcutDialog, ccWaveformDialog, ccDBRoot, ccPropertiesTreeDelegate, matrixDisplayDlg, sfEditDlg, ccPluginInfoDlg
+### qCC/ (Main application) - 75+ dialogs/tools documented
+**UI Dialogs:** ccAboutDialog, ccAlignDlg, ccApplyTransformationDlg, ccAskThreeDoubleValuesDlg, ccAskTwoDoubleValuesDlg, ccBoundingBoxEditorDlg, cc2.5DimEditor, ccCamSensorProjectionDlg, ccClippingBoxRepeatDlg, ccClippingBoxTool, ccColorFromScalarDlg, ccColorGradientDlg, ccColorLevelsDlg, ccComparisonDlg, ccComputeOctreeDlg, ccConsole, ccContourLinesGenerator, ccEntitySelectionDlg, ccEnvelopeExtractor, ccEnvelopeExtractorDlg, ccEntityAction, ccExportCoordToSFDlg, ccExtrudePolylineDlg, ccFilterByValueDlg, ccFitSphereDlg, ccGBLSensorProjectionDlg, ccHistogramWindow, ccCustomDoubleValidator, ccGeomFeaturesDlg, ccItemSelectionDlg, ccKrigingParamsDialog, ccInterpolationDlg, ccNoiseFilterDlg, ccNormalComputationDlg, ccLabelingDlg, ccOrderChoiceDlg, ccMatchScalesDlg, ccLibAlgorithms, ccInnerRect2DFinder, ccGraphicalSegmentationOptionsDlg, ccGraphicalSegmentationTool, ccRecentFiles, ccRegistrationDlg, ccRasterizeTool, ccPtsSamplingDlg, ccPrimitiveFactoryDlg, ccPrimitiveDistanceDlg, ccPointPropertiesDlg, ccPlaneEditDlg, ccScalarFieldArithmeticsDlg, ccScaleDlg, ccSectionExtractionTool, ccSectionExtractionSubDlg, ccOrthoSectionGenerationDlg, ccPointPairRegistrationDlg, ccScalarFieldFromColorDlg, ccScalarFieldsManagerDialog, ccRegistrationTools, ccSelectChildrenDlg, ccSensorComputeDistancesDlg, ccSmoothPolylineDialog, ccSORFilterDlg, ccStatisticalTestDlg, ccSubsamplingDlg, ccTracePolylineTool, ccUnrollDlg, ccVolumeCalcTool, ccUtils, ccSensorComputeScatteringAnglesDlg, ccSetSFsAsVec3Dialog, ccShortcutDialog, ccWaveformDialog, ccDBRoot, ccPropertiesTreeDelegate, matrixDisplayDlg, sfEditDlg, ccPluginInfoDlg, ccPluginUIManager
 
 ### libs/ (Core libraries)
 **qCC_db (70+ headers):** ccObject, ccHObject, ccSerializableObject, ccDrawableObject, ccInteractor
@@ -48,8 +48,9 @@
 **Export:** qCC_io.h
 
 ### plugins/ (Plugin system)
-- [ ] plugins/core/
-- [ ] plugins/standard/
+**GL Plugins:** qEDL, qSSAO
+**IO Plugins:** qCoreIO (ObjFilter)
+- [ ] plugins/core/ (other plugins)
 
 ## Notes
 - Focus on user-facing, high-level files first
