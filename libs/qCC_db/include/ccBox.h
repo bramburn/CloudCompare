@@ -18,22 +18,34 @@
 #ifndef CC_BOX_PRIMITIVE_HEADER
 #define CC_BOX_PRIMITIVE_HEADER
 
+/**
+ * @file ccBox.h
+ *
+ * @brief Box primitive class
+ *
+ * Represents a 3D box primitive composed of 6 plane faces.
+ * Can be used for clipping, visualization bounding boxes, etc.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Local
 #include "ccGenericPrimitive.h"
 
-//! Box (primitive)
-/** 3D box primitive
- **/
+/**
+ * @brief Box primitive
+ *
+ * A 3D box composed of 6 plane faces.
+ */
 class QCC_DB_LIB_API ccBox : public ccGenericPrimitive
 {
   public:
-	//! Default constructor
-	/** Box dimensions axis along each dimension are defined in a single 3D vector.
-	    A box is in fact composed of 6 planes (ccPlane).
-	    \param dims box dimensions
-	    \param transMat optional 3D transformation (can be set afterwards with ccDrawableObject::setGLTransformation)
-	    \param name name
-	**/
+	/**
+	 * @brief Create a box
+	 * @param[in] dims Box dimensions (width, height, depth)
+	 * @param[in] transMat Optional transformation matrix
+	 * @param[in] name Box name
+	 */
 	ccBox(const CCVector3&  dims,
 	      const ccGLMatrix* transMat = nullptr,
 	      QString           name     = QString("Box"));
