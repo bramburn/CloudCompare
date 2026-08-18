@@ -18,25 +18,43 @@
 #ifndef CC_LAS_FWF_FILTER_HEADER
 #define CC_LAS_FWF_FILTER_HEADER
 
+/**
+ * @file LASFWFFilter.h
+ *
+ * @brief LAS FWF file filter
+ *
+ * I/O filter for LAS Full WaveForm files.
+ *
+ * @author CNRS / OSUR
+ */
+
 // qCC_io
 #include <FileIOFilter.h>
 
-//! LAS with Full WaveForm support (version >= 1.3) filter
+/**
+ * @brief LAS FWF file filter
+ *
+ * Read/write LAS files with Full WaveForm support.
+ */
 class LASFWFFilter : public FileIOFilter
 {
   public:
+	/// Constructor
 	LASFWFFilter();
 
-	// static accessors
+	/// Get file filter string
 	static inline QString GetFileFilter()
 	{
 		return "LAS 1.3 or 1.4 (*.las *.laz)";
 	}
 
-	// inherited from FileIOFilter
+	/// Load file
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/// Check if can save
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	
+	/// Save file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 
