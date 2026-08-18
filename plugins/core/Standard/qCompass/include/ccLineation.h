@@ -18,24 +18,48 @@
 #ifndef CC_LINEATION_HEADER
 #define CC_LINEATION_HEADER
 
+/**
+ * @file ccLineation.h
+ *
+ * @brief Lineation class
+ *
+ * Represents lineations measured with compass.
+ */
+
 #include "ccPointPair.h"
 
 #include <ccPointCloud.h>
 
-/*
-Class for representing/drawing lineations measured with qCompass.
-*/
+/**
+ * @class ccLineation
+ *
+ * @brief Lineation
+ *
+ * Represents/draws lineations measured with qCompass.
+ */
 class ccLineation : public ccPointPair
 {
 public:
-	//ctors
+	/**
+	 * @brief Create lineation
+	 * @param[in] associatedCloud Associated point cloud
+	 */
 	ccLineation(ccPointCloud* associatedCloud);
+	
+	/**
+	 * @brief Create from polyline
+	 * @param[in] obj Source polyline
+	 */
 	ccLineation(ccPolyline* obj);
 
-	//write metadata specific to this object
+	/// Update metadata
 	void updateMetadata() override;
 
-	//returns true if the given ccHObject is/was a ccLineation (as defined by the objects metadata)
+	/**
+	 * @brief Check if object is a lineation
+	 * @param[in] obj Object to check
+	 * @return True if lineation
+	 */
 	static bool isLineation(ccHObject* obj);
 };
 #endif
