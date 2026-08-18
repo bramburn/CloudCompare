@@ -16,54 +16,89 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccOptions.h
+ *
+ * @brief Application options/settings
+ *
+ * Global application settings persisted to disk.
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 #include "CCAppCommon.h"
 
 // Qt
 #include <QString>
 
-//! Main application options
+/**
+ * @brief Application options singleton
+ *
+ * Global settings for the application.
+ */
 class CCAPPCOMMON_LIB_API ccOptions
 {
   public: // parameters
-	//! Whether to display the normals by default or not
+	
+	/// Display normals by default
 	bool normalsDisplayedByDefault;
 
-	//! Use native load/save dialogs
+	/// Use native file dialogs
 	bool useNativeDialogs;
 
-	//! Should we ask for confirmation when user clicked to quit the app ?
+	/// Confirm on quit
 	bool confirmQuit;
 
-	//! Should we ask for confirmation when user clicked to delete selected entities ?
+	/// Confirm on delete
 	bool confirmDelete;
 
   public: // methods
-	//! Default constructor
+	/**
+	 * @brief Create options
+	 */
 	ccOptions();
 
-	//! Resets parameters to default values
+	/**
+	 * @brief Reset to defaults
+	 */
 	void reset();
 
-	//! Loads from persistent DB
+	/**
+	 * @brief Load from persistent settings
+	 */
 	void fromPersistentSettings();
 
-	//! Saves to persistent DB
+	/**
+	 * @brief Save to persistent settings
+	 */
 	void toPersistentSettings() const;
 
   public: // static methods
-	//! Returns the stored values of each parameter.
+	/**
+	 * @brief Get options instance
+	 * @return Options reference
+	 */
 	static const ccOptions& Instance()
 	{
 		return InstanceNonConst();
 	}
 
-	//! Release unique instance (if any)
+	/**
+	 * @brief Release instance
+	 */
 	static void ReleaseInstance();
 
-	//! Sets parameters
+	/**
+	 * @brief Set options
+	 * @param[in] options New options
+	 * @param[in] saveToPersistentSettings Save to disk
+	 */
 	static void Set(const ccOptions& options, bool saveToPersistentSettings = false);
 
   protected: // methods
-	//! Returns the stored values of each parameter.
+	/**
+	 * @brief Get mutable instance
+	 * @return Options reference
+	 */
 	static ccOptions& InstanceNonConst();
 };
