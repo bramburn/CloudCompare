@@ -19,6 +19,14 @@
 #ifndef CC_DB_HEADER
 #define CC_DB_HEADER
 
+/**
+ * @file qCC_db.h
+ *
+ * @brief qCC_db library export definitions
+ *
+ * Defines the QCC_DB_LIB_API macro for library export/import.
+ */
+
 #include <QtCore/QtGlobal>
 
 #if defined(QCC_DB_LIBRARY_BUILD)
