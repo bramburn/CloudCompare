@@ -252,30 +252,35 @@ The short rule: **don't modify `qCC/`, `ccViewer/`, `libs/qCC_db`, `libs/qCC_io`
 
 - `origin` = upstream `https://github.com/CloudCompare/CloudCompare.git` — read-only reference.
 - `bramburn` = our fork `https://github.com/bramburn/CloudCompare.git` — **default for push**, owns the CI.
-- **Workflow**: branch from local `master`, commit, push to `bramburn`, open a PR on GitHub from `bramburn/<branch>` → `CloudCompare/CloudCompare/<branch>` if upstreaming.
+- `git config remote.pushDefault bramburn` is set in this checkout, so `git push` (no args) lands on the fork. `git pull` (no args) still pulls from `origin/master` for upstream syncs.
+- **Workflow for fork-internal work**: commit on local `master`, `git push`. The fork's `master` is fast-forwarded from `origin/master` on every sync, so direct commits on local `master` are safe and routinely used (Doxygen pass, plugin dev, docs site updates).
+- **Workflow for upstreaming**: branch from local `master` (`git checkout -b fix/foo origin/master`), commit, `git push bramburn <branch>`, open a PR on GitHub from `bramburn/<branch>` → `CloudCompare/CloudCompare/<branch>`.
 - To sync local with upstream: `git pull --ff-only origin master` (the fork is fast-forwarded from origin in the same step).
-- To push to the fork: `git push bramburn <branch>:master` (or to a feature branch on the fork).
-- **Never push to `origin`** — we don't have upstream write access.
-- The fork's `master` is fast-forwarded from `origin/master` on every sync — feature work lives on its own branches, not on `master`.
+- To push to the fork: `git push` (defaults to `bramburn` via `remote.pushDefault`) or `git push bramburn master` explicitly.
+- **Never push to `origin`** — we don't have upstream write access. If you see `Permission to CloudCompare/CloudCompare.git denied`, it means `remote.pushDefault` got reset; fix it with `git config remote.pushDefault bramburn` and re-push.
+- The fork's `master` is fast-forwarded from `origin/master` on every sync — feature work for upstreaming lives on its own branches, not on `master`.
 
 ### Commit & PR style
 
-- This is a fork-tracking repo (we follow upstream `master`); **never push to `master` directly** — branch from it.
-- The upstream project uses squash-merge with conventional-style commit messages (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`).
+- For **fork-internal work** (Doxygen, plugin dev, docs site, build scripts): commit on local `master`, `git push`. The fork's `master` is fast-forwarded from `origin/master` on every sync, and `remote.pushDefault = bramburn` means `git push` lands on the fork. Local `master` is the right place for these.
+- For **upstreaming** (changes that should go into the upstream `CloudCompare/CloudCompare` repo): branch from local `master` (`git checkout -b fix/foo origin/master`), commit on the feature branch, `git push bramburn <branch>`, open a PR on GitHub from `bramburn/<branch>` → `CloudCompare/CloudCompare/<branch>`. **Never** push to `origin/master` directly — we don't have upstream write access.
+- The upstream project uses squash-merge with conventional-style commit messages (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`). The fork follows the same convention.
 - Submodules should remain at the SHAs that upstream tracks; if you need a newer submodule, PR upstream first.
 - `.pi/` is a local pi-coding-agent scratch dir — gitignored, don't commit it.
 
 ## CI
 
-GitHub Actions on `bramburn/CloudCompare` (the fork). Two workflows are relevant:
+GitHub Actions on `bramburn/CloudCompare` (the fork). Three workflows are relevant:
 
 - **`.github/workflows/windows.yml`** — our slim Windows build, mirrors the local plugin set (18 self-contained plugins, no LAS/E57/PCL). Triggers on push to `master`, on PR, and on `workflow_dispatch`. Uploads the `deployqt\` bundle as artifact `cloudcompare-windows-x64`. ~15 min cold, <5 min warm (ccache + build-dir cache).
 - **`.github/workflows/build.yml`** — inherited from upstream. Runs the **full** Windows + macOS + Ubuntu matrix with the upstream plugin set (LAS, E57, Photoscan, RDB, qFacets, qHoughNormals, qCloudLayers). Useful as a sanity check before upstreaming a PR.
+- **`.github/workflows/deploy-docs.yml`** — builds the Docusaurus site under `website/` and publishes to GitHub Pages on the `gh-pages` branch. Triggers on push to `master` when `website/**` or this workflow file change, plus `workflow_dispatch`. Uses the official `actions/deploy-pages@v4`. The site lands at <https://bramburn.github.io/CloudCompare/> within ~1-2 minutes.
 
-To trigger a Windows build manually: GitHub → Actions → "Windows Build" → Run workflow.
-To download the build artifact: GitHub → Actions → pick a run → scroll to Artifacts → `cloudcompare-windows-x64`.
+To trigger a build manually: GitHub → Actions → pick the workflow → "Run workflow".
+To download the Windows build artifact: GitHub → Actions → "Windows Build" → pick a run → scroll to Artifacts → `cloudcompare-windows-x64`.
+To see a docs deploy: GitHub → Actions → "Deploy docs site to GitHub Pages" → pick a run → check the environment link.
 
-**Workflow file edits**: when you change `.github/workflows/windows.yml`, also update this section and the build commands above.
+**Workflow file edits**: when you change any of these three workflow files, also update this section and the relevant build commands above.
 
 ## Security
 
