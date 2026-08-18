@@ -18,6 +18,18 @@
 #ifndef Q_CORK_PLUGIN_HEADER
 #define Q_CORK_PLUGIN_HEADER
 
+/**
+ * @file qCork.h
+ *
+ * @brief Mesh boolean operations plugin
+ *
+ * Mesh boolean operations (CSG) plugin using Cork library.
+ *
+ * Reference: https://github.com/cloudcompare/cork
+ *
+ * @author Daniel Girardeau-Montaut
+ */
+
 //Qt
 #include <QObject>
 
@@ -25,10 +37,13 @@
 
 class QAction;
 
-//! Mes Boolean Operations (CSG) plugin
-/** This plugin is based on Cork: https://github.com/gilbo/cork
-	Required implementation is CC's dedicated fork: https://github.com/cloudcompare/cork
-**/
+/**
+ * @class qCork
+ *
+ * @brief Mesh boolean operations plugin
+ *
+ * Perform boolean operations on meshes using the Cork library.
+ */
 class qCork : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
@@ -38,21 +53,23 @@ class qCork : public QObject, public ccStdPluginInterface
 
 public:
 
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qCork(QObject* parent = nullptr);
 
-	//inherited from ccStdPluginInterface
+	/// Handle new selection
 	virtual void onNewSelection(const ccHObject::Container& selectedEntities);
+	
+	/// Get plugin actions
 	virtual QList<QAction *> getActions() override;
 
 protected:
-
-	//! Starts main action
+	/// Execute mesh boolean operation
 	void doAction();
 
 protected:
-
-	//! Associated action
 	QAction* m_action;
 };
 
