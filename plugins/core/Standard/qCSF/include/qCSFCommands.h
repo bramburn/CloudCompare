@@ -31,6 +31,14 @@
 // A mex version for programming in Matlab is at File Exchange of Mathworks website:
 // http://www.mathworks.com/matlabcentral/fileexchange/58139-csf--ground-filtering-of-point-cloud-based-on-cloth-simulation
 
+/**
+ * @file qCSFCommands.h
+ *
+ * @brief CSF CLI commands
+ *
+ * Command line interface commands for CSF.
+ */
+
 //CloudCompare
 #include "ccCommandLineInterface.h"
 
@@ -38,7 +46,9 @@
 #include "ccCSFDlg.h"
 #include "CSF.h"
 
+/// CSF command identifier
 static const char COMMAND_CSF[] = "CSF"; 
+/// Scene type command
 static const char COMMAND_CSF_SCENE[] = "SCENES";
 static const char COMMAND_CSF_SCENE_SLOPE[] = "SLOPE";
 static const char COMMAND_CSF_SCENE_RELIEF[] = "RELIEF";
@@ -50,6 +60,13 @@ static const char COMMAND_CSF_CLASS_THRESHOLD[] = "CLASS_THRESHOLD";
 static const char COMMAND_CSF_EXPORT_GROUND[] = "EXPORT_GROUND";
 static const char COMMAND_CSF_EXPORT_OFFGROUND[] = "EXPORT_OFFGROUND";
 
+/**
+ * @struct CommandCSF
+ *
+ * @brief CSF command
+ *
+ * CLI command for Cloth Simulation Filter.
+ */
 struct CommandCSF : public ccCommandLineInterface::Command
 {
 	CommandCSF() : ccCommandLineInterface::Command("CSF", COMMAND_CSF) {}
