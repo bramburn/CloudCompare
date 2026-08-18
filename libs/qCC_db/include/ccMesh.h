@@ -21,6 +21,27 @@
 #include <PointProjectionTools.h>
 #include <SimpleTriangle.h>
 
+/**
+ * @file ccMesh.h
+ *
+ * @brief Triangular mesh class
+ *
+ * Represents a 3D triangular mesh composed of vertices (points)
+ * and triangular faces. Meshes can be created from point clouds
+ * using Delaunay triangulation or loaded from mesh file formats.
+ *
+ * @section Mesh Features
+ * - Triangle-based geometry
+ * - Per-vertex normals
+ * - Texture coordinates
+ * - Material properties
+ * - Per-triangle picking
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see ccGenericMesh for base class
+ * @see ccPointCloud for vertex storage
+ */
+
 // Local
 #include "ccGenericMesh.h"
 #include "ccPointCloud.h"
@@ -28,51 +49,77 @@
 class ccProgressDialog;
 class ccPolyline;
 
-//! Triangular mesh
+/**
+ * @brief Triangular mesh
+ *
+ * Represents a mesh made of triangular faces connecting vertices.
+ * Vertices are stored in a separate point cloud.
+ */
 class QCC_DB_LIB_API ccMesh : public ccGenericMesh
 {
   public:
-	//! Default ccMesh constructor
-	/** \param vertices the vertices cloud
-	    \param uniqueID unique ID (handle with care)
-	**/
+	/**
+	 * @brief Create a mesh with vertices
+	 * @param[in] vertices Point cloud containing mesh vertices
+	 * @param[in] uniqueID Optional unique ID
+	 */
 	explicit ccMesh(ccGenericPointCloud* vertices, unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
-	//! ccMesh constructor (from a CCCoreLib::GenericIndexedMesh)
-	/** The GenericIndexedMesh must be associated to a valid ccGenericPointCloud instance.
-	    \param giMesh		the mesh to 'copy'
-	    \param giVertices	associated vertices (can technically be different from the input mesh vertices, but should have at least as many points)
-	**/
+	/**
+	 * @brief Create mesh from CCCoreLib mesh
+	 * @param[in] giMesh Source mesh to copy
+	 * @param[in] giVertices Associated vertex cloud
+	 */
 	explicit ccMesh(CCCoreLib::GenericIndexedMesh* giMesh, ccGenericPointCloud* giVertices);
 
-	//! Default destructor
+	/**
+	 * @brief Destructor
+	 */
 	~ccMesh() override;
 
-	//! Returns class ID
+	/**
+	 * @brief Get the class type identifier
+	 * @return CC_TYPES::MESH
+	 */
 	inline CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::MESH;
 	}
 
-	//! Sets the associated vertices cloud
+	/**
+	 * @brief Set the associated vertex cloud
+	 * @param[in] cloud New vertex cloud
+	 * @param[in] autoRemoveFlags Remove per-point flags if cloud changes
+	 */
 	void setAssociatedCloud(ccGenericPointCloud* cloud, bool autoRemoveFlags = true);
 
-	//! Clones this entity
-	/** All the main features of the entity are cloned, except from the octree
-	    \param vertices vertices set to use (will be automatically - AND OPTIMALLY - cloned if nullptr)
-	    \param clonedMaterials for internal use
-	    \param clonedNormsTable for internal use
-	    \param cloneTexCoords for internal use
-	    \return a copy of this entity
-	**/
+	/**
+	 * @brief Clone the mesh
+	 * @param[in] vertices Vertex cloud (cloned if nullptr)
+	 * @param[in] clonedMaterials Internal use
+	 * @param[in] clonedNormsTable Internal use
+	 * @param[in] cloneTexCoords Internal use
+	 * @return New mesh clone
+	 */
 	ccMesh* cloneMesh(ccGenericPointCloud*    vertices         = nullptr,
 	                  ccMaterialSet*          clonedMaterials  = nullptr,
 	                  NormsIndexesTableType*  clonedNormsTable = nullptr,
 	                  TextureCoordsContainer* cloneTexCoords   = nullptr);
 
-	//! Creates a Delaunay 2.5D mesh from a point cloud
-	/** See CCCoreLib::PointProjectionTools::computeTriangulation.
-	 **/
+	/**
+	 * @brief Create Delaunay triangulation from point cloud
+	 *
+	 * Generates a 2.5D triangular mesh using Delaunay triangulation.
+	 *
+	 * @param[in] cloud Source point cloud
+	 * @param[in] type Triangulation algorithm type
+	 * @param[in] updateNormals Compute vertex normals
+	 * @param[in] maxEdgeLength Maximum triangle edge length (0 = unlimited)
+	 * @param[in] dim Projection dimension
+	 * @return New mesh, or nullptr on failure
+	 *
+	 * @see CCCoreLib::PointProjectionTools::computeTriangulation
+	 */
 	static ccMesh* Triangulate(ccGenericPointCloud*           cloud,
 	                           CCCoreLib::TRIANGULATION_TYPES type,
 	                           bool                           updateNormals = false,
