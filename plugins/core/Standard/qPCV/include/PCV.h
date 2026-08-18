@@ -25,12 +25,24 @@
 //Qt
 #include <QString>
 
+/**
+ * @file PCV.h
+ *
+ * @brief PCV algorithm
+ *
+ * Portion de Ciel Visible - Ambient Occlusion algorithm.
+ */
+
 //System
 #include <vector>
 
-//! PCV (Portion de Ciel Visible) algorithm
-/** "Ambient Occlusion" in english!
-**/
+/**
+ * @class PCV
+ *
+ * @brief PCV algorithm
+ *
+ * Portion de Ciel Visible - Ambient Occlusion algorithm.
+ */
 class PCV
 {
 public:
