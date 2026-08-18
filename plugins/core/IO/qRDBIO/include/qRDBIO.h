@@ -7,7 +7,7 @@
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
 // #  it under the terms of the GNU General Public License as published by  #
-// #  the Free Software Foundation; version 2 of the License.               #
+// #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
 // #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
@@ -18,9 +18,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qRDBIO.h
+ *
+ * @brief RDB I/O plugin
+ *
+ * Plugin for RIEGL RDB file I/O.
+ *
+ * @author RIEGL Laser Measurement Systems GmbH
+ */
+
 #include <ccIOPluginInterface.h>
 
-//! RDB file (3D cloud)
+/**
+ * @brief RDB I/O plugin
+ *
+ * Read RIEGL RDB files.
+ */
 class qRDBIO : public QObject
     , public ccIOPluginInterface
 {
@@ -30,10 +44,13 @@ class qRDBIO : public QObject
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qRDBIO" FILE "../info.json")
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create plugin
+	 * @param[in] parent Parent object
+	 */
 	explicit qRDBIO(QObject* parent = nullptr);
 
-	// inherited from ccIOPluginInterface
+	/// Get list of supported filters
 	FilterList getFilters() override;
 };
 
