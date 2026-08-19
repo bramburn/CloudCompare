@@ -1,3 +1,11 @@
+/**
+ * @file ccCommandLineParser.cpp
+ * @brief Command line parser implementation
+ * @details Implements the command line interface for CloudCompare batch processing,
+ * including command registration, parsing, and entity management.
+ * @see ccCommandLineParser
+ */
+
 #include "ccCommandLineParser.h"
 
 // Local
@@ -36,36 +44,65 @@ constexpr char COMMAND_SILENT_MODE[] = "SILENT";
 /*************** ccCommandLineParser *****************/
 /*****************************************************/
 
+/**
+ * @brief Prints verbose message to console
+ * @param message Message to print
+ */
 void ccCommandLineParser::printVerbose(const QString& message) const
 {
 	ccConsole::PrintVerbose(message);
 }
 
+/**
+ * @brief Prints message to console
+ * @param message Message to print
+ */
 void ccCommandLineParser::print(const QString& message) const
 {
 	ccConsole::Print(message);
 }
 
+/**
+ * @brief Prints highlighted message to console
+ * @param message Message to print
+ */
 void ccCommandLineParser::printHigh(const QString& message) const
 {
 	ccConsole::PrintHigh(message);
 }
 
+/**
+ * @brief Prints debug message to console
+ * @param message Message to print
+ */
 void ccCommandLineParser::printDebug(const QString& message) const
 {
 	ccConsole::PrintDebug(message);
 }
 
+/**
+ * @brief Prints warning message to console
+ * @param message Warning message to print
+ */
 void ccCommandLineParser::warning(const QString& message) const
 {
 	ccConsole::Warning(message);
 }
 
+/**
+ * @brief Prints debug warning message to console
+ * @param message Warning message to print
+ */
 void ccCommandLineParser::warningDebug(const QString& message) const
 {
 	ccConsole::WarningDebug(message);
 }
 
+/**
+ * @brief Prints error message and returns false
+ * @param message Error message to print
+ * @return false (for command chaining)
+ */
 bool ccCommandLineParser::error(const QString& message) const
 {
 	ccConsole::Error(message);
@@ -73,6 +110,11 @@ bool ccCommandLineParser::error(const QString& message) const
 	return false;
 }
 
+/**
+ * @brief Prints debug error message and returns false
+ * @param message Error message to print
+ * @return false (for command chaining)
+ */
 bool ccCommandLineParser::errorDebug(const QString& message) const
 {
 	ccConsole::ErrorDebug(message);
@@ -80,6 +122,12 @@ bool ccCommandLineParser::errorDebug(const QString& message) const
 	return false;
 }
 
+/**
+ * @brief Main entry point for command line parsing
+ * @param arguments Command line arguments
+ * @param plugins Plugin interfaces for command registration
+ * @return Exit code (EXIT_SUCCESS or EXIT_FAILURE)
+ */
 int ccCommandLineParser::Parse(const QStringList& arguments, ccPluginInterfaceList& plugins)
 {
 	if (arguments.size() < 2)
@@ -199,6 +247,9 @@ int ccCommandLineParser::Parse(const QStringList& arguments, ccPluginInterfaceLi
 	return result;
 }
 
+/**
+ * @brief Constructor
+ */
 ccCommandLineParser::ccCommandLineParser()
     : ccCommandLineInterface()
     , m_cloudExportFormat(BinFilter::GetFileFilter())
@@ -213,6 +264,9 @@ ccCommandLineParser::ccCommandLineParser()
 {
 }
 
+/**
+ * @brief Destructor
+ */
 ccCommandLineParser::~ccCommandLineParser()
 {
 	if (m_progressDialog)
@@ -222,6 +276,11 @@ ccCommandLineParser::~ccCommandLineParser()
 	}
 }
 
+/**
+ * @brief Registers a command with the parser
+ * @param command Command to register
+ * @return true if registration succeeded
+ */
 bool ccCommandLineParser::registerCommand(Command::Shared command)
 {
 	if (!command)
@@ -534,16 +593,30 @@ bool SelectEntities(ccCommandLineInterface::SelectEntitiesOptions options,
 	return true;
 }
 
+/**
+ * @brief Selects clouds based on options
+ * @param options Selection criteria
+ * @return true on success
+ */
 bool ccCommandLineParser::selectClouds(const SelectEntitiesOptions& options)
 {
 	return SelectEntities(options, *this, m_clouds, m_unselectedClouds, "cloud");
 }
 
+/**
+ * @brief Selects meshes based on options
+ * @param options Selection criteria
+ * @return true on success
+ */
 bool ccCommandLineParser::selectMeshes(const SelectEntitiesOptions& options)
 {
 	return SelectEntities(options, *this, m_meshes, m_unselectedMeshes, "mesh");
 }
 
+/**
+ * @brief Removes loaded clouds from memory
+ * @param onlyLast If true, remove only the last cloud
+ */
 void ccCommandLineParser::removeClouds(bool onlyLast /*=false*/)
 {
 	while (!m_clouds.empty())
@@ -556,6 +629,10 @@ void ccCommandLineParser::removeClouds(bool onlyLast /*=false*/)
 	}
 }
 
+/**
+ * @brief Removes loaded meshes from memory
+ * @param onlyLast If true, remove only the last mesh
+ */
 void ccCommandLineParser::removeMeshes(bool onlyLast /*=false*/)
 {
 	while (!m_meshes.empty())
@@ -575,6 +652,10 @@ static CCVector3d s_firstGlobalShift;
 //! First time the global shift is set/defined
 static bool s_globalShiftFirstTime = true;
 
+/**
+ * @brief Sets global shift handling options
+ * @param globalShiftOptions Global shift configuration
+ */
 void ccCommandLineParser::setGlobalShiftOptions(const GlobalShiftOptions& globalShiftOptions)
 {
 	// default Global Shift handling parameters
@@ -629,6 +710,13 @@ void ccCommandLineParser::updateInteralGlobalShift(const GlobalShiftOptions& glo
 	}
 }
 
+/**
+ * @brief Imports a file into the parser
+ * @param filename File to import
+ * @param globalShiftOptions Global shift handling for the file
+ * @param filter Optional file filter
+ * @return true if import succeeded
+ */
 bool ccCommandLineParser::importFile(QString filename, const GlobalShiftOptions& globalShiftOptions, FileIOFilter::Shared filter)
 {
 	printHigh(QString("Opening file: '%1'").arg(filename));
@@ -745,6 +833,13 @@ bool ccCommandLineParser::importFile(QString filename, const GlobalShiftOptions&
 	return true;
 }
 
+/**
+ * @brief Saves all loaded clouds
+ * @param suffix Optional suffix for output filenames
+ * @param allAtOnce Save all clouds to a single file
+ * @param allAtOnceFileName Output filename for single-file export
+ * @return true on success
+ */
 bool ccCommandLineParser::saveClouds(QString suffix /*=QString()*/, bool allAtOnce /*=false*/, const QString* allAtOnceFileName /*=nullptr*/)
 {
 	// all-at-once: all clouds in a single file
@@ -802,6 +897,13 @@ bool ccCommandLineParser::saveClouds(QString suffix /*=QString()*/, bool allAtOn
 	return true;
 }
 
+/**
+ * @brief Saves all loaded meshes
+ * @param suffix Optional suffix for output filenames
+ * @param allAtOnce Save all meshes to a single file
+ * @param allAtOnceFileName Output filename for single-file export
+ * @return true on success
+ */
 bool ccCommandLineParser::saveMeshes(QString suffix /*=QString()*/, bool allAtOnce /*=false*/, const QString* allAtOnceFileName /*=nullptr*/)
 {
 	// all-at-once: all meshes in a single file
@@ -857,6 +959,9 @@ bool ccCommandLineParser::saveMeshes(QString suffix /*=QString()*/, bool allAtOn
 	return true;
 }
 
+/**
+ * @brief Registers all built-in commands
+ */
 void ccCommandLineParser::registerBuiltInCommands()
 {
 	registerCommand(Command::Shared(new CommandDebugCmdLine));
@@ -955,12 +1060,20 @@ void ccCommandLineParser::registerBuiltInCommands()
 	registerCommand(Command::Shared(new CommandComputeScatteringAngles));
 }
 
+/**
+ * @brief Cleans up loaded entities
+ */
 void ccCommandLineParser::cleanup()
 {
 	removeClouds();
 	removeMeshes();
 }
 
+/**
+ * @brief Starts the command processing loop
+ * @param parent Parent dialog for progress
+ * @return EXIT_SUCCESS or EXIT_FAILURE
+ */
 int ccCommandLineParser::start(QDialog* parent /*=nullptr*/)
 {
 	if (m_arguments.empty())
