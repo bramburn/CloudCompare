@@ -25,6 +25,7 @@ pub mod scalar_field;
 pub mod registration;
 pub mod octree;
 pub mod io;
+pub mod coarse_align;
 
 pub use scalar_field::{
     mean, min_max, rms, std, valid_count, apply_offset, apply_scale,
@@ -33,4 +34,7 @@ pub use scalar_field::{
 pub use registration::{
     icp_iterate, IcprParamsRust as IcprParams, IcprResultRust as IcprResult,
     IcprErrorRust as IcprError,
+};
+pub use coarse_align::{
+    coarse_align, apply_transform_in_place, CoarseAlignResult,
 };

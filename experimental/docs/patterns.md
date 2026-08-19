@@ -402,6 +402,75 @@ swap landed 2026-08-19).
 
 ---
 
+## P15. PCA pre-alignment: degenerate on near-symmetric clouds
+
+**Pattern:** Coarse pre-alignment via principal component analysis
+(centroid + eigenvectors of the covariance matrix) gives ICP a
+much better starting point when the initial rotation is large
+(30°+). But PCA only works well when the cloud has **distinct
+eigenvalues** — i.e. it must be clearly elongated along one
+axis.
+
+For a symmetric cloud (e.g. the unit cube), all three
+eigenvalues are equal, and the principal axes are not unique.
+The SVD-based axis alignment can land on a 180° rotation
+around any axis. The coarse alignment gets you to RMS ≈
+the cloud's "radius" — i.e. useless.
+
+**Symptom of the bug:** the coarse-aligned cloud has RMS equal
+to the cloud's diagonal, even after running ICP for many
+iterations. The ICP loop is escaping the local minimum but
+slowly.
+
+**Fix:** use a deliberately asymmetric cloud (e.g. an "L" with
+arms of clearly different lengths). For real-world data
+(building scans, terrain), the cloud is usually asymmetric
+and PCA works fine. For ICP on point clouds that *could* be
+symmetric, prefer ICP variants that search over rotations
+(e.g. Go-ICP, 4-point congruent set) over pure PCA.
+
+**Source:** `cc-rust/src/coarse_align.rs` (test
+`coarse_align_handles_rotation` uses an L-shaped cloud; the
+`asymmetric-9` cloud used by ICP tests is too symmetric for
+PCA to recover rotations beyond ~5°).
+
+**Pattern:** When writing characterisation tests for any algorithm
+that uses SVD (rotation estimation, point-set registration,
+procrustes analysis), the input cloud must be **non-symmetric**
+along all three axes. Pure-cube corners are a classic trap.
+
+The 8 corners of the unit cube are at (0/1, 0/1, 0/1). Translating
+this cube by any axis-aligned vector (e.g. (1, 0, 0)) gives a
+matched-pair distribution where the cross-covariance H has a
+zero column/row in the direction of the translation:
+
+```text
+H = Σ (data_i − c_data)(model_i − c_model)^T
+  = diag(0, 2, 2)    for a +X translation of the cube
+```
+
+H is rank 2 in 3D. The SVD has infinitely many valid decompositions
+because the missing axis can take any sign. nalgebra picks one
+deterministically but it is, in general, a reflection rather than
+a rotation.
+
+**Fix:** add at least one off-axis point to break the symmetry. The
+"asymmetric-9" fixture in `experimental/fixtures/synthetic/asymmetric-9.toml`
+is the canonical example: 8 cube corners plus one point at
+(1.5, 0.3, 0.7). The off-axis point makes H full-rank, so the SVD
+returns a unique rotation.
+
+**Symptom of the bug:** ICP tests pass on paper (the test "asserts"
+the right answer) but the recovered transform has a +/−X flip that
+the assertion doesn't catch because the test only checks magnitude
+or RMS, not the sign of individual components.
+
+**Source:** `experimental/fixtures/synthetic/asymmetric-9.toml`,
+`cc-rust/src/registration.rs::tests::asymmetric_cloud` (D4, fixture
+swap landed 2026-08-19).
+
+---
+
 ## Adding a new pattern
 
 When you find a pattern that:
