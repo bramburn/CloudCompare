@@ -1,0 +1,4 @@
+# Build logs that the user may redirect to this folder, plus any scratch
+# state. Keep the wrapper .cmd files themselves tracked.
+*.log
+*.tmp
