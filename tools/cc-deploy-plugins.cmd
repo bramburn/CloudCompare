@@ -30,7 +30,7 @@ if not exist "%DST%" mkdir "%DST%" >nul
 REM xcopy /EXCLUDE needs one pattern per line
 > "%TMPEXCLUDE%" echo qReCapIO\
 
-xcopy /E /Y /I /EXCLUDE:%TMPEXCLUDE% "%SRC%\%DST:"=____%" "%DST%" >nul
+xcopy /E /Y /I /EXCLUDE:%TMPEXCLUDE% "%SRC%" "%DST%" >nul
 set "RC=%ERRORLEVEL%"
 del "%TMPEXCLUDE%" >nul 2>&1
 
