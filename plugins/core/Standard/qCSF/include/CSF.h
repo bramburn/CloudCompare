@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 //#######################################################################################
 //#                                                                                     #
@@ -34,6 +34,7 @@
  * Cloth simulation for ground filtering.
  */
 
+#include "CSFExport.h"
 #include "wlPointCloud.h"
 #include "Cloth.h"
 
@@ -46,7 +47,7 @@ class QWidget;
 class ccMesh;
 
 /**
- * @class CSF
+ * @CSF_LIB_API class CSF
  *
  * @brief Cloth Simulation Filter
  *

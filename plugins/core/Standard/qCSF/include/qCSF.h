@@ -1,5 +1,11 @@
 ﻿#pragma once
 
+#ifdef QCSF_PLUGIN_EXPORTS
+#  define QCSF_LIB_API Q_DECL_EXPORT
+#else
+#  define QCSF_LIB_API Q_DECL_IMPORT
+#endif
+
 //#######################################################################################
 //#                                                                                     #
 //#                              CLOUDCOMPARE PLUGIN: qCSF                              #

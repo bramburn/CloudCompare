@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 //#######################################################################################
 //#                                                                                     #
@@ -54,6 +54,7 @@
  */
 
 //local
+#include "CSFExport.h"
 #include "Vec3.h"
 #include "Particle.h"
 
@@ -63,7 +64,7 @@
 class ccMesh;
 
 /**
- * @class Cloth
+ * @CSF_LIB_API class Cloth
  *
  * @brief Cloth simulation
  *

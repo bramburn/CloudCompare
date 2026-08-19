@@ -1,6 +1,10 @@
-# AGENTS_REGISTRATION.md — Goal: Manual Dual-Screen Point-Cloud Registration
+# AGENTS_REGISTRATION.md — Goal: Manual Point-Cloud Registration
 
-**Feature goal:** port Faro Scene Classic-style **manual point-pair registration** into CloudCompare, with **two synchronized 3D viewports** (one per cloud) and **real-time transform preview**. This is a substantial architectural challenge — CloudCompare is a large C++/Qt codebase with a plugin architecture, and dual-screen manual registration touches UI, rendering, OpenGL, point-cloud manipulation, and geometric algorithms.
+**Feature goal:** port Faro Scene Classic-style **manual point-pair registration** into CloudCompare. **Current scope: single-viewport first (Phase 1); dual-synchronized viewports are Phase 2** (see §1c below and decision R15 from the decision matrix).
+
+> ⚠️ **Decision R15 locked (2026-08-19):** Dual-viewport registration is deferred to Phase 2. Phase 1 implements single-viewport point-pair picking → transform → apply (the existing CC `ccPointPairRegistrationDlg` workflow, but as a plugin). This is because qScanBrowser (bubble view) is the higher-priority Phase 1 item and the bidirectional picking in qScanBrowser is the real dual-viewport bridge.
+
+**Relationship with qScanBrowser:** qScanBrowser (PRD: `PRD/scan-view/PRD.md`) and qManualRegistration share the **bidirectional 3D ↔ bubble picking** infrastructure (F16 in qScanBrowser Phase 2). Once bubble view is working, those picked points feed into the registration workflow. Do not conflate the two — they are separate plugins with a shared dependency on the picking system.
 
 > **Status:** goal & design only. No plugin has been created yet. This document + [`docs/context/registration/`](docs/context/registration/) exist so that any AI agent (or human) picking up the task has the full picture without re-deriving it.
 
@@ -37,14 +41,25 @@ This document + the five context files pin down all four so the agent doesn't ha
 
 ## 2. Scope
 
+### Phase 1 — Single viewport (current)
+
 | In scope | Out of scope |
 |---|---|
-| A **new Standard plugin** that opens a dialog with two `ccGLWindow`s and lets the user pick ≥3 point pairs across them. | Replacing `ccPointPairRegistrationDlg` (single-window flow stays untouched). |
-| Live preview of the rigid transform applied to the "aligned" cloud in its viewport. | ICP refinement (use existing qPCL/ICP path for that). |
+| A **new Standard plugin** (`qManualRegistration`) that opens a dialog and lets the user pick ≥3 point pairs from one cloud against a reference. | Replacing `ccPointPairRegistrationDlg` (single-window flow stays untouched). |
+| Single viewport: pick points on the source cloud. | Dual synchronized viewports (Phase 2). |
+| Live preview of the rigid transform applied to the source cloud (via `setGLTransformation`). | ICP refinement (use existing qPCL/ICP path for that). |
 | Computing the rigid transform from pairs (Horn / Eigen Umeyama). | Scale-aware / non-rigid registration. |
-| Final commit via `applyRigidTransformation` + `m_app->addToDB`. | Undo stack (deferred to a later milestone — see §6). |
-| RMS error per-pair and overall. | Global-shift handling for very large coordinates (use the existing `ccGlobalShiftManager` plumbing — that's an implementation detail, not a feature). |
-| CLI mode (optional — register a `ccCommandLineInterface::Command` if we want). | Texture / colour-aware picking. |
+| Final commit via `applyRigidTransformation` + `m_app->addToDB`. | Undo stack (deferred — see §6). |
+| RMS error per-pair and overall. | Global-shift handling for very large coordinates. |
+| CLI mode (optional — `ccCommandLineInterface::Command`). | Texture / colour-aware picking. |
+
+### Phase 2 — Dual synchronized viewports (deferred)
+
+| In scope | Depends on |
+|---|---|
+| Two `ccGLWindow`s side-by-side (source left, reference right). | qScanBrowser Phase 2 (bidirectional picking). |
+| Cross-window picking: pick in source → pair with reference point. | `ccPickingHub` multi-listener pattern (§4). |
+| Synchronized camera: rotate one → other follows (optional polish). | Phase 1 stable. |
 
 ---
 

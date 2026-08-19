@@ -1,0 +1,28 @@
+********* Start testing of TestFileIOFilter *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestFileIOFilter::initTestCase()
+PASS   : TestFileIOFilter::getRealFilenameReturnsInput()
+PASS   : TestFileIOFilter::getRealFilenameSimplePath()
+PASS   : TestFileIOFilter::checkForSpecialCharsClean()
+PASS   : TestFileIOFilter::checkForSpecialCharsSpaces()
+PASS   : TestFileIOFilter::getFiltersReturnsNonEmptyAfterInit()
+PASS   : TestFileIOFilter::importFilterListReturnsNonEmpty()
+PASS   : TestFileIOFilter::findBestFilterForExtensionPly()
+PASS   : TestFileIOFilter::findBestFilterForExtensionAsc()
+PASS   : TestFileIOFilter::findBestFilterForExtensionBin()
+PASS   : TestFileIOFilter::findBestFilterForExtensionUnknown()
+PASS   : TestFileIOFilter::findBestFilterForExtensionIsCaseInsensitive()
+PASS   : TestFileIOFilter::getFilterValidPlyString()
+PASS   : TestFileIOFilter::getFilterUnknownString()
+PASS   : TestFileIOFilter::getFilterEmptyString()
+PASS   : TestFileIOFilter::registerAddsToList()
+PASS   : TestFileIOFilter::unregisterAllClearsList()
+PASS   : TestFileIOFilter::plyFilterDefaultExtension()
+PASS   : TestFileIOFilter::binFilterDefaultExtension()
+PASS   : TestFileIOFilter::plyFilterCanSaveCloud()
+PASS   : TestFileIOFilter::plyFilterCanSaveMesh()
+PASS   : TestFileIOFilter::plyFilterSupportsImport()
+PASS   : TestFileIOFilter::plyFilterSupportsExport()
+PASS   : TestFileIOFilter::cleanupTestCase()
+Totals: 24 passed, 0 failed, 0 skipped, 0 blacklisted, 4ms
+********* Finished testing of TestFileIOFilter *********

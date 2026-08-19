@@ -31,6 +31,9 @@
 #include <GenericProgressCallback.h>
 #include <DgmOctree.h>
 
+// Plugin
+#include "qM3C2.h"
+
 class ccGenericPointCloud;
 class NormsIndexesTableType;
 class ccScalarField;
@@ -44,7 +47,7 @@ class ccMainAppInterface;
  *
  * Normals computation related tools for M3C2.
  */
-class qM3C2Normals
+class QM3C2_LIB_API qM3C2Normals
 {
 public:
 
@@ -95,7 +98,7 @@ public:
  *
  * Generic tools for M3C2 processing.
  */
-class qM3C2Tools
+class QM3C2_LIB_API qM3C2Tools
 {
 public:
 

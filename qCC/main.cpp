@@ -63,6 +63,12 @@
 #include "ccPluginInterface.h"
 #include "ccPluginManager.h"
 
+// Sentry crash reporting
+#ifdef CC_USE_SENTRY
+#include <sentry.h>
+#include <QDir>
+#endif
+
 #ifdef USE_VLD
 #include <vld.h>
 #endif
@@ -134,6 +140,29 @@ int main(int argc, char** argv)
 		}
 	}
 #endif
+
+	// -------------------------------------------------------------------------
+	// Sentry crash reporting — must be initialised before anything else
+	// so that crashes during startup are captured.
+	// CC_USE_SENTRY is set by CMake when sentry-native is found.
+	// -------------------------------------------------------------------------
+#ifdef CC_USE_SENTRY
+	{
+		sentry_options_t* options = sentry_options_new();
+		sentry_options_set_dsn(options, CC_SENTRY_DSN);
+		// Store crash DB next to the executable so it travels with the install
+		sentry_options_set_database_path(options, QDir::toNativeSeparators(
+			QCoreApplication::applicationDirPath() + "/.sentry-native").toUtf8().constData());
+		sentry_options_set_release(options, CC_SENTRY_RELEASE);
+#ifdef _DEBUG
+		sentry_options_set_debug(options, 1);
+#endif
+		sentry_init(options);
+		// Ensure Sentry flushes any queued events on normal shutdown
+		QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
+		                [] { sentry_close(); });
+	}
+#endif // CC_USE_SENTRY
 
 	bool commandLine = IsCommandLine(argc, argv);
 

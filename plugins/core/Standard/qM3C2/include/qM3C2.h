@@ -18,6 +18,18 @@
 #ifndef Q_M3C2_PLUGIN_HEADER
 #define Q_M3C2_PLUGIN_HEADER
 
+//##########################################################################
+//#                                                                        #
+//#                       CLOUDCOMPARE PLUGIN: qM3C2                       #
+//#                                                                        #
+//##########################################################################
+
+#ifdef QM3C2_PLUGIN_EXPORTS
+#  define QM3C2_LIB_API Q_DECL_EXPORT
+#else
+#  define QM3C2_LIB_API Q_DECL_IMPORT
+#endif
+
 /**
  * @file qM3C2.h
  *

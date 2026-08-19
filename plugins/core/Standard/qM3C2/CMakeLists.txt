@@ -5,6 +5,8 @@ if( PLUGIN_STANDARD_QM3C2 )
 
 	AddPlugin( NAME ${PROJECT_NAME} )
 
+	target_compile_definitions( ${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_EXPORTS )
+
 	add_subdirectory( include )
 	add_subdirectory( src )
 	add_subdirectory( ui )

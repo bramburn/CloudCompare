@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 //#######################################################################################
 //#                                                                                     #
@@ -36,13 +36,14 @@
  * Particle for cloth simulation.
  */
 
+#include "CSFExport.h"
 #include <vector>
 #include <limits>
 
 #include "Vec3.h"
 
 /**
- * @class Particle
+ * @CSF_LIB_API class Particle
  *
  * @brief Particle
  *

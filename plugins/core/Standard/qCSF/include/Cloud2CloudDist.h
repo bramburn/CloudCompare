@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 //#######################################################################################
 //#                                                                                     #
@@ -36,11 +36,12 @@
  * Computing distance between cloth and point cloud.
  */
 
+#include "CSFExport.h"
 #include "Cloth.h"
 #include "wlPointCloud.h"
 
 /**
- * @class Cloud2CloudDist
+ * @CSF_LIB_API class Cloud2CloudDist
  *
  * @brief Cloud to cloud distance
  *

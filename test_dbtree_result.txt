@@ -1,0 +1,10 @@
+********* Start testing of TestDBTree *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestDBTree::initTestCase()
+PASS   : TestDBTree::testAddChildSuccess()
+PASS   : TestDBTree::testAddChildNullPtr()
+PASS   : TestDBTree::testAddChildDuplicateRejected()
+PASS   : TestDBTree::testAddChildInsertIndex()
+PASS   : TestDBTree::testGetChildBoundary()
+PASS   : TestDBTree::testGetParentNullForRoot()
+PASS   : TestDBTree::testGetChildIndex()

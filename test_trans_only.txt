@@ -1,0 +1,9 @@
+********* Start testing of TestRegistration *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestRegistration::initTestCase()
+QDEBUG : TestRegistration::testHornTranslationOnly(translate) Horn result: T=(-10,5,-3) expected=(10,-5,3) scale=1
+FAIL!  : TestRegistration::testHornTranslationOnly(translate) 'Vec3dEqual(trans.T, expectedT, 1e-3)' returned FALSE. ()
+C:\dev\CloudCompare\qCC\test\TestRegistration.cpp(441) : failure location
+PASS   : TestRegistration::cleanupTestCase()
+Totals: 2 passed, 1 failed, 0 skipped, 0 blacklisted, 1ms
+********* Finished testing of TestRegistration *********

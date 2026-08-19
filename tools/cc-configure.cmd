@@ -16,10 +16,10 @@ if "%1"=="--fresh" (
     if exist "%BUILD_DIR%\rules.ninja" del /f /q "%BUILD_DIR%\rules.ninja"
 )
 
-:: CMake 3.31.6 (from Visual Studio 2022 installation — avoids CMake 4.3 /external:I regression)
-:: IMPORTANT: Use this CMake, not a standalone CMake 4.3, to avoid the /external:I flag
-:: that strips MSVC standard library paths and causes "type_traits not found" errors.
-set "CMAKE_BIN=C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe"
+:: CMake 4.3.0 (pinned — hidapi submodule requires ≤4.3)
+:: Always use this explicit path: vcvars64.bat prepends its bundled CMake 3.31 to PATH,
+:: which shadows any standalone CMake and causes "unknown target" errors.
+set "CMAKE_BIN=C:\dev\tools\cmake-4.3.0\bin\cmake.exe"
 
 :: Qt 6.8.3
 set "QT_PREFIX=C:\dev\tools\Qt\6.8.3\msvc2022_64"
@@ -33,7 +33,10 @@ set "NINJA_BIN=C:\ProgramData\chocolatey\bin\ninja.exe"
 :: Disabled plugins (known missing external dependencies on this machine)
 ::   cc3DFin: Taskflow requires C++20 on a C++17 project
 ::   qCompass/qRANSAC_SD/qSRA: ccTrace namespace collision with Qt 6.8.3 internal headers
-set "PLUGIN_EXTRAS=-DPLUGIN_STANDARD_3DFIN=OFF -DPLUGIN_STANDARD_QCOMPASS=OFF -DPLUGIN_STANDARD_QRANSAC_SD=OFF -DPLUGIN_STANDARD_QSRA=OFF"
+:: Enabled for testing (T1-D/E):
+::   qM3C2: M3C2 statistics and normals tools
+::   qCSF: Cloth Simulation Filter (Vec3, Particle, Cloth, Cloud2CloudDist)
+set "PLUGIN_EXTRAS=-DPLUGIN_STANDARD_3DFIN=OFF -DPLUGIN_STANDARD_QCOMPASS=OFF -DPLUGIN_STANDARD_QRANSAC_SD=OFF -DPLUGIN_STANDARD_QSRA=OFF -DPLUGIN_STANDARD_QM3C2=ON -DPLUGIN_STANDARD_QCSF=ON"
 
 echo Configuring CloudCompare (Ninja generator)...
 echo   CMake:  %CMAKE_BIN%
@@ -45,6 +48,7 @@ echo   Ninja:  %NINJA_BIN%
     -DCMAKE_PREFIX_PATH="%QT_PREFIX%" ^
     -DCMAKE_TOOLCHAIN_FILE="%VCPKG_TOOLCHAIN%" ^
     -DCMAKE_MAKE_PROGRAM="%NINJA_BIN%" ^
+    -DBUILD_TESTING=ON ^
     %PLUGIN_EXTRAS%
 
 if errorlevel 1 (

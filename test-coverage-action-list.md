@@ -22,13 +22,24 @@ Each entry has:
 
 ---
 
-## Current Baseline
+## Current Baseline — T1 COMPLETE ✅
 
 ```
-Existing tests (BUILD_TESTING=ON):
-  qCC/test/TestArgumentParser.cpp       → ~60 test cases, Qt Test ✅
-  libs/qCC_io/test/TestShpFilter.*    → ShpFilter round-trips, Qt Test ✅
+T1 (Tier 1) — all 8 binaries passing, 226 tests, 0 failed:
+  qCC/test/TestArgumentParser.cpp       →  60 tests ✅
+  qCC/test/TestFileIOFilter.cpp        →  24 tests ✅
+  qCC/test/TestPointCloud.cpp           →  23 tests ✅
+  qCC/test/TestShiftedObject.cpp        →  20 tests ✅
+  qCC/test/TestRegistration.cpp         →  31 tests ✅
+  qCC/test/TestM3C2.cpp                →  15 tests ✅
+  plugins/core/Standard/qCSF/TestCSF.cpp →  16 tests ✅
+  qCC/test/TestDBTree.cpp              →  37 tests ✅
+
+Previous baseline:
+  libs/qCC_io/test/TestShpFilter.*    → ShpFilter round-trips ✅
 ```
+
+**BUILD_TESTING=ON** (flipped in `tools/cc-configure.cmd`)
 
 ---
 
@@ -78,11 +89,23 @@ All 9 methods are unit-testable or round-trip-testable:
 
 ---
 
-### T1-C ⭐ NEW: Registration Math — `TestRegistration`
-**File:** `qCC/test/TestRegistration.cpp` (new binary)
+### T1-C ⭐ NEW: Registration Math — `TestRegistration` ✅ DONE (2026-08-19)
+**File:** `qCC/test/TestRegistration.cpp` (new binary, 31 tests)
 **Priority:** 1 | **Difficulty:** medium | **Type:** unit
 **Evidence:** `libs/qCC_db/extern/CCCoreLib/src/RegistrationTools.cpp`
 `libs/qCC_db/extern/CCCoreLib/include/GeometricalAnalysisTools.h:84`
+
+All 31 tests pass:
+- Horn identity, known-rotation, fixed/free scale, translation-only
+- Centroid (gravity center) of unit cube, single point, two points
+- Cross-covariance symmetry and normalization (√N factor)
+- Quaternion ↔ rotation matrix roundtrip (identity, 90°Z, 180°X)
+- SquareMatrix: identity, multiplication, inverse, determinant, transpose, trace
+- ScaledTransformation: apply, identity, scale-only
+
+> ⚠️ Note: `FindAbsoluteOrientation` returns `T = centroid_P - centroid_Q`
+> (maps REFERENCE → MOVING), not the reverse. Horn scale formula:
+> `s = RMS(aligned) / sqrt(RMS(ref))`, not `s_new / s_ref`.
 
 | Test | Method | Evidence |
 |---|---|---|
@@ -99,33 +122,31 @@ All 9 methods are unit-testable or round-trip-testable:
 
 ---
 
-### T1-D ⭐ NEW: qM3C2 — `TestM3C2`
-**File:** `plugins/core/Standard/qM3C2/test/TestM3C2.cpp` (new binary)
+### T1-D ⭐ NEW: qM3C2 — `TestM3C2` ✅ DONE (2026-08-19)
+**File:** `qCC/test/TestM3C2.cpp` (new binary, 15 tests)
 **Priority:** 1 | **Difficulty:** medium | **Type:** unit
 **Evidence:**
 - `qM3C2Tools.cpp:494` — `Median`: `midpoint average`, 3 lines
 - `qM3C2Tools.cpp:518` — `Interquartile`: `Q3−Q1`
 - `qM3C2Tools.cpp:533` — `ComputeStatistics`: mean/median/IQR
-- `qM3C2Process.cpp:190` — `ComputeM3C2DistForPoint`
-- `qM3C2Normals.cpp` — `ComputeCorePointsNormals`, `MakeNormalsHorizontal`
+- `qM3C2Tools.cpp:471` — `MakeNormalsHorizontal`: N.z=0 then renormalise
 
-**Best gems (trivial 5-20 line pure functions):**
+All 15 tests pass:
+- `testComputeMeanStdDev`: population stddev of squared-dist values (uses sqrt(E[X²]-E[X]²))
+- `testComputeMedianIQR`: midpoint averaging, Q1+Q3/2 formula
+- `testComputeStatisticsEmpty`: NaN for mean, 0 for stddev
+- `testMakeNormalsHorizontal`: compressed normals → zero Z → renormalise → re-compress
 
-| Test | Method | Lines | Reason |
-|---|---|---|---|
-| `testMedianOdd` | `Median()` | ~3 | Odd-count → middle element |
-| `testMedianEven` | `Median()` | ~3 | Even-count → midpoint avg |
-| `testInterquartile` | `Interquartile()` | ~3 | Q3-Q1 from sorted set |
-| `testComputeStatistics` | `ComputeStatistics()` | ~15 | mean/median/stddev/IQR |
-| `testMakeNormalsHorizontal` | `MakeNormalsHorizontal()` | ~3 | N.z=0 then normalize |
-| `testCorePointsNormals` | `ComputeCorePointsNormals()` | ~10 | PCA per core point |
-
-> **Fixture strategy:** Construct `wl::PointCloud` structs directly (no GUI needed), or use `ccPointCloud` with known synthetic geometry.
+**Key implementation notes:**
+- `ComputeStatistics(stddev)` computes population σ of `squareDistd` values, NOT stddev of d values
+- `MakeNormalsHorizontal`: Z≈0 after quantization (tolerance `1e-2`, not `1e-9`)
+- `reserveTheNormsTable()` sets capacity, not size → use `addNormIndex()` not `addNormAtIndex()`
+- Plugin export macro (`QM3C2_LIB_API`) added to `qM3C2.h` + `qM3C2Tools.h` (was missing)
 
 ---
 
-### T1-E ⭐ NEW: qCSF — `TestCSF`
-**File:** `plugins/core/Standard/qCSF/test/TestCSF.cpp` (new binary)
+### T1-E ⭐ NEW: qCSF — `TestCSF` ✅ DONE (2026-08-19)
+**File:** `plugins/core/Standard/qCSF/TestCSF.cpp` (16 tests)
 **Priority:** 1 | **Difficulty:** medium | **Type:** unit
 **Evidence:**
 - `CSF.cpp:61` — `CSF::Apply` — cloth sim loop
@@ -149,21 +170,30 @@ All 9 methods are unit-testable or round-trip-testable:
 
 ---
 
-### T1-F ⭐ NEW: ccHObject Tree — `TestDBTree`
-**File:** `qCC/test/TestDBTree.cpp` (new binary)
+### T1-F ⭐ NEW: ccHObject Tree — `TestDBTree` ✅ DONE (2026-08-19)
+**File:** `qCC/test/TestDBTree.cpp` (37 tests)
 **Priority:** 1 | **Difficulty:** medium | **Type:** unit
-**Evidence:** `libs/qCC_db/src/ccHObject.cpp`
+**Evidence:** `libs/qCC_db/src/ccHObject.cpp` lines 367–1020
 
-| Test | Method | Difficulty |
+All 37 tests pass — covering the full child-management API:
+
+| Test | Method | Key findings |
 |---|---|---|
-| `testAddChild` | `addChild()` | easy |
-| `testRemoveChild` | `removeChild()` | easy |
-| `testFindChildByName` | `findChildByName()` | easy |
-| `testFindChildByType` | `findChildByType()` | easy |
-| `testClone` | `clone()` | medium |
-| `testBoundingBox` | `getBB()` | easy |
-| `testResize` | ccPointCloud `resize()` | easy |
-| `testGlobalShift` | `setGlobalShift()` | easy |
+| `testAddChild*` | `addChild()` | null rejected, duplicate rejected, insertIndex works |
+| `testRemoveChild*` | `removeChild()` | DP_NONE detaches, DP_PARENT_OF_OTHER deletes |
+| `testFilterChildren*` | `filterChildren()` | recursive/non-recursive, strict vs kindOf |
+| `testFind*` | `find()` | self, direct, deep descendant, not-found |
+| `testTransferChild` | `transferChild()` | child correctly moved; DP_PARENT_OF_OTHER leaves orphaned DP_NOTIFY_OTHER_ON_UPDATE flag (known ccHObject bug) |
+| `testSwapChildren` | `swapChildren()` | positional swap |
+| `testGetChildCountRecursive` | `getChildCountRecursive()` | flat count of entire subtree |
+| `testIsAncestorOf` | `isAncestorOf()` | true/false cases |
+| `testGetBB_recursive` | `getBB_recursive()` | aggregates children's BBs |
+| `testAddDependency` | `addDependency()` | bitwise flag check needed (not exact equality) |
+| `testNewByType` | `ccHObject::New()` | factory method for POINT_CLOUD and invalid type |
+
+**Known ccHObject bugs discovered by tests:**
+- `transferChild` with `DP_PARENT_OF_OTHER`: `removeDependencyFlag(DP_PARENT_OF_OTHER)` clears bit 3 (`DP_DELETE_OTHER`) but leaves bit 4 (`DP_NOTIFY_OTHER_ON_UPDATE`), causing `addDependency` to early-return. Test uses `DP_PARENT_OF_OTHER` and verifies child-pointer transfer works despite this.
+- `removeAllChildren` / `removeAllChildren` with `DP_PARENT_OF_OTHER`: child dtor → `onDeletionOf` → accesses parent's `m_children` mid-destruction (use-after-free). Use `DP_NONE` for children in tests involving `removeAllChildren`.
 
 ---
 
@@ -782,7 +812,7 @@ add_test(NAME TestM3C2 COMMAND TestM3C2)
 ```
 Week 1: T1-A (extend existing) + T1-B (FileIOFilter) + T1-G (PointCloud)
 Week 2: T1-C (Registration) + T1-D (M3C2) + T1-E (CSF)
-Week 3: T1-F (ccHObject) + T1-H (ShiftedObject) + T2-A (ScalarField)
+Week 3: T1-F (ccHObject) + T1-H (ShiftedObject) + T2-A (ScalarField) ✅
 Week 4: T2-B (GLMatrix) + T2-C (AsciiFilter) + T2-D (GlobalShift)
 Week 5: T2-E (BinFilter) + T2-F (Material) + T2-G (Histogram)
 Week 6: T3-A (MPlane) + T3-B (PCV) + T3-C (VoxFall) + T3-D (Canupo)

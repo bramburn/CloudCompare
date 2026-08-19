@@ -1,0 +1,19 @@
+********* Start testing of TestM3C2 *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestM3C2::initTestCase()
+PASS   : TestM3C2::testComputeMeanStdDev(simple_3pts)
+PASS   : TestM3C2::testComputeMeanStdDev(simple_5pts)
+PASS   : TestM3C2::testComputeMeanStdDev(single_point)
+PASS   : TestM3C2::testComputeMeanStdDev(all_zero)
+PASS   : TestM3C2::testComputeMedianIQR(odd_3pts)
+PASS   : TestM3C2::testComputeMedianIQR(even_4pts)
+PASS   : TestM3C2::testComputeMedianIQR(odd_5pts)
+PASS   : TestM3C2::testComputeMedianIQR(single_point)
+PASS   : TestM3C2::testComputeStatisticsEmpty()
+PASS   : TestM3C2::testMakeNormalsHorizontal(already_horizontal)
+PASS   : TestM3C2::testMakeNormalsHorizontal(tilted_111)
+PASS   : TestM3C2::testMakeNormalsHorizontal(negative_tilted)
+PASS   : TestM3C2::testMakeNormalsHorizontalMultiple()
+PASS   : TestM3C2::cleanupTestCase()
+Totals: 15 passed, 0 failed, 0 skipped, 0 blacklisted, 120ms
+********* Finished testing of TestM3C2 *********

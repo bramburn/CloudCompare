@@ -1,0 +1,19 @@
+********* Start testing of TestM3C2 *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestM3C2::initTestCase()
+FAIL!  : TestM3C2::testComputeMeanStdDev(simple_3pts) 'std::abs(stddev - expectedStdDev) < 1e-9' returned FALSE. (stddev=0.816497 expected=1)
+C:\dev\CloudCompare\qCC\test\TestM3C2.cpp(78) : failure location
+FAIL!  : TestM3C2::testComputeMeanStdDev(simple_5pts) 'std::abs(stddev - expectedStdDev) < 1e-9' returned FALSE. (stddev=1.41421 expected=1.58114)
+C:\dev\CloudCompare\qCC\test\TestM3C2.cpp(78) : failure location
+PASS   : TestM3C2::testComputeMeanStdDev(single_point)
+PASS   : TestM3C2::testComputeMeanStdDev(all_zero)
+PASS   : TestM3C2::testComputeMedianIQR(odd_3pts)
+PASS   : TestM3C2::testComputeMedianIQR(even_4pts)
+FAIL!  : TestM3C2::testComputeMedianIQR(odd_5pts) 'std::abs(iqr - expectedIQR) < 1e-9' returned FALSE. (IQR=2 expected=3)
+C:\dev\CloudCompare\qCC\test\TestM3C2.cpp(126) : failure location
+PASS   : TestM3C2::testComputeMedianIQR(single_point)
+PASS   : TestM3C2::testComputeStatisticsEmpty()
+FAIL!  : TestM3C2::testMakeNormalsHorizontal() Caught unhandled exception
+C:\Users\qt\work\qt\qtbase\src\testlib\qtestcase.cpp(1982) : failure location
+Totals: 7 passed, 4 failed, 0 skipped, 0 blacklisted, 2ms
+********* Finished testing of TestM3C2 *********

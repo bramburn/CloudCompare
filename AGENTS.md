@@ -33,6 +33,7 @@ Goal-level docs (`AGENTS_*.md` at the repo root) describe **in-flight projects**
 
 | Goal | Doc | Status | Subsystems touched |
 |---|---|---|---|
+| **Sentry error monitoring** (crash reporting + event capture) | [`qCC/main.cpp`](qCC/main.cpp) + [`qCC/test/TestSentry.cpp`](qCC/test/TestSentry.cpp) | **Done.** Sentry SDK integrated, app starts, TestSentry passes. | Sentry DSN `https://ac001120bfa96ba91d2ed97c62e632ad@o494653.ingest.us.sentry.io/4511938553053184`, release `cloudcompare@2.14.0`. `sentry_init()` at top of `main()` before anything else. `sentry_close()` on `QCoreApplication::aboutToQuit`. CMake POST_BUILD in `qCC/CMakeLists.txt` copies sentry.dll + all 8 CC core DLLs into `deployqt/`. `CC_USE_SENTRY=ON` by default; disable with `-DCC_USE_SENTRY=OFF`. |
 | **Manual dual-screen point-cloud registration** (Faro Scene Classic-style: two synchronized 3D viewports, manual point-pair picking, live transform preview) | [`AGENTS_REGISTRATION.md`](AGENTS_REGISTRATION.md) + [`docs/context/registration/`](docs/context/registration/) | Goal & design only — no plugin yet. Planned as a Standard plugin at `plugins/core/Standard/qManualRegistration/`. | Plugin system (`CCPluginAPI`, `ccMainAppInterface`), GL viewport (`qCC_glWindow`, `ccGLWindow`), picking (`ccPickingHub`, `ccPickingListener`), registration math (`CCCoreLib::HornRegistrationTools` + Umeyama), transform application (`ccDrawableObject::setGLTransformation` vs `ccPointCloud::applyRigidTransformation`). |
 | **Spherical scan browser** (Google Street View for ReCap RCS/RCP: 360° spherical panorama view from each registered scan station, station-jump navigation, click-to-measure) | [`PRD/scan-view/`](PRD/scan-view/) | PRD complete, implementation not started. Planned as a Standard plugin at `plugins/core/Standard/qScanBrowser/`. Phase 1 = colour panorama skybox + bubble-view drag navigation. Phase 2 = range-image depth + measurements. Phase 3 = correspondence view + annotations. | ReCap SDK (`RCStructuredScan`, `RCSphericalModel`, `getColor`, `getRange`), `ccOverlayDialog`, `ccGLWindowInterface::bubbleViewMode`, `ccGBLSensor` spherical depth map, OpenGL sphere texture rendering. |
 
@@ -81,7 +82,14 @@ cmake --build C:\dev\CloudCompare\build --config Release --parallel 16
 & 'C:\dev\CloudCompare\build\qCC\deployqt\CloudCompare.exe'
 ```
 
-The `deployqt\` folder is a fully self-contained ~70 MB bundle: `windeployqt` copied every Qt6 runtime DLL and every enabled plugin DLL alongside the `.exe`. No PATH, no registry, no system install. Copy the folder to any other Windows x64 machine and it runs.
+The `deployqt\` folder is a fully self-contained ~70 MB bundle. After a build, it contains:
+- `CloudCompare.exe`
+- **CC core DLLs** (CCCoreLib, CCAppCommon, CCPluginAPI, QCC_DB_LIB, QCC_IO_LIB, QCC_GL_LIB, CC_FBO_LIB, hidapi) — copied automatically by CMake POST_BUILD in `qCC/CMakeLists.txt`
+- **sentry.dll** (Sentry crash reporter) — also copied by that POST_BUILD
+- **Qt runtime DLLs** (Qt6Core, Qt6Gui, Qt6Widgets, etc.) — copied by `windeployqt`
+- **Qt plugins** (platforms/, imageformats/, styles/, etc.) — copied by `windeployqt`
+
+No PATH, no registry, no system install. Copy the folder to any other Windows x64 machine and it runs. **Do not run the .exe from `build/qCC/CloudCompare.exe`** — that path has no DLLs alongside it; always run from `build/qCC/deployqt/CloudCompare.exe`.
 
 **Iteration loop:**
 
@@ -414,7 +422,7 @@ To see a docs deploy: GitHub → Actions → "Deploy docs site to GitHub Pages" 
 - [`BUILD-LOCAL.md`](BUILD-LOCAL.md) — this machine's full build narrative (issues hit, exact paths, every workaround).
 - [`test-coverage-action-list.md`](test-coverage-action-list.md) — T1–T4 Qt Test roadmap with evidence references and CMake wiring patterns.
 - `cmake/CMakeExternalLibs.cmake` — Qt 6 `find_package()` + component list + Windows SDK auto-detect (`CC_WINDOWS_SDK_LIB_DIR`).
-- `cmake/DeployQt.cmake` — windeployqt invocation that produces the `deployqt\` bundle.
+- `cmake/DeployQt.cmake` — windeployqt invocation that produces the `deployqt\` bundle. **Note:** DeployQt only copies Qt runtime DLLs. CC core DLLs (CCCoreLib, CCAppCommon, etc.) and sentry.dll are copied separately by CMake POST_BUILD in `qCC/CMakeLists.txt` — this is intentional and no separate deploy script is needed for the main app.
 - `qCC/test/CMakeLists.txt` — test binary wiring; if you add a new test target, copy the existing `add_executable` + `target_link_libraries` + `add_test` pattern.
 - `plugins/core/CMakeLists.txt` — plugin enumeration; add new plugin subdirs here.
 

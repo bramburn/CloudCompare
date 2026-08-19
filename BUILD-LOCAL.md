@@ -12,9 +12,9 @@ This file is local-only — not part of the upstream repo. (The repo's own `BUIL
 |---|---|
 | Location | `C:\dev\CloudCompare\` |
 | Branch | `master` |
-| HEAD | `da62b8e0155cee4237335476477cb1088c54c2f3` |
-| Commit | "Make the ASCII open dialog strings translatable (#2365)" — 2026-08-19 01:50:37 +0900 |
-| Synced | `git fetch` confirms 0 commits behind `origin/master` (fresh `--recursive` clone) |
+| HEAD | `5a63db7d` |
+| Commit | "build: fix RC compilation (cmcldeps.exe rc.exe flag issue) + clean SDK path propagation" — 2026-08-19 |
+| Synced | Fork's `master` is fast-forwarded from `origin/master`; feature branches used for upstream PRs. |
 | Submodules | All 17 submodules checked out |
 
 To re-sync:
@@ -83,30 +83,30 @@ $env:Path = 'C:\dev\tools\Qt\6.8.3\msvc2022_64\bin;' + $env:Path
 
 ## 4. How to re-configure and rebuild
 
-Two wrapper scripts live at `C:\dev\tools\`:
+Build scripts live at `C:\dev\CloudCompare\tools\`:
 
 | Script | What it does |
 |---|---|
-| `C:\dev\tools\cc-configure.cmd` | Calls `vcvars64.bat`, then `cmake -G Ninja --fresh …` with the plugin set below. |
-| `C:\dev\tools\cc-build.cmd` | Calls `vcvars64.bat`, then `cmake --build C:\dev\CloudCompare\build --config Release --parallel 16`. |
+| `tools\cc-configure.cmd` | From a VS 2022 x64 native prompt: calls `cmake -G Ninja …` with the plugin set below. |
+| `tools\cc-build.py` | Runs Ninja directly (`ninja -C build -j16`). Handles `--clean` to wipe CMakeFiles first. |
 
-To re-configure (e.g. after adding/removing plugins):
+**Recommended workflow (from PowerShell):**
 ```powershell
-& C:\dev\tools\cc-configure.cmd
+# Configure (re-run when changing plugins)
+python C:\dev\CloudCompare\tools\cc-configure.py
+
+# Build (incremental — ~30 s for source-only changes)
+python C:\dev\CloudCompare\tools\cc-build.py
+
+# Clean + rebuild (forces full recompile)
+python C:\dev\CloudCompare\tools\cc-build.py --clean
 ```
 
-To rebuild (incremental):
+**Or from an x64 Native Tools Command Prompt for VS 2022:**
 ```powershell
-& C:\dev\tools\cc-build.cmd
-```
-
-Or manually from an *x64 Native Tools Command Prompt for VS 2022*:
-```powershell
-cmake -S C:\dev\CloudCompare -B C:\dev\CloudCompare\build -G Ninja --fresh `
-  -DCMAKE_BUILD_TYPE=Release `
-  -DCMAKE_PREFIX_PATH=C:/dev/tools/Qt/6.8.3/msvc2022_64 `
-  -DCMAKE_MAKE_PROGRAM=C:/ProgramData/chocolatey/bin/ninja.exe
-cmake --build C:\dev\CloudCompare\build --config Release --parallel 16
+cd C:\dev\CloudCompare
+tools\cc-configure.cmd
+tools\cc-build.cmd
 ```
 
 ---
@@ -188,9 +188,9 @@ C:\dev\vcpkg\vcpkg install libigl cgal:x64-windows   # → enables qMeshBoolean
 C:\dev\vcpkg\vcpkg install opencv:x64-windows        # → enables q3DMASC
 ```
 
-Then re-run the configure with `CMAKE_PREFIX_PATH` updated:
+Then re-run the configure:
 ```powershell
-& C:\dev\tools\cc-configure.cmd   # edit the script to add -DCMAKE_PREFIX_PATH=C:/dev/vcpkg/installed/x64-windows and the new plugin flag
+python C:\dev\CloudCompare\tools\cc-configure.py
 ```
 
 ---
@@ -225,19 +225,37 @@ If you change a plugin flag and re-run without `--fresh`, the old cached value (
 
 Wiping the build directory with `Remove-Item -Recurse -Force` was blocked by the agent's safety guard. CMake `--fresh` is the workaround — it empties the cache without removing the build tree.
 
+### #6 — `fatal error RC1106: invalid option: -3` (CMake 3.31 + Ninja + MSVC)
+
+CMake 3.31's Ninja generator passes `-D` and `-I` flags (Unix style) to ALL compilers, including `rc.exe`. The Windows resource compiler only understands `/D` and `/I` (Windows style). When `rc.exe` sees `-D SYM`, it interprets `D SYM` as a single argument and then sees `-3` (tail of `/EHsc` from `CMAKE_CXX_FLAGS`) as an invalid option.
+
+**Fix (in `cmake/CMakeExternalLibs.cmake`):** `CMAKE_RC_COMPILER_LAUNCHER` is set to a Python wrapper (`rc_wrapper.py`) that converts `-D` → `/D` and `-I` → `/I` before forwarding to `rc.exe`. This is generated at configure time into the build directory.
+
+Additionally, `/EHsc` is stripped from `CMAKE_RC_FLAGS` via `string(REGEX REPLACE)` so it never reaches `rc.exe` via that route.
+
 ---
 
 ## 9. Unit tests (Qt Test)
 
 Qt Test (`Qt6::Test`) is used for unit tests. `BUILD_TESTING=ON` is set in `tools/cc-configure.cmd`.
 
-### Test binaries
+### Test binaries (T1 — all passing as of 2026-08-19)
+
+| Binary | Tests | Status |
+|---|---|---|
+| `TestArgumentParser.exe` | 60 | ✅ PASS |
+| `TestFileIOFilter.exe` | 24 | ✅ PASS |
+| `TestPointCloud.exe` | 23 | ✅ PASS |
+| `TestShiftedObject.exe` | 20 | ✅ PASS |
+| `TestRegistration.exe` | 31 | ✅ PASS |
+| **Total** | **158** | **0 failed** |
 
 ```
 C:\dev\CloudCompare\build\qCC\test\TestArgumentParser.exe
 C:\dev\CloudCompare\build\qCC\test\TestFileIOFilter.exe
 C:\dev\CloudCompare\build\qCC\test\TestPointCloud.exe
 C:\dev\CloudCompare\build\qCC\test\TestShiftedObject.exe
+C:\dev\CloudCompare\build\qCC\test\TestRegistration.exe
 ```
 
 ### Running tests
@@ -260,11 +278,11 @@ dll_dirs = [
 env = os.environ.copy()
 env['PATH'] = ';'.join(dll_dirs) + ';' + env.get('PATH', '')
 result = subprocess.run(
-    ['C:/dev/CloudCompare/build/qCC/test/TestArgumentParser.exe',
-     '-txt', '-o', 'C:/dev/CloudCompare/test_result.txt'],
-    capture_output=True, text=True, env=env, timeout=30
+    ['C:/dev/CloudCompare/build/qCC/test/TestRegistration.exe',
+     '-txt', '-o', 'C:/dev/CloudCompare/test_registration_result.txt'],
+    capture_output=True, text=True, env=env, timeout=120
 )
-with open('C:/dev/CloudCompare/test_result.txt') as f:
+with open('C:/dev/CloudCompare/test_registration_result.txt') as f:
     print(f.read())
 ```
 
@@ -282,6 +300,20 @@ The `TestFileIOFilter.exe` also needs `qCC_io` and `shapelib` DLL dirs.
 
 **Wrong filter string assertions** — `FileIOFilter::ImportFilterList()` uses `QObject::tr("All (*.*)")` (returns the translation string), not `"All Files (*.*)"`. The PLY filter registers as `"PLY mesh (*.ply)"`, not `"Stanford ply (*.ply)"`. **Always grep the actual source to get the exact string before writing assertions.**
 
+**MSVC template `>>` parsing in Qt Test macros** — `QTest::addColumn<std::vector<std::vector<double>>>("name")` causes `C2947` ("expecting '>'") in MSVC because the preprocessor misparses `>>` inside angle brackets. Fix: use `Mat3 = std::array<double, 9>` (flat array) instead, or use a typedef.
+
+**`M_SQRT2_2` undefined on MSVC** — `<cmath>` doesn't define `M_SQRT2_2` on MSVC. Define manually: `#define M_SQRT2_2 0.707106781186547524400844362104849`.
+
+**`loadIdentity()` → `toIdentity()`** — `SquareMatrixd::loadIdentity()` was renamed to `toIdentity()` in recent CloudCompare.
+
+**`SquareMatrixd::inverse()` → `inv()`** — `inverse()` was renamed to `inv()`.
+
+**`MakeIdentity3()` helper** — `SquareMatrixd::Identity(3)` static factory doesn't exist. Use: `SquareMatrixd I(3); I.toIdentity();`
+
+**Horn `FindAbsoluteOrientation` returns `T = centroid_P - centroid_Q`** — The translation returned maps REFERENCE → MOVING, not the reverse. For a cloud Q = P + offset, Horn returns T = -(offset). This is consistent but non-obvious.
+
+**Horn scale formula** — `trans.s = RMS(aligned_cloud) / sqrt(RMS(ref_cloud))`, not `s_new / s_ref`. For a 2× scaled cloud, this gives ~0.5, not 2.0.
+
 ### Writing new tests
 
 - All test files live in `qCC/test/`
@@ -298,9 +330,7 @@ The `TestFileIOFilter.exe` also needs `qCC_io` and `shapelib` DLL dirs.
 |---|---|
 | `C:\dev\tools\cmake-4.3.0\` | Portable CMake 4.3.0 (extracted from GitHub release zip) |
 | `C:\dev\tools\Qt\6.8.3\msvc2022_64\` | Qt 6.8.3 MSVC 2022 64-bit |
-| `C:\dev\tools\cc-configure.cmd` | Configure wrapper |
-| `C:\dev\tools\cc-build.cmd` | Build wrapper |
-| `C:\dev\tools\cc-configure.log` | Last configure run log |
-| `C:\dev\tools\cc-build.log` | Last build run log |
+| `C:\dev\CloudCompare\tools\cc-configure.cmd` | Configure batch wrapper (from VS x64 prompt) |
+| `C:\dev\CloudCompare\tools\cc-build.py` | Python build script (Ninja wrapper, handles `--clean`) |
 | `C:\dev\CloudCompare\BUILD-LOCAL.md` | This file (local-only, untracked by git) |
-| `C:\dev\CloudCompare\build\` | All build outputs (~3-5 GB when complete; the `deployqt\` subfolders are the runnable bundles) |
+| `C:\dev\CloudCompare\build\` | All build outputs; `qCC/deployqt/` = runnable CloudCompare bundle (~70 MB) |

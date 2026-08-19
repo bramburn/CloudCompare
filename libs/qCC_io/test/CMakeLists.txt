@@ -25,5 +25,49 @@ if ( OPTION_USE_SHAPE_LIB )
     add_test( NAME TestShpFilter COMMAND TestShpFilter )
 endif()
 
+# T2-D: ccGlobalShiftManager
+add_executable(TestGlobalShift
+    TestGlobalShift.cpp
+)
+
+target_link_libraries(TestGlobalShift
+    PRIVATE
+        QCC_IO_LIB
+        QCC_DB_LIB
+        CCCoreLib
+        Qt6::Test
+)
+
+add_test(NAME TestGlobalShift COMMAND TestGlobalShift)
+
+# T2-E: BinFilter
+add_executable(TestBinFilter
+    TestBinFilter.cpp
+)
+
+target_link_libraries(TestBinFilter
+    PRIVATE
+        QCC_IO_LIB
+        QCC_DB_LIB
+        CCCoreLib
+        Qt6::Test
+)
+
+add_test(NAME TestBinFilter COMMAND TestBinFilter)
+
+# T2-F: AsciiFilter
+add_executable(TestAsciiFilter
+    TestAsciiFilter.cpp
+)
+
+target_link_libraries(TestAsciiFilter
+    PRIVATE
+        QCC_IO_LIB
+        QCC_DB_LIB
+        CCCoreLib
+        Qt6::Test
+)
+
+add_test(NAME TestAsciiFilter COMMAND TestAsciiFilter)
 
 

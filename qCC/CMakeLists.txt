@@ -7,6 +7,24 @@ option( CC_USE_EIGEN
 	OFF
 )
 
+# Sentry crash reporting
+option( CC_USE_SENTRY
+	"Compile with Sentry crash/reporting integration"
+	ON
+)
+
+if( CC_USE_SENTRY )
+	# vcpkg exposes sentry-native as the CMake package "sentry"
+	find_package( sentry CONFIG )
+	if( sentry_FOUND )
+		set( CC_SENTRY_AVAILABLE ON )
+		message( STATUS "Sentry: found — CC_SENTRY_AVAILABLE=ON sentry_DIR=${sentry_DIR}" )
+	else()
+		set( CC_SENTRY_AVAILABLE OFF )
+		message( STATUS "sentry-native not found; Sentry disabled. Install with: vcpkg install sentry-native:x64-windows" )
+	endif()
+endif()
+
 if ( CC_USE_EIGEN )
 	set ( EIGEN_ROOT_DIR "" CACHE PATH "Eigen root (contains the Eigen directory)" )
 	if ( NOT EIGEN_ROOT_DIR )
@@ -57,6 +75,21 @@ target_link_libraries( ${PROJECT_NAME}
 		Qt6::OpenGLWidgets
 		Qt6::OpenGL
 )
+
+if( CC_SENTRY_AVAILABLE )
+	target_link_libraries( ${PROJECT_NAME}
+		PRIVATE
+			sentry::sentry
+	)
+	# Pass hardcoded DSN and release string directly.
+	# @VAR@ substitution does not work in target_compile_definitions;
+	# hardcode here to avoid a configure_file() dependency.
+	target_compile_definitions( ${PROJECT_NAME}
+		PRIVATE
+			CC_SENTRY_DSN="https://ac001120bfa96ba91d2ed97c62e632ad@o494653.ingest.us.sentry.io/4511938553053184"
+			CC_SENTRY_RELEASE="cloudcompare@2.14.0"
+	)
+endif()
 
 if( CCCORELIB_USE_QT_CONCURRENT )
 	# We want *deployqt to handle this dependency, so instead of just copying the file
@@ -196,6 +229,74 @@ if( WIN32 )
 		DEPLOY_PATH
 			${CLOUDCOMPARE_DEST_FOLDER}
 	)
+
+	# After windeployqt, copy sentry-native DLL into the deploy bundle so crashes
+	# during app startup are captured.  DeployQt puts the .exe at:
+	#   ${CMAKE_CURRENT_BINARY_DIR}/deployqt/CloudCompare.exe
+	# (single-config) or ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/deployqt/CloudCompare.exe
+	# (multi-config).
+	if( CC_SENTRY_AVAILABLE )
+		# DeployQt puts the app at <BINARY_DIR>/deployqt/CloudCompare.exe (single-config)
+		# or <BINARY_DIR>/<CONFIG>/deployqt/CloudCompare.exe (multi-config).
+		if( CMAKE_CONFIGURATION_TYPES )
+			set( sentry_deploy_dir "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/deployqt" )
+		else()
+			set( sentry_deploy_dir "${CMAKE_CURRENT_BINARY_DIR}/deployqt" )
+		endif()
+		# sentry_DIR is a cache variable set by find_package(sentry CONFIG) above.
+		# It points to <vcpkg>/installed/x64-windows/share/sentry/; go up two levels.
+		get_filename_component( SENTRY_VCPKG_PREFIX "$CACHE{sentry_DIR}/../.." ABSOLUTE )
+		set( SENTRY_DLL "${SENTRY_VCPKG_PREFIX}/bin/sentry.dll" )
+		if( EXISTS "${SENTRY_DLL}" )
+			add_custom_command(
+				TARGET ${PROJECT_NAME}
+				POST_BUILD
+				COMMAND ${CMAKE_COMMAND} -E copy_if_different
+					"${SENTRY_DLL}"
+					"${sentry_deploy_dir}"
+				COMMENT "Copying sentry.dll into deploy bundle"
+				VERBATIM
+			)
+		else()
+			message( WARNING "Sentry DLL not found at ${SENTRY_DLL}" )
+		endif()
+	endif()
+
+	# CC core DLLs: resolve deployqt path (same logic as above)
+	if( CMAKE_CONFIGURATION_TYPES )
+		set( cc_deploy_dir "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/deployqt" )
+	else()
+		set( cc_deploy_dir "${CMAKE_CURRENT_BINARY_DIR}/deployqt" )
+	endif()
+
+	# Copy CC core DLLs so the app launches from deployqt/ without a separate
+	# script.  These are the DLLs CloudCompare.exe links against directly or
+	# transitively; without them the OS shows "DLL not found" before main()
+	# runs — which Sentry cannot capture.
+	set( CC_CORE_DLLS
+		"${CMAKE_BINARY_DIR}/libs/qCC_db/extern/CCCoreLib/CCCoreLib.dll"   # CCCoreLib
+		"${CMAKE_BINARY_DIR}/libs/CCAppCommon/CCAppCommon.dll"              # CCAppCommon
+		"${CMAKE_BINARY_DIR}/libs/CCPluginAPI/CCPluginAPI.dll"                # CCPluginAPI
+		"${CMAKE_BINARY_DIR}/libs/qCC_db/QCC_DB_LIB.dll"                    # QCC_DB_LIB
+		"${CMAKE_BINARY_DIR}/libs/qCC_io/QCC_IO_LIB.dll"                    # QCC_IO_LIB
+		"${CMAKE_BINARY_DIR}/libs/qCC_glWindow/QCC_GL_LIB.dll"               # QCC_GL_LIB
+		"${CMAKE_BINARY_DIR}/libs/CCFbo/CC_FBO_LIB.dll"                     # CC_FBO_LIB
+		# hidapi.dll: 3DConnexion 3D mouse support (linked by CCAppCommon)
+		"${CMAKE_BINARY_DIR}/libs/CCAppCommon/devices/3dConnexion/extern/hidapi/src/windows/hidapi.dll"
+	)
+	foreach( dll ${CC_CORE_DLLS} )
+		if( EXISTS "${dll}" )
+			add_custom_command(
+				TARGET ${PROJECT_NAME}
+				POST_BUILD
+				COMMAND ${CMAKE_COMMAND} -E copy_if_different
+					"${dll}"
+					"${cc_deploy_dir}"
+				COMMENT "Copying CC core DLL into deploy bundle: ${dll}"
+				VERBATIM
+			)
+		endif()
+	endforeach()
 else()
 	DeployQt(
 		TARGET
