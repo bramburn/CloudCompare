@@ -14,6 +14,13 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccComputeOctreeDlg.cpp
+ * @brief Dialog for configuring octree computation parameters
+ * @details Allows users to set octree subdivision mode: auto, by minimum
+ * cell size, or by custom bounding box.
+ * @see ccComputeOctreeDlg, ccOctree
+ */
 
 #include "ccComputeOctreeDlg.h"
 
@@ -23,6 +30,12 @@
 // qCC_db
 #include <ccOctree.h>
 
+/**
+ * @brief Constructor
+ * @param baseBBox Base bounding box for reference
+ * @param minCellSize Minimum allowed cell size
+ * @param parent Parent widget
+ */
 ccComputeOctreeDlg::ccComputeOctreeDlg(const ccBBox& baseBBox, double minCellSize, QWidget* parent /*=nullptr*/)
     : QDialog(parent)
     , Ui::ComputeOctreeDialog()
@@ -59,6 +72,10 @@ ccComputeOctreeDlg::ccComputeOctreeDlg(const ccBBox& baseBBox, double minCellSiz
 	}
 }
 
+/**
+ * @brief Gets the selected computation mode
+ * @return ComputationMode (DEFAULT, MIN_CELL_SIZE, or CUSTOM_BBOX)
+ */
 ccComputeOctreeDlg::ComputationMode ccComputeOctreeDlg::getMode() const
 {
 	// defaultRadioButton
@@ -71,11 +88,19 @@ ccComputeOctreeDlg::ComputationMode ccComputeOctreeDlg::getMode() const
 	return DEFAULT;
 }
 
+/**
+ * @brief Gets the minimum cell size
+ * @return Minimum cell size value
+ */
 double ccComputeOctreeDlg::getMinCellSize() const
 {
 	return cellSizeDoubleSpinBox->value();
 }
 
+/**
+ * @brief Gets the custom bounding box
+ * @return Custom bounding box if CUSTOM_BBOX mode selected
+ */
 ccBBox ccComputeOctreeDlg::getCustomBBox() const
 {
 	return (m_bbEditorDlg ? m_bbEditorDlg->getBox() : ccBBox());
