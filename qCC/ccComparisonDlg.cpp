@@ -14,6 +14,14 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccComparisonDlg.cpp
+ * @brief Implementation of cloud/cloud and cloud/mesh comparison dialog
+ * @details Dialog for comparing two entities (point clouds or meshes) and
+ * computing distances, with options for octree level, local models,
+ * and multi-threaded processing.
+ * @see ccComparisonDlg
+ */
 
 #include "ccComparisonDlg.h"
 
@@ -56,6 +64,14 @@ const unsigned char DEFAULT_OCTREE_LEVEL = 7;
 
 static int s_maxThreadCount = ccQtHelpers::GetMaxThreadCount();
 
+/**
+ * @brief Constructor
+ * @param compEntity Entity to compare
+ * @param refEntity Reference entity
+ * @param cpType Comparison type (CLOUD_CLOUD, CLOUD_MESH, etc.)
+ * @param parent Parent widget
+ * @param noDisplay If true, suppress display updates
+ */
 ccComparisonDlg::ccComparisonDlg(ccHObject*         compEntity,
                                  ccHObject*         refEntity,
                                  CC_COMPARISON_TYPE cpType,
@@ -144,6 +160,9 @@ ccComparisonDlg::ccComparisonDlg(ccHObject*         compEntity,
 	connect(split3DCheckBox, &QCheckBox::toggled, this, &ccComparisonDlg::enableCompute2D);
 }
 
+/**
+ * @brief Destructor
+ */
 ccComparisonDlg::~ccComparisonDlg()
 {
 	releaseOctrees();
