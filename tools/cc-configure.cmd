@@ -1,28 +1,59 @@
 @echo off
-REM ============================================================================
-REM CloudCompare configure script (in-repo)
-REM ----------------------------------------------------------------------------
-REM Lives at C:\dev\CloudCompare\tools\cc-configure.cmd so the build wrapper
-REM ships with the repo. Update this file when you change any of:
-REM   - the pinned CMAKE_PREFIX_PATH (Qt install dir)
-REM   - the vcpkg toolchain file location
-REM   - the enabled PLUGIN_* flags
-REM
-REM Toolchain layout this script assumes (Windows + VS 2022):
-REM   - MSVC:        C:\Program Files\Microsoft Visual Studio\2022\Community\...
-REM   - Qt 6.8.3:    C:\dev\tools\Qt\6.8.3\msvc2022_64
-REM   - vcpkg:       C:\dev\CloudCompare\vcpkg  (inside the repo, by design)
-REM   - ReCap SDK:   C:\ReCapSDK_v26.0.2        (optional, only for qReCapIO)
-REM   - Ninja:       C:\ProgramData\chocolatey\bin\ninja.exe
-REM
-REM Usage:    tools\cc-configure.cmd
-REM Effect:   Re-runs `cmake --fresh` into C:\dev\CloudCompare\build\.
-REM
-REM Companion script: tools\cc-build.cmd (incremental build, no --fresh).
-REM ============================================================================
+:: Configure CloudCompare with Ninja generator.
+:: Must be run from an x64 Native Tools Developer Command Prompt for VS 2022,
+:: or after calling vcvars64.bat.
+:: Usage: tools\cc-configure.cmd [--fresh]
+::   --fresh   Delete CMakeCache.txt before configuring
 
-call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat" >nul
-REM Use the pinned CMake 4.3.0 explicitly (vcvars64 prepends its own CMake 3.31 which shadows PATH)
-set "CMAKE_PATH=C:\dev\tools\cmake-4.3.0\bin\cmake.exe"
+setlocal
 
-%CMAKE_PATH% -S C:\dev\CloudCompare -B C:\dev\CloudCompare\build -G Ninja --fresh -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DCMAKE_PREFIX_PATH=C:/dev/tools/Qt/6.8.3/msvc2022_64;C:/dev/CloudCompare/vcpkg/installed/x64-windows;C:/ReCapSDK_v26.0.2 -DCMAKE_TOOLCHAIN_FILE=C:/dev/CloudCompare/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_MAKE_PROGRAM=C:/ProgramData/chocolatey/bin/ninja.exe -DPLUGIN_IO_QCORE=ON -DPLUGIN_GL_QEDL=ON -DPLUGIN_GL_QSSAO=ON -DPLUGIN_STANDARD_QANIMATION=ON -DPLUGIN_STANDARD_QBROOM=ON -DPLUGIN_STANDARD_QCSF=ON -DPLUGIN_STANDARD_QM3C2=ON -DPLUGIN_STANDARD_QPOISSON_RECON=ON -DPLUGIN_STANDARD_QHPR=ON -DPLUGIN_STANDARD_QPCV=ON -DPLUGIN_STANDARD_QCOLORIMETRIC_SEGMENTER=ON -DPLUGIN_STANDARD_QMPLANE=ON -DPLUGIN_STANDARD_QVOXFALL=ON -DPLUGIN_STANDARD_QCOMPASS=OFF -DPLUGIN_STANDARD_QRANSAC_SD=OFF -DPLUGIN_STANDARD_QSRA=OFF -DPLUGIN_STANDARD_QCANUPO=ON -DPLUGIN_STANDARD_3DFIN=ON -DPLUGIN_IO_QE57=OFF -DPLUGIN_IO_QLAS=ON -DPLUGIN_IO_QLAS_FWF=OFF -DPLUGIN_IO_QPHOTOSCAN=OFF -DPLUGIN_IO_QDRACO=OFF -DPLUGIN_IO_QPDAL=OFF -DPLUGIN_IO_QFBX=OFF -DPLUGIN_IO_QSTEP=OFF -DPLUGIN_IO_QRDB=OFF -DPLUGIN_IO_QADDITIONAL=OFF -DPLUGIN_IO_QCSV_MATRIX=OFF -DPLUGIN_STANDARD_QCORK=OFF -DPLUGIN_STANDARD_QHOUGH_NORMALS=OFF -DPLUGIN_STANDARD_QMESH_BOOLEAN=OFF -DPLUGIN_STANDARD_QFACETS=OFF -DPLUGIN_STANDARD_QMASONRY=OFF -DPLUGIN_STANDARD_QTREEISO=OFF -DPLUGIN_STANDARD_3DMASC=OFF -DPLUGIN_STANDARD_QCLOUDLAYERS=OFF -DPLUGIN_STANDARD_QG3POINT=OFF -DPLUGIN_STANDARD_QJSONRPC=OFF -DPLUGIN_STANDARD_QPCL=OFF -DPLUGIN_IO_QRECAP=OFF -DPLUGIN_EXPERIMENTAL_QHELLOCLOUD=ON
+set "SOURCE_DIR=C:\dev\CloudCompare"
+set "BUILD_DIR=C:\dev\CloudCompare\build"
+
+if "%1"=="--fresh" (
+    echo [fresh] Removing CMake cache...
+    if exist "%BUILD_DIR%\CMakeCache.txt" del /f /q "%BUILD_DIR%\CMakeCache.txt"
+    if exist "%BUILD_DIR%\rules.ninja" del /f /q "%BUILD_DIR%\rules.ninja"
+)
+
+:: CMake 3.31.6 (from Visual Studio 2022 installation — avoids CMake 4.3 /external:I regression)
+:: IMPORTANT: Use this CMake, not a standalone CMake 4.3, to avoid the /external:I flag
+:: that strips MSVC standard library paths and causes "type_traits not found" errors.
+set "CMAKE_BIN=C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe"
+
+:: Qt 6.8.3
+set "QT_PREFIX=C:\dev\tools\Qt\6.8.3\msvc2022_64"
+
+:: vcpkg toolchain (vcpkg lives inside the repo at vcpkg/)
+set "VCPKG_TOOLCHAIN=C:\dev\CloudCompare\vcpkg\scripts\buildsystems\vcpkg.cmake"
+
+:: Ninja (chocolatey) — NOT depot_tools ninja (which is a Python script)
+set "NINJA_BIN=C:\ProgramData\chocolatey\bin\ninja.exe"
+
+:: Disabled plugins (known missing external dependencies on this machine)
+::   cc3DFin: Taskflow requires C++20 on a C++17 project
+::   qCompass/qRANSAC_SD/qSRA: ccTrace namespace collision with Qt 6.8.3 internal headers
+set "PLUGIN_EXTRAS=-DPLUGIN_STANDARD_3DFIN=OFF -DPLUGIN_STANDARD_QCOMPASS=OFF -DPLUGIN_STANDARD_QRANSAC_SD=OFF -DPLUGIN_STANDARD_QSRA=OFF"
+
+echo Configuring CloudCompare (Ninja generator)...
+echo   CMake:  %CMAKE_BIN%
+echo   Qt:     %QT_PREFIX%
+echo   Ninja:  %NINJA_BIN%
+
+"%CMAKE_BIN%" -S "%SOURCE_DIR%" -B "%BUILD_DIR%" -G Ninja ^
+    -DCMAKE_BUILD_TYPE=Release ^
+    -DCMAKE_PREFIX_PATH="%QT_PREFIX%" ^
+    -DCMAKE_TOOLCHAIN_FILE="%VCPKG_TOOLCHAIN%" ^
+    -DCMAKE_MAKE_PROGRAM="%NINJA_BIN%" ^
+    %PLUGIN_EXTRAS%
+
+if errorlevel 1 (
+    echo Configure FAILED
+    exit /b 1
+)
+
+echo.
+echo Configure succeeded
+echo   Build:   cmake --build %BUILD_DIR% --parallel
+echo   Run:     %BUILD_DIR%\qCC\deployqt\CloudCompare.exe
+endlocal
