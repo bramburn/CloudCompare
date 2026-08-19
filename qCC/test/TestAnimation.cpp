@@ -148,12 +148,12 @@ public:
 		// which may be affected by objectCenteredView state).
 		// This mirrors what setCameraCenter(true) does internally, but
 		// guarantees the field is written correctly.
-		ip.cameraCenter = icam;
+		ip.cameraCenterDirect() = icam;
 		// Also update focalDistance from the interpolated focal values.
 		// Note: autoUpdateFocal is skipped here because we already set
 		// cameraCenter directly. The focalDistance field is updated from
 		// the interpolated focalDistance to keep the state consistent.
-		ip.focalDistance = InterpolateNumber(m_view1.params.getFocalDistance(),
+		ip.focalDistanceDirect() = InterpolateNumber(m_view1.params.getFocalDistance(),
 		                                    m_view2.params.getFocalDistance(), ratio);
 
 		// NOTE: direct struct assignment (interpView.params = ip) corrupts

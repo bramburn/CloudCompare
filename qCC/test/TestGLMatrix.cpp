@@ -358,10 +358,11 @@ class TestGLMatrix : public QObject
 		bool ok = R.toQuaternion(q);
 		QVERIFY2(ok, "toQuaternion should succeed for valid rotation matrix");
 
-		// Expected: q ≈ (0, 0, 1, 0)  or q ≈ (0, 0, -1, 0)
-		double q_expected[] = { 0.0, 0.0, 1.0, 0.0 };
+		// Expected: q ≈ (0, 0, 0, 1) or q ≈ (0, 0, 0, -1)
+		// R_z(180°): w=cos(90°)=0, axis=Z, z=sin(90°)=1 → q=(0,0,0,1)
+		double q_expected[] = { 0.0, 0.0, 0.0, 1.0 };
 		QVERIFY2(quaternionMatches(q, q_expected),
-		         qPrintable(QString("R_z(180°) → q should be ±(0,0,1,0), got (%1,%2,%3,%4)")
+		         qPrintable(QString("R_z(180°) → q should be ±(0,0,0,1), got (%1,%2,%3,%4)")
 		                    .arg(q[0]).arg(q[1]).arg(q[2]).arg(q[3])));
 
 		// Round-trip: R → q → R2 should give same matrix

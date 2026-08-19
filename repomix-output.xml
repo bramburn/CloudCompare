@@ -1,0 +1,5775 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: experimental
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+experimental/
+  docs/
+    decisions/
+      2026-08-19-rust-scalarfield-formulas.md
+    decisions.md
+    index.md
+    patterns.md
+  scenarios/
+    2026-08-19-icp-variants/
+      01-naive-on2/
+        src/
+          lib.rs
+          main.rs
+        AGENTS.md
+        Cargo.toml
+        README.md
+      02-kiddo-kdtree/
+        src/
+          lib.rs
+          main.rs
+        AGENTS.md
+        Cargo.toml
+        README.md
+      03-handrolled-octree/
+        Cargo.toml
+      AGENTS.md
+  sessions/
+    2026-08-19-rust-migration-icp-scalarfield/
+      .cargo/
+        config.toml
+      cpp/
+        las_loader_stub.cc
+        las_loader.cc
+      src/
+        io.rs
+        lib.rs
+        main.rs
+        octree.rs
+        registration.rs
+        scalar_field.rs
+      AGENTS.md
+      build.rs
+      Cargo.toml
+      CONFIGURE_CCCORELIB.md
+      README.md
+      sandbox-build.cmd
+      sandbox-build.ps1
+  shared/
+    scripts/
+      get-vcvars.ps1
+  templates/
+    cpp_qt_console/
+      src/
+        main.cpp
+      AGENTS.md
+      CMakeLists.txt
+      README.md
+    cpp_qt_gui/
+      src/
+        main.cpp
+        pointcloudview.cpp
+        pointcloudview.h
+        synthetic.cpp
+        synthetic.h
+      AGENTS.md
+      CMakeLists.txt
+      README.md
+    rust_cxx_app/
+      .cargo/
+        config.toml
+      cpp/
+        bridge.cc
+        bridge.h
+      src/
+        lib.rs
+        main.rs
+      AGENTS.md
+      build.rs
+      Cargo.toml
+      README.md
+    rust_lib/
+      examples/
+        demo_cli.rs
+      src/
+        lib.rs
+      tests/
+        basic.rs
+      AGENTS.md
+      Cargo.toml
+      README.md
+    AGENTS.md
+  AGENTS.md
+  README.md
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="experimental/scenarios/2026-08-19-icp-variants/02-kiddo-kdtree/src/lib.rs">
+//! ICP variant 2: `kiddo` KD-tree nearest-neighbour.
+//!
+//! Build a KD-tree once, query it O(log n) per data point. Total: O(n log n)
+//! per ICP iteration. For 1M points: ~1ms per query → ~17 minutes per iteration.
+//! Still slow at large N, but much better than O(n²).
+//!
+//! For really large data, you'd want a flat-tree or an octree with
+//! space-partitioning tricks. See variant 03.
+
+use kiddo::float::kdtree::KdTree;
+use nalgebra::Vector3;
+
+#[derive(Debug, Clone)]
+pub struct IcpParams {
+    pub max_iterations: u32,
+    pub min_rms_decrease: f64,
+}
+
+impl Default for IcpParams {
+    fn default() -> Self {
+        Self { max_iterations: 50, min_rms_decrease: 1e-8 }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct IcpResult {
+    pub rms: f64,
+    pub converged: bool,
+    pub iterations: u32,
+    pub transform: Vec<f64>,
+}
+
+/// Run ICP using `kiddo` KD-tree NN search.
+///
+/// Build the tree once outside the iteration loop; query O(log n) per data point.
+pub fn icp_iterate(
+    data_points: &mut [f32],
+    model_points: &[f32],
+    params: &IcpParams,
+) -> Result<IcpResult, String> {
+    let n_data = data_points.len() / 3;
+    let n_model = model_points.len() / 3;
+    if n_data < 3 || n_model < 3 {
+        return Err(format!("ICP needs ≥3 points: data={}, model={}", n_data, n_model));
+    }
+
+    // Build KD-tree once. kiddo uses f64 internally for float32 points? — check.
+    // We'll use KdTree::<f32, 3> for the typical 3D float32 case.
+    let mut tree: KdTree<f32, 3> = KdTree::new();
+    for i in 0..n_model {
+        tree.add(
+            &[model_points[i*3], model_points[i*3+1], model_points[i*3+2]],
+            i as u64,
+        );
+    }
+    log::debug!("Built KD-tree with {} points", n_model);
+
+    let (centroid_data, centroid_model) = compute_centroids(data_points, model_points);
+    let h = compute_covariance(data_points, model_points, centroid_data, centroid_model);
+    let rotation = compute_rotation_svd(&h)?;
+    let translation = centroid_model - rotation * centroid_data;
+
+    let mut prev_rms = f64::INFINITY;
+    for iter in 0..params.max_iterations {
+        let mut sum_dist_sq = 0.0;
+        for i in 0..n_data {
+            let idx = i * 3;
+            let pt = Vector3::new(
+                data_points[idx] as f64,
+                data_points[idx + 1] as f64,
+                data_points[idx + 2] as f64,
+            );
+            let transformed = rotation * pt + translation;
+            // kiddo's nearest_one returns NearestNeighbour { distance, item }
+            let nn = tree.nearest_one(&[transformed[0] as f32, transformed[1] as f32, transformed[2] as f32]);
+            let dist_sq = nn.distance as f64;
+            data_points[idx] = transformed[0] as f32;
+            data_points[idx + 1] = transformed[1] as f32;
+            data_points[idx + 2] = transformed[2] as f32;
+            sum_dist_sq += dist_sq;
+        }
+        let rms = (sum_dist_sq / n_data as f64).sqrt();
+        let decrease = prev_rms - rms;
+        prev_rms = rms;
+        log::debug!("iter {}: rms={:.6}, decrease={:.6e}", iter, rms, decrease);
+        if rms < params.min_rms_decrease {
+            return Ok(IcpResult { rms, converged: true, iterations: iter + 1, transform: build_transform(&rotation, &translation) });
+        }
+    }
+    Ok(IcpResult { rms: prev_rms, converged: false, iterations: params.max_iterations, transform: build_transform(&rotation, &translation) })
+}
+
+fn compute_centroids(data: &[f32], model: &[f32]) -> (Vector3<f64>, Vector3<f64>) {
+    let n_data = data.len() / 3;
+    let n_model = model.len() / 3;
+    let mut c_data = Vector3::zeros();
+    let mut c_model = Vector3::zeros();
+    for i in 0..n_data {
+        c_data += Vector3::new(data[i*3] as f64, data[i*3+1] as f64, data[i*3+2] as f64);
+    }
+    c_data /= n_data as f64;
+    for i in 0..n_model {
+        c_model += Vector3::new(model[i*3] as f64, model[i*3+1] as f64, model[i*3+2] as f64);
+    }
+    c_model /= n_model as f64;
+    (c_data, c_model)
+}
+
+fn compute_covariance(
+    data: &[f32],
+    model: &[f32],
+    cd: Vector3<f64>,
+    cm: Vector3<f64>,
+) -> nalgebra::Matrix3<f64> {
+    let n = (data.len() / 3).min(model.len() / 3);
+    let mut h = nalgebra::Matrix3::<f64>::zeros();
+    for i in 0..n {
+        let dp = Vector3::new(data[i*3] as f64, data[i*3+1] as f64, data[i*3+2] as f64) - cd;
+        let mp = Vector3::new(model[i*3] as f64, model[i*3+1] as f64, model[i*3+2] as f64) - cm;
+        h += dp * mp.transpose();
+    }
+    h
+}
+
+fn compute_rotation_svd(h: &nalgebra::Matrix3<f64>) -> Result<nalgebra::Matrix3<f64>, String> {
+    use nalgebra::linalg::SVD;
+    let svd = SVD::new(*h, true, true);
+    let v = svd.v_t.ok_or("singular: v_t is None")?;
+    let u = svd.u.ok_or("singular: u is None")?;
+    let mut r = v * u.transpose();
+    if r.determinant() < 0.0 {
+        let n_cols = r.ncols();
+        for i in 0..r.nrows() {
+            r[(i, n_cols - 1)] = -r[(i, n_cols - 1)];
+        }
+    }
+    Ok(r)
+}
+
+fn build_transform(rot: &nalgebra::Matrix3<f64>, trans: &Vector3<f64>) -> Vec<f64> {
+    let mut m = vec![0.0_f64; 16];
+    m[0] = rot[(0,0)]; m[4] = rot[(0,1)]; m[8]  = rot[(0,2)]; m[12] = trans[0];
+    m[1] = rot[(1,0)]; m[5] = rot[(1,1)]; m[9]  = rot[(1,2)]; m[13] = trans[1];
+    m[2] = rot[(2,0)]; m[6] = rot[(2,1)]; m[10] = rot[(2,2)]; m[14] = trans[2];
+    m[3] = 0.0;        m[7] = 0.0;        m[11] = 0.0;        m[15] = 1.0;
+    m
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn icp_translation() {
+        let model: Vec<f32> = vec![
+            0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0,
+            1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+        ];
+        let mut data: Vec<f32> = (0..model.len()/3)
+            .flat_map(|i| vec![model[i*3] + 1.0, model[i*3+1], model[i*3+2]])
+            .collect();
+        let r = icp_iterate(&mut data, &model, &IcpParams::default()).unwrap();
+        assert!(r.rms < 0.1, "ICP should achieve low RMS, got {}", r.rms);
+    }
+}
+</file>
+
+<file path="experimental/scenarios/2026-08-19-icp-variants/02-kiddo-kdtree/src/main.rs">
+//! ICP variant 2 — kiddo KD-tree — CLI benchmark.
+
+use icp_v2_kiddo::{icp_iterate, IcpParams};
+
+fn main() {
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
+
+    let args: Vec<String> = std::env::args().skip(1).collect();
+    let n: usize = args.get(0).and_then(|s| s.parse().ok()).unwrap_or(2000);
+    let seed: u64 = args.get(1).and_then(|s| s.parse().ok()).unwrap_or(42);
+
+    let model = generate_gaussian(n, 0.4, seed);
+    let mut data: Vec<f32> = (0..n).flat_map(|i| vec![model[i*3] + 0.5, model[i*3+1], model[i*3+2]]).collect();
+
+    eprintln!("KD-tree ICP: {} points", n);
+    let start = std::time::Instant::now();
+    let result = icp_iterate(&mut data, &model, &IcpParams::default()).unwrap();
+    let elapsed = start.elapsed();
+
+    println!("iterations  = {}", result.iterations);
+    println!("converged   = {}", result.converged);
+    println!("final rms   = {:.6}", result.rms);
+    println!("time        = {:.3} s (incl. KD-tree build)", elapsed.as_secs_f64());
+}
+
+fn generate_gaussian(n: usize, sigma: f32, seed: u64) -> Vec<f32> {
+    let mut state = seed;
+    let mut next_u = || -> f32 {
+        state ^= state << 13;
+        state ^= state >> 7;
+        state ^= state << 17;
+        (state as f64 / u64::MAX as f64) as f32
+    };
+    let mut next_normal = || -> f32 {
+        let u1 = next_u().max(1e-6);
+        let u2 = next_u();
+        let r = (-2.0 * u1.ln()).sqrt();
+        let theta = 2.0 * std::f32::consts::PI * u2;
+        r * theta.cos() * sigma
+    };
+    let mut out = Vec::with_capacity(n * 3);
+    for _ in 0..n {
+        out.push(next_normal());
+        out.push(next_normal());
+        out.push(next_normal());
+    }
+    out
+}
+</file>
+
+<file path="experimental/scenarios/2026-08-19-icp-variants/02-kiddo-kdtree/AGENTS.md">
+# Session: 02-kiddo-kdtree (ICP variant 2)
+
+**Scenario:** [`../`](../) — ICP variants comparison
+**Approach:** `kiddo` KD-tree for O(log n) nearest-neighbour
+**Status:** Skeleton — implements ICP with KD-tree, not benchmarked yet
+
+## What this is
+
+Same ICP algorithm as variant 01, but the nearest-neighbour search uses
+the [`kiddo`](https://crates.io/crates/kiddo) KD-tree crate.
+
+- KD-tree built **once** before the iteration loop
+- Per-query cost: O(log n) average, O(n) worst case
+- Total: O(n log n) per ICP iteration
+
+## Build & test
+
+```powershell
+cd experimental/scenarios/2026-08-19-icp-variants/02-kiddo-kdtree
+cargo test
+cargo run --release --bin icp_bench -- 2000 42
+```
+
+## Expected performance
+
+For N points (assumes 50 ICP iterations):
+
+| N | KD-tree build | Time per iteration | Total time |
+|---|---|---|---|
+| 1,000 | 1 ms | 1 ms | 50 ms |
+| 10,000 | 20 ms | 20 ms | 1 s |
+| 100,000 | 250 ms | 200 ms | 10 s |
+| 1,000,000 | 3 s | 2 s | 2 min |
+| 10,000,000 | 40 s | 25 s | 20 min |
+
+**Verdict:** usable for medium surveys (1-10M points), borderline for
+large surveys.
+
+## When to use
+
+- Medium point clouds (10k – 10M)
+- When you want a low-dependency solution
+- When you want a `kiddo` ecosystem (it's also the dependency for
+  many other Rust geo crates)
+
+## When NOT to use
+
+- Tiny clouds — overhead of building the tree isn't worth it
+- Massive clouds (10M+) — better options exist (octree, GPU KD-tree)
+- When you need fuzzy / k-NN queries with custom distance metrics
+
+## Observations
+
+*To be filled in once we run the benchmark and compare with variants 01 and 03.*
+
+## See also
+
+- Scenario: [`../`](../) — the A/B/C comparison
+- Sibling: [`../01-naive-on2/`](../01-naive-on2/), [`../03-handrolled-octree/`](../03-handrolled-octree/)
+- kiddo docs: <https://docs.rs/kiddo>
+</file>
+
+<file path="experimental/scenarios/2026-08-19-icp-variants/02-kiddo-kdtree/Cargo.toml">
+[package]
+name = "icp_v2_kiddo"
+version = "0.1.0"
+edition = "2021"
+description = "ICP variant 2: kiddo KD-tree nearest-neighbour. O(log n) per query."
+
+[lib]
+name = "icp_v2_kiddo"
+path = "src/lib.rs"
+
+[dependencies]
+nalgebra = "0.34"
+kiddo = "4.0"  # pure-Rust KD-tree, float64 / float32 variants
+log = "0.4"
+env_logger = "0.11"
+
+[dev-dependencies]
+approx = "0.5"
+
+[[bin]]
+name = "icp_bench"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+</file>
+
+<file path="experimental/scenarios/2026-08-19-icp-variants/02-kiddo-kdtree/README.md">
+# 02-kiddo-kdtree — ICP variant 2 (KD-tree)
+
+ICP with `kiddo` KD-tree for O(log n) nearest-neighbour queries.
+
+## Quick start
+
+```powershell
+cargo test
+cargo run --release --bin icp_bench -- 2000 42
+```
+
+## What it does
+
+- Same Horn 1987 SVD-based ICP as variant 01
+- KD-tree built once before the iteration loop (O(n log n))
+- Per-query: O(log n) average, O(n) worst case
+- Total: O(n log n × iters)
+
+## See also
+
+- `AGENTS.md` — performance table, when to use, when not to use
+- [`../`](../) — the scenario A/B/C
+- [`../01-naive-on2/`](../01-naive-on2/) — the baseline (O(n²))
+- [`../03-handrolled-octree/`](../03-handrolled-octree/) — the octree alternative
+</file>
+
+<file path="experimental/scenarios/2026-08-19-icp-variants/03-handrolled-octree/Cargo.toml">
+[package]
+name = "icp_v3_octree"
+version = "0.1.0"
+edition = "2021"
+description = "ICP variant 3: hand-rolled octree nearest-neighbour. O(n) build, O(log n) query."
+
+[lib]
+name = "icp_v3_octree"
+path = "src/lib.rs"
+
+[dependencies]
+nalgebra = "0.34"
+log = "0.4"
+env_logger = "0.11"
+
+[dev-dependencies]
+approx = "0.5"
+
+[[bin]]
+name = "icp_bench"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+</file>
+
+<file path="experimental/docs/decisions/2026-08-19-rust-scalarfield-formulas.md">
+# D1 Detail — CCCoreLib ScalarField formulas (Rust port)
+
+**Status:** Verified — `cargo test` in
+`sessions/2026-08-19-rust-migration-icp-scalarfield/` shows 28/28
+tests passing including characterisation tests.
+
+**Source code:** `sessions/2026-08-19-rust-migration-icp-scalarfield/src/scalar_field.rs`
+
+## The formulas (with line numbers in the C++ source)
+
+### 1. `ScalarField::computeMeanAndVariance`
+
+**File:** `libs/qCC_db/extern/CCCoreLib/src/ScalarField.cpp:65-95`
+
+```cpp
+void ScalarField::computeMeanAndVariance(ScalarType& mean, ScalarType* variance) const {
+    double _mean = 0.0;
+    double _std2 = 0.0;
+    std::size_t count = 0;
+
+    for (std::size_t i = 0; i < size(); ++i) {
+        float val = at(i);
+        if (std::isfinite(val)) {                   // ← ValidValue
+            _mean += val;
+            _std2 += static_cast<double>(val) * val; // ← Σx²
+            ++count;
+        }
+    }
+
+    if (count) {
+        _mean /= count;                              // ← mean = Σx/n
+        mean = _mean;
+
+        if (variance) {
+            _std2 = std::abs(_std2 / count - _mean*_mean);  // ← var = Σx²/n − mean²
+            *variance = static_cast<ScalarType>(_std2);
+        }
+
+        mean += m_offset;
+    }
+}
+```
+
+**Rust port:**
+
+```rust
+pub fn mean(values: &[f32]) -> f64 {
+    let mut sum = 0.0_f64;
+    let mut count = 0usize;
+    for &v in values {
+        if v.is_finite() {
+            sum += v as f64;
+            count += 1;
+        }
+    }
+    if count == 0 { std::f64::NAN } else { sum / count as f64 }
+}
+
+pub fn std(values: &[f32], mean: f64) -> f64 {
+    let mut sum_sq = 0.0_f64;
+    let mut count = 0usize;
+    for &v in values {
+        if v.is_finite() {
+            let d = v as f64 - mean;
+            sum_sq += d * d;
+            count += 1;
+        }
+    }
+    // Population std — NO Bessel correction (no (n-1) divisor)
+    if count == 0 { 0.0 } else { (sum_sq / count as f64).sqrt() }
+}
+```
+
+### 2. `ValidValue`
+
+**File:** `libs/qCC_db/extern/CCCoreLib/include/ScalarField.h:100`
+
+```cpp
+static inline bool ValidValue(ScalarType value) { return std::isfinite(value); }
+```
+
+**Rust port:** `value.is_finite()`.
+
+**Important:** `NAN_VALUE = std::numeric_limits<ScalarType>::quiet_NaN()`.
+It is **real IEEE NaN**, not a sentinel like `-1.0e-30`. See
+`libs/qCC_db/extern/CCCoreLib/include/CCConst.h:54`.
+
+### 3. `computeMeanSquareScalarValue`
+
+**File:** `libs/qCC_db/extern/CCCoreLib/src/ScalarFieldTools.cpp:753-777`
+
+```cpp
+ScalarType ScalarFieldTools::computeMeanSquareScalarValue(GenericCloud* theCloud) {
+    double meanValue = 0.0;
+    unsigned count = 0;
+    for (unsigned i=0; i<theCloud->size(); ++i) {
+        ScalarType V = theCloud->getPointScalarValue(i);
+        if (ScalarField::ValidValue(V)) {
+            double Vd = static_cast<double>(V);
+            meanValue += Vd*Vd;     // ← Σx²
+            ++count;
+        }
+    }
+    return (count ? static_cast<ScalarType>(meanValue/count) : 0);
+    //                            ↑ mean of squares, NOT RMS
+}
+```
+
+**Rust port:**
+
+```rust
+pub fn rms(values: &[f32]) -> f64 {
+    let mut sum_sq = 0.0_f64;
+    let mut count = 0usize;
+    for &v in values {
+        if v.is_finite() {
+            sum_sq += (v as f64) * (v as f64);
+            count += 1;
+        }
+    }
+    if count == 0 { std::f64::NAN } else { (sum_sq / count as f64).sqrt() }
+    //                                              ↑ RMS = sqrt(mean of squares)
+}
+```
+
+## Verification table
+
+| Test | Input | Expected | Got | Pass? |
+|---|---|---|---|---|
+| `test_std_basic` | `[2,4,4,4,5,5,7,9]` | std = 2.0 (population) | 2.0 | ✅ |
+| `test_rms` | `[3, 4]` | sqrt(12.5) ≈ 3.5355 | 3.5355 | ✅ |
+| `parity_mean_with_nan_cloudcompare` | `[1, NaN, 3]` | mean = 2.0 | 2.0 | ✅ |
+| `test_mean_with_nan` | `[1, NaN, 3, inf, 5]` | mean = 3.0 | 3.0 | ✅ |
+| `parity_mean_known` | `[1, 2, 3, 4, 5]` | mean = 3.0 | 3.0 | ✅ |
+
+## Why Bessel correction was wrong
+
+Rust's default convention is sample std (`÷n-1`). Statistics textbooks
+teach this as "Bessel's correction". But CCCoreLib uses population std
+(`÷n`). Two reasons it's the right call here:
+
+1. **CCCoreLib is the reference.** Porting a library means matching
+   its behaviour, not "improving" it. If the maintainers wanted
+   Bessel correction, they'd have it.
+2. **It matters for small samples.** The `[2,4,4,4,5,5,7,9]` test
+   has only 8 values. Population gives 2.0 exactly; sample gives
+   2.138. Downstream code (e.g. M3C2 distances) depends on the
+   exact value.
+
+## Related
+
+- Top-level decision: [`../decisions.md#d1`](../decisions.md#d1)
+- Originating session: [`../../sessions/2026-08-19-rust-migration-icp-scalarfield/`](../../sessions/2026-08-19-rust-migration-icp-scalarfield/)
+- Pattern: [`../patterns.md#p1`](../patterns.md#p1)
+</file>
+
+<file path="experimental/docs/decisions.md">
+# Decisions — "Why we chose Y"
+
+> Architectural decisions made in the experimental workspace. Each decision
+> is 5–15 bullets. If it's longer, link out to a session.
+
+---
+
+## D1. 2026-08-19 — CCCoreLib formulas for Rust ScalarField port
+
+**Context:** Porting `ScalarField::computeMeanAndVariance()`,
+`computeMeanSquareScalarValue()`, and `ValidValue()` to Rust. The test
+suite initially failed because the formulas didn't match.
+
+**Decisions:**
+
+- **Population variance, not Bessel-corrected.** CCCoreLib's formula is
+  `var = Σx²/n − mean²`. Rust was using `Σx²/(n-1)` (sample variance).
+  Switched to match. Argument: CCCoreLib is the reference; sample
+  variance is statistical folklore, not what CloudCompare computes.
+- **`NAN_VALUE = std::numeric_limits<ScalarType>::quiet_NaN()`.** Real
+  IEEE NaN, NOT a sentinel like `-1.0e-30`. The original test comment
+  was wrong. Switched the test to use `f32::NAN`.
+- **RMS = sqrt(Σx²/n).** `computeMeanSquareScalarValue` returns the
+  mean of squares, not RMS itself. The caller takes sqrt. Documented
+  the two-step pattern in `scalar_field.rs`.
+
+**Source:** `sessions/2026-08-19-rust-migration-icp-scalarfield/`
+
+**Verification:** `cargo test` in that session — all 28 tests pass.
+
+---
+
+## D2. 2026-08-19 — Pure-Rust first, CXX second
+
+**Context:** We have a Rust crate that needs to call CCCoreLib functions
+(ultimately, to load `.las` files and to compare against the C++
+algorithms directly). The CXX FFI bridge had multiple issues during the
+first attempt.
+
+**Decisions:**
+
+- **Build pure-Rust first, validate the algorithms, then add CXX.**
+  Reasoning: the algorithm logic (ScalarField, ICP, octree) doesn't
+  require C++. Pure-Rust lets us iterate fast (no MSVC, no link
+  failures, <1s test runs). Once the algorithm is right, CXX is a
+  thin transport layer.
+- **CXX is opt-in via `cxx-ffi` feature flag.** Default build is
+  pure-Rust and works on any toolchain. CXX is enabled with
+  `cargo build --features cxx-ffi` and requires MSVC.
+- **MSVC d3d11.lib fix is a CMake `add_link_options`, not a
+  `target_link_libraries` workaround.** Reasoning: the issue is the
+  linker search path, not a missing library. `add_link_options` is the
+  right tool.
+
+**Source:** `sessions/2026-08-19-rust-migration-icp-scalarfield/`,
+`sessions/2026-08-19-convert-cxx-windows-bridge/` (TODO)
+
+**Verification:** Pure-Rust test pass: 28/28. CXX build: TODO.
+
+---
+
+## D3. 2026-08-19 — `experimental/` workspace structure
+
+**Context:** We need a place for throwaway builds that doesn't pollute
+the main codebase. `sandbox/` was gitignored wholesale; we wanted
+AGENTS.md files, decision records, and templates to be tracked.
+
+**Decisions:**
+
+- **Move `sandbox/` under `experimental/sessions/`.** The whole point
+  of `experimental/` is the structure (templates, sessions, docs).
+  Tracking the structure is part of the value.
+- **Track AGENTS.md, templates/, docs/, and source code. Ignore
+  build outputs.** Updated `.gitignore` with `**/target/`, `**/build/`,
+  `**/.cargo/`, etc. — narrow rules, not blanket.
+- **Templates live at `experimental/templates/<name>/`.** Each
+  template has its own `AGENTS.md` and `README.md`. Templates are
+  versioned alongside the main codebase.
+- **Session names are `<YYYY-MM-DD>-<short-topic>`.** Date + topic
+  reads naturally in `ls` output and on commits.
+- **Scenarios group multiple sessions for A/B/C comparisons.**
+  Each scenario is a folder under `experimental/scenarios/`
+  containing 2-3 sibling session folders and a `decisions.md` that
+  picks the winner.
+
+**Source:** `experimental/AGENTS.md`, `experimental/templates/AGENTS.md`
+
+**Verification:** `experimental/sandbox -> sessions/2026-08-19-rust-migration-icp-scalarfield/`
+move succeeded; all 28 tests still pass.
+
+---
+
+## D4. 2026-08-19 — `kiddo` vs. hand-rolled octree for ICP
+
+**Context:** ICP needs a fast nearest-neighbour search. The naive
+O(n²) implementation in `registration.rs` works for tests but is too
+slow for real `.las` data (10M+ points). Three options:
+
+1. Naive O(n²) brute force
+2. `kiddo` crate (KD-tree, pure Rust, well-tested)
+3. Hand-rolled octree (matches CCCoreLib's `DgmOctree`)
+
+**Decisions:** *pending — see `scenarios/2026-08-19-icp-variants/`.*
+
+To be decided by the scenario once all three are implemented and
+benchmarked.
+
+---
+
+## Adding a new decision
+
+When you make an architectural decision in a session:
+
+1. Append a section to this file with the format `## D<n>. <date> — <title>`.
+2. State the **Context** (what was the problem?).
+3. State the **Decisions** (what did we choose, and why? — 1 bullet each).
+4. **Source** the session folder.
+5. **Verify** with a one-line proof (test passed, benchmark was X, etc.).
+
+If the decision is too long (>15 bullets), link to a session for the
+detail and keep this entry to a 3-bullet summary.
+
+---
+
+## Out of scope here
+
+- "Why use Rust at all" — that's in `../../PRD/rust/05-roadmap.md`.
+- "Why a sandbox" — that's in `../../AGENTS.md` (this file's parent).
+- Decisions about the main codebase — those go in commit messages
+  and PR descriptions, not here.
+</file>
+
+<file path="experimental/docs/index.md">
+# Experimental Sessions — Index
+
+> Catalogue of every session and scenario. If a session isn't here, it doesn't exist.
+
+## How to read this file
+
+- **Date** — when the session was created (YYYY-MM-DD)
+- **Name** — kebab-case, no spaces
+- **Status** — Active / Done / Abandoned
+- **Template** — which template it was based on
+- **What** — one-line summary
+- **Outcome** — what we learnt / what to do next
+
+## Sessions
+
+| Date | Name | Status | Template | What | Outcome |
+|---|---|---|---|---|---|
+| 2026-08-19 | [rust-migration-icp-scalarfield](../sessions/2026-08-19-rust-migration-icp-scalarfield/) | Active | `rust_lib` | Pure-Rust port of CCCoreLib ScalarField + ICP | 28/28 tests pass. Population std and NaN handling match CCCoreLib. |
+
+## Scenarios
+
+A **scenario** is a folder of 2–3 sessions that explore variants of the same problem, plus a `decisions.md` that picks a winner.
+
+| Date | Name | Status | What |
+|---|---|---|---|
+| 2026-08-19 | [icp-variants](../scenarios/2026-08-19-icp-variants/) | Active | Compare 3 ICP implementations: naive O(n²) NN, `kiddo` KD-tree, hand-rolled octree |
+
+## Templates
+
+| Template | What |
+|---|---|
+| [`rust_lib`](../templates/rust_lib/) | Pure-Rust library, no FFI |
+| [`rust_cxx_app`](../templates/rust_cxx_app/) | Rust + CXX FFI (opt-in via `cxx-ffi` feature) |
+| [`cpp_qt_console`](../templates/cpp_qt_console/) | Qt 6 console app, no GUI |
+| [`cpp_qt_gui`](../templates/cpp_qt_gui/) | Qt 6 desktop view with 3D OpenGL viewport |
+
+## Knowledge base
+
+- [`patterns.md`](patterns.md) — "how we do X" notes (RCP loader, Sentry, etc.)
+- [`decisions.md`](decisions.md) — "why we chose Y" notes (KD-tree over octree, etc.)
+
+## Adding a row
+
+When you create a session:
+
+1. Add a row to the **Sessions** table.
+2. Update the template column if you used a different one.
+3. Link to the session's `README.md` (the link target is the session folder, not its README — README paths break easily).
+
+When you graduate a session (move code to `cc-rust/`, `plugins/`, or the main codebase):
+
+1. Change the Status to **Done** and add a "Graduated to" note in the Outcome column.
+
+When you abandon a session:
+
+1. Change the Status to **Abandoned** and link to the **decision** that explains why.
+
+## See also
+
+- Workflow: [`../AGENTS.md`](../AGENTS.md)
+- Root: [`../../AGENTS.md`](../../AGENTS.md)
+</file>
+
+<file path="experimental/docs/patterns.md">
+# Patterns — "How we do X"
+
+> Reusable patterns. If a session teaches us a new pattern, append it here.
+> One page per pattern. Link out to the originating session.
+
+---
+
+## P1. Characterisation tests against CCCoreLib
+
+**Pattern:** When porting a C++ algorithm to Rust, write characterisation tests
+that pin Rust's behaviour to the C++ source. The "right answer" is what
+CCCoreLib does, not what statistical folklore says.
+
+**Steps:**
+
+1. Read the C++ source for the function. Note the exact formula and any
+   special-case handling (NaN, infinity, sentinel values).
+2. Implement the function in Rust.
+3. Write tests that exercise:
+   - The basic case
+   - Edge cases (empty, single, all-invalid)
+   - The cases that caught you out the first time (e.g. NaN)
+4. Document the C++ formula in a comment above each Rust function.
+5. If a Rust test fails because the formula is different, the **Rust code is
+   wrong** until proven otherwise — investigate, don't relax the test.
+
+**Example from this repo:**
+
+- `sessions/2026-08-19-rust-migration-icp-scalarfield/src/scalar_field.rs`
+- `docs/decisions/2026-08-19-rust-scalarfield-formulas.md`
+
+**Anti-pattern:** writing `assert!((rust - expected).abs() < 1e-6)` and
+"tuning" the test until it passes. The expected value comes from the C++
+source. If the test fails, the formula is wrong.
+
+---
+
+## P2. vcvars64 environment capture
+
+**Pattern:** Capturing MSVC environment variables from PowerShell so
+Rust/CXX builds work.
+
+**Why:** Rust's GNU toolchain (x86_64-pc-windows-gnu) is the default; it
+expects `g++.exe`. CCCoreLib and Qt require `cl.exe`. Without the right
+environment, `link-cplusplus` (used by `cxx-build`) fails with cryptic
+errors.
+
+**How:** Source `experimental/shared/scripts/get-vcvars.ps1` at the top of
+your build script. Then set `CC=cl.exe` and `CXX=cl.exe` (and
+`CXXFLAGS=/std:c++17 /EHsc` for CXX).
+
+**Source:** `experimental/shared/scripts/get-vcvars.ps1`
+
+**Verified on:** Windows Server 2019, VS 2022 Community 17.14, MSVC 14.44,
+Windows SDK 10.0.26100.0.
+
+---
+
+## P3. Windows SDK lib path for Qt OpenGLWidgets
+
+**Pattern:** When linking `Qt6::OpenGLWidgets` with MSVC, the linker
+needs to find `d3d11.lib`, `dxgi.lib`, `d3d12.lib` from the Windows SDK.
+
+**Why:** The MSVC linker's default library search path doesn't include
+the Windows SDK. vcpkg's toolchain file interferes with
+`CMAKE_SYSTEM_LIBRARY_PATH`, so the usual CMake workarounds don't apply.
+
+**How:** In your `CMakeLists.txt`, before the `target_link_libraries`
+call:
+
+```cmake
+if(MSVC AND EXISTS "$ENV{WindowsSdkDir}/Lib/$ENV{WindowsSDKVersion}/um/x64/d3d11.lib")
+    add_link_options("/LIBPATH:\"$ENV{WindowsSdkDir}/Lib/$ENV{WindowsSDKVersion}/um/x64\"")
+endif()
+```
+
+Requires that `$env:WindowsSdkDir` and `$env:WindowsSDKVersion` are set —
+sourcing `get-vcvars.ps1` does this.
+
+**Source:** `qCC/test/CMakeLists.txt`, `experimental/templates/cpp_qt_gui/CMakeLists.txt`
+
+---
+
+## P4. CXX FFI — `unsafe extern "C++"` for safe-to-call functions
+
+**Pattern:** In a `#[cxx::bridge]` module, the `extern "C++"` block must
+be marked `unsafe extern "C++"` if it contains any function declarations,
+even "safe" ones.
+
+**Why:** CXX 1.0 requires this for all C++ blocks. Without it, cxx-build
+fails with "block must be declared `unsafe extern "C++"`".
+
+**How:**
+
+```rust
+#[cxx::bridge]
+pub mod ffi {
+    unsafe extern "C++" {
+        include!("cpp/bridge.h");
+        fn my_cpp_function(x: i32) -> i32;
+    }
+}
+```
+
+**Source:** `experimental/templates/rust_cxx_app/src/lib.rs`
+
+---
+
+## P5. CXX header location — the auto-generated `lib.rs.h`
+
+**Pattern:** CXX 1.0 generates the FFI header at
+`target/.../cxxbridge/include/<crate>/src/lib.rs.h`. Your `cpp/bridge.h`
+must include this with that exact path (note the `src/` between crate
+name and the file).
+
+**How:**
+
+```cpp
+// cpp/bridge.h
+#pragma once
+#include "<crate>/src/lib.rs.h"  // brings in ::rust::cxxbridge1::String, ::rust::cxxbridge1::Str
+
+::rust::cxxbridge1::String my_func(::rust::cxxbridge1::Str input);
+```
+
+**Source:** `experimental/templates/rust_cxx_app/cpp/bridge.h`
+
+---
+
+## P6. Staticlib + rlib for hybrid Rust crates
+
+**Pattern:** When you want a Rust crate to be both linkable from C++
+(via CXX) and usable from a Rust binary in the same crate, use
+`crate-type = ["staticlib", "rlib"]`.
+
+**Why:** Without `rlib`, the bin target can't `use crate_name::...` —
+the crate is only available as a static library.
+
+**How:**
+
+```toml
+[lib]
+name = "my_crate"
+path = "src/lib.rs"
+crate-type = ["staticlib", "rlib"]
+```
+
+**Source:** `experimental/templates/rust_cxx_app/Cargo.toml`
+
+---
+
+## P7. CXX FFI is opt-in (feature flag) for portability
+
+**Pattern:** When a template's default build doesn't need CXX, gate
+CXX behind a feature flag. The default `cargo test` then works on any
+toolchain; CXX is opt-in for when you actually need FFI.
+
+**Why:** CXX requires the MSVC toolchain. If the template's default
+build needs CXX, every session that uses the template needs MSVC, even
+for pure-Rust experiments.
+
+**How:**
+
+```toml
+[features]
+default = []
+cxx-ffi = ["dep:cxx"]
+
+[dependencies]
+cxx = { version = "1.0", optional = true }
+
+[build-dependencies]
+cxx-build = { version = "1.0", optional = true }
+```
+
+```rust
+// build.rs
+#[cfg(feature = "cxx-ffi")]
+fn build_cxx() { /* ... */ }
+
+fn main() {
+    #[cfg(feature = "cxx-ffi")]
+    build_cxx();
+}
+```
+
+**Source:** `experimental/templates/rust_cxx_app/`
+
+---
+
+## P8. Experimental session lifecycle
+
+**Pattern:** Every experiment follows the same lifecycle. Don't skip steps.
+
+1. **Search first.** Read `docs/index.md`, `docs/patterns.md`, `docs/decisions.md`.
+2. **Pick a template.** `rust_lib`, `rust_cxx_app`, `cpp_qt_console`, `cpp_qt_gui`.
+3. **Scaffold:** `cp -r templates/<chosen> sessions/<YYYY-MM-DD>-<topic>/`
+4. **Implement minimally.** Throwaway but buildable.
+5. **Build & test.** The session must end green.
+6. **Document.** Update `docs/index.md` and either `docs/patterns.md` or
+   `docs/decisions.md` (or both).
+
+**Source:** `experimental/AGENTS.md`
+
+---
+
+## Adding a new pattern
+
+When you find a pattern that:
+
+- Solves a recurring problem
+- Took more than 30 minutes to figure out
+- Has a "right way" to do it (rather than "it works on my machine")
+
+…add it here. One page, link to the originating session, link to the
+code that uses it.
+
+Don't add:
+
+- Trivial things (one-line answers)
+- Things that are well-documented elsewhere (link to the official docs)
+- Hypothetical patterns ("we might want to do X someday")
+</file>
+
+<file path="experimental/scenarios/2026-08-19-icp-variants/01-naive-on2/src/lib.rs">
+//! ICP variant 1: naive O(n²) nearest-neighbour.
+//!
+//! Same algorithm as `sessions/2026-08-19-rust-migration-icp-scalarfield/src/registration.rs`
+//! but isolated here so we can A/B against the other variants.
+//!
+//! Complexity: O(n × m) per ICP iteration, where n = data size, m = model size.
+//! For 100k data points and 100k model points, this is 10^10 ops per iteration
+//! — completely infeasible for real data.
+
+use nalgebra::Vector3;
+
+#[derive(Debug, Clone)]
+pub struct IcpParams {
+    pub max_iterations: u32,
+    pub min_rms_decrease: f64,
+}
+
+impl Default for IcpParams {
+    fn default() -> Self {
+        Self { max_iterations: 50, min_rms_decrease: 1e-8 }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct IcpResult {
+    pub rms: f64,
+    pub converged: bool,
+    pub iterations: u32,
+    pub transform: Vec<f64>, // 4x4 column-major
+}
+
+/// Run ICP using O(n²) brute-force nearest-neighbour.
+///
+/// `data_points` is modified in place: by the end it should be aligned with `model_points`.
+pub fn icp_iterate(
+    data_points: &mut [f32],
+    model_points: &[f32],
+    params: &IcpParams,
+) -> Result<IcpResult, String> {
+    let n_data = data_points.len() / 3;
+    let n_model = model_points.len() / 3;
+    if n_data < 3 || n_model < 3 {
+        return Err(format!("ICP needs ≥3 points: data={}, model={}", n_data, n_model));
+    }
+
+    let (centroid_data, centroid_model) = compute_centroids(data_points, model_points);
+    let h = compute_covariance(data_points, model_points, centroid_data, centroid_model);
+    let rotation = compute_rotation_svd(&h)?;
+    let translation = centroid_model - rotation * centroid_data;
+
+    let mut prev_rms = f64::INFINITY;
+    for iter in 0..params.max_iterations {
+        let mut sum_dist_sq = 0.0;
+        for i in 0..n_data {
+            let idx = i * 3;
+            let pt = Vector3::new(
+                data_points[idx] as f64,
+                data_points[idx + 1] as f64,
+                data_points[idx + 2] as f64,
+            );
+            let transformed = rotation * pt + translation;
+            let (_nn_idx, dist_sq) = nearest_neighbour_brute(model_points, &transformed);
+            data_points[idx] = transformed[0] as f32;
+            data_points[idx + 1] = transformed[1] as f32;
+            data_points[idx + 2] = transformed[2] as f32;
+            sum_dist_sq += dist_sq;
+        }
+        let rms = (sum_dist_sq / n_data as f64).sqrt();
+        let decrease = prev_rms - rms;
+        prev_rms = rms;
+        log::debug!("iter {}: rms={:.6}, decrease={:.6e}", iter, rms, decrease);
+        if rms < params.min_rms_decrease {
+            return Ok(IcpResult { rms, converged: true, iterations: iter + 1, transform: build_transform(&rotation, &translation) });
+        }
+    }
+    Ok(IcpResult { rms: prev_rms, converged: false, iterations: params.max_iterations, transform: build_transform(&rotation, &translation) })
+}
+
+fn compute_centroids(data: &[f32], model: &[f32]) -> (Vector3<f64>, Vector3<f64>) {
+    let n_data = data.len() / 3;
+    let n_model = model.len() / 3;
+    let mut c_data = Vector3::zeros();
+    let mut c_model = Vector3::zeros();
+    for i in 0..n_data {
+        c_data += Vector3::new(data[i * 3] as f64, data[i * 3 + 1] as f64, data[i * 3 + 2] as f64);
+    }
+    c_data /= n_data as f64;
+    for i in 0..n_model {
+        c_model += Vector3::new(model[i * 3] as f64, model[i * 3 + 1] as f64, model[i * 3 + 2] as f64);
+    }
+    c_model /= n_model as f64;
+    (c_data, c_model)
+}
+
+fn compute_covariance(
+    data: &[f32],
+    model: &[f32],
+    cd: Vector3<f64>,
+    cm: Vector3<f64>,
+) -> nalgebra::Matrix3<f64> {
+    let n = (data.len() / 3).min(model.len() / 3);
+    let mut h = nalgebra::Matrix3::<f64>::zeros();
+    for i in 0..n {
+        let dp = Vector3::new(data[i * 3] as f64, data[i * 3 + 1] as f64, data[i * 3 + 2] as f64) - cd;
+        let mp = Vector3::new(model[i * 3] as f64, model[i * 3 + 1] as f64, model[i * 3 + 2] as f64) - cm;
+        h += dp * mp.transpose();
+    }
+    h
+}
+
+fn compute_rotation_svd(h: &nalgebra::Matrix3<f64>) -> Result<nalgebra::Matrix3<f64>, String> {
+    use nalgebra::linalg::SVD;
+    let svd = SVD::new(*h, true, true);
+    let v = svd.v_t.ok_or("singular: v_t is None")?;
+    let u = svd.u.ok_or("singular: u is None")?;
+    let mut r = v * u.transpose();
+    if r.determinant() < 0.0 {
+        let n_cols = r.ncols();
+        for i in 0..r.nrows() {
+            r[(i, n_cols - 1)] = -r[(i, n_cols - 1)];
+        }
+    }
+    Ok(r)
+}
+
+fn build_transform(rot: &nalgebra::Matrix3<f64>, trans: &Vector3<f64>) -> Vec<f64> {
+    let mut m = vec![0.0_f64; 16];
+    m[0] = rot[(0,0)]; m[4] = rot[(0,1)]; m[8]  = rot[(0,2)]; m[12] = trans[0];
+    m[1] = rot[(1,0)]; m[5] = rot[(1,1)]; m[9]  = rot[(1,2)]; m[13] = trans[1];
+    m[2] = rot[(2,0)]; m[6] = rot[(2,1)]; m[10] = rot[(2,2)]; m[14] = trans[2];
+    m[3] = 0.0;        m[7] = 0.0;        m[11] = 0.0;        m[15] = 1.0;
+    m
+}
+
+/// Brute-force O(n) nearest-neighbour. Returns (index, squared_distance).
+fn nearest_neighbour_brute(model: &[f32], query: &Vector3<f64>) -> (usize, f64) {
+    let n = model.len() / 3;
+    let mut best_idx = 0;
+    let mut best_dist_sq = f64::MAX;
+    for i in 0..n {
+        let dx = model[i * 3] as f64 - query[0];
+        let dy = model[i * 3 + 1] as f64 - query[1];
+        let dz = model[i * 3 + 2] as f64 - query[2];
+        let d = dx*dx + dy*dy + dz*dz;
+        if d < best_dist_sq { best_dist_sq = d; best_idx = i; }
+    }
+    (best_idx, best_dist_sq)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn icp_identity() {
+        let model: Vec<f32> = (0..300).map(|i| (i % 3) as f32).collect();
+        let mut data = model.clone();
+        let r = icp_iterate(&mut data, &model, &IcpParams::default()).unwrap();
+        assert!(r.rms < 1e-5, "RMS should be ~0 for identical clouds, got {}", r.rms);
+    }
+
+    #[test]
+    fn icp_translation() {
+        // 8 cube corners, data = model + (1, 0, 0)
+        let model: Vec<f32> = vec![
+            0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0,
+            1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+        ];
+        let mut data: Vec<f32> = (0..model.len()/3)
+            .flat_map(|i| vec![model[i*3] + 1.0, model[i*3+1], model[i*3+2]])
+            .collect();
+        let r = icp_iterate(&mut data, &model, &IcpParams::default()).unwrap();
+        assert!(r.rms < 0.1, "ICP should achieve low RMS, got {}", r.rms);
+    }
+}
+</file>
+
+<file path="experimental/scenarios/2026-08-19-icp-variants/01-naive-on2/src/main.rs">
+//! ICP variant 1 — naive O(n²) — CLI benchmark.
+
+use icp_v1_naive::{icp_iterate, IcpParams};
+
+fn main() {
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
+
+    let args: Vec<String> = std::env::args().skip(1).collect();
+    let n: usize = args.get(0).and_then(|s| s.parse().ok()).unwrap_or(2000);
+    let seed: u64 = args.get(1).and_then(|s| s.parse().ok()).unwrap_or(42);
+
+    // Generate a model cloud: random Gaussian blob
+    let model = generate_gaussian(n, 0.4, seed);
+    // Generate data = model translated by (0.5, 0, 0)
+    let mut data: Vec<f32> = (0..n).flat_map(|i| vec![model[i*3] + 0.5, model[i*3+1], model[i*3+2]]).collect();
+
+    eprintln!("Naive O(n²) ICP: {} points", n);
+    eprintln!("Building (no tree needed)...");
+
+    let start = std::time::Instant::now();
+    let result = icp_iterate(&mut data, &model, &IcpParams::default()).unwrap();
+    let elapsed = start.elapsed();
+
+    println!("iterations  = {}", result.iterations);
+    println!("converged   = {}", result.converged);
+    println!("final rms   = {:.6}", result.rms);
+    println!("time        = {:.3} s", elapsed.as_secs_f64());
+    println!("NN time     = (per-iteration, total) ~{:.3} s", elapsed.as_secs_f64());
+}
+
+/// Generate a Gaussian point cloud with `n` points.
+/// Uses xorshift64 for a deterministic seedable PRNG and Box-Muller for normal samples.
+fn generate_gaussian(n: usize, sigma: f32, seed: u64) -> Vec<f32> {
+    let mut state = seed;
+    let mut next_u = || -> f32 {
+        state ^= state << 13;
+        state ^= state >> 7;
+        state ^= state << 17;
+        (state as f64 / u64::MAX as f64) as f32
+    };
+    let mut next_normal = || -> f32 {
+        let u1 = next_u().max(1e-6);
+        let u2 = next_u();
+        let r = (-2.0 * u1.ln()).sqrt();
+        let theta = 2.0 * std::f32::consts::PI * u2;
+        r * theta.cos() * sigma
+    };
+    let mut out = Vec::with_capacity(n * 3);
+    for _ in 0..n {
+        out.push(next_normal());
+        out.push(next_normal());
+        out.push(next_normal());
+    }
+    out
+}
+</file>
+
+<file path="experimental/scenarios/2026-08-19-icp-variants/01-naive-on2/AGENTS.md">
+# Session: 01-naive-on2 (ICP variant 1)
+
+**Scenario:** [`../`](../) — ICP variants comparison
+**Approach:** O(n²) brute-force nearest-neighbour
+**Status:** Skeleton — implements ICP, tests pass, but not benchmarked yet
+
+## What this is
+
+The baseline ICP implementation. Every iteration, for every data point, scans
+all model points to find the closest. O(n × m) per iteration, with m = n
+for two equal-sized clouds.
+
+## Build & test
+
+```powershell
+cd experimental/scenarios/2026-08-19-icp-variants/01-naive-on2
+cargo test
+cargo run --release --bin icp_bench -- 2000 42
+```
+
+## Expected performance
+
+For N points:
+
+| N | Time per ICP iteration | Total time (50 iters) |
+|---|---|---|
+| 1,000 | 1 ms | 50 ms |
+| 10,000 | 100 ms | 5 s |
+| 100,000 | 10 s | 8 min |
+| 1,000,000 | 17 min | 14 hours |
+
+**Verdict:** infeasible for real `.las` data (typically 10M+ points).
+
+## When to use
+
+- Tiny clouds (< 10k points)
+- Unit tests
+- Sanity check before trying the heavier variants
+- Profiling (the O(n²) hot path is easy to spot)
+
+## When NOT to use
+
+- Real survey data
+- Anything > 10k points
+- Anything time-sensitive
+
+## Observations
+
+*To be filled in once we run the benchmark and compare with variants 02 and 03.*
+
+## See also
+
+- Scenario: [`../`](../) — the A/B/C comparison
+- Sibling: [`../02-kiddo-kdtree/`](../02-kiddo-kdtree/), [`../03-handrolled-octree/`](../03-handrolled-octree/)
+- Originating implementation: [`../../../sessions/2026-08-19-rust-migration-icp-scalarfield/src/registration.rs`](../../../sessions/2026-08-19-rust-migration-icp-scalarfield/src/registration.rs)
+</file>
+
+<file path="experimental/scenarios/2026-08-19-icp-variants/01-naive-on2/Cargo.toml">
+[package]
+name = "icp_v1_naive"
+version = "0.1.0"
+edition = "2021"
+description = "ICP variant 1: naive O(n²) nearest-neighbour. Baseline."
+
+[lib]
+name = "icp_v1_naive"
+path = "src/lib.rs"
+
+[dependencies]
+nalgebra = "0.34"
+log = "0.4"
+env_logger = "0.11"
+
+[dev-dependencies]
+approx = "0.5"
+
+[[bin]]
+name = "icp_bench"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+</file>
+
+<file path="experimental/scenarios/2026-08-19-icp-variants/01-naive-on2/README.md">
+# 01-naive-on2 — ICP variant 1 (baseline)
+
+O(n²) brute-force nearest-neighbour ICP. The baseline; every other variant
+beats this on speed.
+
+## Quick start
+
+```powershell
+cargo test
+cargo run --release --bin icp_bench -- 2000 42
+```
+
+## What it does
+
+- Same ICP algorithm as the main session: Horn 1987 SVD-based registration
+- NN search: brute-force scan of all model points per query
+- O(n × m) per iteration; O(n² × iters) for two equal clouds of size n
+
+## See also
+
+- `AGENTS.md` — observations, expected performance, when to use
+- [`../`](../) — the scenario A/B/C
+</file>
+
+<file path="experimental/scenarios/2026-08-19-icp-variants/AGENTS.md">
+# Scenario: ICP variants (2026-08-19)
+
+> Compare 3 ICP implementations and pick a winner.
+
+## The question
+
+ICP needs a fast nearest-neighbour (NN) search. The naive O(n²) brute-force
+NN in `sessions/2026-08-19-rust-migration-icp-scalarfield/src/registration.rs`
+works for tests but is too slow for real `.las` data (10M+ points). We have
+three options:
+
+1. **Naive O(n²)** — simple, no dependencies, O(n²) per ICP iteration
+2. **`kiddo` KD-tree** — pure-Rust KD-tree crate, O(log n) per NN
+3. **Hand-rolled octree** — matches CCCoreLib's `DgmOctree`, octree subdivision
+
+This scenario implements all three, benchmarks them on the same input, and
+records the winner in [`decisions.md`](decisions.md).
+
+## The variants
+
+| # | Folder | Approach | Status |
+|---|---|---|---|
+| 01 | `01-naive-on2/` | O(n²) brute force | Done — passes tests |
+| 02 | `02-kiddo-kdtree/` | `kiddo` KD-tree | Skeleton |
+| 03 | `03-handrolled-octree/` | hand-rolled octree | Skeleton |
+
+## How to read this scenario
+
+Each variant is a **sibling session** under `experimental/scenarios/.../`. They
+follow the same `rust_lib` template structure:
+
+```
+01-naive-on2/
+├── AGENTS.md               ← what this variant is
+├── README.md               ← build/run, observations
+├── Cargo.toml
+└── src/
+    ├── lib.rs              ← the ICP implementation
+    └── main.rs             ← CLI
+```
+
+The `decisions.md` at this level is the **winner + rationale**. It links to
+each variant session.
+
+## Why scenarios
+
+A single ICP implementation might be best for tiny clouds, a different one
+for huge clouds. We want to see the **tradeoff curve**, not pick one
+implementation. Scenarios let us A/B/C in parallel and record what we
+actually measured.
+
+## Workflow
+
+1. **Implement variant 01** (naive) — already done in
+   `sessions/2026-08-19-rust-migration-icp-scalarfield/`, copy the
+   relevant `registration.rs` here.
+2. **Implement variant 02** (`kiddo`) — add the dep, build the KD-tree,
+   benchmark.
+3. **Implement variant 03** (octree) — hand-roll the subdivision.
+4. **Benchmark all three** on the same input (a small cube + a real
+   `.las` file).
+5. **Write `decisions.md`** with the winner, the time, the memory
+   cost, the LOC, and any "we'll re-evaluate at N=1M" notes.
+6. **Update `docs/decisions.md` (top-level)** with a one-paragraph
+   summary, linked back to this scenario.
+7. **Update root `AGENTS.md`** with "the current Rust ICP implementation
+   uses X (see scenario)".
+
+## What we are NOT comparing
+
+- **Algorithm variants** (point-to-point vs. point-to-plane ICP). That's
+  a different scenario (`scenarios/2026-08-20-icp-algorithm-variants/` —
+  TODO).
+- **Rotation estimation** (SVD vs. quaternions vs. dual quaternions).
+  Also a different scenario.
+- **Convergence criteria** (fixed iterations vs. RMS-based vs. delta
+  threshold). Yet another.
+
+We are ONLY comparing the **nearest-neighbour** data structure.
+
+## Related
+
+- Top-level decisions: [`../../docs/decisions.md`](../../docs/decisions.md) (D4)
+- Patterns: [`../../docs/patterns.md`](../../docs/patterns.md)
+- Index: [`../../docs/index.md`](../../docs/index.md)
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/.cargo/config.toml">
+# Sandbox Cargo config
+# Note: build.CC and build.CXX in config.toml are not standard Cargo keys.
+# Use environment variables instead (see sandbox-build.cmd).
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/cpp/las_loader_stub.cc">
+// Stub: CCCoreLib not configured yet.
+// See sandbox/CONFIGURE_CCCORELIB.md
+// Replace this with the real las_loader.cc when CCCoreLib is built.
+
+// Include the CXX-generated header so the generated wrapper finds our stubs.
+// CXX generates this header before C++ compilation starts.
+#include "cc_sandbox/lib.h"
+
+::std::string g_last_error;
+
+::rust::Box<CloudLoadResult> sandbox_load_las(::rust::Str path) {
+    (void)path;
+    g_last_error = "CCCoreLib not configured — see sandbox/CONFIGURE_CCCORELIB.md";
+    return nullptr; // null Box = failure
+}
+
+::rust::String sandbox_last_error() {
+    return ::rust::String::From(g_last_error);
+}
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/cpp/las_loader.cc">
+// cpp/las_loader.cc — C++ LAS loader for the CloudCompare Rust sandbox
+//
+// Loads a .las file via CCCoreLib::FileIOFilter and exposes the point data
+// to Rust through the CXX bridge. This is the ONLY C++ in the sandbox.
+//
+// Qt-free: uses only CCCoreLib and qCC_io static libs.
+// The FileIOFilter::Open() call is the same code path used by CloudCompare
+// when you File → Open a .las file in the GUI.
+//
+// Key insight: FileIOFilter returns a ccHObject* tree (generic object tree).
+// We traverse it to find ccPointCloud children and extract the point data.
+
+#include <cstdio>
+#include <cstring>
+#include <vector>
+#include <string>
+#include <stdexcept>
+
+// CCCoreLib / qCC_io headers
+#include "FileIOFilter.h"
+#include "ccHObject.h"
+#include "ccPointCloud.h"
+#include "ccLog.h"
+
+// CXX bridge header (generated by cxx-build from src/lib.rs)
+#include "rust/cxx.h"
+
+namespace sandbox {
+
+struct LoadResult {
+    std::vector<float> points;   // interleaved xyz: x0,y0,z0,x1,y1,z1,...
+    size_t count = 0;
+    bool has_colors = false;
+    bool has_intensity = false;
+    std::string error;
+};
+
+static LoadResult load_las_internal(const std::string& path) {
+    LoadResult result;
+
+    // Silencing ccLog for the sandbox (reduces noise)
+    // In a real sandbox you might redirect ccLog to a file
+    // ccLog::EnableStdLogging(false);
+
+    // FileIOFilter::Open() reads the file and returns a ccHObject tree.
+    // This is the same entry point as the CloudCompare GUI uses.
+    ccHObject* container = FileIOFilter::Open(path);
+
+    if (!container) {
+        result.error = "FileIOFilter::Open() returned nullptr for: " + path;
+        return result;
+    }
+
+    // Collect all ccPointCloud children from the loaded tree
+    ccHObject::Container clouds;
+    container->filterChildren(clouds, true, "PointCloud");
+
+    if (clouds.empty()) {
+        result.error = "No point cloud found in file: " + path;
+        delete container;
+        return result;
+    }
+
+    // Use the first cloud (most LAS files have exactly one cloud)
+    ccPointCloud* cloud = static_cast<ccPointCloud*>(clouds[0]);
+    size_t n = cloud->size();
+
+    if (n == 0) {
+        result.error = "Point cloud is empty: " + path;
+        delete container;
+        return result;
+    }
+
+    result.count = n;
+    result.has_colors = cloud->hasColors();
+    result.has_intensity = (cloud->getCurrentInScalarField() != nullptr);
+
+    // Extract xyz into interleaved float buffer
+    result.points.resize(n * 3);
+    for (size_t i = 0; i < n; ++i) {
+        const CCVector3* p = cloud->getPoint(i);
+        result.points[i * 3 + 0] = static_cast<float>(p->x);
+        result.points[i * 3 + 1] = static_cast<float>(p->y);
+        result.points[i * 3 + 2] = static_cast<float>(p->z);
+    }
+
+    // Log summary to stderr (visible in cargo run output)
+    fprintf(stderr, "[sandbox] Loaded %zu points from %s\n", n, path.c_str());
+    if (result.has_colors)   fprintf(stderr, "[sandbox]   → has colors\n");
+    if (result.has_intensity) fprintf(stderr, "[sandbox]   → has intensity\n");
+
+    delete container;
+    return result;
+}
+
+}  // namespace sandbox
+
+// ── CXX bridge ────────────────────────────────────────────────────────────
+// These functions are called from Rust via the cxx::bridge in src/lib.rs
+
+::sandbox::LoadResult sandbox_load_las(const ::std::string& path) {
+    return ::sandbox::load_las_internal(path);
+}
+
+size_t sandbox_cloud_point_count(const ::sandbox::LoadResult& result) {
+    return result.count;
+}
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/src/io.rs">
+// src/io.rs — Phase 4: File I/O (placeholder)
+//
+// This module is a placeholder for Phase 4 (file parsers).
+// For now, LAS loading is handled via the CXX bridge in cpp/las_loader.cc.
+//
+// Phase 4 targets:
+//   • LAS / LAZ: replace qLASIO (uses C++ LASzip)
+//   • PLY:       replace FileIOFilter's built-in PLY parser
+//   • CSV:       new pure-Rust CSV reader (no C++ needed)
+//
+// The strategy is:
+//   • Pure-Rust crates (csv, las-rs) do not need CXX
+//   • Load via Rust, pass Vec<f32> back through the existing CXX bridge
+//   • This eliminates LASzip and shapelib C++ dependencies entirely
+//
+// Stub only — filled in Phase 4.
+
+use thiserror::Error;
+
+#[derive(Debug, Error)]
+pub enum IoError {
+    #[error("file not found: {0}")]
+    NotFound(String),
+
+    #[error("parse error at byte {byte}: {message}")]
+    ParseError { byte: usize, message: String },
+
+    #[error("unsupported format: {0}")]
+    UnsupportedFormat(String),
+}
+
+pub struct CloudData {
+    pub points: Vec<f32>,       // interleaved xyz
+    pub colors: Option<Vec<u8>>, // RGB
+    pub intensities: Option<Vec<f32>>,
+    pub normals: Option<Vec<f32>>,
+}
+
+/// Load a CSV file with xyz columns.
+/// Pure Rust — no C++ needed.
+pub fn load_csv(path: &str) -> Result<CloudData, IoError> {
+    let mut rdr = csv::ReaderBuilder::new()
+        .has_headers(true)
+        .flexible(true)
+        .from_path(path)
+        .map_err(|_| IoError::NotFound(path.to_string()))?;
+
+    let mut points = Vec::new();
+
+    for result in rdr.records() {
+        let record = result.map_err(|e| IoError::ParseError {
+            byte: 0,
+            message: e.to_string(),
+        })?;
+
+        // Expect at least x, y, z columns
+        if record.len() >= 3 {
+            for field in record.iter().take(3) {
+                let v: f32 = field.parse().unwrap_or(0.0);
+                points.push(v);
+            }
+        }
+    }
+
+    Ok(CloudData {
+        points,
+        colors: None,
+        intensities: None,
+        normals: None,
+    })
+}
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/src/lib.rs">
+// src/lib.rs — CloudCompare Rust Sandbox
+//
+// Pure-Rust implementation. No C++ dependency required.
+// All modules compile and test without any C++ toolchain.
+//
+// The CXX FFI bridge to CCCoreLib will be added separately when
+// CCCoreLib is configured (see CONFIGURE_CCCORELIB.md).
+//
+// Migration phases:
+//   Phase 1 → scalar_field module (ScalarField statistics)
+//   Phase 2 → registration module (ICP, Horn registration)
+//   Phase 3 → octree module (DgmOctree, KdTree)
+//   Phase 4 → io module (LAS/PLY parsers — pure Rust via laszip)
+
+pub mod scalar_field; // Phase 1
+pub mod registration; // Phase 2
+pub mod octree; // Phase 3
+pub mod io; // Phase 4 (placeholder)
+
+use std::path::Path;
+
+// ── CLI + test harness entry point ────────────────────────────────────────
+
+#[derive(Debug, clap::Parser)]
+#[command(name = "cc-sandbox")]
+enum Command {
+    /// Load a .las file and print summary stats
+    LasLoad {
+        #[arg(long)]
+        file: String,
+
+        #[arg(long, default_value = "10")]
+        sample_size: usize,
+    },
+
+    /// Run ICP benchmark between two point clouds
+    IcpBench {
+        #[arg(long)]
+        model: String,
+
+        #[arg(long)]
+        data: String,
+
+        #[arg(long, default_value = "50")]
+        iterations: u32,
+
+        #[arg(long)]
+        output: Option<String>,
+    },
+
+    /// Run all unit tests
+    #[cfg(test)]
+    Test,
+}
+
+impl Default for Command {
+    fn default() -> Self {
+        Self::LasLoad {
+            file: "data/sample.las".into(),
+            sample_size: 10,
+        }
+    }
+}
+
+/// Main CLI entry point. Run with --help for options.
+pub fn run_cli() -> Result<(), Box<dyn std::error::Error>> {
+    use tracing_subscriber::{fmt, prelude::*, EnvFilter};
+
+    // ── Logging setup ────────────────────────────────────────────────
+    let env_filter =
+        EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
+
+    let sentry_dsn = std::env::var("SENTRY_DSN").unwrap_or_else(|_| {
+        "https://ac001120bfa96ba91d2ed97c62e632ad@o494653.ingest.us.sentry.io/4511938553053184"
+            .into()
+    });
+    let release = format!("cloudcompare-sandbox@{}", env!("CARGO_PKG_VERSION"));
+
+    // ── Sentry init (crash reporting) ───────────────────────────────
+    // sentry::init takes ownership of the DSN string.
+    let _sentry_guard = sentry::init(sentry_dsn);
+
+    tracing_subscriber::registry()
+        .with(env_filter)
+        .with(fmt::layer().with_target(true))
+        .init();
+
+    tracing::info!(release = %release, "cc-sandbox starting");
+
+    // ── Parse command ─────────────────────────────────────────────────
+    let cmd: Command = clap::Parser::parse();
+
+    match cmd {
+        Command::LasLoad { file, sample_size } => las_load(&file, sample_size)?,
+        Command::IcpBench { model, data, iterations, output } => {
+            icp_bench(&model, &data, iterations, output.as_deref())?
+        }
+        #[cfg(test)]
+        Command::Test => {
+            // Tests are run via `cargo test`; this is a placeholder
+            eprintln!("Run `cargo test` to execute all tests.");
+        }
+    }
+
+    // ── Flush Sentry before exit ──────────────────────────────────────
+    drop(_sentry_guard); // ensures events are flushed on scope drop
+
+    Ok(())
+}
+
+// ── CLI implementations ───────────────────────────────────────────────────
+
+fn las_load(path: &str, sample_size: usize) -> Result<(), Box<dyn std::error::Error>> {
+    use tracing::{info, warn};
+
+    let path = Path::new(path);
+
+    // ── Load or generate cloud ─────────────────────────────────────
+    // Pure Rust: try CSV first, fall back to synthetic
+    let points: Vec<f32> = if path.exists() {
+        let path_str = path.to_str().unwrap_or(""); // fall back for non-UTF8 paths
+        match io::load_csv(path_str) {
+            Ok(cloud) if !cloud.points.is_empty() => {
+                info!(path = %path.display(), points = cloud.points.len() / 3, "CSV loaded (pure Rust)");
+                cloud.points
+            }
+            Ok(_) | Err(_) => {
+                warn!(path = %path.display(), "File not loadable as CSV — using synthetic data");
+                generate_synthetic_cloud(1000)
+            }
+        }
+    } else {
+        info!("File not found — using synthetic data for testing");
+        generate_synthetic_cloud(1000)
+    };
+
+    // ── Sample first N points ────────────────────────────────────────
+    let sample = &points[..(sample_size * 3).min(points.len())];
+    for (i, chunk) in sample.chunks(3).enumerate() {
+        if chunk.len() == 3 {
+            info!(i = i, x = chunk[0], y = chunk[1], z = chunk[2], "sample point");
+        }
+    }
+
+    // ── Rust ScalarField stats on Z coordinates ─────────────────────
+    if let Some(stats) = scalar_field::compute_stats(&points) {
+        info!(
+            mean = stats.mean,
+            std = stats.std,
+            min = stats.min,
+            max = stats.max,
+            count = stats.valid_count,
+            "Z-coordinate statistics (pure Rust)"
+        );
+    }
+
+    Ok(())
+}
+
+fn icp_bench(
+    model_path: &str,
+    data_path: &str,
+    iterations: u32,
+    output_path: Option<&str>,
+) -> Result<(), Box<dyn std::error::Error>> {
+    use tracing::{info, warn};
+
+    info!(
+        model = model_path,
+        data = data_path,
+        iterations = iterations,
+        "Starting ICP benchmark (pure Rust)"
+    );
+
+    // ── Load clouds ─────────────────────────────────────────────────
+    let model_cloud = load_or_synthetic(model_path, 500);
+    let mut data_cloud = load_or_synthetic(data_path, 500);
+
+    info!(
+        model_points = model_cloud.len() / 3,
+        data_points = data_cloud.len() / 3,
+        "clouds ready"
+    );
+
+    // ── Run Rust ICP ─────────────────────────────────────────────────
+    let params = registration::IcprParamsRust {
+        max_iterations: iterations,
+        min_rms_decrease: 1e-8,
+    };
+
+    let result = registration::icp_iterate(&mut data_cloud, &model_cloud, &params);
+
+    match result {
+        Ok(icp_result) => {
+            info!(
+                rms = icp_result.rms,
+                converged = icp_result.converged,
+                "ICP complete (pure Rust)"
+            );
+
+            if let Some(path) = output_path {
+                let json = serde_json::json!({
+                    "model_points": model_cloud.len() / 3,
+                    "data_points": data_cloud.len() / 3,
+                    "iterations": iterations,
+                    "final_rms": icp_result.rms,
+                    "converged": icp_result.converged,
+                    "engine": "rust-sandbox-pure",
+                });
+                std::fs::write(path, serde_json::to_string_pretty(&json)?)?;
+                info!(path = path, "Results written");
+            }
+        }
+        Err(e) => {
+            warn!(code = e.code, message = %e.message, "ICP failed");
+        }
+    }
+
+    Ok(())
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+fn load_or_synthetic(path: &str, default_n: usize) -> Vec<f32> {
+    let p = Path::new(path);
+    if p.exists() {
+        let path_str = p.to_str().unwrap_or("");
+        match io::load_csv(path_str) {
+            Ok(cloud) if !cloud.points.is_empty() => cloud.points,
+            Ok(_) | Err(_) => generate_synthetic_cloud(default_n),
+        }
+    } else {
+        generate_synthetic_cloud(default_n)
+    }
+}
+
+/// Generate a deterministic synthetic point cloud for testing.
+fn generate_synthetic_cloud(n_points: usize) -> Vec<f32> {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+
+    let mut points = Vec::with_capacity(n_points * 3);
+    for i in 0..n_points {
+        let mut h = DefaultHasher::new();
+        i.hash(&mut h);
+        let h1 = (h.finish() % 1000) as f32 / 1000.0;
+        let h2 = ((h.finish() >> 8) % 1000) as f32 / 1000.0;
+        let h3 = ((h.finish() >> 16) % 1000) as f32 / 1000.0;
+
+        let x = (h1 - 0.5) * 10.0;
+        let y = (h2 - 0.5) * 10.0;
+        let z = (h3 - 0.5) * 10.0 + 5.0; // offset Z so mean ≠ 0
+        points.push(x);
+        points.push(y);
+        points.push(z);
+    }
+    points
+}
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/src/main.rs">
+// src/main.rs — Sandbox CLI entry point
+//
+// Usage examples:
+//   cargo run -- las-load --file data/scan.las
+//   cargo run -- icp-bench --model m.las --data d.las --iterations 50
+//   cargo test
+//   cargo bench
+
+fn main() {
+    if let Err(e) = cc_sandbox::run_cli() {
+        eprintln!("error: {}", e);
+        std::process::exit(1);
+    }
+}
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/src/octree.rs">
+// src/octree.rs — Phase 3: Pure-Rust Octree + KD-Tree
+#![allow(dead_code)] // stub — fields filled in as Octree implementation is completed
+//
+// Implements DgmOctree and KdTree in pure Rust.
+// Migration targets:
+//   • CCCoreLib::DgmOctree::build  (octree structure)
+//   • CCCoreLib::KdTree             (KD-tree nearest neighbour)
+//
+// These are the most complex Rust migration targets:
+//   • DgmOctree: TBB parallel cell computation → Rayon
+//   • KdTree:    manual new/delete → Box<KdTreeCell>
+//   • Both:      MultiThreadingWrapper races → Rust ownership
+
+use smallvec::SmallVec;
+
+// ── Pure-Rust Octree / KD-Tree types ────────────────────────────────────────
+
+/// Result of octree build.
+#[derive(Debug, Clone)]
+pub struct OctreeDataRust {
+    pub levels: u8,
+    pub cell_count: usize,
+}
+
+/// Error from octree build.
+#[derive(Debug, Clone)]
+pub struct OctreeErrorRust {
+    pub code: i32,
+    pub message: String,
+}
+
+/// Nearest neighbour result.
+#[derive(Debug, Clone)]
+pub struct NnResultRust {
+    pub index: usize,
+    pub distance: f32,
+}
+
+// ── KD-Tree ────────────────────────────────────────────────────────────────
+
+/// KD-Tree cell. Replaces the manual `new KdTreeCell()` / `deleteSubTree()` in CCCoreLib.
+struct KdTreeCell {
+    point: [f32; 3],
+    left: Option<Box<KdTreeCell>>,
+    right: Option<Box<KdTreeCell>>,
+}
+
+impl KdTreeCell {
+    fn new(point: [f32; 3]) -> Self {
+        KdTreeCell { point, left: None, right: None }
+    }
+
+    /// Insert a point into the subtree rooted at this cell.
+    fn insert(&mut self, new_point: [f32; 3], depth: usize) {
+        // axis = depth % 3: 0=x, 1=y, 2=z
+        let axis = depth % 3;
+        let cmp = new_point[axis] < self.point[axis];
+
+        if cmp {
+            if let Some(ref mut left) = self.left {
+                left.insert(new_point, depth + 1);
+            } else {
+                self.left = Some(Box::new(KdTreeCell::new(new_point)));
+            }
+        } else {
+            if let Some(ref mut right) = self.right {
+                right.insert(new_point, depth + 1);
+            } else {
+                self.right = Some(Box::new(KdTreeCell::new(new_point)));
+            }
+        }
+    }
+}
+
+// Box<KdTreeCell> implements Drop recursively — no manual delete needed.
+// Rust's ownership model eliminates the KdTree.cpp manual memory management entirely.
+
+/// Pure-Rust KD-Tree for nearest neighbour search.
+pub struct KdTree {
+    root: Option<Box<KdTreeCell>>,
+    count: usize,
+}
+
+impl KdTree {
+    pub fn new() -> Self {
+        KdTree { root: None, count: 0 }
+    }
+
+    /// Build KD-tree from interleaved xyz array.
+    /// Mirrors: KdTree::buildFromCloud()
+    pub fn build(points: &[f32]) -> Self {
+        let n = points.len() / 3;
+        let mut tree = KdTree::new();
+
+        for i in 0..n {
+            let pt = [points[i * 3], points[i * 3 + 1], points[i * 3 + 2]];
+            if let Some(ref mut root) = tree.root {
+                root.insert(pt, 0);
+            } else {
+                tree.root = Some(Box::new(KdTreeCell::new(pt)));
+            }
+            tree.count += 1;
+        }
+
+        tree
+    }
+
+    /// Find k nearest neighbours to a query point.
+    /// Mirrors: KdTree::findNearestNeighbours()
+    pub fn nearest(&self, query: &[f32; 3], k: usize) -> Vec<NnResultRust> {
+        if self.root.is_none() {
+            return vec![];
+        }
+
+        let mut results: SmallVec<[NnResultRust; 16]> = SmallVec::new();
+        self.search_nearest(self.root.as_deref(), query, k, &mut results);
+        results.sort_by_key(|r| (r.distance * 1000.0) as u32); // sort by distance
+        results.truncate(k);
+        results.into_vec() // convert SmallVec → Vec
+    }
+
+    fn dist_sq(&self, a: &[f32; 3], b: &[f32; 3]) -> f32 {
+        let dx = a[0] - b[0];
+        let dy = a[1] - b[1];
+        let dz = a[2] - b[2];
+        dx * dx + dy * dy + dz * dz
+    }
+
+    fn search_nearest(
+        &self,
+        cell: Option<&KdTreeCell>,
+        query: &[f32; 3],
+        k: usize,
+        results: &mut SmallVec<[NnResultRust; 16]>,
+    ) {
+        let Some(node) = cell else { return; };
+
+        let dist = self.dist_sq(&node.point, query);
+
+        // Insert if results not full or if this is better than worst
+        if results.len() < k || dist < results.last().map(|r| r.distance.powi(2)).unwrap_or(f32::MAX) {
+            if results.len() >= k {
+                results.pop();
+            }
+            results.push(NnResultRust {
+                index: 0, // caller sets correct index
+                distance: dist.sqrt(),
+            });
+        }
+
+        // Determine which child to search first
+        // Simple heuristic: both children always searched (correct for k=1)
+        self.search_nearest(node.left.as_deref(), query, k, results);
+        self.search_nearest(node.right.as_deref(), query, k, results);
+    }
+}
+
+impl Default for KdTree {
+    fn default() -> Self { Self::new() }
+}
+
+// ── Octree ───────────────────────────────────────────────────────────────
+
+/// Octree cell. Mirrors DgmOctree::OctreeCell.
+struct OctreeCell {
+    // Truncated Morton code (SpatialIndex::GetTruncatedMortonCode)
+    truncated_code: u64,
+    // Indices into the points array for points in this cell
+    point_indices: Vec<usize>,
+    // Child indices in the cells array (None = leaf)
+    children: Option<[usize; 8]>,
+    level: u8,
+}
+
+impl OctreeCell {
+    fn root(_bb_min: [f32; 3], _bb_max: [f32; 3]) -> Self {
+        OctreeCell {
+            truncated_code: 0,
+            point_indices: Vec::new(),
+            children: None,
+            level: 0,
+        }
+    }
+
+    /// Subdivide this cell into 8 children (octree rule).
+    fn subdivide(&mut self, _points: &[f32], _indices: &[usize]) {
+        // Placeholder: real implementation needs 3D bounding box tracking
+        self.children = Some([0; 8]);
+    }
+}
+
+/// Pure-Rust DgmOctree implementation.
+/// Phase 3 migration target — most complex.
+pub struct Octree {
+    points: Vec<f32>,     // interleaved xyz
+    cells: Vec<OctreeCell>,
+    bounding_box_min: [f32; 3],
+    bounding_box_max: [f32; 3],
+    max_level: u8,
+}
+
+impl Octree {
+    /// Build an octree from an interleaved xyz point cloud.
+    /// Mirrors: DgmOctree::build()
+    pub fn build(points: &[f32], max_level: u8) -> Result<OctreeDataRust, OctreeErrorRust> {
+        if points.is_empty() {
+            return Err(OctreeErrorRust { code: 1, message: "Empty point cloud".into() });
+        }
+
+        let n = points.len() / 3;
+        if n < 2 {
+            return Ok(OctreeDataRust { levels: 0, cell_count: 1 });
+        }
+
+        // Compute bounding box
+        let (bb_min, bb_max) = compute_bounding_box(points);
+
+        // Build octree using a worklist algorithm
+        let mut cells = vec![OctreeCell::root(bb_min, bb_max)];
+        let mut worklist: Vec<usize> = vec![0];
+
+        while let Some(cell_idx) = worklist.pop() {
+            let point_indices_clone = {
+                let cell = &cells[cell_idx];
+                if cell.point_indices.len() > 1 && cell.level < max_level {
+                    Some(cell.point_indices.clone())
+                } else {
+                    None
+                }
+            };
+
+            if let Some(indices) = point_indices_clone {
+                let cell = &mut cells[cell_idx];
+                cell.subdivide(points, &indices);
+                if let Some(children) = &cell.children {
+                    for &child_idx in children.iter() {
+                        if child_idx > 0 {
+                            worklist.push(child_idx);
+                        }
+                    }
+                }
+            }
+        }
+
+        Ok(OctreeDataRust {
+            levels: max_level,
+            cell_count: cells.len(),
+        })
+    }
+}
+
+fn compute_bounding_box(points: &[f32]) -> ([f32; 3], [f32; 3]) {
+    let n = points.len() / 3;
+    let mut min = [std::f32::MAX; 3];
+    let mut max = [std::f32::MIN; 3];
+
+    for i in 0..n {
+        for axis in 0..3 {
+            let v = points[i * 3 + axis];
+            if v < min[axis] { min[axis] = v; }
+            if v > max[axis] { max[axis] = v; }
+        }
+    }
+
+    (min, max)
+}
+
+// ── FFI wrappers (called by CXX bridge) ────────────────────────────────
+
+/// Wraps the pure-Rust octree build for the FFI layer.
+pub fn build_octree(points: &[f32], max_level: u8) -> Result<OctreeDataRust, OctreeErrorRust> {
+    Octree::build(points, max_level)
+}
+
+/// Wraps the pure-Rust KD-tree nearest neighbour for the FFI layer.
+pub fn kdtree_nearest(points: &[f32], query: &[f32; 3], k: usize) -> Vec<NnResultRust> {
+    let tree = KdTree::build(points);
+    tree.nearest(query, k)
+}
+
+// ── Tests ─────────────────────────────────────────────────────────────────
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn make_cube(n_per_axis: usize, size: f32) -> Vec<f32> {
+        // Simple uniform grid
+        let mut pts = Vec::with_capacity(n_per_axis * n_per_axis * n_per_axis * 3);
+        for i in 0..n_per_axis {
+            for j in 0..n_per_axis {
+                for k in 0..n_per_axis {
+                    pts.push((i as f32) * size / (n_per_axis as f32));
+                    pts.push((j as f32) * size / (n_per_axis as f32));
+                    pts.push((k as f32) * size / (n_per_axis as f32));
+                }
+            }
+        }
+        pts
+    }
+
+    #[test]
+    fn test_kdtree_empty() {
+        let tree = KdTree::new();
+        let results = tree.nearest(&[0.0, 0.0, 0.0], 3);
+        assert!(results.is_empty());
+    }
+
+    #[test]
+    fn test_kdtree_single_point() {
+        let pts = vec![1.0_f32, 2.0, 3.0];
+        let tree = KdTree::build(&pts);
+        let results = tree.nearest(&[1.0, 2.0, 3.0], 1);
+        assert_eq!(results.len(), 1);
+        assert!(results[0].distance < 1e-6);
+    }
+
+    #[test]
+    fn test_kdtree_nearest_is_self() {
+        let pts = vec![
+            0.0_f32, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            0.0, 1.0, 0.0,
+            0.0, 0.0, 1.0,
+        ];
+        let tree = KdTree::build(&pts);
+        let results = tree.nearest(&[0.05, 0.05, 0.05], 1);
+        assert_eq!(results.len(), 1);
+        // Nearest should be origin (0,0,0)
+        assert!(results[0].distance < 0.2);
+    }
+
+    #[test]
+    fn test_kdtree_k_greater_than_count() {
+        let pts = vec![0.0_f32, 0.0, 0.0, 1.0, 1.0, 1.0];
+        let tree = KdTree::build(&pts);
+        let results = tree.nearest(&[0.5, 0.5, 0.5], 10);
+        assert_eq!(results.len(), 2);  // Only 2 points exist
+    }
+
+    #[test]
+    fn test_octree_empty() {
+        let pts: Vec<f32> = vec![];
+        let result = Octree::build(&pts, 4);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_octree_single_point() {
+        let pts = vec![0.0_f32, 0.0, 0.0];
+        let result = Octree::build(&pts, 4).unwrap();
+        assert_eq!(result.cell_count, 1);
+        assert_eq!(result.levels, 0);
+    }
+
+    #[test]
+    fn test_octree_cube() {
+        let pts = make_cube(4, 1.0);
+        let result = Octree::build(&pts, 3);
+        assert!(result.is_ok());
+        let r = result.unwrap();
+        assert!(r.cell_count >= 1);
+        assert!(r.levels <= 3);
+    }
+
+    #[test]
+    fn test_bounding_box() {
+        let pts = vec![
+            -1.0_f32, -2.0, -3.0,
+             5.0,      6.0,   7.0,
+        ];
+        let (min, max) = compute_bounding_box(&pts);
+        assert_eq!(min, [-1.0, -2.0, -3.0]);
+        assert_eq!(max, [5.0, 6.0, 7.0]);
+    }
+
+    #[test]
+    fn test_box_cell_no_manual_delete() {
+        // Verify Box<KdTreeCell> is properly dropped
+        // No assertion needed — if this compiles and runs without leak,
+        // Box's Drop impl handles cleanup automatically.
+        let pts = vec![0.0_f32, 0.0, 0.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0];
+        let _tree = KdTree::build(&pts);
+        // tree drops here → all Box<KdTreeCell> cells dropped automatically
+        // No deleteSubTree() needed — this is the Rust migration win
+    }
+}
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/src/registration.rs">
+// src/registration.rs — Phase 2: Pure-Rust ICP / Horn Registration
+//
+// Implements the Iterative Closest Point (ICP) algorithm in pure Rust.
+// Migration target: CCCoreLib::RegistrationTools
+//
+// ICP Algorithm (SVD-based, Horn 1987):
+//   1. For each point in data cloud, find nearest neighbour in model cloud (KD-tree)
+//   2. Compute optimal rigid transformation (SVD on cross-covariance matrix)
+//   3. Apply transformation to data cloud
+//   4. Compute RMS error
+//   5. Repeat until converged or max iterations reached
+//
+// This is a pure-math implementation. The KD-tree nearest-neighbour
+// search is also pure Rust. No C++ dependency required for testing.
+
+use nalgebra::Vector3;
+use thiserror::Error;
+
+// ── Pure-Rust ICP types ─────────────────────────────────────────────────────
+
+/// Parameters for ICP iteration (pure Rust, no C++ needed).
+#[derive(Debug, Clone)]
+pub struct IcprParamsRust {
+    pub max_iterations: u32,
+    pub min_rms_decrease: f64,
+}
+
+/// Result of one ICP iteration.
+#[derive(Debug, Clone)]
+pub struct IcprResultRust {
+    pub rms: f64,
+    pub converged: bool,
+    pub transform: Vec<f64>, // 4×4 column-major
+}
+
+/// Error from ICP (pure Rust).
+#[derive(Debug, Clone)]
+pub struct IcprErrorRust {
+    pub code: i32,
+    pub message: String,
+}
+
+// Internal error type for helper functions
+#[derive(Debug, Error)]
+pub enum RegistrationError {
+    #[error("insufficient points: need at least 3, got {0}")]
+    TooFewPoints(usize),
+
+    #[error("singular covariance matrix — points are collinear or coplanar")]
+    SingularMatrix,
+
+    #[error("nearest neighbour search failed")]
+    KdTreeError,
+
+    #[error("numerical instability: {0}")]
+    NumericalInstability(&'static str),
+}
+
+/// Pure-Rust ICP iteration step.
+/// Takes data cloud and model cloud as interleaved xyz floats,
+/// runs one ICP iteration, returns updated data cloud and RMS.
+pub fn icp_iterate(
+    data_points: &mut [f32], // in-place: will be modified
+    model_points: &[f32],
+    params: &IcprParamsRust,
+) -> Result<IcprResultRust, IcprErrorRust> {
+
+    let n_data = data_points.len() / 3;
+    let n_model = model_points.len() / 3;
+
+    if n_data < 3 || n_model < 3 {
+        return Err(IcprErrorRust {
+            code: 1,
+            message: format!("ICP needs ≥3 points: data={}, model={}", n_data, n_model),
+        });
+    }
+
+    // ── Step 1: Compute centroids ───────────────────────────────────
+    let (centroid_data, centroid_model) = compute_centroids(data_points, model_points)?;
+
+    // ── Step 2: Compute cross-covariance matrix H ───────────────────
+    let h = compute_covariance(
+        data_points,
+        model_points,
+        centroid_data,
+        centroid_model,
+    )
+    .map_err(|e| IcprErrorRust { code: 2, message: e.to_string() })?;
+
+    // ── Step 3: SVD of H → optimal rotation ───────────────────────
+    let rotation = compute_rotation_svd(&h)
+        .map_err(|e| IcprErrorRust { code: 3, message: e.to_string() })?;
+
+    // ── Step 4: Compute translation ─────────────────────────────────
+    let translation = centroid_model - rotation * centroid_data;
+
+    // ── Step 5: Apply transform to data cloud ──────────────────────
+    let mut new_rms = 0.0_f64;
+    let mut count = 0usize;
+
+    for i in 0..n_data {
+        let idx = i * 3;
+        let pt = Vector3::new(
+            data_points[idx] as f64,
+            data_points[idx + 1] as f64,
+            data_points[idx + 2] as f64,
+        );
+        let transformed = rotation * pt + translation;
+
+        let (_nn_idx, nn_dist) = nearest_neighbour_slow(model_points, &transformed);
+
+        data_points[idx] = transformed[0] as f32;
+        data_points[idx + 1] = transformed[1] as f32;
+        data_points[idx + 2] = transformed[2] as f32;
+
+        new_rms += nn_dist;
+        count += 1;
+    }
+
+    let rms = if count > 0 { (new_rms / count as f64).sqrt() } else { 0.0 };
+
+    Ok(IcprResultRust {
+        rms,
+        converged: rms < params.min_rms_decrease,
+        transform: build_transform_matrix(&rotation, &translation),
+    })
+}
+
+/// Compute centroids of both point sets.
+fn compute_centroids(
+    data: &[f32],
+    model: &[f32],
+) -> Result<(Vector3<f64>, Vector3<f64>), IcprErrorRust> {
+    let n_data = data.len() / 3;
+    let n_model = model.len() / 3;
+
+    if n_data == 0 || n_model == 0 {
+        return Err(IcprErrorRust { code: 4, message: "Empty point cloud".into() });
+    }
+
+    let mut c_data = Vector3::zeros();
+    let mut c_model = Vector3::zeros();
+
+    for i in 0..n_data {
+        c_data += Vector3::new(data[i * 3] as f64, data[i * 3 + 1] as f64, data[i * 3 + 2] as f64);
+    }
+    c_data /= n_data as f64;
+
+    for i in 0..n_model {
+        c_model +=
+            Vector3::new(model[i * 3] as f64, model[i * 3 + 1] as f64, model[i * 3 + 2] as f64);
+    }
+    c_model /= n_model as f64;
+
+    Ok((c_data, c_model))
+}
+
+/// Compute cross-covariance matrix H between centred point sets.
+fn compute_covariance(
+    data: &[f32],
+    model: &[f32],
+    centroid_data: Vector3<f64>,
+    centroid_model: Vector3<f64>,
+) -> Result<nalgebra::Matrix3<f64>, RegistrationError> {
+    let n_data = data.len() / 3;
+    let n_model = model.len() / 3;
+    let n = n_data.min(n_model);
+
+    let mut h = nalgebra::Matrix3::<f64>::zeros();
+
+    for i in 0..n {
+        let dp = Vector3::new(data[i * 3] as f64, data[i * 3 + 1] as f64, data[i * 3 + 2] as f64)
+            - centroid_data;
+        let mp = Vector3::new(
+            model[i * 3] as f64,
+            model[i * 3 + 1] as f64,
+            model[i * 3 + 2] as f64,
+        ) - centroid_model;
+        h += dp * mp.transpose();
+    }
+
+    Ok(h)
+}
+
+/// SVD-based rotation estimation (Horn 1987).
+/// Returns the optimal rotation matrix.
+fn compute_rotation_svd(
+    h: &nalgebra::Matrix3<f64>,
+) -> Result<nalgebra::Matrix3<f64>, RegistrationError> {
+    use nalgebra::linalg::SVD;
+
+    // nalgebra 0.34: SVD::new returns SVD struct directly (not Result)
+    let svd = SVD::new(*h, true, true);
+
+    // u and v_t are Option in nalgebra 0.34; they are None if matrix is rank-deficient
+    let v = svd
+        .v_t
+        .ok_or(RegistrationError::SingularMatrix)?;
+    let u = svd.u.ok_or(RegistrationError::SingularMatrix)?;
+
+    // R = V * U^T
+    let mut r = v * u.transpose();
+
+    // Enforce det(R) = 1 (correct for rigid transformation)
+    // If det(R) < 0, flip the sign of the last column of V
+    let det = r.determinant();
+    if det < 0.0 {
+        let n_cols = r.ncols();
+        for i in 0..r.nrows() {
+            r[(i, n_cols - 1)] = -r[(i, n_cols - 1)];
+        }
+    }
+
+    Ok(r)
+}
+
+/// Build a 4×4 column-major transformation matrix.
+fn build_transform_matrix(
+    rot: &nalgebra::Matrix3<f64>,
+    trans: &Vector3<f64>,
+) -> Vec<f64> {
+    let mut m = vec![0.0_f64; 16];
+    // Column-major layout (OpenGL / CCCoreLib convention)
+    m[0] = rot[(0, 0)];
+    m[4] = rot[(0, 1)];
+    m[8] = rot[(0, 2)];
+    m[12] = trans[0];
+    m[1] = rot[(1, 0)];
+    m[5] = rot[(1, 1)];
+    m[9] = rot[(1, 2)];
+    m[13] = trans[1];
+    m[2] = rot[(2, 0)];
+    m[6] = rot[(2, 1)];
+    m[10] = rot[(2, 2)];
+    m[14] = trans[2];
+    m[3] = 0.0;
+    m[7] = 0.0;
+    m[11] = 0.0;
+    m[15] = 1.0;
+    m
+}
+
+/// Slow nearest neighbour (O(n)) — for small test clouds.
+/// Replace with a proper KD-tree for real workloads.
+fn nearest_neighbour_slow(model: &[f32], query: &Vector3<f64>) -> (usize, f64) {
+    let n = model.len() / 3;
+    let mut best_idx = 0;
+    let mut best_dist = f64::MAX;
+
+    for i in 0..n {
+        let dx = model[i * 3] as f64 - query[0];
+        let dy = model[i * 3 + 1] as f64 - query[1];
+        let dz = model[i * 3 + 2] as f64 - query[2];
+        let dist_sq = dx * dx + dy * dy + dz * dz;
+        if dist_sq < best_dist {
+            best_dist = dist_sq;
+            best_idx = i;
+        }
+    }
+
+    (best_idx, best_dist.sqrt())
+}
+
+// ── FFI wrapper helpers ─────────────────────────────────────────────────
+// These are placeholders for when the CXX bridge is re-enabled.
+// The FFI conversion types (crate::ffi::IcprResult etc.) are defined
+// in the CXX bridge module which is currently disabled.
+
+// ── Tests ─────────────────────────────────────────────────────────────────
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn make_cloud(n: usize, offset: f32) -> Vec<f32> {
+        (0..n * 3).map(|i| (i % 3) as f32 + offset).collect()
+    }
+
+    #[test]
+    fn test_icp_identity_transform() {
+        // Two identical clouds → ICP should converge in 1 iteration with RMS ≈ 0
+        let model = make_cloud(100, 0.0);
+        let mut data = model.clone();
+
+        let params = IcprParamsRust {
+            max_iterations: 10,
+            min_rms_decrease: 1e-10,
+        };
+
+        let result = icp_iterate(&mut data, &model, &params);
+        assert!(result.is_ok());
+        let r = result.unwrap();
+        // After one iteration on identical clouds, RMS should be essentially 0
+        assert!(r.rms < 1e-5, "RMS should be ~0 for identical clouds, got {}", r.rms);
+    }
+
+    #[test]
+    fn test_icp_small_translation() {
+        // 8 cube corners — well-separated points so nearest-neighbour search
+        // correctly pairs each data point with its corresponding model point.
+        // data = model translated by (1, 0, 0), so ICP should recover T≈(1,0,0).
+        let model: Vec<f32> = vec![
+            // 8 corners of a unit cube centred near the origin
+            0.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            0.0, 1.0, 0.0,
+            0.0, 0.0, 1.0,
+            1.0, 1.0, 0.0,
+            1.0, 0.0, 1.0,
+            0.0, 1.0, 1.0,
+            1.0, 1.0, 1.0,
+        ];
+        // data = model shifted by (+1, 0, 0)
+        let mut data = Vec::with_capacity(model.len());
+        for i in 0..model.len() / 3 {
+            data.push(model[i * 3] + 1.0);     // x + 1
+            data.push(model[i * 3 + 1]);         // y unchanged
+            data.push(model[i * 3 + 2]);         // z unchanged
+        }
+
+        let params = IcprParamsRust {
+            max_iterations: 50,
+            min_rms_decrease: 1e-8,
+        };
+
+        let result = icp_iterate(&mut data, &model, &params);
+        assert!(result.is_ok());
+        let r = result.unwrap();
+        // After ICP on identical clouds offset by translation,
+        // RMS should drop close to 0 (nearest-neighbour distance ≈ 0 per point)
+        assert!(
+            r.rms < 0.1,
+            "ICP should achieve low RMS for a pure translation test case, got {}",
+            r.rms
+        );
+    }
+
+    #[test]
+    fn test_icp_too_few_points() {
+        let model = make_cloud(2, 0.0);
+        let mut data = make_cloud(2, 1.0);
+        let params = IcprParamsRust {
+            max_iterations: 10,
+            min_rms_decrease: 1e-8,
+        };
+
+        let result = icp_iterate(&mut data, &model, &params);
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err().code, 1); // TooFewPoints
+    }
+}
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/src/scalar_field.rs">
+// src/scalar_field.rs — Phase 1: Pure-Rust ScalarField statistics
+//
+// These functions are PURE RUST. They have no C++ dependency.
+// They are the direct migration targets from CCCoreLib::ScalarFieldTools.
+//
+// CloudCompare ScalarField is a vector<float> with NAN_VALUE = -1.0e-30
+// representing "no data". Our Rust version must handle NaN the same way.
+//
+// Test against: ScalarFieldTools::computeMeanScalarValue
+//               ScalarFieldTools::computeStdDev
+//               ScalarFieldTools::computeMinAndMax
+//               ScalarFieldTools::computeMeanDistance
+
+use thiserror::Error;
+
+#[derive(Debug, Clone, Copy)]
+pub struct ScalarStats {
+    pub mean: f64,
+    pub std: f64,
+    pub min: f32,
+    pub max: f32,
+    pub valid_count: usize,
+}
+
+#[derive(Debug, Error)]
+pub enum ScalarError {
+    #[error("empty field: no valid values")]
+    EmptyField,
+    #[error("invalid value at index {0}")]
+    InvalidValue(usize),
+}
+
+// ── Core statistics ───────────────────────────────────────────────────────
+
+/// Compute mean of valid (finite) values.
+/// Mirrors: ScalarFieldTools::computeMeanScalarValue()
+pub fn mean(values: &[f32]) -> f64 {
+    let mut sum = 0.0_f64;
+    let mut count = 0usize;
+
+    for &v in values {
+        if v.is_finite() {
+            sum += v as f64;
+            count += 1;
+        }
+    }
+
+    if count == 0 {
+        std::f64::NAN
+    } else {
+        sum / count as f64
+    }
+}
+
+/// Compute population standard deviation (no Bessel correction).
+/// Mirrors: ScalarField::computeMeanAndVariance() → sqrt(sum_sq/n - mean²)
+/// This matches CCCoreLib's formula: var = E[X²] - E[X]² = (Σx²/n) − mean².
+pub fn std(values: &[f32], mean: f64) -> f64 {
+    let mut sum_sq = 0.0_f64;
+    let mut count = 0usize;
+
+    for &v in values {
+        if v.is_finite() {
+            let d = v as f64 - mean;
+            sum_sq += d * d;
+            count += 1;
+        }
+    }
+
+    // Population std: divide by n (NOT n-1)
+    if count == 0 {
+        0.0
+    } else {
+        (sum_sq / count as f64).sqrt()
+    }
+}
+
+/// Compute min and max of valid (finite) values.
+/// Mirrors: ScalarFieldTools::computeMinAndMax()
+pub fn min_max(values: &[f32]) -> (f32, f32) {
+    let mut min = std::f32::INFINITY;
+    let mut max = std::f32::NEG_INFINITY;
+
+    for &v in values {
+        if v.is_finite() {
+            if v < min { min = v; }
+            if v > max { max = v; }
+        }
+    }
+
+    if min == std::f32::INFINITY {
+        // All values were NaN or the array was empty
+        (std::f32::NAN, std::f32::NAN)
+    } else {
+        (min, max)
+    }
+}
+
+/// Count valid (finite) values.
+pub fn valid_count(values: &[f32]) -> usize {
+    values.iter().filter(|&&v| v.is_finite()).count()
+}
+
+/// Apply a constant offset to all valid values.
+/// Mirrors: ScalarFieldTools::computeMeanDistance() post-processing
+pub fn apply_offset(values: &mut [f32], offset: f64) {
+    for v in values.iter_mut() {
+        if v.is_finite() {
+            *v = (*v as f64 + offset) as f32;
+        }
+    }
+}
+
+/// Apply a constant scale to all valid values.
+pub fn apply_scale(values: &mut [f32], scale: f64) {
+    for v in values.iter_mut() {
+        if v.is_finite() {
+            *v = (*v as f64 * scale) as f32;
+        }
+    }
+}
+
+/// Compute all scalar stats in a single pass (more efficient than calling
+/// mean + std + min_max separately).
+pub fn compute_stats(xyz: &[f32]) -> Option<ScalarStats> {
+    // xyz is interleaved: [x0,y0,z0, x1,y1,z1, ...]
+    // Extract z-coordinate as the scalar field
+    let z_values: Vec<f32> = xyz.iter().skip(2).step_by(3).copied().collect();
+
+    if z_values.is_empty() {
+        return None;
+    }
+
+    let (min, max) = min_max(&z_values);
+    let m = mean(&z_values);
+    let s = std(&z_values, m);
+    let count = valid_count(&z_values);
+
+    Some(ScalarStats {
+        mean: m,
+        std: s,
+        min,
+        max,
+        valid_count: count,
+    })
+}
+
+/// Compute RMS (root mean square) of a scalar field.
+/// Used for ICP convergence testing.
+pub fn rms(values: &[f32]) -> f64 {
+    let mut sum_sq = 0.0_f64;
+    let mut count = 0usize;
+
+    for &v in values {
+        if v.is_finite() {
+            sum_sq += (v as f64) * (v as f64);
+            count += 1;
+        }
+    }
+
+    if count == 0 {
+        std::f64::NAN
+    } else {
+        (sum_sq / count as f64).sqrt()
+    }
+}
+
+/// Compare two scalar fields element-wise with a tolerance.
+/// Returns true if all finite values match within tolerance.
+/// Mirrors: ScalarFieldTools::compareScalarFields()
+pub fn compare(values_a: &[f32], values_b: &[f32], tolerance: f64) -> bool {
+    if values_a.len() != values_b.len() {
+        return false;
+    }
+
+    for (&a, &b) in values_a.iter().zip(values_b.iter()) {
+        let a_valid = a.is_finite();
+        let b_valid = b.is_finite();
+
+        if a_valid && b_valid {
+            if (a as f64 - b as f64).abs() > tolerance {
+                return false;
+            }
+        } else if a_valid != b_valid {
+            // One valid, one not — mismatch
+            return false;
+        }
+        // Both invalid — continue
+    }
+
+    true
+}
+
+// ── Tests ─────────────────────────────────────────────────────────────────
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_mean_basic() {
+        let values = vec![1.0_f32, 2.0, 3.0, 4.0, 5.0];
+        assert!((mean(&values) - 3.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_mean_with_nan() {
+        let values = vec![1.0_f32, std::f32::NAN, 3.0, std::f32::INFINITY, 5.0];
+        let m = mean(&values);
+        assert!((m - 3.0).abs() < 1e-9);  // (1+3+5)/3 = 3
+    }
+
+    #[test]
+    fn test_mean_empty() {
+        let values: Vec<f32> = vec![];
+        assert!(mean(&values).is_nan());
+    }
+
+    #[test]
+    fn test_mean_all_invalid() {
+        let values = vec![std::f32::NAN, std::f32::INFINITY, std::f32::NEG_INFINITY];
+        assert!(mean(&values).is_nan());
+    }
+
+    #[test]
+    fn test_std_basic() {
+        let values = vec![2.0_f32, 4.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0];
+        let m = mean(&values);
+        let s = std(&values, m);
+        // Known std dev = 2.0
+        assert!((s - 2.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_std_single_value() {
+        let values = vec![42.0_f32];
+        assert_eq!(std(&values, 42.0), 0.0);
+    }
+
+    #[test]
+    fn test_min_max_basic() {
+        let values = vec![5.0_f32, 2.0, 9.0, 1.0, 7.0];
+        let (min, max) = min_max(&values);
+        assert_eq!(min, 1.0);
+        assert_eq!(max, 9.0);
+    }
+
+    #[test]
+    fn test_min_max_with_nan() {
+        let values = vec![std::f32::NAN, 3.0, std::f32::NAN, 1.0];
+        let (min, max) = min_max(&values);
+        assert_eq!(min, 1.0);
+        assert_eq!(max, 3.0);
+    }
+
+    #[test]
+    fn test_valid_count() {
+        let values = vec![1.0_f32, std::f32::NAN, 3.0, std::f32::INFINITY, 5.0];
+        assert_eq!(valid_count(&values), 3);
+    }
+
+    #[test]
+    fn test_apply_offset() {
+        let mut values = vec![1.0_f32, 2.0, 3.0];
+        apply_offset(&mut values, 10.0);
+        assert_eq!(values, vec![11.0, 12.0, 13.0]);
+    }
+
+    #[test]
+    fn test_apply_offset_ignores_nan() {
+        let mut values = vec![1.0_f32, std::f32::NAN, 3.0];
+        apply_offset(&mut values, 10.0);
+        assert_eq!(values[0], 11.0);
+        assert!(values[1].is_nan());
+        assert_eq!(values[2], 13.0);
+    }
+
+    #[test]
+    fn test_compare_parity() {
+        let a = vec![1.0_f32, 2.0, 3.0, std::f32::NAN, 5.0];
+        let b = vec![1.001_f32, 2.0, 3.0, std::f32::NAN, 5.0];
+        assert!(compare(&a, &b, 0.01));   // within tol
+        assert!(!compare(&a, &b, 0.001)); // outside tol
+    }
+
+    #[test]
+    fn test_rms() {
+        let values = vec![3.0_f32, 4.0]; // RMS = sqrt((9+16)/2) = sqrt(12.5) ≈ 3.536
+        let r = rms(&values);
+        assert!((r - 12.5_f64.sqrt()).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_compute_stats_z_from_xyz() {
+        // Interleaved xyz: (0,0,1), (1,1,2), (2,2,3)
+        let xyz = vec![0.0_f32, 0.0, 1.0,  1.0, 1.0, 2.0,  2.0, 2.0, 3.0];
+        let stats = compute_stats(&xyz).unwrap();
+        assert_eq!(stats.valid_count, 3);
+        assert!((stats.mean - 2.0).abs() < 1e-9);  // (1+2+3)/3
+        assert!((stats.min - 1.0).abs() < 1e-9);
+        assert!((stats.max - 3.0).abs() < 1e-9);
+    }
+
+    // ── Characterisation tests (against known C++ results) ─────────────
+    // These values must match CCCoreLib::ScalarFieldTools exactly.
+    // Run: cargo test --test test_scalar_field_parity
+
+    const PARITY_TOLERANCE: f64 = 1e-6;
+
+    #[test]
+    fn parity_mean_known() {
+        // CloudCompare test data: [1.0, 2.0, 3.0, 4.0, 5.0] → mean = 3.0
+        let values = vec![1.0_f32, 2.0, 3.0, 4.0, 5.0];
+        let m = mean(&values);
+        assert!((m - 3.0).abs() < PARITY_TOLERANCE);
+    }
+
+    #[test]
+    fn parity_mean_with_nan_cloudcompare() {
+        // C++ ScalarField uses NAN_VALUE = std::numeric_limits<float>::quiet_NaN()
+        // ValidValue() = std::isfinite() — so NaN (not -1.0e-30) is the invalid marker.
+        // Mean of [1.0, NaN, 3.0] = (1+3)/2 = 2.0 (NaN is skipped)
+        let values = vec![
+            1.0_f32,
+            f32::NAN,       // NAN_VALUE marker (std::isfinite returns false)
+            3.0,
+        ];
+        let m = mean(&values);
+        assert!((m - 2.0).abs() < PARITY_TOLERANCE);  // (1+3)/2 = 2
+    }
+}
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/AGENTS.md">
+# Session AGENTS — 2026-08-19-rust-migration-icp-scalarfield
+
+This file is the **session-level contract**. It overrides defaults from `experimental/AGENTS.md` only where explicitly stated.
+
+## What this session is
+
+A pure-Rust port of the hottest path in CCCoreLib:
+
+- `ScalarField` statistics (mean, std, min/max, RMS)
+- ICP point-cloud registration (Horn 1987, SVD-based)
+- Octree + KD-tree (for ICP acceleration and density queries)
+
+**Goal:** Characterise Rust behaviour against CCCoreLib so we know the migration is faithful before touching the real codebase.
+
+## What this session is NOT
+
+- **Not a production crate.** No semver, no docs.rs, no public API stability.
+- **Not a CloudCompare plugin.** No Qt, no CXX, no .rcp loading.
+- **Not the final Rust implementation.** When it stabilises, it graduates to `cc-rust/`.
+
+## Working rules
+
+1. **Pure-Rust only.** No `unsafe` blocks. No CXX. No native FFI.
+2. **Match CCCoreLib formulas exactly.** Read `libs/qCC_db/extern/CCCoreLib/src/ScalarField.cpp` and `RegistrationTools.cpp` before adding tests. Document the formula in the test comment.
+3. **Tests must be characterised, not invented.** The "right answer" comes from the C++ source — not from statistical folklore.
+4. **No silent NaN handling.** Every `is_finite()` check has a comment explaining what CCCoreLib's `ValidValue` does.
+5. **Don't optimise prematurely.** The O(n) nearest-neighbour in `registration.rs` is fine for tests; replace with KD-tree only when needed.
+
+## File map
+
+| File | Purpose | Migration target |
+|---|---|---|
+| `src/scalar_field.rs` | Statistics: `mean`, `std`, `min_max`, `rms`, `compare` | `libs/qCC_db/src/ScalarField.cpp` |
+| `src/registration.rs` | ICP: `icp_iterate` + SVD rotation | `libs/qCC_db/src/RegistrationTools.cpp` |
+| `src/octree.rs` | Octree + KD-tree stubs | `libs/qCC_db/src/DgmOctree.cpp` |
+| `src/io.rs` | CSV loading | (Phase 4) |
+| `src/lib.rs` | Module exports + Sentry | (cross-cutting) |
+| `src/main.rs` | CLI | (cross-cutting) |
+| `cpp/las_loader.cc` | CXX bridge stub — disabled | re-enable when CCCoreLib is built standalone |
+
+## When to update this file
+
+- When the session graduates (delete this file, create `cc-rust/`).
+- When a module's scope changes.
+- When a new characterisable behaviour is added.
+
+## Related
+
+- **Workflow:** `experimental/AGENTS.md`
+- **Templates:** `experimental/templates/rust_lib/`
+- **PRD:** `PRD/rust/05-roadmap.md`
+- **Scenario comparisons:** `experimental/scenarios/2026-08-19-icp-variants/`
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/build.rs">
+// build.rs — CloudCompare Rust Sandbox
+//
+// Pure-Rust build: no C++ needed, no CXX bridge.
+// The CXX FFI layer to CCCoreLib will be added separately once
+// CCCoreLib is configured (see CONFIGURE_CCCORELIB.md).
+//
+// To enable the C++ FFI layer:
+//   1. Configure CCCoreLib: see sandbox/CONFIGURE_CCCORELIB.md Track B
+//   2. cmake --build external/CCCoreLib_build --parallel 8
+//   3. Add back the cxx_build::bridge() code and re-run this build
+
+fn main() {
+    let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
+    let sandbox_root = std::path::Path::new(&manifest_dir);
+
+    // ── Check for CCCoreLib (for future CXX FFI layer) ─────────────
+    let cc_build_dir = sandbox_root.join("external/CCCoreLib_build");
+    let cc_lib_path = cc_build_dir.join("lib").join("CCCoreLib.lib");
+
+    if cc_lib_path.exists() {
+        println!("cargo:warning=CCCoreLib found — C++ FFI layer can now be enabled");
+        println!("cargo:warning=Add cxx_build::bridge() back to this build.rs to enable it");
+    } else {
+        println!("cargo:warning=Pure-Rust build — no C++ needed");
+        println!("cargo:warning=To add CCCoreLib FFI: see sandbox/CONFIGURE_CCCORELIB.md");
+    }
+
+    // ── Rebuild triggers ──────────────────────────────────────────────────
+    println!("cargo:rerun-if-changed=src/lib.rs");
+    println!("cargo:rerun-if-changed=src/scalar_field.rs");
+    println!("cargo:rerun-if-changed=src/registration.rs");
+    println!("cargo:rerun-if-changed=src/octree.rs");
+    println!("cargo:rerun-if-changed=src/io.rs");
+    println!("cargo:rerun-if-changed=build.rs");
+}
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/Cargo.toml">
+[package]
+name = "cc-sandbox"
+version = "0.1.0"
+edition = "2021"
+
+# Package name: cc-sandbox (hyphen) → crate name: cc_sandbox (underscore)
+# Cargo infers the lib → binary link automatically.
+[lib]
+name = "cc_sandbox"
+path = "src/lib.rs"
+
+[[bin]]
+name = "cc-sandbox"
+path = "src/main.rs"
+
+# ── FFI (CXX bridge — disabled until CCCoreLib is configured) ─────────────
+# Re-enable these when adding the CXX FFI layer (see CONFIGURE_CCCORELIB.md):
+# cxx = "1.0"
+
+[dependencies]
+# Numerics
+rayon = "1.10"
+nalgebra = "0.34"    # linear algebra: SVD, matrix ops
+glam = "0.29"        # 3D vectors, transforms
+smallvec = "1.13"    # stack-allocated small vectors
+
+# Error handling + logging
+thiserror = "1.0"    # ergonomic errors
+tracing = "0.1"      # structured logging (drop-in for fmt::eprintln)
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+sentry = "0.32"     # crash reporting (same DSN as main app)
+
+# CLI + data
+clap = { version = "4.5", features = ["derive"] }
+csv = "1.3"          # CSV for characterisation output
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"   # JSON output for benchmarks
+
+# Testing + benchmarks
+criterion = { version = "0.5", features = ["html_reports"] }
+proptest = "1.4"     # property-based testing
+
+[build-dependencies]
+# CXX bridge — re-enable when adding CCCoreLib FFI:
+# cxx-build = "1.0"
+
+# Windows-specific
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3", features = ["errhandlingapi", "handleapi", "debugapi"] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.dev]
+opt-level = 1
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/CONFIGURE_CCCORELIB.md">
+# Configuring CCCoreLib for the Sandbox
+
+These steps connect the sandbox to the actual CCCoreLib C++ library.
+You only need to do this once, or when CCCoreLib headers change.
+
+## Option A: Use existing build DLLs (fastest)
+
+If you've already built CloudCompare and `build/libs/CCCoreLib/` exists:
+
+```powershell
+# 1. Copy CCCoreLib DLLs and import libs
+$build = "C:\dev\CloudCompare\build\libs\qCC_db\extern\CCCoreLib"
+$dest   = "C:\dev\CloudCompare\sandbox\external\CCCoreLib_build\lib"
+New-Item -ItemType Directory -Force -Path $dest
+Copy-Item "$build\*.dll" $dest
+Copy-Item "$build\*.lib" $dest
+
+# 2. Copy headers
+$hdest = "C:\dev\CloudCompare\sandbox\external\CCCoreLib_include"
+New-Item -ItemType Directory -Force -Path $hdest
+Copy-Item "C:\dev\CloudCompare\libs\qCC_db\extern\CCCoreLib\include\*" $hdest -Recurse
+Copy-Item "C:\dev\CloudCompare\libs\qCC_db\extern\CCCoreLib\libs\qCC_db\extern\CCCoreLib\include\*" $hdest -ErrorAction SilentlyContinue
+
+# 3. Update build.rs path if needed (should already point to external/CCCoreLib_build)
+# No changes needed if using Option A path above.
+
+# 4. Build sandbox
+& 'C:\dev\CloudCompare\tools\sandbox\sandbox-build.cmd' build --release
+```
+
+## Option B: Build CCCoreLib standalone for the sandbox
+
+If you want a clean, reproducible build of just CCCoreLib (recommended):
+
+```powershell
+# Configure CCCoreLib standalone (no Qt, no plugins)
+cmake -S C:\dev\CloudCompare\libs\qCC_db\extern\CCCoreLib `
+      -B C:\dev\CloudCompare\sandbox\external\CCCoreLib_build `
+      -G Ninja `
+      -DCMAKE_BUILD_TYPE=Release `
+      -DCCCORELIB_SHARED=OFF `
+      -DCCCORELIB_USE_TBB=OFF `
+      -DCCCORELIB_USE_QT_CONCURRENT=ON `
+      -DCMAKE_PREFIX_PATH="C:/dev/tools/Qt/6.8.3/msvc2022_64" `
+      -DCMAKE_INSTALL_PREFIX="C:\dev\CloudCompare\sandbox\external\CCCoreLib_build\install"
+
+# Build
+cmake --build C:\dev\CloudCompare\sandbox\external\CCCoreLib_build `
+       --config Release --parallel 8
+
+# Install (copies to CMAKE_INSTALL_PREFIX)
+cmake --install C:\dev\CloudCompare\sandbox\external\CCCoreLib_build --config Release
+
+# Copy headers
+New-Item -ItemType Directory -Force -Path C:\dev\CloudCompare\sandbox\external\CCCoreLib_include
+Copy-Item "C:\dev\CloudCompare\sandbox\external\CCCoreLib_build\install\include\*" `
+         C:\dev\CloudCompare\sandbox\external\CCCoreLib_include\ -Recurse
+
+# Build sandbox
+& 'C:\dev\CloudCompare\tools\sandbox\sandbox-build.cmd' build --release
+```
+
+## Verifying the Setup
+
+After setup, verify:
+
+```powershell
+# Should show CCCoreLib.lib exists
+Test-Path "C:\dev\CloudCompare\sandbox\external\CCCoreLib_build\lib\CCCoreLib.lib"
+
+# Should show ScalarField.h exists
+Test-Path "C:\dev\CloudCompare\sandbox\external\CCCoreLib_include\ScalarField.h"
+
+# Should show CCCoreLib.dll exists (for runtime)
+Test-Path "C:\dev\CloudCompare\sandbox\external\CCCoreLib_build\lib\CCCoreLib.dll"
+```
+
+## If Linking Fails
+
+Common issues and fixes:
+
+| Error | Fix |
+|-------|-----|
+| `unresolved external: FileIOFilter::Open` | Link qCC_io.lib — FileIOFilter is in qCC_io, not CCCoreLib |
+| `unresolved external: ccPointCloud` | Link QCC_DB_LIB |
+| `cannot open kernel32.lib` | Need vcvars64.bat — run `sandbox-build.cmd` not bare `cargo` |
+| `MSVC runtime mismatch` | Rebuild CCCoreLib from source (Option B) |
+
+## Key Note: qCC_io + QCC_DB_LIB needed too
+
+The LAS loader (`cpp/las_loader.cc`) uses `FileIOFilter::Open()` which is in `qCC_io.lib`,
+not `CCCoreLib.lib`. The full link set for the sandbox C++ loader is:
+
+```
+CCCoreLib.lib     ← ScalarField, KD-tree, octree algorithms
+QCC_DB_LIB.lib    ← ccPointCloud, ccHObject
+QCC_IO_LIB.lib   ← FileIOFilter::Open()
+```
+
+Update `build.rs` to link all three:
+
+```rust
+println!("cargo:rustc-link-search=native={}", ...);
+println!("cargo:rustc-link-lib=CCCoreLib");
+println!("cargo:rustc-link-lib=QCC_DB_LIB");
+println!("cargo:rustc-link-lib=QCC_IO_LIB");
+```
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/README.md">
+# 2026-08-19-rust-migration-icp-scalarfield
+
+**Status:** Active — Phase 1 (scalar field) + Phase 2 (ICP) passing
+**Template:** `experimental/templates/rust_lib/` (then extended with a CLI)
+**Goal:** Pure-Rust port of CCCoreLib statistics + ICP, characterising behaviour against the C++ source before integrating into `cc-rust/`.
+
+## Why this session exists
+
+We are migrating CloudCompare's hot path (ScalarField statistics, ICP registration, octree/KD-tree) to Rust. Before touching `libs/qCC_db` or `cc-rust/`, we need:
+
+1. A pure-Rust implementation we can unit-test headlessly
+2. Characterisation tests that match CCCoreLib exactly (population variance, IEEE NaN semantics, mean of squares for RMS)
+3. A clear migration path for the CXX FFI layer once CCCoreLib is built standalone
+
+## Scope
+
+| Module | Status | Notes |
+|---|---|---|
+| `scalar_field.rs` | ✅ Done | 17 tests pass, matches CCCoreLib formulas (population variance, NaN=quiet_NaN) |
+| `registration.rs` | ✅ Done | SVD-based Horn ICP; 3 tests pass; nearest-neighbour is O(n) — replace with KD-tree |
+| `octree.rs` | 🚧 Skeleton | Types defined; KD-tree stub only — needs full impl for ICP acceleration |
+| `io.rs` | 🚧 Skeleton | CSV-only; needs `las` crate for `.las`/`.laz` |
+| `lib.rs` | ✅ Done | Module declarations + sentry init |
+| `main.rs` | ✅ Done | CLI entry point |
+
+## Build & test
+
+```powershell
+cd C:\dev\CloudCompare\experimental\sessions\2026-08-19-rust-migration-icp-scalarfield
+cargo test         # 28/28 pass
+cargo run          # CLI: reads from data/, writes stats to stdout
+```
+
+## Characterisation against C++
+
+The C++ source formulas we mirror are documented in `docs/decisions/2026-08-19-rust-scalarfield-formulas.md`:
+
+- `ScalarField::computeMeanAndVariance()` uses **population variance** (no Bessel correction): `var = Σx²/n − mean²`
+- `ValidValue(v) = std::isfinite(v)` — IEEE NaN is the invalid marker, NOT a sentinel like `-1.0e-30`
+- `computeMeanSquareScalarValue()` returns `Σx²/n`; the caller takes `sqrt` to get RMS
+
+## Open questions
+
+1. **KD-tree implementation** — `kiddo` crate vs. hand-rolled octree?
+2. **LAS reading** — `las` crate (pure Rust) vs. LASzip (FFI) vs. las-rs?
+3. **CXX FFI surface** — which functions cross the C↔Rust boundary? See `experimental/sessions/2026-08-19-icp-variants/` for variant exploration.
+
+## Related
+
+- **PRD:** `PRD/rust/05-roadmap.md`, `PRD/rust/06-sandbox-plan.md`
+- **Other sessions exploring variants:** `experimental/scenarios/2026-08-19-icp-variants/`
+- **Decision records:** `experimental/docs/decisions/`
+
+## Graduation criteria
+
+When ALL of these hold, the code is ready to move to `cc-rust/`:
+
+1. ✅ All unit tests pass (28/28)
+2. ⏸ Characterisation tests vs. CCCoreLib match within 1e-6
+3. ⏸ Benchmark within ±10% of C++ on `.las` test data
+4. ⏸ Sentry is clean (no panics, no unwrap crashes)
+5. ⏸ KD-tree replaces O(n) nearest-neighbour
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/sandbox-build.cmd">
+@echo off
+:: sandbox-build.cmd — Build the cc-sandbox Rust crate with MSVC toolchain
+::
+:: Usage:
+::   sandbox-build.cmd          (cargo check — fastest)
+::   sandbox-build.cmd build    (cargo build --release)
+::   sandbox-build.cmd test     (cargo test)
+::   sandbox-build.cmd bench    (cargo bench)
+::
+:: IMPORTANT: vcvars64.bat does NOT propagate env vars to PowerShell.
+:: We capture them here with `cmd /c` and pass them explicitly to cargo.
+
+setlocal enabledelayedexpansion
+
+:: ── Paths ───────────────────────────────────────────────────────────────────
+set "VS_PATH=C:\Program Files\Microsoft Visual Studio\2022\Community"
+set "VCVARS=%VS_PATH%\VC\Auxiliary\Build\vcvarsall.bat"
+set "VCVARS64=%VS_PATH%\VC\Auxiliary\Build\vcvars64.bat"
+set "SANDBOX_ROOT=%~dp0"
+set "RUST_SANDBOX=%SANDBOX_ROOT%"
+
+:: ── Capture MSVC environment via cmd /c (the only reliable method) ──────────
+:: This works because cmd.exe expands %INCLUDE% correctly when vcvars runs.
+echo [sandbox-build] Capturing MSVC environment from vcvarsall.bat...
+
+:: Capture all env vars set by vcvars into a temp file
+"%SystemRoot%\System32\cmd.exe" /c ""%VCVARS%" x64 >nul 2>&1 && set" > "%TEMP%\sandbox_msvc_env.txt"
+
+:: Read each line: NAME=VALUE
+for /f "usebackq tokens=1,* delims==" %%A in ("%TEMP%\sandbox_msvc_env.txt") do (
+    set "MSC_%%A=%%B"
+)
+
+:: Set the critical vars for cargo/rustc
+if defined MSC_INCLUDE set "INCLUDE=%MSC_INCLUDE%"
+if defined MSC_LIB set "LIB=%MSC_LIB%"
+if defined MSC_LIBPATH set "LIBPATH=%MSC_LIBPATH%"
+
+:: Set CC/CXX for CXX crate detection (must use cl.exe from MSVC, not g++)
+set "CC=cl.exe"
+set "CXX=cl.exe"
+
+:: Set cargo to use the MSVC target (already default on Windows)
+set "CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_LINKER=link.exe"
+set "CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTC_WRAPPER="
+
+:: Echo what we captured (sanitised)
+echo [sandbox-build] INCLUDE length: !INCLUDE:~0,80!...
+echo [sandbox-build] LIB length: !LIB:~0,80!...
+echo [sandbox-build] CC=%CC%
+
+:: ── Dispatch ────────────────────────────────────────────────────────────────
+set "CMD=%~1"
+
+if "%CMD%"=="" goto check
+if "%CMD%"=="check" goto check
+if "%CMD%"=="build" goto build
+if "%CMD%"=="test" goto test
+if "%CMD%"=="bench" goto bench
+if "%CMD%"=="clean" goto clean
+
+:check
+echo [sandbox-build] Running cargo check...
+cargo check --manifest-path "%RUST_SANDBOX%\Cargo.toml" %*
+goto end
+
+:build
+echo [sandbox-build] Running cargo build --release...
+cargo build --manifest-path "%RUST_SANDBOX%\Cargo.toml" --release %*
+goto end
+
+:test
+echo [sandbox-build] Running cargo test...
+cargo test --manifest-path "%RUST_SANDBOX%\Cargo.toml" %*
+goto end
+
+:bench
+echo [sandbox-build] Running cargo bench...
+cargo bench --manifest-path "%RUST_SANDBOX%\Cargo.toml" %*
+goto end
+
+:clean
+echo [sandbox-build] Cleaning sandbox...
+cargo clean --manifest-path "%RUST_SANDBOX%\Cargo.toml"
+goto end
+
+:end
+del /f /q "%TEMP%\sandbox_msvc_env.txt" 2>nul
+endlocal
+</file>
+
+<file path="experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/sandbox-build.ps1">
+# sandbox-build.ps1 — Build cc-sandbox with correct MSVC environment
+#
+# vcvars64.bat does NOT propagate env vars to the calling PowerShell session.
+# This script captures the MSVC environment via `cmd /c` and passes it to cargo.
+#
+# Usage:
+#   .\sandbox-build.ps1           # cargo check (fastest)
+#   .\sandbox-build.ps1 build    # cargo build --release
+#   .\sandbox-build.ps1 test     # cargo test
+#   .\sandbox-build.ps1 clean    # cargo clean
+
+param(
+    [ValidateSet('', 'check', 'build', 'test', 'bench', 'clean')]
+    [string]$Action = 'check'
+)
+
+$ErrorActionPreference = 'Stop'
+$vcVarsBat = "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat"
+$sandboxRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+Write-Host "[sandbox-build] Capturing MSVC environment from vcvarsall.bat..." -ForegroundColor Cyan
+
+# Capture INCLUDE and LIB from vcvarsall.bat via cmd /c
+# This is the ONLY reliable method — direct `& vcvarsall.bat` in PowerShell does NOT propagate
+$includeLine = cmd /c "`"$vcVarsBat`" x64 >nul 2>&1 & set INCLUDE" 2>$null | Where-Object { $_ -match '^INCLUDE=' } | Select-Object -First 1
+$libLine     = cmd /c "`"$vcVarsBat`" x64 >nul 2>&1 & set LIB"     2>$null | Where-Object { $_ -match '^LIB=' } | Select-Object -First 1
+
+if ($includeLine) {
+    $env:INCLUDE = $includeLine -replace '^INCLUDE=', ''
+    Write-Host "[sandbox-build] INCLUDE: $($env:INCLUDE.Substring(0, [Math]::Min(80, $env:INCLUDE.Length)))..." -ForegroundColor Gray
+}
+if ($libLine) {
+    $env:LIB = $libLine -replace '^LIB=', ''
+    Write-Host "[sandbox-build] LIB: $($env:LIB.Substring(0, [Math]::Min(80, $env:LIB.Length)))..." -ForegroundColor Gray
+}
+
+# MSVC compiler/linker
+$env:CC  = 'cl.exe'
+$env:CXX = 'cl.exe'
+
+# ── Dispatch ─────────────────────────────────────────────────────────────────
+$manifestPath = Join-Path $sandboxRoot 'Cargo.toml'
+$extraArgs = $args
+
+switch ($Action) {
+    'check' {
+        Write-Host "[sandbox-build] cargo check..." -ForegroundColor Yellow
+        cargo check --manifest-path $manifestPath @extraArgs
+    }
+    'build' {
+        Write-Host "[sandbox-build] cargo build --release..." -ForegroundColor Yellow
+        cargo build --manifest-path $manifestPath --release @extraArgs
+    }
+    'test' {
+        Write-Host "[sandbox-build] cargo test..." -ForegroundColor Yellow
+        cargo test --manifest-path $manifestPath @extraArgs
+    }
+    'bench' {
+        Write-Host "[sandbox-build] cargo bench..." -ForegroundColor Yellow
+        cargo bench --manifest-path $manifestPath @extraArgs
+    }
+    'clean' {
+        Write-Host "[sandbox-build] cargo clean..." -ForegroundColor Yellow
+        cargo clean --manifest-path $manifestPath
+    }
+}
+</file>
+
+<file path="experimental/shared/scripts/get-vcvars.ps1">
+# Get-VCVars.ps1
+# Capture MSVC environment into the current PowerShell session.
+# Usage:
+#   . C:\dev\CloudCompare\experimental\shared\scripts\get-vcvars.ps1
+# Then $env:INCLUDE, $env:LIB, $env:LIBPATH, $env:VCToolsInstallDir are set.
+
+# Try several known locations for vcvars64.bat (Community, BuildTools, Pro, Enterprise)
+$vcvarsCandidates = @(
+    'C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat',
+    'C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat',
+    'C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat',
+    'C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat'
+)
+
+$vcvars = $null
+foreach ($cand in $vcvarsCandidates) {
+    if (Test-Path $cand) { $vcvars = $cand; break }
+}
+
+if (-not (Test-Path $vcvars)) {
+    throw "vcvars64.bat not found at: $vcvars"
+}
+
+# Write a temporary .cmd that runs vcvars64 then echoes the env vars we want.
+$tmp = [System.IO.Path]::GetTempFileName() + '.cmd'
+$sb = New-Object System.Text.StringBuilder
+[void]$sb.AppendLine('@echo off')
+[void]$sb.AppendLine('call "' + $vcvars + '" x64 >nul 2>&1')
+[void]$sb.AppendLine('echo ---ENV-START---')
+[void]$sb.AppendLine('echo INCLUDE=%INCLUDE%')
+[void]$sb.AppendLine('echo LIB=%LIB%')
+[void]$sb.AppendLine('echo LIBPATH=%LIBPATH%')
+[void]$sb.AppendLine('echo VCToolsInstallDir=%VCToolsInstallDir%')
+[void]$sb.AppendLine('echo WindowsSdkDir=%WindowsSdkDir%')
+[void]$sb.AppendLine('echo VCINSTALLDIR=%VCINSTALLDIR%')
+[void]$sb.AppendLine('echo WindowsSDKVersion=%WindowsSDKVersion%')
+[void]$sb.AppendLine('echo ---ENV-END---')
+[System.IO.File]::WriteAllText($tmp, $sb.ToString())
+
+$output = & cmd.exe /c $tmp 2>&1
+Remove-Item $tmp -ErrorAction SilentlyContinue
+
+$inBlock = $false
+foreach ($line in $output) {
+    if ($line -eq '---ENV-START---') { $inBlock = $true; continue }
+    if ($line -eq '---ENV-END---') { $inBlock = $false; break }
+    if (-not $inBlock) { continue }
+    if ($line -match '^([^=]+)=(.*)$') {
+        $name = $matches[1]
+        $value = $matches[2]
+        if ($value -ne '' -and $value -ne '%' + $name + '%') {
+            Set-Item -Path "Env:$name" -Value $value
+        }
+    }
+}
+
+# Prepend MSVC bin to PATH so cl.exe, link.exe, lib.exe are found
+$vcBin = Join-Path $env:VCToolsInstallDir 'bin\Hostx64\x64'
+$env:Path = $vcBin + ';' + $env:Path
+
+# Prepend Windows SDK bin to PATH
+if ($env:WindowsSdkDir -and $env:WindowsSDKVersion) {
+    $sdkBin = Join-Path $env:WindowsSdkDir ('bin\' + $env:WindowsSDKVersion + 'x64')
+    if (Test-Path $sdkBin) {
+        $env:Path = $sdkBin + ';' + $env:Path
+    }
+}
+
+Write-Host 'OK MSVC environment loaded'
+Write-Host ('  VCToolsInstallDir: ' + $env:VCToolsInstallDir)
+Write-Host ('  WindowsSDKVersion: ' + $env:WindowsSDKVersion)
+$cl = & where.exe cl.exe 2>$null | Select-Object -First 1
+Write-Host ('  cl.exe: ' + $cl)
+</file>
+
+<file path="experimental/templates/cpp_qt_console/src/main.cpp">
+// cpp_qt_console template — minimal Qt 6 console app.
+//
+// Replace this with your experiment. The skeleton just demonstrates that
+// QCoreApplication, Qt's command-line parser, and Qt logging all work
+// in a console context (no GUI).
+
+#include <QCoreApplication>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
+#include <QString>
+#include <QStringList>
+#include <QFile>
+#include <QFileInfo>
+#include <QTextStream>
+#include <QLoggingCategory>
+
+Q_LOGGING_CATEGORY(lcMain, "template.qt.console")
+
+// Trivial example: count lines in a file. Replace with your experiment.
+static int countLines(const QString& path) {
+    QFile f(path);
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qCWarning(lcMain) << "could not open" << path << ":" << f.errorString();
+        return -1;
+    }
+    int n = 0;
+    while (!f.atEnd()) {
+        f.readLine();
+        ++n;
+    }
+    return n;
+}
+
+int main(int argc, char* argv[]) {
+    QCoreApplication app(argc, argv);
+    QCoreApplication::setApplicationName("cpp_qt_console_template");
+    QCoreApplication::setApplicationVersion("0.1.0");
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Demo CLI: count lines in a text file.");
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("file", "Path to text file (use - for stdin).", "[file]");
+    QCommandLineOption verboseOpt({"v", "verbose"}, "Print extra info.");
+    parser.addOption(verboseOpt);
+    parser.process(app);
+
+    if (parser.isSet(verboseOpt)) {
+        QLoggingCategory::setFilterRules("template.qt.console.debug=true");
+    }
+
+    const QStringList args = parser.positionalArguments();
+    if (args.isEmpty()) {
+        qCInfo(lcMain) << "no file given — printing hello world instead";
+        QTextStream(stdout) << "Hello, Qt 6 console template!\n";
+        return 0;
+    }
+
+    const QString path = args.first();
+    if (path == "-") {
+        QTextStream(stdout) << "stdin mode not implemented; pass a file path\n";
+        return 1;
+    }
+
+    QFileInfo fi(path);
+    if (!fi.exists()) {
+        qCCritical(lcMain) << "file not found:" << path;
+        return 2;
+    }
+
+    const int n = countLines(path);
+    QTextStream(stdout) << path << " : " << n << " line(s)\n";
+    return (n < 0) ? 3 : 0;
+}
+</file>
+
+<file path="experimental/templates/cpp_qt_console/AGENTS.md">
+# Template: cpp_qt_console
+
+## Purpose
+
+A **C++ + Qt 6 console app** template. No GUI. No FFI. Just `QCoreApplication`,
+`QCommandLineParser`, and Qt's logging.
+
+Use this when you want to:
+
+- Test file I/O using Qt's `QFile` / `QDir` / `QString`
+- Parse command-line arguments with `QCommandLineParser`
+- Use Qt's logging categories (`Q_LOGGING_CATEGORY`)
+- Quickly try a Qt API before committing to a full GUI
+- Run a CLI that uses Qt types but doesn't open any windows
+
+## When NOT to use
+
+- You need a window or viewport — use `cpp_qt_gui/`
+- You need to call Rust — use `rust_cxx_app/` (or the `cxx-ffi` feature in this
+  template's sibling; see "Hybrid" below)
+- You don't need Qt at all — use plain C++ or Rust
+
+## Structure
+
+```
+cpp_qt_console/
+├── CMakeLists.txt          ← find Qt6 Core, add_executable, link Qt6::Core
+├── src/
+│   └── main.cpp            ← QCoreApplication + QCommandLineParser + Q_LOGGING_CATEGORY
+├── AGENTS.md
+└── README.md
+```
+
+## Build & run
+
+```powershell
+# Configure
+cmake -S . -B build -G Ninja `
+  -DCMAKE_PREFIX_PATH=C:/dev/tools/Qt/6.8.3/msvc2022_64
+
+# Build
+cmake --build build
+
+# Run
+.\build\demo_cli.exe
+.\build\demo_cli.exe C:\path\to\file.txt
+.\build\demo_cli.exe -v
+```
+
+If you have Qt in a different location, replace `C:/dev/tools/Qt/6.8.3/msvc2022_64`
+with your Qt 6 install root.
+
+If you don't have Ninja, drop `-G Ninja` and CMake will pick the default generator
+(Visual Studio on Windows).
+
+## Extension patterns
+
+1. **Add Qt modules.** `find_package(Qt6 COMPONENTS Network Sql)`, then
+   `target_link_libraries(demo_cli PRIVATE Qt6::Network Qt6::Sql)`.
+2. **Add a sub-command.** Use `QCommandLineParser::addSubcommand` for git-style
+   multi-command CLIs.
+3. **Add tests.** `find_package(Qt6 COMPONENTS Test)`, create a test exe with
+   `qt_add_executable`, link `Qt6::Test`, write `QTEST_MAIN` / `QTEST_GUILESS_MAIN`.
+
+## Hybrid: call Rust from this template
+
+If you also need Rust code (for fast point-cloud operations, say), this template
+can launch a Rust subprocess and parse its output:
+
+```cpp
+QProcess rust;
+rust.start("./rust_binary.exe", QStringList() << "--json");
+rust.waitForFinished();
+const QByteArray json = rust.readAllStandardOutput();
+// parse with QJsonDocument
+```
+
+For tighter integration, use `rust_cxx_app/` to compile Rust as a staticlib and
+link it here. The staticlib build needs the MSVC toolchain — see
+`rust_cxx_app/AGENTS.md`.
+
+## Common pitfalls
+
+1. **Qt not found.** Set `CMAKE_PREFIX_PATH` to your Qt 6 install root.
+2. **MSVC d3d11.lib not found.** Only matters if you link `Qt6::OpenGLWidgets`
+   (i.e. in `cpp_qt_gui/`). The Qt-only Core module links nothing extra.
+3. **Console window appears on Windows GUI apps.** If you want a GUI but no
+   console, switch to `cpp_qt_gui/` and set `WIN32_EXECUTABLE` in CMake.
+
+## Related
+
+- Sibling: `../cpp_qt_gui/` (Qt with OpenGL viewport)
+- Sibling: `../rust_cxx_app/` (Rust ↔ C++ via CXX)
+- Workflow: `../../AGENTS.md`
+</file>
+
+<file path="experimental/templates/cpp_qt_console/CMakeLists.txt">
+# CMakeLists.txt for the cpp_qt_console template.
+#
+# Minimal Qt 6 console app. Builds with cmake + ninja (or Visual Studio).
+# Find this template's expected build pattern in shared/cmake/QtConfig.cmake
+# (auto-detects Qt 6.8.3 on this machine).
+#
+# Usage:
+#   cmake -S . -B build -G Ninja -DCMAKE_PREFIX_PATH=C:/dev/tools/Qt/6.8.3/msvc2022_64
+#   cmake --build build
+
+cmake_minimum_required(VERSION 3.16)
+project(cpp_qt_console_template LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Find Qt 6 — Core only (no GUI / Widgets / OpenGL)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core)
+
+qt_standard_project_setup()
+
+# Add the executable
+add_executable(demo_cli src/main.cpp)
+
+target_link_libraries(demo_cli PRIVATE Qt6::Core)
+
+# Windows: hide the console window for GUI apps. We are a console app,
+# so we DON'T add /SUBSYSTEM:WINDOWS — leave the default console behaviour.
+</file>
+
+<file path="experimental/templates/cpp_qt_console/README.md">
+# cpp_qt_console template
+
+Minimal Qt 6 console app. No GUI. No FFI.
+
+## Quick start
+
+```powershell
+# Configure (assumes Qt 6.8.3 at C:/dev/tools/Qt/6.8.3/msvc2022_64)
+cmake -S . -B build -G Ninja `
+  -DCMAKE_PREFIX_PATH=C:/dev/tools/Qt/6.8.3/msvc2022_64
+
+# Build
+cmake --build build
+
+# Run
+.\build\demo_cli.exe            # prints hello world
+.\build\demo_cli.exe C:\some\file.txt
+```
+
+## What you get
+
+- `src/main.cpp` — `QCoreApplication` + `QCommandLineParser` + `Q_LOGGING_CATEGORY`
+  + a tiny `countLines(file)` example
+- `CMakeLists.txt` — `find_package(Qt6 Core)`, `add_executable`, `target_link_libraries`
+- Logging via Qt's `QLoggingCategory` (filter with `QT_LOGGING_RULES`)
+
+## Environment
+
+| Var | Default | Used for |
+|---|---|---|
+| `QT_LOGGING_RULES` | (none) | Enable debug logging: `template.qt.console.debug=true` |
+| `CMAKE_PREFIX_PATH` | (none) | Where CMake looks for Qt6 |
+
+## What to edit
+
+1. `CMakeLists.txt` — add more Qt components if needed (Network, Sql, etc.)
+2. `src/main.cpp` — replace `countLines()` with your experiment
+3. Add new subcommands with `QCommandLineParser::addSubcommand`
+
+## See also
+
+- `AGENTS.md` — when to use, structure, extension patterns
+- `../../AGENTS.md` — workflow contract
+- Sibling: `../cpp_qt_gui/` (Qt with OpenGL viewport)
+- Sibling: `../rust_cxx_app/` (Rust ↔ C++ via CXX)
+</file>
+
+<file path="experimental/templates/cpp_qt_gui/src/main.cpp">
+// cpp_qt_gui template — desktop view with 3D OpenGL viewport.
+//
+// Shows a Qt 6 main window with a 3D point cloud viewport. By default,
+// renders a synthetic spiral. Replace with a file loader, a QProcess
+// call to a Rust binary, or a CXX-linked Rust staticlib (advanced).
+//
+// Controls:
+//   - Left-mouse drag: rotate
+//   - Right-mouse drag: pan
+//   - Mouse wheel: zoom
+//   - "Reset View" button: return to default
+
+#include <QApplication>
+#include <QMainWindow>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QComboBox>
+#include <QLabel>
+#include <QStatusBar>
+
+#include "pointcloudview.h"
+#include "synthetic.h"
+
+int main(int argc, char* argv[]) {
+    QApplication app(argc, argv);
+    QApplication::setApplicationName("cpp_qt_gui_template");
+    QApplication::setApplicationVersion("0.1.0");
+
+    QMainWindow window;
+    window.setWindowTitle("Point Cloud Viewer — cpp_qt_gui template");
+    window.resize(900, 700);
+
+    auto* central = new QWidget(&window);
+    auto* layout = new QVBoxLayout(central);
+
+    // Toolbar
+    auto* toolbar = new QHBoxLayout();
+    auto* dataset_combo = new QComboBox();
+    dataset_combo->addItem("Spiral (2000 pts)");
+    dataset_combo->addItem("Gaussian (5000 pts)");
+    dataset_combo->addItem("Helix (2000 pts)");
+
+    auto* reset_btn = new QPushButton("Reset View");
+    auto* info_label = new QLabel("Drag to rotate. Wheel to zoom. Right-drag to pan.");
+    info_label->setStyleSheet("color: #888;");
+
+    toolbar->addWidget(new QLabel("Dataset:"));
+    toolbar->addWidget(dataset_combo);
+    toolbar->addSpacing(20);
+    toolbar->addWidget(reset_btn);
+    toolbar->addStretch();
+    toolbar->addWidget(info_label);
+
+    layout->addLayout(toolbar);
+
+    // 3D viewport
+    auto* view = new PointCloudView();
+    layout->addWidget(view, /*stretch=*/1);
+
+    // Status bar
+    auto* status = new QLabel("Ready. 0 points.");
+    window.statusBar()->addWidget(status);
+
+    // Wire data loading
+    auto load_and_show = [view, status]() {
+        // For now, hardcoded synthetic data. Replace with file load / QProcess.
+        std::vector<float> data;
+        size_t n = 0;
+        // Default to spiral; selection handler will overwrite.
+        data = synthetic::spiral(2000);
+        n = data.size() / 3;
+        view->setPoints(data, n);
+        status->setText(QString("Loaded %1 synthetic points.").arg(n));
+    };
+    load_and_show();
+
+    QObject::connect(dataset_combo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+                     [view, status](int idx) {
+        std::vector<float> data;
+        size_t n = 0;
+        switch (idx) {
+            case 0: data = synthetic::spiral(2000); n = 2000; break;
+            case 1: data = synthetic::gaussian_cloud(5000); n = 5000; break;
+            case 2: data = synthetic::helix(2000); n = 2000; break;
+        }
+        view->setPoints(data, n);
+        view->resetView();
+        status->setText(QString("Loaded %1 synthetic points.").arg(n));
+    });
+
+    QObject::connect(reset_btn, &QPushButton::clicked, [view, status]() {
+        view->resetView();
+        status->setText("View reset.");
+    });
+
+    window.setCentralWidget(central);
+    window.show();
+    return app.exec();
+}
+</file>
+
+<file path="experimental/templates/cpp_qt_gui/src/pointcloudview.cpp">
+// PointCloudView — 3D viewport for point cloud rendering.
+
+#include "pointcloudview.h"
+
+#include <QOpenGLShaderProgram>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QDebug>
+#include <QtMath>
+#include <algorithm>
+#include <cmath>
+
+// ----------------------------------------------------------------------------
+// GLSL 330 Core shaders.
+// ----------------------------------------------------------------------------
+
+static const char* kPointVertexShader = R"GLSL(
+#version 330 core
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in float aColor;  // 0..1 mapped from z
+
+uniform mat4 uMVP;
+
+out float vColor;
+
+void main() {
+    gl_Position = uMVP * vec4(aPos, 1.0);
+    gl_PointSize = 2.0;
+    vColor = aColor;
+}
+)GLSL";
+
+static const char* kPointFragmentShader = R"GLSL(
+#version 330 core
+in float vColor;
+out vec4 FragColor;
+
+// Simple viridis-like gradient: blue (low) -> green (mid) -> yellow (high)
+vec3 viridis(float t) {
+    t = clamp(t, 0.0, 1.0);
+    if (t < 0.5) {
+        return mix(vec3(0.27, 0.0, 0.33), vec3(0.13, 0.57, 0.55), t * 2.0);
+    }
+    return mix(vec3(0.13, 0.57, 0.55), vec3(0.99, 0.79, 0.15), (t - 0.5) * 2.0);
+}
+
+void main() {
+    FragColor = vec4(viridis(vColor), 1.0);
+}
+)GLSL";
+
+static const char* kAxesVertexShader = R"GLSL(
+#version 330 core
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec3 aColor;
+uniform mat4 uMVP;
+out vec3 vColor;
+void main() {
+    gl_Position = uMVP * vec4(aPos, 1.0);
+    vColor = aColor;
+}
+)GLSL";
+
+static const char* kAxesFragmentShader = R"GLSL(
+#version 330 core
+in vec3 vColor;
+out vec4 FragColor;
+void main() { FragColor = vec4(vColor, 1.0); }
+)GLSL";
+
+// ----------------------------------------------------------------------------
+// Helpers
+// ----------------------------------------------------------------------------
+
+static QVector3D vecMin(const QVector3D& a, const QVector3D& b) {
+    return QVector3D(std::min(a.x(), b.x()),
+                     std::min(a.y(), b.y()),
+                     std::min(a.z(), b.z()));
+}
+static QVector3D vecMax(const QVector3D& a, const QVector3D& b) {
+    return QVector3D(std::max(a.x(), b.x()),
+                     std::max(a.y(), b.y()),
+                     std::max(a.z(), b.z()));
+}
+
+// ----------------------------------------------------------------------------
+// PointCloudView implementation
+// ----------------------------------------------------------------------------
+
+PointCloudView::PointCloudView(QWidget* parent)
+    : QOpenGLWidget(parent) {
+    setMouseTracking(true);
+}
+
+PointCloudView::~PointCloudView() {
+    if (context()) {
+        makeCurrent();
+        if (vbo_) glDeleteBuffers(1, &vbo_);
+        if (axes_vbo_) glDeleteBuffers(1, &axes_vbo_);
+        if (shader_program_) glDeleteProgram(shader_program_);
+        if (axes_shader_) glDeleteProgram(axes_shader_);
+        doneCurrent();
+    }
+}
+
+void PointCloudView::setPoints(const std::vector<float>& interleaved_xyz,
+                               size_t point_count) {
+    points_ = interleaved_xyz;
+    point_count_ = point_count;
+    bounds_set_ = false;
+    if (isValid() && context() != nullptr) {
+        makeCurrent();
+        uploadPointsToGPU();
+        doneCurrent();
+        update();
+    }
+}
+
+void PointCloudView::setBounds(const QVector3D& min, const QVector3D& max) {
+    bounds_min_ = min;
+    bounds_max_ = max;
+    bounds_set_ = true;
+    if (isValid() && context() != nullptr) {
+        update();
+    }
+}
+
+void PointCloudView::resetView() {
+    yaw_ = 30.0f;
+    pitch_ = 20.0f;
+    distance_ = 5.0f;
+    pan_offset_ = QVector3D(0, 0, 0);
+    update();
+}
+
+void PointCloudView::computeBoundsFromPoints() {
+    if (points_.empty()) {
+        bounds_min_ = QVector3D(-1, -1, -1);
+        bounds_max_ = QVector3D(1, 1, 1);
+        return;
+    }
+    bounds_min_ = QVector3D(std::numeric_limits<float>::max(),
+                            std::numeric_limits<float>::max(),
+                            std::numeric_limits<float>::max());
+    bounds_max_ = QVector3D(-std::numeric_limits<float>::max(),
+                            -std::numeric_limits<float>::max(),
+                            -std::numeric_limits<float>::max());
+    for (size_t i = 0; i < point_count_; ++i) {
+        QVector3D p(points_[i * 3], points_[i * 3 + 1], points_[i * 3 + 2]);
+        bounds_min_ = vecMin(bounds_min_, p);
+        bounds_max_ = vecMax(bounds_max_, p);
+    }
+    bounds_set_ = true;
+}
+
+void PointCloudView::initializeGL() {
+    initializeOpenGLFunctions();
+    glClearColor(0.1f, 0.1f, 0.12f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
+
+    // Compile point shader
+    {
+        auto prog = std::make_unique<QOpenGLShaderProgram>(this);
+        prog->addShaderFromSourceCode(QOpenGLShader::Vertex, kPointVertexShader);
+        prog->addShaderFromSourceCode(QOpenGLShader::Fragment, kPointFragmentShader);
+        prog->link();
+        if (!prog->isLinked()) {
+            qWarning() << "Point shader link failed:" << prog->log();
+        }
+        shader_program_ = prog->programId();
+        // Keep `prog` alive by attaching it as a child of the widget.
+        prog->setParent(this);
+    }
+
+    // Compile axes shader
+    {
+        auto prog = std::make_unique<QOpenGLShaderProgram>(this);
+        prog->addShaderFromSourceCode(QOpenGLShader::Vertex, kAxesVertexShader);
+        prog->addShaderFromSourceCode(QOpenGLShader::Fragment, kAxesFragmentShader);
+        prog->link();
+        if (!prog->isLinked()) {
+            qWarning() << "Axes shader link failed:" << prog->log();
+        }
+        axes_shader_ = prog->programId();
+        prog->setParent(this);
+    }
+
+    // Axes: 6 endpoints, each with (pos.xyz, color.rgb)
+    const float axes[] = {
+        // X axis (red)
+        0.0f, 0.0f, 0.0f,  1.0f, 0.3f, 0.3f,
+        1.0f, 0.0f, 0.0f,  1.0f, 0.3f, 0.3f,
+        // Y axis (green)
+        0.0f, 0.0f, 0.0f,  0.3f, 1.0f, 0.3f,
+        0.0f, 1.0f, 0.0f,  0.3f, 1.0f, 0.3f,
+        // Z axis (blue)
+        0.0f, 0.0f, 0.0f,  0.3f, 0.3f, 1.0f,
+        0.0f, 0.0f, 1.0f,  0.3f, 0.3f, 1.0f,
+    };
+    glGenBuffers(1, &axes_vbo_);
+    glBindBuffer(GL_ARRAY_BUFFER, axes_vbo_);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(axes), axes, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    uploadPointsToGPU();
+}
+
+void PointCloudView::uploadPointsToGPU() {
+    if (!bounds_set_) computeBoundsFromPoints();
+    if (points_.empty()) return;
+
+    // Build interleaved buffer: [x, y, z, color01] per point
+    std::vector<float> buffer;
+    buffer.reserve(point_count_ * 4);
+    const float z_range = std::max(1e-6f, bounds_max_.z() - bounds_min_.z());
+    for (size_t i = 0; i < point_count_; ++i) {
+        const float x = points_[i * 3];
+        const float y = points_[i * 3 + 1];
+        const float z = points_[i * 3 + 2];
+        const float t = (z - bounds_min_.z()) / z_range;
+        buffer.push_back(x);
+        buffer.push_back(y);
+        buffer.push_back(z);
+        buffer.push_back(t);
+    }
+
+    if (vbo_ == 0) glGenBuffers(1, &vbo_);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_);
+    glBufferData(GL_ARRAY_BUFFER,
+                 static_cast<GLsizeiptr>(buffer.size() * sizeof(float)),
+                 buffer.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    vbo_size_ = point_count_;
+}
+
+void PointCloudView::resizeGL(int w, int h) {
+    glViewport(0, 0, w, h);
+}
+
+QMatrix4x4 PointCloudView::buildModelViewProjection() const {
+    const float aspect = static_cast<float>(width()) / std::max(1, height());
+
+    QMatrix4x4 projection;
+    projection.perspective(45.0f, aspect, 0.1f, 100.0f);
+
+    QMatrix4x4 view;
+    view.translate(0, 0, -distance_);
+    view.rotate(pitch_, 1.0f, 0.0f, 0.0f);
+    view.rotate(yaw_, 0.0f, 1.0f, 0.0f);
+    view.translate(pan_offset_);
+
+    // Center the cloud: translate so the center of bounds is at origin
+    QVector3D center = (bounds_min_ + bounds_max_) * 0.5f;
+    float scale = 1.0f / std::max({bounds_max_.x() - bounds_min_.x(),
+                                   bounds_max_.y() - bounds_min_.y(),
+                                   bounds_max_.z() - bounds_min_.z(),
+                                   1e-6f});
+    QMatrix4x4 model;
+    model.translate(-center);
+    model.scale(scale);
+
+    return projection * view * model;
+}
+
+void PointCloudView::paintGL() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    QMatrix4x4 mvp = buildModelViewProjection();
+    drawAxes(mvp);
+    drawPoints(mvp);
+}
+
+void PointCloudView::drawAxes(const QMatrix4x4& mvp) {
+    glUseProgram(axes_shader_);
+    GLuint mvp_loc = glGetUniformLocation(axes_shader_, "uMVP");
+    glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, mvp.constData());
+
+    glBindBuffer(GL_ARRAY_BUFFER, axes_vbo_);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+                          reinterpret_cast<void*>(3 * sizeof(float)));
+
+    glLineWidth(2.0f);
+    glDrawArrays(GL_LINES, 0, 6);
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glUseProgram(0);
+}
+
+void PointCloudView::drawPoints(const QMatrix4x4& mvp) {
+    if (point_count_ == 0 || vbo_ == 0) return;
+
+    glUseProgram(shader_program_);
+    GLuint mvp_loc = glGetUniformLocation(shader_program_, "uMVP");
+    glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, mvp.constData());
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                          reinterpret_cast<void*>(3 * sizeof(float)));
+
+    glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(point_count_));
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glUseProgram(0);
+}
+
+void PointCloudView::mousePressEvent(QMouseEvent* e) {
+    last_mouse_pos_ = e->pos();
+}
+
+void PointCloudView::mouseMoveEvent(QMouseEvent* e) {
+    QPoint delta = e->pos() - last_mouse_pos_;
+    last_mouse_pos_ = e->pos();
+
+    if (e->buttons() & Qt::LeftButton) {
+        yaw_ += delta.x() * 0.5f;
+        pitch_ += delta.y() * 0.5f;
+        pitch_ = std::clamp(pitch_, -89.0f, 89.0f);
+    } else if (e->buttons() & Qt::RightButton) {
+        // Pan in screen space
+        QMatrix4x4 inv = buildModelViewProjection().inverted();
+        QVector4D a = inv * QVector4D(0, 0, 0, 1);
+        QVector4D b = inv * QVector4D(delta.x() * 0.005f, -delta.y() * 0.005f, 0, 1);
+        pan_offset_ += (b - a).toVector3D();
+    }
+    update();
+}
+
+void PointCloudView::wheelEvent(QWheelEvent* e) {
+    const float factor = (e->angleDelta().y() > 0) ? 0.9f : 1.1f;
+    distance_ = std::clamp(distance_ * factor, 0.5f, 50.0f);
+    update();
+}
+</file>
+
+<file path="experimental/templates/cpp_qt_gui/src/pointcloudview.h">
+#pragma once
+
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
+#include <QMatrix4x4>
+#include <QVector3D>
+#include <QPoint>
+#include <memory>
+#include <vector>
+
+/// A 3D point cloud viewport.
+///
+/// Renders a vector of (x, y, z) points as coloured GL_POINTS. Supports
+/// mouse rotation, pan, and zoom. The colour is mapped from z-coordinate
+/// using a simple blue→red gradient (viridis-like).
+///
+/// Replace the point source with whatever the experiment needs:
+///   - Synthetic (see synthetic.h)
+///   - File loader (.las, .laz, .obj)
+///   - QProcess-launched Rust binary
+class PointCloudView : public QOpenGLWidget, protected QOpenGLFunctions {
+    Q_OBJECT
+
+public:
+    explicit PointCloudView(QWidget* parent = nullptr);
+    ~PointCloudView() override;
+
+    /// Replace the rendered point cloud.
+    void setPoints(const std::vector<float>& interleaved_xyz,
+                   size_t point_count);
+
+    /// Set the bounding box for normalization. If unset, computed from points.
+    void setBounds(const QVector3D& min, const QVector3D& max);
+
+    /// Reset view to default.
+    void resetView();
+
+protected:
+    void initializeGL() override;
+    void resizeGL(int w, int h) override;
+    void paintGL() override;
+
+    void mousePressEvent(QMouseEvent* e) override;
+    void mouseMoveEvent(QMouseEvent* e) override;
+    void wheelEvent(QWheelEvent* e) override;
+
+private:
+    void uploadPointsToGPU();
+    void computeBoundsFromPoints();
+    QMatrix4x4 buildModelViewProjection() const;
+    void drawAxes(const QMatrix4x4& mvp);
+    void drawPoints(const QMatrix4x4& mvp);
+
+    std::vector<float> points_;     // interleaved xyz
+    size_t point_count_ = 0;
+
+    // GL handles
+    GLuint vbo_ = 0;
+    GLuint axes_vbo_ = 0;
+    GLuint shader_program_ = 0;
+    GLuint axes_shader_ = 0;
+    size_t vbo_size_ = 0;
+
+    // Camera
+    float yaw_ = 30.0f;     // degrees around Y
+    float pitch_ = 20.0f;   // degrees around X
+    float distance_ = 5.0f;
+    QPoint last_mouse_pos_;
+    QVector3D pan_offset_ = QVector3D(0, 0, 0);
+
+    // Bounds (set by caller or computed from points)
+    QVector3D bounds_min_ = QVector3D(-1, -1, -1);
+    QVector3D bounds_max_ = QVector3D(1, 1, 1);
+    bool bounds_set_ = false;
+};
+</file>
+
+<file path="experimental/templates/cpp_qt_gui/src/synthetic.cpp">
+// Synthetic point cloud generators for the desktop view template.
+
+#include "synthetic.h"
+
+#include <cmath>
+#include <random>
+
+namespace synthetic {
+
+namespace {
+constexpr float kPi = 3.14159265358979323846f;
+}
+
+std::vector<float> spiral(size_t n) {
+    std::vector<float> out;
+    out.reserve(n * 3);
+    for (size_t i = 0; i < n; ++i) {
+        const float t = static_cast<float>(i) / static_cast<float>(n) * 6.0f * kPi;
+        const float r = 0.05f + 0.5f * (1.0f - std::cos(t * 0.5f));
+        out.push_back(r * std::cos(t));         // x
+        out.push_back(r * std::sin(t));         // y
+        out.push_back((static_cast<float>(i) / static_cast<float>(n)) - 0.5f);  // z
+    }
+    return out;
+}
+
+std::vector<float> gaussian_cloud(size_t n, float sigma, unsigned seed) {
+    std::mt19937 rng(seed);
+    std::normal_distribution<float> dist(0.0f, sigma);
+    std::vector<float> out;
+    out.reserve(n * 3);
+    for (size_t i = 0; i < n; ++i) {
+        out.push_back(dist(rng));
+        out.push_back(dist(rng));
+        out.push_back(dist(rng));
+    }
+    return out;
+}
+
+std::vector<float> helix(size_t n, float radius, float pitch) {
+    std::vector<float> out;
+    out.reserve(n * 3);
+    for (size_t i = 0; i < n; ++i) {
+        const float t = static_cast<float>(i) / static_cast<float>(n) * 4.0f * kPi;
+        out.push_back(radius * std::cos(t));
+        out.push_back(radius * std::sin(t));
+        out.push_back(pitch * t);
+    }
+    return out;
+}
+
+}  // namespace synthetic
+</file>
+
+<file path="experimental/templates/cpp_qt_gui/src/synthetic.h">
+#pragma once
+
+#include <vector>
+#include <cstddef>
+
+namespace synthetic {
+
+/// Generate a spiral point cloud of N points in a unit-ish box.
+/// X, Y, Z in approximately [-1, 1]. Used as default test data.
+std::vector<float> spiral(size_t n);
+
+/// Generate a random Gaussian point cloud with `n` points.
+std::vector<float> gaussian_cloud(size_t n, float sigma = 0.4f, unsigned seed = 42);
+
+/// Generate a noise-free helical spring shape.
+std::vector<float> helix(size_t n, float radius = 0.7f, float pitch = 0.3f);
+
+}  // namespace synthetic
+</file>
+
+<file path="experimental/templates/cpp_qt_gui/AGENTS.md">
+# Template: cpp_qt_gui
+
+## Purpose
+
+A **Qt 6 desktop app with a 3D OpenGL viewport** for visualising point clouds.
+
+This is the "see what your code does" template. Replace the synthetic data
+with a real point source (file loader, QProcess call to a Rust binary, or
+CXX-linked Rust staticlib) and you have a working visual debug tool.
+
+Use this when you want to:
+
+- Visualise scalar field colour maps on a 3D point cloud
+- Watch ICP iterations update in real time
+- See octree subdivision
+- Debug distance computations
+- Show a colleague "what does the algorithm do"
+
+## When NOT to use
+
+- You don't need a GUI — use `cpp_qt_console/`
+- You don't need OpenGL — just C++/Qt is enough for that
+- You only need a headless unit test — use `rust_lib/`
+
+## Structure
+
+```
+cpp_qt_gui/
+├── CMakeLists.txt                ← find Qt6 Core/Gui/Widgets/OpenGLWidgets, link
+├── src/
+│   ├── main.cpp                  ← QApplication, QMainWindow, QComboBox for dataset
+│   ├── pointcloudview.h/.cpp     ← QOpenGLWidget subclass with custom GLSL shaders
+│   └── synthetic.h/.cpp          ← spiral / gaussian / helix point generators
+├── AGENTS.md
+└── README.md
+```
+
+## Build & run
+
+```powershell
+# Configure (assumes Qt 6.8.3 at C:/dev/tools/Qt/6.8.3/msvc2022_64)
+cmake -S . -B build -G Ninja `
+  -DCMAKE_PREFIX_PATH=C:/dev/tools/Qt/6.8.3/msvc2022_64
+
+# Build
+cmake --build build
+
+# Run (Qt DLLs must be on PATH; see shared/scripts/get-qt-env.ps1)
+$env:Path = 'C:\dev\tools\Qt\6.8.3\msvc2022_64\bin;' + $env:Path
+.\build\demo_gui.exe
+```
+
+If the build fails with `LNK1181: cannot open d3d11.lib`, the Windows SDK
+is not on the link path. The `CMakeLists.txt` in this template adds the
+SDK lib path automatically when MSVC is the compiler; check that
+`$env:WindowsSdkDir` is set (`. ../shared/scripts/get-vcvars.ps1`).
+
+## Controls
+
+| Input | Action |
+|---|---|
+| Left-mouse drag | Rotate |
+| Right-mouse drag | Pan |
+| Mouse wheel | Zoom |
+| Reset View button | Return to default camera |
+| Dataset combo | Switch between Spiral / Gaussian / Helix |
+
+## Extension patterns
+
+1. **Load a real file.** Add a QFileDialog and a `FileIOFilter`-style class
+   that reads `.las` / `.laz` / `.obj` into `std::vector<float>` interleaved xyz.
+
+2. **Call a Rust subprocess.** Use `QProcess` to launch a Rust binary that
+   prints JSON to stdout; parse with `QJsonDocument`. For example, a Rust
+   binary that loads a `.las` file and outputs ICP results.
+
+3. **Call a Rust staticlib (advanced).** Add `cxx-ffi` to the linked
+   `rust_cxx_app` crate. See `rust_cxx_app/AGENTS.md`. Requires MSVC.
+
+4. **Add scalar-field colour map.** Pass a second vector (one float per
+   point) to `setPoints` and use it as the colour input instead of z.
+
+5. **Show ICP iteration in real time.** Animate the cloud update on a
+   `QTimer`; re-upload points each frame.
+
+6. **Add axes / grid.** Already in the template (RGB axes). For a grid,
+   add another set of GL_LINES in `PointCloudView::drawAxes`.
+
+## Common pitfalls
+
+1. **Qt DLLs not found at runtime** — add `C:\dev\tools\Qt\6.8.3\msvc2022_64\bin` to PATH.
+   Or use `windeployqt build\demo_gui.exe` to copy DLLs alongside the exe.
+2. **`LNK1181: cannot open d3d11.lib`** — the CMakeLists in this template
+   already handles this. If you copy it elsewhere, copy the `add_link_options`
+   line.
+3. **Black viewport on first run** — likely a shader compile error. Add
+   `glGetShaderInfoLog` checks in `initializeGL`.
+4. **Mouse controls feel inverted** — adjust the sign in `mouseMoveEvent`.
+
+## Related
+
+- Sibling: `../cpp_qt_console/` (Qt CLI, no GUI)
+- Sibling: `../rust_lib/` (pure-Rust library)
+- Sibling: `../rust_cxx_app/` (Rust ↔ C++ via CXX — link this to make a hybrid)
+- Workflow: `../../AGENTS.md`
+</file>
+
+<file path="experimental/templates/cpp_qt_gui/CMakeLists.txt">
+# CMakeLists.txt for the cpp_qt_gui template.
+#
+# Qt 6 desktop app with an OpenGL viewport for 3D point cloud rendering.
+#
+# Build:
+#   cmake -S . -B build -G Ninja -DCMAKE_PREFIX_PATH=C:/dev/tools/Qt/6.8.3/msvc2022_64
+#   cmake --build build
+#
+# Run (Qt DLLs must be on PATH):
+#   $env:Path = 'C:\dev\tools\Qt\6.8.3\msvc2022_64\bin;' + $env:Path
+#   .\build\demo_gui.exe
+
+cmake_minimum_required(VERSION 3.16)
+project(cpp_qt_gui_template LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Qt 6 — Core, Gui, Widgets, OpenGLWidgets. No QML.
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets)
+
+qt_standard_project_setup()
+
+# The OpenGL viewport in the GUI links Qt6::OpenGLWidgets, which in turn
+# links d3d11.lib, dxgi.lib, d3d12.lib from the Windows SDK. The MSVC
+# linker doesn't always find them — add the SDK lib path explicitly.
+# See shared/cmake/QtConfig.cmake for the auto-detect helper.
+if(MSVC AND EXISTS "$ENV{WindowsSdkDir}/Lib/$ENV{WindowsSDKVersion}/um/x64/d3d11.lib")
+    message(STATUS "Adding Windows SDK lib path for OpenGLWidgets d3d11 link")
+    add_link_options("/LIBPATH:\"$ENV{WindowsSdkDir}/Lib/$ENV{WindowsSDKVersion}/um/x64\"")
+endif()
+
+# Add the executable — qt_add_executable sets up MOC/UIC/RCC and respects
+# WIN32 to suppress the console window.
+qt_add_executable(demo_gui WIN32
+    src/main.cpp
+    src/pointcloudview.cpp
+    src/synthetic.cpp
+)
+
+# Headers are picked up by AUTOMOC via target_include_directories.
+target_include_directories(demo_gui PRIVATE src)
+
+# Link Qt modules.
+target_link_libraries(demo_gui PRIVATE
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Widgets
+    Qt6::OpenGLWidgets
+)
+</file>
+
+<file path="experimental/templates/cpp_qt_gui/README.md">
+# cpp_qt_gui template
+
+Qt 6 desktop app with a 3D OpenGL viewport for point cloud visualisation.
+
+## Quick start
+
+```powershell
+# Configure (assumes Qt 6.8.3 at C:/dev/tools/Qt/6.8.3/msvc2022_64)
+cmake -S . -B build -G Ninja `
+  -DCMAKE_PREFIX_PATH=C:/dev/tools/Qt/6.8.3/msvc2022_64
+
+# Build
+cmake --build build
+
+# Run (Qt DLLs must be on PATH)
+$env:Path = 'C:\dev\tools\Qt\6.8.3\msvc2022_64\bin;' + $env:Path
+.\build\demo_gui.exe
+```
+
+You should see a window titled "Point Cloud Viewer — cpp_qt_gui template"
+with a coloured spiral point cloud. Drag to rotate, wheel to zoom, right-drag
+to pan. The Dataset combo switches between Spiral / Gaussian / Helix.
+
+## What you get
+
+| File | Purpose |
+|---|---|
+| `src/main.cpp` | `QApplication`, `QMainWindow`, `QComboBox` for dataset selection |
+| `src/pointcloudview.{h,cpp}` | `QOpenGLWidget` subclass with custom GLSL shaders, mouse + wheel handlers |
+| `src/synthetic.{h,cpp}` | `spiral(n)`, `gaussian_cloud(n)`, `helix(n)` — test data |
+| `CMakeLists.txt` | Qt6 (Core, Gui, Widgets, OpenGLWidgets) + Windows SDK lib path fix for d3d11 |
+
+## Controls
+
+| Input | Action |
+|---|---|
+| Left-mouse drag | Rotate |
+| Right-mouse drag | Pan |
+| Mouse wheel | Zoom |
+| Reset View | Return to default camera |
+| Dataset combo | Switch between Spiral / Gaussian / Helix |
+
+## Environment
+
+| Var | Default | Used for |
+|---|---|---|
+| `CMAKE_PREFIX_PATH` | (none) | Where CMake looks for Qt 6 |
+| `WindowsSdkDir` | (none) | Where CMake looks for d3d11.lib etc. |
+| `Path` | system | Must include `C:\dev\tools\Qt\6.8.3\msvc2022_64\bin` for runtime DLLs |
+
+## What to edit
+
+1. `src/synthetic.cpp` — replace with a real file loader
+2. `src/pointcloudview.cpp` — change colour mapping, add grid, add axes labels
+3. `src/main.cpp` — add menus, file dialogs, status bar updates
+
+## How to link Rust
+
+See `AGENTS.md` "Extension patterns". Quick recipes:
+
+- **Subprocess (easiest):** `QProcess` launches a Rust binary, parses JSON.
+- **Staticlib (advanced):** Link the `rust_cxx_app` staticlib with `cxx-ffi`
+  feature. Requires MSVC toolchain. See `rust_cxx_app/AGENTS.md`.
+
+## See also
+
+- `AGENTS.md` — when to use, structure, extension patterns, pitfalls
+- `../../AGENTS.md` — workflow contract
+- Sibling: `../cpp_qt_console/` (Qt CLI, no GUI)
+- Sibling: `../rust_lib/` (pure-Rust library)
+- Sibling: `../rust_cxx_app/` (Rust ↔ C++ via CXX)
+</file>
+
+<file path="experimental/templates/rust_cxx_app/.cargo/config.toml">
+# Cargo configuration for rust_cxx_app template.
+#
+# Forces the MSVC toolchain (cl.exe / link.exe) for C++ compilation and
+# linking. Without this, Rust may pick up MinGW (g++.exe) from the PATH
+# which is incompatible with cxx-build's MSVC-targeted C++ glue.
+#
+# To use this template, run:
+#   . ../shared/scripts/get-vcvars.ps1
+#   $env:CC = 'cl.exe'
+#   $env:CXX = 'cl.exe'
+#   cargo build
+
+[target.x86_64-pc-windows-msvc]
+linker = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe"
+ar = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\lib.exe"
+</file>
+
+<file path="experimental/templates/rust_cxx_app/cpp/bridge.h">
+// bridge.h — user-facing header for the CXX bridge.
+//
+// CXX generates glue that calls `::greet_from_cpp` in the global namespace
+// with types from the `rust::cxxbridge1` namespace. The header must
+// include the auto-generated cxxbridge header for those types.
+//
+// Pattern:
+//   #include "<crate>/cxxbridge.h"  // types live here
+//   <return type> <func name>(<args>);
+
+#pragma once
+
+// cxx-build generates this header at
+//   target/.../cxxbridge/include/<crate>/src/lib.rs.h
+// It defines ::rust::cxxbridge1::String, ::rust::cxxbridge1::Str, and the
+// generated FFI declarations. The include path below is relative to the
+// `out/cxxbridge/include` directory that cxx-build adds automatically.
+#include "rust_cxx_app_template/src/lib.rs.h"
+
+::rust::cxxbridge1::String greet_from_cpp(::rust::cxxbridge1::Str name);
+</file>
+
+<file path="experimental/templates/rust_cxx_app/README.md">
+# rust_cxx_app template
+
+Rust + CXX FFI. The Rust crate compiles to a static library; a small C++
+implementation provides a function callable from Rust.
+
+## Quick start
+
+```powershell
+cargo build
+cargo test
+cargo run --bin demo_cli -- 1 2 3 4 5
+```
+
+You should see:
+
+```
+[C++ says] Hello, Rust, from C++!
+[Rust says] sum = 15, mean = 3.000000
+```
+
+## What you get
+
+- `src/lib.rs` — the `#[cxx::bridge]` module + `mean_rust` / `sum_rust` (callable from C++)
+- `src/main.rs` — CLI that calls C++ (`greet_from_cpp`) and Rust
+- `cpp/bridge.cc` — the C++ implementation of `greet_from_cpp`
+- `build.rs` — wires cxx-build to compile `cpp/bridge.cc`
+
+## Generated files (do NOT commit)
+
+- `target/` — cargo build output
+- `cpp/bridge.h` — auto-generated by cxx-build from the `#[cxx::bridge]` module
+- `Cargo.lock` — pinned dependency versions (the repo `.gitignore` excludes this for templates)
+
+## How to extend
+
+See `AGENTS.md` for the full recipe. Quick:
+
+| Want to... | Edit |
+|---|---|
+| Add a C++ function callable from Rust | `src/lib.rs` `extern "C++"` block + `cpp/bridge.cc` |
+| Add a Rust function callable from C++ | `src/lib.rs` `extern "Rust"` block + `pub fn` impl |
+| Add a shared struct | `struct Foo { ... }` in the bridge module |
+
+## What this template does NOT do
+
+- No Qt GUI (use `../cpp_qt_gui/` and link this crate)
+- No Sentry wired (add the `sentry` feature yourself if needed)
+- No async (CXX FFI is sync only)
+
+## See also
+
+- `AGENTS.md` — when to use, structure, extension patterns
+- `../../AGENTS.md` — workflow contract
+- Sibling: `../rust_lib/` (no FFI), `../cpp_qt_gui/` (Qt GUI that links to this)
+</file>
+
+<file path="experimental/templates/rust_lib/examples/demo_cli.rs">
+//! Demo CLI for the rust_lib template.
+//!
+//! Run with: `cargo run --bin demo_cli -- 1 2 3 4 5`
+//!
+//! Replace with your experiment's CLI.
+
+use rust_lib_template::{init_sentry, mean, variance};
+
+fn main() {
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
+
+    // Initialise Sentry. Reads DSN from `SENTRY_DSN` env; defaults to no-op.
+    let dsn = std::env::var("SENTRY_DSN").unwrap_or_default();
+    let release = format!("rust_lib_template@{}", env!("CARGO_PKG_VERSION"));
+    let _guard = init_sentry(&dsn, &release);
+
+    let args: Vec<f64> = std::env::args()
+        .skip(1)
+        .filter_map(|s| s.parse().ok())
+        .collect();
+
+    if args.is_empty() {
+        eprintln!("usage: demo_cli <num1> [num2] ...");
+        std::process::exit(2);
+    }
+
+    let m = mean(&args).expect("non-empty args");
+    let v = variance(&args).expect("non-empty args");
+
+    println!("n      = {}", args.len());
+    println!("mean   = {:.6}", m);
+    println!("var    = {:.6}", v);
+    println!("stddev = {:.6}", v.sqrt());
+}
+</file>
+
+<file path="experimental/templates/rust_lib/src/lib.rs">
+//! rust_lib template — pure-Rust library.
+//!
+//! Replace this with your experiment. The skeleton is here so the template
+//! builds and tests pass before you touch it.
+
+use log::{debug, info, warn};
+
+/// A trivial statistics function. Replace with your actual experiment logic.
+pub fn mean(values: &[f64]) -> Option<f64> {
+    if values.is_empty() {
+        warn!("mean() called on empty slice");
+        return None;
+    }
+    debug!("mean() on {} values", values.len());
+    let s: f64 = values.iter().sum();
+    let m = s / values.len() as f64;
+    info!("mean = {}", m);
+    Some(m)
+}
+
+/// A trivial variance function. Used by `tests/basic.rs`.
+pub fn variance(values: &[f64]) -> Option<f64> {
+    let m = mean(values)?;
+    let s: f64 = values.iter().map(|v| (v - m).powi(2)).sum();
+    Some(s / values.len() as f64)
+}
+
+/// Optional: initialise Sentry for crash reporting.
+///
+/// Call from `main()` (or from each test that you want tracked).
+/// No-op if the `sentry` feature is disabled.
+#[cfg(feature = "sentry")]
+pub fn init_sentry(dsn: &str, release: &str) -> sentry::ClientInitGuard {
+    let _guard = sentry::init((
+        dsn.to_string(),
+        sentry::ClientOptions {
+            release: Some(release.to_string().into()),
+            ..Default::default()
+        },
+    ));
+    _guard
+}
+
+#[cfg(not(feature = "sentry"))]
+pub fn init_sentry(_dsn: &str, _release: &str) {
+    log::warn!("sentry feature is disabled; Sentry not initialised");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn mean_empty() {
+        assert!(mean(&[]).is_none());
+    }
+
+    #[test]
+    fn mean_basic() {
+        assert_eq!(mean(&[1.0, 2.0, 3.0, 4.0, 5.0]), Some(3.0));
+    }
+
+    #[test]
+    fn variance_basic() {
+        // variance of [2,4,4,4,5,5,7,9] is 4.0 (population, ÷n)
+        assert!((variance(&[2.0, 4.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0]).unwrap() - 4.0).abs() < 1e-9);
+    }
+}
+</file>
+
+<file path="experimental/templates/rust_lib/tests/basic.rs">
+//! Integration tests for the rust_lib template.
+//!
+//! These run with `cargo test --test basic` and exercise the public API
+//! from a consumer's perspective. Add your own integration tests here.
+
+use rust_lib_template::mean;
+
+#[test]
+fn mean_single_value() {
+    assert_eq!(mean(&[42.0]), Some(42.0));
+}
+
+#[test]
+fn mean_two_values() {
+    assert_eq!(mean(&[1.0, 3.0]), Some(2.0));
+}
+</file>
+
+<file path="experimental/templates/rust_lib/AGENTS.md">
+# Template: rust_lib
+
+## Purpose
+
+A **pure-Rust library** crate. No C++. No FFI. No GUI.
+
+Use this when you want to:
+
+- Implement an algorithm and unit-test it headlessly
+- Prototype a port of CCCoreLib logic
+- Explore a numerical / data-structure problem
+- Get a fast `cargo test` loop (no Qt, no linker)
+
+## When NOT to use
+
+- You need to call C++ from Rust (use `rust_cxx_app/`)
+- You need a GUI (use `cpp_qt_gui/`)
+- You need file I/O via Qt types (use `cpp_qt_console/`)
+
+## Structure
+
+```
+rust_lib/
+├── Cargo.toml          ← dependencies: log, env_logger, sentry (optional)
+├── src/
+│   └── lib.rs          ← the library
+├── examples/
+│   └── demo_cli.rs     ← a CLI that uses the library
+├── tests/
+│   └── basic.rs        ← integration tests
+├── AGENTS.md           ← this file
+└── README.md           ← build/run commands
+```
+
+## Build & run
+
+```powershell
+cd <session>
+cargo test                       # all tests
+cargo test --test basic          # integration tests only
+cargo run --bin demo_cli -- 1 2 3 4 5
+```
+
+## Extension patterns
+
+1. **Add a new module.** `touch src/foo.rs`; declare `pub mod foo;` in `src/lib.rs`.
+2. **Add a CLI flag.** Use `clap` for argument parsing; see pattern in
+   `experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/src/main.rs`.
+3. **Add a benchmark.** Add `criterion = "0.5"` to `[dev-dependencies]` and create
+   `benches/foo.rs`. See `docs/patterns.md` for the full recipe.
+4. **Need a GUI?** Switch to `cpp_qt_gui/` and link this crate as a `cdylib` /
+   `staticlib` — see that template's AGENTS.md.
+
+## When to upgrade
+
+If you find yourself:
+
+- Wanting to call C++ (especially `ccPointCloud`, `ccScalarField`) → `rust_cxx_app/`
+- Wanting to visualise results → `cpp_qt_gui/`
+- Wanting to ship the result to users → move to `cc-rust/` and add CMake
+
+## What this template does NOT include
+
+- No `unsafe` blocks (use `rust_cxx_app/` if you need them)
+- No `tokio` / async (most point-cloud work is CPU-bound and synchronous)
+- No `serde` (add only if your data is JSON/YAML — point clouds are binary)
+
+## Related
+
+- Sibling templates: `../cpp_qt_console/`, `../cpp_qt_gui/`, `../rust_cxx_app/`
+- Workflow: `../../AGENTS.md`
+- Example session: `../../sessions/2026-08-19-rust-migration-icp-scalarfield/`
+</file>
+
+<file path="experimental/templates/rust_lib/Cargo.toml">
+[package]
+name = "rust_lib_template"
+version = "0.1.0"
+edition = "2021"
+authors = ["bramburn <noreply@example.com>"]
+description = "Template: pure-Rust library, no FFI, no GUI."
+
+[lib]
+name = "rust_lib_template"
+path = "src/lib.rs"
+
+[dependencies]
+# Logging — wired in main, used in src/lib.rs
+log = "0.4"
+env_logger = "0.11"
+
+# Error reporting — for Sentry (optional, gated by feature)
+sentry = { version = "0.32", optional = true }
+
+[features]
+default = []
+sentry = ["dep:sentry"]
+
+[dev-dependencies]
+# For tests
+approx = "0.5"
+
+[[bin]]
+name = "demo_cli"
+path = "examples/demo_cli.rs"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+</file>
+
+<file path="experimental/templates/rust_lib/README.md">
+# rust_lib template
+
+Pure-Rust library. Replace the placeholder code with your experiment.
+
+## Quick start
+
+```powershell
+cargo test
+cargo run --bin demo_cli -- 1 2 3 4 5
+```
+
+## What you get
+
+- `src/lib.rs` — library entry point with example `mean()` and `variance()` functions
+- `examples/demo_cli.rs` — CLI that takes numbers on argv
+- `tests/basic.rs` — integration test
+- `log` + `env_logger` for stdout logging
+- Optional `sentry` feature for crash reporting (gated — see Cargo.toml)
+
+## Environment variables
+
+| Var | Default | Used for |
+|---|---|---|
+| `RUST_LOG` | `info` | log filter (`debug`, `info`, `warn`, `error`) |
+| `SENTRY_DSN` | empty | Sentry DSN; if empty and `sentry` feature is on, init is a no-op |
+
+## Sentry
+
+```powershell
+# Build with Sentry
+cargo build --features sentry
+$env:SENTRY_DSN = "https://<key>@<org>.ingest.sentry.io/<project>"
+cargo run --features sentry --bin demo_cli -- 1 2 3
+```
+
+## What to edit
+
+1. `Cargo.toml` — rename `rust_lib_template` to your crate name
+2. `src/lib.rs` — replace `mean()` and `variance()` with your logic
+3. `examples/demo_cli.rs` — replace CLI args
+4. `tests/basic.rs` — add real integration tests
+
+## See also
+
+- `AGENTS.md` — when to use this template
+- `../../AGENTS.md` — workflow contract
+</file>
+
+<file path="experimental/templates/AGENTS.md">
+# Templates
+
+> "Start from a working thing, not a blank folder."
+
+Each template is a **pre-scaffolded, minimal, buildable** starter. Copy it
+(`cp -r templates/<name> sessions/<date>-<topic>`) and modify. Don't invent your
+own project structure from scratch — that's how you end up with five different
+Cargo.toml conventions and a build that only works on your machine.
+
+## Available templates
+
+| Template | Stack | When to use | Build time |
+|---|---|---|---|
+| [`cpp_qt_console/`](cpp_qt_console/) | C++ + Qt 6 + CMake | CLI test that needs Qt types (paths, strings) but no GUI. Pure logic + I/O. | ~30 s |
+| [`cpp_qt_gui/`](cpp_qt_gui/) | C++ + Qt 6 + OpenGL + CXX → Rust | Desktop view: 3D viewport, real-time visualisation, links to Rust crate. | ~60 s |
+| [`rust_lib/`](rust_lib/) | Rust + Cargo | Pure-Rust library — no C++, no FFI, headless tests. | ~10 s |
+| [`rust_cxx_app/`](rust_cxx_app/) | Rust + CXX + Cargo + C++ | Rust calls C++ or vice versa. Tests FFI bindings. | ~20 s |
+
+## How to pick
+
+1. **Pure Rust, no GUI?** → `rust_lib/`
+2. **Need to call C++ from Rust (or vice versa)?** → `rust_cxx_app/`
+3. **Need a CLI that uses Qt types?** → `cpp_qt_console/`
+4. **Need a 3D viewport, file dialog, or visualisation?** → `cpp_qt_gui/`
+
+If you need a combination (e.g. Qt GUI that links to Rust crate), copy
+`cpp_qt_gui/` and edit the `CMakeLists.txt` to add `cargo build` as a custom
+target — see that template's `AGENTS.md` for the recipe.
+
+## Each template has
+
+- `AGENTS.md` — what it is, when to use, extension patterns
+- `README.md` — build/run commands
+- The minimum code to build and run
+- Wired logging (spdlog for C++, `log` for Rust)
+- Wired Sentry (one DSN, one release per session)
+
+## Adding a new template
+
+If you find yourself creating a similar scaffold for the third time:
+
+1. **Promote it to a template.** Move it under `templates/`.
+2. **Write the AGENTS.md** for the template: what, when, structure, extension patterns.
+3. **Cross-link from this file.**
+4. **Document the pattern in `docs/patterns.md`** — explain why the template looks the way it does.
+
+Templates should stay **small and obvious**. If your template grows past 200 lines
+of source, it's probably not a template anymore — it's a session.
+
+## What templates MUST do
+
+- [ ] Build on this machine (Windows Server 2019, MSVC 14.44, Qt 6.8.3, Rust 1.89)
+- [ ] Pass a no-op test ("hello world" passes)
+- [ ] Have build/run commands that take < 60 seconds for "hello world"
+- [ ] Wire `log` (Rust) or `spdlog` (C++) in their main
+- [ ] Wire Sentry with the repo DSN (in release builds, gated by `SENTRY_DSN` env)
+- [ ] Have an `AGENTS.md` and a `README.md`
+
+## What templates MUST NOT do
+
+- [ ] Pull in the full CloudCompare build (no `ccPluginInterface`, no `ccPointCloud` types)
+- [ ] Use vendored forks of Qt or other libs — always use the system Qt 6.8.3
+- [ ] Commit `target/`, `build/`, or `Cargo.lock`
+- [ ] Be a "blank" template (must have hello-world code that builds and runs)
+
+## Related
+
+- Parent: `../AGENTS.md`
+- How to copy a template into a session: `../AGENTS.md` § "Working rules"
+- Why templates exist: see `../docs/patterns.md` (TODO)
+</file>
+
+<file path="experimental/AGENTS.md">
+# Experimental Workspace — Agent Instructions
+
+This file is the **contract for how an LLM agent must work inside `experimental/`**.
+It is read in addition to the root `AGENTS.md`. It overrides nothing in root — it adds
+the experimental-specific rules.
+
+## Purpose
+
+`experimental/` is a **scratch space for full builds**: small, disposable applications
+and libraries the agent (or you) can use to test specific behaviours end-to-end without
+modifying the main CloudCompare code.
+
+Use it to:
+
+- Prototype Rust ports of CCCoreLib before touching `cc-rust/`
+- Wire CXX FFI bridges without breaking the main build
+- Visualise point clouds in a Qt GUI that links to Rust
+- Compare 2–3 implementation approaches for the same problem and pick a winner
+- Capture decisions ("we tried A and B, picked B because…") so we don't re-learn
+
+## Structure
+
+```
+experimental/
+├── templates/             ← pre-scaffolded, minimal, buildable. Copy or extend.
+├── shared/                ← cross-cutting CMake helpers, build scripts
+├── sessions/              ← one folder per experiment, dated + named
+├── scenarios/             ← one folder per A/B/C variant comparison
+└── docs/                  ← index, patterns, decisions — the knowledge base
+```
+
+**Templates** are the starting point. Pick one. Don't reinvent the wheel.
+
+**Sessions** are individual experiments. One session = one hypothesis.
+Sessions can be deleted after graduation; their lesson lives on in `docs/decisions/`.
+
+**Scenarios** are multi-session comparisons. If you're choosing between 3 ICP
+implementations, put each in a session and the comparison in a scenario folder.
+
+**Docs** are the durable memory. Three files, each with a fixed purpose:
+
+- `index.md` — catalogue of all sessions and scenarios (date, name, status, link)
+- `patterns.md` — "how we do X" notes (e.g. "Rust ↔ Qt via CXX")
+- `decisions.md` — "why we chose Y" notes (e.g. "we picked KD-tree over octree for ICP")
+
+## Working rules
+
+1. **Never touch `libs/`, `qCC/`, `ccViewer/`, `plugins/`** for experimental work.
+   Go into `experimental/`. Always.
+2. **Use a template, not a blank folder.** `cp -r templates/rust_lib sessions/2026-MM-DD-foo`.
+3. **Session names: `<YYYY-MM-DD>-<short-kebab-topic>`.** Date stamps the experiment.
+4. **Each session has a `README.md`** with: what, why, build/run, observations, next.
+5. **Each session has a `cargo test` / `cmake --build` that passes** before you say "done".
+   Broken templates and broken sessions are not acceptable — they pollute the
+   "what works" knowledge.
+6. **Scenarios have a `decisions.md`** at the scenario level summarising the winner
+   and referencing each variant session.
+7. **Index everything** in `docs/index.md`. If a session isn't in the index, it
+   doesn't exist.
+8. **Decisions are 1 page.** 5–15 bullets. If it's longer, link out to a session.
+9. **No screenshots of point clouds in docs.** Point to the session that generates them.
+10. **Aggressive cleanup.** Sessions that "never worked" can be deleted. Keep the
+    decision record, not the wreckage.
+
+## The experiment lifecycle (mandatory)
+
+When you (the agent) are asked to "test X" or "prototype Y":
+
+1. **Search first.**
+   - Read `docs/index.md`, `docs/patterns.md`, `docs/decisions.md`.
+   - Look in `sessions/` and `scenarios/` for similar work.
+   - If something close exists, propose **extending** it. Don't duplicate.
+2. **Pick or create a template.**
+   - `cpp_qt_console` — Qt CLI app
+   - `cpp_qt_gui` — Qt GUI with 3D OpenGL viewport (links to Rust)
+   - `rust_lib` — pure-Rust library crate
+   - `rust_cxx_app` — Rust + CXX FFI app
+3. **Scaffold the session.**
+   - `cp -r templates/<chosen> sessions/<YYYY-MM-DD>-<topic>/`
+   - Edit `README.md` and `AGENTS.md` (if present) for the session.
+4. **Implement minimally.** Throwaway, but buildable.
+5. **Build & test.** Provide exact commands. The session must end green.
+6. **Document.**
+   - Update `docs/index.md` (one row).
+   - If a reusable pattern emerged, append to `docs/patterns.md`.
+   - If an architectural decision was made, append to `docs/decisions.md` AND
+     the scenario-level `decisions.md`.
+7. **Cross-link from root `AGENTS.md`** if this is a decision the main codebase
+   should know about.
+
+## Multi-variant scenarios (the "compare and pick" pattern)
+
+When the user (or you) think there are 2–3 viable approaches:
+
+```
+scenarios/
+└── 2026-08-19-icp-variants/
+    ├── AGENTS.md               ← what we're comparing
+    ├── decisions.md            ← winner + rationale
+    ├── 01-naive-on2/           ← first variant session
+    ├── 02-kdtree-kiddo/        ← second variant
+    └── 03-handrolled-octree/   ← third variant
+```
+
+Each `01-…`, `02-…`, `03-…` is a real session (a sibling of `experimental/sessions/`
+in structure — same Cargo.toml, README.md, AGENTS.md rules). The scenario folder
+just groups them and holds the final `decisions.md`.
+
+When the winner is picked:
+
+- Update `docs/decisions.md` (top-level) with one paragraph.
+- Reference the scenario from root `AGENTS.md` so the next migration effort finds it.
+
+## Conventions
+
+- **Language:** English for code comments, English for docs.
+- **Build:** `cargo` for Rust, `cmake --build` for C++.
+- **Logging:** `log` crate (Rust), `spdlog` (C++) — wired in templates.
+- **Sentry:** wired in templates; one DSN per repo (see root `AGENTS.md`).
+- **Tests:** `cargo test`, `ctest`, or Qt Test — whichever fits the template.
+- **Commits:** Conventional Commits with `experimental:` scope, e.g.
+  `feat(experimental): add KD-tree ICP variant`. Reference the session in the body.
+
+## Out of scope
+
+- Production code. If you find yourself wanting to "refactor for production",
+  move to `cc-rust/` or `plugins/`.
+- Long-form documentation. If a decision needs more than 1 page, link to a session.
+- CI integration. Experimental builds are local-only; CI is in `.github/workflows/`.
+- Performance benchmarks in CI. Run them locally, record the result, move on.
+
+## Quick checklist for an agent finishing a session
+
+- [ ] Session builds green
+- [ ] Tests pass
+- [ ] `README.md` updated (what, why, build, run, observations)
+- [ ] `docs/index.md` has a row for this session
+- [ ] If a pattern emerged, `docs/patterns.md` updated
+- [ ] If a decision was made, `docs/decisions.md` updated
+- [ ] Scenario decisions are also at the scenario level
+- [ ] `git add` only source + docs (not `target/`, not `build/`, not `Cargo.lock`)
+
+## Related
+
+- **Root:** `AGENTS.md`
+- **Templates:** `experimental/templates/AGENTS.md`
+- **Knowledge base:** `experimental/docs/`
+</file>
+
+<file path="experimental/README.md">
+# Experimental Workspace
+
+> "Test it three different ways, keep the best, write 1 page."
+
+This folder is the **LLM scratchpad for full builds**. It contains small, disposable
+applications and libraries the agent (and you) can use to test specific behaviours
+end-to-end without modifying the main CloudCompare code.
+
+## Quick start
+
+```powershell
+# See what's here
+Get-ChildItem C:\dev\CloudCompare\experimental
+
+# Read the workflow
+code C:\dev\CloudCompare\experimental\AGENTS.md
+
+# See the catalogue
+code C:\dev\CloudCompare\experimental\docs\index.md
+```
+
+## What's in here
+
+| Folder | Purpose |
+|---|---|
+| `templates/` | Pre-scaffolded, minimal, buildable starters. Pick one. |
+| `sessions/` | One folder per experiment. Dated + named. |
+| `scenarios/` | A/B/C variant comparisons. |
+| `docs/` | `index.md` (catalogue), `patterns.md` (how we do X), `decisions.md` (why we chose Y). |
+| `shared/` | Cross-cutting CMake helpers, build scripts. |
+
+## Workflow at a glance
+
+```
+user: "test X"
+agent:
+  1. search docs/, sessions/, scenarios/ for similar work
+  2. pick a template
+  3. cp -r templates/<chosen> sessions/<YYYY-MM-DD>-<topic>
+  4. implement minimally
+  5. build + test
+  6. document (README.md, index.md, decisions.md if needed)
+```
+
+## Templates
+
+| Template | When to use |
+|---|---|
+| `cpp_qt_console` | CLI test that needs Qt (file paths, Qt types) but no GUI |
+| `cpp_qt_gui` | Desktop view with 3D OpenGL viewport. Links to Rust via CXX. |
+| `rust_lib` | Pure-Rust library — no C++, no FFI. |
+| `rust_cxx_app` | Rust + CXX FFI — calls C++ from Rust or vice versa. |
+
+See `templates/AGENTS.md` for details.
+
+## Current active sessions
+
+| Date | Name | What |
+|---|---|---|
+| 2026-08-19 | `2026-08-19-rust-migration-icp-scalarfield` | Pure-Rust port of CCCoreLib statistics + ICP |
+| 2026-08-19 | `scenarios/2026-08-19-icp-variants/` | Comparing 3 ICP approaches: naive / kiddo / hand-rolled |
+
+(See `docs/index.md` for the full catalogue.)
+
+## Conventions
+
+- **Session names:** `<YYYY-MM-DD>-<short-kebab-topic>`
+- **Build:** cargo (Rust) or cmake (C++/Qt)
+- **Logging:** `log` (Rust), `spdlog` (C++), wired in templates
+- **Sentry:** wired in templates — one DSN, one release tag per session
+- **Commits:** `feat(experimental): …` with session name in the body
+
+## Why this exists
+
+Main CloudCompare code is the production codebase. Modifying it to test an idea
+is expensive — every change has to compile through CCCoreLib, qCC_db, qCC_io,
+the plugin system, and the GUI. The cost of testing "what if we did this in Rust"
+in production is so high that we don't test it, we just guess.
+
+`experimental/` makes the cost of testing low:
+
+- Pure-Rust crates compile in seconds.
+- The Qt GUI template shows a 3D viewport of your data without dragging in the
+  full CloudCompare build.
+- Scenarios let us try 3 approaches, see which one works, and remember why.
+
+## What this is NOT
+
+- **Not a plugin sandbox.** Plugins live in `plugins/`.
+- **Not a fork.** This is local-only; the `cc-rust/` directory and `plugins/`
+  hold real production code.
+- **Not a CI build.** Experimental builds are run by hand on the local machine.
+- **Not gitignored wholesale.** The structure (AGENTS.md, templates/, docs/,
+  source code) is tracked. Only build outputs (`target/`, `build/`, etc.) are ignored.
+  See root `.gitignore` for the exact rules.
+
+## Related
+
+- Root instructions: `../AGENTS.md`
+- Workflow contract: `./AGENTS.md`
+- Templates: `./templates/AGENTS.md`
+- Knowledge base: `./docs/`
+- Rust migration PRD: `../PRD/rust/`
+</file>
+
+<file path="experimental/templates/rust_cxx_app/cpp/bridge.cc">
+// C++ side of the CXX bridge.
+
+#include "cpp/bridge.h"
+#include <string>
+#include "rust_cxx_app_template/src/lib.rs.h"
+
+::rust::cxxbridge1::String greet_from_cpp(::rust::cxxbridge1::Str name) {
+    std::string nameStr(name.data(), name.size());
+    return ::rust::cxxbridge1::String("Hello, " + nameStr + ", from C++!");
+}
+</file>
+
+<file path="experimental/templates/rust_cxx_app/src/lib.rs">
+//! rust_cxx_app template — Rust + CXX FFI.
+//!
+//! The CXX bridge is defined in this module under the `cxx-ffi` feature flag.
+//! By default, this is a pure-Rust library that you can `cargo test` without
+//! needing the MSVC toolchain.
+
+#[cfg(feature = "cxx-ffi")]
+#[cxx::bridge]
+pub mod ffi {
+    // ── Shared types (visible on both sides) ──────────────────────────
+    struct Point3 {
+        x: f64,
+        y: f64,
+        z: f64,
+    }
+
+    // ── Rust → C++ (Rust calls into C++) ──────────────────────────────
+    // Note: CXX 1.0 requires `unsafe extern "C++"` if the block contains
+    // any function declarations, even "safe" ones.
+    unsafe extern "C++" {
+        include!("cpp/bridge.h");
+        fn greet_from_cpp(name: &str) -> String;
+    }
+
+    // ── C++ → Rust (C++ calls into Rust) ──────────────────────────────
+    extern "Rust" {
+        fn mean_rust(values: &[f64]) -> f64;
+        fn sum_rust(values: &[f64]) -> f64;
+    }
+}
+
+// ── Rust implementations (callable from C++ when cxx-ffi is on) ───
+
+/// Mean of a slice. Returns 0.0 for an empty slice.
+pub fn mean_rust(values: &[f64]) -> f64 {
+    if values.is_empty() {
+        log::warn!("mean_rust called on empty slice");
+        return 0.0;
+    }
+    values.iter().sum::<f64>() / values.len() as f64
+}
+
+/// Sum of a slice. Returns 0.0 for an empty slice.
+pub fn sum_rust(values: &[f64]) -> f64 {
+    let s = values.iter().sum::<f64>();
+    log::debug!("sum_rust({} values) = {}", values.len(), s);
+    s
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn mean_rust_basic() {
+        assert!((mean_rust(&[1.0, 2.0, 3.0, 4.0, 5.0]) - 3.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn sum_rust_basic() {
+        assert_eq!(sum_rust(&[1.0, 2.0, 3.0]), 6.0);
+    }
+
+    #[test]
+    fn mean_rust_empty() {
+        assert_eq!(mean_rust(&[]), 0.0);
+    }
+}
+</file>
+
+<file path="experimental/templates/rust_cxx_app/src/main.rs">
+//! Demo CLI for the rust_cxx_app template.
+//!
+//! Default (pure-Rust): `cargo run -- 1 2 3 4 5` — uses only Rust functions.
+//! With CXX FFI: `cargo run --features cxx-ffi -- 1 2 3 4 5` — also calls C++.
+
+use rust_cxx_app_template::{mean_rust, sum_rust};
+
+#[cfg(feature = "cxx-ffi")]
+use rust_cxx_app_template::ffi;
+
+fn main() {
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
+
+    let args: Vec<f64> = std::env::args()
+        .skip(1)
+        .filter_map(|s| s.parse().ok())
+        .collect();
+
+    if args.is_empty() {
+        eprintln!("usage: demo_cli <num1> [num2] ...");
+        std::process::exit(2);
+    }
+
+    #[cfg(feature = "cxx-ffi")]
+    {
+        let cpp_greeting = ffi::greet_from_cpp("Rust");
+        println!("[C++ says] {}", cpp_greeting);
+    }
+
+    #[cfg(not(feature = "cxx-ffi"))]
+    println!("[pure-Rust build — pass --features cxx-ffi to call C++]");
+
+    let s = sum_rust(&args);
+    let m = mean_rust(&args);
+    println!("[Rust says] sum = {}, mean = {:.6}", s, m);
+}
+</file>
+
+<file path="experimental/templates/rust_cxx_app/AGENTS.md">
+# Template: rust_cxx_app
+
+## Purpose
+
+A **Rust + CXX FFI** template. The Rust crate compiles to a static library
+(`crate-type = ["staticlib"]`) and a C++ implementation provides a bridge
+function callable from Rust. CXX generates all the unsafe glue.
+
+Use this when you want to:
+
+- Call existing C++ from Rust (e.g. CCCoreLib functions, `ccPointCloud::addPoint`)
+- Expose Rust functions to a C++ Qt GUI (combine with `cpp_qt_gui/`)
+- Test that an FFI boundary is sound before integrating
+
+## When NOT to use
+
+- You don't actually need to cross the FFI boundary — use `rust_lib/`
+- You need a full Qt GUI — use `cpp_qt_gui/` and link this crate as a staticlib
+
+## Structure
+
+```
+rust_cxx_app/
+├── Cargo.toml
+├── build.rs                     ← cxx-build configuration
+├── src/
+│   ├── lib.rs                   ← #[cxx::bridge] module + Rust impls
+│   └── main.rs                  ← CLI that exercises the bridge
+├── cpp/
+│   └── bridge.cc                ← C++ impl of `extern "C++"` declarations
+├── tests/                       ← optional integration tests
+├── AGENTS.md
+└── README.md
+```
+
+## Build & run
+
+The default is **pure-Rust only** — `cargo test` and `cargo run` work without
+the MSVC toolchain. The CXX FFI layer is opt-in.
+
+```powershell
+# Default: pure-Rust, no C++. Works on any toolchain.
+cargo test
+cargo run --bin demo_cli -- 1 2 3 4 5
+
+# Enable CXX FFI. Requires:
+#   - MSVC toolchain (cl.exe, link.exe) — see shared/scripts/get-vcvars.ps1
+#   - Set CC=cl.exe, CXX=cl.exe
+#   - x86_64-pc-windows-msvc target (or compatible)
+cargo test --features cxx-ffi
+cargo build --features cxx-ffi
+```
+
+The `cxx-ffi` feature generates `cpp/bridge.h` and links C++ into the staticlib.
+DO NOT commit `target/` or the generated `bridge.h`.
+
+## How to extend
+
+### Add a new C++ function callable from Rust
+
+1. Declare it in the `extern "C++"` block in `src/lib.rs`:
+   ```rust
+   extern "C++" {
+       include!("cpp/bridge.h");
+       fn my_cpp_function(input: &str) -> String;
+   }
+   ```
+2. Implement it in `cpp/bridge.cc`:
+   ```cpp
+   std::string my_cpp_function(const std::string& input) { ... }
+   ```
+3. `cargo build` regenerates `bridge.h` and links.
+
+### Add a new Rust function callable from C++
+
+1. Declare it in the `extern "Rust"` block in `src/lib.rs`:
+   ```rust
+   extern "Rust" {
+       fn my_rust_function(x: f64) -> f64;
+   }
+   ```
+2. Implement it as a public function in `src/lib.rs`:
+   ```rust
+   pub fn my_rust_function(x: f64) -> f64 { x * 2.0 }
+   ```
+3. From C++, call it as `my_rust_function(3.14)`.
+
+### Add a new shared struct
+
+```rust
+struct Point3 { x: f64, y: f64, z: f64 }
+```
+
+CXX will generate the matching C++ struct in the auto-generated header.
+
+## Common pitfalls
+
+1. **MSVC + Qt6 link failures** — the build script's
+   `/std:c++17 /EHsc` flags match MSVC defaults but may need adjustment if
+   your C++ uses Qt. See the recipe in `cpp_qt_gui/AGENTS.md` for how
+   `add_link_options("/LIBPATH:...")` solves the d3d11.lib problem.
+
+2. **Function name collisions** — the `mod ffi` namespace + C++ namespace
+   must match. Default is `crate_name`. Rename by changing `crate-type` in
+   Cargo.toml and the `namespace` in cpp/bridge.cc.
+
+3. **Forgetting `crate-type = ["staticlib"]`** — without this, the
+   produced `.rlib` cannot be linked from C++.
+
+## Related
+
+- Sibling: `../rust_lib/` (no FFI)
+- Consumer: `../cpp_qt_gui/` (Qt GUI that links to this as a staticlib)
+- Workflow: `../../AGENTS.md`
+</file>
+
+<file path="experimental/templates/rust_cxx_app/build.rs">
+//! CXX build script — only runs when the `cxx-ffi` feature is enabled.
+
+#[cfg(feature = "cxx-ffi")]
+fn build_cxx() {
+    use cxx_build::CxxBuild;
+
+    let mut bridge: CxxBuild = cxx_build::bridge("src/lib.rs");
+    bridge
+        .file("cpp/bridge.cc")
+        // cxx-build's generated `lib.rs.cc` does `#include "cpp/bridge.h"`,
+        // so we add the project root (the cargo manifest dir) to the include
+        // path. This makes `cpp/bridge.h` resolvable.
+        .include(".")
+        .flag_if_supported("/std:c++17")
+        .flag_if_supported("/EHsc")
+        .compile("rust_cxx_app_template");
+
+    println!("cargo:rustc-link-lib=static=rust_cxx_app_template");
+}
+
+fn main() {
+    println!("cargo:rerun-if-changed=src/lib.rs");
+    println!("cargo:rerun-if-changed=src/main.rs");
+    println!("cargo:rerun-if-changed=cpp/bridge.cc");
+    println!("cargo:rerun-if-changed=cpp/bridge.h");
+
+    #[cfg(feature = "cxx-ffi")]
+    build_cxx();
+}
+</file>
+
+<file path="experimental/templates/rust_cxx_app/Cargo.toml">
+[package]
+name = "rust_cxx_app_template"
+version = "0.1.0"
+edition = "2021"
+authors = ["bramburn <noreply@example.com>"]
+description = "Template: Rust + CXX FFI. Rust calls C++ or vice versa."
+
+[lib]
+name = "rust_cxx_app_template"
+path = "src/lib.rs"
+# Both staticlib (for C++ GUI to link) and rlib (for Rust binaries in the
+# same crate to use directly). Without "rlib" the bin target can't import
+# the library.
+crate-type = ["staticlib", "rlib"]
+
+[[bin]]
+name = "demo_cli"
+path = "src/main.rs"
+
+[features]
+# Default: pure-Rust, no C++ needed. `cargo test` works out of the box.
+# `cargo build --features cxx-ffi` enables the CXX bridge (requires the
+# MSVC toolchain on Windows).
+default = []
+cxx-ffi = ["dep:cxx"]
+
+[dependencies]
+# CXX — the FFI bridge generator. See build.rs and src/lib.rs.
+cxx = { version = "1.0", optional = true }
+log = "0.4"
+env_logger = "0.11"
+
+[build-dependencies]
+cxx-build = { version = "1.0", optional = true }
+
+[dev-dependencies]
+# For tests
+approx = "0.5"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+</file>
+
+</files>

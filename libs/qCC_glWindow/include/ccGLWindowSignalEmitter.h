@@ -71,7 +71,7 @@ class CCGLWINDOW_LIB_API ccGLWindowSignalEmitter : public QObject
 		return m_associatedWindow;
 	}
 
-  signals::
+  signals:
 
 	/**
 	 * @brief Entity selection changed

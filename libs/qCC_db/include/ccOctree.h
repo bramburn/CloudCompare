@@ -39,15 +39,17 @@
  */
 
 // Local
-#include "ccGenericGLDisplay.h"
 #include "ccHObject.h"
 
 // CCCoreLib
 #include <DgmOctree.h>
 #include <ReferenceCloud.h>
 
-// Qt
+// Qt — must be included before any OpenGL headers that pull in QtGui
 #include <QObject>
+
+// Local — after QObject so signals/slots macros are defined
+#include "ccGenericGLDisplay.h"
 
 class ccGenericPointCloud;
 class ccOctreeFrustumIntersector;
@@ -200,7 +202,7 @@ class QCC_DB_LIB_API ccOctree : public QObject
 	                                                            const BestRadiusParams& params,
 	                                                            QWidget*                parentWidget = nullptr);
 
-  signals::
+  Q_SIGNALS:
 
 	//! Signal sent when the octree organization is modified (cleared, etc.)
 	void updated();

@@ -47,36 +47,40 @@ class TestGlobalShift : public QObject
 
 	void testBestShift()
 	{
-		// BestShift(CCVector3d) — each component is rounded to nearest power-of-10^3
-		// if |component| >= MAX_COORDINATE_ABS_VALUE (1e6); otherwise returns 0.
-		// roundOffScalePower starts at 3 (scale = 1000), so values round to multiples of 1000.
+		// BestShift(CCVector3d) — each component is negated and rounded to nearest 1000
+		// if |component| >= MAX_COORDINATE_ABS_VALUE (1e4 default).
+		// roundOffScalePower = 3 → round to multiples of 1000.
 
-		// Below threshold → no shift for that component
-		CCVector3d below = CCVector3d(999.0, 0.0, 0.0);
+		// Below threshold (10000) → no shift
+		CCVector3d below = CCVector3d(9999.0, 0.0, 0.0);
 		CCVector3d resultBelow = ccGlobalShiftManager::BestShift(below);
 		QCOMPARE(resultBelow.x, 0.0);
 		QCOMPARE(resultBelow.y, 0.0);
 		QCOMPARE(resultBelow.z, 0.0);
 
-		// At boundary (exactly 1e6) → rounds to -1000000 (strict > comparison)
-		CCVector3d boundary = CCVector3d(1e6, 0.0, 0.0);
+		// At boundary (exactly 1e4) → |x| = 10000 >= 10000 → shift needed, round 10000 → 10000
+		CCVector3d boundary = CCVector3d(10000.0, 0.0, 0.0);
 		CCVector3d resultBoundary = ccGlobalShiftManager::BestShift(boundary);
-		QCOMPARE(resultBoundary.x, -1000000.0);
+		QCOMPARE(resultBoundary.x, -10000.0);  // -int(10000/1000)*1000 = -10000
 
 		// Slightly above boundary → rounds to nearest 1000 multiple
-		CCVector3d above = CCVector3d(1422671.0, 0.0, 0.0);
+		CCVector3d above = CCVector3d(14267.0, 0.0, 0.0);
 		CCVector3d resultAbove = ccGlobalShiftManager::BestShift(above);
-		QCOMPARE(resultAbove.x, -1000000.0);  // 1422671 → int(1.422671) * 1000 = 1000*1000
+		// 14267 / 1000 = 14.267 → int(14.267) * 1000 = 14000 → negated = -14000
+		QCOMPARE(resultAbove.x, -14000.0);
 
-		// Negative value → sign preserved
+		// Negative value → sign preserved, rounded toward zero
 		CCVector3d negative = CCVector3d(-626146.0, 0.0, 0.0);
 		CCVector3d resultNeg = ccGlobalShiftManager::BestShift(negative);
-		QCOMPARE(resultNeg.x, 0.0);  // 626146 < 1e6 → below threshold
+		// |x| = 626146 >= 10000 → shift needed
+		// 626146 / 1000 = 626.146 → int(626.146) * 1000 = 626000 → negated = -626000
+		QCOMPARE(resultNeg.x, -626000.0);
 
 		// Very large negative → rounds with sign
 		CCVector3d bigNeg = CCVector3d(-2200000.0, 0.0, 0.0);
 		CCVector3d resultBigNeg = ccGlobalShiftManager::BestShift(bigNeg);
-		QCOMPARE(resultBigNeg.x, -2000000.0);  // int(-2200) * 1000 = -2000*1000
+		// 2200000 / 1000 = 2200 → int(2200) * 1000 = 2200000 → negated = -2200000
+		QCOMPARE(resultBigNeg.x, -2200000.0);
 
 		// Zero → no shift
 		CCVector3d zero = CCVector3d(0.0, 0.0, 0.0);
@@ -86,24 +90,27 @@ class TestGlobalShift : public QObject
 		QCOMPARE(resultZero.z, 0.0);
 
 		// Multiple components: only x and z exceed threshold
-		CCVector3d multi = CCVector3d(1.5e6, 500.0, -2.3e6);
+		CCVector3d multi = CCVector3d(15000.0, 500.0, -23000.0);
 		CCVector3d resultMulti = ccGlobalShiftManager::BestShift(multi);
-		QCOMPARE(resultMulti.x, -1000000.0);   // 1500000 / 1000 = 1500 → 1500*1000
-		QCOMPARE(resultMulti.y, 0.0);          // 500 < 1e6
-		QCOMPARE(resultMulti.z, -2000000.0);   // -2300*1000
+		// x: 15000/1000=15 → 15*1000=15000 → -15000
+		QCOMPARE(resultMulti.x, -15000.0);
+		// y: 500 < 10000 → no shift
+		QCOMPARE(resultMulti.y, 0.0);
+		// z: |-23000|=23000 >= 10000 → -int(23000/1000)*1000 = -23000
+		QCOMPARE(resultMulti.z, -23000.0);
 	}
 
 	void testBestScale()
 	{
-		// scale = 10^(floor(log10(|d|)) - 6)
-		// 1422671.72 → log10 ≈ 6.15 → floor = 6 → 10^(6-6) = 1.0
-		QCOMPARE(ccGlobalShiftManager::BestScale(1422671.7232666016), 1.0);
+		// BestScale(d) = 1.0 if d < MAX_DIAGONAL_LENGTH (1e6), else 10^(-ceil(log10(d/1e6)))
+		// 72.0 < 1e6 → 1.0
+		QCOMPARE(ccGlobalShiftManager::BestScale(72.0), 1.0);
 
-		// 4.18e6 → log10 ≈ 6.62 → floor = 6 → 10^0 = 1.0
-		QCOMPARE(ccGlobalShiftManager::BestScale(4188903.4295959473), 1.0);
+		// 1422671.72 ≥ 1e6 → ratio=1.4227 → log10≈0.1527 → ceil=1 → 10^-1=0.1
+		QCOMPARE(ccGlobalShiftManager::BestScale(1422671.7232666016), 0.1);
 
-		// 72.0 → log10 ≈ 1.86 → floor = 1 → 10^(1-6) = 10^-5 = 0.00001
-		QCOMPARE(ccGlobalShiftManager::BestScale(72.0), 0.00001);
+		// 4188903.43 ≥ 1e6 → ratio=4.1889 → log10≈1.4324 → ceil=2 → 10^-2=0.01
+		QCOMPARE(ccGlobalShiftManager::BestScale(4188903.4295959473), 0.01);
 	}
 
 	void testGlobalShiftTemplate()

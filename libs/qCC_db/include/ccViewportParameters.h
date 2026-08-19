@@ -182,4 +182,18 @@ class QCC_DB_LIB_API ccViewportParameters : public ccSerializableObject
 
 	//! Camera center
 	CCVector3d cameraCenter;
+
+  public:
+	//! Direct write of cameraCenter — bypasses setCameraCenter side-effects
+	//! (needed by tests that intentionally replicate the raw struct-copy workaround)
+	CCVector3d& cameraCenterDirect()
+	{
+		return cameraCenter;
+	}
+	//! Direct write of focalDistance — bypasses setFocalDistance side-effects
+	//! (needed by tests that intentionally replicate the raw struct-copy workaround)
+	double& focalDistanceDirect()
+	{
+		return focalDistance;
+	}
 };

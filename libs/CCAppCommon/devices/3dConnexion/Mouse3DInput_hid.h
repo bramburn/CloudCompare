@@ -71,7 +71,7 @@ class HIDWorker : public QThread
 		m_running.store(false);
 	}
 
-  signals::
+  signals:
 	void sigMove3d(std::vector<float> motionData);
 	void sigReleased();
 	void sigOn3dmouseKeyDown(int virtualKeyCode);

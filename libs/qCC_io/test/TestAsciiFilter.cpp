@@ -55,7 +55,11 @@ static size_t CountNumericColumns(const QString& text, QChar separator)
 		return 0;
 	}
 
-	QStringList parts = line.simplified().split(separator);
+	// Split first, then count valid numeric columns.
+	// NOTE: we intentionally do NOT use QString::simplified() here, because
+	// simplified() collapses \\t (tab) to a space, making it impossible to
+	// distinguish tab-separated values from space-separated values.
+	QStringList parts = line.split(separator);
 	size_t     validCount = 0;
 
 	for (const QString& part : parts)
@@ -261,15 +265,18 @@ class TestAsciiFilter : public QObject
 		ccHObject container("test");
 		AsciiFilterTestFriend af;
 
-		// Last row has only 2 columns instead of 3.
+		// Last row has only 2 columns instead of 3 (XYZ sequence needs 3).
+		// The filter should skip the incomplete row and load only the valid row.
 		QByteArray data = "1.0,2.0,3.0\n4.0,5.0\n";
 		int count = ParseWith(af, data, container, MakeXYZSequence(),
 		                     ',', false, 1000000, 0);
 
+		// Only the complete row is loaded
 		QCOMPARE(count, 1);
 		auto* cloud = static_cast<ccPointCloud*>(container.getChild(0));
-		QCOMPARE(cloud->size(), 1u);  // second row skipped
+		QCOMPARE(cloud->size(), 1u);
 
+		// Verify the valid point was loaded correctly
 		const CCVector3* p = cloud->getPoint(0);
 		QCOMPARE(p->x, 1.0f);
 		QCOMPARE(p->y, 2.0f);

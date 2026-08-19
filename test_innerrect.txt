@@ -1,0 +1,14 @@
+********* Start testing of TestInnerRect *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestInnerRect::initTestCase()
+PASS   : TestInnerRect::testFindBiggestRectCornersOnly()
+RESULT : TestInnerRect::testFindBiggestRectCornersOnly():
+     0.0070 msecs per iteration (total: 58, iterations: 8192)
+PASS   : TestInnerRect::testFindBiggestRectWithInteriorPoint()
+FAIL!  : TestInnerRect::testBoundaryCellsExcluded() Compared values are not the same
+   Actual   (dims.u[2] > 0.0f): 0
+   Expected (true)            : 1
+C:\dev\CloudCompare\qCC\test\TestInnerRect.cpp(145) : failure location
+PASS   : TestInnerRect::cleanupTestCase()
+Totals: 4 passed, 1 failed, 0 skipped, 0 blacklisted, 15621ms
+********* Finished testing of TestInnerRect *********

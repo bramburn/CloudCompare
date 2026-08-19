@@ -61,7 +61,7 @@ class CCAPPCOMMON_LIB_API ccDisplaySettingsDlg : public QDialog
 	 */
 	~ccDisplaySettingsDlg() override;
 
-  signals::
+  signals:
 	void aspectHasChanged();
 
   protected:

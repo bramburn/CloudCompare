@@ -998,7 +998,7 @@ void ccGraphicalSegmentationTool::segment(bool keepPointsInside, ScalarType clas
 				pc->setCurrentDisplayedScalarField(sfIdx);
 				if (m_toSegment.size() == 1)
 				{
-					emit currentScalarFieldUpdated();
+					currentScalarFieldUpdated();
 				}
 			}
 		}

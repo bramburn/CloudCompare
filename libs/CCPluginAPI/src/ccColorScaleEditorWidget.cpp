@@ -179,7 +179,7 @@ void ColorBarWidget::mousePressEvent(QMouseEvent* e)
 				relativePos = static_cast<double>(e->pos().y() - contentRect.top()) / contentRect.height();
 			}
 
-			emit pointClicked(relativePos);
+			pointClicked(relativePos);
 			e->accept();
 			return;
 		}
@@ -340,7 +340,7 @@ void SlidersWidget::select(int index, bool silent /*=false*/)
 		m_sliders->element(index)->setSelected(true);
 
 	if (!silent)
-		emit sliderSelected(index);
+		sliderSelected(index);
 }
 
 ColorScaleElementSlider* SlidersWidget::addNewSlider(double relativePos, QColor color)
@@ -465,7 +465,7 @@ void SlidersWidget::mouseMoveEvent(QMouseEvent* e)
 
 			m_sliders->sort();
 
-			emit sliderModified(activeSliderIndex);
+			sliderModified(activeSliderIndex);
 
 			e->accept();
 
@@ -493,7 +493,7 @@ void SlidersWidget::mouseDoubleClickEvent(QMouseEvent* e)
 				if (newColor.isValid() && newColor != slider->getColor())
 				{
 					slider->setColor(newColor);
-					emit sliderModified(i);
+					sliderModified(i);
 				}
 
 				break;
@@ -702,7 +702,7 @@ void ccColorScaleEditorWidget::onSliderModified(int sliderIndex)
 	if (m_labelsWidget)
 		m_labelsWidget->update();
 
-	emit stepModified(sliderIndex);
+	stepModified(sliderIndex);
 }
 
 void ccColorScaleEditorWidget::setSliders(SharedColorScaleElementSliders sliders)
@@ -728,7 +728,7 @@ void ccColorScaleEditorWidget::onSliderSelected(int sliderIndex)
 	if (m_slidersWidget)
 		m_slidersWidget->update();
 
-	emit stepSelected(sliderIndex);
+	stepSelected(sliderIndex);
 }
 
 void ccColorScaleEditorWidget::importColorScale(ccColorScale::Shared scale)

@@ -1,0 +1,1 @@
+Unable to open file for logging: C:\dev\CloudCompare\test_scalarfield.txt

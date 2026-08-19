@@ -95,7 +95,7 @@ class PlyOpenDlg : public QDialog
 	void applyAll();
 	void addAllStdPropsAsSF();
 
-  signals::
+  signals:
 	void fullyAccepted();
 
   protected:

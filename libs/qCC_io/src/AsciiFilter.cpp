@@ -972,7 +972,7 @@ CC_FILE_ERROR AsciiFilter::loadCloudFromFormatedAsciiStream(QTextStream&        
 		QStringList parts = currentLine.simplified().split(separator);
 
 		int nParts = parts.size();
-		if (nParts > maxPartIndex) // fake loop for easy break
+		if (nParts >= maxPartIndex) // fake loop for easy break
 		{
 			// read the point coordinates
 			bool lineIsCorrupted = true;

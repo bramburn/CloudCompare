@@ -140,9 +140,10 @@ class TestInnerRect : public QObject
         {
             const CCVector3& dims = box->getDimensions();
             // Boundary-only cloud: the full BB is empty (no interior points).
-            // The algorithm should return a box with positive Y and Z extent.
-            QTRY_COMPARE(dims.u[1] > 0.0f, true);
-            QTRY_COMPARE(dims.u[2] > 0.0f, true);
+            // dims.u[1] = Y extent (the "height" of the 2D rect = 4.0)
+            // dims.u[2] = BB extent along Z (the excluded 3rd axis = 0 since all z=-1)
+            QTRY_COMPARE(dims.u[1] > 0.0f, true);  // positive Y extent
+            QTRY_COMPARE(dims.u[2] == 0.0f, true);  // zDim=2 → 3rd axis extent = BB.z_extent = 0
             delete box;
         }
         delete cloud;

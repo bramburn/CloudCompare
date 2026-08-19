@@ -236,10 +236,10 @@ class TestVoxFall : public QObject
 		int idxNeg = Grid2Index({-1, 0, 0}, steps);
 		QCOMPARE(idxNeg, -1);
 
-		// Large Z: formula gives a mathematically correct value (even if
-		// physically out of range for the grid).
+		// Large Z: formula gives 10 * 3 * 4 = 120 (mathematically correct,
+		// even though z=10 is physically out of range for a depth-5 grid).
 		int idxLarge = Grid2Index({0, 0, 10}, steps);
-		QCOMPARE(idxLarge, 60);  // 10 * 3 * 4 = 60
+		QCOMPARE(idxLarge, 120);  // 10 * 3 * 4 = 120
 	}
 
 	// -----------------------------------------------------------------------

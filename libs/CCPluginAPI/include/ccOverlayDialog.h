@@ -93,7 +93,7 @@ class CCPLUGIN_LIB_API ccOverlayDialog : public QDialog
 		return m_processing;
 	}
 
-  signals::
+  signals:
 
 	/**
 	 * @brief Process finished signal

@@ -182,7 +182,7 @@ class CCGLWINDOW_LIB_API ccGLWindow : public QOpenGLWidget
 
   protected: // other methods
 	//! Reacts to the itemPickedFast signal (shortcut)
-	slots: void onItemPickedFastSlot(ccHObject* pickedEntity, int pickedItemIndex, int x, int y)
+	protected Q_SLOTS: void onItemPickedFastSlot(ccHObject* pickedEntity, int pickedItemIndex, int x, int y)
 	{
 		onItemPickedFast(pickedEntity, pickedItemIndex, x, y);
 	}

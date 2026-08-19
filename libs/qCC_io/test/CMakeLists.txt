@@ -70,4 +70,52 @@ target_link_libraries(TestAsciiFilter
 
 add_test(NAME TestAsciiFilter COMMAND TestAsciiFilter)
 
+# T3-J: PlyFilter (ASCII/binary PLY roundtrip, static accessors)
+add_executable(TestPlyFilter
+    TestPlyFilter.cpp
+)
+
+target_link_libraries(TestPlyFilter
+    PRIVATE
+        QCC_IO_LIB
+        QCC_DB_LIB
+        CCCoreLib
+        CCPluginAPI
+        Qt6::Test
+)
+
+add_test(NAME TestPlyFilter COMMAND TestPlyFilter)
+
+# T4-F: ImageFileFilter (load/save, canSave, no-crash dialog calls)
+add_executable(TestImageFilter
+    TestImageFilter.cpp
+)
+
+target_link_libraries(TestImageFilter
+    PRIVATE
+        QCC_IO_LIB
+        QCC_DB_LIB
+        CCCoreLib
+        CCPluginAPI
+        Qt6::Test
+)
+
+add_test(NAME TestImageFilter COMMAND TestImageFilter)
+
+# T3-H: DxfFilter (DXF load/save roundtrip, canSave)
+add_executable(TestDxfFilter
+    TestDxfFilter.cpp
+)
+
+target_link_libraries(TestDxfFilter
+    PRIVATE
+        QCC_IO_LIB
+        QCC_DB_LIB
+        CCCoreLib
+        CCPluginAPI
+        Qt6::Test
+)
+
+add_test(NAME TestDxfFilter COMMAND TestDxfFilter)
+
 

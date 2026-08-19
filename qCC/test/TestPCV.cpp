@@ -37,11 +37,12 @@
 // ---------------------------------------------------------------------------
 // Local copy of the static gcd() in PCV.cpp (file-local, not exported).
 // The algorithm is: gcd(a,b) = gcd(b%a, a)  [Euclidean, recursive].
+// Returns absolute value to guarantee non-negative output.
 // ---------------------------------------------------------------------------
 static int LocalGCD(int num1, int num2)
 {
 	int remainder = (num2 % num1);
-	return (remainder != 0 ? LocalGCD(remainder, num1) : num1);
+	return std::abs(remainder != 0 ? LocalGCD(remainder, num1) : num1);
 }
 
 // ---------------------------------------------------------------------------

@@ -311,3 +311,113 @@ target_link_libraries(TestAnimation
 )
 
 add_test(NAME TestAnimation COMMAND TestAnimation)
+
+# T3-E: NormalDistribution + WeibullDistribution (Gaussian PDF, erf, robust params, chi2)
+add_executable(TestDistributions
+    TestDistributions.cpp
+)
+
+target_link_libraries(TestDistributions
+    PRIVATE
+        QCC_DB_LIB
+        CCCoreLib
+        CCPluginAPI
+        Qt6::Test
+)
+
+add_test(NAME TestDistributions COMMAND TestDistributions)
+
+# T3-F: ccOctree (DgmOctree build, query, bounding box)
+add_executable(TestOctree
+    TestOctree.cpp
+)
+
+target_link_libraries(TestOctree
+    PRIVATE
+        QCC_DB_LIB
+        CCCoreLib
+        CCPluginAPI
+        Qt6::Test
+)
+
+add_test(NAME TestOctree COMMAND TestOctree)
+
+# T3-G: ccMesh (triangle area, normal, BB)
+add_executable(TestMesh
+    TestMesh.cpp
+)
+
+target_link_libraries(TestMesh
+    PRIVATE
+        QCC_DB_LIB
+        CCCoreLib
+        CCPluginAPI
+        Qt6::Test
+)
+
+add_test(NAME TestMesh COMMAND TestMesh)
+
+# T4-C: StatisticalTestingTools (Chi2 fractile, probability, roundtrip)
+add_executable(TestStatisticalTesting
+    TestStatisticalTesting.cpp
+)
+
+target_link_libraries(TestStatisticalTesting
+    PRIVATE
+        QCC_DB_LIB
+        CCCoreLib
+        CCPluginAPI
+        Qt6::Test
+)
+
+add_test(NAME TestStatisticalTesting COMMAND TestStatisticalTesting)
+
+# T4-G: ccConsole (Init, RefreshCycle, QtMessagesEnabled)
+add_executable(TestConsole
+    TestConsole.cpp
+    ${qCC_SOURCE_DIR}/ccConsole.cpp
+)
+
+target_link_libraries(TestConsole
+    PRIVATE
+        QCC_GL_LIB
+        QCC_IO_LIB
+        QCC_DB_LIB
+        CCCoreLib
+        CCPluginAPI
+        CCFbo
+        Qt6::Widgets
+        Qt6::OpenGL
+        Qt6::OpenGLWidgets
+        Qt6::Test
+)
+
+add_test(NAME TestConsole COMMAND TestConsole)
+
+# T4-H: ccGLUtils pure math (view matrix trig, FOV, depth conversion)
+add_executable(TestGLUtils
+    TestGLUtils.cpp
+)
+
+target_link_libraries(TestGLUtils
+    PRIVATE
+        CCPluginAPI
+        Qt6::Test
+)
+
+add_test(NAME TestGLUtils COMMAND TestGLUtils)
+
+# T3-I: ccSensor (spherical/cartesian conversion math)
+add_executable(TestSensor
+    TestSensor.cpp
+)
+
+target_link_libraries(TestSensor
+    PRIVATE
+        QCC_DB_LIB
+        CCCoreLib
+        CCPluginAPI
+        Qt6::Test
+)
+
+add_test(NAME TestSensor COMMAND TestSensor)

@@ -590,7 +590,7 @@ void ccDisplaySettingsDlg::doReject()
 	ccGui::Set(m_oldParameters);
 	ccOptions::Set(m_oldOptions);
 
-	emit aspectHasChanged();
+	aspectHasChanged();
 
 	reject();
 }
@@ -622,7 +622,7 @@ void ccDisplaySettingsDlg::apply()
 		ccLog::Print(QString("New log verbosity level: %1").arg(m_parameters.logVerbosityLevel));
 	}
 
-	emit aspectHasChanged();
+	aspectHasChanged();
 }
 
 void ccDisplaySettingsDlg::doAccept()

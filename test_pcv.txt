@@ -1,0 +1,15 @@
+********* Start testing of TestPCV *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestPCV::initTestCase()
+PASS   : TestPCV::testGCD()
+FAIL!  : TestPCV::testGCDNegative() 'LocalGCD(-12, 8) >= 0' returned FALSE. (gcd should return non-negative)
+C:\dev\CloudCompare\qCC\test\TestPCV.cpp(112) : failure location
+PASS   : TestPCV::testSampleSphereCount()
+PASS   : TestPCV::testSampleSphereOnSphere()
+PASS   : TestPCV::testSampleSphereSymmetry()
+PASS   : TestPCV::testGenerateRaysCount()
+PASS   : TestPCV::testGenerateRaysOrigin()
+PASS   : TestPCV::testAssociateToEntityBBox()
+PASS   : TestPCV::cleanupTestCase()
+Totals: 9 passed, 1 failed, 0 skipped, 0 blacklisted, 3ms
+********* Finished testing of TestPCV *********

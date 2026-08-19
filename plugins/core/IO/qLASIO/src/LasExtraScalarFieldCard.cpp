@@ -55,13 +55,13 @@ LasExtraScalarFieldCard::LasExtraScalarFieldCard(QWidget* parent)
 void LasExtraScalarFieldCard::reset()
 {
 	radioButton1->setChecked(true);
-	emit radioButton1->clicked(true);
+	radioButton1->clicked(true);
 
 	nameEdit->clear();
 	if (advancedOptionsButton->isChecked())
 	{
 		advancedOptionsButton->setChecked(false);
-		emit advancedOptionsButton->clicked();
+		advancedOptionsButton->clicked();
 	}
 
 	typeComboBox->setCurrentText("float64");
@@ -82,13 +82,13 @@ void LasExtraScalarFieldCard::fillFrom(const LasExtraScalarField& field)
 	{
 	case 1:
 		radioButton1->setChecked(true);
-		emit radioButton1->clicked(true);
+		radioButton1->clicked(true);
 		assert(field.scalarFields[0] != nullptr);
 		firstScalarFieldComboBox->setCurrentText(QString::fromStdString(field.scalarFields[0]->getName()));
 		break;
 	case 2:
 		radioButton2->setChecked(true);
-		emit radioButton2->clicked(true);
+		radioButton2->clicked(true);
 		assert(field.scalarFields[0] != nullptr);
 		firstScalarFieldComboBox->setCurrentText(QString::fromStdString(field.scalarFields[0]->getName()));
 		assert(field.scalarFields[1] != nullptr);
@@ -96,7 +96,7 @@ void LasExtraScalarFieldCard::fillFrom(const LasExtraScalarField& field)
 		break;
 	case 3:
 		radioButton3->setChecked(true);
-		emit radioButton3->clicked(true);
+		radioButton3->clicked(true);
 		firstScalarFieldComboBox->setCurrentText(QString::fromStdString(field.scalarFields[0]->getName()));
 		assert(field.scalarFields[1] != nullptr);
 		secondScalarFieldComboBox->setCurrentText(QString::fromStdString(field.scalarFields[1]->getName()));
@@ -112,12 +112,12 @@ void LasExtraScalarFieldCard::fillFrom(const LasExtraScalarField& field)
 
 	descriptionEdit->setText(field.description);
 	scaledCheckBox->setChecked(false);
-	emit scaledCheckBox->stateChanged(false);
+	scaledCheckBox->stateChanged(false);
 
 	if (field.scaleIsRelevant())
 	{
 		scaledCheckBox->setChecked(true);
-		emit scaledCheckBox->stateChanged(true);
+		scaledCheckBox->stateChanged(true);
 		assert(field.numElements() <= 3);
 		for (size_t i = 0; i < field.numElements(); ++i)
 		{
@@ -127,7 +127,7 @@ void LasExtraScalarFieldCard::fillFrom(const LasExtraScalarField& field)
 
 	if (field.offsetIsRelevant())
 	{
-		emit scaledCheckBox->stateChanged(true);
+		scaledCheckBox->stateChanged(true);
 		assert(field.numElements() <= 3);
 		for (size_t i = 0; i < field.numElements(); ++i)
 		{
@@ -198,7 +198,7 @@ void LasExtraScalarFieldCard::fillAsDefault(const std::string& sfName)
 	typeComboBox->setEnabled(false);
 	firstScalarFieldComboBox->setEnabled(false);
 
-	emit radioButton1->clicked(true);
+	radioButton1->clicked(true);
 }
 
 bool LasExtraScalarFieldCard::fillField(LasExtraScalarField& field, const ccPointCloud& pointCloud) const

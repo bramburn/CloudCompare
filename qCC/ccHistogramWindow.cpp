@@ -699,7 +699,7 @@ void ccHistogramWindow::setMinDispValue(double val)
 			replot();
 		}
 
-		emit sfMinDispValChanged(val);
+		sfMinDispValChanged(val);
 	}
 }
 
@@ -721,7 +721,7 @@ void ccHistogramWindow::setMaxDispValue(double val)
 			replot();
 		}
 
-		emit sfMaxDispValChanged(val);
+		sfMaxDispValChanged(val);
 	}
 }
 
@@ -743,7 +743,7 @@ void ccHistogramWindow::setMinSatValue(double val)
 			replot();
 		}
 
-		emit sfMinSatValChanged(val);
+		sfMinSatValChanged(val);
 	}
 }
 
@@ -765,7 +765,7 @@ void ccHistogramWindow::setMaxSatValue(double val)
 			replot();
 		}
 
-		emit sfMaxSatValChanged(val);
+		sfMaxSatValChanged(val);
 	}
 }
 
