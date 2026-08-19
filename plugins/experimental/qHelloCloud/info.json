@@ -1,0 +1,17 @@
+{
+	"type" : "Standard",
+	"name" : "qHelloCloud (experimental smoke test)",
+	"icon" : ":/CC/plugin/qHelloCloud/images/icon.png",
+	"description": "Experimental smoke-test plugin. Adds a 'Hello world' action and a 'Load and display point cloud' action. No other UI. Use this as the copy-paste template for new experiments under plugins/experimental/.",
+	"authors" : [
+		{
+			"name" : "Icelabz (experimental scaffold)"
+		}
+	],
+	"maintainers" : [
+		{
+			"name" : "Icelabz (experimental scaffold)"
+		}
+	],
+	"references" : []
+}
