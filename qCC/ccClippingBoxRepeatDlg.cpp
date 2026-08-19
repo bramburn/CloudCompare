@@ -14,6 +14,14 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccClippingBoxRepeatDlg.cpp
+ * @brief Implementation of clipping box repeat dialog
+ * @details Dialog for configuring repeated clipping box extraction,
+ * allowing users to select which dimensions to repeat and how to
+ * project points onto the envelope.
+ * @see ccClippingBoxRepeatDlg
+ */
 
 #include "ccClippingBoxRepeatDlg.h"
 
@@ -23,6 +31,11 @@
 // system
 #include <assert.h>
 
+/**
+ * @brief Constructor
+ * @param singleSliceMode If true, enables single slice extraction mode
+ * @param parent Parent widget
+ */
 ccClippingBoxRepeatDlg::ccClippingBoxRepeatDlg(bool singleSliceMode /*=false*/, QWidget* parent /*=nullptr*/)
     : QDialog(parent)
 {
@@ -50,6 +63,10 @@ ccClippingBoxRepeatDlg::ccClippingBoxRepeatDlg(bool singleSliceMode /*=false*/, 
 	}
 }
 
+/**
+ * @brief Sets which dimension to repeat
+ * @param dim Dimension index (0=X, 1=Y, 2=Z)
+ */
 void ccClippingBoxRepeatDlg::setRepeatDim(unsigned char dim)
 {
 	assert(dim < 3);
@@ -63,24 +80,40 @@ void ccClippingBoxRepeatDlg::setRepeatDim(unsigned char dim)
 	}
 }
 
+/**
+ * @brief Handles X dimension checkbox in single slice mode
+ * @param state Checkbox state
+ */
 void ccClippingBoxRepeatDlg::onDimXChecked(bool state)
 {
 	assert(state);
 	setFlatDim(0);
 }
 
+/**
+ * @brief Handles Y dimension checkbox in single slice mode
+ * @param state Checkbox state
+ */
 void ccClippingBoxRepeatDlg::onDimYChecked(bool state)
 {
 	assert(state);
 	setFlatDim(1);
 }
 
+/**
+ * @brief Handles Z dimension checkbox in single slice mode
+ * @param state Checkbox state
+ */
 void ccClippingBoxRepeatDlg::onDimZChecked(bool state)
 {
 	assert(state);
 	setFlatDim(2);
 }
 
+/**
+ * @brief Sets the flat dimension (for single slice mode)
+ * @param dim Dimension index (0=X, 1=Y, 2=Z)
+ */
 void ccClippingBoxRepeatDlg::setFlatDim(unsigned char dim)
 {
 	assert(dim < 3);
@@ -101,6 +134,11 @@ void ccClippingBoxRepeatDlg::setFlatDim(unsigned char dim)
 	extractLevelSetGroupBox->setEnabled(true);
 }
 
+/**
+ * @brief Handles dimension checkbox toggles
+ * @param dummy Unused parameter
+ * @details Updates UI based on how many dimensions are selected.
+ */
 void ccClippingBoxRepeatDlg::onDimChecked(bool)
 {
 	// if only one dimension is checked, then the user can choose to project
