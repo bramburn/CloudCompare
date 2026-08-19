@@ -15,11 +15,24 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccAboutDialog.cpp
+ * @brief Implementation of the about dialog
+ * @details Displays application version, compilation info, and credits.
+ * @see ccAboutDialog
+ */
+
 #include "ccAboutDialog.h"
 
 #include "ccApplication.h"
 #include "ui_aboutDlg.h"
 
+/**
+ * @brief Constructor
+ * @param parent Parent widget
+ * @details Sets up the UI, retrieves version info, and enriches the
+ * about text with compilation details (compiler, Qt version).
+ */
 ccAboutDialog::ccAboutDialog(QWidget* parent)
     : QDialog(parent)
     , mUI(new Ui::AboutDialog)
@@ -46,6 +59,10 @@ ccAboutDialog::ccAboutDialog(QWidget* parent)
 	mUI->labelText->setText(enrichedHtmlText);
 }
 
+/**
+ * @brief Destructor
+ * @details Deletes the UI structure.
+ */
 ccAboutDialog::~ccAboutDialog()
 {
 	delete mUI;
