@@ -14,6 +14,13 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccClippingBoxTool.cpp
+ * @brief Implementation of the clipping box tool
+ * @details Interactive tool for clipping point clouds with an oriented
+ * bounding box, supporting contour extraction and slice export.
+ * @see ccClippingBoxTool
+ */
 
 #include "ccClippingBoxTool.h"
 
@@ -58,6 +65,10 @@ struct ccClipBoxParams
 };
 static QMap<unsigned, ccClipBoxParams> s_lastBoxParams;
 
+/**
+ * @brief Constructor
+ * @param parent Parent widget
+ */
 ccClippingBoxTool::ccClippingBoxTool(QWidget* parent)
     : ccOverlayDialog(parent)
     , Ui::ClippingBoxDlg()
@@ -101,6 +112,9 @@ ccClippingBoxTool::ccClippingBoxTool(QWidget* parent)
 	removeLastContourToolButton->setEnabled(false);
 }
 
+/**
+ * @brief Destructor
+ */
 ccClippingBoxTool::~ccClippingBoxTool()
 {
 	if (m_clipBox)
@@ -108,6 +122,10 @@ ccClippingBoxTool::~ccClippingBoxTool()
 	m_clipBox = nullptr;
 }
 
+/**
+ * @brief Opens the bounding box editor dialog
+ * @details Allows user to modify the clipping box dimensions and orientation.
+ */
 void ccClippingBoxTool::editBox()
 {
 	if (!m_clipBox)
@@ -183,6 +201,10 @@ void ccClippingBoxTool::editBox()
 	}
 }
 
+/**
+ * @brief Toggles interactor handles visibility
+ * @param state Visibility state
+ */
 void ccClippingBoxTool::toggleInteractors(bool state)
 {
 	if (m_clipBox)
@@ -191,6 +213,10 @@ void ccClippingBoxTool::toggleInteractors(bool state)
 		m_associatedWin->redraw();
 }
 
+/**
+ * @brief Toggles clipping box visibility
+ * @param state Visibility state
+ */
 void ccClippingBoxTool::toggleBox(bool state)
 {
 	if (m_clipBox)
@@ -199,6 +225,11 @@ void ccClippingBoxTool::toggleBox(bool state)
 		m_associatedWin->redraw();
 }
 
+/**
+ * @brief Adds an entity to be clipped
+ * @param entity Entity to clip
+ * @return true if entity was added successfully
+ */
 bool ccClippingBoxTool::addAssociatedEntity(ccHObject* entity)
 {
 	if (!entity)
@@ -281,11 +312,20 @@ bool ccClippingBoxTool::addAssociatedEntity(ccHObject* entity)
 	return true;
 }
 
+/**
+ * @brief Gets count of associated entities
+ * @return Number of entities currently associated with the clip box
+ */
 unsigned ccClippingBoxTool::getNumberOfAssociatedEntity() const
 {
 	return m_clipBox ? m_clipBox->getContainer().getChildrenNumber() : 0;
 }
 
+/**
+ * @brief Links the tool with a GL window
+ * @param win GL window to link with
+ * @return true if linked successfully
+ */
 bool ccClippingBoxTool::linkWith(ccGLWindowInterface* win)
 {
 	if (m_associatedWin && m_clipBox)
