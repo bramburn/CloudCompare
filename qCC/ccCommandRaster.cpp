@@ -1,4 +1,12 @@
 
+/**
+ * @file ccCommandRaster.cpp
+ * @brief Command-line rasterization commands
+ * @details Implements command line interface for rasterizing point clouds
+ * including 2D/2.5D grid generation, empty cell filling, and volume calculations.
+ * @see CommandRasterize, CommandVolume
+ */
+
 // local
 #include "ccRasterizeTool.h"
 
@@ -48,6 +56,13 @@ constexpr char COMMAND_VOLUME[]                 = "VOLUME";
 constexpr char COMMAND_VOLUME_GROUND_IS_FIRST[] = "GROUND_IS_FIRST";
 constexpr char COMMAND_VOLUME_CONST_HEIGHT[]    = "CONST_HEIGHT";
 
+/**
+ * @brief Reads projection type from command arguments
+ * @param cmd Command line interface
+ * @param[out] projType Projected type
+ * @param[out] stdDevSFDesc Standard deviation SF descriptor
+ * @return true if successful
+ */
 static bool ReadProjectionType(ccCommandLineInterface& cmd, ccRasterGrid::ProjectionType& projType, QString& stdDevSFDesc)
 {
 	QString option = cmd.arguments().takeFirst().toUpper();
@@ -124,11 +139,19 @@ static ccRasterGrid::EmptyCellFillOption GetEmptyCellFillingStrategy(QString opt
 	}
 }
 
+/**
+ * @brief Constructor
+ */
 CommandRasterize::CommandRasterize()
     : ccCommandLineInterface::Command("Rasterize", COMMAND_RASTERIZE)
 {
 }
 
+/**
+ * @brief Processes the RASTERIZE command
+ * @param cmd Command line interface
+ * @return true on success
+ */
 bool CommandRasterize::process(ccCommandLineInterface& cmd)
 {
 	// look for local options
@@ -618,11 +641,20 @@ bool CommandRasterize::process(ccCommandLineInterface& cmd)
 	return true;
 }
 
+/**
+ * @brief Constructor for 2.5D volume calculation command
+ */
 CommandVolume25D::CommandVolume25D()
     : ccCommandLineInterface::Command("2.5D Volume Calculation", COMMAND_VOLUME)
 {
 }
 
+/**
+ * @brief Processes the VOLUME command
+ * @param cmd Command line interface
+ * @return true on success
+ * @details Computes 2.5D volume between two clouds or between a cloud and a constant height.
+ */
 bool CommandVolume25D::process(ccCommandLineInterface& cmd)
 {
 	cmd.print("[2.5D VOLUME]");
