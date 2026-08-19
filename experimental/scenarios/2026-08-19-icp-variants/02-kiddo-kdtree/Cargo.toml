@@ -9,6 +9,11 @@ name = "icp_v2_kiddo"
 path = "src/lib.rs"
 
 [dependencies]
+# Use the corrected ICP implementation from cc-rust. The scenario
+# only compares the *nearest-neighbour* data structure, not the
+# surrounding algorithm. See D4 in experimental/docs/decisions.md
+# and patterns P12/P13/P14 for the bug history.
+cc_rust = { path = "../../../../cc-rust" }
 nalgebra = "0.34"
 kiddo = "6.0"  # pure-Rust KD-tree, requires rustc 1.89
 log = "0.4"
@@ -16,6 +21,10 @@ env_logger = "0.11"
 
 [dev-dependencies]
 approx = "0.5"
+
+[[bin]]
+name = "icp_bench"
+path = "src/main.rs"
 
 [profile.release]
 opt-level = 3

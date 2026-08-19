@@ -1,13 +1,17 @@
 id = "02-kiddo-kdtree"
-status = "buildable"
-algorithm = "KD-tree via the `kiddo` crate. kiddo 6.0 has a new builder API (Kiddo<K, A>); migration is bounded but not done in this round."
-build_cmd = "cargo build --release --features kiddo"
-test_cmd = "cargo test --release --features kiddo"
-bench_cmd = "N/A (skeleton — not benchmarked)"
-fixtures = []
+status = "unit-tested"
+algorithm = "KD-tree via the `kiddo` 6.0 crate. Uses `EytzingerFlexPf` stem strategy and `VecOfArenas` leaf strategy (kiddo defaults). Item index in the tree is the input array index."
+build_cmd = "cargo build --release"
+test_cmd = "cargo test --release"
+bench_cmd = "cargo run --release --bin icp_bench"
+fixtures = ["synthetic/asymmetric-9.toml", "synthetic/cube-8.toml"]
 
 # Per-variant notes
-notes = "Skeleton. Currently uses brute-force NN as a placeholder. To graduate: add `kiddo = { version = \"6\", optional = true }` to Cargo.toml, build the tree, and replace `nearest_neighbour_slow` with a call into `FloatLeafMap::nearest_one`."
+notes = "kiddo 6.0 has a different API from 3.x/4.x/5.x. The query method is now `tree.query(&point).nearest_one::<SquaredEuclidean>().execute()`. The tree type needs 6 generic parameters; see `examples/probe_kiddo.rs` for a minimal example."
 
-# Why deferred
-deferred_reason = "kiddo 6.0 API migration needs a builder / entry-pattern refactor. Bounded work, but not on the critical path for the ICP algorithm-correctness fixes. Resume when the corrected ICP is benchmarked and the naive-vs-octree winner needs to be re-evaluated for N > 100k."
+# History
+last_correctness_test = "2026-08-19"
+last_benchmark = "2026-08-19"
+correctness_status = "matches reference (asymmetric-9) within ε"
+benchmark_status = "NN query 0.36 µs at 2k Gaussian, 0.39 µs at 10k — best of the 3 variants for the NN step alone. Full ICP wall time is similar to 01 and 03 because cc-rust's ICP signature does not yet accept a custom NN (D8 candidate)."
+

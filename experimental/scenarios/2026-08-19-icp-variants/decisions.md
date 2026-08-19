@@ -7,61 +7,65 @@
 
 ## Current state (2026-08-19, post-fix)
 
-| Variant | Status | Last benchmark (corrected ICP) | Notes |
+| Variant | Status | NN query (2k, µs/q) | NN query (10k, µs/q) | Notes |
+|---|---|---|---|---|
+| `01-naive-on2` | `unit-tested` | ~50 µs | ~500 µs | Brute force. RMS 0.0002 at 2k (converged); 0.06 at 10k (max-iter hit) |
+| `02-kiddo-kdtree` | `unit-tested` | **0.36** | **0.39** | kiddo 6.0 KD-tree. New in this round. |
+| `03-handrolled-octree` | `unit-tested` (NN) | 4.6 | 40.0 | Hand-rolled octree + AABB pruning. `nearest()` returns real index. |
+
+## NN timings (release, Gaussian, 1000 queries against N-point tree)
+
+| Variant | N=2k | N=10k | Notes |
 |---|---|---|---|
-| `01-naive-on2` | `unit-tested` | 0.37 s / 2.4 s / 10.0 s @ 2k/5k/10k | RMS 0.0002 at 2k (converged); 0.06 at 5k/10k (max-iter hit, not diverged) |
-| `02-kiddo-kdtree` | `buildable` (skeleton) | n/a | kiddo 6.0 API migration deferred — bounded work, see `02-kiddo-kdtree/experiment.toml` |
-| `03-handrolled-octree` | `unit-tested` (NN) + `buildable` (integration) | see below | `nearest()` now returns real index (regression test added); ICP wrapper still uses cc-rust brute force |
+| `01-naive-on2` | ~50 µs/q | ~500 µs/q | O(n) per query |
+| `02-kiddo-kdtree` | **0.36 µs/q** | **0.39 µs/q** | O(log n), barely scales with N |
+| `03-handrolled-octree` | 4.6 µs/q | 40.0 µs/q | O(log n) average with AABB pruning |
 
-## Octree NN timings (2026-08-19)
+The NN query times tell the real story. For typical ICP use,
+**kiddo is ~10× faster than the octree and ~100× faster than
+brute force** on the Gaussian fixtures. Build times are all
+sub-millisecond at these sizes.
 
-`03-handrolled-octree::Octree::from_points` builds an octree and
-exposes `nearest(query) -> (index, dist_sq)`. Timings (release,
-Gaussian cloud, 1000 queries against a tree built from N points):
+## ICP wall times (release, Gaussian, with cc-rust brute force)
 
-| N points | build (s) | 1000 queries (s) | per-query (µs) |
+| Variant | N=2k | N=5k | N=10k |
 |---|---|---|---|
-| 2 000 | 0.000 | 0.005 | 4.6 |
-| 5 000 | 0.001 | 0.013 | 13.2 |
-| 10 000 | 0.003 | 0.040 | 40.0 |
+| `01-naive-on2` | 0.37 s | 2.4 s | 10.0 s |
+| `02-kiddo-kdtree` | 0.27 s | (skipped) | 10.1 s |
+| `03-handrolled-octree` | 0.26 s | 2.45 s | 9.89 s |
 
-The build is essentially free for these sizes. The per-query
-time is sub-O(n) thanks to AABB pruning (subtrees whose closest
-possible distance exceeds the current best are skipped).
-
-The full ICP iteration (using cc-rust's brute-force NN internally)
-takes 0.26 s / 2.45 s / 9.89 s at 2k / 5k / 10k. The ICP loop is
-**dominated by NN** but the wrapper currently builds the octree
-without using it for ICP — see "Cannot pick a winner yet" below.
+The full-ICP wall times are similar across all three variants
+because **cc-rust's `icp_iterate` signature does not accept a
+custom NN** — each variant's wrapper builds its tree (to time
+build + query) and then falls back to cc-rust's brute force for
+the actual iteration. Without plugging the variant's NN into
+cc-rust, the ICP wall time is dominated by brute force, not the
+NN.
 
 ## Cannot pick a winner yet
 
 The scenario status is **`benchmarked`** but **NOT** `selected`,
 because:
 
-- `02-kiddo-kdtree` is still a skeleton (no KD-tree plugged in).
-- `03-handrolled-octree` has a real `nearest()` now, but the ICP
-  wrapper does not use it for the actual iteration — cc-rust's
-  ICP signature does not yet accept a custom NN. The wrapper
-  builds the octree (to time build + query) but falls back to
-  cc-rust's brute force for the ICP loop. Without plugging the
-  octree into cc-rust, the ICP wall times are the same as
-  `01-naive-on2` (~0.37 s / 2.4 s / 10.0 s).
-- A meaningful "octree wins" or "naive wins" claim requires an
-  end-to-end ICP loop using each NN. That's a cc-rust API change
-  (D8 candidate — see below).
+- All three variants have working NNs.
+- None of them can plug their NN into cc-rust's ICP without a
+  signature change. So the "ICP wall time" column above is
+  measuring cc-rust's brute force, not the variant's NN.
+- A meaningful winner requires an end-to-end ICP loop using each
+  NN. That's a cc-rust API change (D8 candidate — see below).
 
 To promote this scenario to `selected`, the runner needs:
 
-1. `02-kiddo-kdtree` to be `reference-validated` (KD-tree plugged in,
-   tests pass on `asymmetric-9`).
-2. `03-handrolled-octree` to be `reference-validated` via the new
-   `cc_rust::icp_with_nn(...)` entry point (or equivalent).
-3. All three variants benchmarked on the same Gaussian fixture
-   at 2k / 5k / 10k / 50k with the **same** ICP loop body, only
-   the NN data structure differing.
-4. A `decisions.md` entry that picks a winner based on those
+1. cc-rust to expose an `icp_with_nn(&dyn NearestNeighbour, ...)` entry point.
+2. All three variants implement `NearestNeighbour` and re-bench
+   at 2k / 5k / 10k / 50k on the same Gaussian fixture.
+3. A `decisions.md` entry that picks a winner based on those
    numbers.
+
+**Until that refactor, the data we have says: kiddo's NN is the
+fastest, but the choice between variants doesn't matter for
+end-to-end ICP wall time.** This is a D8 (cc-rust refactor)
+problem, not an NN problem.
 
 ## Original (SUPERSEDED) decision
 
