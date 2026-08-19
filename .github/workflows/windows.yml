@@ -31,13 +31,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
           fetch-depth: 1
 
       - name: Set up MSVC 2022
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: ilammy/msvc-dev-cmd@v2
         with:
           arch: x64
 
@@ -52,9 +52,14 @@ jobs:
           cache: true
 
       - name: Pin CMake to 4.3.0 (hidapi submodule caps at 4.3)
-        uses: lukka/get-cmake@latest
-        with:
-          cmakeVersion: 4.3.0
+        # Use choco instead of lukka/get-cmake — the latter fails on the
+        # current Windows runner with EACCES on WindowsApps\python.EXE.
+        shell: pwsh
+        run: |
+          choco install cmake --version=4.3.0 -y --no-progress
+          # Re-read PATH so subsequent steps see the choco install
+          $env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [Environment]::GetEnvironmentVariable("Path", "User")
+          cmake --version
 
       - name: Cache build directory
         uses: actions/cache@v4
