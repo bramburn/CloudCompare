@@ -1,88 +1,62 @@
-# Scenario Decision — ICP variants (2026-08-19)
+# Scenario Decision — ICP NN variants (2026-08-19)
 
-> Three implementations of ICP nearest-neighbour, A/B/C'd.
-> This is the WINNER + rationale. Detail lives in each variant's session.
+> Three nearest-neighbour strategies for ICP, A/B/C'd.
+> This is the WINNER + rationale.
 
 ## Variants
 
 | # | Folder | Approach | Status |
 |---|---|---|---|
-| 01 | [`01-naive-on2/`](01-naive-on2/) | O(n²) brute force | Tests pass; bench not run |
-| 02 | [`02-kiddo-kdtree/`](02-kiddo-kdtree/) | `kiddo` 6.0 KD-tree | Stub; API migration needed |
-| 03 | [`03-handrolled-octree/`](03-handrolled-octree/) | Hand-rolled octree | Tests pass; bench not run |
+| 01 | [`01-naive-on2/`](01-naive-on2/) | O(n²) brute force | Tests pass; **benchmarked** |
+| 02 | [`02-kiddo-kdtree/`](02-kiddo-kdtree/) | `kiddo` 6.0 KD-tree | Stub — kiddo API migration needed |
+| 03 | [`03-handrolled-octree/`](03-handrolled-octree/) | Hand-rolled octree (matches CCCoreLib) | Tests pass; **benchmarked** |
+
+## Benchmark results (ICP on random Gaussian cloud, 50 max iterations)
+
+| N (data = model size) | 01-naive | 03-handrolled-octree | Ratio (naive/octree) |
+|---|---|---|---|
+| 2,000 | 0.36 s | 0.60 s (incl. build) | **0.6×** (naive 1.7× faster) |
+| 5,000 | 2.39 s | 4.13 s (incl. build) | **0.6×** (naive 1.7× faster) |
+| 10,000 | 9.24 s | 23.3 s (incl. build) | **0.4×** (naive 2.5× faster) |
+
+Both implementations give the same final RMS (algorithm is identical, only the NN data structure differs). The hand-rolled octree is consistently **2-3x slower** than the naive implementation on these sizes.
 
 ## Decision
 
-**Status: PENDING** — variants 01 and 03 have working implementations but
-have not been benchmarked on real `.las` data. Variant 02 is a stub.
+**Status: REVERSED. Naive wins for now.**
 
-**Provisional winner: variant 03 (hand-rolled octree).**
+The original "provisional winner: hand-rolled octree" decision (D4) is **wrong** when measured. On point clouds of 2k-10k points, the naive O(n²) brute force is **faster** than the hand-rolled octree. Reasons:
 
-Reasoning, in priority order:
+1. **The hand-rolled octree is naive** — always recurses into all 8 children, no early-out, no kNN aggregation
+2. **Build cost is high** — the tree-building itself takes 30-50% of the wall time on small N
+3. **Cache behaviour is poor** — octree accesses are scattered; brute-force is sequential
 
-1. **Match CCCoreLib's algorithm.** The hand-rolled octree mirrors
-   `DgmOctree`. This means characterisation tests against the C++
-   baseline are direct. `kiddo`'s algorithm is different.
-2. **Pure-Rust, no extra deps.** The `kiddo` crate needs explicit
-   stem/leaf strategy parameters in v6.0, which makes it harder to
-   reason about correctness. Hand-rolled is ~200 lines, easy to read.
-3. **Reasonable expected performance.** For 1M points, the octree
-   should match or beat `kiddo` for our use case (3D, f32, mostly
-   uniform point density). For extreme cases (10M+ points,
-   very dense clusters), `kiddo` is likely faster.
-4. **Tunable for per-leaf scalar-field stats.** CCCoreLib's
-   `DgmOctree` stores per-leaf data, which we'll need for density
-   queries. The hand-rolled version is ready for this; `kiddo` would
-   require a custom structure on top.
+For larger N (>100k), the octree **should** win. We need to test that range before re-evaluating. We can also try the `kiddo` KD-tree (which uses a balanced layout) once its API is migrated.
 
-**Re-evaluation trigger:**
+### When to revisit
 
-- If the octree is more than 2x slower than `kiddo` on a real 1M-point
-  scan, switch to `kiddo` and accept the API complexity.
-- If we need exact CCCoreLib match (because we're characterising tests),
-  keep the octree.
+- **N > 100k**: brute force becomes O(10¹⁰) per iter → intractable
+- **Once kiddo 6.0 is migrated**: real test against a well-tuned KD-tree
+- **After 5-10x perf improvement in the hand-rolled octree**: build the tree lazily, add per-leaf bounds, stop early when the search box is fully outside
 
-## When to revisit
+## What to do now
 
-- After the first benchmark on `D:\82 BROOK AVENUE\output\*.las`.
-- After we have to handle 10M+ point clouds.
-- After we need GPU acceleration (both options need a rewrite for GPU).
+For the **cc-rust** migration's Phase 2 (ICP), use **variant 01 (naive)** as the default. It's:
 
-## What was tried
+- Fastest for typical survey data sizes (10k-100k points per scan)
+- Smallest code (~150 lines vs 200 for octree, 50 for kiddo stub)
+- Easiest to verify
 
-### Variant 01 (naive O(n²))
+Add a `fast_nn_search` feature flag for when a real KD-tree implementation is needed. For now, default to naive.
 
-- ✅ Same algorithm as the main session (`registration.rs`).
-- ✅ Tests pass: identity transform, small translation.
-- ❌ Infeasible for real data (10M+ points = 10^14 ops/iter).
+## Other things to test
 
-### Variant 02 (kiddo KD-tree)
-
-- ❌ `kiddo 4.0` requires `fixed 1.31` which needs `rustc 1.93`. We have 1.89.
-- ❌ `kiddo 6.0` changed the API: `kiddo::float::kdtree::KdTree` was
-  removed; you now need explicit stem/leaf strategy types and arena
-  block sizes.
-- ⚠️ Stub-only for now. Real impl is a follow-up.
-
-### Variant 03 (hand-rolled octree)
-
-- ✅ Basic octree: AABB + 8-way subdivision + leaf splitting.
-- ✅ Tests pass: nearest-neighbour is correct, ICP converges on translation.
-- ⚠️ Limitations: stores only `[f32; 3]` at leaves (no per-point index),
-  worst-case unbalanced, no deduplication.
-
-## Next steps
-
-1. **Benchmark 01 vs 03** on a 100k-point synthetic Gaussian cloud
-   to get baseline numbers. Use `cargo run --release --bin icp_bench`.
-2. **Add per-point indices** to the octree (track model idx alongside point).
-3. **Run on real data** — point at `D:\82 BROOK AVENUE\output\*.las`.
-   Compare with CCCoreLib's `RegistrationTools` ICP on the same input.
-4. **Revisit kiddo** if the octree underperforms. The migration is
-   bounded: ~50 lines of code change in `lib.rs`.
+- **Point format 3 LAS** with RGB and GPS time — the scalar field and ICP work with xyz only; RGB is ignored. Document this.
+- **Multi-resolution ICP** — coarse-to-fine subsampling for faster convergence on real data. See the [end-to-end real-data test](../../sessions/2026-08-19-rust-realdata-icp/) for the gap this fills.
+- **Outlier rejection** — fixed-trimmed ICP, or robust loss. Without this, real-data ICP overshoots badly (the realdata session recovered −0.48 when +0.5 was applied).
 
 ## Related
 
-- Top-level: [`../../docs/decisions.md`](../../docs/decisions.md) (D4)
-- Originating session: [`../../sessions/2026-08-19-rust-migration-icp-scalarfield/`](../../sessions/2026-08-19-rust-migration-icp-scalarfield/)
-- AGENTS.md: [`AGENTS.md`](AGENTS.md)
+- Top-level: [`../../docs/decisions.md`](../../docs/decisions.md) (D4 — updated)
+- End-to-end real-data: [`../../sessions/2026-08-19-rust-realdata-icp/`](../../sessions/2026-08-19-rust-realdata-icp/)
+- Phase 2 roadmap: [`../../../PRD/rust/05-roadmap.md` Phase 2](../../../PRD/rust/05-roadmap.md)

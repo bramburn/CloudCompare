@@ -41,6 +41,7 @@ A **scenario** is a folder of 2–3 sessions that explore variants of the same p
 
 ## Knowledge base
 
+- [`SUMMARY.md`](SUMMARY.md) — one-page state of the Rust migration (best entry point)
 - [`patterns.md`](patterns.md) — "how we do X" notes (RCP loader, Sentry, etc.)
 - [`decisions.md`](decisions.md) — "why we chose Y" notes (KD-tree over octree, etc.)
 

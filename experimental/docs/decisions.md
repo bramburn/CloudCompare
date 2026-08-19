@@ -90,7 +90,7 @@ move succeeded; all 28 tests still pass.
 
 ---
 
-## D4. 2026-08-19 — `kiddo` vs. hand-rolled octree for ICP
+## D4. 2026-08-19 — ICP NN: naive wins (octree needs improvement)
 
 **Context:** ICP needs a fast nearest-neighbour search. The naive
 O(n²) implementation in `registration.rs` works for tests but is too
@@ -100,10 +100,28 @@ slow for real `.las` data (10M+ points). Three options:
 2. `kiddo` crate (KD-tree, pure Rust, well-tested)
 3. Hand-rolled octree (matches CCCoreLib's `DgmOctree`)
 
-**Decisions:** *pending — see `scenarios/2026-08-19-icp-variants/`.*
+**Decisions:**
 
-To be decided by the scenario once all three are implemented and
-benchmarked.
+- **Naive wins for now.** On random Gaussian point clouds of
+  2k–10k points, the naive implementation is **2–3× faster** than
+  the hand-rolled octree (measured: 0.36s vs 0.60s on 2k, 2.4s vs
+  4.1s on 5k, 9.2s vs 23.3s on 10k).
+- **Reason:** the hand-rolled octree is naive (always recurses all 8
+  children, no early-out, no per-leaf bounds). For larger N (>100k)
+  it should still win; we haven't tested that range yet.
+- **`kiddo` 6.0 deferred.** API migration is bounded (~50 lines)
+  but not done in this round.
+- **Default for `cc-rust` Phase 2: naive.** Fastest, smallest,
+  easiest to verify. Add a `fast_nn_search` feature flag later.
+
+**Source:** `scenarios/2026-08-19-icp-variants/decisions.md`
+
+**Verification:** `cargo run --release --bin icp_bench -- N 42` for
+N ∈ {2000, 5000, 10000}. Both variants give the same final RMS
+(algorithm is identical) — only the wall time differs.
+
+**When to revisit:** N > 100k, or when the hand-rolled octree is
+optimised (lazy build, kNN early-out, per-leaf bounds).
 
 ---
 
