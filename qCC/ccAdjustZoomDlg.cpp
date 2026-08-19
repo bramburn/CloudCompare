@@ -14,12 +14,26 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccAdjustZoomDlg.cpp
+ * @brief Implementation of the zoom adjustment dialog
+ * @details Allows users to adjust camera focal distance and pixel size
+ * for precise zoom control in 3D views.
+ * @see ccAdjustZoomDlg
+ */
 
 #include "ccAdjustZoomDlg.h"
 
 // local
 #include "ccGLWindowInterface.h"
 
+/**
+ * @brief Constructor
+ * @param win GL window to adjust zoom for
+ * @param parent Parent widget
+ * @details Initializes the dialog with current viewport parameters
+ * including window dimensions, focal distance, and pixel size.
+ */
 ccAdjustZoomDlg::ccAdjustZoomDlg(ccGLWindowInterface* win, QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::Tool)
     , Ui::AdjustZoomDialog()
@@ -65,11 +79,21 @@ ccAdjustZoomDlg::ccAdjustZoomDlg(ccGLWindowInterface* win, QWidget* parent /*=nu
 	connect(pixelCountSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &ccAdjustZoomDlg::onPixelCountChanged);
 }
 
+/**
+ * @brief Gets the currently configured focal distance
+ * @return Focal distance value from the spin box
+ */
 double ccAdjustZoomDlg::getFocalDistance() const
 {
 	return focalDoubleSpinBox->value();
 }
 
+/**
+ * @brief Handles focal distance spin box changes
+ * @param focalDist New focal distance value
+ * @details Recalculates pixel size based on the new focal distance,
+ * maintaining consistency with the distance-to-width ratio.
+ */
 void ccAdjustZoomDlg::onFocalChanged(double focalDist)
 {
 	assert(pixelCountSpinBox->value() > 0);
@@ -80,6 +104,12 @@ void ccAdjustZoomDlg::onFocalChanged(double focalDist)
 	pixelSizeDoubleSpinBox->blockSignals(false);
 }
 
+/**
+ * @brief Handles pixel size spin box changes
+ * @param pixelSizeNPixels New pixel size value
+ * @details Recalculates focal distance based on the new pixel size,
+ * maintaining consistency with the viewport parameters.
+ */
 void ccAdjustZoomDlg::onPixelSizeChanged(double pixelSizeNPixels)
 {
 	assert(pixelCountSpinBox->value() > 0);
@@ -90,6 +120,12 @@ void ccAdjustZoomDlg::onPixelSizeChanged(double pixelSizeNPixels)
 	focalDoubleSpinBox->blockSignals(false);
 }
 
+/**
+ * @brief Handles pixel count spin box changes
+ * @param pixelCount New pixel count value
+ * @details Recalculates pixel size based on the new pixel count,
+ * which represents how many screen pixels correspond to one unit.
+ */
 void ccAdjustZoomDlg::onPixelCountChanged(int pixelCount)
 {
 	assert(pixelCount > 0);
