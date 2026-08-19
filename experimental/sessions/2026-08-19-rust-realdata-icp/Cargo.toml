@@ -1,0 +1,21 @@
+[package]
+name = "realdata_icp"
+version = "0.1.0"
+edition = "2021"
+description = "End-to-end Rust ICP test on a real .las scan. Ties together Phases 1, 2, 4."
+
+[dependencies]
+# Phase 4: LAS reader (pure-Rust)
+las = "0.9"
+# Phase 4: Re-export the read function from the LAS strategy session
+las_v1_pure_rust = { path = "../../scenarios/2026-08-19-las-parsers/01-pure-rust-las" }
+# Phase 1 + 2: ScalarField + ICP from the cc-rust workspace
+cc_rust = { path = "../../../cc-rust" }
+# Logging + CLI
+log = "0.4"
+env_logger = "0.11"
+clap = { version = "4.5", features = ["derive"] }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
