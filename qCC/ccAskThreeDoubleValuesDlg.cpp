@@ -14,12 +14,32 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccAskThreeDoubleValuesDlg.cpp
+ * @brief Implementation of three-value input dialog
+ * @details A generic dialog for requesting three double values from the user.
+ * @see ccAskThreeDoubleValuesDlg
+ */
 
 #include "ccAskThreeDoubleValuesDlg.h"
 
 // Qt
 #include <QPushButton>
 
+/**
+ * @brief Constructor
+ * @param vName1 Name/label for first value
+ * @param vName2 Name/label for second value
+ * @param vName3 Name/label for third value
+ * @param minVal Minimum value for spin boxes
+ * @param maxVal Maximum value for spin boxes
+ * @param defaultVal1 Default value for first spin box
+ * @param defaultVal2 Default value for second spin box
+ * @param defaultVal3 Default value for third spin box
+ * @param precision Decimal precision for spin boxes
+ * @param windowTitle Optional window title
+ * @param parent Parent widget
+ */
 ccAskThreeDoubleValuesDlg::ccAskThreeDoubleValuesDlg(const QString& vName1,
                                                      const QString& vName2,
                                                      const QString& vName3,
@@ -63,6 +83,13 @@ ccAskThreeDoubleValuesDlg::ccAskThreeDoubleValuesDlg(const QString& vName1,
 	}
 }
 
+/**
+ * @brief Shows an optional checkbox
+ * @param label Checkbox label text
+ * @param state Initial checkbox state
+ * @param tooltip Optional tooltip text
+ * @details Makes the hidden checkbox visible for optional boolean input.
+ */
 void ccAskThreeDoubleValuesDlg::showCheckbox(const QString& label, bool state, QString tooltip /*=QString()*/)
 {
 	checkBox->setVisible(true);
@@ -72,6 +99,10 @@ void ccAskThreeDoubleValuesDlg::showCheckbox(const QString& label, bool state, Q
 	checkBox->setToolTip(tooltip);
 }
 
+/**
+ * @brief Gets the checkbox state
+ * @return true if checkbox is checked
+ */
 bool ccAskThreeDoubleValuesDlg::getCheckboxState() const
 {
 	return checkBox->isChecked();
