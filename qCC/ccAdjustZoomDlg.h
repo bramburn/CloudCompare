@@ -50,7 +50,7 @@ class ccAdjustZoomDlg : public QDialog
 	//! Returns requested focal distance
 	double getFocalDistance() const;
 
-  protected Q_SLOTS:
+  protected slots:
 	void onFocalChanged(double);
 	void onPixelSizeChanged(double);
 	void onPixelCountChanged(int);

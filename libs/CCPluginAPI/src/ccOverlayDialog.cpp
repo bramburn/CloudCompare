@@ -37,7 +37,7 @@ ccOverlayDialog::ccOverlayDialog(QWidget* parent /*=nullptr*/, Qt::WindowFlags f
     , m_associatedWin(nullptr)
     , m_processing(false)
 {
-	QShortcut* escShortcut = new QShortcut(QKeySequence::Cancel, this);
+	QShortcut* escShortcut = new QShortcut(QKeySequence(Qt::Key_Escape), this);
 	connect(escShortcut, &QShortcut::activated, [this]()
 	        { close(); });
 }

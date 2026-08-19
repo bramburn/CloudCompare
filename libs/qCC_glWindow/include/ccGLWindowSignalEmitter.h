@@ -40,6 +40,9 @@
 // system
 #include <unordered_set>
 
+//! Required for Qt::QueuedConnection when passing std::unordered_set<int> through signals
+Q_DECLARE_METATYPE(std::unordered_set<int>);
+
 class ccGLWindowInterface;
 
 /**

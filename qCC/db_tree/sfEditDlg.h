@@ -92,7 +92,7 @@ class sfEditDlg : public QWidget
 	/// Handle log scale changed
 	void logScaleChanged(bool);
 
-  Q_SIGNALS:
+  signals:
 
 	/// Emitted when SF display parameters change
 	void entitySFHasChanged();

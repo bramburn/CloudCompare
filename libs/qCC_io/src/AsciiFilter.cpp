@@ -40,7 +40,7 @@
 #include <cstring>
 
 // Qt
-#include <QScopedPointer>
+#include <memory>
 
 // Semi-persistent parameters
 static int  s_defaultSkippedLineCount = 0;
@@ -235,7 +235,7 @@ CC_FILE_ERROR AsciiFilter::saveToFile(ccHObject* entity, const QString& filename
 	bool writeSF = (!theScalarFields.empty());
 
 	// progress dialog
-	QScopedPointer<ccProgressDialog> pDlg(nullptr);
+	std::unique_ptr<ccProgressDialog> pDlg(nullptr);
 	if (parameters.parentWidget)
 	{
 		pDlg.reset(new ccProgressDialog(true, parameters.parentWidget));
@@ -243,7 +243,7 @@ CC_FILE_ERROR AsciiFilter::saveToFile(ccHObject* entity, const QString& filename
 		pDlg->setInfo(QObject::tr("Number of points: %1").arg(numberOfPoints));
 		pDlg->start();
 	}
-	CCCoreLib::NormalizedProgress nprogress(pDlg.data(), numberOfPoints);
+	CCCoreLib::NormalizedProgress nprogress(pDlg.get(), numberOfPoints);
 
 	// non static parameters
 	int   normalPrecision = 2 + sizeof(PointCoordinateType);
@@ -848,7 +848,7 @@ CC_FILE_ERROR AsciiFilter::loadCloudFromFormatedAsciiStream(QTextStream&        
 	}
 
 	// progress indicator
-	QScopedPointer<ccProgressDialog> pDlg(nullptr);
+	std::unique_ptr<ccProgressDialog> pDlg(nullptr);
 	if (parameters.parentWidget)
 	{
 		pDlg.reset(new ccProgressDialog(true, parameters.parentWidget));
@@ -856,7 +856,7 @@ CC_FILE_ERROR AsciiFilter::loadCloudFromFormatedAsciiStream(QTextStream&        
 		pDlg->setInfo(QObject::tr("Approximate number of points: %1").arg(approximateNumberOfLines));
 		pDlg->start();
 	}
-	CCCoreLib::NormalizedProgress nprogress(pDlg.data(), approximateNumberOfLines);
+	CCCoreLib::NormalizedProgress nprogress(pDlg.get(), approximateNumberOfLines);
 
 	// buffers
 	CCVector3d    P(0, 0, 0);

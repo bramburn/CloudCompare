@@ -44,7 +44,6 @@ ccEDLFilter::ccEDLFilter()
     , m_fboMix(nullptr)
     , m_mixShader(nullptr)
     , m_expScale(100.0f)
-    , m_glFuncIsValid(false)
 {
 	for (unsigned i = 0; i < FBO_COUNT; ++i)
 	{
@@ -142,13 +141,9 @@ bool ccEDLFilter::init(unsigned width, unsigned height, GLenum internalFormat, G
 		return false;
 	}
 
-	if (!m_glFuncIsValid)
+	if (!glFunc21())
 	{
-		if (!m_glFunc.initializeOpenGLFunctions())
-		{
-			return false;
-		}
-		m_glFuncIsValid = true;
+		return false;
 	}
 
 	setValid(false);
@@ -250,15 +245,15 @@ void ccEDLFilter::shade(GLuint texDepth, GLuint texColor, ViewportParameters& pa
 	}
 
 	// we must use corner-based screen coordinates
-	m_glFunc.glMatrixMode(GL_PROJECTION);
-	m_glFunc.glPushMatrix();
-	m_glFunc.glLoadIdentity();
-	m_glFunc.glOrtho(0.0, static_cast<GLdouble>(m_screenWidth), 0.0, static_cast<GLdouble>(m_screenHeight), 0.0, 1.0);
-	m_glFunc.glMatrixMode(GL_MODELVIEW);
-	m_glFunc.glPushMatrix();
-	m_glFunc.glLoadIdentity();
+	glFunc21()->glMatrixMode(GL_PROJECTION);
+	glFunc21()->glPushMatrix();
+	glFunc21()->glLoadIdentity();
+	glFunc21()->glOrtho(0.0, static_cast<GLdouble>(m_screenWidth), 0.0, static_cast<GLdouble>(m_screenHeight), 0.0, 1.0);
+	glFunc21()->glMatrixMode(GL_MODELVIEW);
+	glFunc21()->glPushMatrix();
+	glFunc21()->glLoadIdentity();
 
-	assert(m_glFunc.glGetError() == GL_NO_ERROR);
+	assert(glFunc21()->glGetError() == GL_NO_ERROR);
 
 	float lightMod = parameters.perspectiveMode ? 3.0f : 1.2f; // FIXME: we would need to be smarter and depend on the actual 'zoom' (= the focal distance now)
 	lightMod *= parameters.zoomFactor;
@@ -286,19 +281,19 @@ void ccEDLFilter::shade(GLuint texDepth, GLuint texColor, ViewportParameters& pa
 		m_EDLShader->setUniformValueArray("Light_dir", reinterpret_cast<const GLfloat*>(m_lightDir), 1, 3);
 		m_EDLShader->setUniformValueArray("Neigh_pos_2D", reinterpret_cast<const GLfloat*>(m_neighbours), 8, 2);
 
-		m_glFunc.glActiveTexture(GL_TEXTURE1);
-		m_glFunc.glBindTexture(GL_TEXTURE_2D, texColor);
+		glFunc21()->glActiveTexture(GL_TEXTURE1);
+		glFunc21()->glBindTexture(GL_TEXTURE_2D, texColor);
 
-		m_glFunc.glActiveTexture(GL_TEXTURE0);
+		glFunc21()->glActiveTexture(GL_TEXTURE0);
 		ccGLUtils::DisplayTexture2DPosition(texDepth, 0, 0, m_screenWidth / scale, m_screenHeight / scale);
 
-		m_glFunc.glActiveTexture(GL_TEXTURE1);
-		m_glFunc.glBindTexture(GL_TEXTURE_2D, 0);
+		glFunc21()->glActiveTexture(GL_TEXTURE1);
+		glFunc21()->glBindTexture(GL_TEXTURE_2D, 0);
 
 		m_EDLShader->release();
 		fbo->stop();
 
-		assert(m_glFunc.glGetError() == GL_NO_ERROR);
+		assert(glFunc21()->glGetError() == GL_NO_ERROR);
 
 		// smooth the result
 		const BilateralFilterDesc& bl = m_bilateralFilters[i];
@@ -306,7 +301,7 @@ void ccEDLFilter::shade(GLuint texDepth, GLuint texColor, ViewportParameters& pa
 		{
 			bl.filter->setParams(bl.halfSize, bl.sigma, bl.sigmaZ);
 			bl.filter->shade(texDepth, fbo->getColorTexture(), parameters);
-			assert(m_glFunc.glGetError() == GL_NO_ERROR);
+			assert(glFunc21()->glGetError() == GL_NO_ERROR);
 		}
 	}
 
@@ -328,42 +323,42 @@ void ccEDLFilter::shade(GLuint texDepth, GLuint texColor, ViewportParameters& pa
 		GLuint texCol1 = m_bilateralFilters[1].filter ? m_bilateralFilters[1].filter->getTexture() : m_fbos[1]->getColorTexture();
 		GLuint texCol2 = m_bilateralFilters[2].filter ? m_bilateralFilters[2].filter->getTexture() : m_fbos[2]->getColorTexture();
 
-		m_glFunc.glActiveTexture(GL_TEXTURE3);
-		m_glFunc.glBindTexture(GL_TEXTURE_2D, texDepth);
+		glFunc21()->glActiveTexture(GL_TEXTURE3);
+		glFunc21()->glBindTexture(GL_TEXTURE_2D, texDepth);
 
-		m_glFunc.glActiveTexture(GL_TEXTURE2);
-		m_glFunc.glBindTexture(GL_TEXTURE_2D, texCol2);
+		glFunc21()->glActiveTexture(GL_TEXTURE2);
+		glFunc21()->glBindTexture(GL_TEXTURE_2D, texCol2);
 
-		m_glFunc.glActiveTexture(GL_TEXTURE1);
-		m_glFunc.glBindTexture(GL_TEXTURE_2D, texCol1);
+		glFunc21()->glActiveTexture(GL_TEXTURE1);
+		glFunc21()->glBindTexture(GL_TEXTURE_2D, texCol1);
 
-		m_glFunc.glActiveTexture(GL_TEXTURE0);
+		glFunc21()->glActiveTexture(GL_TEXTURE0);
 		ccGLUtils::DisplayTexture2DPosition(texCol0, 0, 0, m_screenWidth, m_screenHeight);
 
-		// m_glFunc.glBindTexture(GL_TEXTURE_2D,0);
-		m_glFunc.glActiveTexture(GL_TEXTURE1);
-		m_glFunc.glBindTexture(GL_TEXTURE_2D, 0);
-		m_glFunc.glActiveTexture(GL_TEXTURE2);
-		m_glFunc.glBindTexture(GL_TEXTURE_2D, 0);
-		m_glFunc.glActiveTexture(GL_TEXTURE3);
-		m_glFunc.glBindTexture(GL_TEXTURE_2D, 0);
+		// glFunc21()->glBindTexture(GL_TEXTURE_2D,0);
+		glFunc21()->glActiveTexture(GL_TEXTURE1);
+		glFunc21()->glBindTexture(GL_TEXTURE_2D, 0);
+		glFunc21()->glActiveTexture(GL_TEXTURE2);
+		glFunc21()->glBindTexture(GL_TEXTURE_2D, 0);
+		glFunc21()->glActiveTexture(GL_TEXTURE3);
+		glFunc21()->glBindTexture(GL_TEXTURE_2D, 0);
 
 		m_mixShader->release();
 		m_fboMix->stop();
 
-		assert(m_glFunc.glGetError() == GL_NO_ERROR);
+		assert(glFunc21()->glGetError() == GL_NO_ERROR);
 	}
 
 	// restore GL_TEXTURE_0 by default
-	m_glFunc.glActiveTexture(GL_TEXTURE0);
+	glFunc21()->glActiveTexture(GL_TEXTURE0);
 
-	assert(m_glFunc.glGetError() == GL_NO_ERROR);
+	assert(glFunc21()->glGetError() == GL_NO_ERROR);
 
-	m_glFunc.glMatrixMode(GL_PROJECTION);
-	m_glFunc.glPopMatrix();
-	m_glFunc.glMatrixMode(GL_MODELVIEW);
-	m_glFunc.glPopMatrix();
-	assert(m_glFunc.glGetError() == GL_NO_ERROR);
+	glFunc21()->glMatrixMode(GL_PROJECTION);
+	glFunc21()->glPopMatrix();
+	glFunc21()->glMatrixMode(GL_MODELVIEW);
+	glFunc21()->glPopMatrix();
+	assert(glFunc21()->glGetError() == GL_NO_ERROR);
 }
 
 GLuint ccEDLFilter::getTexture()

@@ -12,10 +12,7 @@ The main dependency of CloudCompare is Qt. CloudCompare 2.14+ requires Qt 6.
 
 Debian/ubuntu package names:
 ``` bash
-# Pre Ubuntu 24 (Qt5 dependencies)
-sudo apt install libqt5svg5-dev libqt5opengl5-dev qt5-default qttools5-dev qttools5-dev-tools libqt5websockets5-dev
-
-# Ubuntu 24 (Qt6 depencendies)
+# Ubuntu 24+ (Qt6 dependencies)
 sudo apt install qt6-base-dev qt6-svg-dev qt6-tools-dev \
 qt6-tools-dev-tools libqt6opengl6-dev \
 libqt6websockets6-dev
@@ -46,11 +43,11 @@ Example:
 ```shell
 # Windows
 mkdir build & cd build
-cmake -DCMAKE_PREFIX_PATH=C:\Qt\5.15.2\msvc2019_64 ..
+cmake -DCMAKE_PREFIX_PATH=C:\Qt\6.8.3\msvc2022_64 ..
 
 # macOs
 mkdir build && cd build
-cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt@5 ..
+cmake -DCMAKE_PREFIX_PATH=/usr/local/qt/6.8.3/macos ..
 
 # Linux
 mkdir build && cd build

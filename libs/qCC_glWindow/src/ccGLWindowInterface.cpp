@@ -568,11 +568,7 @@ bool ccGLWindowInterface::initialize()
 	// initialize can be called again when switching to exclusive full screen!
 	if (!m_initialized)
 	{
-		if (!glFunc->initializeOpenGLFunctions()) // DGM: seems to be necessary at least with Qt 5.4
-		{
-			assert(false);
-			return false;
-		}
+		// glFunc from QOpenGLVersionFunctionsFactory::get() is already initialized in Qt 6
 
 		// we init the model view and projection matrices with identity
 		m_viewMatd.toIdentity();
@@ -771,34 +767,6 @@ bool ccGLWindowInterface::initialize()
 
 		// apply (potentially) updated parameters;
 		setDisplayParameters(params, hasOverriddenDisplayParameters());
-
-#if 0
-		//OpenGL 3.3+ rendering shader
-		if (QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_Version_3_3)
-		{
-			bool vaEnabled = ccFBOUtils::CheckVAAvailability();
-			if (vaEnabled && !m_customRenderingShader)
-			{
-				ccGui::ParamStruct params = getDisplayParameters();
-
-				ccShader* renderingShader = new ccShader();
-				QString shadersPath = ccGLWindow::getShadersPath();
-				QString error;
-				if (!renderingShader->fromFile(shadersPath + QString("/Rendering"), QString("rendering"), error))
-				{
-					if (!m_silentInitialization)
-						ccLog::Warning(QString("[3D View %i] Failed to load custom rendering shader: '%2'").arg(m_uniqueID).arg(error));
-					delete renderingShader;
-					renderingShader = nullptr;
-				}
-				else
-				{
-					m_customRenderingShader = renderingShader;
-				}
-				setDisplayParameters(params, hasOverriddenDisplayParameters());
-			}
-		}
-#endif
 
 		if (!m_silentInitialization)
 		{
@@ -7234,12 +7202,7 @@ bool ccGLWindowInterface::TestStereoSupport(bool forceRetest /*=false*/)
 		// testWindow->deleteLater();
 		return false;
 	}
-	if (!glFunc->initializeOpenGLFunctions()) // DGM: seems to be necessary at least with Qt 5.4
-	{
-		ccLog::Warning("Failed to initialize the OpengGL functions");
-		// testWindow->deleteLater();
-		return false;
-	}
+	// glFunc from QOpenGLVersionFunctionsFactory::get() is already initialized in Qt 6
 
 	GLboolean isStereoEnabled = GL_FALSE;
 	glFunc->glGetBooleanv(GL_STEREO, &isStereoEnabled);

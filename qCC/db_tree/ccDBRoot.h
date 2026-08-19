@@ -261,7 +261,7 @@ class ccDBRoot : public QAbstractItemModel
 	void enableBubbleViewMode();
 	void editLabelScalarValue();
 
-  Q_SIGNALS:
+  signals:
 	void selectionChanged();
 	void dbIsEmpty();
 	void dbIsNotEmptyAnymore();

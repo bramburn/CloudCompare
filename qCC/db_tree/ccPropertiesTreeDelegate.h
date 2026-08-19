@@ -151,7 +151,7 @@ class ccPropertiesTreeDelegate : public QStyledItemDelegate
 	//! Returns currently bound object
 	ccHObject* getCurrentObject();
 
-  Q_SIGNALS:
+  signals:
 	void ccObjectPropertiesChanged(ccHObject* hObject) const;
 	void ccObjectAppearanceChanged(ccHObject* hObject) const;
 	void ccObjectAndChildrenAppearanceChanged(ccHObject* hObject) const;

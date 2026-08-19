@@ -43,7 +43,9 @@
 #include <ccGlFilter.h>
 
 // Qt
+#include <QOpenGLContext>
 #include <QOpenGLFunctions_2_1>
+#include <QOpenGLVersionFunctionsFactory>
 
 /**
  * @file ccEDLFilter.h
@@ -146,10 +148,13 @@ class ccEDLFilter : public ccGlFilter
 	// Light direction
 	float m_lightDir[3];
 
-	//! Associated OpenGL functions set
-	QOpenGLFunctions_2_1 m_glFunc;
-	//! Associated OpenGL functions set validity
-	bool m_glFuncIsValid;
+  private:
+	//! Get OpenGL 2.1 functions for the current context (Qt 6 compatible)
+	QOpenGLFunctions_2_1* glFunc21()
+	{
+		auto* ctx = QOpenGLContext::currentContext();
+		return ctx ? QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_2_1>(ctx) : nullptr;
+	}
 };
 
 #endif

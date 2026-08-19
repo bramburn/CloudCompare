@@ -145,6 +145,9 @@ class QCC_DB_LIB_API ccGLMatrixd : public ccGLMatrixTpl<double>
 	}
 };
 
+//! Required for Qt::QueuedConnection when passing ccGLMatrixd through signals
+Q_DECLARE_METATYPE(ccGLMatrixd);
+
 /*** Helpers ***/
 
 //! Constructor from a 3x3 rotation matrix R and a vector Tr

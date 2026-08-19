@@ -21,6 +21,9 @@
 #include "ccPlane.h"
 #include "ccPointCloud.h"
 
+// System
+#include <memory>
+
 ccCoordinateSystem::ccCoordinateSystem(PointCoordinateType displayScale,
                                        PointCoordinateType axisWidth,
                                        const ccGLMatrix*   transMat /*=nullptr*/,
@@ -161,9 +164,9 @@ bool ccCoordinateSystem::buildUp()
 		verts->clear();
 	}
 
-	*this += *QScopedPointer<ccPlane>(createXYplane());
-	*this += *QScopedPointer<ccPlane>(createYZplane());
-	*this += *QScopedPointer<ccPlane>(createZXplane());
+	*this += *std::unique_ptr<ccPlane>(createXYplane());
+	*this += *std::unique_ptr<ccPlane>(createYZplane());
+	*this += *std::unique_ptr<ccPlane>(createZXplane());
 
 	return (vertices() && vertices()->size() == 12 && this->size() == 6);
 }

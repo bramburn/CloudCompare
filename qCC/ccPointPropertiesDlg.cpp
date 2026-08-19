@@ -258,7 +258,7 @@ void ccPointPropertiesDlg::exportCurrentLabel()
 		m_label->setSelected(true);
 	}
 
-	Q_EMIT newLabel(labelObject);
+	emit newLabel(labelObject);
 
 	if (m_associatedWin)
 	{

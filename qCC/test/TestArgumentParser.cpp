@@ -362,6 +362,202 @@ class TestArgumentParser : public QObject
 		QVERIFY(result.has_value());
 		QCOMPARE(*result, Color::RED);
 	}
+
+	// takeDouble()
+	void takeDoubleParsesValid()
+	{
+		QStringList      args{"3.141592653589"};
+		ccArgumentParser parser(args);
+
+		auto result = parser.takeDouble("test");
+		QVERIFY(result.has_value());
+		QCOMPARE(*result, 3.141592653589);
+		QVERIFY(args.isEmpty());
+	}
+
+	void takeDoubleOnEmptyReturnsNullopt()
+	{
+		QStringList      args;
+		ccArgumentParser parser(args);
+
+		auto result = parser.takeDouble("test");
+		QVERIFY(!result.has_value());
+	}
+
+	void takeDoubleOnInvalidReturnsNullopt()
+	{
+		QStringList      args{"not_a_number"};
+		ccArgumentParser parser(args);
+
+		auto result = parser.takeDouble("test");
+		QVERIFY(!result.has_value());
+	}
+
+	void takeDoubleMinMaxAcceptsInRange()
+	{
+		QStringList      args{"50"};
+		ccArgumentParser parser(args);
+
+		auto result = parser.takeDouble("test", 0.0, 100.0);
+		QVERIFY(result.has_value());
+		QCOMPARE(*result, 50.0);
+	}
+
+	void takeDoubleMinMaxRejectsBelowMin()
+	{
+		QStringList      args{"-5"};
+		ccArgumentParser parser(args);
+
+		auto result = parser.takeDouble("test", 0.0, 100.0);
+		QVERIFY(!result.has_value());
+	}
+
+	void takeDoubleMinMaxRejectsAboveMax()
+	{
+		QStringList      args{"150"};
+		ccArgumentParser parser(args);
+
+		auto result = parser.takeDouble("test", 0.0, 100.0);
+		QVERIFY(!result.has_value());
+	}
+
+	// takeInt()
+	void takeIntParsesValid()
+	{
+		QStringList      args{"-42"};
+		ccArgumentParser parser(args);
+
+		auto result = parser.takeInt("test");
+		QVERIFY(result.has_value());
+		QCOMPARE(*result, -42);
+		QVERIFY(args.isEmpty());
+	}
+
+	void takeIntOnEmptyReturnsNullopt()
+	{
+		QStringList      args;
+		ccArgumentParser parser(args);
+
+		auto result = parser.takeInt("test");
+		QVERIFY(!result.has_value());
+	}
+
+	void takeIntOnInvalidReturnsNullopt()
+	{
+		QStringList      args{"abc"};
+		ccArgumentParser parser(args);
+
+		auto result = parser.takeInt("test");
+		QVERIFY(!result.has_value());
+	}
+
+	void takeIntMinMaxAcceptsInRange()
+	{
+		QStringList      args{"5"};
+		ccArgumentParser parser(args);
+
+		auto result = parser.takeInt("test", 0, 10);
+		QVERIFY(result.has_value());
+		QCOMPARE(*result, 5);
+	}
+
+	void takeIntMinMaxRejectsBelowMin()
+	{
+		QStringList      args{"-1"};
+		ccArgumentParser parser(args);
+
+		auto result = parser.takeInt("test", 0, 10);
+		QVERIFY(!result.has_value());
+	}
+
+	void takeIntMinMaxRejectsAboveMax()
+	{
+		QStringList      args{"20"};
+		ccArgumentParser parser(args);
+
+		auto result = parser.takeInt("test", 0, 10);
+		QVERIFY(!result.has_value());
+	}
+
+	// ParseDouble() static
+	void ParseDoubleValid()
+	{
+		auto result = ccArgumentParser::ParseDouble("3.14159", "test");
+		QVERIFY(result.has_value());
+		QCOMPARE(*result, 3.14159);
+	}
+
+	void ParseDoubleInvalid()
+	{
+		auto result = ccArgumentParser::ParseDouble("abc", "test");
+		QVERIFY(!result.has_value());
+	}
+
+	void ParseDoubleNegative()
+	{
+		auto result = ccArgumentParser::ParseDouble("-100.5", "test");
+		QVERIFY(result.has_value());
+		QCOMPARE(*result, -100.5);
+	}
+
+	void ParseDoubleScientific()
+	{
+		auto result = ccArgumentParser::ParseDouble("1.5e3", "test");
+		QVERIFY(result.has_value());
+		QCOMPARE(*result, 1500.0);
+	}
+
+	// ParseInt() static
+	void ParseIntValid()
+	{
+		auto result = ccArgumentParser::ParseInt("42", "test");
+		QVERIFY(result.has_value());
+		QCOMPARE(*result, 42);
+	}
+
+	void ParseIntInvalid()
+	{
+		auto result = ccArgumentParser::ParseInt("abc", "test");
+		QVERIFY(!result.has_value());
+	}
+
+	void ParseIntNegative()
+	{
+		auto result = ccArgumentParser::ParseInt("-999", "test");
+		QVERIFY(result.has_value());
+		QCOMPARE(*result, -999);
+	}
+
+	// size()
+	void sizeReturnsRemainingCount()
+	{
+		QStringList      args{"a", "b", "c"};
+		ccArgumentParser parser(args);
+
+		QCOMPARE(parser.size(), static_cast<size_t>(3));
+		parser.skip();
+		QCOMPARE(parser.size(), static_cast<size_t>(2));
+		parser.takeNext();
+		QCOMPARE(parser.size(), static_cast<size_t>(1));
+	}
+
+	void sizeEmptyList()
+	{
+		QStringList      args;
+		ccArgumentParser parser(args);
+
+		QCOMPARE(parser.size(), static_cast<size_t>(0));
+	}
+
+	// peek() after skip()
+	void peekAfterSkipReturnsNext()
+	{
+		QStringList      args{"skip", "target", "after"};
+		ccArgumentParser parser(args);
+
+		parser.skip();
+		QCOMPARE(parser.peek(), "target");
+	}
 };
 
 QTEST_GUILESS_MAIN(TestArgumentParser)

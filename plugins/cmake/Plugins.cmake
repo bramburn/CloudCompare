@@ -13,7 +13,7 @@ function( AddPlugin )
 			ADD_PLUGIN
 			""
 			"NAME;TYPE;SHADER_FOLDER"
-			""
+			"DEPENDS"
 			${ARGN}
 	)
 	
@@ -96,6 +96,7 @@ function( AddPlugin )
 		CCCoreLib
 		CCPluginAPI
 		CCPluginStub
+		${ADD_PLUGIN_DEPENDS}
 	)
 
 	# On macOS, copy the plugin to the ccPlugins directory at the top level

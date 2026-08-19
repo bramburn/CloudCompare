@@ -567,7 +567,16 @@ void ccCloudLayersDlg::tableViewDoubleClicked(const QModelIndex& index)
 	}
 
 	QColor currColor = index.model()->data(index, Qt::DisplayRole).value<QColor>();
-	QColor color = QColorDialog::getColor(currColor, this, tr("Pick a color"), QColorDialog::DontUseNativeDialog);
+	QColor color;
+	{
+		QColorDialog dialog(this);
+		dialog.setCurrentColor(currColor);
+		dialog.setOptions(QColorDialog::DontUseNativeDialog);
+		if (dialog.exec() == QDialog::Accepted)
+		{
+			color = dialog.currentColor();
+		}
+	}
 
 	if (color.isValid() && color != currColor)
 	{

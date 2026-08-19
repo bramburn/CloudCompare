@@ -122,7 +122,7 @@ bool Mouse3DInput::connect(QWidget* mainWidget, QString appName)
 	Q_UNUSED(appName)
 
 	// Required for Qt::QueuedConnection across thread boundaries.
-	qRegisterMetaType<std::vector<float>>("std::vector<float>");
+	qRegisterMetaType<std::vector<float>>();
 
 	// drive the device directly via hidapi (HIDWorker thread)
 	m_hidWorker = new HIDWorker(this);

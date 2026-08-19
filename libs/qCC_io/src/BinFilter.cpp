@@ -43,6 +43,7 @@
 
 // system
 #include <cassert>
+#include <memory>
 #include <cstring>
 #include <unordered_set>
 
@@ -162,7 +163,7 @@ CC_FILE_ERROR BinFilter::saveToFile(ccHObject* root, const QString& filename, co
 	if (!out.open(QIODevice::WriteOnly))
 		return CC_FERR_WRITING;
 
-	QScopedPointer<ccProgressDialog> pDlg(nullptr);
+	std::unique_ptr<ccProgressDialog> pDlg(nullptr);
 	if (parameters.parentWidget)
 	{
 		pDlg.reset(new ccProgressDialog(false, parameters.parentWidget));
@@ -476,7 +477,7 @@ CC_FILE_ERROR BinFilter::LoadFileV2(QFile& in, ccHObject& container, int flags, 
 		return CC_FERR_MALFORMED_FILE;
 	}
 
-	QScopedPointer<ccProgressDialog> pDlg(nullptr);
+	std::unique_ptr<ccProgressDialog> pDlg(nullptr);
 	if (parallel && parentWidget)
 	{
 		pDlg.reset(new ccProgressDialog(false, parentWidget));
@@ -1117,7 +1118,7 @@ CC_FILE_ERROR BinFilter::LoadFileV1(QFile& in, ccHObject& container, unsigned nb
 		return CC_FERR_NO_LOAD;
 	}
 
-	QScopedPointer<ccProgressDialog> pDlg(nullptr);
+	std::unique_ptr<ccProgressDialog> pDlg(nullptr);
 	if (parameters.parentWidget)
 	{
 		pDlg.reset(new ccProgressDialog(true, parameters.parentWidget));
@@ -1143,7 +1144,7 @@ CC_FILE_ERROR BinFilter::LoadFileV1(QFile& in, ccHObject& container, unsigned nb
 		}
 
 		// progress for this cloud
-		CCCoreLib::NormalizedProgress nprogress(pDlg.data(), nbOfPoints);
+		CCCoreLib::NormalizedProgress nprogress(pDlg.get(), nbOfPoints);
 		if (pDlg)
 		{
 			pDlg->reset();

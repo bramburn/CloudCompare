@@ -71,7 +71,7 @@ class ccPointPropertiesDlg : public ccPointPickingGenericInterface
 	//! To capture overridden shortcuts (pause button, etc.)
 	void onShortcutTriggered(int);
 
-  Q_SIGNALS:
+  signals:
 
 	//! Signal emitted when a new label is created
 	void newLabel(ccHObject*);

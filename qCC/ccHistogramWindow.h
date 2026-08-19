@@ -195,7 +195,7 @@ class ccHistogramWindow : public QCustomPlot
 	void setMinSatValue(double);
 	void setMaxSatValue(double);
 
-  Q_SIGNALS:
+  signals:
 
 	void sfMinDispValChanged(double);
 	void sfMaxDispValChanged(double);

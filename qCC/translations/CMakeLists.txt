@@ -2,11 +2,16 @@ set_directory_properties( PROPERTIES CLEAN_NO_CUSTOM 1 )
 
 find_package(Qt6 COMPONENTS LinguistTools REQUIRED )
 
-# Note that _qt5_linguisttools_install_prefix is from Qt5LinguistToolsConfig.cmake
-#	and probably a private variable...
-set( QT_PATH ${_qt5_linguisttools_install_prefix} )
-if( UNIX AND NOT APPLE )
-	set( QT_PATH "${QT_PATH}/share/qt5" )
+# Derive Qt6 install prefix from Qt6::lconvert's binary location
+# lconvert lives at: <QT_PREFIX>/bin/lconvert[.exe]
+# Translations live at: <QT_PREFIX>/translations/
+get_target_property(_qt6_lconvert_loc Qt6::lconvert IMPORTED_LOCATION)
+if(_qt6_lconvert_loc)
+    get_filename_component(_qt6_bin_dir "${_qt6_lconvert_loc}" DIRECTORY)
+    set(QT_PATH "${_qt6_bin_dir}/../translations")
+else()
+    # Fallback: assume standard Qt6 install layout
+    set(QT_PATH "${PACKAGE_PREFIX_DIR}/translations")
 endif()
 
 set( QT_LCONVERT_EXE Qt6::lconvert )
@@ -30,8 +35,8 @@ foreach( TRANSLATION_FILE ${TRANSLATION_FILES} )
 	unset( TRANSLATION_FILES_QT_EXIST )
 	
 	# These are the Qt files we want to add if they exist
-	set( QT_LANG_FILES 
-		${QT_PATH}/translations/qtbase_${LANG_CODE}.qm
+	set( QT_LANG_FILES
+		${QT_PATH}/qtbase_${LANG_CODE}.qm
 		)
 	
 	# Now check that they exist	

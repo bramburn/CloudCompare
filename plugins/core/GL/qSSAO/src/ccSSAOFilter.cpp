@@ -121,7 +121,6 @@ ccSSAOFilter::ccSSAOFilter()
     , m_bilateralGHalfSize(2)
     , m_bilateralGSigma(0.5f)
     , m_bilateralGSigmaZ(0.4f)
-    , m_glFuncIsValid(0)
 {
 }
 
@@ -142,9 +141,9 @@ ccGlFilter* ccSSAOFilter::clone() const
 
 void ccSSAOFilter::reset()
 {
-	if (m_glFuncIsValid && m_glFunc.glIsTexture(m_texReflect))
+	if (glFunc21() && glFunc21()->glIsTexture(m_texReflect))
 	{
-		m_glFunc.glDeleteTextures(1, &m_texReflect);
+		glFunc21()->glDeleteTextures(1, &m_texReflect);
 	}
 	m_texReflect = 0;
 
@@ -207,18 +206,14 @@ bool ccSSAOFilter::init(unsigned width, unsigned height, const QString& shadersP
 	else
 	{
 		enableBilateralFilter = m_bilateralFilterEnabled;
-		useReflectTexture     = (m_glFuncIsValid && m_glFunc.glIsTexture(m_texReflect));
+		useReflectTexture     = (glFunc21() && glFunc21()->glIsTexture(m_texReflect));
 	}
 
 	sampleSphere();
 
-	if (!m_glFuncIsValid)
+	if (!glFunc21())
 	{
-		if (!m_glFunc.initializeOpenGLFunctions())
-		{
-			return false;
-		}
-		m_glFuncIsValid = true;
+		return false;
 	}
 
 	setValid(false);
@@ -276,9 +271,9 @@ bool ccSSAOFilter::init(unsigned width, unsigned height, const QString& shadersP
 	m_h = height;
 
 	// remove the existing texture
-	if (m_glFunc.glIsTexture(m_texReflect))
+	if (glFunc21()->glIsTexture(m_texReflect))
 	{
-		m_glFunc.glDeleteTextures(1, &m_texReflect);
+		glFunc21()->glDeleteTextures(1, &m_texReflect);
 	}
 	m_texReflect = 0;
 
@@ -327,16 +322,16 @@ void ccSSAOFilter::shade(GLuint texDepth, GLuint texColor, ViewportParameters& p
 	assert(m_fbo);
 
 	// we must use corner-based screen coordinates
-	m_glFunc.glMatrixMode(GL_PROJECTION);
-	m_glFunc.glPushMatrix();
-	m_glFunc.glLoadIdentity();
-	m_glFunc.glOrtho(0.0, static_cast<GLdouble>(m_w), 0.0, static_cast<GLdouble>(m_h), 0.0, 1.0);
-	m_glFunc.glMatrixMode(GL_MODELVIEW);
-	m_glFunc.glPushMatrix();
-	m_glFunc.glLoadIdentity();
-	assert(m_glFunc.glGetError() == GL_NO_ERROR);
+	glFunc21()->glMatrixMode(GL_PROJECTION);
+	glFunc21()->glPushMatrix();
+	glFunc21()->glLoadIdentity();
+	glFunc21()->glOrtho(0.0, static_cast<GLdouble>(m_w), 0.0, static_cast<GLdouble>(m_h), 0.0, 1.0);
+	glFunc21()->glMatrixMode(GL_MODELVIEW);
+	glFunc21()->glPushMatrix();
+	glFunc21()->glLoadIdentity();
+	assert(glFunc21()->glGetError() == GL_NO_ERROR);
 
-	bool hasReflectTexture = m_glFunc.glIsTexture(m_texReflect);
+	bool hasReflectTexture = glFunc21()->glIsTexture(m_texReflect);
 
 	m_fbo->start();
 
@@ -350,27 +345,27 @@ void ccSSAOFilter::shade(GLuint texDepth, GLuint texColor, ViewportParameters& p
 	m_shader->setUniformValue("UseReflect", hasReflectTexture ? 1 : 0);
 	m_shader->setUniformValueArray("P", m_ssaoNeighbours.data(), MAX_N, 3);
 
-	m_glFunc.glActiveTexture(GL_TEXTURE2);
-	m_glFunc.glBindTexture(GL_TEXTURE_2D, texColor);
+	glFunc21()->glActiveTexture(GL_TEXTURE2);
+	glFunc21()->glBindTexture(GL_TEXTURE_2D, texColor);
 
 	GLuint texReflect = 0;
 	if (hasReflectTexture)
 	{
-		m_glFunc.glActiveTexture(GL_TEXTURE1);
-		m_glFunc.glBindTexture(GL_TEXTURE_2D, m_texReflect);
+		glFunc21()->glActiveTexture(GL_TEXTURE1);
+		glFunc21()->glBindTexture(GL_TEXTURE_2D, m_texReflect);
 	}
 
-	m_glFunc.glActiveTexture(GL_TEXTURE0);
+	glFunc21()->glActiveTexture(GL_TEXTURE0);
 	ccGLUtils::DisplayTexture2DPosition(texDepth, 0, 0, m_w, m_h);
 
 	if (hasReflectTexture)
 	{
-		m_glFunc.glActiveTexture(GL_TEXTURE1);
-		m_glFunc.glBindTexture(GL_TEXTURE_2D, 0);
+		glFunc21()->glActiveTexture(GL_TEXTURE1);
+		glFunc21()->glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	m_glFunc.glActiveTexture(GL_TEXTURE2);
-	m_glFunc.glBindTexture(GL_TEXTURE_2D, 0);
+	glFunc21()->glActiveTexture(GL_TEXTURE2);
+	glFunc21()->glBindTexture(GL_TEXTURE_2D, 0);
 
 	m_shader->release();
 	m_fbo->stop();
@@ -379,18 +374,18 @@ void ccSSAOFilter::shade(GLuint texDepth, GLuint texColor, ViewportParameters& p
 	{
 		m_bilateralFilter->setParams(m_bilateralGHalfSize, m_bilateralGSigma, m_bilateralGSigmaZ);
 		m_bilateralFilter->shade(texDepth, m_fbo->getColorTexture(), parameters);
-		assert(m_glFunc.glGetError() == GL_NO_ERROR);
+		assert(glFunc21()->glGetError() == GL_NO_ERROR);
 	}
 
 	// restore GL_TEXTURE_0 by default
-	m_glFunc.glActiveTexture(GL_TEXTURE0);
+	glFunc21()->glActiveTexture(GL_TEXTURE0);
 
-	m_glFunc.glMatrixMode(GL_PROJECTION);
-	m_glFunc.glPopMatrix();
-	m_glFunc.glMatrixMode(GL_MODELVIEW);
-	m_glFunc.glPopMatrix();
+	glFunc21()->glMatrixMode(GL_PROJECTION);
+	glFunc21()->glPopMatrix();
+	glFunc21()->glMatrixMode(GL_MODELVIEW);
+	glFunc21()->glPopMatrix();
 
-	auto lastGLError = m_glFunc.glGetError();
+	auto lastGLError = glFunc21()->glGetError();
 	if (GL_NO_ERROR != lastGLError)
 	{
 		ccLog::Warning(QString("[SSAO] GL error detected: %1").arg(lastGLError));
@@ -456,22 +451,22 @@ void ccSSAOFilter::initReflectTexture()
 		reflectTexture[i * 3 + 2] = static_cast<float>((1.0 + P.z) / 2);
 	}
 
-	assert(m_glFuncIsValid);
+	assert(glFunc21());
 
-	m_glFunc.glPushAttrib(GL_ENABLE_BIT);
-	m_glFunc.glEnable(GL_TEXTURE_2D);
+	glFunc21()->glPushAttrib(GL_ENABLE_BIT);
+	glFunc21()->glEnable(GL_TEXTURE_2D);
 
-	m_glFunc.glGenTextures(1, &m_texReflect);
-	m_glFunc.glBindTexture(GL_TEXTURE_2D, m_texReflect);
-	m_glFunc.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	m_glFunc.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	m_glFunc.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	m_glFunc.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	m_glFunc.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_w, m_h, 0, GL_RGB, GL_FLOAT, &reflectTexture[0]);
-	m_glFunc.glBindTexture(GL_TEXTURE_2D, 0);
+	glFunc21()->glGenTextures(1, &m_texReflect);
+	glFunc21()->glBindTexture(GL_TEXTURE_2D, m_texReflect);
+	glFunc21()->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFunc21()->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glFunc21()->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glFunc21()->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFunc21()->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_w, m_h, 0, GL_RGB, GL_FLOAT, &reflectTexture[0]);
+	glFunc21()->glBindTexture(GL_TEXTURE_2D, 0);
 
-	m_glFunc.glPopAttrib();
-	assert(m_glFunc.glGetError() == GL_NO_ERROR);
+	glFunc21()->glPopAttrib();
+	assert(glFunc21()->glGetError() == GL_NO_ERROR);
 
 	// According to Wikipedia, noise is made of 4*4 repeated tiles to have only high frequency
 }

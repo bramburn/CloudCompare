@@ -360,7 +360,7 @@ void ccDBRoot::unloadAll()
 		endRemoveRows();
 	}
 
-	Q_EMIT dbIsEmpty();
+	emit dbIsEmpty();
 
 	updatePropertiesView();
 
@@ -431,7 +431,7 @@ void ccDBRoot::addElement(ccHObject* object, bool autoExpand /*=true*/)
 
 	if (wasEmpty && m_treeRoot->getChildrenNumber() != 0)
 	{
-		Q_EMIT dbIsNotEmptyAnymore();
+		emit dbIsNotEmptyAnymore();
 	}
 }
 
@@ -487,7 +487,7 @@ void ccDBRoot::removeElements(ccHObject::Container& objects)
 
 	if (m_treeRoot->getChildrenNumber() == 0)
 	{
-		Q_EMIT dbIsEmpty();
+		emit dbIsEmpty();
 	}
 }
 
@@ -530,7 +530,7 @@ void ccDBRoot::removeElement(ccHObject* object)
 
 	if (m_treeRoot->getChildrenNumber() == 0)
 	{
-		Q_EMIT dbIsEmpty();
+		emit dbIsEmpty();
 	}
 }
 
@@ -655,7 +655,7 @@ void ccDBRoot::deleteSelectedEntities()
 
 	if (m_treeRoot->getChildrenNumber() == 0)
 	{
-		Q_EMIT dbIsEmpty();
+		emit dbIsEmpty();
 	}
 
 	MainWindow::RefreshAllGLWindow(false);
@@ -784,7 +784,7 @@ bool ccDBRoot::setData(const QModelIndex& idx, const QVariant& value, int role)
 
 				reflectObjectPropChange(item);
 
-				Q_EMIT dataChanged(idx, idx);
+				emit dataChanged(idx, idx);
 			}
 
 			return true;
@@ -929,7 +929,7 @@ void ccDBRoot::changeSelection(const QItemSelection& selected, const QItemSelect
 
 	MainWindow::RefreshAllGLWindow();
 
-	Q_EMIT selectionChanged();
+	emit selectionChanged();
 }
 
 void ccDBRoot::unselectEntity(ccHObject* obj)
@@ -951,7 +951,7 @@ void ccDBRoot::unselectAllEntities()
 	QItemSelectionModel* selectionModel = m_dbTreeWidget->selectionModel();
 	assert(selectionModel);
 
-	selectionModel->clear();
+	selectionModel->clearSelection();
 	QCoreApplication::processEvents();
 }
 
@@ -1004,7 +1004,7 @@ void ccDBRoot::selectEntity(ccHObject* obj, bool forceAdditiveSelection /*=false
 	// otherwise we clear current selection (if CTRL is not pushed)
 	else if (!additiveSelection)
 	{
-		selectionModel->clear();
+		selectionModel->clearSelection();
 	}
 }
 
@@ -1146,7 +1146,7 @@ void ccDBRoot::updatePropertiesView()
 
 	for (const QModelIndex& idx : selectedIndexes)
 	{
-		Q_EMIT dataChanged(idx, idx);
+		emit dataChanged(idx, idx);
 	}
 }
 
@@ -1157,7 +1157,7 @@ void ccDBRoot::updateCCObject(ccHObject* object)
 	QModelIndex idx = index(object);
 
 	if (idx.isValid())
-		Q_EMIT dataChanged(idx, idx);
+		emit dataChanged(idx, idx);
 }
 
 void ccDBRoot::redrawCCObject(ccHObject* object)

@@ -295,7 +295,16 @@ void ccDisplaySettingsDlg::changeLightSpecularColor()
 
 void ccDisplaySettingsDlg::changeMeshFrontDiffuseColor()
 {
-	QColor newCol = QColorDialog::getColor(m_meshFrontDiff, this, QString(), QColorDialog::ShowAlphaChannel);
+	QColor newCol;
+	{
+		QColorDialog dialog(this);
+		dialog.setCurrentColor(m_meshFrontDiff);
+		dialog.setOptions(QColorDialog::ShowAlphaChannel);
+		if (dialog.exec() == QDialog::Accepted)
+		{
+			newCol = dialog.currentColor();
+		}
+	}
 	if (!newCol.isValid())
 		return;
 
@@ -309,7 +318,16 @@ void ccDisplaySettingsDlg::changeMeshFrontDiffuseColor()
 
 void ccDisplaySettingsDlg::changeMeshBackDiffuseColor()
 {
-	QColor newCol = QColorDialog::getColor(m_meshBackDiff, this, QString(), QColorDialog::ShowAlphaChannel);
+	QColor newCol;
+	{
+		QColorDialog dialog(this);
+		dialog.setCurrentColor(m_meshBackDiff);
+		dialog.setOptions(QColorDialog::ShowAlphaChannel);
+		if (dialog.exec() == QDialog::Accepted)
+		{
+			newCol = dialog.currentColor();
+		}
+	}
 	if (!newCol.isValid())
 		return;
 
@@ -322,7 +340,16 @@ void ccDisplaySettingsDlg::changeMeshBackDiffuseColor()
 
 void ccDisplaySettingsDlg::changeMeshSpecularColor()
 {
-	QColor newCol = QColorDialog::getColor(m_meshSpecularColor, this, QString(), QColorDialog::ShowAlphaChannel);
+	QColor newCol;
+	{
+		QColorDialog dialog(this);
+		dialog.setCurrentColor(m_meshSpecularColor);
+		dialog.setOptions(QColorDialog::ShowAlphaChannel);
+		if (dialog.exec() == QDialog::Accepted)
+		{
+			newCol = dialog.currentColor();
+		}
+	}
 	if (!newCol.isValid())
 		return;
 
@@ -335,7 +362,16 @@ void ccDisplaySettingsDlg::changeMeshSpecularColor()
 
 void ccDisplaySettingsDlg::changePointsColor()
 {
-	QColor newCol = QColorDialog::getColor(m_pointsDefaultCol, this, QString(), QColorDialog::ShowAlphaChannel);
+	QColor newCol;
+	{
+		QColorDialog dialog(this);
+		dialog.setCurrentColor(m_pointsDefaultCol);
+		dialog.setOptions(QColorDialog::ShowAlphaChannel);
+		if (dialog.exec() == QDialog::Accepted)
+		{
+			newCol = dialog.currentColor();
+		}
+	}
 	if (!newCol.isValid())
 		return;
 
@@ -348,7 +384,16 @@ void ccDisplaySettingsDlg::changePointsColor()
 
 void ccDisplaySettingsDlg::changeBBColor()
 {
-	QColor newCol = QColorDialog::getColor(m_bbDefaultCol, this, QString(), QColorDialog::ShowAlphaChannel);
+	QColor newCol;
+	{
+		QColorDialog dialog(this);
+		dialog.setCurrentColor(m_bbDefaultCol);
+		dialog.setOptions(QColorDialog::ShowAlphaChannel);
+		if (dialog.exec() == QDialog::Accepted)
+		{
+			newCol = dialog.currentColor();
+		}
+	}
 	if (!newCol.isValid())
 		return;
 
@@ -361,7 +406,16 @@ void ccDisplaySettingsDlg::changeBBColor()
 
 void ccDisplaySettingsDlg::changeTextColor()
 {
-	QColor newCol = QColorDialog::getColor(m_textDefaultCol, this, QString(), QColorDialog::ShowAlphaChannel);
+	QColor newCol;
+	{
+		QColorDialog dialog(this);
+		dialog.setCurrentColor(m_textDefaultCol);
+		dialog.setOptions(QColorDialog::ShowAlphaChannel);
+		if (dialog.exec() == QDialog::Accepted)
+		{
+			newCol = dialog.currentColor();
+		}
+	}
 	if (!newCol.isValid())
 		return;
 
@@ -387,7 +441,16 @@ void ccDisplaySettingsDlg::changeBackgroundColor()
 
 void ccDisplaySettingsDlg::changeLabelBackgroundColor()
 {
-	QColor newCol = QColorDialog::getColor(m_labelBackgroundCol, this, QString(), QColorDialog::ShowAlphaChannel);
+	QColor newCol;
+	{
+		QColorDialog dialog(this);
+		dialog.setCurrentColor(m_labelBackgroundCol);
+		dialog.setOptions(QColorDialog::ShowAlphaChannel);
+		if (dialog.exec() == QDialog::Accepted)
+		{
+			newCol = dialog.currentColor();
+		}
+	}
 	if (!newCol.isValid())
 		return;
 
@@ -400,7 +463,16 @@ void ccDisplaySettingsDlg::changeLabelBackgroundColor()
 
 void ccDisplaySettingsDlg::changeLabelMarkerColor()
 {
-	QColor newCol = QColorDialog::getColor(m_labelMarkerCol, this, QString(), QColorDialog::ShowAlphaChannel);
+	QColor newCol;
+	{
+		QColorDialog dialog(this);
+		dialog.setCurrentColor(m_labelMarkerCol);
+		dialog.setOptions(QColorDialog::ShowAlphaChannel);
+		if (dialog.exec() == QDialog::Accepted)
+		{
+			newCol = dialog.currentColor();
+		}
+	}
 	if (!newCol.isValid())
 		return;
 
