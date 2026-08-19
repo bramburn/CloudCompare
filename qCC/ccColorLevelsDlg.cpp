@@ -14,6 +14,13 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccColorLevelsDlg.cpp
+ * @brief Implementation of color levels adjustment dialog
+ * @details Dialog for adjusting color histogram levels (input/output levels)
+ * for point cloud colors with histogram visualization.
+ * @see ccColorLevelsDlg
+ */
 
 #include "ccColorLevelsDlg.h"
 
@@ -38,6 +45,11 @@ static int  s_inputLevels[2]      = {0, 255};
 static int  s_outputLevels[2]     = {0, 255};
 static bool s_outputLevelsEnabled = false;
 
+/**
+ * @brief Constructor
+ * @param parent Parent widget
+ * @param pointCloud Point cloud to adjust colors for
+ */
 ccColorLevelsDlg::ccColorLevelsDlg(QWidget* parent, ccGenericPointCloud* pointCloud)
     : QDialog(parent, Qt::Tool)
     , Ui::ColorLevelsDialog()
@@ -70,6 +82,10 @@ ccColorLevelsDlg::ccColorLevelsDlg(QWidget* parent, ccGenericPointCloud* pointCl
 	updateHistogram();
 }
 
+/**
+ * @brief Updates the color histogram display
+ * @details Computes and displays histogram for the selected color channel.
+ */
 void ccColorLevelsDlg::updateHistogram()
 {
 	if (m_histogram)
@@ -154,11 +170,19 @@ void ccColorLevelsDlg::updateHistogram()
 	}
 }
 
+/**
+ * @brief Handles color channel selection change
+ * @param channel Channel index
+ */
 void ccColorLevelsDlg::onChannelChanged(int channel)
 {
 	updateHistogram();
 }
 
+/**
+ * @brief Applies color level adjustments
+ * @details Scales point cloud colors based on input/output level settings.
+ */
 void ccColorLevelsDlg::onApply()
 {
 	// save parameters
@@ -201,6 +225,17 @@ void ccColorLevelsDlg::onApply()
 	maxOutputSpinBox->setValue(255);
 }
 
+/**
+ * @brief Scales color values in a cloud
+ * @param cloud Point cloud to modify
+ * @param inputLevelMin Minimum input level
+ * @param inputLevelMax Maximum input level
+ * @param outputLevelMin Minimum output level
+ * @param outputLevelMax Maximum output level
+ * @param applyRGB Which channels to apply scaling to
+ * @return true if successful
+ * @details Maps color values from [inputMin,inputMax] to [outputMin,outputMax].
+ */
 bool ccColorLevelsDlg::ScaleColorFields(ccGenericPointCloud* cloud, int inputLevelMin, int inputLevelMax, int outputLevelMin, int outputLevelMax, const bool applyRGB[3])
 {
 	if (!cloud)
