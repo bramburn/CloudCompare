@@ -14,6 +14,13 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccColorGradientDlg.cpp
+ * @brief Implementation of color gradient dialog
+ * @details Dialog for configuring color gradient parameters including
+ * default ramp, two-color custom ramp, and banding modes.
+ * @see ccColorGradientDlg
+ */
 
 #include "ccColorGradientDlg.h"
 
@@ -33,6 +40,11 @@ static ccColorGradientDlg::GradientType s_lastType(ccColorGradientDlg::Default);
 static double                           s_lastFreq     = 5.0;
 static int                              s_lastDimIndex = 2;
 
+/**
+ * @brief Constructor
+ * @param parent Parent widget
+ * @details Initializes UI and restores previous settings.
+ */
 ccColorGradientDlg::ccColorGradientDlg(QWidget* parent)
     : QDialog(parent, Qt::Tool)
     , Ui::ColorGradientDialog()
@@ -50,12 +62,20 @@ ccColorGradientDlg::ccColorGradientDlg(QWidget* parent)
 	directionComboBox->setCurrentIndex(s_lastDimIndex);
 }
 
+/**
+ * @brief Gets the gradient direction dimension
+ * @return Dimension index (0=X, 1=Y, 2=Z)
+ */
 unsigned char ccColorGradientDlg::getDimension() const
 {
 	s_lastDimIndex = directionComboBox->currentIndex();
 	return static_cast<unsigned char>(s_lastDimIndex);
 }
 
+/**
+ * @brief Sets the gradient type
+ * @param type Gradient type (Default, TwoColors, or Banding)
+ */
 void ccColorGradientDlg::setType(ccColorGradientDlg::GradientType type)
 {
 	switch (type)
@@ -74,6 +94,10 @@ void ccColorGradientDlg::setType(ccColorGradientDlg::GradientType type)
 	}
 }
 
+/**
+ * @brief Gets the current gradient type
+ * @return Current gradient type
+ */
 ccColorGradientDlg::GradientType ccColorGradientDlg::getType() const
 {
 	// ugly hack: we use 's_lastType' here as the type is only requested
@@ -88,6 +112,11 @@ ccColorGradientDlg::GradientType ccColorGradientDlg::getType() const
 	return s_lastType;
 }
 
+/**
+ * @brief Gets the custom gradient colors
+ * @param[out] first First color
+ * @param[out] second Second color
+ */
 void ccColorGradientDlg::getColors(QColor& first, QColor& second) const
 {
 	assert(customRampRadioButton->isChecked());
@@ -95,6 +124,10 @@ void ccColorGradientDlg::getColors(QColor& first, QColor& second) const
 	second = s_secondColor;
 }
 
+/**
+ * @brief Gets the banding frequency
+ * @return Number of bands for banding mode
+ */
 double ccColorGradientDlg::getBandingFrequency() const
 {
 	// ugly hack: we use 's_lastFreq' here as the frequency is only requested
@@ -103,6 +136,9 @@ double ccColorGradientDlg::getBandingFrequency() const
 	return s_lastFreq;
 }
 
+/**
+ * @brief Opens color picker for first gradient color
+ */
 void ccColorGradientDlg::changeFirstColor()
 {
 	QColor newCol = QColorDialog::getColor(s_firstColor, this);
@@ -113,6 +149,9 @@ void ccColorGradientDlg::changeFirstColor()
 	}
 }
 
+/**
+ * @brief Opens color picker for second gradient color
+ */
 void ccColorGradientDlg::changeSecondColor()
 {
 	QColor newCol = QColorDialog::getColor(s_secondColor, this);
