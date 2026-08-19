@@ -14,6 +14,13 @@
 // #                    COPYRIGHT: CloudCompare project                     #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccEntitySelectionDlg.cpp
+ * @brief Entity selection dialog implementation
+ * @details Dialog for selecting one or more entities from a list,
+ * with support for multi-selection mode.
+ * @see ccEntitySelectionDialog
+ */
 
 #include "ccEntitySelectionDlg.h"
 
@@ -24,6 +31,14 @@
 #include <QDialog>
 #include <QListWidgetItem>
 
+/**
+ * @brief Constructor
+ * @param entities List of entities to display for selection
+ * @param multiSelectionEnabled Enable multi-selection mode
+ * @param defaultSelectedIndex Default selected index
+ * @param parent Parent widget
+ * @param labelStr Custom label text
+ */
 ccEntitySelectionDialog::ccEntitySelectionDialog(const ccHObject::Container& entities,
                                                  bool                        multiSelectionEnabled,
                                                  int                         defaultSelectedIndex /*=0*/,
@@ -67,6 +82,9 @@ ccEntitySelectionDialog::ccEntitySelectionDialog(const ccHObject::Container& ent
 	}
 }
 
+/**
+ * @brief Destructor
+ */
 ccEntitySelectionDialog::~ccEntitySelectionDialog()
 {
 	if (m_ui)
@@ -76,6 +94,9 @@ ccEntitySelectionDialog::~ccEntitySelectionDialog()
 	}
 }
 
+/**
+ * @brief Selects all entities
+ */
 void ccEntitySelectionDialog::selectAll()
 {
 	m_ui->listWidget->selectAll();
