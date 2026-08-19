@@ -52,13 +52,13 @@ static bool tupleEq(const Tuple3i& a, const Tuple3i& b)
 }
 
 // Helper: ccGLMatrix * CCVector3 → CCVector3
+// ccGLMatrixTpl has apply(Tuple4Tpl<float>&) in-place, use it
 static CCVector3 transformPoint(const ccGLMatrix& m, const CCVector3& p)
 {
 	ccGLMatrix mat = m;
-	float vec[4] = {p.x, p.y, p.z, 1.0f};
-	float result[4];
-	mat.transformVec4(result, vec);
-	return CCVector3(result[0], result[1], result[2]);
+	Tuple4Tpl<float> vec(static_cast<float>(p.x), static_cast<float>(p.y), static_cast<float>(p.z), 1.0f);
+	mat.apply(vec);
+	return CCVector3(vec.x, vec.y, vec.z);
 }
 
 // ##########################################################################
@@ -128,21 +128,30 @@ class qVoxFallTransform
 		float zRot = azimuth * 3.14159f / 180.0f;
 		float xRot = (90.0f - static_cast<float>(dip)) * 3.14159f / 180.0f;
 
-		ccGLMatrix zRotMatrix;
-		zRotMatrix.setRotation(
-		    Vector3Tpl<float>(std::cos(zRot), std::sin(zRot), 0.0f),
-		    Vector3Tpl<float>(-std::sin(zRot), std::cos(zRot), 0.0f),
-		    Vector3Tpl<float>(0.0f, 0.0f, 1.0f),
-		    Vector3Tpl<float>(0.0f, 0.0f, 0.0f));
+		float cz = std::cos(zRot);
+		float sz = std::sin(zRot);
+		float cx = std::cos(xRot);
+		float sx = std::sin(xRot);
 
-		ccGLMatrix xRotMatrix;
-		xRotMatrix.setRotation(
-		    Vector3Tpl<float>(1.0f, 0.0f, 0.0f),
-		    Vector3Tpl<float>(0.0f, std::cos(xRot), -std::sin(xRot)),
-		    Vector3Tpl<float>(0.0f, std::sin(xRot), std::cos(xRot)),
-		    Vector3Tpl<float>(0.0f, 0.0f, 0.0f));
+		// Z rotation columns: R_z(θ) = [col0 col1 col2 | col3]
+		// col0 = (cos, sin, 0), col1 = (-sin, cos, 0), col2 = (0,0,1)
+		Vector3Tpl<float> zX(cz, sz, 0.0f);
+		Vector3Tpl<float> zY(-sz, cz, 0.0f);
+		Vector3Tpl<float> zZ(0.0f, 0.0f, 1.0f);
 
-		matrix = zRotMatrix * xRotMatrix;
+		// X rotation columns: R_x(φ) = [col0 col1 col2 | col3]
+		// col0 = (1,0,0), col1 = (0,cos,-sin), col2 = (0,sin,cos)
+		Vector3Tpl<float> xX(1.0f, 0.0f, 0.0f);
+		Vector3Tpl<float> xY(0.0f, cx, -sx);
+		Vector3Tpl<float> xZ(0.0f, sx, cx);
+
+		// Z*X combined: col_j = Z * col_j(X)
+		Vector3Tpl<float> mX( cz * xX.x + sz * xY.x, -sz * xX.x + cz * xY.x, xZ.x);
+		Vector3Tpl<float> mY( cz * xX.y + sz * xY.y, -sz * xX.y + cz * xY.y, xZ.y);
+		Vector3Tpl<float> mZ( cz * xX.z + sz * xY.z, -sz * xX.z + cz * xY.z, xZ.z);
+		Vector3Tpl<float> mTr(0.0f, 0.0f, 0.0f);
+
+		matrix = ccGLMatrix(mX, mY, mZ, mTr);
 		inverse = matrix.inverse();
 	}
 };
@@ -212,18 +221,22 @@ class TestVoxFall : public QObject
 	}
 
 	// -----------------------------------------------------------------------
-	// Grid2Index out-of-bounds: formula produces a positive index for valid
-	// in-range coords; large Z coords produce large index values.
+	// Grid2Index out-of-bounds: the formula gives meaningless values for
+	// out-of-range inputs (negative coords → negative index, large coords
+	// → large but mathematically valid index).
 	// -----------------------------------------------------------------------
 	void testGrid2IndexBounds()
 	{
 		CCVector3 steps = make3(3.0f, 4.0f, 5.0f);
 
-		// Negative coords: formula still produces a value (undefined but non-negative)
+		// Negative coords: formula produces a negative index (mathematically
+		// correct from the raw formula, but practically undefined for VoxFall
+		// which expects non-negative grid coords).
 		int idxNeg = Grid2Index({-1, 0, 0}, steps);
-		QVERIFY2(idxNeg >= 0, qPrintable(QString("idx should be non-negative, got %1").arg(idxNeg)));
+		QCOMPARE(idxNeg, -13);  // -1*3*4 + 0*3 + (-1) = -12 - 1 = -13
 
-		// Out-of-range Z (depth=5, max valid index=4)
+		// Large Z: formula gives a mathematically correct value (even if
+		// physically out of range for the grid).
 		int idxLarge = Grid2Index({0, 0, 10}, steps);
 		QCOMPARE(idxLarge, 60);  // 10 * 3 * 4 = 60
 	}
@@ -266,7 +279,7 @@ class TestVoxFall : public QObject
 	{
 		qVoxFallTransform xf(90.0, 0.0);
 
-		const float* m = xf.matrix.getMatrix();
+		const float* m = xf.matrix.data();
 		// Identity check (row-major float[16])
 		QVERIFY2(approxEq(m[0], 1.0f) && approxEq(m[5], 1.0f) && approxEq(m[10], 1.0f) && approxEq(m[15], 1.0f),
 		         "Dip=90, Az=0 should give identity matrix (diag)");

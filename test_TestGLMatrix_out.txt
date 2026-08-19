@@ -1,0 +1,19 @@
+********* Start testing of TestGLMatrix *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestGLMatrix::initTestCase()
+PASS   : TestGLMatrix::testIdentityTimesVector()
+PASS   : TestGLMatrix::testMatrixMultiplication90DegZ()
+PASS   : TestGLMatrix::testInverse()
+PASS   : TestGLMatrix::testInverseSingular()
+PASS   : TestGLMatrix::testTranspose()
+PASS   : TestGLMatrix::testTrace()
+PASS   : TestGLMatrix::testDeterminant()
+PASS   : TestGLMatrix::testDeterminantZero()
+PASS   : TestGLMatrix::testInitFromQuaternion()
+FAIL!  : TestGLMatrix::testToQuaternion() 'quaternionMatches(q, q_expected)' returned FALSE. (R_z(180°) ? q should be ±(0,0,1,0), got (6.12323e-17,0,0,1))
+C:\dev\CloudCompare\qCC\test\TestGLMatrix.cpp(365) : failure location
+PASS   : TestGLMatrix::testToGlArray()
+PASS   : TestGLMatrix::testTranslationExtraction()
+PASS   : TestGLMatrix::cleanupTestCase()
+Totals: 13 passed, 1 failed, 0 skipped, 0 blacklisted, 4ms
+********* Finished testing of TestGLMatrix *********

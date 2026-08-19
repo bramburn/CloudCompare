@@ -1,0 +1,11 @@
+********* Start testing of TestLibAlgorithms *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestLibAlgorithms::initTestCase()
+FAIL!  : TestLibAlgorithms::testGetDefaultCloudKernelSize() Compared values are not the same
+   Actual   (qAbs(kernelSize - 30.0) < 1e-9): 0
+   Expected (true)                          : 1
+C:\dev\CloudCompare\qCC\test\TestLibAlgorithms.cpp(104) : failure location
+PASS   : TestLibAlgorithms::testGetDefaultCloudKernelSizeEmptyCloud()
+PASS   : TestLibAlgorithms::cleanupTestCase()
+Totals: 3 passed, 1 failed, 0 skipped, 0 blacklisted, 15225ms
+********* Finished testing of TestLibAlgorithms *********

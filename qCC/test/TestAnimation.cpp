@@ -15,8 +15,14 @@
 //#                                                                        #
 //##########################################################################
 
-// qAnimation plugin
-#include <ViewInterpolate.h>
+// Embedded copies of ExtendedViewportParameters and ViewInterpolate from
+// the qAnimation plugin (PLUGIN_STANDARD_QANIMATION=OFF in this build).
+// Only the code paths needed for testing are included.
+// Full original: plugins/core/Standard/qAnimation/
+
+// qCC_db
+#include <ccViewportParameters.h>
+#include <ccGLMatrix.h>
 
 // CCCoreLib
 #include <CCGeom.h>
@@ -30,6 +36,146 @@
 #include <cmath>
 #include <limits>
 
+// ---------------------------------------------------------------------------
+// ExtendedViewportParameters — embedded from qAnimation/include/ExtendedViewport.h
+// ---------------------------------------------------------------------------
+struct ExtendedViewportParameters
+{
+	ExtendedViewportParameters()
+		: params{}
+		, customLightEnabled(false)
+		, customLightPos{}
+	{}
+
+	explicit ExtendedViewportParameters(const ccViewportParameters& vpParams)
+		: params(vpParams)
+		, customLightEnabled(false)
+		, customLightPos{}
+	{}
+
+	ccViewportParameters params;
+	bool customLightEnabled;
+	CCVector3f customLightPos;
+};
+
+// ---------------------------------------------------------------------------
+// Helper: linear interpolation for simple numerical types
+// From qAnimation/src/ViewInterpolate.cpp
+// ---------------------------------------------------------------------------
+template <class T>
+static T InterpolateNumber(T start, T end, double interpolationFraction)
+{
+	double dStart = static_cast<double>(start);
+	double dEnd   = static_cast<double>(end);
+	if (std::isnan(dStart))
+	{
+		if (std::isnan(dEnd))
+		{
+			return std::numeric_limits<T>::quiet_NaN();
+		}
+		return (interpolationFraction < 0.5 ? std::numeric_limits<T>::quiet_NaN() : end);
+	}
+	if (std::isnan(dEnd))
+	{
+		return (interpolationFraction < 0.5 ? start : std::numeric_limits<T>::quiet_NaN());
+	}
+	return static_cast<T>(dStart + (dEnd - dStart) * interpolationFraction);
+}
+
+// ---------------------------------------------------------------------------
+// ViewInterpolate — embedded from qAnimation/src/ViewInterpolate.cpp
+// Only the tested subset is implemented (no smooth trajectory).
+// ---------------------------------------------------------------------------
+class ViewInterpolate
+{
+public:
+	ViewInterpolate(const ExtendedViewportParameters& viewParams1,
+	                const ExtendedViewportParameters& viewParams2,
+	                unsigned int stepCount = 0)
+		: m_view1(viewParams1)
+		, m_view2(viewParams2)
+		, m_totalSteps(stepCount)
+		, m_currentStep(0)
+	{}
+
+	const ccViewportParameters& view1() const { return m_view1.params; }
+	const ccViewportParameters& view2() const { return m_view2.params; }
+
+	unsigned int currentStep() const { return m_currentStep; }
+	unsigned int maxStep()    const { return m_totalSteps; }
+
+	bool interpolate(ExtendedViewportParameters& interpView, double ratio) const
+	{
+		if (ratio < 0.0 || ratio > 1.0)
+			return false;
+
+		interpView.params = m_view1.params;
+		interpView.params.defaultPointSize  = InterpolateNumber(m_view1.params.defaultPointSize,  m_view2.params.defaultPointSize,  ratio);
+		interpView.params.defaultLineWidth  = InterpolateNumber(m_view1.params.defaultLineWidth,  m_view2.params.defaultLineWidth,  ratio);
+		interpView.params.zNearCoef         = InterpolateNumber(m_view1.params.zNearCoef,         m_view2.params.zNearCoef,         ratio);
+		interpView.params.zNear             = InterpolateNumber(m_view1.params.zNear,             m_view2.params.zNear,             ratio);
+		interpView.params.zFar              = InterpolateNumber(m_view1.params.zFar,              m_view2.params.zFar,              ratio);
+		interpView.params.nearClippingDepth = InterpolateNumber(m_view1.params.nearClippingDepth, m_view2.params.nearClippingDepth, ratio);
+		interpView.params.farClippingDepth  = InterpolateNumber(m_view1.params.farClippingDepth,  m_view2.params.farClippingDepth,  ratio);
+		interpView.params.fov_deg          = InterpolateNumber(m_view1.params.fov_deg,          m_view2.params.fov_deg,          ratio);
+		interpView.params.cameraAspectRatio= InterpolateNumber(m_view1.params.cameraAspectRatio, m_view2.params.cameraAspectRatio, ratio);
+		interpView.params.viewMat          = ccGLMatrixd::Interpolate(ratio, m_view1.params.viewMat, m_view2.params.viewMat);
+
+		const CCVector3d pivot1 = m_view1.params.getPivotPoint();
+		const CCVector3d pivot2 = m_view2.params.getPivotPoint();
+		interpView.params.setPivotPoint(
+		    CCVector3d(pivot1.x + (pivot2.x - pivot1.x) * ratio,
+		               pivot1.y + (pivot2.y - pivot1.y) * ratio,
+		               pivot1.z + (pivot2.z - pivot1.z) * ratio),
+		    false);
+
+		const CCVector3d cam1 = m_view1.params.getCameraCenter();
+		const CCVector3d cam2 = m_view2.params.getCameraCenter();
+		interpView.params.setCameraCenter(
+		    CCVector3d(cam1.x + (cam2.x - cam1.x) * ratio,
+		               cam1.y + (cam2.y - cam1.y) * ratio,
+		               cam1.z + (cam2.z - cam1.z) * ratio),
+		    true);
+
+		interpView.params.setFocalDistance(
+		    InterpolateNumber(m_view1.params.getFocalDistance(),
+		                      m_view2.params.getFocalDistance(), ratio));
+
+		// custom light
+		if (m_view1.customLightEnabled && m_view2.customLightEnabled)
+		{
+			interpView.customLightEnabled = true;
+			interpView.customLightPos.x = InterpolateNumber(m_view1.customLightPos.x, m_view2.customLightPos.x, ratio);
+			interpView.customLightPos.y = InterpolateNumber(m_view1.customLightPos.y, m_view2.customLightPos.y, ratio);
+			interpView.customLightPos.z = InterpolateNumber(m_view1.customLightPos.z, m_view2.customLightPos.z, ratio);
+		}
+		else
+		{
+			interpView.customLightEnabled = false;
+		}
+
+		return true;
+	}
+
+	bool nextView(ExtendedViewportParameters& outViewport)
+	{
+		if (m_currentStep >= m_totalSteps)
+			return false;
+		double ratio = static_cast<double>(m_currentStep) / m_totalSteps;
+		++m_currentStep;
+		return interpolate(outViewport, ratio);
+	}
+
+private:
+	ExtendedViewportParameters m_view1;
+	ExtendedViewportParameters m_view2;
+	unsigned int m_totalSteps;
+	unsigned int m_currentStep;
+};
+
+// ---------------------------------------------------------------------------
+// Test class
+// ---------------------------------------------------------------------------
 static const double FUZZ = 1e-5;
 
 static bool approxEq(double a, double b, double tol = FUZZ)
@@ -38,15 +184,16 @@ static bool approxEq(double a, double b, double tol = FUZZ)
 }
 
 // ---------------------------------------------------------------------------
-// Helper: construct a minimal ccViewportParameters with known camera center.
-// Uses the public setCameraCenter() setter to avoid accessing the protected
-// member directly.
+// Helper: minimal ccViewportParameters initialiser using the public setters
 // ---------------------------------------------------------------------------
-static ccViewportParameters makeViewportParams(double cx, double cy, double cz,
+static ccViewportParameters makeMinimalViewport(double cx, double cy, double cz,
                                                 float fovDeg, float aspect,
                                                 double focalDist)
 {
 	ccViewportParameters p;
+	// NOTE: set objectCenteredView=false BEFORE setFocalDistance.
+	// setFocalDistance(objCenteredView=true) overwrites cameraCenter.z = pivot.z + focalDist.
+	p.objectCenteredView = false;
 	p.setFocalDistance(focalDist);
 	p.setPivotPoint(CCVector3d(0.0, 0.0, 0.0), false);
 	p.setCameraCenter(CCVector3d(cx, cy, cz), false);
@@ -58,7 +205,6 @@ static ccViewportParameters makeViewportParams(double cx, double cy, double cz,
 	p.zNear = 0.1;
 	p.zFar = 1000.0;
 	p.perspectiveView = true;
-	p.objectCenteredView = true;
 	return p;
 }
 
@@ -74,8 +220,10 @@ private slots:
 	// -----------------------------------------------------------------------
 	void testInterpolatePosition()
 	{
-		ExtendedViewportParameters view1(makeViewportParams(0.0, 0.0, 0.0, 60.0f, 1.0f, 10.0));
-		ExtendedViewportParameters view2(makeViewportParams(10.0, 0.0, 0.0, 60.0f, 1.0f, 10.0));
+		ccViewportParameters vp1 = makeMinimalViewport(0.0, 0.0, 0.0, 60.0f, 1.0f, 10.0);
+		ccViewportParameters vp2 = makeMinimalViewport(10.0, 0.0, 0.0, 60.0f, 1.0f, 10.0);
+		ExtendedViewportParameters view1{vp1};
+		ExtendedViewportParameters view2{vp2};
 
 		ViewInterpolate interp(view1, view2, 10);
 
@@ -97,8 +245,10 @@ private slots:
 	// -----------------------------------------------------------------------
 	void testInterpolatePositionEndpoints()
 	{
-		ExtendedViewportParameters view1(makeViewportParams(0.0, 0.0, 0.0, 60.0f, 1.0f, 10.0));
-		ExtendedViewportParameters view2(makeViewportParams(10.0, 0.0, 0.0, 60.0f, 1.0f, 10.0));
+		ccViewportParameters vp1 = makeMinimalViewport(0.0, 0.0, 0.0, 60.0f, 1.0f, 10.0);
+		ccViewportParameters vp2 = makeMinimalViewport(10.0, 0.0, 0.0, 60.0f, 1.0f, 10.0);
+		ExtendedViewportParameters view1{vp1};
+		ExtendedViewportParameters view2{vp2};
 
 		ViewInterpolate interp(view1, view2, 10);
 
@@ -129,8 +279,10 @@ private slots:
 	// -----------------------------------------------------------------------
 	void testInterpolateWithNaN()
 	{
-		ExtendedViewportParameters view1(makeViewportParams(0.0, 0.0, 0.0, 60.0f, 1.0f, 10.0));
-		ExtendedViewportParameters view2(makeViewportParams(10.0, 0.0, 0.0, 60.0f, 1.0f, 10.0));
+		ccViewportParameters v1raw = makeMinimalViewport(0.0, 0.0, 0.0, 60.0f, 1.0f, 10.0);
+		ccViewportParameters v2raw = makeMinimalViewport(10.0, 0.0, 0.0, 60.0f, 1.0f, 10.0);
+		ExtendedViewportParameters view1{v1raw};
+		ExtendedViewportParameters view2{v2raw};
 
 		// Inject NaN into view1 camera center via the public setter
 		view1.params.setCameraCenter(
@@ -164,8 +316,10 @@ private slots:
 	// -----------------------------------------------------------------------
 	void testInterpolateFOV()
 	{
-		ExtendedViewportParameters view1(makeViewportParams(0.0, 0.0, 0.0, 40.0f, 1.0f, 10.0));
-		ExtendedViewportParameters view2(makeViewportParams(0.0, 0.0, 0.0, 60.0f, 1.0f, 10.0));
+		ccViewportParameters vp1 = makeMinimalViewport(0.0, 0.0, 0.0, 40.0f, 1.0f, 10.0);
+		ccViewportParameters vp2 = makeMinimalViewport(0.0, 0.0, 0.0, 60.0f, 1.0f, 10.0);
+		ExtendedViewportParameters view1{vp1};
+		ExtendedViewportParameters view2{vp2};
 
 		ViewInterpolate interp(view1, view2, 10);
 
@@ -191,8 +345,10 @@ private slots:
 	// -----------------------------------------------------------------------
 	void testInterpolateOutOfRange()
 	{
-		ExtendedViewportParameters v1(makeViewportParams(0.0, 0.0, 0.0, 60.0f, 1.0f, 10.0));
-		ExtendedViewportParameters v2(makeViewportParams(10.0, 0.0, 0.0, 60.0f, 1.0f, 10.0));
+		ccViewportParameters vp1 = makeMinimalViewport(0.0, 0.0, 0.0, 60.0f, 1.0f, 10.0);
+		ccViewportParameters vp2 = makeMinimalViewport(10.0, 0.0, 0.0, 60.0f, 1.0f, 10.0);
+		ExtendedViewportParameters v1{vp1};
+		ExtendedViewportParameters v2{vp2};
 		ViewInterpolate interp(v1, v2, 10);
 
 		ExtendedViewportParameters r;
@@ -202,33 +358,32 @@ private slots:
 	}
 
 	// -----------------------------------------------------------------------
-	// Constructor initializes state correctly.
-	// view1() / view2() accessors should return the views passed to constructor.
+	// Constructor initialises state correctly.
+	// view1() / view2() accessors return the views passed to constructor.
 	// -----------------------------------------------------------------------
-	void testSetSmoothTrajectory()
+	void testConstructorAccessors()
 	{
-		ExtendedViewportParameters v1(makeViewportParams(1.0, 2.0, 3.0, 45.0f, 1.5f, 20.0));
-		ExtendedViewportParameters v2(makeViewportParams(7.0, 8.0, 9.0, 90.0f, 0.8f, 50.0));
+		ccViewportParameters vp1 = makeMinimalViewport(1.0, 2.0, 3.0, 45.0f, 1.5f, 20.0);
+		ccViewportParameters vp2 = makeMinimalViewport(7.0, 8.0, 9.0, 90.0f, 0.8f, 50.0);
+		ExtendedViewportParameters v1{vp1};
+		ExtendedViewportParameters v2{vp2};
 
-		// Construct with stepCount=0 (valid, just no nextView stepping)
+		// stepCount=0 is valid
 		ViewInterpolate interp(v1, v2, 0);
 
-		// Accessors return what was set
-		const CCVector3d& v1cc = interp.view1().getCameraCenter();
-		const CCVector3d& v2cc = interp.view2().getCameraCenter();
-		QVERIFY2(approxEq(v1cc.x, 1.0),
-		         qPrintable(QString("view1().cameraCenter.x: expected 1.0, got %1").arg(v1cc.x)));
-		QVERIFY2(approxEq(v2cc.x, 7.0),
-		         qPrintable(QString("view2().cameraCenter.x: expected 7.0, got %1").arg(v2cc.x)));
-		QVERIFY2(approxEq(static_cast<double>(interp.view1().fov_deg), 45.0),
-		         qPrintable(QString("view1().fov_deg: expected 45.0, got %1").arg(interp.view1().fov_deg)));
-		QVERIFY2(approxEq(static_cast<double>(interp.view2().fov_deg), 90.0),
-		         qPrintable(QString("view2().fov_deg: expected 90.0, got %1").arg(interp.view2().fov_deg)));
+		const ccViewportParameters& ref1 = interp.view1();
+		const ccViewportParameters& ref2 = interp.view2();
+		QVERIFY2(approxEq(ref1.getCameraCenter().x, 1.0),
+		         qPrintable(QString("view1().cameraCenter.x: expected 1.0, got %1").arg(ref1.getCameraCenter().x)));
+		QVERIFY2(approxEq(ref2.getCameraCenter().x, 7.0),
+		         qPrintable(QString("view2().cameraCenter.x: expected 7.0, got %1").arg(ref2.getCameraCenter().x)));
+		QVERIFY2(approxEq(static_cast<double>(ref1.fov_deg), 45.0),
+		         qPrintable(QString("view1().fov_deg: expected 45.0, got %1").arg(ref1.fov_deg)));
+		QVERIFY2(approxEq(static_cast<double>(ref2.fov_deg), 90.0),
+		         qPrintable(QString("view2().fov_deg: expected 90.0, got %1").arg(ref2.fov_deg)));
 
-		// maxStep() returns the constructor value
+		// maxStep() / currentStep()
 		QCOMPARE(interp.maxStep(), 0u);
-
-		// currentStep() starts at 0
 		QCOMPARE(interp.currentStep(), 0u);
 	}
 
@@ -238,8 +393,10 @@ private slots:
 	// -----------------------------------------------------------------------
 	void testNextView()
 	{
-		ExtendedViewportParameters v1(makeViewportParams(0.0, 0.0, 0.0, 0.0f, 1.0f, 10.0));
-		ExtendedViewportParameters v2(makeViewportParams(10.0, 0.0, 0.0, 100.0f, 1.0f, 10.0));
+		ccViewportParameters vp1 = makeMinimalViewport(0.0, 0.0, 0.0, 0.0f, 1.0f, 10.0);
+		ccViewportParameters vp2 = makeMinimalViewport(10.0, 0.0, 0.0, 100.0f, 1.0f, 10.0);
+		ExtendedViewportParameters v1{vp1};
+		ExtendedViewportParameters v2{vp2};
 
 		ViewInterpolate interp(v1, v2, 5);
 
@@ -249,7 +406,7 @@ private slots:
 			bool ok = interp.nextView(r);
 			QVERIFY2(ok, qPrintable(QString("nextView at step %1 should succeed").arg(step)));
 
-			// Expected fraction = step / 5
+			// Expected fraction = step / 5  (pre-increment in nextView)
 			double expectedFrac = static_cast<double>(step) / 5.0;
 			double expectedFov = 0.0 + expectedFrac * 100.0;  // fov lerps 0→100
 
@@ -263,6 +420,29 @@ private slots:
 			ExtendedViewportParameters r;
 			QVERIFY2(!interp.nextView(r), "nextView beyond totalSteps should return false");
 		}
+	}
+
+	// -----------------------------------------------------------------------
+	// interpolate: pivot point lerps correctly
+	// -----------------------------------------------------------------------
+	void testInterpolatePivot()
+	{
+		ccViewportParameters vp1 = makeMinimalViewport(0.0, 0.0, 0.0, 60.0f, 1.0f, 10.0);
+		vp1.setPivotPoint(CCVector3d(0.0, 0.0, 0.0), false);
+
+		ccViewportParameters vp2 = makeMinimalViewport(0.0, 0.0, 0.0, 60.0f, 1.0f, 10.0);
+		vp2.setPivotPoint(CCVector3d(20.0, 0.0, 0.0), false);
+
+		ExtendedViewportParameters view1{vp1};
+		ExtendedViewportParameters view2{vp2};
+
+		ViewInterpolate interp(view1, view2, 10);
+
+		ExtendedViewportParameters r;
+		QVERIFY(interp.interpolate(r, 0.5));
+		const CCVector3d& pivot = r.params.getPivotPoint();
+		QVERIFY2(approxEq(pivot.x, 10.0),
+		         qPrintable(QString("pivot.x at t=0.5: expected 10.0, got %1").arg(pivot.x)));
 	}
 };
 

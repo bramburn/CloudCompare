@@ -21,7 +21,12 @@
 // CCCoreLib
 #include <CCGeom.h>
 
+// qCC_db
+#include <ccPointCloud.h>
+#include <ccBBox.h>
+
 // Qt Test
+#include <QTest>
 #include <QObject>
 #include <QString>
 
@@ -183,13 +188,14 @@ private slots:
 		cloud.addPoint(CCVector3(0.0f, 0.0f, 0.0f));
 		cloud.addPoint(CCVector3(3.0f, 4.0f, 5.0f));
 
-		CCCoreLib::BoundingBox bb = cloud.getBBox();
-		QVERIFY(approxEq(bb.xMin, 0.0, FUZZ));
-		QVERIFY(approxEq(bb.yMin, 0.0, FUZZ));
-		QVERIFY(approxEq(bb.zMin, 0.0, FUZZ));
-		QVERIFY(approxEq(bb.xMax, 3.0, FUZZ));
-		QVERIFY(approxEq(bb.yMax, 4.0, FUZZ));
-		QVERIFY(approxEq(bb.zMax, 5.0, FUZZ));
+		// getOwnGlobalBB returns GlobalBoundingBox = CCCoreLib::BoundingBoxTpl<double>
+		CCCoreLib::BoundingBoxTpl<double> bb = cloud.getOwnGlobalBB();
+		QVERIFY(approxEq(bb.minCorner().x, 0.0, FUZZ));
+		QVERIFY(approxEq(bb.minCorner().y, 0.0, FUZZ));
+		QVERIFY(approxEq(bb.minCorner().z, 0.0, FUZZ));
+		QVERIFY(approxEq(bb.maxCorner().x, 3.0, FUZZ));
+		QVERIFY(approxEq(bb.maxCorner().y, 4.0, FUZZ));
+		QVERIFY(approxEq(bb.maxCorner().z, 5.0, FUZZ));
 	}
 };
 

@@ -1,0 +1,23 @@
+********* Start testing of TestInnerRect *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+INFO   : TestInnerRect::initTestCase() entering
+PASS   : TestInnerRect::initTestCase()
+INFO   : TestInnerRect::testFindBiggestRectCornersOnly() entering
+INFO   : TestInnerRect::testFindBiggestRectCornersOnly() QVERIFY(box != nullptr)
+C:\dev\CloudCompare\qCC\test\TestInnerRect.cpp(59) : message location
+FAIL!  : TestInnerRect::testFindBiggestRectCornersOnly() 'box != nullptr' returned FALSE. (process should return a box when interior is empty)
+C:\dev\CloudCompare\qCC\test\TestInnerRect.cpp(59) : failure location
+INFO   : TestInnerRect::testFindBiggestRectWithInteriorPoint() entering
+INFO   : TestInnerRect::testFindBiggestRectWithInteriorPoint() QVERIFY(box != nullptr)
+C:\dev\CloudCompare\qCC\test\TestInnerRect.cpp(93) : message location
+FAIL!  : TestInnerRect::testFindBiggestRectWithInteriorPoint() 'box != nullptr' returned FALSE. (process should return a box)
+C:\dev\CloudCompare\qCC\test\TestInnerRect.cpp(93) : failure location
+INFO   : TestInnerRect::testBoundaryCellsExcluded() entering
+INFO   : TestInnerRect::testBoundaryCellsExcluded() QVERIFY(box != nullptr)
+C:\dev\CloudCompare\qCC\test\TestInnerRect.cpp(125) : message location
+FAIL!  : TestInnerRect::testBoundaryCellsExcluded() 'box != nullptr' returned FALSE. (boundary-only cloud should yield a box)
+C:\dev\CloudCompare\qCC\test\TestInnerRect.cpp(125) : failure location
+INFO   : TestInnerRect::cleanupTestCase() entering
+PASS   : TestInnerRect::cleanupTestCase()
+Totals: 2 passed, 3 failed, 0 skipped, 0 blacklisted, 1ms
+********* Finished testing of TestInnerRect *********

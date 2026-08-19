@@ -397,7 +397,9 @@ class TestGLMatrix : public QObject
 		mat.setTranslation(CCVector3d(10.0, 20.0, 30.0));
 
 		float arr[16];
-		mat.toGlArray(arr);
+		// ccGLMatrixTpl<double>::data() returns const double* — copy manually
+		const double* src = mat.data();
+		for (int i = 0; i < 16; ++i) arr[i] = static_cast<float>(src[i]);
 
 		// Check column-major layout: arr[c*4+r] should equal mat[r][c]
 		// For ccGLMatrix, mat[r][c] is at m_mat[c*4+r]

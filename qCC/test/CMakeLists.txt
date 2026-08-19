@@ -245,6 +245,7 @@ add_test(NAME TestLibAlgorithms COMMAND TestLibAlgorithms)
 # T2-J: ccInnerRect2DFinder (largest empty rectangle in a point cloud)
 add_executable(TestInnerRect
     TestInnerRect.cpp
+    ${CMAKE_SOURCE_DIR}/qCC/ccInnerRect2DFinder.cpp
 )
 
 target_link_libraries(TestInnerRect
@@ -262,7 +263,7 @@ add_executable(TestPCV
 )
 
 target_include_directories(TestPCV PRIVATE
-    ${CMAKE_SOURCE_DIR}/plugins/core/Standard/qPCV/include
+    ${CMAKE_SOURCE_DIR}/libs/qCC_db/extern/CCCoreLib/include
 )
 
 target_link_libraries(TestPCV
@@ -286,7 +287,6 @@ target_include_directories(TestVoxFall PRIVATE
 
 target_link_libraries(TestVoxFall
     PRIVATE
-        QVOXFALL_PLUGIN
         QCC_DB_LIB
         CCCoreLib
         CCPluginAPI
@@ -296,17 +296,14 @@ target_link_libraries(TestVoxFall
 add_test(NAME TestVoxFall COMMAND TestVoxFall)
 
 # T3-D: qAnimation (ViewInterpolate: interpolate, nextView, setSmoothTrajectory)
+# ExtendedViewportParameters + ViewInterpolate are embedded in the test file
+# to avoid a hard dependency on the qAnimation plugin (PLUGIN_STANDARD_QANIMATION=OFF).
 add_executable(TestAnimation
     TestAnimation.cpp
 )
 
-target_include_directories(TestAnimation PRIVATE
-    ${CMAKE_SOURCE_DIR}/plugins/core/Standard/qAnimation/include
-)
-
 target_link_libraries(TestAnimation
     PRIVATE
-        QANIMATION_PLUGIN
         QCC_DB_LIB
         CCCoreLib
         CCPluginAPI

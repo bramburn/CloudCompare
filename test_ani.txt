@@ -1,0 +1,16 @@
+********* Start testing of TestAnimation *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestAnimation::initTestCase()
+FAIL!  : TestAnimation::testInterpolatePosition() 'approxEq(cc.z, 0.0)' returned FALSE. (cameraCenter.z: expected 0.0, got 10)
+C:\dev\CloudCompare\qCC\test\TestAnimation.cpp(238) : failure location
+PASS   : TestAnimation::testInterpolatePositionEndpoints()
+FAIL!  : TestAnimation::testInterpolateWithNaN() '!std::isnan(cc.x)' returned FALSE. (At t=0.5 with NaN start, cameraCenter.x should not be NaN)
+C:\dev\CloudCompare\qCC\test\TestAnimation.cpp(306) : failure location
+PASS   : TestAnimation::testInterpolateFOV()
+PASS   : TestAnimation::testInterpolateOutOfRange()
+PASS   : TestAnimation::testConstructorAccessors()
+PASS   : TestAnimation::testNextView()
+PASS   : TestAnimation::testInterpolatePivot()
+PASS   : TestAnimation::cleanupTestCase()
+Totals: 8 passed, 2 failed, 0 skipped, 0 blacklisted, 2ms
+********* Finished testing of TestAnimation *********

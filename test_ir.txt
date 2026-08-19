@@ -1,0 +1,12 @@
+********* Start testing of TestInnerRect *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestInnerRect::initTestCase()
+FAIL!  : TestInnerRect::testFindBiggestRectCornersOnly() 'box != nullptr' returned FALSE. (process should return a box when interior is empty)
+C:\dev\CloudCompare\qCC\test\TestInnerRect.cpp(59) : failure location
+FAIL!  : TestInnerRect::testFindBiggestRectWithInteriorPoint() 'box != nullptr' returned FALSE. (process should return a box)
+C:\dev\CloudCompare\qCC\test\TestInnerRect.cpp(93) : failure location
+FAIL!  : TestInnerRect::testBoundaryCellsExcluded() 'box != nullptr' returned FALSE. (boundary-only cloud should yield a box)
+C:\dev\CloudCompare\qCC\test\TestInnerRect.cpp(125) : failure location
+PASS   : TestInnerRect::cleanupTestCase()
+Totals: 2 passed, 3 failed, 0 skipped, 0 blacklisted, 2ms
+********* Finished testing of TestInnerRect *********

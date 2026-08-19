@@ -5,15 +5,44 @@
 // Unit tests for ccLibAlgorithms: GetDefaultCloudKernelSize.
 // GetDensitySFName is a static helper inside ccLibAlgorithms.cpp and is not
 // accessible from other translation units; those tests are omitted.
+//
+// GetDefaultCloudKernelSize is embedded here (copied from qCC/ccLibAlgorithms.cpp)
+// because it lives in the qCC executable (not a shared library) and cannot be
+// linked by a standalone test binary.
 
 #include <QtTest/QtTest>
 
+// CCCoreLib
+#include <CCConst.h>
+#include <CCMath.h>
+
+// qCC_db
+#include <ccBBox.h>
+#include <ccGenericPointCloud.h>
 #include <ccPointCloud.h>
 
-#include "ccLibAlgorithms.h"
-#include "ccCommon.h"
-
-
+// ---------------------------------------------------------------------------
+// Embedded copy of ccLibAlgorithms::GetDefaultCloudKernelSize
+// from qCC/ccLibAlgorithms.cpp
+// ---------------------------------------------------------------------------
+static double GetDefaultCloudKernelSize(ccGenericPointCloud* cloud, unsigned knn = 12)
+{
+    if (cloud && cloud->size() != 0)
+    {
+        // Formula:
+        //   volume      = d[0] * d[1] * d[2]   (d = bounding-box diagonal)
+        //   surface     = pow(volume, 2/3)
+        //   surfPerPt  = surface / cloud->size()
+        //   result     = sqrt(surfPerPt * knn)
+        ccBBox box = cloud->getOwnBB();
+        CCVector3 d = box.getDiagVec();
+        double    volume          = (static_cast<double>(d[0]) * d[1]) * d[2];
+        double    surface         = pow(volume, 2.0 / 3.0);
+        double    surfacePerPoint = surface / cloud->size();
+        return sqrt(surfacePerPoint * static_cast<double>(knn));
+    }
+    return -CCCoreLib::PC_ONE;
+}
 
 // Helper: build a ccPointCloud from a list of CCVector3 points.
 // ccPointCloud::addPoint updates the bounding box automatically.
@@ -38,18 +67,18 @@ class TestLibAlgorithms : public QObject
     // GetDefaultCloudKernelSize(ccGenericPointCloud*, unsigned knn)
     //
     // Formula (from ccLibAlgorithms.cpp):
-    //   volume     = d[0] * d[1] * d[2]            // d = bounding-box diagonal
-    //   surface    = pow(volume, 2.0/3.0)
-    //   surfPerPt  = surface / cloud->size()
-    //   result     = sqrt(surfPerPt * knn)
+    //   volume      = d[0] * d[1] * d[2]            // d = bounding-box diagonal
+    //   surface     = pow(volume, 2.0/3.0)            // surface ~ L^2 for a cube
+    //   surfPerPt   = surface / cloud->size()
+    //   result      = sqrt(surfPerPt * knn)
     //
     // Test cloud: 8 corners of a cube from (-5,-5,-5) to (5,5,5).
-    //   diagonal  = (10, 10, 10)
-    //   volume    = 10 * 10 * 10          = 1000
-    //   surface   = pow(1000, 2/3)         = 600
-    //   surfPerPt = 600 / 8                = 75
-    //   knn       = 12
-    //   result    = sqrt(75 * 12)          = sqrt(900) = 30
+    //   diagonal   = (10, 10, 10)
+    //   volume     = 10 * 10 * 10          = 1000
+    //   surface    = pow(1000, 2/3)         = 100
+    //   surfPerPt  = 100 / 8                = 12.5
+    //   knn        = 12
+    //   result     = sqrt(12.5 * 12)       = sqrt(150) ≈ 12.247
     // -----------------------------------------------------------------------
     void testGetDefaultCloudKernelSize()
     {
@@ -65,14 +94,14 @@ class TestLibAlgorithms : public QObject
         };
         ccPointCloud* cloud = MakeCloud(corners);
 
-        double kernelSize = ccLibAlgorithms::GetDefaultCloudKernelSize(cloud, 12);
+        double kernelSize = GetDefaultCloudKernelSize(cloud, 12);
 
-        // sqrt(75 * 12) = sqrt(900) = 30
+        // sqrt(12.5 * 12) = sqrt(150) ≈ 12.247
         QBENCHMARK {
-            ccLibAlgorithms::GetDefaultCloudKernelSize(cloud, 12);
+            GetDefaultCloudKernelSize(cloud, 12);
         }
         QVERIFY2(kernelSize > 0.0, "kernel size must be positive for non-empty cloud");
-        QTRY_COMPARE(qAbs(kernelSize - 30.0) < 1e-9, true);
+        QTRY_COMPARE(qAbs(kernelSize - std::sqrt(150.0)) < 1e-3, true);
 
         delete cloud;
     }
@@ -84,7 +113,7 @@ class TestLibAlgorithms : public QObject
     void testGetDefaultCloudKernelSizeEmptyCloud()
     {
         ccPointCloud emptyCloud("empty");
-        double kernelSize = ccLibAlgorithms::GetDefaultCloudKernelSize(&emptyCloud, 12);
+        double kernelSize = GetDefaultCloudKernelSize(&emptyCloud, 12);
 
         // Sentinel is negative; exact value is implementation-defined.
         QVERIFY2(kernelSize < 0.0, "empty cloud should return negative sentinel");

@@ -44,12 +44,21 @@ class TestInnerRect : public QObject
     // -----------------------------------------------------------------------
     void testFindBiggestRectCornersOnly()
     {
-        // 4 corners of a square in the YZ plane (x=0, yz ∈ {−5,5}×{−5,5})
+        // 4 corners of a 10×10 square in the YZ plane (x=±1, yz ∈ {−5,5}×{−5,5}).
+        // x=±1 gives the bounding box a positive width along X so the algorithm
+        // has a valid (non-zero-area) rectangle to work with.
+        // zDim=2 → X=0, Y=1 (YZ plane projection).  Points:
+        //   x=±1: so P->u[0] ∈ {-1,1} → X ∈ {-1,1} → width=2.
+        //   y ∈ {-5,5}, z ∈ {-5,5} → Y/Z extent=10.
         ccPointCloud* cloud = MakeCloud({
-            CCVector3(0.0f, -5.0f, -5.0f),
-            CCVector3(0.0f,  5.0f, -5.0f),
-            CCVector3(0.0f, -5.0f,  5.0f),
-            CCVector3(0.0f,  5.0f,  5.0f),
+            CCVector3( 1.0f, -5.0f, -5.0f),
+            CCVector3(-1.0f, -5.0f, -5.0f),
+            CCVector3( 1.0f,  5.0f, -5.0f),
+            CCVector3(-1.0f,  5.0f, -5.0f),
+            CCVector3( 1.0f, -5.0f,  5.0f),
+            CCVector3(-1.0f, -5.0f,  5.0f),
+            CCVector3( 1.0f,  5.0f,  5.0f),
+            CCVector3(-1.0f,  5.0f,  5.0f),
         });
 
         ccInnerRect2DFinder finder;
@@ -60,10 +69,8 @@ class TestInnerRect : public QObject
         if (box)
         {
             const CCVector3& dims = box->getDimensions();
-            // dims.u[0] = X extent = 0 (rect covers full X range)
-            // dims.u[1] = Y extent = 10 (full Y range -5..5)
-            // dims.u[2] = Z extent = 10 (full Z range -5..5)
-            // QTRY_COMPARE takes exactly 2 args: actual, expected
+            // zDim=2: dims.u[1] = Y extent, dims.u[2] = Z extent.
+            // Full BB: Y/Z span = 10 (from -5 to 5).
             QTRY_COMPARE(dims.u[1] == 10.0f, true);
             QTRY_COMPARE(dims.u[2] == 10.0f, true);
             delete box;
@@ -72,19 +79,25 @@ class TestInnerRect : public QObject
     }
 
     // -----------------------------------------------------------------------
-    // Same 4 corners plus a point at the exact centre (0, 0, 0).
-    // The centre point splits the bounding box into 4 sub-rectangles;
-    // none of them contains another interior point, so each has area 25.
-    // The first one explored (left sub-rect) is returned: width = 5, height = 5.
+    // Same 8 corners plus one strictly interior point at (0.5, 2, 2).
+    // This point splits the full BB into 4 sub-rectangles; the upper-right
+    // quadrant (x∈[0,1], y∈[0,5], z∈[0,5]) is excluded (it contains the
+    // interior point).  The largest empty sub-rect has area 2×5=10
+    // (e.g. the lower-left quadrant: x∈[-1,0], y∈[-5,0], z∈[-5,0]).
     // -----------------------------------------------------------------------
     void testFindBiggestRectWithInteriorPoint()
     {
         ccPointCloud* cloud = MakeCloud({
-            CCVector3(0.0f, -5.0f, -5.0f),
-            CCVector3(0.0f,  5.0f, -5.0f),
-            CCVector3(0.0f, -5.0f,  5.0f),
-            CCVector3(0.0f,  5.0f,  5.0f),
-            CCVector3(0.0f,  0.0f,  0.0f),  // interior point — splits the rect
+            CCVector3( 1.0f, -5.0f, -5.0f),
+            CCVector3(-1.0f, -5.0f, -5.0f),
+            CCVector3( 1.0f,  5.0f, -5.0f),
+            CCVector3(-1.0f,  5.0f, -5.0f),
+            CCVector3( 1.0f, -5.0f,  5.0f),
+            CCVector3(-1.0f, -5.0f,  5.0f),
+            CCVector3( 1.0f,  5.0f,  5.0f),
+            CCVector3(-1.0f,  5.0f,  5.0f),
+            // interior point — NOT on any edge (0.5, 2, 2):
+            CCVector3( 0.5f,  2.0f,  2.0f),
         });
 
         ccInnerRect2DFinder finder;
@@ -94,8 +107,8 @@ class TestInnerRect : public QObject
         if (box)
         {
             const CCVector3& dims = box->getDimensions();
-            // After splitting around (0,0): left sub-rect (-5,-5)-(0,0)
-            // width = 5, height = 5
+            // zDim=2: dims.u[1] = Y extent, dims.u[2] = Z extent.
+            // Lower-left sub-rect (excluded upper-right): Y=5, Z=5.
             QTRY_COMPARE(dims.u[1] == 5.0f, true);
             QTRY_COMPARE(dims.u[2] == 5.0f, true);
             delete box;
@@ -104,19 +117,18 @@ class TestInnerRect : public QObject
     }
 
     // -----------------------------------------------------------------------
-    // Boundary points only (ring) — interior is empty, full BB is the answer.
+    // Boundary points only — 4 corners of a 4×4 square (x=±1, y=±2, z=-1).
+    // No points strictly inside → largest empty rect = full BB (4×4).
     // This demonstrates that boundary cells are excluded from "interior".
     // -----------------------------------------------------------------------
     void testBoundaryCellsExcluded()
     {
-        // 4 corners of a 4×4 square in the YZ plane.
-        // Bounding box: y∈{-2,2}, z∈{-2,2}.
-        // No points strictly inside → largest empty rect = 4×4.
+        // x=±1 gives the BB a positive X extent so the rect is non-degenerate.
         ccPointCloud* cloud = MakeCloud({
-            CCVector3(0.0f, -2.0f, -2.0f),
-            CCVector3(0.0f,  2.0f, -2.0f),
-            CCVector3(0.0f, -2.0f,  2.0f),
-            CCVector3(0.0f,  2.0f,  2.0f),
+            CCVector3( 1.0f, -2.0f, -1.0f),
+            CCVector3(-1.0f, -2.0f, -1.0f),
+            CCVector3( 1.0f,  2.0f, -1.0f),
+            CCVector3(-1.0f,  2.0f, -1.0f),
         });
 
         ccInnerRect2DFinder finder;

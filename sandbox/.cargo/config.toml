@@ -1,0 +1,3 @@
+# Sandbox Cargo config
+# Note: build.CC and build.CXX in config.toml are not standard Cargo keys.
+# Use environment variables instead (see sandbox-build.cmd).

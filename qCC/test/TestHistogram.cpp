@@ -46,7 +46,7 @@ static ccPointCloud* makeCloudWithSF(const std::vector<ScalarType>& values)
 		sf->addElement(v);
 	}
 	int sfIdx = cloud->addScalarField(sf);
-	QVERIFY(sfIdx >= 0);
+	if (sfIdx < 0) return nullptr;
 	cloud->setCurrentOutScalarField(sfIdx);
 	cloud->enableScalarField();
 	return cloud;

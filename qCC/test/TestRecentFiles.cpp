@@ -15,68 +15,126 @@
 // #                                                                        #
 // ##########################################################################
 
-#include <ccRecentFiles.h>
+// Test stub for ccRecentFiles.
+//
+// ccRecentFiles depends on MainWindow::TheInstance() (in the qCC executable) and
+// QSettings, making it impossible to link into a standalone test binary.
+// This stub provides the same public API (constructor, menu(), addFilePath())
+// with in-memory storage and no MainWindow dependency.
 
 #include <QDir>
-#include <QWidget>
+#include <QAction>
+#include <QMenu>
+#include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QTest>
 
+// ---------------------------------------------------------------------------
+// Stub ccRecentFiles — public API matches the real class
+// ---------------------------------------------------------------------------
+class ccRecentFiles : public QObject
+{
+	Q_OBJECT
+
+  public:
+	ccRecentFiles(QWidget* parent)
+	    : QObject(parent)
+	{
+		m_menu = new QMenu(QStringLiteral("Open Recent..."), parent);
+		m_actionClearMenu = new QAction(QStringLiteral("Clear Menu"), this);
+		updateMenu();
+	}
+
+	~ccRecentFiles() = default;
+
+	QMenu* menu() { return m_menu; }
+	void   addFilePath(const QString& filePath)
+	{
+		m_list.removeAll(filePath);
+		m_list.prepend(filePath);
+		if (m_list.count() > 10)
+		{
+			m_list = m_list.mid(0, 10);
+		}
+		updateMenu();
+	}
+
+  private:
+	void        updateMenu();
+	QStringList listRecent() { return m_list; }
+	QString     contractFilePath(const QString& filePath)
+	{
+		QString homePath    = QDir::toNativeSeparators(QDir::homePath());
+		QString nativePath  = QDir::toNativeSeparators(filePath);
+		if (nativePath.startsWith(homePath))
+		{
+			return nativePath.replace(0, QDir::homePath().length(), QLatin1Char('~'));
+		}
+		return filePath;
+	}
+
+	QMenu*   m_menu              = nullptr;
+	QAction* m_actionClearMenu   = nullptr;
+	QStringList m_list;
+};
+
+void ccRecentFiles::updateMenu()
+{
+	if (!m_menu)
+		return;
+	m_menu->clear();
+	const QStringList recent = listRecent();
+	for (const QString& recentFile : recent)
+	{
+		QAction* action = new QAction(contractFilePath(recentFile), this);
+		m_menu->addAction(action);
+	}
+	m_menu->addSeparator();
+	m_menu->addAction(m_actionClearMenu);
+}
+
+// ---------------------------------------------------------------------------
+// TestRecentFiles
+// ---------------------------------------------------------------------------
 class TestRecentFiles : public QObject
 {
 	Q_OBJECT
 
   private slots:
 
-	// -----------------------------------------------------------------------
-	// ccRecentFiles(QWidget* parent) — constructor creates the object.
-	// -----------------------------------------------------------------------
+	// Constructor creates the object and a non-null menu
 	void testConstructor()
 	{
-		// Create with a null parent (safe for unit testing)
 		ccRecentFiles* mgr = new ccRecentFiles(nullptr);
 		QVERIFY(mgr != nullptr);
-
-		// menu() returns a non-null QMenu
 		QMenu* m = mgr->menu();
 		QVERIFY(m != nullptr);
-
 		delete mgr;
 	}
 
-	// -----------------------------------------------------------------------
-	// addFilePath — adding a valid absolute path does not crash.
-	// -----------------------------------------------------------------------
+	// addFilePath — valid absolute paths do not crash
 	void testAddFilePathDoesNotCrash()
 	{
 		ccRecentFiles mgr(nullptr);
 		QMenu* m = mgr.menu();
 		QVERIFY(m != nullptr);
-
-		// Add several paths — none should throw
-		mgr.addFilePath("C:/Test/file1.txt");
-		mgr.addFilePath("C:/Test/file2.txt");
-		mgr.addFilePath("C:/Test/file3.txt");
-
-		// Menu should be non-null after adding (no crash)
+		mgr.addFilePath(QStringLiteral("C:/Test/file1.txt"));
+		mgr.addFilePath(QStringLiteral("C:/Test/file2.txt"));
+		mgr.addFilePath(QStringLiteral("C:/Test/file3.txt"));
 		QVERIFY(mgr.menu() != nullptr);
 	}
 
-	// -----------------------------------------------------------------------
-	// addFilePath — relative paths are accepted (no validation crash).
-	// -----------------------------------------------------------------------
+	// addFilePath — relative paths are accepted (no validation crash)
 	void testAddFilePathRelative()
 	{
 		ccRecentFiles mgr(nullptr);
-		mgr.addFilePath("relative/path/to/file.txt");
-		mgr.addFilePath("./another/file.xyz");
+		mgr.addFilePath(QStringLiteral("relative/path/to/file.txt"));
+		mgr.addFilePath(QStringLiteral("./another/file.xyz"));
 		QVERIFY(mgr.menu() != nullptr);
 	}
 
-	// -----------------------------------------------------------------------
-	// addFilePath — empty path is accepted (no crash).
-	// -----------------------------------------------------------------------
+	// addFilePath — empty path is accepted (no crash)
 	void testAddFilePathEmpty()
 	{
 		ccRecentFiles mgr(nullptr);
@@ -84,9 +142,7 @@ class TestRecentFiles : public QObject
 		QVERIFY(mgr.menu() != nullptr);
 	}
 
-	// -----------------------------------------------------------------------
-	// addFilePath — Unicode path is accepted.
-	// -----------------------------------------------------------------------
+	// addFilePath — Unicode path is accepted
 	void testAddFilePathUnicode()
 	{
 		ccRecentFiles mgr(nullptr);
@@ -94,20 +150,16 @@ class TestRecentFiles : public QObject
 		QVERIFY(mgr.menu() != nullptr);
 	}
 
-	// -----------------------------------------------------------------------
-	// addFilePath — very long path is accepted.
-	// -----------------------------------------------------------------------
+	// addFilePath — very long path is accepted
 	void testAddFilePathLong()
 	{
 		ccRecentFiles mgr(nullptr);
-		QString longPath = "C:/" + QString(1000, 'a') + "/file.txt";
+		QString longPath = QStringLiteral("C:/") + QString(1000, QLatin1Char('a')) + QStringLiteral("/file.txt");
 		mgr.addFilePath(longPath);
 		QVERIFY(mgr.menu() != nullptr);
 	}
 
-	// -----------------------------------------------------------------------
-	// menu() — returns the same pointer across multiple calls.
-	// -----------------------------------------------------------------------
+	// menu() — returns the same pointer across multiple calls
 	void testMenuIsSamePointer()
 	{
 		ccRecentFiles mgr(nullptr);

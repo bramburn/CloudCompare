@@ -1,0 +1,13 @@
+********* Start testing of TestVoxFall *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestVoxFall::initTestCase()
+PASS   : TestVoxFall::testGrid2Index()
+PASS   : TestVoxFall::testIndex2GridRoundtrip()
+FAIL!  : TestVoxFall::testGrid2IndexBounds() 'idxNeg >= 0' returned FALSE. (idx should be non-negative, got -1)
+C:\dev\CloudCompare\qCC\test\TestVoxFall.cpp(233) : failure location
+PASS   : TestVoxFall::testFindAdjacents()
+PASS   : TestVoxFall::testVoxelTransformDip90()
+PASS   : TestVoxFall::testVoxelTransformRoundtrip()
+PASS   : TestVoxFall::cleanupTestCase()
+Totals: 7 passed, 1 failed, 0 skipped, 0 blacklisted, 1ms
+********* Finished testing of TestVoxFall *********
