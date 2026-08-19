@@ -1,0 +1,16 @@
+id = "01-naive-on2"
+status = "unit-tested"
+algorithm = "Brute-force O(n²) nearest-neighbour. For each data point, scan all model points and pick the one with smallest squared distance."
+build_cmd = "cargo build --release"
+test_cmd = "cargo test --release"
+bench_cmd = "cargo run --release --bin icp_bench"
+fixtures = ["synthetic/asymmetric-9.toml", "synthetic/cube-8.toml"]
+
+# Per-variant notes
+notes = "Same algorithm as `cc-rust/src/registration.rs::nearest_neighbour_slow`. The fastest variant for typical point counts because there is no tree-build cost and the inner loop is a tight, predictable memory access pattern. Loses to KD-tree / octree only for very large N (>100k) where O(n²) dominates tree-build + queries."
+
+# History
+last_correctness_test = "2026-08-19"
+last_benchmark = "2026-08-19"
+correctness_status = "matches reference (asymmetric-9) within ε; cube-8 is degenerate by design"
+benchmark_status = "SUPERSEDED — numbers from 2026-08-19 pre-fix are not load-bearing"

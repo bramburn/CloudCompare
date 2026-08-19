@@ -1,62 +1,78 @@
-# Scenario Decision — ICP NN variants (2026-08-19)
+# Decisions — ICP variants scenario
 
-> Three nearest-neighbour strategies for ICP, A/B/C'd.
-> This is the WINNER + rationale.
+> This file supersedes the original "naive wins" entry below.
+> The original numbers were measured with a buggy ICP. The
+> corrected ICP is in `cc-rust/src/registration.rs` and
+> re-benchmarked here against the same fixtures.
 
-## Variants
+## Current state (2026-08-19, post-fix)
 
-| # | Folder | Approach | Status |
+| Variant | Status | Last benchmark (corrected ICP) | Notes |
 |---|---|---|---|
-| 01 | [`01-naive-on2/`](01-naive-on2/) | O(n²) brute force | Tests pass; **benchmarked** |
-| 02 | [`02-kiddo-kdtree/`](02-kiddo-kdtree/) | `kiddo` 6.0 KD-tree | Stub — kiddo API migration needed |
-| 03 | [`03-handrolled-octree/`](03-handrolled-octree/) | Hand-rolled octree (matches CCCoreLib) | Tests pass; **benchmarked** |
+| `01-naive-on2` | `unit-tested` | 0.37 s / 2.4 s / 10.0 s @ 2k/5k/10k | RMS 0.0002 at 2k (converged); 0.06 at 5k/10k (max-iter hit, not diverged) |
+| `02-kiddo-kdtree` | `buildable` (skeleton) | n/a | kiddo 6.0 API migration deferred — bounded work, see `02-kiddo-kdtree/experiment.toml` |
+| `03-handrolled-octree` | `buildable` (skeleton) | n/a | `nearest()` still returns 0 as placeholder; needs real point indices and an early-out |
 
-## Benchmark results (ICP on random Gaussian cloud, 50 max iterations)
+## Cannot pick a winner yet
 
-| N (data = model size) | 01-naive | 03-handrolled-octree | Ratio (naive/octree) |
-|---|---|---|---|
-| 2,000 | 0.36 s | 0.60 s (incl. build) | **0.6×** (naive 1.7× faster) |
-| 5,000 | 2.39 s | 4.13 s (incl. build) | **0.6×** (naive 1.7× faster) |
-| 10,000 | 9.24 s | 23.3 s (incl. build) | **0.4×** (naive 2.5× faster) |
+The scenario status is **`benchmarked`** but **NOT** `selected`,
+because:
 
-Both implementations give the same final RMS (algorithm is identical, only the NN data structure differs). The hand-rolled octree is consistently **2-3x slower** than the naive implementation on these sizes.
+- `02-kiddo-kdtree` is a skeleton (no KD-tree plugged in).
+- `03-handrolled-octree` is a skeleton (`nearest()` returns 0).
+- The previous "naive wins" claim was based on a benchmark of the
+  octree variant whose `nearest()` was returning 0 — i.e. the
+  octree was finding wrong correspondences, ICP was diverging
+  silently, and the wall time was a meaningless comparison.
 
-## Decision
+To promote this scenario to `selected`, the runner needs:
 
-**Status: REVERSED. Naive wins for now.**
+1. `02-kiddo-kdtree` to be `reference-validated` (KD-tree plugged in,
+   tests pass on `asymmetric-9`).
+2. `03-handrolled-octree` to be `reference-validated` (real
+   `nearest()` returning point indices, with an early-out).
+3. All three variants benchmarked on the same Gaussian fixture
+   at 2k / 5k / 10k / 50k.
+4. A `decisions.md` entry that picks a winner based on those
+   numbers.
 
-The original "provisional winner: hand-rolled octree" decision (D4) is **wrong** when measured. On point clouds of 2k-10k points, the naive O(n²) brute force is **faster** than the hand-rolled octree. Reasons:
+## Original (SUPERSEDED) decision
 
-1. **The hand-rolled octree is naive** — always recurses into all 8 children, no early-out, no kNN aggregation
-2. **Build cost is high** — the tree-building itself takes 30-50% of the wall time on small N
-3. **Cache behaviour is poor** — octree accesses are scattered; brute-force is sequential
+> Retained for the historical record. Do not use these numbers
+> to make a decision.
 
-For larger N (>100k), the octree **should** win. We need to test that range before re-evaluating. We can also try the `kiddo` KD-tree (which uses a balanced layout) once its API is migrated.
+The original claim was:
 
-### When to revisit
+- **Naive wins for now.** On random Gaussian point clouds of
+  2k–10k points, the naive implementation was **2–3× faster**
+  than the hand-rolled octree (measured 2026-08-19 18:00 UTC:
+  0.36s vs 0.60s on 2k, 2.4s vs 4.1s on 5k, 9.2s vs 23.3s on 10k).
+- **Reason:** the hand-rolled octree was naive (no early-out,
+  no per-leaf bounds, all 8 children recursed).
 
-- **N > 100k**: brute force becomes O(10¹⁰) per iter → intractable
-- **Once kiddo 6.0 is migrated**: real test against a well-tuned KD-tree
-- **After 5-10x perf improvement in the hand-rolled octree**: build the tree lazily, add per-leaf bounds, stop early when the search box is fully outside
+That was true, but both variants were running the buggy ICP, so
+the *correctness* of the comparison was not load-bearing for any
+ICP feature work. Re-bench with the corrected algorithm before
+reinstating or reversing the claim.
 
-## What to do now
+## Next concrete steps
 
-For the **cc-rust** migration's Phase 2 (ICP), use **variant 01 (naive)** as the default. It's:
+1. **Fix `03-handrolled-octree::Octree::nearest()`** to return the
+   real point index (not 0). Add an early-out for subtrees whose
+   bounding-box distance exceeds the current best. Tests on
+   `asymmetric-9`.
+2. **Implement `02-kiddo-kdtree`** with the kiddo 6.0 API. Tests
+   on `asymmetric-9`.
+3. **Re-bench all three** with the corrected ICP, on the same
+   Gaussian fixture at 2k / 5k / 10k / 50k.
+4. **Update this file** with the new numbers and a `selected`
+   pick.
+5. **Update `../../docs/decisions.md` D4** to either reinstate or
+   reverse the "naive wins" claim based on the new numbers.
 
-- Fastest for typical survey data sizes (10k-100k points per scan)
-- Smallest code (~150 lines vs 200 for octree, 50 for kiddo stub)
-- Easiest to verify
+## Source
 
-Add a `fast_nn_search` feature flag for when a real KD-tree implementation is needed. For now, default to naive.
-
-## Other things to test
-
-- **Point format 3 LAS** with RGB and GPS time — the scalar field and ICP work with xyz only; RGB is ignored. Document this.
-- **Multi-resolution ICP** — coarse-to-fine subsampling for faster convergence on real data. See the [end-to-end real-data test](../../sessions/2026-08-19-rust-realdata-icp/) for the gap this fills.
-- **Outlier rejection** — fixed-trimmed ICP, or robust loss. Without this, real-data ICP overshoots badly (the realdata session recovered −0.48 when +0.5 was applied).
-
-## Related
-
-- Top-level: [`../../docs/decisions.md`](../../docs/decisions.md) (D4 — updated)
-- End-to-end real-data: [`../../sessions/2026-08-19-rust-realdata-icp/`](../../sessions/2026-08-19-rust-realdata-icp/)
-- Phase 2 roadmap: [`../../../PRD/rust/05-roadmap.md` Phase 2](../../../PRD/rust/05-roadmap.md)
+- `cc-rust/src/registration.rs` (corrected ICP)
+- `scenarios/2026-08-19-icp-variants/01-naive-on2/` (re-benched 2026-08-19 23:00 UTC)
+- `experimental/docs/decisions.md` D4 (history)
+- `experimental/docs/patterns.md` P12, P13, P14 (the three fixes)

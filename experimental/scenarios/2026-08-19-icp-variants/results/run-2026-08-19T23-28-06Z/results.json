@@ -1,0 +1,37 @@
+﻿{
+    "variants":  [
+                     {
+                         "correctness_rmse":  null,
+                         "variant":  "01-naive-on2",
+                         "build_success":  true,
+                         "git_sha":  "a945ad1a",
+                         "failure_mode":  "ok",
+                         "runtime_ms":  1039.6,
+                         "test_success":  true,
+                         "peak_memory_mb":  0,
+                         "point_count":  null
+                     }
+                 ],
+    "fixtures":  [
+                     {
+                         "relative":  "synthetic/asymmetric-9.toml",
+                         "manifest":  "C:\\dev\\CloudCompare\\experimental\\fixtures\\synthetic\\asymmetric-9.toml",
+                         "available":  true
+                     },
+                     {
+                         "relative":  "synthetic/cube-8.toml",
+                         "manifest":  "C:\\dev\\CloudCompare\\experimental\\fixtures\\synthetic\\cube-8.toml",
+                         "available":  true
+                     },
+                     {
+                         "relative":  "real/brook-avenue-splice.toml\",",
+                         "manifest":  "C:\\dev\\CloudCompare\\experimental\\fixtures\\real\\brook-avenue-splice.toml\",",
+                         "available":  false
+                     }
+                 ],
+    "timestamp":  "2026-08-19T23-28-06Z",
+    "profile":  "release",
+    "scenario_status":  "benchmarked",
+    "scenario":  "2026-08-19-icp-variants",
+    "git_sha":  "a945ad1a"
+}

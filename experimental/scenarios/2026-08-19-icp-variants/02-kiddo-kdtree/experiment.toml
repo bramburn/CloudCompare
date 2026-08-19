@@ -1,0 +1,13 @@
+id = "02-kiddo-kdtree"
+status = "buildable"
+algorithm = "KD-tree via the `kiddo` crate. kiddo 6.0 has a new builder API (Kiddo<K, A>); migration is bounded but not done in this round."
+build_cmd = "cargo build --release --features kiddo"
+test_cmd = "cargo test --release --features kiddo"
+bench_cmd = "N/A (skeleton — not benchmarked)"
+fixtures = []
+
+# Per-variant notes
+notes = "Skeleton. Currently uses brute-force NN as a placeholder. To graduate: add `kiddo = { version = \"6\", optional = true }` to Cargo.toml, build the tree, and replace `nearest_neighbour_slow` with a call into `FloatLeafMap::nearest_one`."
+
+# Why deferred
+deferred_reason = "kiddo 6.0 API migration needs a builder / entry-pattern refactor. Bounded work, but not on the critical path for the ICP algorithm-correctness fixes. Resume when the corrected ICP is benchmarked and the naive-vs-octree winner needs to be re-evaluated for N > 100k."

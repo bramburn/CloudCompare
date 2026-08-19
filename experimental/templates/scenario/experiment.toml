@@ -1,0 +1,54 @@
+# Scenario contract — example.
+# Copy this file into your scenario folder and edit.
+
+id = "2026-08-19-icp-variants"
+question = "Which nearest-neighbour structure should support Rust ICP?"
+
+# Lifecycle state.
+# One of: scaffolded | buildable | unit-tested | reference-validated
+#         benchmarked | selected | graduated | abandoned
+status = "benchmarked"
+
+owner = "rust-migration"
+
+# Reference implementation we're matching (or null for pure exploration).
+reference = { cpp = "CCCoreLib/src/RegistrationTools.cpp" }
+
+# Valid fixtures for this scenario. Each is a relative path under
+# experimental/fixtures/. The runner will resolve these and refuse
+# to run if any required fixture is missing.
+fixtures = [
+    "synthetic/cube-8.toml",
+    "synthetic/asymmetric-9.toml",
+    "real/brook-avenue-splice.toml",   # optional: missing → skipped
+]
+
+# Variants. Each is a sibling session folder name.
+variants = [
+    "01-naive-on2",
+    "02-kiddo-kdtree",
+    "03-handrolled-octree",
+]
+
+# Metrics the runner collects. Names match the JSON keys in
+# results.json so downstream tools can rely on them.
+metrics = [
+    "build_success",
+    "test_success",
+    "correctness_rmse",
+    "runtime_ms",
+    "peak_memory_mb",
+    "point_count",
+    "failure_mode",
+]
+
+# What the winner must demonstrate. The runner enforces each of
+# these — a missing piece keeps the scenario at "benchmarked" rather
+# than letting it advance to "selected".
+promotion = { required = [
+    "all_correctness_tests_pass",
+    "benchmark_results_recorded_in_results_json",
+    "decisions_md_explains_why",
+] }
+
+tags = ["icp", "nearest-neighbour", "rust", "phase-2"]

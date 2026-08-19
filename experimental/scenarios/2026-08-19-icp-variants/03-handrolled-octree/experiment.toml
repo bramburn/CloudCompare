@@ -1,0 +1,20 @@
+id = "03-handrolled-octree"
+status = "buildable"
+algorithm = "Hand-rolled octree subdivision matching CCCoreLib's `DgmOctree`. Naive implementation: subdivides on the centre of the bounding box and recurses into all 8 children."
+build_cmd = "cargo build --release"
+test_cmd = "cargo test --release"
+bench_cmd = "cargo run --release --bin icp_bench"
+fixtures = ["synthetic/asymmetric-9.toml", "synthetic/cube-8.toml"]
+
+# Per-variant notes
+notes = [
+    "Current `octree.rs::nearest()` returns 0 as a placeholder index. The structure is in place; the query is not.",
+    "For an honest comparison with `01-naive-on2`, the `nearest()` method must return the real index of the closest point in the tree.",
+    "Even with a correct `nearest()`, no early-out / kNN pruning is implemented, so the asymptotic behaviour is the same as the brute-force. The win only appears once we prune subtrees whose bounding-box distance exceeds the current best.",
+]
+
+# Why current numbers are not load-bearing
+benchmark_status = "SUPERSEDED — pre-ICP-bug-fix numbers; do not use to claim a winner"
+correctness_status = "skeleton (returns 0); cannot be reference-validated yet"
+
+next_step = "Implement `Octree::nearest()` returning the actual point index, then add an early-out for subtrees whose closest point is provably further than the current best."

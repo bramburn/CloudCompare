@@ -9,6 +9,12 @@ name = "icp_v1_naive"
 path = "src/lib.rs"
 
 [dependencies]
+# Use the corrected ICP implementation from cc-rust. This variant
+# only differs in *which nearest-neighbour* it plugs in — not in
+# the surrounding ICP algorithm. As of 2026-08-19, the algorithm
+# in cc-rust has been fixed (see D4 in experimental/docs/decisions.md
+# and patterns P12, P13, P14).
+cc_rust = { path = "../../../../cc-rust" }
 nalgebra = "0.34"
 log = "0.4"
 env_logger = "0.11"
