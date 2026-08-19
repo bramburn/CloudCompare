@@ -1,0 +1,32 @@
+id = "asymmetric-9"
+kind = "synthetic"
+generator = "cc-rust/src/registration.rs::tests::asymmetric_cloud"
+format = "in-memory"
+point_count = 9
+
+# The 8 cube corners plus one off-axis point at (1.5, 0.3, 0.7).
+# The off-axis point is on purpose: it makes the cross-covariance H
+# full-rank so ICP's SVD gives a unique rotation. The pure cube
+# is degenerate (H is rank 2 in 3D) and nalgebra's SVD returns a
+# reflection in that case.
+points = [
+    [0.0, 0.0, 0.0],
+    [1.0, 0.0, 0.0],
+    [0.0, 1.0, 0.0],
+    [0.0, 0.0, 1.0],
+    [1.0, 1.0, 0.0],
+    [1.0, 0.0, 1.0],
+    [0.0, 1.0, 1.0],
+    [1.0, 1.0, 1.0],
+    [1.5, 0.3, 0.7],
+]
+
+expected_centroid = [0.6111, 0.4778, 0.5222]
+
+provenance = "cc-rust test fixture; chosen 2026-08-19 after ICP tests with the pure cube were found to be degenerate (H rank-deficient → SVD returns a reflection)."
+
+notes = [
+    "Non-symmetric on purpose.",
+    "The off-axis point at index 8 is what makes ICP well-conditioned.",
+    "Use this for any algorithm test where the SVD is on the critical path.",
+]

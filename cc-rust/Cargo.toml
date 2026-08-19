@@ -37,6 +37,7 @@ num-traits = "0.2"
 thiserror = "1.0"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+log = "0.4"
 
 # Sentry (optional, same DSN as the main app)
 sentry = { version = "0.32", optional = true }

@@ -1,0 +1,26 @@
+id = "cube-8"
+kind = "synthetic"
+generator = "cc-rust/src/registration.rs::tests::cube_corners (deprecated)"
+format = "in-memory"
+point_count = 8
+
+# The 8 corners of the unit cube. PURE cube only.
+# WARNING: this fixture is degenerate for ICP. Translating it along
+# any axis produces a rank-deficient cross-covariance H, and the
+# SVD returns a reflection. Use `asymmetric-9` instead.
+points = [
+    [0.0, 0.0, 0.0],
+    [1.0, 0.0, 0.0],
+    [0.0, 1.0, 0.0],
+    [0.0, 0.0, 1.0],
+    [1.0, 1.0, 0.0],
+    [1.0, 0.0, 1.0],
+    [0.0, 1.0, 1.0],
+    [1.0, 1.0, 1.0],
+]
+
+expected_centroid = [0.5, 0.5, 0.5]
+
+provenance = "Initial ICP test fixture. Deprecated 2026-08-19 — see asymmetric-9."
+
+deprecation_note = "This fixture is preserved for regression tests of the degenerate-case handling in ICP (H rank < 3 → SVD gives reflection → must early-exit via min_rms_absolute). Do not use for new algorithm development."

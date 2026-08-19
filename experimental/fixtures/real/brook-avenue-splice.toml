@@ -1,0 +1,22 @@
+id = "brook-avenue-splice"
+kind = "real"
+path = "D:/82 BROOK AVENUE/output/2026-08-13-09-46-35_82 brook avenue.splice.las"
+size_bytes = 253_000_000
+format = "las"
+expected = { point_count = 7_459_206, version = "1.4", pdrf = 3 }
+provenance = "Leica RTC360 scan, captured 2026-08-13 at 09:46:35 UTC. Surveying site: 82 Brook Avenue, indoor + outdoor."
+local_only = true
+
+# To verify the SHA-256 after download:
+#   Get-FileHash -Algorithm SHA256 "D:\82 BROOK AVENUE\output\2026-08-13-09-46-35_82 brook avenue.splice.las"
+# Then paste the hex value here as `sha256 = "..."`. Without that,
+# the run.ps1 script will warn but proceed (sha256 check is opt-in).
+sha256 = ""
+
+notes = [
+    "Path includes spaces. Quote in shell.",
+    "Released under NDA — do not commit or upload.",
+    "Benchmarked at 7.2M pts/s release throughput with the pure-Rust `las` crate.",
+    "Used as a smoke test for the end-to-end Rust pipeline (LAS read → ICP).",
+    "ICP on this raw scan is currently poor quality — needs outlier rejection + coarse pre-alignment before ICP can recover the real-world transformation. See D4 in experimental/docs/decisions.md.",
+]
