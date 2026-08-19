@@ -377,17 +377,28 @@ The short rule: **don't modify `qCC/`, `ccViewer/`, `libs/qCC_db`, `libs/qCC_io`
 
 ## CI
 
-GitHub Actions on `bramburn/CloudCompare` (the fork). Three workflows are relevant:
+GitHub Actions on `bramburn/CloudCompare` (the fork). Two workflows remain:
 
-- **`.github/workflows/windows.yml`** — our slim Windows build, mirrors the local plugin set (18 self-contained plugins, no LAS/E57/PCL). Triggers on push to `master`, on PR, and on `workflow_dispatch`. Uploads the `deployqt\` bundle as artifact `cloudcompare-windows-x64`. ~15 min cold, <5 min warm (ccache + build-dir cache).
 - **`.github/workflows/build.yml`** — inherited from upstream. Runs the **full** Windows + macOS + Ubuntu matrix with the upstream plugin set (LAS, E57, Photoscan, RDB, qFacets, qHoughNormals, qCloudLayers). Useful as a sanity check before upstreaming a PR.
 - **`.github/workflows/deploy-docs.yml`** — builds the Docusaurus site under `website/` and publishes to GitHub Pages on the `gh-pages` branch. Triggers on push to `master` when `website/**` or this workflow file change, plus `workflow_dispatch`. Uses the official `actions/deploy-pages@v4`. The site lands at <https://bramburn.github.io/CloudCompare/> within ~1-2 minutes.
 
-To trigger a build manually: GitHub → Actions → pick the workflow → "Run workflow".
-To download the Windows build artifact: GitHub → Actions → "Windows Build" → pick a run → scroll to Artifacts → `cloudcompare-windows-x64`.
-To see a docs deploy: GitHub → Actions → "Deploy docs site to GitHub Pages" → pick a run → check the environment link.
+### Windows build CI: removed (best-effort, lean on local)
 
-**Workflow file edits**: when you change any of these three workflow files, also update this section and the relevant build commands above.
+The fork's slim Windows CI workflow (`.github/workflows/windows.yml`) was removed on 2026-08-19 after a structural incompatibility with the GitHub-hosted runner surfaced. Three independent fix attempts (YAML escaping, line-ending normalization, header truncation) all hit the same `ninja: error: CMakeFiles\rules.ninja:31: expected newline, got lexing error` — the runner's pre-installed **cmake 4.4.2** emits unparseable `rules.ninja` for this codebase. Our local **cmake 4.3.0** (pinned at `C:\dev\tools\cmake-4.3.0\`) does not have the problem. Fixing CI would require pinning cmake ≤ 4.3 via the `lukka/get-cmake` action, switching to the Visual Studio generator, or self-hosted runners — none worth the maintenance cost for a fork that already builds cleanly via the local `cc-build.cmd`.
+
+**For verification, use the local build:**
+
+```powershell
+& 'C:\dev\CloudCompare\tools\cc-configure.cmd'
+& 'C:\dev\CloudCompare\tools\cc-build.cmd'
+```
+
+The local build is faster (cached, no checkout), uses the same Qt/CMake/Ninja versions, and produces the same `deployqt\` bundle. Upstream CI (`build.yml`) still runs the full matrix on every push to `master` — that's the cross-platform safety net.
+
+If you want to re-enable Windows CI later, the recommended approach is the **Visual Studio generator** (sidesteps the rules.ninja emission bug entirely) or pinning cmake 4.3 explicitly with `lukka/get-cmake@latest` + `version: '4.3.0'`. See [`BUILD-LOCAL.md`](BUILD-LOCAL.md) for the full failure timeline.
+
+To trigger a build manually: GitHub → Actions → pick the workflow → "Run workflow".
+To see a docs deploy: GitHub → Actions → "Deploy docs site to GitHub Pages" → pick a run → check the environment link.
 
 ## Security
 
