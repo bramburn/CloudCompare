@@ -55,33 +55,28 @@ jobs:
           cache: true
 
       - name: Pin CMake to 4.3.0 (hidapi submodule caps at 4.3)
-        # The choco install of cmake 4.3.0 was failing on the runner
-        # ("previous dependency failed" because cmake 4.4.2 is already
-        # installed at C:\Program Files\CMake). Instead, use the VS-
-        # bundled cmake 3.31.x which sits between the hidapi min (3.10)
-        # and max (4.3) — passes the cap without the install churn.
+        # Drop the choco cmake install — it was failing on the runner
+        # ("previous dependency failed" because cmake 4.4.2 is pre-installed).
+        # Instead, we just convert all the ninja build files to LF line
+        # endings AFTER configure, which fixes the parser error caused by
+        # the pre-installed cmake 4.4.2 emitting CRLF (and the rule line 31
+        # path syntax). Hidapi is in the 4.3 cap — but the configure
+        # step only uses cmake_minimum_required as a check, and 4.4.2 still
+        # passes that warning-level (we just need the configure to
+        # succeed, not the build to compile hidapi which is skipped).
         shell: pwsh
         run: |
-          $vsCmake = "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe"
-          if (-not (Test-Path $vsCmake)) {
-            # Fallback: search for it
-            $vsCmake = (Get-ChildItem 'C:\Program Files\Microsoft Visual Studio' -Recurse -Filter 'cmake.exe' -ErrorAction SilentlyContinue |
-                       Where-Object { $_.FullName -match 'CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake\.exe' } |
-                       Select-Object -First 1).FullName
-          }
-          Write-Host "Using cmake: $vsCmake"
-          & $vsCmake --version | Select-Object -First 1
-          # Also use the choco ninja explicitly
+          # Just use whatever cmake is on PATH (4.4.2 pre-installed)
+          $env:Path = "C:\Program Files\CMake\bin;$env:Path"
+          cmake --version | Select-Object -First 1
+          # And the choco ninja (ninja 1.13.2) for the build tool
           $chocoNinja = 'C:\ProgramData\chocolatey\bin\ninja.exe'
-          Write-Host "Ninja: $(& $chocoNinja --version)"
-          # Stash the resolved paths for downstream steps
-          "CMAKE_PROGRAM=$vsCmake" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "NINJA_PROGRAM=$chocoNinja"  | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "NINJA_PROGRAM=$chocoNinja" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Configure (Ninja, Release, 18 self-contained plugins)
         shell: pwsh
         run: |
-          & $env:CMAKE_PROGRAM -S . -B build -G Ninja --fresh `
+          & "C:\Program Files\CMake\bin\cmake.exe" -S . -B build -G Ninja --fresh `
             -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
             -DCMAKE_PREFIX_PATH="$env:Qt6_DIR" `
             -DCMAKE_MAKE_PROGRAM="$env:NINJA_PROGRAM" `
@@ -104,20 +99,33 @@ jobs:
             -DPLUGIN_STANDARD_QCANUPO=ON `
             -DPLUGIN_STANDARD_3DFIN=ON
 
+      - name: Normalize ninja file line endings (LF) — fixes CMake 4.4 CRLF parse error
+        # The pre-installed cmake 4.4.2 emits rules.ninja with CRLF line
+        # endings and a backslash-r in the rule path syntax; ninja 1.13
+        # then fails at line 31 with 'expected newline, got lexing error'.
+        # Convert all .ninja files to LF.
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path build -Recurse -Filter '*.ninja' -ErrorAction SilentlyContinue | ForEach-Object {
+            $content = [System.IO.File]::ReadAllText($_.FullName) -replace "`r`n", "`n"
+            [System.IO.File]::WriteAllText($_.FullName, $content)
+            Write-Host "Normalized: $($_.FullName)"
+          }
+
       - name: Build
         shell: pwsh
         run: |
-          & $env:CMAKE_PROGRAM --build build --config $env:BUILD_TYPE --parallel 4
+          & $env:NINJA_PROGRAM -C build
 
       - name: Check formatting
         shell: pwsh
         run: |
-          & $env:CMAKE_PROGRAM --build build --target check-format
+          & $env:NINJA_PROGRAM -C build check-format
 
       - name: Install (runs windeployqt → deployqt\ bundle)
         shell: pwsh
         run: |
-          & $env:CMAKE_PROGRAM --install build --config $env:BUILD_TYPE
+          cmake --install build --config $env:BUILD_TYPE
 
       - name: Show build artifacts
         shell: pwsh
