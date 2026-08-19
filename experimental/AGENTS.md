@@ -23,10 +23,16 @@ Use it to:
 ```
 experimental/
 ├── templates/             ← pre-scaffolded, minimal, buildable. Copy or extend.
-├── shared/                ← cross-cutting CMake helpers, build scripts
+│   ├── rust_lib/          pure-Rust library
+│   ├── rust_cxx_app/      Rust + CXX FFI (CXX opt-in via feature flag)
+│   ├── cpp_qt_console/    Qt 6 console
+│   └── cpp_qt_gui/        Qt 6 desktop view with 3D OpenGL viewport
+├── shared/                ← cross-cutting helpers (vcvars capture, scripts)
 ├── sessions/              ← one folder per experiment, dated + named
 ├── scenarios/             ← one folder per A/B/C variant comparison
-└── docs/                  ← index, patterns, decisions — the knowledge base
+├── fixtures/              ← real-data manifests (paths + hashes, never the data)
+├── docs/                  ← index, patterns, decisions, lifecycle, promotion
+└── run.ps1                ← single command to run a scenario's variants
 ```
 
 **Templates** are the starting point. Pick one. Don't reinvent the wheel.
@@ -37,11 +43,64 @@ Sessions can be deleted after graduation; their lesson lives on in `docs/decisio
 **Scenarios** are multi-session comparisons. If you're choosing between 3 ICP
 implementations, put each in a session and the comparison in a scenario folder.
 
-**Docs** are the durable memory. Three files, each with a fixed purpose:
+**Docs** are the durable memory. Files, each with a fixed purpose:
 
 - `index.md` — catalogue of all sessions and scenarios (date, name, status, link)
 - `patterns.md` — "how we do X" notes (e.g. "Rust ↔ Qt via CXX")
 - `decisions.md` — "why we chose Y" notes (e.g. "we picked KD-tree over octree for ICP")
+- `lifecycle.md` — status state machine, promotion process
+- `decisions/<topic>.md` — long-form decision record (e.g. scalar-field formula parity)
+
+## Status state machine (mandatory)
+
+Every session and scenario declares its current state. The state controls what
+claims are allowed. **Promote carefully** — measurement, not optimism, is the gate.
+
+| State | What it means | Allowed claims |
+|---|---|---|
+| `scaffolded` | folder + Cargo.toml/CMakeLists + stub source. **Has never compiled.** | none — does not exist for benchmarks |
+| `buildable` | `cargo build` or `cmake --build` succeeds. **No tests run yet.** | "the code compiles" |
+| `unit-tested` | one or more `cargo test` / Qt Test cases pass. **No correctness vs reference.** | "the unit tests pass" |
+| `reference-validated` | outputs match a reference implementation (brute-force, CCCoreLib, or known-answer) within tolerance. | "matches reference within ε" |
+| `benchmarked` | timing/throughput numbers recorded with toolchain, profile, fixture, commit SHA. | "faster than X by Y at N points" |
+| `selected` | named winner of a scenario, with a `decisions.md` entry. | "we picked this for N reason" |
+| `graduated` | code moved to `cc-rust/` or production. | "this is now production" |
+| `abandoned` | killed with reason. Kept for one release, then deleted. | (no claims — just the record) |
+
+### Hard rules
+
+- **Never** claim a performance number without `benchmarked` state.
+- **Never** claim "matches reference" without `reference-validated` state.
+- **Never** promote to `selected` unless `reference-validated` AND `benchmarked`.
+- **Never** promote to `graduated` without an explicit `decisions.md` entry
+  and a `promotion.md` describing what moves to production.
+
+### Why this matters
+
+A common failure mode for LLM agents is to record expected behaviour as if it
+were measured. "O(log n) per query" without `benchmarked` is a design claim,
+not a result. The status table makes this distinction machine-checkable.
+
+## Evidence rules
+
+1. **Never describe expected performance as measured performance.** Use
+   "expected O(log n); implementation and performance not yet validated."
+   for non-`benchmarked` work.
+2. **A candidate is not selectable** until correctness is compared against a
+   reference implementation (brute-force NN, a different tree, or
+   CCCoreLib's output for the same input).
+3. **Every result must record** the commit SHA, compiler toolchain, build
+   profile, fixture identity, and command used. The `experiment.toml`
+   schema enforces this.
+4. **Real local datasets are referenced by manifest + hash**, never
+   committed to git. See `fixtures/` for the format.
+5. **Sentry is disabled by default** for experimental builds. To enable
+   it for a specific run, set `SENTRY_DSN` in the environment.
+6. **A production change requires an explicit promotion request** — see
+   `docs/promotion.md`. The agent never silently copies experiment code
+   into the main codebase.
+7. **Incomplete implementations must be labelled `scaffolded` or
+   `buildable`** in the session README. They cannot be benchmarked.
 
 ## Working rules
 
@@ -66,26 +125,43 @@ implementations, put each in a session and the comparison in a scenario folder.
 
 When you (the agent) are asked to "test X" or "prototype Y":
 
-1. **Search first.**
+1. **Classify the request.** Which of:
+   - `scratch` — one file, no persistent artefact
+   - `experiment` — uncertain approach, isolated build
+   - `scenario` — two or more viable approaches to compare
+   - `parity` — compare Rust with CloudCompare/C++ on identical input
+   - `integration` — real files, DLLs, CXX, Qt, or production-like environment
+   - `promotion` — move a proven candidate toward the main codebase
+2. **Search first.**
    - Read `docs/index.md`, `docs/patterns.md`, `docs/decisions.md`.
    - Look in `sessions/` and `scenarios/` for similar work.
    - If something close exists, propose **extending** it. Don't duplicate.
-2. **Pick or create a template.**
+3. **Write the hypothesis.** Before scaffolding, capture in `README.md`:
+   ```md
+   ## Hypothesis
+   Using `<approach>` will reduce `<metric>` by `<factor>` on
+   `<fixture>` while preserving the reference's outputs within `<tolerance>`.
+   ```
+4. **Pick or create a template.**
    - `cpp_qt_console` — Qt CLI app
    - `cpp_qt_gui` — Qt GUI with 3D OpenGL viewport (links to Rust)
    - `rust_lib` — pure-Rust library crate
    - `rust_cxx_app` — Rust + CXX FFI app
-3. **Scaffold the session.**
+5. **Scaffold the session.**
    - `cp -r templates/<chosen> sessions/<YYYY-MM-DD>-<topic>/`
    - Edit `README.md` and `AGENTS.md` (if present) for the session.
-4. **Implement minimally.** Throwaway, but buildable.
-5. **Build & test.** Provide exact commands. The session must end green.
-6. **Document.**
+   - **Add `experiment.toml`** (see `templates/scenario/experiment.toml` for
+     the schema). Without it, the session cannot be promoted to `benchmarked`.
+6. **Implement minimally.** Throwaway, but buildable.
+7. **Run gates.** Move through the status state machine in order:
+   scaffolded → buildable → unit-tested → reference-validated → benchmarked.
+   A `selected` decision requires all of these.
+8. **Document.**
    - Update `docs/index.md` (one row).
    - If a reusable pattern emerged, append to `docs/patterns.md`.
    - If an architectural decision was made, append to `docs/decisions.md` AND
      the scenario-level `decisions.md`.
-7. **Cross-link from root `AGENTS.md`** if this is a decision the main codebase
+9. **Cross-link from root `AGENTS.md`** if this is a decision the main codebase
    should know about.
 
 ## Multi-variant scenarios (the "compare and pick" pattern)
@@ -96,6 +172,7 @@ When the user (or you) think there are 2–3 viable approaches:
 scenarios/
 └── 2026-08-19-icp-variants/
     ├── AGENTS.md               ← what we're comparing
+    ├── experiment.toml         ← machine-readable contract
     ├── decisions.md            ← winner + rationale
     ├── 01-naive-on2/           ← first variant session
     ├── 02-kdtree-kiddo/        ← second variant
@@ -103,8 +180,9 @@ scenarios/
 ```
 
 Each `01-…`, `02-…`, `03-…` is a real session (a sibling of `experimental/sessions/`
-in structure — same Cargo.toml, README.md, AGENTS.md rules). The scenario folder
-just groups them and holds the final `decisions.md`.
+in structure — same Cargo.toml, README.md, AGENTS.md rules, AND a per-variant
+`experiment.toml` declaring the variant's status). The scenario folder just
+groups them and holds the final `decisions.md`.
 
 When the winner is picked:
 
@@ -116,10 +194,14 @@ When the winner is picked:
 - **Language:** English for code comments, English for docs.
 - **Build:** `cargo` for Rust, `cmake --build` for C++.
 - **Logging:** `log` crate (Rust), `spdlog` (C++) — wired in templates.
-- **Sentry:** wired in templates; one DSN per repo (see root `AGENTS.md`).
+- **Sentry:** wired in templates but disabled by default; only enabled
+  with `SENTRY_DSN` in the environment.
 - **Tests:** `cargo test`, `ctest`, or Qt Test — whichever fits the template.
-- **Commits:** Conventional Commits with `experimental:` scope, e.g.
-  `feat(experimental): add KD-tree ICP variant`. Reference the session in the body.
+- **Commits:** Conventional Commits with `experimental:` or `experiment():` scope:
+  - `experiment(icp): add brute-force correctness baseline`
+  - `experiment(icp): add kiddo nearest-neighbour candidate`
+  - `benchmark(icp): compare nearest-neighbour variants`
+  - `docs(experimental): record ICP candidate decision`
 
 ## Out of scope
 
@@ -133,11 +215,13 @@ When the winner is picked:
 
 - [ ] Session builds green
 - [ ] Tests pass
-- [ ] `README.md` updated (what, why, build, run, observations)
+- [ ] `README.md` updated (what, why, build, run, observations, **status**)
+- [ ] `experiment.toml` declares the variant and its current status
 - [ ] `docs/index.md` has a row for this session
 - [ ] If a pattern emerged, `docs/patterns.md` updated
 - [ ] If a decision was made, `docs/decisions.md` updated
 - [ ] Scenario decisions are also at the scenario level
+- [ ] If benchmarked, results reference a fixture manifest, not a hard-coded path
 - [ ] `git add` only source + docs (not `target/`, not `build/`, not `Cargo.lock`)
 
 ## Related
@@ -145,3 +229,4 @@ When the winner is picked:
 - **Root:** `AGENTS.md`
 - **Templates:** `experimental/templates/AGENTS.md`
 - **Knowledge base:** `experimental/docs/`
+- **Lifecycle & promotion:** `experimental/docs/lifecycle.md`, `experimental/docs/promotion.md`

@@ -298,6 +298,110 @@ pan_offset_ -= up * (float)delta.y() * pan_amount;
 
 ---
 
+## P12. SVD rotation order — nalgebra's `svd.v_t` is V^T
+
+**Pattern:** When computing the Horn 1987 rotation R = V · U^T from
+an SVD of a 3×3 cross-covariance H, remember that nalgebra's
+`svd.v_t` is the right-singular vectors **transposed** (V^T, not V).
+The correct R is therefore:
+
+```rust
+let v_t = svd.v_t.ok_or(...)?;
+let u = svd.u.ok_or(...)?;
+let r = v_t.transpose() * u.transpose();  // R = V · U^T
+```
+
+**Why it matters:** using `v_t * u.transpose()` (without the inner
+`.transpose()`) gives V^T · U^T = (U·V)^T, which is the wrong matrix.
+For a full-rank H, the result is a mirror/reflection, not a rotation.
+For a rank-deficient H (degenerate fixture, e.g. a translated cube),
+the SVD has no unique answer for the missing axes and the result
+becomes implementation-dependent.
+
+**Symptom of the bug:** ICP converges in 1 iteration to a sensible
+result, then diverges in iteration 2 because the reflection undoes
+the alignment.
+
+**Source:** `cc-rust/src/registration.rs` (D4, fix landed 2026-08-19).
+
+---
+
+## P13. ICP with in-place data must NOT apply cumulative transform in NN search
+
+**Pattern:** Two styles of ICP — non-mutating (keep `data_initial`,
+track cumulative `(R, t)`) and in-place (mutate `data` each iteration).
+Pick **one**. The bug is mixing them:
+
+```rust
+// WRONG — double-transformation
+for i in 0..n_data {
+    let pt = data[i];                              // already transformed
+    let transformed = rotation * pt + translation; // transforms AGAIN
+    nearest_neighbour(model, &transformed);
+}
+```
+
+```rust
+// RIGHT — in-place style
+for i in 0..n_data {
+    let pt = data[i];  // data is already at the current pose
+    nearest_neighbour(model, &pt);
+}
+```
+
+**Why it matters:** the data array IS the current pose in the
+in-place style. Applying the cumulative `(rotation, translation)` to
+the already-transformed data double-rotates and double-translates,
+which sends the correspondences into a region where the next ΔR
+makes things worse, not better.
+
+**Symptom of the bug:** ICP gets the right answer in iteration 1,
+then the cumulative transform "skips ahead" of the actual data state
+and iteration 2 finds nonsense correspondences. RMS diverges.
+
+**Source:** `cc-rust/src/registration.rs` (D4, fix landed 2026-08-19).
+
+---
+
+## P14. Test fixtures for SVD-based algorithms must be non-symmetric
+
+**Pattern:** When writing characterisation tests for any algorithm
+that uses SVD (rotation estimation, point-set registration,
+procrustes analysis), the input cloud must be **non-symmetric**
+along all three axes. Pure-cube corners are a classic trap.
+
+The 8 corners of the unit cube are at (0/1, 0/1, 0/1). Translating
+this cube by any axis-aligned vector (e.g. (1, 0, 0)) gives a
+matched-pair distribution where the cross-covariance H has a
+zero column/row in the direction of the translation:
+
+```text
+H = Σ (data_i − c_data)(model_i − c_model)^T
+  = diag(0, 2, 2)    for a +X translation of the cube
+```
+
+H is rank 2 in 3D. The SVD has infinitely many valid decompositions
+because the missing axis can take any sign. nalgebra picks one
+deterministically but it is, in general, a reflection rather than
+a rotation.
+
+**Fix:** add at least one off-axis point to break the symmetry. The
+"asymmetric-9" fixture in `experimental/fixtures/synthetic/asymmetric-9.toml`
+is the canonical example: 8 cube corners plus one point at
+(1.5, 0.3, 0.7). The off-axis point makes H full-rank, so the SVD
+returns a unique rotation.
+
+**Symptom of the bug:** ICP tests pass on paper (the test "asserts"
+the right answer) but the recovered transform has a +/−X flip that
+the assertion doesn't catch because the test only checks magnitude
+or RMS, not the sign of individual components.
+
+**Source:** `experimental/fixtures/synthetic/asymmetric-9.toml`,
+`cc-rust/src/registration.rs::tests::asymmetric_cloud` (D4, fixture
+swap landed 2026-08-19).
+
+---
+
 ## Adding a new pattern
 
 When you find a pattern that:

@@ -210,3 +210,26 @@ macos_bundle_warnings.json
 /experimental/sessions/**/tmp/
 /perimental/sessions/**/cache/
 
+# ─────────────────────────────────────────────────────────────────────────────
+# cc-rust/ — the actual Rust migration target (Phase 0+ of the roadmap)
+# ─────────────────────────────────────────────────────────────────────────────
+# Track source + Cargo.toml + build.rs + benches. Ignore build outputs.
+# The .gitignore rules above for /experimental/**/build/ etc. don't reach
+# here, so add explicit patterns.
+
+# Cargo / Rust build outputs
+/cc-rust/target/
+/cc-rust/Cargo.lock
+
+# IDE
+/cc-rust/.vscode/
+/cc-rust/.idea/
+
+# Test data dumps
+/cc-rust/data/
+!/cc-rust/data/.gitkeep
+
+# Generated coverage / benchmark reports
+/cc-rust/coverage/
+/cc-rust/target/criterion/
+

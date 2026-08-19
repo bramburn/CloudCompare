@@ -90,7 +90,79 @@ move succeeded; all 28 tests still pass.
 
 ---
 
-## D4. 2026-08-19 — ICP NN: naive wins (octree needs improvement)
+## D4. 2026-08-19 — ICP algorithm correctness fixes (3 bugs in series)
+
+**Context:** External review of the ICP implementation found three
+distinct bugs, all in `cc-rust/src/registration.rs` and the variant
+ICP code. This entry supersedes the original "naive wins" D4 below;
+re-benchmarking with the corrected algorithm is in progress.
+
+**Decisions:**
+
+- **Bug 1 — SVD order (Horn 1987).** The rotation was computed as
+  `svd.v_t * svd.u.transpose()`. nalgebra's `svd.v_t` is already V^T
+  (the right-singular vectors transposed), so the correct Horn
+  rotation R = V · U^T is `v_t.transpose() * u.transpose()`. The old
+  code computed V^T · U^T = (U·V)^T, which is the wrong matrix. With
+  this fix, the rotation matrix is correct in all tests.
+- **Bug 2 — Double transformation.** The NN-search loop was
+  applying the cumulative `(rotation, translation)` to the data
+  *before* searching, even though the data array was already
+  mutated in place. This double-transformation broke the
+  correspondences after the first iteration, so the algorithm
+  diverged as soon as the RMS dropped close to zero. Fix: use
+  `data_points[i]` directly as the query, no extra transform.
+- **Bug 3 — Degenerate test fixture.** The original 8-cube-corner
+  fixture produces a rank-2 cross-covariance H under any axis-aligned
+  translation. The SVD of H = diag(0, 2, 2) has no unique answer
+  for the X axis, and nalgebra returned R[0,0] = -1 (a reflection).
+  Replaced with an "L-shaped" 9-point cloud that has one off-axis
+  point to make H full-rank.
+- **Bug 4 — Convergence was delta-only, not absolute.** Without an
+  absolute-RMS check, ICP kept iterating after the data was already
+  at the model. The next iteration's H was again degenerate
+  (data = model), and the SVD returned a reflection that moved the
+  data away. Added `IcprParamsRust::min_rms_absolute` (default 1e-3)
+  to stop early.
+
+**Source:** `cc-rust/src/registration.rs` after 2026-08-19 22:00 UTC.
+
+**Verification:** 5/5 ICP tests pass with the corrected code:
+`translation_only`, `rotation_only`, `rotation_and_translation`,
+`identity_converges_quickly`, `too_few_points`. The
+`asymmetric-9.toml` fixture is the canonical test cloud; the
+deprecated `cube-8.toml` is kept as a regression test for the
+degenerate-H path.
+
+**Re-benchmark (corrected ICP, 2026-08-19 23:00 UTC):** the naive
+ICP variant `01-naive-on2` re-bench'd at 0.37 s / 2.4 s / 10.0 s
+for 2k / 5k / 10k Gaussian points. RMS 0.0002 at 2k (converged);
+0.06 at 5k and 10k (max-iter hit, not diverged — the algorithm is
+correctly making progress but needs more iterations for larger N).
+The variant now uses the corrected ICP via a `cc_rust` path
+dependency; the "naive" in the name refers to the NN search, not
+the surrounding algorithm.
+
+**Status of the original "naive wins" claim:** SUPERSEDED. The
+previous benchmark (0.36s vs 0.60s on 2k points) was run with the
+*buggy* ICP. The new `01-naive-on2` benchmark above is correct,
+but `02-kiddo-kdtree` and `03-handrolled-octree` are still
+skeletons (no real KD-tree or octree `nearest()`), so a winner
+cannot be picked yet. See the scenario-level
+`decisions.md` for the re-bench plan.
+
+**When to revisit:** `02-kiddo-kdtree` and `03-handrolled-octree`
+need real implementations. Then re-bench all three on the same
+fixture at 2k / 5k / 10k / 50k. The new numbers will inform the
+final `selected` decision.
+
+---
+
+## D4-original. 2026-08-19 — ICP NN: naive wins (octree needs improvement) — SUPERSEDED
+
+> Superseded by the entry above. Retained for the historical record.
+> The numbers below were measured with the buggy ICP; do not use
+> them to make a decision.
 
 **Context:** ICP needs a fast nearest-neighbour search. The naive
 O(n²) implementation in `registration.rs` works for tests but is too
@@ -100,7 +172,7 @@ slow for real `.las` data (10M+ points). Three options:
 2. `kiddo` crate (KD-tree, pure Rust, well-tested)
 3. Hand-rolled octree (matches CCCoreLib's `DgmOctree`)
 
-**Decisions:**
+**Decisions (under the original, buggy ICP):**
 
 - **Naive wins for now.** On random Gaussian point clouds of
   2k–10k points, the naive implementation is **2–3× faster** than
@@ -120,8 +192,8 @@ slow for real `.las` data (10M+ points). Three options:
 N ∈ {2000, 5000, 10000}. Both variants give the same final RMS
 (algorithm is identical) — only the wall time differs.
 
-**When to revisit:** N > 100k, or when the hand-rolled octree is
-optimised (lazy build, kNN early-out, per-leaf bounds).
+**Status:** SUPERSEDED. Re-bench with the corrected ICP before
+upholding or reversing the "naive wins" pick.
 
 ---
 
