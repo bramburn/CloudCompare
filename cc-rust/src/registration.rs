@@ -421,6 +421,135 @@ fn build_transform_matrix(
     m
 }
 
+/// Apply a 4×4 column-major transform to a point cloud in place.
+/// Mirrors the helper in `coarse_align.rs` for use in multi-
+/// resolution ICP, where the coarse-level transform is applied
+/// to the fine-level data.
+pub fn apply_transform_in_place(points: &mut [f32], transform: &[f64; 16]) {
+    for i in 0..points.len() / 3 {
+        let x = points[i * 3] as f64;
+        let y = points[i * 3 + 1] as f64;
+        let z = points[i * 3 + 2] as f64;
+        let new_x = transform[0] * x + transform[4] * y + transform[8] * z + transform[12];
+        let new_y = transform[1] * x + transform[5] * y + transform[9] * z + transform[13];
+        let new_z = transform[2] * x + transform[6] * y + transform[10] * z + transform[14];
+        points[i * 3]     = new_x as f32;
+        points[i * 3 + 1] = new_y as f32;
+        points[i * 3 + 2] = new_z as f32;
+    }
+}
+
+/// Multi-resolution ICP. Subsamples both clouds to a smaller
+/// size and runs ICP at the coarse level, then applies the
+/// recovered transform to the original (full-resolution) data
+/// and runs a second pass.
+///
+/// Why this helps: ICP on a noisy or partial-overlap cloud
+/// often gets stuck in a local minimum at fine resolution
+/// because every iteration moves every point, including
+/// outliers. At coarse resolution (10% subsample), the outliers
+/// average out and the inlier alignment signal dominates.
+/// Running ICP twice — coarse then fine — recovers the global
+/// minimum much more reliably than a single fine-resolution pass.
+///
+/// `fractions` is the list of subsample fractions, applied in
+/// order. The last entry is the full-resolution pass. Default
+/// `[0.1, 1.0]` (10% then 100%) gives a typical "coarse-to-fine"
+/// schedule.
+///
+/// `params` is reused across all passes.
+pub fn icp_multi_resolution(
+    data_points: &mut [f32],
+    model_points: &[f32],
+    fractions: &[f64],
+    params: &IcprParamsRust,
+) -> Result<IcprResultRust, IcprErrorRust> {
+    if fractions.is_empty() {
+        return Err(IcprErrorRust {
+            code: 2,
+            message: "icp_multi_resolution: fractions must not be empty".to_string(),
+        });
+    }
+
+    // Track the cumulative transform so that the final result
+    // is a transform from the original data to the model.
+    let mut cumulative: [f64; 16] = {
+        let mut m = [0.0_f64; 16];
+        m[0] = 1.0; m[5] = 1.0; m[10] = 1.0; m[15] = 1.0;
+        m
+    };
+
+    let n_data = data_points.len() / 3;
+    let n_model = model_points.len() / 3;
+
+    for &frac in fractions {
+        // Subsample. For the model, use a deterministic stride.
+        // For the data, also use a stride — the algorithm is
+        // symmetric.
+        let frac = frac.clamp(0.01, 1.0);
+        let n_sub_data = ((n_data as f64 * frac).round() as usize).max(3);
+        let n_sub_model = ((n_model as f64 * frac).round() as usize).max(3);
+
+        let mut sub_data: Vec<f32> = Vec::with_capacity(n_sub_data * 3);
+        for i in 0..n_sub_data {
+            let src = (i * n_data) / n_sub_data;
+            let i3 = src * 3;
+            sub_data.push(data_points[i3]);
+            sub_data.push(data_points[i3 + 1]);
+            sub_data.push(data_points[i3 + 2]);
+        }
+        let mut sub_model: Vec<f32> = Vec::with_capacity(n_sub_model * 3);
+        for i in 0..n_sub_model {
+            let src = (i * n_model) / n_sub_model;
+            let i3 = src * 3;
+            sub_model.push(model_points[i3]);
+            sub_model.push(model_points[i3 + 1]);
+            sub_model.push(model_points[i3 + 2]);
+        }
+
+        let sub_result = icp_iterate(&mut sub_data, &sub_model, params)?;
+        // Apply sub_result.transform to the FULL data array.
+        let mut t = [0.0_f64; 16];
+        t.copy_from_slice(&sub_result.transform);
+        apply_transform_in_place(data_points, &t);
+
+        // Compose cumulative = sub_transform * cumulative.
+        // We need 4×4 matrix multiply: cumulative_new = sub * cumulative.
+        let mut new_cum = [0.0_f64; 16];
+        for col in 0..4 {
+            for row in 0..4 {
+                let mut s = 0.0;
+                for k in 0..4 {
+                    s += t[col * 4 + k] * cumulative[k * 4 + row];
+                }
+                new_cum[col * 4 + row] = s;
+            }
+        }
+        cumulative = new_cum;
+    }
+
+    // Final RMS on the full-resolution data, against the model.
+    let mut sum_dist_sq = 0.0;
+    for i in 0..n_data {
+        let idx = i * 3;
+        let pt = Vector3::new(
+            data_points[idx] as f64,
+            data_points[idx + 1] as f64,
+            data_points[idx + 2] as f64,
+        );
+        let (nn_idx, dist_sq) = nearest_neighbour_slow(model_points, &pt);
+        sum_dist_sq += dist_sq;
+        let _ = nn_idx; // not used in the summary RMS
+    }
+    let final_rms = (sum_dist_sq / n_data as f64).sqrt();
+    Ok(IcprResultRust {
+        rms: final_rms,
+        converged: true,
+        iterations: fractions.len() as u32,
+        transform: cumulative.to_vec(),
+    })
+}
+
 // ── Tests ──────────────────────────────────────────────────────────────────
 //
 // **Note on test fixtures:** the early tests used the 8 cube corners as the
@@ -666,5 +795,59 @@ mod tests {
         let t = Vector3::new(r.transform[12], r.transform[13], r.transform[14]);
         let err = (t - (-data_offset)).norm();
         assert!(err < 0.05, "translation error too high: {:?}", t);
+    }
+
+    #[test]
+    fn multi_resolution_recovers_translation() {
+        // Use a Gaussian cloud (not a grid, so stride subsample
+        // doesn't land on a 2D slice). 500 points is enough to
+        // give the coarse pass a meaningful sample.
+        let model: Vec<f32> = gaussian_cloud(500, 0.5, 42);
+        let data_offset = Vector3::new(3.0_f64, -2.0_f64, 1.5_f64);
+        let data_offset_f32 = [data_offset[0] as f32, data_offset[1] as f32, data_offset[2] as f32];
+        let mut data: Vec<f32> = (0..model.len() / 3)
+            .flat_map(|i| {
+                let i3 = i * 3;
+                vec![
+                    model[i3] + data_offset_f32[0],
+                    model[i3 + 1] + data_offset_f32[1],
+                    model[i3 + 2] + data_offset_f32[2],
+                ]
+            })
+            .collect();
+
+        let params = IcprParamsRust { max_iterations: 50, min_rms_decrease: 1e-6, ..Default::default() };
+        let r = icp_multi_resolution(&mut data, &model, &[0.2, 1.0], &params)
+            .expect("multi-res ICP failed");
+        let t = Vector3::new(r.transform[12], r.transform[13], r.transform[14]);
+        // The recovered transform's translation should be the
+        // "data → model" direction: -data_offset.
+        let err = (t - (-data_offset)).norm();
+        assert!(err < 0.1, "translation error too high: {:?} (expected {:?})", t, -data_offset);
+    }
+
+    /// Generate a Gaussian cloud. Helper for multi-resolution test.
+    fn gaussian_cloud(n: usize, sigma: f32, seed: u64) -> Vec<f32> {
+        let mut state = seed;
+        let mut next_u = || -> f32 {
+            state ^= state << 13;
+            state ^= state >> 7;
+            state ^= state << 17;
+            (state as f64 / u64::MAX as f64) as f32
+        };
+        let mut next_normal = || -> f32 {
+            let u1 = next_u().max(1e-6);
+            let u2 = next_u();
+            let r = (-2.0 * u1.ln()).sqrt();
+            let theta = 2.0 * std::f32::consts::PI * u2;
+            r * theta.cos() * sigma
+        };
+        let mut out = Vec::with_capacity(n * 3);
+        for _ in 0..n {
+            out.push(next_normal());
+            out.push(next_normal());
+            out.push(next_normal());
+        }
+        out
     }
 }
