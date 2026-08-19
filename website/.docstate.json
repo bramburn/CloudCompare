@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "lastRun": "2025-01-01T00:00:00Z",
+  "queue": [
+    {"path": "qCC/ccAdjustZoomDlg.h", "status": "pending", "docPath": "reference/ccAdjustZoomDlg"},
+    {"path": "qCC/ccCropTool.h", "status": "pending", "docPath": "reference/ccCropTool"},
+    {"path": "qCC/ccGraphicalTransformationTool.h", "status": "pending", "docPath": "reference/ccGraphicalTransformationTool"},
+    {"path": "qCC/ccIsolines.h", "status": "pending", "docPath": "reference/ccIsolines"},
+    {"path": "qCC/ccPointListPickingDlg.h", "status": "pending", "docPath": "reference/ccPointListPickingDlg"},
+    {"path": "qCC/ccPointPickingGenericInterface.h", "status": "pending", "docPath": "reference/ccPointPickingGenericInterface"}
+  ],
+  "pointer": 0
+}

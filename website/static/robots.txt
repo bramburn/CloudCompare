@@ -1,0 +1,17 @@
+# robots.txt — the search-engine entry point for the docs site.
+# Lives under static/ so Docusaurus serves it at the site root as-is.
+#
+# Sitemap URL matches `baseUrl` in docusaurus.config.js
+# (https://bramburn.github.io/CloudCompare/sitemap.xml).
+
+User-agent: *
+
+# Allow everything by default. Add Disallow rules here if a section
+# ever needs to be hidden from crawlers (e.g. /tags/**, draft pages).
+Allow: /
+
+# Point every well-behaved crawler at the sitemap. The sitemap is
+# generated at build time by @docusaurus/plugin-sitemap (bundled in
+# @docusaurus/preset-classic; configured under docusaurus.config.js
+# → presets → sitemap).
+Sitemap: https://bramburn.github.io/CloudCompare/sitemap.xml
