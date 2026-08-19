@@ -14,6 +14,13 @@
 // #                   COPYRIGHT: The CloudCompare project                  #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccContourLinesGenerator.cpp
+ * @brief Contour line generation from raster grids
+ * @details Generates contour lines (isolines) from raster grid data using
+ * GDAL's contour generation algorithms.
+ * @see ccContourLinesGenerator, ccIsolines
+ */
 
 #include "ccContourLinesGenerator.h"
 
@@ -27,6 +34,13 @@
 // System
 #include <cassert>
 
+/**
+ * @brief Generates a unique name for a contour polyline
+ * @param value Contour value
+ * @param mainIndex Main contour index
+ * @param partNumber Part number for multi-part contours
+ * @return Formatted polyline name
+ */
 static QString GetPolylineName(double value, unsigned mainIndex, unsigned partNumber)
 {
 	QString contourLineName = QObject::tr("Contour line [value = %1]").arg(value);
@@ -204,6 +218,14 @@ static CPLErr ContourWriter(double  dfLevel,
 
 #endif // CC_GDAL_SUPPORT
 
+/**
+ * @brief Generates contour lines from a raster grid
+ * @param rasterGrid Source raster grid
+ * @param gridMinCornerXY Minimum corner coordinates
+ * @param params Generation parameters (start, step, max altitude, etc.)
+ * @param[out] contourLines Output vector of contour polylines
+ * @return true on success
+ */
 bool ccContourLinesGenerator::GenerateContourLines(ccRasterGrid*             rasterGrid,
                                                    const CCVector2d&         gridMinCornerXY,
                                                    const Parameters&         params,
