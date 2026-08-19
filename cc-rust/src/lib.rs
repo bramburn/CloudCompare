@@ -26,6 +26,7 @@ pub mod registration;
 pub mod octree;
 pub mod io;
 pub mod coarse_align;
+pub mod dgm_octree;
 
 pub use scalar_field::{
     mean, min_max, rms, std, valid_count, apply_offset, apply_scale,
@@ -37,4 +38,8 @@ pub use registration::{
 };
 pub use coarse_align::{
     coarse_align, apply_transform_in_place, CoarseAlignResult,
+};
+pub use dgm_octree::{
+    DgmOctree, compute_cell_code, get_cell_pos, get_bit_shift,
+    MAX_OCTREE_LEVEL,
 };
