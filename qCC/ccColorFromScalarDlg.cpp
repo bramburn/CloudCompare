@@ -14,6 +14,14 @@
 // #          COPYRIGHT: CloudCompare project                               #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccColorFromScalarDlg.cpp
+ * @brief Implementation of color from scalar dialog
+ * @details Dialog for converting scalar field values to RGB/RGBA colors
+ * with support for HSV and RGB color modes, saturation ranges, and
+ * interactive histogram visualization.
+ * @see ccColorFromScalarDlg
+ */
 
 #include "ccColorFromScalarDlg.h"
 
@@ -37,6 +45,12 @@
 #include <cassert>
 #include <cstring>
 
+/**
+ * @brief Constructor
+ * @param parent Parent widget
+ * @param pointCloud Point cloud with scalar fields to colorize
+ * @details Initializes the dialog with histogram displays and color mapping controls.
+ */
 ccColorFromScalarDlg::ccColorFromScalarDlg(QWidget* parent, ccPointCloud* pointCloud)
     : QDialog(parent, Qt::Tool)
     , m_cloud(pointCloud)
@@ -196,6 +210,10 @@ ccColorFromScalarDlg::ccColorFromScalarDlg(QWidget* parent, ccPointCloud* pointC
 	}
 }
 
+/**
+ * @brief Destructor
+ * @details Restores original scalar field color settings.
+ */
 ccColorFromScalarDlg::~ccColorFromScalarDlg()
 {
 	if (!m_systemInvalid)
@@ -214,6 +232,11 @@ ccColorFromScalarDlg::~ccColorFromScalarDlg()
 	delete m_ui;
 }
 
+/**
+ * @brief Updates color maps based on RGB/HSV mode
+ * @details Rebuilds color scales for each channel (R/G/B/A or H/S/V/A)
+ * based on the selected color mode and reverse settings.
+ */
 void ccColorFromScalarDlg::updateColormaps()
 {
 	if (!m_systemInvalid)
@@ -309,6 +332,10 @@ void ccColorFromScalarDlg::updateColormaps()
 	}
 }
 
+/**
+ * @brief Handles color reversal toggle
+ * @param state Checkbox state
+ */
 void ccColorFromScalarDlg::toggleColors(int state)
 {
 	if (!m_systemInvalid)
@@ -321,6 +348,10 @@ void ccColorFromScalarDlg::toggleColors(int state)
 	}
 }
 
+/**
+ * @brief Handles RGB/HSV mode toggle
+ * @param state Radio button state
+ */
 void ccColorFromScalarDlg::toggleColorMode(bool state)
 {
 	if (!m_systemInvalid)
@@ -332,6 +363,10 @@ void ccColorFromScalarDlg::toggleColorMode(bool state)
 }
 
 // update/redraw histograms but don't reset postion of UI elements/sliders etc.
+/**
+ * @brief Refreshes histogram displays
+ * @details Updates all channel histograms without resetting UI state.
+ */
 void ccColorFromScalarDlg::refreshDisplay()
 {
 	if (!m_systemInvalid)
@@ -344,6 +379,10 @@ void ccColorFromScalarDlg::refreshDisplay()
 	}
 }
 
+/**
+ * @brief Updates histogram for a channel
+ * @param n Channel index (0-3)
+ */
 void ccColorFromScalarDlg::updateHistogram(int n)
 {
 	if (!m_systemInvalid)
@@ -410,6 +449,10 @@ void ccColorFromScalarDlg::updateHistogram(int n)
 	}
 }
 
+/**
+ * @brief Updates spin box limits for a channel
+ * @param n Channel index (0-3)
+ */
 void ccColorFromScalarDlg::updateSpinBoxLimits(int n)
 {
 	if (!m_systemInvalid)
@@ -445,6 +488,10 @@ void ccColorFromScalarDlg::updateSpinBoxLimits(int n)
 	}
 }
 
+/**
+ * @brief Updates channel when scalar field selection changes
+ * @param n Channel index (0-3)
+ */
 void ccColorFromScalarDlg::updateChannel(int n)
 {
 	if (!m_systemInvalid)
@@ -467,6 +514,10 @@ void ccColorFromScalarDlg::updateChannel(int n)
 	}
 }
 
+/**
+ * @brief Sets default saturation values for a channel
+ * @param n Channel index (0-3)
+ */
 void ccColorFromScalarDlg::setDefaultSatValuePerChannel(int n)
 {
 	if (!m_systemInvalid)
@@ -489,12 +540,22 @@ void ccColorFromScalarDlg::setDefaultSatValuePerChannel(int n)
 	}
 }
 
+/**
+ * @brief Handles dialog resize events
+ * @param event Resize event
+ */
 void ccColorFromScalarDlg::resizeEvent(QResizeEvent* event)
 {
 	refreshDisplay();
 }
 
 // mapping ranges changed
+/**
+ * @brief Handles minimum value changes
+ * @param n Channel index (0-3)
+ * @param val New minimum value
+ * @param slider true if change came from slider
+ */
 void ccColorFromScalarDlg::minChanged(int n, double val, bool slider)
 {
 	if (n >= c_channelCount || n < 0)
@@ -521,6 +582,12 @@ void ccColorFromScalarDlg::minChanged(int n, double val, bool slider)
 	}
 }
 
+/**
+ * @brief Handles maximum value changes
+ * @param n Channel index (0-3)
+ * @param val New maximum value
+ * @param slider true if change came from slider
+ */
 void ccColorFromScalarDlg::maxChanged(int n, double val, bool slider)
 {
 	if (n >= c_channelCount || n < 0)
@@ -547,6 +614,11 @@ void ccColorFromScalarDlg::maxChanged(int n, double val, bool slider)
 	}
 }
 
+/**
+ * @brief Applies color mapping to point cloud
+ * @details Converts scalar field values to RGB/RGBA colors based on
+ * current settings and applies them to all points.
+ */
 void ccColorFromScalarDlg::onApply()
 {
 	if (!m_systemInvalid)
@@ -637,6 +709,9 @@ void ccColorFromScalarDlg::onApply()
 	}
 }
 
+/**
+ * @brief Disables all controls except cancel
+ */
 void ccColorFromScalarDlg::disableAllButCancel()
 {
 	for (unsigned n = 0; n < c_channelCount; n++)
