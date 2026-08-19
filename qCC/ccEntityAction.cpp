@@ -14,6 +14,13 @@
 // #          COPYRIGHT: CloudCompare project                               #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccEntityAction.cpp
+ * @brief Entity action functions implementation
+ * @details Implements various actions on entities such as colors, scalar
+ * fields, normals, coordinate transformations, and more.
+ * @see ccEntityAction
+ */
 
 // Qt
 #include <QColorDialog>
@@ -75,6 +82,11 @@
 #include <array>
 #include <unordered_set>
 
+/**
+ * @brief Namespace for entity action functions
+ * @details Provides static functions for performing operations on entities
+ * including color manipulation, scalar field management, and transformations.
+ */
 namespace ccEntityAction
 {
 	static QString GetFirstAvailableSFName(const ccPointCloud* cloud, const QString& baseName)
@@ -101,6 +113,13 @@ namespace ccEntityAction
 		return {};
 	}
 
+	/**
+	 * @brief Sets or colorizes entity colors
+	 * @param selectedEntities Entities to modify
+	 * @param colorize If true, colorize existing colors; if false, replace
+	 * @param parent Parent widget for dialogs
+	 * @return true on success
+	 */
 	//////////
 	// Colours
 	bool setColor(ccHObject::Container selectedEntities, bool colorize, QWidget* parent /*=nullptr*/)
@@ -206,6 +225,11 @@ namespace ccEntityAction
 		return true;
 	}
 
+	/**
+	 * @brief Converts RGB colors to greyscale
+	 * @param selectedEntities Entities to convert
+	 * @return true on success
+	 */
 	bool rgbToGreyScale(ccHObject::Container selectedEntities)
 	{
 		for (ccHObject* ent : selectedEntities)
@@ -234,6 +258,12 @@ namespace ccEntityAction
 		return true;
 	}
 
+	/**
+	 * @brief Applies a color gradient to entities
+	 * @param selectedEntities Entities to modify
+	 * @param parent Parent widget for dialogs
+	 * @return true on success
+	 */
 	bool setColorGradient(ccHObject::Container selectedEntities, QWidget* parent /*=nullptr*/)
 	{
 		ccColorGradientDlg dlg(parent);
@@ -294,6 +324,12 @@ namespace ccEntityAction
 		return true;
 	}
 
+	/**
+	 * @brief Adjusts color levels (gamma, contrast)
+	 * @param selectedEntities Entities to modify
+	 * @param parent Parent widget for dialogs
+	 * @return true on success
+	 */
 	bool changeColorLevels(ccHObject::Container selectedEntities, QWidget* parent /*=nullptr*/)
 	{
 		if (selectedEntities.size() != 1)
@@ -327,6 +363,12 @@ namespace ccEntityAction
 	}
 
 	//! Interpolate colors from on entity and transfer them to another one
+	/**
+	 * @brief Interpolates colors between two points
+	 * @param selectedEntities Entities to modify
+	 * @param parent Parent widget for dialogs
+	 * @return true on success
+	 */
 	bool interpolateColors(ccHObject::Container selectedEntities, QWidget* parent /*=nullptr*/)
 	{
 		if (selectedEntities.size() != 2)
