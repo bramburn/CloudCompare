@@ -15,6 +15,18 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file cc2.5DimEditor.cpp
+ *
+ * @brief Implementation of the 2.5D raster data editor interface
+ *
+ * @details Implements the generic interface for 2.5D raster data editing,
+ * including grid size computation, 2D view creation, and raster-to-point-cloud
+ * conversion functionality.
+ *
+ * @see cc2Point5DimEditor
+ */
+
 #include "cc2.5DimEditor.h"
 
 // Local
@@ -40,6 +52,7 @@
 // System
 #include <assert.h>
 
+/** Default constructor. Initializes pointers to null. */
 cc2Point5DimEditor::cc2Point5DimEditor()
     : m_bbEditorDlg(nullptr)
     , m_glWindow(nullptr)
@@ -47,6 +60,7 @@ cc2Point5DimEditor::cc2Point5DimEditor()
 {
 }
 
+/** Destructor. Cleans up the raster cloud if present. */
 cc2Point5DimEditor::~cc2Point5DimEditor()
 {
 	if (m_rasterCloud)
@@ -58,6 +72,10 @@ cc2Point5DimEditor::~cc2Point5DimEditor()
 	}
 }
 
+/** Shows the bounding box editor dialog for grid configuration.
+ * @return true if user accepted the dialog, false otherwise
+ * @see createBoundingBoxEditor()
+ */
 bool cc2Point5DimEditor::showGridBoxEditor()
 {
 	if (m_bbEditorDlg)
@@ -76,6 +94,11 @@ bool cc2Point5DimEditor::showGridBoxEditor()
 	return false;
 }
 
+/** Creates the bounding box editor dialog.
+ * @param gridBBox Initial bounding box for the grid
+ * @param parent Parent widget for the dialog
+ * @see showGridBoxEditor()
+ */
 void cc2Point5DimEditor::createBoundingBoxEditor(const ccBBox& gridBBox, QWidget* parent)
 {
 	if (!m_bbEditorDlg)
@@ -85,6 +108,11 @@ void cc2Point5DimEditor::createBoundingBoxEditor(const ccBBox& gridBBox, QWidget
 	}
 }
 
+/** Creates a 2D OpenGL view for displaying the grid.
+ * @param parentFrame Frame widget to contain the GL window
+ * @note Configures the view for top-down 2D projection with appropriate
+ * interaction modes and display parameters.
+ */
 void cc2Point5DimEditor::create2DView(QFrame* parentFrame)
 {
 	if (!m_glWindow)
@@ -122,6 +150,12 @@ void cc2Point5DimEditor::create2DView(QFrame* parentFrame)
 	}
 }
 
+/** Computes the grid dimensions based on bounding box and grid step.
+ * @param[out] gridWidth Output grid width in cells
+ * @param[out] gridHeight Output grid height in cells
+ * @return true if grid size was computed successfully
+ * @see getGridSizeAsString()
+ */
 bool cc2Point5DimEditor::getGridSize(unsigned& gridWidth, unsigned& gridHeight) const
 {
 	// vertical dimension
@@ -136,6 +170,10 @@ bool cc2Point5DimEditor::getGridSize(unsigned& gridWidth, unsigned& gridHeight) 
 	return ccRasterGrid::ComputeGridSize(Z, box, gridStep, gridWidth, gridHeight);
 }
 
+/** Returns a human-readable string describing the grid dimensions.
+ * @return QString in format "WIDTH x HEIGHT (CELLS cells)"
+ * @see getGridSize()
+ */
 QString cc2Point5DimEditor::getGridSizeAsString() const
 {
 	unsigned gridWidth  = 0;
@@ -148,11 +186,19 @@ QString cc2Point5DimEditor::getGridSizeAsString() const
 	return QString("%1 x %2 (%3 cells)").arg(gridWidth).arg(gridHeight).arg(QLocale::system().toString(gridWidth * gridHeight));
 }
 
+/** Gets the current bounding box from the editor dialog or returns default.
+ * @return Current bounding box (from dialog if available, else default empty box)
+ */
 ccBBox cc2Point5DimEditor::getCustomBBox() const
 {
 	return (m_bbEditorDlg ? m_bbEditorDlg->getBox() : ccBBox());
 }
 
+/** Updates the 2D view zoom to fit the grid bounding box.
+ * @param box Bounding box to fit in the view
+ * @note Computes optimal point size and camera focal length to display
+ * the grid appropriately in the 2D view.
+ */
 void cc2Point5DimEditor::update2DDisplayZoom(ccBBox& box)
 {
 	if (!m_glWindow || !m_grid.isValid())
@@ -207,6 +253,22 @@ void cc2Point5DimEditor::update2DDisplayZoom(ccBBox& box)
 	m_glWindow->redraw();
 }
 
+/** Converts the internal raster grid to a point cloud.
+ * @param exportHeightStats Export height statistics
+ * @param exportSFStats Export scalar field statistics
+ * @param exportedStatistics List of statistics fields to export
+ * @param projectSFs Project scalar fields from input cloud
+ * @param projectColors Project colors from input cloud
+ * @param resampleInputCloudXY Resample input cloud in XY plane
+ * @param resampleInputCloudZ Resample input cloud in Z direction
+ * @param inputCloud Optional input cloud for projection/resampling
+ * @param percentileValue Percentile value for height statistics
+ * @param exportToOriginalCS Export in original coordinate system
+ * @param appendGridSizeToSFNames Append grid dimensions to SF names
+ * @param progressDialog Optional progress dialog
+ * @return Newly created point cloud, or nullptr on failure
+ * @see m_grid
+ */
 ccPointCloud* cc2Point5DimEditor::convertGridToCloud(bool                                               exportHeightStats,
                                                      bool                                               exportSFStats,
                                                      const std::vector<ccRasterGrid::ExportableFields>& exportedStatistics,
@@ -244,6 +306,12 @@ ccPointCloud* cc2Point5DimEditor::convertGridToCloud(bool                       
 	                             progressDialog);
 }
 
+/** Maps combo box index to empty cell fill strategy.
+ * @param comboBox Combo box containing the fill strategy selection
+ * @return Corresponding EmptyCellFillOption value
+ * @note Combo indices: 0=LEAVE_EMPTY, 1=FILL_MIN, 2=FILL_AVG,
+ * 3=FILL_MAX, 4=FILL_CUSTOM, 5=INTERPOLATE, 6=KRIGING
+ */
 ccRasterGrid::EmptyCellFillOption cc2Point5DimEditor::getFillEmptyCellsStrategy(QComboBox* comboBox) const
 {
 	if (!comboBox)
