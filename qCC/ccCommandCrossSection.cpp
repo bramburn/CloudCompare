@@ -1,3 +1,12 @@
+/**
+ * @file ccCommandCrossSection.cpp
+ * @brief Command-line cross section extraction
+ * @details Processes point clouds and meshes to extract cross-sectional slices
+ * based on XML-defined parameters including box dimensions, repeat dimensions,
+ * and output paths.
+ * @see CommandCrossSection
+ */
+
 #include "ccCommandCrossSection.h"
 
 #include "ccCommandLineCommands.h"
@@ -10,11 +19,21 @@
 
 constexpr char COMMAND_CROSS_SECTION[] = "CROSS_SECTION";
 
+/**
+ * @brief Constructor
+ */
 CommandCrossSection::CommandCrossSection()
     : ccCommandLineInterface::Command("Cross section", COMMAND_CROSS_SECTION)
 {
 }
 
+/**
+ * @brief Processes the CROSS_SECTION command
+ * @param cmd Command line interface
+ * @return true on success
+ * @details Reads XML configuration file specifying clipping box parameters,
+ * loads input files, extracts slices, and saves results to output directory.
+ */
 bool CommandCrossSection::process(ccCommandLineInterface& cmd)
 {
 	cmd.print("[CROSS SECTION]");
