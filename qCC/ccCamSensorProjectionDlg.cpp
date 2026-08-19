@@ -14,6 +14,13 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccCamSensorProjectionDlg.cpp
+ * @brief Implementation of camera sensor projection dialog
+ * @details Dialog for configuring camera sensor intrinsic and extrinsic
+ * parameters including position, orientation, focal length, distortion, etc.
+ * @see ccCamSensorProjectionDlg
+ */
 
 #include "ccCamSensorProjectionDlg.h"
 
@@ -26,6 +33,11 @@
 // persistent parameters
 static bool s_inCameraCS = true;
 
+/**
+ * @brief Constructor
+ * @param parent Parent widget
+ * @details Initializes UI with validators for numeric input fields.
+ */
 ccCamSensorProjectionDlg::ccCamSensorProjectionDlg(QWidget* parent)
     : QDialog(parent)
     , Ui::CamSensorProjectDialog()
@@ -49,6 +61,13 @@ ccCamSensorProjectionDlg::ccCamSensorProjectionDlg(QWidget* parent)
 	inWorldCSCheckBox->setChecked(s_inCameraCS);
 }
 
+/**
+ * @brief Initializes dialog from camera sensor
+ * @param sensor Camera sensor to read parameters from
+ * @details Populates all UI fields with the sensor's intrinsic
+ * (focal, FOV, pixel size, etc.) and extrinsic (position, rotation)
+ * parameters, as well as distortion model info.
+ */
 void ccCamSensorProjectionDlg::initWithCamSensor(const ccCameraSensor* sensor)
 {
 	if (!sensor)
@@ -149,6 +168,12 @@ void ccCamSensorProjectionDlg::initWithCamSensor(const ccCameraSensor* sensor)
 	}
 }
 
+/**
+ * @brief Updates camera sensor from dialog values
+ * @param sensor Camera sensor to update
+ * @details Writes all UI field values back to the sensor's
+ * intrinsic and extrinsic parameters.
+ */
 void ccCamSensorProjectionDlg::updateCamSensor(ccCameraSensor* sensor)
 {
 	if (!sensor)
