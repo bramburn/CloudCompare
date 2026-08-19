@@ -10,7 +10,7 @@
 
 #include <QMessageBox>
 
-namespace qHelloCloud
+namespace HelloCloud
 {
 	void performActionHello( ccMainAppInterface *appInterface )
 	{

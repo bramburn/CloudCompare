@@ -44,7 +44,7 @@ QList<QAction *> qHelloCloud::getActions()
 
 		connect( m_actionHello, &QAction::triggered, this, [this]()
 		{
-			qHelloCloud::performActionHello( m_app );
+			HelloCloud::performActionHello( m_app );
 		} );
 	}
 
@@ -56,7 +56,7 @@ QList<QAction *> qHelloCloud::getActions()
 
 		connect( m_actionLoad, &QAction::triggered, this, [this]()
 		{
-			qHelloCloud::performActionLoadCloud( m_app );
+			HelloCloud::performActionLoadCloud( m_app );
 		} );
 	}
 

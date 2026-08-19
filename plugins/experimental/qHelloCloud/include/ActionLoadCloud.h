@@ -8,7 +8,7 @@
 
 class ccMainAppInterface;
 
-namespace qHelloCloud
+namespace HelloCloud
 {
 	//! Pops a QFileDialog, loads the selected file via the standard CC
 	//! filter chain, adds the result to the DB tree, and zooms the active

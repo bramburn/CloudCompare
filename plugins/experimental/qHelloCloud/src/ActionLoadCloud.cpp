@@ -13,7 +13,7 @@
 #include <QFileInfo>
 #include <QString>
 
-namespace qHelloCloud
+namespace HelloCloud
 {
 	void performActionLoadCloud( ccMainAppInterface *appInterface )
 	{
