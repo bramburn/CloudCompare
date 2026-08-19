@@ -7117,6 +7117,14 @@ ccGLWindowInterface* ccGLWindowInterface::FromWidget(QWidget* widget)
 		return monoWidget;
 	}
 
+	// ccGLWindowStereo is itself a QWidget (QOpenGLWidget subclass)
+	ccGLWindowStereo* stereoWindow = qobject_cast<ccGLWindowStereo*>(widget);
+	if (stereoWindow)
+	{
+		return stereoWindow;
+	}
+
+	// Fallback: ccGLStereoWidget container (legacy, when ccGLWindowStereo was a QWindow)
 	ccGLStereoWidget* stereoWidget = qobject_cast<ccGLStereoWidget*>(widget);
 	if (stereoWidget)
 	{

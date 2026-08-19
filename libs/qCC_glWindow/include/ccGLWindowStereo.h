@@ -28,21 +28,24 @@
  * @brief Stereo GL window
  *
  * OpenGL window with stereo 3D display support.
+ * Migrated to QOpenGLWidget in Qt 6 (previously QWindow with manual context).
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
  */
-#include <QHBoxLayout>
-#include <QWidget>
-#include <QWindow>
 
-class QOpenGLPaintDevice;
+// Qt
+#include <QHBoxLayout>
+#include <QOpenGLWidget>
+#include <QWidget>
 
 /**
- * @brief Stereo GL window
+ * @brief Stereo GL window (Qt 6: QOpenGLWidget-based)
  *
  * OpenGL window with stereo 3D support.
+ * Inherits from QOpenGLWidget for automatic context management (Qt 6 pattern).
+ * The actual stereo rendering uses custom stereo FBOs via ccGLWindowInterface.
  */
-class CCGLWINDOW_LIB_API ccGLWindowStereo : public QWindow
+class CCGLWINDOW_LIB_API ccGLWindowStereo : public QOpenGLWidget
     , public ccGLWindowInterface
 {
 	Q_OBJECT
@@ -50,11 +53,11 @@ class CCGLWINDOW_LIB_API ccGLWindowStereo : public QWindow
   public:
 	/**
 	 * @brief Create stereo window
-	 * @param[in] format Surface format
-	 * @param[in] parent Parent window
+	 * @param[in] format Surface format (stereo must be enabled)
+	 * @param[in] parent Parent widget
 	 * @param[in] silentInitialization Skip init messages
 	 */
-	ccGLWindowStereo(QSurfaceFormat* format = nullptr, QWindow* parent = nullptr, bool silentInitialization = false);
+	ccGLWindowStereo(QSurfaceFormat* format = nullptr, QWidget* parent = nullptr, bool silentInitialization = false);
 
 	//! Destructor
 	~ccGLWindowStereo() override;
@@ -115,7 +118,7 @@ class CCGLWINDOW_LIB_API ccGLWindowStereo : public QWindow
 	}
 	inline QImage doGrabFramebuffer() override
 	{
-		return {};
+		return grabFramebuffer();
 	}
 	inline bool isStereo() const override
 	{
@@ -138,17 +141,17 @@ class CCGLWINDOW_LIB_API ccGLWindowStereo : public QWindow
 	}
 
 	// shortcuts
-	void setWindowTitle(QString title)
+	inline void setWindowTitle(QString title)
 	{
-		setTitle(title);
+		QWidget::setWindowTitle(title);
 	}
-	QString windowTitle() const
+	inline QString windowTitle() const
 	{
-		return title();
+		return QWidget::windowTitle();
 	}
 	inline QWidget* asWidget() override
 	{
-		return m_parentWidget;
+		return this;
 	}
 	inline QSize getScreenSize() const override
 	{
@@ -158,15 +161,15 @@ class CCGLWINDOW_LIB_API ccGLWindowStereo : public QWindow
 	// inherited from ccGLWindowInterface
 	inline int qtWidth() const override
 	{
-		return QWindow::width();
+		return QWidget::width();
 	}
 	inline int qtHeight() const override
 	{
-		return QWindow::height();
+		return QWidget::height();
 	}
 	inline QSize qtSize() const override
 	{
-		return QWindow::size();
+		return QWidget::size();
 	}
 	bool enableStereoMode(const StereoParams& params) override;
 	void disableStereoMode() override;
@@ -211,16 +214,11 @@ class CCGLWINDOW_LIB_API ccGLWindowStereo : public QWindow
 	bool initPaintGL() override;
 	void swapGLBuffers() override;
 
-	//! Returns the context (if any)
-	inline QOpenGLContext* context() const
-	{
-		return m_context;
-	}
+	// inherited from QOpenGLWidget — not used (use doMakeCurrent() instead)
+	// makeCurrent() is deleted in QOpenGLWidget's public API when context is managed
+	// We expose it via doMakeCurrent() in ccGLWindowInterface
 
-	//! Don't call makeCurrent() on this instance, as the FBO would not properly be managed
-	/** Use doMakeCurrent() instaad.
-	 **/
-	void makeCurrent() = delete;
+	//! use doMakeCurrent() from ccGLWindowInterface instead
 
   protected: // other methods
 	//! Reacts to the itemPickedFast signal (shortcut)
@@ -232,15 +230,15 @@ class CCGLWINDOW_LIB_API ccGLWindowStereo : public QWindow
 	// inherited from ccGLWindowInterface
 	int width() const override
 	{
-		return QWindow::width();
+		return QWidget::width();
 	}
 	int height() const override
 	{
-		return QWindow::height();
+		return QWidget::height();
 	}
 	QSize size() const override
 	{
-		return QWindow::size();
+		return QWidget::size();
 	}
 	GLuint defaultQtFBO() const override;
 
@@ -281,17 +279,14 @@ class CCGLWINDOW_LIB_API ccGLWindowStereo : public QWindow
 	}
 
   protected: // members
-	//! Associated OpenGL context
-	QOpenGLContext* m_context;
-
-	//! Format
+	//! Format (set via setFormat() before context creation)
 	QSurfaceFormat m_format;
 
-	//! Associated widget (we use the WidgetContainer mechanism)
+	//! Associated widget
 	QWidget* m_parentWidget;
 };
 
-//! Container widget for ccGLWindow
+//! Container widget for ccGLWindowStereo (thin wrapper; ccGLWindowStereo is itself a QWidget in Qt 6)
 class CCGLWINDOW_LIB_API ccGLStereoWidget : public QWidget
 {
 	Q_OBJECT
@@ -312,11 +307,8 @@ class CCGLWINDOW_LIB_API ccGLStereoWidget : public QWidget
 
 	virtual ~ccGLStereoWidget()
 	{
-		if (m_associatedWindow)
-		{
-			m_associatedWindow->setParent(nullptr);
-			m_associatedWindow->close();
-		}
+		// ccGLWindowStereo is owned by the caller; just clear the association
+		m_associatedWindow = nullptr;
 	}
 
 	inline ccGLWindowStereo* associatedWindow() const
@@ -329,11 +321,10 @@ class CCGLWINDOW_LIB_API ccGLStereoWidget : public QWidget
 		if (window)
 		{
 			assert(layout() && layout()->count() == 0);
-			QWidget* container = QWidget::createWindowContainer(window, this);
-			layout()->addWidget(container);
-
+			// ccGLWindowStereo is already a QWidget — embed it directly
+			layout()->addWidget(window);
 			m_associatedWindow = window;
-			m_associatedWindow->setParentWidget(container);
+			m_associatedWindow->setParentWidget(this);
 		}
 		else
 		{

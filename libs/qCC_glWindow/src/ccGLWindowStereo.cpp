@@ -26,20 +26,22 @@
 
 // Qt
 #include <QMessageBox>
-#include <QOpenGLPaintDevice>
 #include <QResizeEvent>
 
 ccGLWindowStereo::ccGLWindowStereo(QSurfaceFormat* format /*=nullptr*/,
-                                   QWindow*        parent /*=nullptr*/,
+                                   QWidget*        parent /*=nullptr*/,
                                    bool            silentInitialization /*=false*/)
-    : QWindow(parent)
+    : QOpenGLWidget(parent)
     , ccGLWindowInterface(this, silentInitialization)
-    , m_context(nullptr)
     , m_parentWidget(nullptr)
 {
-	setSurfaceType(QWindow::OpenGLSurface);
+	// Store format for preInitialize (must be set before context creation)
+	m_format = format ? *format : QSurfaceFormat::defaultFormat();
 
-	m_format = format ? *format : requestedFormat();
+	if (format)
+	{
+		setFormat(*format);
+	}
 
 	// default picking mode
 	setPickingMode(DEFAULT_PICKING);
@@ -49,12 +51,9 @@ ccGLWindowStereo::ccGLWindowStereo(QSurfaceFormat* format /*=nullptr*/,
 
 	// signal/slot connections
 	connect(m_signalEmitter, &ccGLWindowSignalEmitter::itemPickedFast, this, &ccGLWindowStereo::onItemPickedFastSlot, Qt::DirectConnection);
-	connect(&m_scheduleTimer, &QTimer::timeout, [&]()
-	        { checkScheduledRedraw(); });
-	connect(&m_autoRefreshTimer, &QTimer::timeout, this, [&]()
-	        { update(); });
-	connect(&m_deferredPickingTimer, &QTimer::timeout, this, [&]()
-	        { doPicking(); });
+	connect(&m_scheduleTimer, &QTimer::timeout, [&]() { checkScheduledRedraw(); });
+	connect(&m_autoRefreshTimer, &QTimer::timeout, this, [&]() { update(); });
+	connect(&m_deferredPickingTimer, &QTimer::timeout, this, [&]() { doPicking(); });
 
 	QString windowTitle = QString("3D View Stereo %1").arg(m_uniqueID);
 	setWindowTitle(windowTitle);
@@ -67,21 +66,17 @@ ccGLWindowStereo::~ccGLWindowStereo()
 	disableStereoMode();
 
 	uninitializeGL();
-
-	if (m_context)
-	{
-		m_context->doneCurrent();
-	}
+	// QOpenGLWidget handles context cleanup automatically
 }
 
 void ccGLWindowStereo::grabMouse()
 {
-	setMouseGrabEnabled(true);
+	QWidget::grabMouse();
 }
 
 void ccGLWindowStereo::releaseMouse()
 {
-	setMouseGrabEnabled(false);
+	QWidget::releaseMouse();
 }
 
 void ccGLWindowStereo::setParentWidget(QWidget* widget)
@@ -101,10 +96,8 @@ void ccGLWindowStereo::setParentWidget(QWidget* widget)
 
 void ccGLWindowStereo::doMakeCurrent()
 {
-	if (m_context)
-	{
-		m_context->makeCurrent(this);
-	}
+	// QOpenGLWidget manages the context automatically
+	makeCurrent();
 
 	if (m_activeFbo)
 	{
@@ -115,25 +108,16 @@ void ccGLWindowStereo::doMakeCurrent()
 bool ccGLWindowStereo::preInitialize(bool& firstTime)
 {
 	firstTime = false;
-	if (!m_context)
-	{
-		m_context = new QOpenGLContext(this);
-		m_context->setFormat(m_format);
-		m_context->setShareContext(QOpenGLContext::globalShareContext());
-		if (!m_context->create())
-		{
-			ccLog::Error("Failed to create the OpenGL context");
-			return false;
-		}
-		firstTime = true;
-	}
-	else if (!m_context->isValid())
+
+	// QOpenGLWidget::makeCurrent() creates the context lazily on first call
+	makeCurrent();
+
+	if (!context() || !context()->isValid())
 	{
 		return false;
 	}
 
-	m_context->makeCurrent(this);
-
+	firstTime = true;
 	return true;
 }
 
@@ -165,16 +149,6 @@ bool ccGLWindowStereo::event(QEvent* evt)
 	}
 		return true;
 
-	case QEvent::Expose:
-	{
-		if (isExposed())
-		{
-			requestUpdate();
-		}
-		evt->accept();
-	}
-		return true;
-
 	case QEvent::UpdateRequest:
 	case QEvent::Show:
 	case QEvent::Paint:
@@ -189,7 +163,7 @@ bool ccGLWindowStereo::event(QEvent* evt)
 		break;
 	}
 
-	return QWindow::event(evt);
+	return QOpenGLWidget::event(evt);
 }
 
 void ccGLWindowStereo::resizeGL(int w, int h)
@@ -214,10 +188,7 @@ void ccGLWindowStereo::requestUpdate()
 
 bool ccGLWindowStereo::initPaintGL()
 {
-	if (!isExposed())
-	{
-		return false;
-	}
+	// Ensure GL is initialized (QOpenGLWidget handles context automatically)
 	if (!m_initialized && !initialize())
 	{
 		return false;
@@ -235,17 +206,9 @@ bool ccGLWindowStereo::initPaintGL()
 
 void ccGLWindowStereo::swapGLBuffers()
 {
-	if (!m_stereoModeEnabled)
-	{
-		if (m_context)
-		{
-			m_context->swapBuffers(this);
-		}
-		else
-		{
-			assert(false);
-		}
-	}
+	// QOpenGLWidget swaps buffers automatically after each frame paintGL() callback.
+	// For non-stereo mode there is nothing extra to do.
+	// For stereo mode, ccGLWindowInterface::enableStereoMode manages FBO swapping manually.
 }
 
 bool ccGLWindowStereo::enableStereoMode(const StereoParams& params)
@@ -265,21 +228,28 @@ void ccGLWindowStereo::Create(ccGLWindowStereo*& window, QWidget*& widget, bool 
 	format.setStereo(true);
 
 	window = new ccGLWindowStereo(&format, nullptr, silentInitialization);
-	widget = new ccGLStereoWidget(window);
+	// ccGLWindowStereo is itself a QWidget (QOpenGLWidget subclass)
+	widget = window;
 }
 
 ccGLWindowStereo* ccGLWindowStereo::FromWidget(QWidget* widget)
 {
+	// Direct cast for the case where ccGLWindowStereo is used directly as a widget
+	ccGLWindowStereo* stereoWindow = qobject_cast<ccGLWindowStereo*>(widget);
+	if (stereoWindow)
+	{
+		return stereoWindow;
+	}
+
+	// Fallback: check if it's a ccGLStereoWidget container
 	ccGLStereoWidget* myWidget = qobject_cast<ccGLStereoWidget*>(widget);
 	if (myWidget)
 	{
 		return myWidget->associatedWindow();
 	}
-	else
-	{
-		assert(false);
-		return nullptr;
-	}
+
+	assert(false);
+	return nullptr;
 }
 
 void ccGLWindowStereo::doSetMouseTracking(bool enable)

@@ -227,6 +227,71 @@ Wiping the build directory with `Remove-Item -Recurse -Force` was blocked by the
 
 ---
 
+## 9. Unit tests (Qt Test)
+
+Qt Test (`Qt6::Test`) is used for unit tests. `BUILD_TESTING=ON` is set in `tools/cc-configure.cmd`.
+
+### Test binaries
+
+```
+C:\dev\CloudCompare\build\qCC\test\TestArgumentParser.exe
+C:\dev\CloudCompare\build\qCC\test\TestFileIOFilter.exe
+C:\dev\CloudCompare\build\qCC\test\TestPointCloud.exe
+C:\dev\CloudCompare\build\qCC\test\TestShiftedObject.exe
+```
+
+### Running tests
+
+**Never run Qt test executables directly from PowerShell without a DLL PATH.** The DLLs are spread across `build/libs/` subdirectories — the system `PATH` does not include them. Use Python `subprocess` to set `PATH` explicitly:
+
+```python
+import subprocess, os
+
+dll_dirs = [
+    'C:/dev/CloudCompare/build/libs/CCPluginAPI',
+    'C:/dev/CloudCompare/build/libs/qCC_db',
+    'C:/dev/CloudCompare/build/libs/qCC_db/extern/CCCoreLib',
+    'C:/dev/CloudCompare/build/libs/CCFbo',
+    'C:/dev/CloudCompare/build/libs/qCC_glWindow',
+    'C:/dev/CloudCompare/build/libs/qCC_io',
+    'C:/dev/CloudCompare/build/libs/qCC_io/extern/shapelib',
+    'C:/dev/tools/Qt/6.8.3/msvc2022_64/bin',
+]
+env = os.environ.copy()
+env['PATH'] = ';'.join(dll_dirs) + ';' + env.get('PATH', '')
+result = subprocess.run(
+    ['C:/dev/CloudCompare/build/qCC/test/TestArgumentParser.exe',
+     '-txt', '-o', 'C:/dev/CloudCompare/test_result.txt'],
+    capture_output=True, text=True, env=env, timeout=30
+)
+with open('C:/dev/CloudCompare/test_result.txt') as f:
+    print(f.read())
+```
+
+The `TestFileIOFilter.exe` also needs `qCC_io` and `shapelib` DLL dirs.
+
+### Issues hit and fixed (do not repeat)
+
+**`d3d11.lib not found` on link** — `cmake/CMakeExternalLibs.cmake` hardcoded Windows Kits **8.0** (doesn't exist on this machine) and added it to `CMAKE_PREFIX_PATH` (not used by the MSVC linker). Fixed: replaced with `CC_WINDOWS_SDK_LIB_DIR` that auto-detects the newest installed SDK (10.0.26100.0) and adds `/LIBPATH:...` to all test targets via `add_link_options()` in `qCC/test/CMakeLists.txt`. **If you add new test targets, add the same `add_link_options` guard.**
+
+**`FileIOFilter::GetRealFilename` unresolved external** — the method had no `QCC_IO_LIB_API` export macro. `libs/qCC_io/include/FileIOFilter.h` now includes `qCC_io.h` and declares `QCC_IO_LIB_API static QString GetRealFilename(...)`. **Any static method in a shared library class that is defined in the `.cpp` and called from outside the library needs the `*_LIB_API` macro.**
+
+**`ccPointCloud::addColor()` crashes with access violation** — `addColor()` calls `assert(m_rgbaColors->isAllocated())`. The color table is a **separate allocation** from the point table. Must call `reserveTheRGBTable()` before `addColor()`. Same pattern for normals: call `reserveTheNormsTable()` before `addNorm()`.
+
+**Qt Test `cleanup()` slot ordering** — `cleanup()` runs **after** every test function. If `cleanup()` calls `InitInternalFilters()`, any test that calls `UnregisterAll()` without re-initialising first will see filters restored before it can assert on the empty state. Structure tests accordingly.
+
+**Wrong filter string assertions** — `FileIOFilter::ImportFilterList()` uses `QObject::tr("All (*.*)")` (returns the translation string), not `"All Files (*.*)"`. The PLY filter registers as `"PLY mesh (*.ply)"`, not `"Stanford ply (*.ply)"`. **Always grep the actual source to get the exact string before writing assertions.**
+
+### Writing new tests
+
+- All test files live in `qCC/test/`
+- Each new binary needs an entry in `qCC/test/CMakeLists.txt`
+- Use `QTEST_GUILESS_MAIN(ClassName)` for headless tests
+- `CCVector3` / `CCVector3d` have no `operator==` — compare `.x/.y/.z` individually
+- Scalar field: `addScalarField()` returns an index, `sf->setValue(i, val)`, `sf->computeMinAndMax()`, then `sf->getMin()`/`getMax()`
+
+---
+
 ## 8. Files & logs created
 
 | Path | What |

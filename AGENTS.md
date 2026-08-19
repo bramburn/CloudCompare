@@ -18,8 +18,10 @@ This is the **root index**. Deep dives live in topic-split siblings so each one 
 | The 7 vendored libraries & their ownership boundaries | [`AGENTS-libs.md`](AGENTS-libs.md) | `CCCoreLib`, `qCC_db`, `qCC_io`, `qCC_glWindow`, `CCAppCommon`, `CCPluginAPI`, `CCPluginStub`, `CCFbo` — what each owns, what each exposes, who links to whom. |
 | UI patterns (dialogs, MDI, console, db-tree) | [`AGENTS-ui.md`](AGENTS-ui.md) | Qt conventions used in `qCC/`, where `.ui` files live, how the db-tree works, how `ccOverlayDialog` plugs in. |
 | Coding standards (naming, headers, formatting, includes, clang-format) | [`AGENTS-coding-standards.md`](AGENTS-coding-standards.md) | The rules from `CONTRIBUTING.md` + the .clang-format rules + the unwritten conventions in the codebase. |
+| **Unit testing with Qt Test** | [`BUILD-LOCAL.md` §9](BUILD-LOCAL.md#9-unit-tests-qt-test) | Running tests, PATH setup, known issues (SDK link path, DLL exports, ccPointCloud API gotchas, fixture ordering). |
 | **Human-facing docs site** | [`website/`](website/) | Docusaurus site at [`bramburn.github.io/CloudCompare`](https://bramburn.github.io/CloudCompare/), deployed by `.github/workflows/deploy-docs.yml`. Start there for the build cookbook, plugin inventory, and architecture map. |
 | **Active feature goals** (in-flight projects with their own context) | [`AGENTS_REGISTRATION.md`](AGENTS_REGISTRATION.md) | Manual dual-screen point-cloud registration (Faro Scene Classic-style). Includes §11 with five copy-pasteable agent prompts (recon → PRD → AGENTS → README → milestones). One of N such docs; add more as goals emerge. |
+| **Test coverage plan** | [`test-coverage-action-list.md`](test-coverage-action-list.md) | T1–T4 roadmap: 30% → 90% coverage with Qt Test. T1 (T1-A–H) is the current sprint. |
 
 Each sub-folder has its own short `AGENTS.md` pointing at the right topical file. Read **AGENTS-architecture.md first** if you're new to the codebase; jump to **AGENTS-plugin-dev.md** if you're here to add a feature. The active goals at the top level are themselves a kind of per-feature index — see **AGENTS_REGISTRATION.md** for the manual-registration work.
 
@@ -410,8 +412,10 @@ To see a docs deploy: GitHub → Actions → "Deploy docs site to GitHub Pages" 
 
 - [`BUILD.md`](BUILD.md) — upstream generic build instructions (cross-platform; supersedes this file's role for the project itself).
 - [`BUILD-LOCAL.md`](BUILD-LOCAL.md) — this machine's full build narrative (issues hit, exact paths, every workaround).
-- `cmake/CMakeExternalLibs.cmake` — Qt 6 `find_package()` + component list (any new plugin that needs Qt modules should respect this).
+- [`test-coverage-action-list.md`](test-coverage-action-list.md) — T1–T4 Qt Test roadmap with evidence references and CMake wiring patterns.
+- `cmake/CMakeExternalLibs.cmake` — Qt 6 `find_package()` + component list + Windows SDK auto-detect (`CC_WINDOWS_SDK_LIB_DIR`).
 - `cmake/DeployQt.cmake` — windeployqt invocation that produces the `deployqt\` bundle.
+- `qCC/test/CMakeLists.txt` — test binary wiring; if you add a new test target, copy the existing `add_executable` + `target_link_libraries` + `add_test` pattern.
 - `plugins/core/CMakeLists.txt` — plugin enumeration; add new plugin subdirs here.
 
 ## Qt 6 Migration (Qt 6.8.3)
