@@ -14,6 +14,13 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccCropTool.cpp
+ * @brief Crop tool implementation for point clouds and meshes
+ * @details Provides the Crop function to extract portions of entities
+ * using a bounding box. Supports both inside/outside cropping modes.
+ * @see ccCropTool
+ */
 
 #include "ccCropTool.h"
 
@@ -30,6 +37,14 @@
 #include <ManualSegmentationTools.h>
 #include <SimpleMesh.h>
 
+/**
+ * @brief Crops an entity using a bounding box
+ * @param entity Entity to crop (point cloud or mesh)
+ * @param box Cropping bounding box
+ * @param inside If true, keep points inside box; if false, keep points outside
+ * @param meshRotation Optional rotation matrix for mesh vertices
+ * @return Cropped entity, or nullptr on failure
+ */
 ccHObject* ccCropTool::Crop(ccHObject* entity, const ccBBox& box, bool inside /*=true*/, const ccGLMatrix* meshRotation /*=nullptr*/)
 {
 	assert(entity);
