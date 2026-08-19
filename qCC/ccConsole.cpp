@@ -14,6 +14,13 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccConsole.cpp
+ * @brief Console widget implementation
+ * @details Implements the logging console widget for CloudCompare with
+ * support for text output, warning/error messages, and clipboard operations.
+ * @see ccConsole, ccLog
+ */
 
 #include "ccConsole.h"
 
@@ -54,11 +61,19 @@ static int s_refreshCycle_ms                    = 1000;
 
 /*** ccCustomQListWidget ***/
 
+/**
+ * @brief Constructor
+ * @param parent Parent widget
+ */
 ccCustomQListWidget::ccCustomQListWidget(QWidget* parent)
     : QListWidget(parent)
 {
 }
 
+/**
+ * @brief Handles key press events for copy operations
+ * @param event Key event
+ */
 void ccCustomQListWidget::keyPressEvent(QKeyEvent* event)
 {
 	if (event->matches(QKeySequence::Copy))
@@ -81,8 +96,10 @@ void ccCustomQListWidget::keyPressEvent(QKeyEvent* event)
 	}
 }
 
-/*** ccConsole ***/
-
+/**
+ * @brief Sets the console refresh cycle
+ * @param cycle_ms Refresh interval in milliseconds
+ */
 void ccConsole::SetRefreshCycle(int cycle_ms /*=1000*/)
 {
 	if (cycle_ms <= 0)
@@ -105,6 +122,11 @@ void ccConsole::SetRefreshCycle(int cycle_ms /*=1000*/)
 	}
 }
 
+/**
+ * @brief Gets the singleton console instance
+ * @param autoInit Create instance if it doesn't exist
+ * @return Console instance or nullptr
+ */
 ccConsole* ccConsole::TheInstance(bool autoInit /*=true*/)
 {
 	if (!s_console.instance && autoInit)
@@ -116,6 +138,10 @@ ccConsole* ccConsole::TheInstance(bool autoInit /*=true*/)
 	return s_console.instance;
 }
 
+/**
+ * @brief Releases the console singleton
+ * @param flush Flush pending messages before releasing
+ */
 void ccConsole::ReleaseInstance(bool flush /*=true*/)
 {
 	if (flush && s_console.instance)
@@ -127,6 +153,9 @@ void ccConsole::ReleaseInstance(bool flush /*=true*/)
 	s_console.release();
 }
 
+/**
+ * @brief Constructor
+ */
 ccConsole::ccConsole()
     : m_textDisplay(nullptr)
     , m_parentWidget(nullptr)
@@ -135,6 +164,9 @@ ccConsole::ccConsole()
 {
 }
 
+/**
+ * @brief Destructor
+ */
 ccConsole::~ccConsole()
 {
 	setLogFile(QString()); // to close/delete any active stream
@@ -200,6 +232,10 @@ static void MyMessageOutput(QtMsgType type, const QMessageLogContext& context, c
 #endif
 }
 
+/**
+ * @brief Enables/disables Qt message forwarding to console
+ * @param state True to enable, false to disable
+ */
 void ccConsole::EnableQtMessages(bool state)
 {
 	s_showQtMessagesInConsole = state;
@@ -257,6 +293,10 @@ bool ccConsole::autoRefresh() const
 	return m_timer.isActive();
 }
 
+/**
+ * @brief Sets auto-refresh mode
+ * @param state True to enable auto-refresh
+ */
 void ccConsole::setAutoRefresh(bool state)
 {
 	if (state)
@@ -271,6 +311,9 @@ void ccConsole::setAutoRefresh(bool state)
 	}
 }
 
+/**
+ * @brief Refreshes the console display
+ */
 void ccConsole::refresh()
 {
 	m_mutex.lock();
@@ -335,6 +378,11 @@ void ccConsole::refresh()
 	m_mutex.unlock();
 }
 
+/**
+ * @brief Logs a message to the console
+ * @param message Message text
+ * @param level Log level (see ccLog)
+ */
 void ccConsole::logMessage(const QString& message, int level)
 {
 	// skip messages below the current 'verbosity' level
