@@ -4,7 +4,7 @@
 **Total files:** ~7964 source files (excluding build/.git/)
 **Started:** 2025-01-XX
 
-## Progress - 433 commits so far
+## Progress - 434 commits so far
 
 **Status:** Core CloudCompare headers documented. Remaining undocumented files are in:
 - Submodule plugins (qMPlane, q3DMASC, qColorimetricSegmenter, qG3Point, qJSonRPCPlugin, qMasonry, qTreeIso, qVoxFall, cc3DFin)
