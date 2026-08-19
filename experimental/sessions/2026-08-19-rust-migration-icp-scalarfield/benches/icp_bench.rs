@@ -1,0 +1,57 @@
+//! Benchmarks for the ICP registration.
+//!
+//! Run with: `cargo bench --bench icp_bench`
+
+use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
+use cc_sandbox::registration::{icp_iterate, IcprParamsRust};
+
+fn make_cloud(n: usize, sigma: f32, seed: u64) -> Vec<f32> {
+    let mut state = seed;
+    let mut next_u = || -> f32 {
+        state ^= state << 13;
+        state ^= state >> 7;
+        state ^= state << 17;
+        (state as f64 / u64::MAX as f64) as f32
+    };
+    let mut next_normal = || -> f32 {
+        let u1 = next_u().max(1e-6);
+        let u2 = next_u();
+        let r = (-2.0 * u1.ln()).sqrt();
+        let theta = 2.0_f32 * std::f32::consts::PI * u2;
+        r * theta.cos() * sigma
+    };
+    let mut out = Vec::with_capacity(n * 3);
+    for _ in 0..n {
+        out.push(next_normal());
+        out.push(next_normal());
+        out.push(next_normal());
+    }
+    out
+}
+
+fn bench_icp(c: &mut Criterion) {
+    let mut group = c.benchmark_group("icp");
+    for &n in &[100usize, 1_000, 5_000, 10_000] {
+        let model = make_cloud(n, 0.4, 42);
+        let mut data: Vec<f32> = (0..n)
+            .flat_map(|i| vec![model[i * 3] + 0.5, model[i * 3 + 1], model[i * 3 + 2]])
+            .collect();
+        let params = IcprParamsRust { max_iterations: 10, min_rms_decrease: 1e-8 };
+        group.throughput(Throughput::Elements(n as u64));
+        group.bench_with_input(BenchmarkId::from_parameter(n), &n, |b, &_n| {
+            // Reset data each iteration since ICP mutates in place
+            let model_ref = make_cloud(n, 0.4, 42);
+            let mut data_local: Vec<f32> = (0..n)
+                .flat_map(|i| vec![model_ref[i * 3] + 0.5, model_ref[i * 3 + 1], model_ref[i * 3 + 2]])
+                .collect();
+            b.iter(|| {
+                let r = icp_iterate(&mut data_local, &model_ref, &params).unwrap();
+                std::hint::black_box(r);
+            });
+        });
+    }
+    group.finish();
+}
+
+criterion_group!(benches, bench_icp);
+criterion_main!(benches);

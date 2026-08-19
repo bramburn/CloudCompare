@@ -1,0 +1,29 @@
+[package]
+name = "las_v1_pure_rust"
+version = "0.1.0"
+edition = "2021"
+description = "Phase 4 strategy: pure-Rust LAS reading via the `las` crate."
+
+[lib]
+name = "las_v1_pure_rust"
+path = "src/lib.rs"
+
+[[bin]]
+name = "las_inspect"
+path = "src/main.rs"
+
+[dependencies]
+# Pure-Rust LAS reader. The most-used pure-Rust LAS implementation.
+# - las 0.9+ handles .las 1.0-1.4
+# - For .laz (compressed), we need `laz` as well — see strategy 02.
+las = "0.9"
+log = "0.4"
+env_logger = "0.11"
+clap = { version = "4.5", features = ["derive"] }
+
+[dev-dependencies]
+approx = "0.5"
+
+[profile.release]
+opt-level = 3
+lto = "thin"

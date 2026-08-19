@@ -1,0 +1,25 @@
+[package]
+name = "scalarfield_v3_simd"
+version = "0.1.0"
+edition = "2021"
+description = "Phase 1 strategy 3: ScalarField with portable SIMD (std::simd, stable in 1.78+)."
+
+[lib]
+name = "scalarfield_v3_simd"
+path = "src/lib.rs"
+
+[dependencies]
+log = "0.4"
+env_logger = "0.11"
+
+[dev-dependencies]
+approx = "0.5"
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "bench"
+harness = false
+
+[profile.release]
+opt-level = 3
+lto = "thin"

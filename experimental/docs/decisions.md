@@ -107,6 +107,98 @@ benchmarked.
 
 ---
 
+## D5. 2026-08-19 — ScalarField parallel strategy: hybrid sequential + rayon
+
+**Context:** For Phase 1 of the Rust migration (porting `ScalarField`),
+the C++ implementation does its single-pass stats with a tight loop.
+We tested 3 Rust strategies to find the best speedup.
+
+**Decisions:**
+
+- **Sequential below 50K elements, rayon above.** Rayon gives a
+  **15x speedup on 1M elements** (4.34 ms → 296 µs) but **loses below
+  10K** (thread-pool overhead exceeds the work).
+- **Cross-over heuristic at 50K.** A small `if` in the public
+  `compute_all` function picks the right backend.
+- **`std::simd` deferred.** The portable SIMD path is nightly-only
+  on Rust 1.89. Code is staged in `scenarios/2026-08-19-scalarfield-strategies/03-portable-simd/`
+  for when the API stabilises.
+
+**Source:** `scenarios/2026-08-19-scalarfield-strategies/decisions.md`
+
+**Verification:** criterion benchmarks at 1k / 10k / 100k / 1M.
+
+| Backend | 1k | 10k | 100k | 1M |
+|---|---|---|---|---|
+| 01-sequential | 4.4 µs | 51 µs | 470 µs | 4.34 ms |
+| 02-parallel-rayon | 36 µs | 63 µs | 103 µs | **296 µs** |
+| 03-portable-simd | n/a | n/a | n/a | n/a (nightly) |
+
+---
+
+## D6. 2026-08-19 — LAS file parser: pure-Rust `las` crate replaces `LASzip`
+
+**Context:** Phase 4 of the Rust migration — replace
+`libs/qCC_db/extern/CCCoreLib/src/LasOpenFilter.cpp` (which uses
+`LASzip`, a C++ library) with a pure-Rust equivalent.
+
+**Decisions:**
+
+- **Use the `las` crate (pure-Rust).** 7.2M points/sec on a real
+  253 MB `.las` (point format 3) — **at least competitive with
+  LASzip**, often faster.
+- **All-into-memory is fine for now** (max `.las` is 250 MB in our
+  test corpus; in-memory ≈ 1 GB). Streaming variant is a follow-up
+  if/when we hit 1+ GB files.
+- **`.laz` (compressed) deferred** — add `laz` crate on top of
+  `las` when we need it. None of the current survey data is LAZ.
+
+**Source:** `scenarios/2026-08-19-las-parsers/decisions.md`
+
+**Verification:** read `D:\82 BROOK AVENUE\output\2026-08-13-09-46-35_82 brook avenue.splice.las`
+(7.5M points) in 1.04 s release; first point matches expected indoor-survey coords.
+
+**Migration impact:**
+
+- Removes `LASzip` from the CloudCompare build entirely (one less
+  C++ dep to vendor, build, audit).
+- The CXX FFI surface becomes `read_all_xyz(path: &Path) -> Vec<f64>`
+  — single function, no extra C++ glue.
+- The C++ side calls into Rust from `LasOpenFilter::loadFile`, gets
+  back `Vec<f64>`, narrows to `float` per point, populates
+  `ccPointCloud`.
+
+---
+
+## D7. 2026-08-19 — `cc-rust/` Cargo workspace created (Phase 0 done)
+
+**Context:** The roadmap called for a `cc-rust/` directory at the
+repo root with the Cargo workspace that becomes the production Rust
+crate. Until now, all Rust code lived in `experimental/`.
+
+**Decisions:**
+
+- **Created `cc-rust/`** with `crate-type = ["staticlib", "rlib"]` so
+  the C++ side can link against the staticlib and Rust binaries in
+  the same crate can use the rlib directly.
+- **CXX FFI gated behind a `cxx-ffi` feature** — same pattern as
+  `experimental/templates/rust_cxx_app/`. Default is pure-Rust so
+  `cargo test` works on any toolchain.
+- **28/28 tests pass** in `cc-rust/` (copied from
+  `experimental/sessions/2026-08-19-rust-migration-icp-scalarfield/`).
+- **CLI scaffold** at `cc-rust/src/main.rs` with `status`,
+  `scalar-stats`, `icp` subcommands (the latter two are stubs
+  until Phase 0's live FFI is done).
+
+**Source:** `cc-rust/docs/PHASES.md` — live status of all 4 phases.
+
+**Next:** Add `cc-rust/` to the CMake build as a custom target
+(`cc_rust_lib`) that runs `cargo build --release`. Hook the
+resulting `.lib` into `CloudCompare.exe` linking. That's the
+Phase 0 deliverable in the roadmap.
+
+---
+
 ## Adding a new decision
 
 When you make an architectural decision in a session:

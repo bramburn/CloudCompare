@@ -27,6 +27,8 @@ A **scenario** is a folder of 2–3 sessions that explore variants of the same p
 | Date | Name | Status | What |
 |---|---|---|---|
 | 2026-08-19 | [icp-variants](../scenarios/2026-08-19-icp-variants/) | Active | Compare 3 ICP NN implementations: naive / `kiddo` KD-tree / hand-rolled octree. Provisional winner: hand-rolled octree. |
+| 2026-08-19 | [scalarfield-strategies](../scenarios/2026-08-19-scalarfield-strategies/) | Active | Compare 3 ScalarField strategies: sequential / rayon / portable-SIMD. **Winner: hybrid seq+rayon (15x speedup at 1M).** |
+| 2026-08-19 | [las-parsers](../scenarios/2026-08-19-las-parsers/) | Active | Compare 2 LAS parser strategies: pure-Rust `las` crate / C++ LASzip. **Winner: pure-Rust `las` (7.2M pts/s, drops LASzip dep).** |
 
 ## Templates
 

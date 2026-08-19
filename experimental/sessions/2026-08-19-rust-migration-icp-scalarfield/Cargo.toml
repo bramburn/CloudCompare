@@ -55,3 +55,11 @@ panic = "abort"
 
 [profile.dev]
 opt-level = 1
+
+[[bench]]
+name = "scalar_field_bench"
+harness = false
+
+[[bench]]
+name = "icp_bench"
+harness = false
