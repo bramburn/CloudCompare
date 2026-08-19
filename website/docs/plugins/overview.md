@@ -14,8 +14,9 @@ The three plugin types are:
 
 | Type | Folder | What it ships |
 |---|---|---|
-| **Standard** | `plugins/core/Standard/` | Analysis tools — qCSF, qM3C2, qRANSAC_SD, qPoissonRecon, qBroom, qAnimation, qCompass, qCanupo, 3DFin, qPCV, qColorimetricSegmenter, qMPlane, qVoxFall, qHPR, qSRA, … |
-| **I/O** | `plugins/core/IO/` | File-format filters — qLASIO, qE57IO, qPDALIO, qFBXIO, qPhotoscanIO, qDracoIO, qStepCADImport, qRDBIO, qLASFWFIO, qCSVMatrixIO, qAdditionalIO, qTreeIso, qCoreIO |
+| **Standard** | `plugins/core/Standard/` | Analysis tools — qCSF, qM3C2, qPoissonRecon, qBroom, qAnimation, qCanupo, 3DFin, qPCV, qColorimetricSegmenter, qMPlane, qVoxFall, qHPR, qTreeIso, … |
+| **I/O** | `plugins/core/IO/` | File-format filters — qLASIO, qE57IO, qPDALIO, qFBXIO, qPhotoscanIO, qDracoIO, qStepCADImport, qRDBIO, qLASFWFIO, qCSVMatrixIO, qAdditionalIO, qCoreIO |
+| **Experimental** | `plugins/experimental/` | Plugins under development — currently `qHelloCloud` (plugin-loading smoke test). |
 | **GL** | `plugins/core/GL/` | OpenGL post-filters — qEDL (Eye Dome Lighting), qSSAO (Screen-Space Ambient Occlusion) |
 
 The full source for every plugin in the upstream set lives in
@@ -41,13 +42,14 @@ For the full contract and the API surface, see
 
 ## The local set
 
-The fork ships with **18 self-contained plugins enabled** and **20+
-disabled by default** because they need external dependencies. The full
-inventory is in:
+The fork ships with **16 self-contained plugins** enabled and **20+
+disabled by default** because they need external dependencies. Three
+upstream-default plugins (`qCompass`, `qRANSAC_SD`, `qSRA`) are also
+disabled because they are Qt 6.8.3 incompatible (class-name collision in
+`qvectornd.h`). The full inventory is in:
 
-- [Local set](/docs/plugins/local-set) — the 18 enabled, what each does.
-- [Disabled priority](/docs/plugins/disabled-priority) — the disabled ones, their
-  dependencies, and the vcpkg recipe.
+- [Local set](/docs/plugins/local-set) — the 16 enabled, what each does, plus experimental plugins.
+- [Disabled priority](/docs/plugins/disabled-priority) — the disabled ones (external deps + Qt 6.8.3 broken), their recipes.
 - [Standard](/docs/plugins/standard) — the Standard plugin pattern in detail.
 - [I/O](/docs/plugins/io) — the I/O plugin pattern in detail.
 - [GL](/docs/plugins/gl) — the GL plugin pattern in detail.

@@ -73,7 +73,7 @@ ccRenderToFileDlg::ccRenderToFileDlg(ccGLWindowInterface* win, QWidget* parent /
 	QSettings settings;
 	settings.beginGroup("RenderToFile");
 	m_selectedFilter             = settings.value("selectedFilter", firstFilter).toString();
-	QString currentPath          = settings.value("currentPath", QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString();
+	QString currentPath          = settings.value("currentPath", QStandardPaths::writableLocation(QStandardPaths::StandardLocation::Documents)).toString();
 	QString selectedExtension    = settings.value("selectedExtension", firstExtension).toString();
 	QString baseFilename         = settings.value("baseFilename", "capture").toString();
 	bool    dontScale            = settings.value("dontScaleFeatures", dontScalePoints()).toBool();

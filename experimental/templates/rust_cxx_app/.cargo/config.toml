@@ -1,0 +1,15 @@
+# Cargo configuration for rust_cxx_app template.
+#
+# Forces the MSVC toolchain (cl.exe / link.exe) for C++ compilation and
+# linking. Without this, Rust may pick up MinGW (g++.exe) from the PATH
+# which is incompatible with cxx-build's MSVC-targeted C++ glue.
+#
+# To use this template, run:
+#   . ../shared/scripts/get-vcvars.ps1
+#   $env:CC = 'cl.exe'
+#   $env:CXX = 'cl.exe'
+#   cargo build
+
+[target.x86_64-pc-windows-msvc]
+linker = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe"
+ar = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\lib.exe"

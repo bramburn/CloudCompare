@@ -431,12 +431,12 @@ void ccPropertiesTreeDelegate::fillWithMetaData(const ccObject* _obj)
 			if (value.length() > 1024)
 			{
 				// prefer the name over a very long description!
-				value = QString(QVariant::typeToName(var.type()));
+				value = var.typeName();
 			}
 		}
 		else
 		{
-			value = QString(QVariant::typeToName(var.type()));
+			value = var.typeName();
 		}
 
 		appendRow(ITEM(it.key()), ITEM(value));

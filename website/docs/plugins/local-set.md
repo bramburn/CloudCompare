@@ -6,9 +6,15 @@ sidebar_position: 2
 
 # Local set
 
-The fork ships with **18 self-contained plugins** — no external
+The fork ships with **16 self-contained plugins** — no external
 dependencies beyond Qt 6 and the standard system libraries. This is the
-default set in the wrapper scripts; the same set is built in CI.
+default set in the wrapper scripts.
+
+:::note
+`qM3C2` and `qCSF` are explicitly enabled in `tools/cc-configure.cmd`
+(`-DPLUGIN_STANDARD_QM3C2=ON -DPLUGIN_STANDARD_QCSF=ON`) as the
+T1 test targets. All others default to `OFF` in their `CMakeLists.txt`.
+:::
 
 | Plugin | Type | What it does |
 |---|---|---|
@@ -17,19 +23,26 @@ default set in the wrapper scripts; the same set is built in CI.
 | `qSSAO` | GL | Screen-Space Ambient Occlusion — contact-shadow post-filter for meshes |
 | `qAnimation` | Standard | Camera-path animation / flythrough |
 | `qBroom` | Standard | Interactive cropping tool ("the broom") |
-| `qCSF` | Standard | Cloth Simulation Filtering — ground / non-ground segmentation |
-| `qM3C2` | Standard | M3C2 multiscale cloud-to-cloud distance |
+| `qCSF` | Standard | Cloth Simulation Filtering — ground / non-ground segmentation (T1 test target) |
+| `qM3C2` | Standard | M3C2 multiscale cloud-to-cloud distance (T1 test target) |
 | `qPoissonRecon` | Standard | Surface reconstruction from oriented points (Kazhdan & Hoppe) |
-| `qRANSAC_SD` | Standard | RANSAC plane / sphere / cone / cylinder detection |
-| `qSRA` | Standard | Surface Roughness Analysis |
 | `qHPR` | Standard | Hidden Point Removal — point-cloud visibility from a viewpoint |
 | `qPCV` | Standard | Principal Component View — turntable spin image |
 | `qColorimetricSegmenter` | Standard | Color-based segmentation (HSV / Lab) |
 | `qMPlane` | Standard | Manual plane definition |
 | `qVoxFall` | Standard | Voxel fall direction analysis |
-| `qCompass` | Standard | Structural geology compass / strike-dip tool |
 | `qCanupo` | Standard | CANUPO classifier (Brodu & Lague) |
 | `3DFin` | Standard | 3D fish morphology / forestry biometrics |
+| `qTreeIso` | Standard | Tree isolation from point clouds |
+
+## Experimental plugins
+
+`plugins/experimental/` holds plugins under active development that are
+not yet ready for the default build:
+
+| Plugin | Status | What it does |
+|---|---|---|
+| `qHelloCloud` | Smoke test | Minimal Standard plugin scaffold — validates the plugin loading code path end-to-end. Used to verify namespace collisions before enabling a new plugin. |
 
 ## Verifying the local set on your build
 
@@ -57,6 +70,12 @@ OpenCASCADE, Xerces-C++). For a surveying-company build that targets
 mobile and terrestrial laser scans, those plugins are *useful* but not
 *required* — and they add 1-2&nbsp;hours to a clean build plus 5-10&nbsp;GB
 of vcpkg install footprint.
+
+Three plugins from the upstream default are **Qt 6.8.3 incompatible**
+and are excluded regardless of dependencies:
+`qCompass` (class-name collision in `qvectornd.h`),
+`qRANSAC_SD`, and `qSRA`. They will return when the Qt 6 upstream
+migration is complete.
 
 The fork's default is the set you can build in 15 minutes on a clean
 checkout with no extra dependencies. The disabled plugins are *opt-in*;

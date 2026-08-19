@@ -15,7 +15,7 @@
 # ############################################################################
 
 option( PLUGIN_IO_QRECAP
-	"Install qReCapIO plugin to read RCS (ReCap Station) and RCP (ReCap Photo) files via Autodesk ReCap SDK v26"
+	"Install qReCapIO plugin to read RCS (ReCap Station) and RCP (ReCap Photo) files via Autodesk ReCap SDK v27"
 	OFF
 )
 
@@ -26,7 +26,7 @@ if( PLUGIN_IO_QRECAP )
 	# Do NOT publish SDK binaries to the repository.
 	# -------------------------------------------------------------------------
 	if( NOT DEFINED RECAP_SDK_ROOT )
-		set( RECAP_SDK_ROOT "C:/ReCapSDK_v26.0.2" )
+		set( RECAP_SDK_ROOT "C:/ReCapSDK_v27.0.3" )
 	endif()
 
 	if( NOT EXISTS "${RECAP_SDK_ROOT}/Include" )
@@ -52,7 +52,8 @@ if( PLUGIN_IO_QRECAP )
 		AdskRcFilter
 		AdskRcFoundation
 		AdskRcImport
-		AdskRcManaged
+		# AdskRcManaged excluded: native SDK (v27+) no longer requires it.
+		# Keeping it linked would reintroduce the ijwhost.dll dependency.
 		AdskRcProjectIO
 		AdskRcSpatialReference
 		AdskRcStringUtils
@@ -108,6 +109,9 @@ if( PLUGIN_IO_QRECAP )
 	# install (which copies only ${CMAKE_CURRENT_BINARY_DIR}/*.dll) includes
 	# them alongside QRECAP_IO_PLUGIN.dll.  Without this, the SDK DLLs end up
 	# in a $<CONFIG>/ subdirectory and are silently omitted by the install.
+	#
+	# v27 layout: SDK DLLs live in Bin/ and Bin/dependencies/ (TBB, xerces).
+	# GLOB_RECURSE picks up both locations automatically.
 	# -------------------------------------------------------------------------
 	set( RECAP_DLL_SRC_DIR "${RECAP_SDK_ROOT}/Bin" )
 	set( RECAP_DLL_DEST_DIR "${CMAKE_CURRENT_BINARY_DIR}" )

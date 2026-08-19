@@ -81,7 +81,7 @@ void ccOctree::setDisplayMode(DisplayMode mode)
 void ccOctree::clear()
 {
 	// warn the others that the octree organization is going to change
-	Q_EMIT updated();
+	emit updated();
 
 	QOpenGLContext* context = QOpenGLContext::currentContext();
 	if (context)

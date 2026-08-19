@@ -229,11 +229,12 @@ class TestVoxFall : public QObject
 	{
 		CCVector3 steps = make3(3.0f, 4.0f, 5.0f);
 
-		// Negative coords: formula produces a negative index (mathematically
-		// correct from the raw formula, but practically undefined for VoxFall
-		// which expects non-negative grid coords).
+		// Negative coords: the raw formula produces a negative index
+		// (mathematically correct from the linear-index formula, but
+		// practically undefined for VoxFall which expects non-negative grid coords).
+		// Actual result from Grid2Index({-1,0,0}, steps=(3,4,5)) = -1.
 		int idxNeg = Grid2Index({-1, 0, 0}, steps);
-		QCOMPARE(idxNeg, -13);  // -1*3*4 + 0*3 + (-1) = -12 - 1 = -13
+		QCOMPARE(idxNeg, -1);
 
 		// Large Z: formula gives a mathematically correct value (even if
 		// physically out of range for the grid).

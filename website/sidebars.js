@@ -68,6 +68,7 @@ const sidebars = {
         'build/linux',
         'build/macos',
         'build/troubleshooting',
+        'testing/index',
         'ci/overview',
         'ci/github-pages',
         'ci/windows-build',

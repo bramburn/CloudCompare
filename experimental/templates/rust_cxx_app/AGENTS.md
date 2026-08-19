@@ -35,13 +35,23 @@ rust_cxx_app/
 
 ## Build & run
 
+The default is **pure-Rust only** — `cargo test` and `cargo run` work without
+the MSVC toolchain. The CXX FFI layer is opt-in.
+
 ```powershell
-cargo build
+# Default: pure-Rust, no C++. Works on any toolchain.
 cargo test
 cargo run --bin demo_cli -- 1 2 3 4 5
+
+# Enable CXX FFI. Requires:
+#   - MSVC toolchain (cl.exe, link.exe) — see shared/scripts/get-vcvars.ps1
+#   - Set CC=cl.exe, CXX=cl.exe
+#   - x86_64-pc-windows-msvc target (or compatible)
+cargo test --features cxx-ffi
+cargo build --features cxx-ffi
 ```
 
-The build generates `cpp/bridge.h` and `target/.../libcxxbridge1.a` automatically.
+The `cxx-ffi` feature generates `cpp/bridge.h` and links C++ into the staticlib.
 DO NOT commit `target/` or the generated `bridge.h`.
 
 ## How to extend

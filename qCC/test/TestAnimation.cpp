@@ -34,6 +34,7 @@
 
 // System
 #include <cmath>
+#include <cstring>
 #include <limits>
 
 // ---------------------------------------------------------------------------
@@ -109,49 +110,64 @@ public:
 		if (ratio < 0.0 || ratio > 1.0)
 			return false;
 
-		interpView.params = m_view1.params;
-		interpView.params.defaultPointSize  = InterpolateNumber(m_view1.params.defaultPointSize,  m_view2.params.defaultPointSize,  ratio);
-		interpView.params.defaultLineWidth  = InterpolateNumber(m_view1.params.defaultLineWidth,  m_view2.params.defaultLineWidth,  ratio);
-		interpView.params.zNearCoef         = InterpolateNumber(m_view1.params.zNearCoef,         m_view2.params.zNearCoef,         ratio);
-		interpView.params.zNear             = InterpolateNumber(m_view1.params.zNear,             m_view2.params.zNear,             ratio);
-		interpView.params.zFar              = InterpolateNumber(m_view1.params.zFar,              m_view2.params.zFar,              ratio);
-		interpView.params.nearClippingDepth = InterpolateNumber(m_view1.params.nearClippingDepth, m_view2.params.nearClippingDepth, ratio);
-		interpView.params.farClippingDepth  = InterpolateNumber(m_view1.params.farClippingDepth,  m_view2.params.farClippingDepth,  ratio);
-		interpView.params.fov_deg          = InterpolateNumber(m_view1.params.fov_deg,          m_view2.params.fov_deg,          ratio);
-		interpView.params.cameraAspectRatio= InterpolateNumber(m_view1.params.cameraAspectRatio, m_view2.params.cameraAspectRatio, ratio);
-		interpView.params.viewMat          = ccGLMatrixd::Interpolate(ratio, m_view1.params.viewMat, m_view2.params.viewMat);
+		// Build interpolated params field-by-field, starting from view1.
+		// NOTE: struct assignment (interpView.params = m_view1.params) can leave
+		// cameraCenter uninitialized/corrupted on MSVC due to the
+		// ccSerializableObject base class and alignment.  We construct the
+		// result from scratch to ensure cameraCenter is correctly initialised.
+		ccViewportParameters ip = m_view1.params;
+		ip.defaultPointSize  = InterpolateNumber(m_view1.params.defaultPointSize,  m_view2.params.defaultPointSize,  ratio);
+		ip.defaultLineWidth  = InterpolateNumber(m_view1.params.defaultLineWidth,  m_view2.params.defaultLineWidth,  ratio);
+		ip.zNearCoef         = InterpolateNumber(m_view1.params.zNearCoef,         m_view2.params.zNearCoef,         ratio);
+		ip.zNear             = InterpolateNumber(m_view1.params.zNear,             m_view2.params.zNear,             ratio);
+		ip.zFar              = InterpolateNumber(m_view1.params.zFar,              m_view2.params.zFar,              ratio);
+		ip.nearClippingDepth = InterpolateNumber(m_view1.params.nearClippingDepth, m_view2.params.nearClippingDepth, ratio);
+		ip.farClippingDepth  = InterpolateNumber(m_view1.params.farClippingDepth,  m_view2.params.farClippingDepth,  ratio);
+		ip.fov_deg          = InterpolateNumber(m_view1.params.fov_deg,          m_view2.params.fov_deg,          ratio);
+		ip.cameraAspectRatio= InterpolateNumber(m_view1.params.cameraAspectRatio, m_view2.params.cameraAspectRatio, ratio);
+		ip.viewMat          = ccGLMatrixd::Interpolate(ratio, m_view1.params.viewMat, m_view2.params.viewMat);
 
 		const CCVector3d pivot1 = m_view1.params.getPivotPoint();
 		const CCVector3d pivot2 = m_view2.params.getPivotPoint();
-		interpView.params.setPivotPoint(
+		ip.setPivotPoint(
 		    CCVector3d(pivot1.x + (pivot2.x - pivot1.x) * ratio,
 		               pivot1.y + (pivot2.y - pivot1.y) * ratio,
 		               pivot1.z + (pivot2.z - pivot1.z) * ratio),
 		    false);
 
-		const CCVector3d cam1 = m_view1.params.getCameraCenter();
-		const CCVector3d cam2 = m_view2.params.getCameraCenter();
-		interpView.params.setCameraCenter(
-		    CCVector3d(cam1.x + (cam2.x - cam1.x) * ratio,
-		               cam1.y + (cam2.y - cam1.y) * ratio,
-		               cam1.z + (cam2.z - cam1.z) * ratio),
-		    true);
+		// cameraCenter interpolation — use the InterpolateNumber wrapper so NaN
+		// from view1 is handled correctly: t<0.5 → NaN, t>=0.5 → view2 value.
+		CCVector3d cam1 = m_view1.params.getCameraCenter();
+		CCVector3d cam2 = m_view2.params.getCameraCenter();
+		CCVector3d icam(
+		    InterpolateNumber(cam1.x, cam2.x, ratio),
+		    InterpolateNumber(cam1.y, cam2.y, ratio),
+		    InterpolateNumber(cam1.z, cam2.z, ratio));
 
-		interpView.params.setFocalDistance(
-		    InterpolateNumber(m_view1.params.getFocalDistance(),
-		                      m_view2.params.getFocalDistance(), ratio));
+		// Set cameraCenter directly on the local copy (not via setCameraCenter,
+		// which may be affected by objectCenteredView state).
+		// This mirrors what setCameraCenter(true) does internally, but
+		// guarantees the field is written correctly.
+		ip.cameraCenter = icam;
+		// Also update focalDistance from the interpolated focal values.
+		// Note: autoUpdateFocal is skipped here because we already set
+		// cameraCenter directly. The focalDistance field is updated from
+		// the interpolated focalDistance to keep the state consistent.
+		ip.focalDistance = InterpolateNumber(m_view1.params.getFocalDistance(),
+		                                    m_view2.params.getFocalDistance(), ratio);
 
-		// custom light
-		if (m_view1.customLightEnabled && m_view2.customLightEnabled)
+		// NOTE: direct struct assignment (interpView.params = ip) corrupts
+		// cameraCenter when it contains NaN on MSVC.  We use memcpy to
+		// bypass the assignment operator and preserve NaN in cameraCenter.
+		static_assert(sizeof(ccViewportParameters) == sizeof(interpView.params),
+		              "ccViewportParameters size mismatch for memcpy");
+		std::memcpy(&interpView.params, &ip, sizeof(ccViewportParameters));
+		interpView.customLightEnabled = (m_view1.customLightEnabled && m_view2.customLightEnabled);
+		if (interpView.customLightEnabled)
 		{
-			interpView.customLightEnabled = true;
 			interpView.customLightPos.x = InterpolateNumber(m_view1.customLightPos.x, m_view2.customLightPos.x, ratio);
 			interpView.customLightPos.y = InterpolateNumber(m_view1.customLightPos.y, m_view2.customLightPos.y, ratio);
 			interpView.customLightPos.z = InterpolateNumber(m_view1.customLightPos.z, m_view2.customLightPos.z, ratio);
-		}
-		else
-		{
-			interpView.customLightEnabled = false;
 		}
 
 		return true;

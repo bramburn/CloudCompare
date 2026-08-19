@@ -256,7 +256,7 @@ void HIDWorker::run()
 				auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastMotionTime).count();
 				if (elapsed > 100)
 				{
-					Q_EMIT sigReleased();
+					emit sigReleased();
 					motionActive = false;
 				}
 			}
@@ -466,7 +466,7 @@ void HIDWorker::processMotion(const unsigned char* buf, int n)
 	axes[4] = -scaleAxis(rz, ds); // orbit Y (Y/Z swap)
 	axes[5] = scaleAxis(ry, ds);  // orbit Z (Y/Z swap)
 
-	Q_EMIT sigMove3d(axes);
+	emit sigMove3d(axes);
 }
 
 void HIDWorker::processButtons(const unsigned char* buf, int n, unsigned int& prevButtonMask)
@@ -491,11 +491,11 @@ void HIDWorker::processButtons(const unsigned char* buf, int n, unsigned int& pr
 		unsigned int mask = 1u << bit;
 		if (pressed & mask)
 		{
-			Q_EMIT sigOn3dmouseKeyDown(c_buttonMap[bit]);
+			emit sigOn3dmouseKeyDown(c_buttonMap[bit]);
 		}
 		if (released & mask)
 		{
-			Q_EMIT sigOn3dmouseKeyUp(c_buttonMap[bit]);
+			emit sigOn3dmouseKeyUp(c_buttonMap[bit]);
 		}
 	}
 

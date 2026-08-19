@@ -103,7 +103,7 @@ public:
 public Q_SLOTS:
 	bool removeRows(int position, int rows, const QModelIndex& parent);
 
-Q_SIGNALS:
+signals::
 	void codeChanged(AsprsItem item, int oldCode);
 	void colorChanged(AsprsItem item);
 	void classNamedChanged(int row, QString newName);

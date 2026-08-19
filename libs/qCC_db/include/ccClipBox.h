@@ -154,7 +154,7 @@ class QCC_DB_LIB_API ccClipBox : public QObject
 		return m_entityContainer;
 	}
 
-  Q_SIGNALS:
+  signals::
 
 	//! Signal sent each time the box is modified
 	void boxModified(const ccBBox* box);

@@ -207,7 +207,7 @@ class CCPLUGIN_LIB_API ColorBarWidget : public ColorScaleEditorBaseWidget
 	//! Default constructor
 	ColorBarWidget(SharedColorScaleElementSliders sliders, QWidget* parent = nullptr, Qt::Orientation orientation = Qt::Horizontal);
 
-  Q_SIGNALS:
+  signals::
 
 	//! Signal emitted when the mouse (left) button is clicked
 	/** \param relativePos relative click position (between 0 and 1)
@@ -245,7 +245,7 @@ class CCPLUGIN_LIB_API SlidersWidget : public ColorScaleEditorBaseWidget
 	//! Updates all sliders positions
 	void updateAllSlidersPos();
 
-  Q_SIGNALS:
+  signals::
 
 	//! Signal emitted when a slider is changed (position or color)
 	void sliderModified(int index);
@@ -356,7 +356,7 @@ class CCPLUGIN_LIB_API ccColorScaleEditorWidget : public ColorScaleEditorBaseWid
 	// inherited from ColorScaleEditorBaseWidget
 	void setSliders(SharedColorScaleElementSliders sliders) override;
 
-  Q_SIGNALS:
+  signals::
 
 	//! Signal emitted when a slider is selected
 	void stepSelected(int index);

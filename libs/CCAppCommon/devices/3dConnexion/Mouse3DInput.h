@@ -272,7 +272,7 @@ class CCAPPCOMMON_LIB_API Mouse3DInput : public QObject
 	 **/
 	bool onSiEvent(void* siGetEventData);
 
-  Q_SIGNALS:
+  signals::
 
 	void sigMove3d(std::vector<float>& motionData);
 	void sigReleased();

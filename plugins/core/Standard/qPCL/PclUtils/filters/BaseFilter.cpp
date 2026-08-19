@@ -66,7 +66,7 @@ void BaseFilter::throwError(int errCode)
 	else if (errCode < 0)
 	{
 		//DGM: as libraries shouldn't issue message themselves, it should be sent to the plugin via a signal
-		Q_EMIT newErrorMessage(errMsg);
+		emit newErrorMessage(errMsg);
 	}
 }
 

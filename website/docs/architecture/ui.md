@@ -62,6 +62,39 @@ The `ccOverlayDialog` base class is in `libs/qCC_io/CC/include/
 ccOverlayDialog.h`. Subclass and override `start()` (called when the
 dialog opens) and `stop()` (called when it closes).
 
+## The 3D viewport (`ccGLWindow`)
+
+The 3D viewport is the most complex widget in the app. There are two
+implementations:
+
+- **`ccGLWindow`** — the standard viewport, inherits from `QOpenGLWidget`.
+  Handles trackball camera, picking, LOD, axis gizmo, EDL/SSAO hooks,
+  and all OpenGL rendering.
+- **`ccGLWindowStereo`** — stereo 3D variant (anaglyph, quad-buffer).
+  **Migrated to `QOpenGLWidget` in Qt 6** (previously `QWindow` with
+  manual OpenGL context management). The migration follows the same
+  pattern as `ccGLWindow` — `QOpenGLWidget` gives automatic context
+  lifecycle, which eliminated a class of context-loss crashes.
+
+Both inherit `ccGLWindowInterface`, the abstract viewport API. Any code
+that talks to a viewport calls through this interface so it works with
+both variants.
+
+```cpp
+// ccGLWindowStereo.h (Qt 6 pattern)
+class CCGLWINDOW_LIB_API ccGLWindowStereo : public QOpenGLWidget
+    , public ccGLWindowInterface
+{
+    // QOpenGLWidget handles context makeCurrent automatically.
+    // Stereo rendering uses custom stereo FBOs via ccGLWindowInterface.
+};
+```
+
+If you're adding a new viewport feature, check whether it belongs in
+`ccGLWindow` (shared) or `ccGLWindowStereo` (stereo-specific). The
+`ccGLWindowInterface` base class is the right place for anything that
+applies to both.
+
 ## Qt Designer files
 
 Dialogs are designed in Qt Designer. The `.ui` file lives next to the

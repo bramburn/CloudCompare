@@ -57,7 +57,13 @@ the axis gizmo, the LOD culling, the EDL/SSAO hook points, and the
 Qt + OpenGL glue. This is the only place in the project that
 simultaneously uses Qt and OpenGL.
 
-**Exposes:** `ccGLWindow.h`, the `ccGenericCamera` API.
+**Qt 6 migration:** `ccGLWindow` and `ccGLWindowStereo` both inherit
+from `QOpenGLWidget` (not `QWindow`). `ccGLWindowStereo` was migrated
+from the legacy `QWindow` + manual-context pattern to the
+`QOpenGLWidget`-based pattern shared with `ccGLWindow`. This eliminated
+manual context management and context-loss crash paths.
+
+**Exposes:** `ccGLWindow.h`, `ccGLWindowInterface.h`, the `ccGenericCamera` API.
 
 **Linked by:** `qCC`, `ccViewer`, GL plugins.
 

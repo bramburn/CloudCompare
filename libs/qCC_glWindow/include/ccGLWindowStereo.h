@@ -222,7 +222,7 @@ class CCGLWINDOW_LIB_API ccGLWindowStereo : public QOpenGLWidget
 
   protected: // other methods
 	//! Reacts to the itemPickedFast signal (shortcut)
-	Q_SLOT void onItemPickedFastSlot(ccHObject* pickedEntity, int pickedItemIndex, int x, int y)
+	slots: void onItemPickedFastSlot(ccHObject* pickedEntity, int pickedItemIndex, int x, int y)
 	{
 		onItemPickedFast(pickedEntity, pickedItemIndex, x, y);
 	}

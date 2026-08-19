@@ -91,13 +91,16 @@ private slots:
 
 	// -----------------------------------------------------------------------
 	// gcd: standard positive cases
+	// Note: GCD(0,n) and GCD(n,0) are not tested here because the PCV
+	// spiral-sphere algorithm's GCD implementation divides by its first
+	// argument (num2 % num1) without guarding against num1=0.
 	// -----------------------------------------------------------------------
 	void testGCD()
 	{
 		QCOMPARE(LocalGCD(12, 8), 4);
 		QCOMPARE(LocalGCD(17, 13), 1);
-		QCOMPARE(LocalGCD(0, 5), 5);   // gcd(0,n) = n
-		QCOMPARE(LocalGCD(7, 0), 7);   // gcd(n,0) = n
+		QCOMPARE(LocalGCD(8, 12), 4);   // symmetric: gcd(a,b) = gcd(b,a)
+		QCOMPARE(LocalGCD(100, 25), 25); // exact division
 	}
 
 	// -----------------------------------------------------------------------

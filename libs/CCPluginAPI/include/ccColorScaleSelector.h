@@ -63,7 +63,7 @@ class CCPLUGIN_LIB_API ccColorScaleSelector : public QFrame
 	//! Returns a given color scale by index
 	ccColorScale::Shared getScale(int index) const;
 
-  Q_SIGNALS:
+  signals::
 
 	//! Signal emitted when a color scale is selected
 	void colorScaleSelected(int);

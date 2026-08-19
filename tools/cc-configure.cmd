@@ -36,7 +36,8 @@ set "NINJA_BIN=C:\ProgramData\chocolatey\bin\ninja.exe"
 :: Enabled for testing (T1-D/E):
 ::   qM3C2: M3C2 statistics and normals tools
 ::   qCSF: Cloth Simulation Filter (Vec3, Particle, Cloth, Cloud2CloudDist)
-set "PLUGIN_EXTRAS=-DPLUGIN_STANDARD_3DFIN=OFF -DPLUGIN_STANDARD_QCOMPASS=OFF -DPLUGIN_STANDARD_QRANSAC_SD=OFF -DPLUGIN_STANDARD_QSRA=OFF -DPLUGIN_STANDARD_QM3C2=ON -DPLUGIN_STANDARD_QCSF=ON"
+::   qReCapIO: Autodesk ReCap SDK v27 — reads .rcs/.rcp files (native only, no ijwhost)
+set "PLUGIN_EXTRAS=-DPLUGIN_STANDARD_3DFIN=OFF -DPLUGIN_STANDARD_QCOMPASS=OFF -DPLUGIN_STANDARD_QRANSAC_SD=OFF -DPLUGIN_STANDARD_QSRA=OFF -DPLUGIN_STANDARD_QM3C2=ON -DPLUGIN_STANDARD_QCSF=ON -DPLUGIN_IO_QRECAP=ON"
 
 echo Configuring CloudCompare (Ninja generator)...
 echo   CMake:  %CMAKE_BIN%

@@ -385,7 +385,7 @@ void PlyOpenDlg::apply()
 	{
 		saveContext(&s_lastContext);
 		s_lastContext.applyAll = false;
-		Q_EMIT fullyAccepted();
+		emit fullyAccepted();
 	}
 }
 
@@ -395,7 +395,7 @@ void PlyOpenDlg::applyAll()
 	{
 		saveContext(&s_lastContext);
 		s_lastContext.applyAll = true;
-		Q_EMIT fullyAccepted();
+		emit fullyAccepted();
 	}
 }
 

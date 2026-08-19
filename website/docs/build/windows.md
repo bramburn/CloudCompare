@@ -19,20 +19,28 @@ call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build
 "C:\dev\tools\cmake-4.3.0\bin\cmake.exe" -S C:\dev\CloudCompare -B C:\dev\CloudCompare\build -G Ninja --fresh ^
   -DCMAKE_BUILD_TYPE=Release ^
   -DCMAKE_PREFIX_PATH=C:/dev/tools/Qt/6.8.3/msvc2022_64 ^
-  -DCMAKE_MAKE_PROGRAM=C:/ProgramData/chocolatey/bin/ninja.exe
+  -DCMAKE_TOOLCHAIN_FILE=C:/dev/CloudCompare/vcpkg/scripts/buildsystems/vcpkg.cmake ^
+  -DCMAKE_MAKE_PROGRAM=C:/ProgramData/chocolatey/bin/ninja.exe ^
+  -DBUILD_TESTING=ON ^
+  -DPLUGIN_STANDARD_QCSF=ON ^
+  -DPLUGIN_STANDARD_QM3C2=ON
 ```
 
-The script does three things in order:
+The script does four things in order:
 
 1. `vcvars64.bat` puts MSVC, the Windows SDK, and the CMake 3.31.6 shim on
    `PATH`. The 3.31.6 is fine for configure (it satisfies `>= 3.10` and is
    `<= 4.3`), but the build script needs the pinned 4.3.0 because the
    build generates files that 3.31.6 doesn't quite understand.
-2. `cmake -S … -B … --fresh` writes a fresh configure cache. **Always
+2. `-DCMAKE_TOOLCHAIN_FILE` integrates vcpkg (at `vcpkg/` inside the repo).
+   This is how plugin dependencies (LASzip, Xerces-C++, PCL, etc.) are
+   found. The vcpkg tree lives inside the repo at `C:\dev\CloudCompare\vcpkg\`
+   and is gitignored.
+3. `cmake -S … -B … --fresh` writes a fresh configure cache. **Always
    re-run with `--fresh` when toggling plugin options** — otherwise a stale
    `PLUGIN_IO_QE57=ON` (etc.) sticks and the plugin's `find_package(X)`
    runs even though you think it's off.
-3. `CMAKE_MAKE_PROGRAM` is set explicitly to dodge the `depot_tools\ninja`
+4. `CMAKE_MAKE_PROGRAM` is set explicitly to dodge the `depot_tools\ninja`
    bash shim that's earlier on `PATH`.
 
 ### `cc-build.cmd`
@@ -77,6 +85,21 @@ The first time you enable a plugin, you'll also need its external
 dependency installed (see
 [Plugins / Disabled priority](/docs/plugins/disabled-priority) for the vcpkg
 recipe).
+
+## Plugin deployment
+
+When you enable a new plugin that has external DLLs (e.g. a vcpkg-installed
+SDK), copy the plugin's `.dll` files into `deployqt/plugins/<type>/` so
+`windeployqt` picks them up automatically:
+
+```bat
+tools\cc-deploy-plugins.cmd
+```
+
+This script mirrors every built plugin `.dll` from `build/plugins/` into
+`build/qCC/deployqt/plugins/`, and also copies the CC core DLLs
+(`CCCoreLib.dll`, `QCC_DB_LIB.dll`, etc.) to the deployqt root so the
+bundle is self-contained.
 
 ## Gotchas
 

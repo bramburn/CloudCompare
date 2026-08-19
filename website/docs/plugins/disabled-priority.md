@@ -6,12 +6,26 @@ sidebar_position: 3
 
 # Disabled priority
 
-The plugins below are **off by default** in the fork. Each needs an
-external dependency. The table is in the order a surveying-company build
-should re-enable them, based on how often each plugin shows up in
-deliverables.
+The plugins below are **off by default** in the fork. Each needs either an
+external dependency or a fix upstream. The tables are in priority order
+for a surveying-company build.
 
-## Priority list
+## Qt 6.8.3 incompatible (blocked upstream)
+
+These plugins are structurally broken with Qt 6.8.3 and cannot be enabled
+regardless of dependencies. The root cause is a **class-name collision**:
+Qt 6.8.3 added an internal `ccTrace` struct in `qvectornd.h`, which
+conflicts with CloudCompare's `ccTrace` class name across every
+translation unit that includes both headers. Fixing it requires a rename
+in the CloudCompare source and coordination with upstream.
+
+| Plugin | Issue | Fix needed |
+|---|---|---|
+| `qCompass` | `ccTrace` namespace pollution | Rename `ccTrace` class |
+| `qRANSAC_SD` | Same `ccTrace`/`ccMapWindow` collision | Same |
+| `qSRA` | Same root cause | Same |
+
+## External dependency needed
 
 | Plugin | Needs | Why you'd enable it |
 |---|---|---|
@@ -35,7 +49,6 @@ deliverables.
 | `qRDBIO` | — | Riegl RDB. |
 | `qAdditionalIO` | various | Extra formats (GTS, DP, SOCET, etc.). |
 | `qCSVMatrixIO` | — | CSV matrix. |
-| `qTreeIso` | Eigen3 (optional) | Tree isolation. Works as-is. |
 
 ## The vcpkg recipe
 

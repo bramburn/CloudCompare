@@ -135,7 +135,7 @@ bool Mouse3DInput::connect(QWidget* mainWidget, QString appName)
 	}
 
 	QObject::connect(m_hidWorker, &HIDWorker::sigMove3d, this, [this](std::vector<float> v)
-	                 { Q_EMIT sigMove3d(v); },
+	                 { emit sigMove3d(v); },
 	                 Qt::QueuedConnection);
 	QObject::connect(m_hidWorker, &HIDWorker::sigReleased, this, &Mouse3DInput::sigReleased, Qt::QueuedConnection);
 	QObject::connect(m_hidWorker, &HIDWorker::sigOn3dmouseKeyDown, this, &Mouse3DInput::sigOn3dmouseKeyDown, Qt::QueuedConnection);
@@ -281,7 +281,7 @@ bool Mouse3DInput::onSiEvent(void* siGetEventData)
 
 	case SI_ZERO_EVENT:
 		// FIXME: too flickery!
-		Q_EMIT sigReleased();
+		emit sigReleased();
 		break;
 
 	case SI_BUTTON_EVENT:
@@ -333,27 +333,27 @@ bool Mouse3DInput::onSiEvent(void* siGetEventData)
 
 void Mouse3DInput::move3d(std::vector<float>& motionData)
 {
-	Q_EMIT sigMove3d(motionData);
+	emit sigMove3d(motionData);
 }
 
 void Mouse3DInput::on3dmouseKeyDown(int virtualKeyCode)
 {
-	Q_EMIT sigOn3dmouseKeyDown(virtualKeyCode);
+	emit sigOn3dmouseKeyDown(virtualKeyCode);
 }
 
 void Mouse3DInput::on3dmouseCMDKeyDown(int virtualCMDCode)
 {
-	Q_EMIT sigOn3dmouseCMDKeyDown(virtualCMDCode);
+	emit sigOn3dmouseCMDKeyDown(virtualCMDCode);
 }
 
 void Mouse3DInput::on3dmouseKeyUp(int virtualKeyCode)
 {
-	Q_EMIT sigOn3dmouseKeyUp(virtualKeyCode);
+	emit sigOn3dmouseKeyUp(virtualKeyCode);
 }
 
 void Mouse3DInput::on3dmouseCMDKeyUp(int virtualCMDCode)
 {
-	Q_EMIT sigOn3dmouseCMDKeyUp(virtualCMDCode);
+	emit sigOn3dmouseCMDKeyUp(virtualCMDCode);
 }
 
 void Mouse3DInput::GetMatrix(const std::vector<float>& vec, ccGLMatrixd& mat)

@@ -145,7 +145,7 @@ bool ccAsprsModel::setData(const QModelIndex& index, const QVariant& value, int 
 		if (role == Qt::CheckStateRole)
 		{
 			item.visible = static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked;
-			Q_EMIT colorChanged(item);
+			emit colorChanged(item);
 		}
 		else
 		{
@@ -182,7 +182,7 @@ bool ccAsprsModel::setData(const QModelIndex& index, const QVariant& value, int 
 		{
 			int oldCode = item.code;
 			item.code = code;
-			Q_EMIT codeChanged(item, oldCode);
+			emit codeChanged(item, oldCode);
 			break;
 		}
 	}
@@ -190,7 +190,7 @@ bool ccAsprsModel::setData(const QModelIndex& index, const QVariant& value, int 
 	case COLOR:
 	{
 		item.color = value.value<QColor>();
-		Q_EMIT colorChanged(item);
+		emit colorChanged(item);
 	}
 	break;
 
@@ -201,7 +201,7 @@ bool ccAsprsModel::setData(const QModelIndex& index, const QVariant& value, int 
 	break;
 	}
 
-	Q_EMIT dataChanged(index, index);
+	emit dataChanged(index, index);
 
 	return true;
 }
@@ -358,7 +358,7 @@ void ccAsprsModel::refreshData()
 {
 	QModelIndex a = createIndex(0, COUNT);
 	QModelIndex b = createIndex(m_data.count() - 1, COUNT);
-	Q_EMIT dataChanged(a, b);
+	emit dataChanged(a, b);
 }
 
 bool ccAsprsModel::removeRows(int position, int rows, const QModelIndex& parent)

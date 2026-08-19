@@ -200,7 +200,7 @@ class QCC_DB_LIB_API ccOctree : public QObject
 	                                                            const BestRadiusParams& params,
 	                                                            QWidget*                parentWidget = nullptr);
 
-  Q_SIGNALS:
+  signals::
 
 	//! Signal sent when the octree organization is modified (cleared, etc.)
 	void updated();
