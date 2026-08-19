@@ -106,15 +106,18 @@ jobs:
 
       - name: Build
         shell: pwsh
-        run: & $env:CMAKE_PROGRAM --build build --config $env:BUILD_TYPE --parallel 4
+        run: |
+          & $env:CMAKE_PROGRAM --build build --config $env:BUILD_TYPE --parallel 4
 
       - name: Check formatting
         shell: pwsh
-        run: & $env:CMAKE_PROGRAM --build build --target check-format
+        run: |
+          & $env:CMAKE_PROGRAM --build build --target check-format
 
       - name: Install (runs windeployqt → deployqt\ bundle)
         shell: pwsh
-        run: & $env:CMAKE_PROGRAM --install build --config $env:BUILD_TYPE
+        run: |
+          & $env:CMAKE_PROGRAM --install build --config $env:BUILD_TYPE
 
       - name: Show build artifacts
         shell: pwsh
