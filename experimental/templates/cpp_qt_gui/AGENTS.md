@@ -59,11 +59,33 @@ SDK lib path automatically when MSVC is the compiler; check that
 
 | Input | Action |
 |---|---|
-| Left-mouse drag | Rotate |
-| Right-mouse drag | Pan |
-| Mouse wheel | Zoom |
-| Reset View button | Return to default camera |
+| Left-mouse drag | Rotate (yaw + pitch) |
+| Right-mouse drag | Pan (in camera's right/up plane) |
+| Middle-mouse drag | Zoom (alternative to wheel) |
+| Mouse wheel | Zoom in/out |
+| Arrow keys | Rotate by 5° per press |
+| `+` / `-` | Zoom |
+| `Home` | Reset view |
+| Reset View button | Same as Home |
 | Dataset combo | Switch between Spiral / Gaussian / Helix |
+
+The status bar shows live camera state (`yaw=X° pitch=Y° dist=Z pan=(a,b,c)`)
+and a reminder of the controls. Camera state updates 10×/sec.
+
+## Important OpenGL note: `GL_PROGRAM_POINT_SIZE`
+
+In **OpenGL Core profile** (which Qt 6's `QOpenGLWidget` uses by default
+on Windows), `gl_PointSize` set inside the vertex shader is **ignored**
+unless you also call `glEnable(GL_PROGRAM_POINT_SIZE)`. Without this
+enable, points render at the hardware's minimum (typically 1.0 pixel)
+regardless of what the shader says — making a "point cloud" look like
+a faint dotted outline. The fix is in `PointCloudView::initializeGL()`:
+
+```cpp
+glEnable(GL_PROGRAM_POINT_SIZE);
+```
+
+If you copy this template to a new project, keep that line.
 
 ## Extension patterns
 

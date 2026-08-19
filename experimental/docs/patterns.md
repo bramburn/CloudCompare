@@ -188,6 +188,100 @@ fn main() {
 
 ---
 
+## P9. `glEnable(GL_PROGRAM_POINT_SIZE)` for point clouds in OpenGL Core
+
+**Pattern:** When rendering `GL_POINTS` in OpenGL Core profile (Qt 6's
+`QOpenGLWidget` defaults to Core on Windows), `gl_PointSize` set in the
+vertex shader is **silently ignored** unless you call
+`glEnable(GL_PROGRAM_POINT_SIZE)` in `initializeGL()`.
+
+**Symptom:** the points render at the hardware's minimum size (typically
+1.0 pixel). A 2000-point cloud looks like a faint dotted outline instead
+of visible dots.
+
+**Why:** OpenGL Core profile (vs. Compatibility profile) removed the
+fixed-function point-size state. Without `GL_PROGRAM_POINT_SIZE`, drivers
+clamp the size to 1.0 regardless of the shader.
+
+**How:** in your `QOpenGLWidget::initializeGL()` (or wherever you set up
+GL state):
+
+```cpp
+glEnable(GL_PROGRAM_POINT_SIZE);  // ← required for vertex-shader gl_PointSize
+```
+
+Optional: also set the value dynamically via a uniform so you can scale
+point size with camera distance:
+
+```glsl
+// vertex shader
+uniform float uPointSize;
+void main() {
+    gl_Position = uMVP * vec4(aPos, 1.0);
+    gl_PointSize = uPointSize;  // 2.0 - 12.0 pixels feels right
+}
+```
+
+```cpp
+// in C++
+glUniform1f(uPointSize_loc, std::clamp(80.0f / std::max(0.5f, distance_), 2.0f, 12.0f));
+```
+
+**Source:** `experimental/templates/cpp_qt_gui/src/pointcloudview.cpp`
+
+---
+
+## P10. QOpenGLWidget mouse event delivery
+
+**Pattern:** `QOpenGLWidget` doesn't always receive mouse events out of
+the box. Three things to set in the constructor:
+
+1. `setMouseTracking(true)` — needed for hover events (less critical for
+   press/drag but still good practice)
+2. `setFocusPolicy(Qt::StrongFocus)` — without this, keyboard and wheel
+   events may go elsewhere after a click
+3. `setFocus()` after adding to layout — give the widget initial focus so
+   the first wheel/key event reaches it
+4. In `mousePressEvent`, call `setFocus(Qt::MouseFocusReason)` — keeps
+   focus locked even if the user clicks on the widget after a non-focus
+   action
+
+**Symptom of missing these:** the viewport renders correctly but
+left/right/middle drag, wheel, and keyboard shortcuts do nothing. The
+status bar still shows "View reset" because the button works.
+
+**Source:** `experimental/templates/cpp_qt_gui/src/pointcloudview.cpp`
+
+---
+
+## P11. Pan math: use camera right/up vectors, not MVP inversion
+
+**Pattern:** Converting a 2D pixel delta to a 3D world-space pan offset
+should use the camera's local right and up vectors, not an inverse MVP
+multiply. The MVP inversion trick gives weird results because it's
+projecting through perspective division.
+
+**How:**
+
+```cpp
+const float yaw_rad = qDegreesToRadians(yaw_);
+const float pitch_rad = qDegreesToRadians(pitch_);
+const QVector3D forward(std::cos(pitch_rad) * std::sin(yaw_rad),
+                        -std::sin(pitch_rad),
+                        -std::cos(pitch_rad) * std::cos(yaw_rad));
+const QVector3D world_up(0, 1, 0);
+const QVector3D right = QVector3D::crossProduct(forward, world_up).normalized();
+const QVector3D up = QVector3D::crossProduct(right, forward).normalized();
+
+const float pan_amount = distance_ * 0.002f;  // scale with zoom
+pan_offset_ += right * (float)delta.x() * pan_amount;
+pan_offset_ -= up * (float)delta.y() * pan_amount;
+```
+
+**Source:** `experimental/templates/cpp_qt_gui/src/pointcloudview.cpp`
+
+---
+
 ## P8. Experimental session lifecycle
 
 **Pattern:** Every experiment follows the same lifecycle. Don't skip steps.

@@ -16,6 +16,9 @@
 | Date | Name | Status | Template | What | Outcome |
 |---|---|---|---|---|---|
 | 2026-08-19 | [rust-migration-icp-scalarfield](../sessions/2026-08-19-rust-migration-icp-scalarfield/) | Active | `rust_lib` | Pure-Rust port of CCCoreLib ScalarField + ICP | 28/28 tests pass. Population std and NaN handling match CCCoreLib. |
+| 2026-08-19 | [icp-variants/01-naive-on2](../scenarios/2026-08-19-icp-variants/01-naive-on2/) | Done | `rust_lib` | ICP with O(n²) brute-force NN | 2/2 tests pass. Baseline. Infeasible for real data. |
+| 2026-08-19 | [icp-variants/02-kiddo-kdtree](../scenarios/2026-08-19-icp-variants/02-kiddo-kdtree/) | Stub | `rust_lib` | ICP with `kiddo` KD-tree | API migration needed (kiddo 6.0 has a different API). |
+| 2026-08-19 | [icp-variants/03-handrolled-octree](../scenarios/2026-08-19-icp-variants/03-handrolled-octree/) | Done | `rust_lib` | ICP with hand-rolled octree (matches CCCoreLib) | 2/2 tests pass. Provisional scenario winner. |
 
 ## Scenarios
 
@@ -23,7 +26,7 @@ A **scenario** is a folder of 2–3 sessions that explore variants of the same p
 
 | Date | Name | Status | What |
 |---|---|---|---|
-| 2026-08-19 | [icp-variants](../scenarios/2026-08-19-icp-variants/) | Active | Compare 3 ICP implementations: naive O(n²) NN, `kiddo` KD-tree, hand-rolled octree |
+| 2026-08-19 | [icp-variants](../scenarios/2026-08-19-icp-variants/) | Active | Compare 3 ICP NN implementations: naive / `kiddo` KD-tree / hand-rolled octree. Provisional winner: hand-rolled octree. |
 
 ## Templates
 

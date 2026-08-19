@@ -5,6 +5,7 @@
 #include <QMatrix4x4>
 #include <QVector3D>
 #include <QPoint>
+#include <QKeyEvent>
 #include <memory>
 #include <vector>
 
@@ -35,6 +36,19 @@ public:
     /// Reset view to default.
     void resetView();
 
+    /// Read the current camera state (yaw, pitch, distance, pan).
+    /// Useful for status bar display.
+    void cameraState(float* yaw, float* pitch, float* distance, QVector3D* pan) const {
+        *yaw = yaw_; *pitch = pitch_; *distance = distance_; *pan = pan_offset_;
+    }
+
+    /// Number of points currently rendered.
+    size_t pointCount() const { return point_count_; }
+
+    /// World-space bounds.
+    QVector3D boundsMin() const { return bounds_min_; }
+    QVector3D boundsMax() const { return bounds_max_; }
+
 protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
@@ -43,6 +57,7 @@ protected:
     void mousePressEvent(QMouseEvent* e) override;
     void mouseMoveEvent(QMouseEvent* e) override;
     void wheelEvent(QWheelEvent* e) override;
+    void keyPressEvent(QKeyEvent* e) override;
 
 private:
     void uploadPointsToGPU();

@@ -1,0 +1,25 @@
+[package]
+name = "icp_v3_octree"
+version = "0.1.0"
+edition = "2021"
+description = "ICP variant 3: hand-rolled octree nearest-neighbour. O(n) build, O(log n) query."
+
+[lib]
+name = "icp_v3_octree"
+path = "src/lib.rs"
+
+[dependencies]
+nalgebra = "0.34"
+log = "0.4"
+env_logger = "0.11"
+
+[dev-dependencies]
+approx = "0.5"
+
+[[bin]]
+name = "icp_bench"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+lto = "thin"

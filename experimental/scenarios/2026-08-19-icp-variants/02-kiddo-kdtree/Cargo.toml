@@ -1,0 +1,22 @@
+[package]
+name = "icp_v2_kiddo"
+version = "0.1.0"
+edition = "2021"
+description = "ICP variant 2: kiddo KD-tree nearest-neighbour. O(log n) per query."
+
+[lib]
+name = "icp_v2_kiddo"
+path = "src/lib.rs"
+
+[dependencies]
+nalgebra = "0.34"
+kiddo = "6.0"  # pure-Rust KD-tree, requires rustc 1.89
+log = "0.4"
+env_logger = "0.11"
+
+[dev-dependencies]
+approx = "0.5"
+
+[profile.release]
+opt-level = 3
+lto = "thin"

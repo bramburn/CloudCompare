@@ -20,12 +20,13 @@ layout(location = 0) in vec3 aPos;
 layout(location = 1) in float aColor;  // 0..1 mapped from z
 
 uniform mat4 uMVP;
+uniform float uPointSize;
 
 out float vColor;
 
 void main() {
     gl_Position = uMVP * vec4(aPos, 1.0);
-    gl_PointSize = 2.0;
+    gl_PointSize = uPointSize;
     vColor = aColor;
 }
 )GLSL";
@@ -89,7 +90,15 @@ static QVector3D vecMax(const QVector3D& a, const QVector3D& b) {
 
 PointCloudView::PointCloudView(QWidget* parent)
     : QOpenGLWidget(parent) {
+    // Critical: enable mouse tracking + focus so the widget actually
+    // receives mouse press/move/wheel events from the OS.
     setMouseTracking(true);
+    setFocusPolicy(Qt::StrongFocus);
+    // Give the widget an initial focus so it captures keyboard too.
+    setAttribute(Qt::WA_AcceptTouchEvents, false);
+
+    // Larger default cursor — a crosshair is conventional for 3D viewports
+    setCursor(Qt::CrossCursor);
 }
 
 PointCloudView::~PointCloudView() {
@@ -157,6 +166,11 @@ void PointCloudView::initializeGL() {
     initializeOpenGLFunctions();
     glClearColor(0.1f, 0.1f, 0.12f, 1.0f);
     glEnable(GL_DEPTH_TEST);
+    // Required in OpenGL Core profile for `gl_PointSize` in the vertex
+    // shader to actually take effect. Without this, points render at the
+    // hardware's minimum (typically 1.0 pixel) regardless of what the
+    // shader says.
+    glEnable(GL_PROGRAM_POINT_SIZE);
 
     // Compile point shader
     {
@@ -294,7 +308,13 @@ void PointCloudView::drawPoints(const QMatrix4x4& mvp) {
 
     glUseProgram(shader_program_);
     GLuint mvp_loc = glGetUniformLocation(shader_program_, "uMVP");
+    GLuint size_loc = glGetUniformLocation(shader_program_, "uPointSize");
     glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, mvp.constData());
+    // Pick a sensible point size in pixels. We scale with 1/distance so
+    // the points don't bloat when zoomed in or shrink to nothing when
+    // zoomed out. Clamp to keep within a reasonable range.
+    const float point_size = std::clamp(80.0f / std::max(0.5f, distance_), 2.0f, 12.0f);
+    glUniform1f(size_loc, point_size);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo_);
     glEnableVertexAttribArray(0);
@@ -311,29 +331,90 @@ void PointCloudView::drawPoints(const QMatrix4x4& mvp) {
 }
 
 void PointCloudView::mousePressEvent(QMouseEvent* e) {
+    // Ensure we hold focus so subsequent wheel / keyboard events reach us
+    // even if the user clicked on the widget without first tabbing into it.
+    setFocus(Qt::MouseFocusReason);
     last_mouse_pos_ = e->pos();
+    // Force a redraw so the user sees the press is being received.
+    // Without this, a press-then-release with no movement gives no visual
+    // feedback and the user thinks the input is broken.
+    update();
 }
 
 void PointCloudView::mouseMoveEvent(QMouseEvent* e) {
-    QPoint delta = e->pos() - last_mouse_pos_;
+    // QMouseEvent::pos() can be -1,-1 for synthesised events. Guard.
+    if (last_mouse_pos_.x() < 0 || last_mouse_pos_.y() < 0) {
+        last_mouse_pos_ = e->pos();
+        return;
+    }
+    const QPoint delta = e->pos() - last_mouse_pos_;
+    if (delta.isNull()) return;
     last_mouse_pos_ = e->pos();
 
+    // Rotation speed in degrees per pixel. 0.5° per pixel feels natural
+    // for a desktop mouse on a ~900px viewport.
+    constexpr float kRotSpeed = 0.5f;
+    // Pan speed as a fraction of the current camera distance per pixel.
+    constexpr float kPanSpeed = 0.002f;
+
     if (e->buttons() & Qt::LeftButton) {
-        yaw_ += delta.x() * 0.5f;
-        pitch_ += delta.y() * 0.5f;
+        yaw_ += delta.x() * kRotSpeed;
+        pitch_ += delta.y() * kRotSpeed;
         pitch_ = std::clamp(pitch_, -89.0f, 89.0f);
     } else if (e->buttons() & Qt::RightButton) {
-        // Pan in screen space
-        QMatrix4x4 inv = buildModelViewProjection().inverted();
-        QVector4D a = inv * QVector4D(0, 0, 0, 1);
-        QVector4D b = inv * QVector4D(delta.x() * 0.005f, -delta.y() * 0.005f, 0, 1);
-        pan_offset_ += (b - a).toVector3D();
+        // Pan in the camera's local right/up plane. Derive the right and
+        // up vectors from the view matrix's rotation block — this is
+        // far simpler and more reliable than inverting the full MVP.
+        const float yaw_rad = qDegreesToRadians(yaw_);
+        const float pitch_rad = qDegreesToRadians(pitch_);
+        // Forward vector in world space (looking from camera into scene).
+        const QVector3D forward(std::cos(pitch_rad) * std::sin(yaw_rad),
+                                -std::sin(pitch_rad),
+                                -std::cos(pitch_rad) * std::cos(yaw_rad));
+        // World-up is (0, 1, 0); right = forward × up (right-handed).
+        const QVector3D world_up(0, 1, 0);
+        const QVector3D right = QVector3D::crossProduct(forward, world_up).normalized();
+        const QVector3D up = QVector3D::crossProduct(right, forward).normalized();
+
+        const float pan_amount = distance_ * kPanSpeed;
+        // delta.x() > 0 means mouse moved right → pan world left
+        // (camera follows mouse) — but the more intuitive convention is
+        // "grab and drag": mouse right drags the scene right. Use the
+        // intuitive sign.
+        pan_offset_ += right * static_cast<float>(delta.x()) * pan_amount;
+        pan_offset_ -= up * static_cast<float>(delta.y()) * pan_amount;
+    } else if (e->buttons() & Qt::MiddleButton) {
+        // Bonus: middle-button drag zooms (alternative to wheel).
+        constexpr float kZoomSpeed = 0.02f;
+        distance_ = std::clamp(distance_ * (1.0f + delta.y() * kZoomSpeed), 0.5f, 50.0f);
     }
     update();
 }
 
 void PointCloudView::wheelEvent(QWheelEvent* e) {
-    const float factor = (e->angleDelta().y() > 0) ? 0.9f : 1.1f;
+    // angleDelta is in 1/8 of a degree. Positive = wheel up = zoom in.
+    // Divide by 120 (one notch = 15° = 120 units) to get notches.
+    const float notches = static_cast<float>(e->angleDelta().y()) / 120.0f;
+    if (notches == 0.0f) return;
+    const float factor = std::pow(0.9f, notches);  // 0.9 per notch
     distance_ = std::clamp(distance_ * factor, 0.5f, 50.0f);
+    update();
+}
+
+void PointCloudView::keyPressEvent(QKeyEvent* e) {
+    // Arrow keys rotate, +/- zooms, Home resets.
+    constexpr float kKeyRotStep = 5.0f;
+    switch (e->key()) {
+        case Qt::Key_Left:  yaw_ -= kKeyRotStep; break;
+        case Qt::Key_Right: yaw_ += kKeyRotStep; break;
+        case Qt::Key_Up:    pitch_ += kKeyRotStep; break;
+        case Qt::Key_Down:  pitch_ -= kKeyRotStep; break;
+        case Qt::Key_Plus:
+        case Qt::Key_Equal: distance_ = std::clamp(distance_ * 0.9f, 0.5f, 50.0f); break;
+        case Qt::Key_Minus: distance_ = std::clamp(distance_ * 1.1f, 0.5f, 50.0f); break;
+        case Qt::Key_Home:  resetView(); return;
+        default: QOpenGLWidget::keyPressEvent(e); return;
+    }
+    pitch_ = std::clamp(pitch_, -89.0f, 89.0f);
     update();
 }
