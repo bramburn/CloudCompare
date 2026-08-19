@@ -14,6 +14,13 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccApplyTransformationDlg.cpp
+ * @brief Implementation of transformation dialog
+ * @details Provides multiple ways to define 4x4 transformation matrices:
+ * direct matrix entry, axis-angle, Euler angles, and from-to axis rotation.
+ * @see ccApplyTransformationDlg
+ */
 
 #include "ccApplyTransformationDlg.h"
 
@@ -56,6 +63,12 @@ class DipDirTransformationDialog : public QDialog
 	}
 };
 
+/**
+ * @brief Constructor
+ * @param parent Parent widget
+ * @details Initializes the dialog with all transformation input tabs,
+ * restores previous state, and connects UI signals.
+ */
 ccApplyTransformationDlg::ccApplyTransformationDlg(QWidget* parent /*=nullptr*/)
     : QDialog(parent)
     , Ui::ApplyTransformationDialog()
@@ -138,6 +151,11 @@ ccApplyTransformationDlg::ccApplyTransformationDlg(QWidget* parent /*=nullptr*/)
 	        {toXAxisDoubleSpinBox->setValue(0.0); toYAxisDoubleSpinBox->setValue(0.0); toZAxisDoubleSpinBox->setValue(1.0); });
 }
 
+/**
+ * @brief Handles matrix text editor changes
+ * @details Parses the matrix text, validates it, and updates all
+ * other input forms to reflect the same transformation.
+ */
 void ccApplyTransformationDlg::onMatrixTextChange()
 {
 	QString text = matrixTextEdit->toPlainText();
@@ -159,6 +177,12 @@ void ccApplyTransformationDlg::onMatrixTextChange()
 	}
 }
 
+/**
+ * @brief Handles axis-angle spin box changes
+ * @param dummy Unused parameter
+ * @details Constructs a transformation from axis and angle inputs
+ * and updates all other forms.
+ */
 void ccApplyTransformationDlg::onRotAngleValueChanged(double)
 {
 	double     alpha = 0.0;
@@ -185,6 +209,12 @@ void ccApplyTransformationDlg::onRotAngleValueChanged(double)
 	updateAll(mat, true, false, true, true); // no need to update the current form
 }
 
+/**
+ * @brief Handles Euler angles spin box changes
+ * @param dummy Unused parameter
+ * @details Constructs a transformation from Euler angles (phi, theta, psi)
+ * and updates all other forms.
+ */
 void ccApplyTransformationDlg::onEulerValueChanged(double)
 {
 	double     phi   = 0.0;
@@ -211,6 +241,12 @@ void ccApplyTransformationDlg::onEulerValueChanged(double)
 	updateAll(mat, true, true, false, true); // no need to update the current form
 }
 
+/**
+ * @brief Handles from-to axis spin box changes
+ * @param dummy Unused parameter
+ * @details Constructs a transformation from 'from' to 'to' axis rotation
+ * and updates all other forms.
+ */
 void ccApplyTransformationDlg::onFromToValueChanged(double)
 {
 	CCVector3d fromAxis(0.0, 0.0, 1.0), toAxis(0.0, 0.0, 1.0);
@@ -240,6 +276,16 @@ void ccApplyTransformationDlg::onFromToValueChanged(double)
 	updateAll(mat, true, true, true, false); // no need to update the current form
 }
 
+/**
+ * @brief Updates all input forms with a transformation matrix
+ * @param mat Transformation matrix to display
+ * @param textForm Update matrix text form
+ * @param axisAngleForm Update axis-angle form
+ * @param eulerForm Update Euler angles form
+ * @param fromToForm Update from-to axis form
+ * @details Synchronizes all input forms to show the same transformation
+ * in their respective representations.
+ */
 void ccApplyTransformationDlg::updateAll(const ccGLMatrixd& mat,
                                          bool               textForm /*=true*/,
                                          bool               axisAngleForm /*=true*/,
@@ -367,6 +413,13 @@ void ccApplyTransformationDlg::updateAll(const ccGLMatrixd& mat,
 	}
 }
 
+/**
+ * @brief Gets the final transformation matrix
+ * @param[out] applyToGlobal Whether to apply transformation globally
+ * @return The transformation matrix (possibly inverted)
+ * @details Reads the current matrix text, applies inversion if checked,
+ * and returns the resulting transformation.
+ */
 ccGLMatrixd ccApplyTransformationDlg::getTransformation(bool& applyToGlobal) const
 {
 	// get current input matrix text
@@ -386,6 +439,11 @@ ccGLMatrixd ccApplyTransformationDlg::getTransformation(bool& applyToGlobal) con
 	return mat;
 }
 
+/**
+ * @brief Validates matrix and accepts dialog
+ * @details Parses the matrix text, shows error if invalid, otherwise
+ * accepts the dialog and saves the state.
+ */
 void ccApplyTransformationDlg::checkMatrixValidityAndAccept()
 {
 	// get current input matrix text
@@ -408,6 +466,11 @@ void ccApplyTransformationDlg::checkMatrixValidityAndAccept()
 	s_currentFormIndex = tabWidget->currentIndex();
 }
 
+/**
+ * @brief Loads transformation matrix from ASCII file
+ * @details Opens a file dialog, reads a 4x4 matrix from the file,
+ * and updates the matrix text editor.
+ */
 void ccApplyTransformationDlg::loadFromASCIIFile()
 {
 	// persistent settings
@@ -434,6 +497,10 @@ void ccApplyTransformationDlg::loadFromASCIIFile()
 	settings.endGroup();
 }
 
+/**
+ * @brief Loads transformation matrix from clipboard
+ * @details Reads text from system clipboard and sets it as the matrix text.
+ */
 void ccApplyTransformationDlg::loadFromClipboard()
 {
 	QClipboard* clipboard = QApplication::clipboard();
@@ -451,6 +518,11 @@ void ccApplyTransformationDlg::loadFromClipboard()
 	}
 }
 
+/**
+ * @brief Initializes transformation from dip and dip direction
+ * @details Opens a dialog to input geological strike/dip parameters
+ * and creates a corresponding rotation matrix.
+ */
 void ccApplyTransformationDlg::initFromDipAndDipDir()
 {
 	static double              s_dip_deg           = 0.0;
@@ -499,6 +571,11 @@ void ccApplyTransformationDlg::initFromDipAndDipDir()
 	updateAll(trans, true, true, true, true);
 }
 
+/**
+ * @brief Handles dialog button clicks
+ * @param button The clicked button
+ * @details Handles Reset button to restore identity transformation.
+ */
 void ccApplyTransformationDlg::buttonClicked(QAbstractButton* button)
 {
 	if (buttonBox->buttonRole(button) == QDialogButtonBox::ResetRole)
@@ -508,6 +585,10 @@ void ccApplyTransformationDlg::buttonClicked(QAbstractButton* button)
 	}
 }
 
+/**
+ * @brief Sets axis from clipboard
+ * @details Reads a 3D vector from clipboard and sets the axis spin boxes.
+ */
 void ccApplyTransformationDlg::axisFromClipboard()
 {
 	CCVector3d vector;
@@ -519,6 +600,10 @@ void ccApplyTransformationDlg::axisFromClipboard()
 	}
 }
 
+/**
+ * @brief Sets translation from clipboard
+ * @details Reads a 3D vector from clipboard and sets the translation spin boxes.
+ */
 void ccApplyTransformationDlg::transFromClipboard()
 {
 	CCVector3d vector;
@@ -530,6 +615,10 @@ void ccApplyTransformationDlg::transFromClipboard()
 	}
 }
 
+/**
+ * @brief Sets Euler angles from clipboard
+ * @details Reads a 3D vector from clipboard and sets the Euler angles spin boxes.
+ */
 void ccApplyTransformationDlg::eulerAnglesFromClipboard()
 {
 	CCVector3d vector;
@@ -541,6 +630,10 @@ void ccApplyTransformationDlg::eulerAnglesFromClipboard()
 	}
 }
 
+/**
+ * @brief Sets Euler translation from clipboard
+ * @details Reads a 3D vector from clipboard and sets the Euler translation spin boxes.
+ */
 void ccApplyTransformationDlg::eulerTransFromClipboard()
 {
 	CCVector3d vector;
@@ -552,6 +645,10 @@ void ccApplyTransformationDlg::eulerTransFromClipboard()
 	}
 }
 
+/**
+ * @brief Sets 'from' axis from clipboard
+ * @details Reads a 3D vector from clipboard and sets the 'from' axis spin boxes.
+ */
 void ccApplyTransformationDlg::fromAxisFromClipboard()
 {
 	CCVector3d vector;
@@ -563,6 +660,10 @@ void ccApplyTransformationDlg::fromAxisFromClipboard()
 	}
 }
 
+/**
+ * @brief Sets 'to' axis from clipboard
+ * @details Reads a 3D vector from clipboard and sets the 'to' axis spin boxes.
+ */
 void ccApplyTransformationDlg::toAxisFromClipboard()
 {
 	CCVector3d vector;
@@ -574,6 +675,10 @@ void ccApplyTransformationDlg::toAxisFromClipboard()
 	}
 }
 
+/**
+ * @brief Sets from-to translation from clipboard
+ * @details Reads a 3D vector from clipboard and sets the from-to translation spin boxes.
+ */
 void ccApplyTransformationDlg::fromToTransFromClipboard()
 {
 	CCVector3d vector;
