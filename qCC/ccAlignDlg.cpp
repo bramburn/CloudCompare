@@ -14,6 +14,13 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccAlignDlg.cpp
+ * @brief Implementation of point cloud alignment dialog
+ * @details Provides UI for fine-tuning alignment between two point clouds
+ * using various sampling methods and ICP-like algorithms.
+ * @see ccAlignDlg
+ */
 
 #include "ccAlignDlg.h"
 
@@ -31,6 +38,14 @@
 #include <ccGenericPointCloud.h>
 #include <ccProgressDialog.h>
 
+/**
+ * @brief Constructor
+ * @param data Data point cloud to align
+ * @param model Reference/model point cloud
+ * @param parent Parent widget
+ * @details Initializes the dialog with sampling options and sets up
+ * signal/slot connections for interactive parameter adjustment.
+ */
 ccAlignDlg::ccAlignDlg(ccGenericPointCloud* data, ccGenericPointCloud* model, QWidget* parent)
     : QDialog(parent, Qt::Tool)
     , m_ui(new Ui::AlignDialog)
@@ -63,6 +78,10 @@ ccAlignDlg::ccAlignDlg(ccGenericPointCloud* data, ccGenericPointCloud* model, QW
 	connect(m_ui->isNbCandLimited, &QCheckBox::toggled, this, &ccAlignDlg::toggleNbMaxCandidates);
 }
 
+/**
+ * @brief Destructor
+ * @details Disables temporary colors and cleans up UI.
+ */
 ccAlignDlg::~ccAlignDlg()
 {
 	modelObject->enableTempColor(false);
@@ -71,46 +90,84 @@ ccAlignDlg::~ccAlignDlg()
 	delete m_ui;
 }
 
+/**
+ * @brief Gets the number of alignment tries
+ * @return Number of tries for the ICP algorithm
+ */
 unsigned ccAlignDlg::getNbTries()
 {
 	return m_ui->nbTries->value();
 }
 
+/**
+ * @brief Gets the expected overlap percentage
+ * @return Overlap value between 0 and 100
+ */
 double ccAlignDlg::getOverlap()
 {
 	return m_ui->overlap->value();
 }
 
+/**
+ * @brief Gets the delta parameter
+ * @return Delta value for distance threshold
+ */
 double ccAlignDlg::getDelta()
 {
 	return m_ui->delta->value();
 }
 
+/**
+ * @brief Gets the model/reference cloud
+ * @return Pointer to the model point cloud
+ */
 ccGenericPointCloud* ccAlignDlg::getModelObject()
 {
 	return modelObject;
 }
 
+/**
+ * @brief Gets the data cloud to align
+ * @return Pointer to the data point cloud
+ */
 ccGenericPointCloud* ccAlignDlg::getDataObject()
 {
 	return dataObject;
 }
 
+/**
+ * @brief Gets the selected sampling method
+ * @return Current sampling method (NONE, RANDOM, SPACE, or OCTREE)
+ */
 ccAlignDlg::CC_SAMPLING_METHOD ccAlignDlg::getSamplingMethod()
 {
 	return (CC_SAMPLING_METHOD)m_ui->samplingMethod->currentIndex();
 }
 
+/**
+ * @brief Checks if candidate count is limited
+ * @return true if max candidates is enabled
+ */
 bool ccAlignDlg::isNumberOfCandidatesLimited()
 {
 	return m_ui->isNbCandLimited->isChecked();
 }
 
+/**
+ * @brief Gets the maximum number of candidates
+ * @return Maximum number of candidates for ICP
+ */
 unsigned ccAlignDlg::getMaxNumberOfCandidates()
 {
 	return m_ui->nbMaxCandidates->value();
 }
 
+/**
+ * @brief Gets a sampled version of the model cloud
+ * @return Sampled reference cloud, or nullptr on failure
+ * @details Respects the current sampling method setting and rate.
+ * Caller is responsible for deleting the returned cloud.
+ */
 CCCoreLib::ReferenceCloud* ccAlignDlg::getSampledModel()
 {
 	CCCoreLib::ReferenceCloud* sampledCloud = nullptr;
@@ -161,6 +218,12 @@ CCCoreLib::ReferenceCloud* ccAlignDlg::getSampledModel()
 	return sampledCloud;
 }
 
+/**
+ * @brief Gets a sampled version of the data cloud
+ * @return Sampled reference cloud, or nullptr on failure
+ * @details Respects the current sampling method setting and rate.
+ * Caller is responsible for deleting the returned cloud.
+ */
 CCCoreLib::ReferenceCloud* ccAlignDlg::getSampledData()
 {
 	CCCoreLib::ReferenceCloud* sampledCloud = nullptr;
@@ -210,6 +273,10 @@ CCCoreLib::ReferenceCloud* ccAlignDlg::getSampledData()
 	return sampledCloud;
 }
 
+/**
+ * @brief Updates UI labels and temporary colors for clouds
+ * @details Sets model to red, data to yellow, and updates text labels.
+ */
 void ccAlignDlg::setColorsAndLabels()
 {
 	if (!modelObject || !dataObject)
@@ -228,6 +295,10 @@ void ccAlignDlg::setColorsAndLabels()
 	MainWindow::RefreshAllGLWindow(false);
 }
 
+/**
+ * @brief Swaps model and data clouds
+ * @details Allows user to switch which cloud is considered the reference.
+ */
 void ccAlignDlg::swapModelAndData()
 {
 	std::swap(dataObject, modelObject);
@@ -235,6 +306,10 @@ void ccAlignDlg::swapModelAndData()
 	changeSamplingMethod(m_ui->samplingMethod->currentIndex());
 }
 
+/**
+ * @brief Handles model sampling slider release
+ * @details Converts slider position to sampling rate and updates the UI.
+ */
 void ccAlignDlg::modelSliderReleased()
 {
 	double rate = static_cast<double>(m_ui->modelSample->sliderPosition()) / m_ui->modelSample->maximum();
@@ -245,6 +320,10 @@ void ccAlignDlg::modelSliderReleased()
 	modelSamplingRateChanged(rate);
 }
 
+/**
+ * @brief Handles data sampling slider release
+ * @details Converts slider position to sampling rate and updates the UI.
+ */
 void ccAlignDlg::dataSliderReleased()
 {
 	double rate = static_cast<double>(m_ui->dataSample->sliderPosition()) / m_ui->dataSample->maximum();
@@ -255,6 +334,11 @@ void ccAlignDlg::dataSliderReleased()
 	dataSamplingRateChanged(rate);
 }
 
+/**
+ * @brief Handles model sampling rate spin box changes
+ * @param value New sampling rate value
+ * @details Updates the slider position and remaining points label.
+ */
 void ccAlignDlg::modelSamplingRateChanged(double value)
 {
 	QString message("An error occurred");
@@ -303,6 +387,11 @@ void ccAlignDlg::modelSamplingRateChanged(double value)
 	m_ui->modelRemaining->setText(message);
 }
 
+/**
+ * @brief Handles data sampling rate spin box changes
+ * @param value New sampling rate value
+ * @details Updates the slider position and remaining points label.
+ */
 void ccAlignDlg::dataSamplingRateChanged(double value)
 {
 	QString message("An error occurred");
@@ -351,6 +440,11 @@ void ccAlignDlg::dataSamplingRateChanged(double value)
 	m_ui->dataRemaining->setText(message);
 }
 
+/**
+ * @brief Automatically estimates delta using local density
+ * @details Computes local density approximation and sets delta to
+ * mean + variance for robust alignment initialization.
+ */
 void ccAlignDlg::estimateDelta()
 {
 	ccProgressDialog pDlg(false, this);
@@ -406,6 +500,12 @@ void ccAlignDlg::estimateDelta()
 	delete sampledData;
 }
 
+/**
+ * @brief Handles sampling method change
+ * @param index New sampling method index
+ * @details Updates spin box ranges and limits based on the selected
+ * sampling method (None, Random, Space, or Octree).
+ */
 void ccAlignDlg::changeSamplingMethod(int index)
 {
 	// Reste a changer les textes d'aide
@@ -526,6 +626,10 @@ void ccAlignDlg::changeSamplingMethod(int index)
 	dataSliderReleased();
 }
 
+/**
+ * @brief Toggles max candidates spin box enabled state
+ * @param activ true to enable, false to disable
+ */
 void ccAlignDlg::toggleNbMaxCandidates(bool activ)
 {
 	m_ui->nbMaxCandidates->setEnabled(activ);
