@@ -14,6 +14,13 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccBoundingBoxEditorDlg.cpp
+ * @brief Implementation of bounding box editor dialog
+ * @details Interactive dialog for editing 3D bounding boxes with support
+ * for axis-aligned and oriented boxes, square mode, and clipboard integration.
+ * @see ccBoundingBoxEditorDlg
+ */
 
 #include "ccBoundingBoxEditorDlg.h"
 
@@ -32,6 +39,12 @@ static const int CenterIndex    = 1;
 static const int MaxCornerIndex = 2;
 
 // Helper
+/**
+ * @brief Converts box to square (equal dimensions)
+ * @param box Box to modify in place
+ * @param pivotType Pivot type (0=min corner, 1=center, 2=max corner)
+ * @param defaultDim Preferred dimension to use (-1 = largest)
+ */
 static void MakeSquare(ccBBox& box, int pivotType, int defaultDim = -1)
 {
 	assert(defaultDim < 3);
@@ -75,6 +88,12 @@ static void MakeSquare(ccBBox& box, int pivotType, int defaultDim = -1)
 	}
 }
 
+/**
+ * @brief Constructor
+ * @param showBoxAxes Whether to show oriented bounding box axes
+ * @param showRasterGridImage Whether to show raster grid preview
+ * @param parent Parent widget
+ */
 ccBoundingBoxEditorDlg::ccBoundingBoxEditorDlg(bool showBoxAxes, bool showRasterGridImage, QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::Tool)
     , Ui::BoundingBoxEditorDialog()
@@ -139,6 +158,10 @@ ccBoundingBoxEditorDlg::ccBoundingBoxEditorDlg(bool showBoxAxes, bool showRaster
 	}
 }
 
+/**
+ * @brief Sets the bounding box to edit
+ * @param box New bounding box
+ */
 void ccBoundingBoxEditorDlg::setBox(const ccBBox& box)
 {
 	m_currentBBox = box;
@@ -146,11 +169,19 @@ void ccBoundingBoxEditorDlg::setBox(const ccBBox& box)
 	checkBaseInclusion();
 }
 
+/**
+ * @brief Checks if square mode is active
+ * @return true if box should maintain equal dimensions
+ */
 bool ccBoundingBoxEditorDlg::keepSquare() const
 {
 	return keepSquareCheckBox->isChecked();
 }
 
+/**
+ * @brief Forces square mode on/off
+ * @param state true to enable square mode
+ */
 void ccBoundingBoxEditorDlg::forceKeepSquare(bool state)
 {
 	if (state)
@@ -158,6 +189,10 @@ void ccBoundingBoxEditorDlg::forceKeepSquare(bool state)
 	keepSquareCheckBox->setDisabled(state);
 }
 
+/**
+ * @brief Handles square mode toggle
+ * @param state New square mode state
+ */
 void ccBoundingBoxEditorDlg::squareModeActivated(bool state)
 {
 	if (state)
@@ -167,6 +202,11 @@ void ccBoundingBoxEditorDlg::squareModeActivated(bool state)
 	}
 }
 
+/**
+ * @brief Sets 2D editing mode
+ * @param state true for 2D mode
+ * @param dim Dimension to hide (0=X, 1=Y, 2=Z)
+ */
 void ccBoundingBoxEditorDlg::set2DMode(bool state, unsigned char dim)
 {
 	bool hideX = (state && dim == 0);
@@ -186,6 +226,11 @@ void ccBoundingBoxEditorDlg::set2DMode(bool state, unsigned char dim)
 	zLabel->setHidden(hideZ);
 }
 
+/**
+ * @brief Sets the base/reference bounding box
+ * @param box Base bounding box
+ * @param isMinimal Whether current box must contain base box
+ */
 void ccBoundingBoxEditorDlg::setBaseBBox(const ccBBox& box, bool isMinimal /*=true*/)
 {
 	// set new default one
@@ -197,6 +242,9 @@ void ccBoundingBoxEditorDlg::setBaseBBox(const ccBBox& box, bool isMinimal /*=tr
 	resetToDefault();
 }
 
+/**
+ * @brief Checks if base box is contained and updates UI
+ */
 void ccBoundingBoxEditorDlg::checkBaseInclusion()
 {
 	bool exclude = false;
@@ -209,6 +257,9 @@ void ccBoundingBoxEditorDlg::checkBaseInclusion()
 	okPushButton->setEnabled(!m_baseBoxIsMinimal || !exclude);
 }
 
+/**
+ * @brief Resets box to base/default box
+ */
 void ccBoundingBoxEditorDlg::resetToDefault()
 {
 	m_currentBBox = m_baseBBox;
@@ -221,6 +272,9 @@ void ccBoundingBoxEditorDlg::resetToDefault()
 	checkBaseInclusion();
 }
 
+/**
+ * @brief Resets box to last used box
+ */
 void ccBoundingBoxEditorDlg::resetToLast()
 {
 	m_currentBBox = s_lastBBox;
@@ -233,6 +287,9 @@ void ccBoundingBoxEditorDlg::resetToLast()
 	checkBaseInclusion();
 }
 
+/**
+ * @brief Saves current box and accepts dialog
+ */
 void ccBoundingBoxEditorDlg::saveBoxAndAccept()
 {
 	if (oriGroupBox->isVisible())
@@ -266,6 +323,10 @@ void ccBoundingBoxEditorDlg::saveBoxAndAccept()
 	accept();
 }
 
+/**
+ * @brief Executes the dialog modally
+ * @return Dialog result code
+ */
 int ccBoundingBoxEditorDlg::exec()
 {
 	// backup current box
@@ -275,6 +336,9 @@ int ccBoundingBoxEditorDlg::exec()
 	return QDialog::exec();
 }
 
+/**
+ * @brief Cancels editing and restores original box
+ */
 void ccBoundingBoxEditorDlg::cancel()
 {
 	// restore init. box
@@ -283,6 +347,10 @@ void ccBoundingBoxEditorDlg::cancel()
 	reject();
 }
 
+/**
+ * @brief Handles X width spin box changes
+ * @param value New width value
+ */
 void ccBoundingBoxEditorDlg::updateXWidth(double value)
 {
 	updateCurrentBBox(value);
@@ -296,6 +364,10 @@ void ccBoundingBoxEditorDlg::updateXWidth(double value)
 	}
 }
 
+/**
+ * @brief Handles Y width spin box changes
+ * @param value New width value
+ */
 void ccBoundingBoxEditorDlg::updateYWidth(double value)
 {
 	updateCurrentBBox(value);
@@ -309,6 +381,10 @@ void ccBoundingBoxEditorDlg::updateYWidth(double value)
 	}
 }
 
+/**
+ * @brief Handles Z width spin box changes
+ * @param value New width value
+ */
 void ccBoundingBoxEditorDlg::updateZWidth(double value)
 {
 	updateCurrentBBox(value);
@@ -322,6 +398,10 @@ void ccBoundingBoxEditorDlg::updateZWidth(double value)
 	}
 }
 
+/**
+ * @brief Updates current box from UI values
+ * @param dummy Unused parameter
+ */
 void ccBoundingBoxEditorDlg::updateCurrentBBox(double dummy)
 {
 	CCVector3 A(static_cast<PointCoordinateType>(xDoubleSpinBox->value()),
@@ -354,6 +434,10 @@ void ccBoundingBoxEditorDlg::updateCurrentBBox(double dummy)
 	}
 }
 
+/**
+ * @brief Updates UI to reflect current box state
+ * @param dummy Unused parameter
+ */
 void ccBoundingBoxEditorDlg::reflectChanges(int dummy)
 {
 	// left column
@@ -417,6 +501,12 @@ void ccBoundingBoxEditorDlg::reflectChanges(int dummy)
 	}
 }
 
+/**
+ * @brief Computes optimal dialog height
+ * @param showBoxAxes Whether axes group is visible
+ * @param showRasterGridImage Whether grid preview is visible
+ * @return Optimal height in pixels
+ */
 int ccBoundingBoxEditorDlg::computeBestDialogHeight(bool showBoxAxes, bool showRasterGridImage) const
 {
 	// we always keep space to display the grid
@@ -455,6 +545,12 @@ int ccBoundingBoxEditorDlg::computeBestDialogHeight(bool showBoxAxes, bool showR
 	return height;
 }
 
+/**
+ * @brief Sets the oriented box axes
+ * @param X X-axis direction
+ * @param Y Y-axis direction
+ * @param Z Z-axis direction
+ */
 void ccBoundingBoxEditorDlg::setBoxAxes(const CCVector3& X, const CCVector3& Y, const CCVector3& Z)
 {
 	// if (xOriFrame->isEnabled())
@@ -479,6 +575,12 @@ void ccBoundingBoxEditorDlg::setBoxAxes(const CCVector3& X, const CCVector3& Y, 
 	}
 }
 
+/**
+ * @brief Gets the current oriented box axes
+ * @param[out] X X-axis direction
+ * @param[out] Y Y-axis direction
+ * @param[out] Z Z-axis direction
+ */
 void ccBoundingBoxEditorDlg::getBoxAxes(CCVector3d& X, CCVector3d& Y, CCVector3d& Z)
 {
 	X = CCVector3d(xOriXDoubleSpinBox->value(),
@@ -494,6 +596,10 @@ void ccBoundingBoxEditorDlg::getBoxAxes(CCVector3d& X, CCVector3d& Y, CCVector3d
 	               zOriZDoubleSpinBox->value());
 }
 
+/**
+ * @brief Handles axis spin box changes
+ * @param dummy Unused parameter
+ */
 void ccBoundingBoxEditorDlg::onAxisValueChanged(double)
 {
 	CCVector3d X;
@@ -537,6 +643,9 @@ void ccBoundingBoxEditorDlg::onAxisValueChanged(double)
 	}
 }
 
+/**
+ * @brief Loads box from clipboard
+ */
 void ccBoundingBoxEditorDlg::fromClipboardClicked()
 {
 	QClipboard* clipboard = QApplication::clipboard();
@@ -571,6 +680,9 @@ void ccBoundingBoxEditorDlg::fromClipboardClicked()
 	}
 }
 
+/**
+ * @brief Copies box to clipboard as transformation matrix
+ */
 void ccBoundingBoxEditorDlg::toClipboardClicked()
 {
 	QClipboard* clipboard = QApplication::clipboard();
