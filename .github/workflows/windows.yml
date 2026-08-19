@@ -64,16 +64,6 @@ jobs:
           $env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [Environment]::GetEnvironmentVariable("Path", "User")
           cmake --version
 
-      - name: Cache build directory
-        uses: actions/cache@v4
-        with:
-          path: |
-            build
-            ~/.ccache
-          key: ${{ runner.os }}-cc-win-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-cc-win-
-
       - name: Configure (Ninja, Release, 18 self-contained plugins)
         shell: pwsh
         run: |
