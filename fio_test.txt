@@ -1,0 +1,127 @@
+********* Start testing of TestFileIOFilter *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+INFO   : TestFileIOFilter::initTestCase() entering
+PASS   : TestFileIOFilter::initTestCase()
+INFO   : TestFileIOFilter::getRealFilenameReturnsInput() entering
+INFO   : TestFileIOFilter::getRealFilenameReturnsInput() QCOMPARE(result, "C:/no/such/path.txt")
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(48) : message location
+PASS   : TestFileIOFilter::getRealFilenameReturnsInput()
+INFO   : TestFileIOFilter::getRealFilenameSimplePath() entering
+INFO   : TestFileIOFilter::getRealFilenameSimplePath() QVERIFY(dir.isValid())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(54) : message location
+INFO   : TestFileIOFilter::getRealFilenameSimplePath() QCOMPARE(FileIOFilter::GetRealFilename(path), path)
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(56) : message location
+PASS   : TestFileIOFilter::getRealFilenameSimplePath()
+INFO   : TestFileIOFilter::checkForSpecialCharsClean() entering
+INFO   : TestFileIOFilter::checkForSpecialCharsClean() QVERIFY(!FileIOFilter::CheckForSpecialChars("normal_file.txt"))
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(62) : message location
+PASS   : TestFileIOFilter::checkForSpecialCharsClean()
+INFO   : TestFileIOFilter::checkForSpecialCharsSpaces() entering
+INFO   : TestFileIOFilter::checkForSpecialCharsSpaces() QVERIFY(!FileIOFilter::CheckForSpecialChars("normal file.txt"))
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(67) : message location
+PASS   : TestFileIOFilter::checkForSpecialCharsSpaces()
+INFO   : TestFileIOFilter::getFiltersReturnsNonEmptyAfterInit() entering
+INFO   : TestFileIOFilter::getFiltersReturnsNonEmptyAfterInit() QVERIFY(!filters.empty())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(74) : message location
+PASS   : TestFileIOFilter::getFiltersReturnsNonEmptyAfterInit()
+INFO   : TestFileIOFilter::importFilterListReturnsNonEmpty() entering
+INFO   : TestFileIOFilter::importFilterListReturnsNonEmpty() QVERIFY(!list.isEmpty())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(81) : message location
+INFO   : TestFileIOFilter::importFilterListReturnsNonEmpty() QCOMPARE(list.first(), QStringLiteral("All Files (*.*)"))
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(83) : message location
+FAIL!  : TestFileIOFilter::importFilterListReturnsNonEmpty() Compared values are not the same
+   Actual   (list.first())                     : "All (*.*)"
+   Expected (QStringLiteral("All Files (*.*)")): "All Files (*.*)"
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(83) : failure location
+INFO   : TestFileIOFilter::findBestFilterForExtensionPly() entering
+INFO   : TestFileIOFilter::findBestFilterForExtensionPly() QVERIFY(!filter.isNull())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(90) : message location
+INFO   : TestFileIOFilter::findBestFilterForExtensionPly() QVERIFY(filter->importSupported())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(91) : message location
+PASS   : TestFileIOFilter::findBestFilterForExtensionPly()
+INFO   : TestFileIOFilter::findBestFilterForExtensionAsc() entering
+INFO   : TestFileIOFilter::findBestFilterForExtensionAsc() QVERIFY(!filter.isNull())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(97) : message location
+PASS   : TestFileIOFilter::findBestFilterForExtensionAsc()
+INFO   : TestFileIOFilter::findBestFilterForExtensionBin() entering
+INFO   : TestFileIOFilter::findBestFilterForExtensionBin() QVERIFY(!filter.isNull())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(103) : message location
+PASS   : TestFileIOFilter::findBestFilterForExtensionBin()
+INFO   : TestFileIOFilter::findBestFilterForExtensionUnknown() entering
+INFO   : TestFileIOFilter::findBestFilterForExtensionUnknown() QCOMPARE(filter.isNull(), true)
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(110) : message location
+PASS   : TestFileIOFilter::findBestFilterForExtensionUnknown()
+INFO   : TestFileIOFilter::findBestFilterForExtensionIsCaseInsensitive() entering
+INFO   : TestFileIOFilter::findBestFilterForExtensionIsCaseInsensitive() QCOMPARE(!filter1.isNull(), true)
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(117) : message location
+INFO   : TestFileIOFilter::findBestFilterForExtensionIsCaseInsensitive() QCOMPARE(!filter2.isNull(), true)
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(118) : message location
+PASS   : TestFileIOFilter::findBestFilterForExtensionIsCaseInsensitive()
+INFO   : TestFileIOFilter::getFilterValidPlyString() entering
+INFO   : TestFileIOFilter::getFilterValidPlyString() QVERIFY(!filter.isNull())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(125) : message location
+FAIL!  : TestFileIOFilter::getFilterValidPlyString() '!filter.isNull()' returned FALSE. ()
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(125) : failure location
+INFO   : TestFileIOFilter::getFilterUnknownString() entering
+INFO   : TestFileIOFilter::getFilterUnknownString() QCOMPARE(filter.isNull(), true)
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(132) : message location
+PASS   : TestFileIOFilter::getFilterUnknownString()
+INFO   : TestFileIOFilter::getFilterEmptyString() entering
+INFO   : TestFileIOFilter::getFilterEmptyString() QCOMPARE(filter.isNull(), true)
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(138) : message location
+PASS   : TestFileIOFilter::getFilterEmptyString()
+INFO   : TestFileIOFilter::registerAddsToList() entering
+INFO   : TestFileIOFilter::registerAddsToList() QCOMPARE(FileIOFilter::GetFilters().size(), static_cast<size_t>(0))
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(145) : message location
+INFO   : TestFileIOFilter::registerAddsToList() QVERIFY(!FileIOFilter::GetFilters().empty())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(149) : message location
+PASS   : TestFileIOFilter::registerAddsToList()
+INFO   : TestFileIOFilter::unregisterAllClearsList() entering
+INFO   : TestFileIOFilter::unregisterAllClearsList() QCOMPARE(FileIOFilter::GetFilters().size(), static_cast<size_t>(0))
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(156) : message location
+INFO   : TestFileIOFilter::unregisterAllClearsList() QCOMPARE(FileIOFilter::ImportFilterList().size(), 0)
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(157) : message location
+FAIL!  : TestFileIOFilter::unregisterAllClearsList() Compared values are not the same
+   Actual   (FileIOFilter::ImportFilterList().size()): 1
+   Expected (0)                                      : 0
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(157) : failure location
+INFO   : TestFileIOFilter::plyFilterDefaultExtension() entering
+INFO   : TestFileIOFilter::plyFilterDefaultExtension() QVERIFY(!filter.isNull())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(164) : message location
+INFO   : TestFileIOFilter::plyFilterDefaultExtension() QCOMPARE(filter->getDefaultExtension(), QStringLiteral("ply"))
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(165) : message location
+PASS   : TestFileIOFilter::plyFilterDefaultExtension()
+INFO   : TestFileIOFilter::binFilterDefaultExtension() entering
+INFO   : TestFileIOFilter::binFilterDefaultExtension() QVERIFY(!filter.isNull())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(171) : message location
+INFO   : TestFileIOFilter::binFilterDefaultExtension() QCOMPARE(filter->getDefaultExtension(), QStringLiteral("bin"))
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(172) : message location
+PASS   : TestFileIOFilter::binFilterDefaultExtension()
+INFO   : TestFileIOFilter::plyFilterCanSaveCloud() entering
+INFO   : TestFileIOFilter::plyFilterCanSaveCloud() QVERIFY(!filter.isNull())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(179) : message location
+INFO   : TestFileIOFilter::plyFilterCanSaveCloud() QCOMPARE(filter->canSave(CC_TYPES::POINT_CLOUD, multiple, exclusive), true)
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(182) : message location
+PASS   : TestFileIOFilter::plyFilterCanSaveCloud()
+INFO   : TestFileIOFilter::plyFilterCanSaveMesh() entering
+INFO   : TestFileIOFilter::plyFilterCanSaveMesh() QVERIFY(!filter.isNull())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(188) : message location
+INFO   : TestFileIOFilter::plyFilterCanSaveMesh() QCOMPARE(filter->canSave(CC_TYPES::MESH, multiple, exclusive), true)
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(191) : message location
+PASS   : TestFileIOFilter::plyFilterCanSaveMesh()
+INFO   : TestFileIOFilter::plyFilterSupportsImport() entering
+INFO   : TestFileIOFilter::plyFilterSupportsImport() QVERIFY(!filter.isNull())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(198) : message location
+INFO   : TestFileIOFilter::plyFilterSupportsImport() QCOMPARE(filter->importSupported(), true)
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(199) : message location
+PASS   : TestFileIOFilter::plyFilterSupportsImport()
+INFO   : TestFileIOFilter::plyFilterSupportsExport() entering
+INFO   : TestFileIOFilter::plyFilterSupportsExport() QVERIFY(!filter.isNull())
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(205) : message location
+INFO   : TestFileIOFilter::plyFilterSupportsExport() QCOMPARE(filter->exportSupported(), true)
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(206) : message location
+PASS   : TestFileIOFilter::plyFilterSupportsExport()
+INFO   : TestFileIOFilter::cleanupTestCase() entering
+PASS   : TestFileIOFilter::cleanupTestCase()
+Totals: 21 passed, 3 failed, 0 skipped, 0 blacklisted, 9ms
+********* Finished testing of TestFileIOFilter *********

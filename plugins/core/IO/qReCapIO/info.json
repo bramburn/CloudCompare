@@ -1,0 +1,30 @@
+{
+	"type": "I/O",
+	"name": "qReCapIO",
+	"description": "Autodesk ReCap RCS/RCP point cloud import via ReCap SDK v26",
+	"maintainer": "CloudCompare Community",
+	"version": "1.0.0",
+	"cloudcompare": {
+		"min": "2.12"
+	},
+	"dependencies": [
+		{
+			"name": "Autodesk ReCap SDK",
+			"version": "26.0",
+			"url": "https://developer.autodesk.com/en/docs/recap/v1/overview/",
+			"note": "Locally-installed; binaries not included in repository."
+		}
+	],
+	"formats": [
+		{
+			"extension": "rcs",
+			"description": "ReCap Station point cloud",
+			"mode": "r"
+		},
+		{
+			"extension": "rcp",
+			"description": "ReCap Photo project",
+			"mode": "r"
+		}
+	]
+}

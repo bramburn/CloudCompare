@@ -34,9 +34,24 @@ if ( UNIX )
 endif()
 
 if ( MSVC )
-	# Where to find OpenGL libraries
-	set(WINDOWS_OPENGL_LIBS "C:\\Program Files (x86)\\Windows Kits\\8.0\\Lib\\win8\\um\\x64" CACHE PATH "WindowsSDK libraries" )
-	list( APPEND CMAKE_PREFIX_PATH ${WINDOWS_OPENGL_LIBS} )
+	# Locate the newest installed Windows SDK (10.x) — the "um/x64" folder
+	# contains d3d11.lib, dxgi.lib, d3d12.lib etc. used by Qt6 OpenGL + Direct3D.
+	# We store this in a global variable so test CMakeLists.txt can append
+	# /LIBPATH:"..." to the linker's search path without disturbing the defaults.
+	file( GLOB _CC_WINSDK_DIRS "C:/Program Files (x86)/Windows Kits/10/Lib/"* )
+	if( _CC_WINSDK_DIRS )
+		list( SORT _CC_WINSDK_DIRS )
+		list( REVERSE _CC_WINSDK_DIRS )
+		list( GET _CC_WINSDK_DIRS 0 _CC_WINSDK_VER )
+		set( CC_WINDOWS_SDK_LIB_DIR "${_CC_WINSDK_VER}/um/x64" )
+		if( EXISTS "${CC_WINDOWS_SDK_LIB_DIR}" )
+			message( STATUS "Windows SDK lib dir: ${CC_WINDOWS_SDK_LIB_DIR}" )
+		else()
+			unset( CC_WINDOWS_SDK_LIB_DIR )
+		endif()
+	endif()
+	unset( _CC_WINSDK_DIRS )
+	unset( _CC_WINSDK_VER )
 endif()
 				
 # ------------------------------------------------------------------------------

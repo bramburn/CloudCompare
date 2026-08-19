@@ -22,6 +22,7 @@
 
 // local
 #include "ccGlobalShiftManager.h"
+#include "qCC_io.h"
 
 class QWidget;
 
@@ -360,7 +361,7 @@ class FileIOFilter
 
   public: // helpers
 	//! Returns the real file/path in case the input filename points to a symbolic link, shortcut or alias
-	static QString GetRealFilename(QString filename);
+	QCC_IO_LIB_API static QString GetRealFilename(QString filename);
 
   protected:
 	static constexpr float DEFAULT_PRIORITY = 25.0f;

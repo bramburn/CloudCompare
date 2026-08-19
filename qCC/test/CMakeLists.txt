@@ -1,5 +1,13 @@
 find_package(Qt6 REQUIRED COMPONENTS Test)
 
+# On Windows/MSVC, the Qt6 OpenGLWidgets component links d3d11.lib / dxgi.lib
+# but the Windows SDK library directory is not on the linker's default search path.
+# CMake sets it up via the MSVC toolchain on full Visual Studio installs, but the
+# Community edition + vcpkg toolchain needs an explicit /LIBPATH for the SDK.
+if(MSVC AND DEFINED CC_WINDOWS_SDK_LIB_DIR AND EXISTS "${CC_WINDOWS_SDK_LIB_DIR}")
+	add_link_options( "/LIBPATH:\"${CC_WINDOWS_SDK_LIB_DIR}\"" )
+endif()
+
 add_executable(TestArgumentParser
     TestArgumentParser.cpp
 )
@@ -19,13 +27,11 @@ add_executable(TestFileIOFilter
 
 target_link_libraries(TestFileIOFilter
     PRIVATE
-        qCC_io
+        QCC_IO_LIB
+        QCC_DB_LIB
+        CCCoreLib
         CCPluginAPI
         Qt6::Test
-)
-
-target_include_directories(TestFileIOFilter PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../libs/qCC_io/include
 )
 
 add_test(NAME TestFileIOFilter COMMAND TestFileIOFilter)
@@ -37,15 +43,10 @@ add_executable(TestPointCloud
 
 target_link_libraries(TestPointCloud
     PRIVATE
-        qCC_db
+        QCC_DB_LIB
         CCCoreLib
         CCPluginAPI
         Qt6::Test
-)
-
-target_include_directories(TestPointCloud PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../libs/qCC_db/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../libs/qCC_db/extern/CCCoreLib/include
 )
 
 add_test(NAME TestPointCloud COMMAND TestPointCloud)
@@ -57,15 +58,10 @@ add_executable(TestShiftedObject
 
 target_link_libraries(TestShiftedObject
     PRIVATE
-        qCC_db
+        QCC_DB_LIB
         CCCoreLib
         CCPluginAPI
         Qt6::Test
-)
-
-target_include_directories(TestShiftedObject PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../libs/qCC_db/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../libs/qCC_db/extern/CCCoreLib/include
 )
 
 add_test(NAME TestShiftedObject COMMAND TestShiftedObject)

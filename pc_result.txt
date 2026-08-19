@@ -1,0 +1,131 @@
+********* Start testing of TestPointCloud *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+INFO   : TestPointCloud::initTestCase() entering
+PASS   : TestPointCloud::initTestCase()
+INFO   : TestPointCloud::constructEmpty() entering
+INFO   : TestPointCloud::constructEmpty() QCOMPARE(cloud.size(), static_cast<unsigned>(0))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(44) : message location
+INFO   : TestPointCloud::constructEmpty() QCOMPARE(cloud.capacity(), static_cast<unsigned>(0))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(45) : message location
+PASS   : TestPointCloud::constructEmpty()
+INFO   : TestPointCloud::constructNamed() entering
+INFO   : TestPointCloud::constructNamed() QCOMPARE(cloud.getName(), QString("my cloud"))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(51) : message location
+PASS   : TestPointCloud::constructNamed()
+INFO   : TestPointCloud::reserveAllocatesCapacity() entering
+INFO   : TestPointCloud::reserveAllocatesCapacity() QCOMPARE(cloud.capacity(), static_cast<unsigned>(0))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(58) : message location
+INFO   : TestPointCloud::reserveAllocatesCapacity() QVERIFY(cloud.reserve(100))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(59) : message location
+INFO   : TestPointCloud::reserveAllocatesCapacity() QCOMPARE(cloud.capacity(), static_cast<unsigned>(100))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(60) : message location
+INFO   : TestPointCloud::reserveAllocatesCapacity() QCOMPARE(cloud.size(), static_cast<unsigned>(0))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(61) : message location
+PASS   : TestPointCloud::reserveAllocatesCapacity()
+INFO   : TestPointCloud::resizeGrowsWithZeroFill() entering
+INFO   : TestPointCloud::resizeGrowsWithZeroFill() QVERIFY(cloud.reserve(10))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(67) : message location
+INFO   : TestPointCloud::resizeGrowsWithZeroFill() QVERIFY(cloud.resize(5))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(68) : message location
+INFO   : TestPointCloud::resizeGrowsWithZeroFill() QCOMPARE(cloud.size(), static_cast<unsigned>(5))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(69) : message location
+INFO   : TestPointCloud::resizeGrowsWithZeroFill() QCOMPARE(cloud.capacity(), static_cast<unsigned>(10))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(70) : message location
+PASS   : TestPointCloud::resizeGrowsWithZeroFill()
+INFO   : TestPointCloud::reserveAndAddPoints() entering
+INFO   : TestPointCloud::reserveAndAddPoints() QVERIFY(cloud.reserve(10))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(76) : message location
+INFO   : TestPointCloud::reserveAndAddPoints() QCOMPARE(cloud.size(), static_cast<unsigned>(5))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(81) : message location
+PASS   : TestPointCloud::reserveAndAddPoints()
+INFO   : TestPointCloud::boundingBoxEmpty() entering
+INFO   : TestPointCloud::boundingBoxEmpty() QCOMPARE(bbMin.x, 0.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(90) : message location
+INFO   : TestPointCloud::boundingBoxEmpty() QCOMPARE(bbMin.y, 0.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(91) : message location
+INFO   : TestPointCloud::boundingBoxEmpty() QCOMPARE(bbMin.z, 0.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(92) : message location
+INFO   : TestPointCloud::boundingBoxEmpty() QCOMPARE(bbMax.x, 0.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(93) : message location
+INFO   : TestPointCloud::boundingBoxEmpty() QCOMPARE(bbMax.y, 0.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(94) : message location
+INFO   : TestPointCloud::boundingBoxEmpty() QCOMPARE(bbMax.z, 0.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(95) : message location
+PASS   : TestPointCloud::boundingBoxEmpty()
+INFO   : TestPointCloud::boundingBoxTwoPoints() entering
+INFO   : TestPointCloud::boundingBoxTwoPoints() QCOMPARE(bbMin.x, 0.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(108) : message location
+INFO   : TestPointCloud::boundingBoxTwoPoints() QCOMPARE(bbMin.y, 0.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(109) : message location
+INFO   : TestPointCloud::boundingBoxTwoPoints() QCOMPARE(bbMin.z, 0.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(110) : message location
+INFO   : TestPointCloud::boundingBoxTwoPoints() QCOMPARE(bbMax.x, 2.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(111) : message location
+INFO   : TestPointCloud::boundingBoxTwoPoints() QCOMPARE(bbMax.y, 3.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(112) : message location
+INFO   : TestPointCloud::boundingBoxTwoPoints() QCOMPARE(bbMax.z, 4.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(113) : message location
+PASS   : TestPointCloud::boundingBoxTwoPoints()
+INFO   : TestPointCloud::setAndGetName() entering
+INFO   : TestPointCloud::setAndGetName() QCOMPARE(cloud.getName(), QString("renamed"))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(121) : message location
+PASS   : TestPointCloud::setAndGetName()
+INFO   : TestPointCloud::globalShiftRoundtrip() entering
+INFO   : TestPointCloud::globalShiftRoundtrip() QCOMPARE(cloud.getGlobalShift().x, shift.x)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(131) : message location
+INFO   : TestPointCloud::globalShiftRoundtrip() QCOMPARE(cloud.getGlobalShift().y, shift.y)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(132) : message location
+INFO   : TestPointCloud::globalShiftRoundtrip() QCOMPARE(cloud.getGlobalShift().z, shift.z)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(133) : message location
+PASS   : TestPointCloud::globalShiftRoundtrip()
+INFO   : TestPointCloud::globalShiftDefault() entering
+INFO   : TestPointCloud::globalShiftDefault() QCOMPARE(cloud.getGlobalShift().x, 0.0)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(140) : message location
+INFO   : TestPointCloud::globalShiftDefault() QCOMPARE(cloud.getGlobalShift().y, 0.0)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(141) : message location
+INFO   : TestPointCloud::globalShiftDefault() QCOMPARE(cloud.getGlobalShift().z, 0.0)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(142) : message location
+PASS   : TestPointCloud::globalShiftDefault()
+INFO   : TestPointCloud::globalScaleRoundtrip() entering
+INFO   : TestPointCloud::globalScaleRoundtrip() QCOMPARE(cloud.getGlobalScale(), 0.001)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(151) : message location
+PASS   : TestPointCloud::globalScaleRoundtrip()
+INFO   : TestPointCloud::globalScaleDefault() entering
+INFO   : TestPointCloud::globalScaleDefault() QCOMPARE(cloud.getGlobalScale(), 1.0)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(158) : message location
+PASS   : TestPointCloud::globalScaleDefault()
+INFO   : TestPointCloud::addScalarField() entering
+INFO   : TestPointCloud::addScalarField() QVERIFY(cloud.reserve(3))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(165) : message location
+INFO   : TestPointCloud::addScalarField() QVERIFY(sfIdx >= 0)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(171) : message location
+INFO   : TestPointCloud::addScalarField() QCOMPARE(cloud.getNumberOfScalarFields(), 1)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(172) : message location
+INFO   : TestPointCloud::addScalarField() QVERIFY(sf != nullptr)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(174) : message location
+PASS   : TestPointCloud::addScalarField()
+INFO   : TestPointCloud::scalarFieldStatistics() entering
+INFO   : TestPointCloud::scalarFieldStatistics() QVERIFY(cloud.reserve(4))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(183) : message location
+INFO   : TestPointCloud::scalarFieldStatistics() QVERIFY(sfIdx >= 0)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(189) : message location
+INFO   : TestPointCloud::scalarFieldStatistics() QVERIFY(sf != nullptr)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(191) : message location
+INFO   : TestPointCloud::scalarFieldStatistics() QCOMPARE(sf->getMin(), 1.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(198) : message location
+INFO   : TestPointCloud::scalarFieldStatistics() QCOMPARE(sf->getMax(), 4.0f)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(199) : message location
+PASS   : TestPointCloud::scalarFieldStatistics()
+INFO   : TestPointCloud::deleteScalarField() entering
+INFO   : TestPointCloud::deleteScalarField() QVERIFY(cloud.reserve(1))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(205) : message location
+INFO   : TestPointCloud::deleteScalarField() QVERIFY(sfIdx >= 0)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(208) : message location
+INFO   : TestPointCloud::deleteScalarField() QCOMPARE(cloud.getNumberOfScalarFields(), 1)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(209) : message location
+INFO   : TestPointCloud::deleteScalarField() QCOMPARE(cloud.getNumberOfScalarFields(), 0)
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(211) : message location
+PASS   : TestPointCloud::deleteScalarField()
+INFO   : TestPointCloud::addColorsPerPoint() entering
+INFO   : TestPointCloud::addColorsPerPoint() QVERIFY(cloud.reserve(3))
+C:\dev\CloudCompare\qCC\test\TestPointCloud.cpp(218) : message location

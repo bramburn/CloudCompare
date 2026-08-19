@@ -1,0 +1,59 @@
+********* Start testing of TestFileIOFilter *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+INFO   : TestFileIOFilter::initTestCase() entering
+PASS   : TestFileIOFilter::initTestCase()
+INFO   : TestFileIOFilter::getRealFilenameReturnsInput() entering
+PASS   : TestFileIOFilter::getRealFilenameReturnsInput()
+INFO   : TestFileIOFilter::getRealFilenameSimplePath() entering
+PASS   : TestFileIOFilter::getRealFilenameSimplePath()
+INFO   : TestFileIOFilter::checkForSpecialCharsClean() entering
+PASS   : TestFileIOFilter::checkForSpecialCharsClean()
+INFO   : TestFileIOFilter::checkForSpecialCharsSpaces() entering
+PASS   : TestFileIOFilter::checkForSpecialCharsSpaces()
+INFO   : TestFileIOFilter::getFiltersReturnsNonEmptyAfterInit() entering
+PASS   : TestFileIOFilter::getFiltersReturnsNonEmptyAfterInit()
+INFO   : TestFileIOFilter::importFilterListReturnsNonEmpty() entering
+FAIL!  : TestFileIOFilter::importFilterListReturnsNonEmpty() Compared values are not the same
+   Actual   (list.first())                     : "All (*.*)"
+   Expected (QStringLiteral("All Files (*.*)")): "All Files (*.*)"
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(83) : failure location
+INFO   : TestFileIOFilter::findBestFilterForExtensionPly() entering
+PASS   : TestFileIOFilter::findBestFilterForExtensionPly()
+INFO   : TestFileIOFilter::findBestFilterForExtensionAsc() entering
+PASS   : TestFileIOFilter::findBestFilterForExtensionAsc()
+INFO   : TestFileIOFilter::findBestFilterForExtensionBin() entering
+PASS   : TestFileIOFilter::findBestFilterForExtensionBin()
+INFO   : TestFileIOFilter::findBestFilterForExtensionUnknown() entering
+PASS   : TestFileIOFilter::findBestFilterForExtensionUnknown()
+INFO   : TestFileIOFilter::findBestFilterForExtensionIsCaseInsensitive() entering
+PASS   : TestFileIOFilter::findBestFilterForExtensionIsCaseInsensitive()
+INFO   : TestFileIOFilter::getFilterValidPlyString() entering
+FAIL!  : TestFileIOFilter::getFilterValidPlyString() '!filter.isNull()' returned FALSE. ()
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(125) : failure location
+INFO   : TestFileIOFilter::getFilterUnknownString() entering
+PASS   : TestFileIOFilter::getFilterUnknownString()
+INFO   : TestFileIOFilter::getFilterEmptyString() entering
+PASS   : TestFileIOFilter::getFilterEmptyString()
+INFO   : TestFileIOFilter::registerAddsToList() entering
+PASS   : TestFileIOFilter::registerAddsToList()
+INFO   : TestFileIOFilter::unregisterAllClearsList() entering
+FAIL!  : TestFileIOFilter::unregisterAllClearsList() Compared values are not the same
+   Actual   (FileIOFilter::ImportFilterList().size()): 1
+   Expected (0)                                      : 0
+C:\dev\CloudCompare\qCC\test\TestFileIOFilter.cpp(157) : failure location
+INFO   : TestFileIOFilter::plyFilterDefaultExtension() entering
+PASS   : TestFileIOFilter::plyFilterDefaultExtension()
+INFO   : TestFileIOFilter::binFilterDefaultExtension() entering
+PASS   : TestFileIOFilter::binFilterDefaultExtension()
+INFO   : TestFileIOFilter::plyFilterCanSaveCloud() entering
+PASS   : TestFileIOFilter::plyFilterCanSaveCloud()
+INFO   : TestFileIOFilter::plyFilterCanSaveMesh() entering
+PASS   : TestFileIOFilter::plyFilterCanSaveMesh()
+INFO   : TestFileIOFilter::plyFilterSupportsImport() entering
+PASS   : TestFileIOFilter::plyFilterSupportsImport()
+INFO   : TestFileIOFilter::plyFilterSupportsExport() entering
+PASS   : TestFileIOFilter::plyFilterSupportsExport()
+INFO   : TestFileIOFilter::cleanupTestCase() entering
+PASS   : TestFileIOFilter::cleanupTestCase()
+Totals: 21 passed, 3 failed, 0 skipped, 0 blacklisted, 10ms
+********* Finished testing of TestFileIOFilter *********

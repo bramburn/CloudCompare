@@ -1,0 +1,24 @@
+********* Start testing of TestShiftedObject *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestShiftedObject::initTestCase()
+PASS   : TestShiftedObject::defaultShiftIsZero()
+PASS   : TestShiftedObject::defaultScaleIsOne()
+PASS   : TestShiftedObject::defaultIsNotShifted()
+PASS   : TestShiftedObject::setGlobalShiftStores()
+PASS   : TestShiftedObject::setGlobalShiftThreeArgs()
+PASS   : TestShiftedObject::setGlobalScaleStores()
+PASS   : TestShiftedObject::isShiftedAfterShift()
+PASS   : TestShiftedObject::isShiftedAfterScale()
+PASS   : TestShiftedObject::toGlobal3dNoShiftOrScale()
+PASS   : TestShiftedObject::toGlobal3dWithShift()
+PASS   : TestShiftedObject::toGlobal3dWithScale()
+PASS   : TestShiftedObject::toGlobal3dWithShiftAndScale()
+PASS   : TestShiftedObject::toLocal3dRoundtrip()
+PASS   : TestShiftedObject::toLocal3dNoShiftOrScale()
+PASS   : TestShiftedObject::precisionPreservationSmallShift()
+PASS   : TestShiftedObject::precisionPreservationLargeShift()
+PASS   : TestShiftedObject::copyGlobalShiftAndScale()
+PASS   : TestShiftedObject::negativeShiftComponents()
+PASS   : TestShiftedObject::cleanupTestCase()
+Totals: 20 passed, 0 failed, 0 skipped, 0 blacklisted, 1ms
+********* Finished testing of TestShiftedObject *********
