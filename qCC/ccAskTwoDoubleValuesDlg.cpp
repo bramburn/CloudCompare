@@ -14,9 +14,27 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccAskTwoDoubleValuesDlg.cpp
+ * @brief Implementation of two-value input dialog
+ * @details A generic dialog for requesting two double values from the user.
+ * @see ccAskTwoDoubleValuesDlg
+ */
 
 #include "ccAskTwoDoubleValuesDlg.h"
 
+/**
+ * @brief Constructor
+ * @param vName1 Name/label for first value
+ * @param vName2 Name/label for second value
+ * @param minVal Minimum value for spin boxes
+ * @param maxVal Maximum value for spin boxes
+ * @param defaultVal1 Default value for first spin box
+ * @param defaultVal2 Default value for second spin box
+ * @param precision Decimal precision for spin boxes
+ * @param windowTitle Optional window title
+ * @param parent Parent widget
+ */
 ccAskTwoDoubleValuesDlg::ccAskTwoDoubleValuesDlg(const QString& vName1,
                                                  const QString& vName2,
                                                  double         minVal,
