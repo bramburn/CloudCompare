@@ -55,22 +55,36 @@ jobs:
           cache: true
 
       - name: Pin CMake to 4.3.0 (hidapi submodule caps at 4.3)
-        # Use choco instead of lukka/get-cmake — the latter fails on the
-        # current Windows runner with EACCES on WindowsApps\python.EXE.
+        # The choco install of cmake 4.3.0 was failing on the runner
+        # ("previous dependency failed" because cmake 4.4.2 is already
+        # installed at C:\Program Files\CMake). Instead, use the VS-
+        # bundled cmake 3.31.x which sits between the hidapi min (3.10)
+        # and max (4.3) — passes the cap without the install churn.
         shell: pwsh
         run: |
-          choco install cmake --version=4.3.0 -y --no-progress
-          # Re-read PATH so subsequent steps see the choco install
-          $env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [Environment]::GetEnvironmentVariable("Path", "User")
-          cmake --version
+          $vsCmake = "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe"
+          if (-not (Test-Path $vsCmake)) {
+            # Fallback: search for it
+            $vsCmake = (Get-ChildItem 'C:\Program Files\Microsoft Visual Studio' -Recurse -Filter 'cmake.exe' -ErrorAction SilentlyContinue |
+                       Where-Object { $_.FullName -match 'CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake\.exe' } |
+                       Select-Object -First 1).FullName
+          }
+          Write-Host "Using cmake: $vsCmake"
+          & $vsCmake --version | Select-Object -First 1
+          # Also use the choco ninja explicitly
+          $chocoNinja = 'C:\ProgramData\chocolatey\bin\ninja.exe'
+          Write-Host "Ninja: $(& $chocoNinja --version)"
+          # Stash the resolved paths for downstream steps
+          "CMAKE_PROGRAM=$vsCmake" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "NINJA_PROGRAM=$chocoNinja"  | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Configure (Ninja, Release, 18 self-contained plugins)
         shell: pwsh
         run: |
-          cmake -S . -B build -G Ninja --fresh `
+          & $env:CMAKE_PROGRAM -S . -B build -G Ninja --fresh `
             -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
             -DCMAKE_PREFIX_PATH="$env:Qt6_DIR" `
-            -DCMAKE_MAKE_PROGRAM=ninja `
+            -DCMAKE_MAKE_PROGRAM="$env:NINJA_PROGRAM" `
             -DPLUGIN_IO_QCORE=ON `
             -DPLUGIN_GL_QEDL=ON `
             -DPLUGIN_GL_QSSAO=ON `
@@ -92,15 +106,15 @@ jobs:
 
       - name: Build
         shell: pwsh
-        run: cmake --build build --config $env:BUILD_TYPE --parallel 4
+        run: & $env:CMAKE_PROGRAM --build build --config $env:BUILD_TYPE --parallel 4
 
       - name: Check formatting
         shell: pwsh
-        run: cmake --build build --target check-format
+        run: & $env:CMAKE_PROGRAM --build build --target check-format
 
       - name: Install (runs windeployqt → deployqt\ bundle)
         shell: pwsh
-        run: cmake --install build --config $env:BUILD_TYPE
+        run: & $env:CMAKE_PROGRAM --install build --config $env:BUILD_TYPE
 
       - name: Show build artifacts
         shell: pwsh
