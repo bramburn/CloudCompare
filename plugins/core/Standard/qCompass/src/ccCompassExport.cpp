@@ -31,7 +31,7 @@
 #include "ccLineation.h"
 #include "ccSNECloud.h"
 #include "ccThickness.h"
-#include "ccTrace.h"
+#include "ccCompassTrace.h"
 
 static int WritePlanes(ccHObject* rootObject, ccHObject* object, QTextStream& out, const QString& parentName = QString())
 {
@@ -158,9 +158,9 @@ static int WriteTraces(ccHObject* object, QTextStream& out, const QString& paren
 
 	//is object a polyline
 	int n = 0;
-	if (ccTrace::isTrace(object)) //ensure this is a trace
+	if (ccCompassTrace::isTrace(object)) //ensure this is a trace
 	{
-		ccTrace* p = static_cast<ccTrace*>(object);
+		ccCompassTrace* p = static_cast<ccCompassTrace*>(object);
 
 		//loop through points
 		CCVector3 start;
@@ -170,7 +170,7 @@ static int WriteTraces(ccHObject* object, QTextStream& out, const QString& paren
 		if (p->size() >= 2)
 		{
 			//set cost function
-			ccTrace::COST_MODE = p->getMetaData("cost_function").toInt();
+			ccCompassTrace::COST_MODE = p->getMetaData("cost_function").toInt();
 
 			//loop through segments
 			for (unsigned i = 1; i < p->size(); i++)
@@ -198,7 +198,7 @@ static int WriteTraces(ccHObject* object, QTextStream& out, const QString& paren
 				out << endGlobal.z << ",";
 
 				out << cost << ",";
-				out << ccTrace::COST_MODE << Qt::endl;
+				out << ccCompassTrace::COST_MODE << Qt::endl;
 			}
 		}
 		++n;
@@ -255,7 +255,7 @@ int WriteTracesSVG(const ccGLCameraParameters& cameraParams, ccHObject* object, 
 	int n = 0;
 
 	//is this a drawable polyline?
-	if (object->isA(CC_TYPES::POLY_LINE) || ccTrace::isTrace(object))
+	if (object->isA(CC_TYPES::POLY_LINE) || ccCompassTrace::isTrace(object))
 	{
 		//get polyline object
 		ccPolyline* line = static_cast<ccPolyline*>(object);
@@ -312,7 +312,7 @@ int WriteObjectXML(ccHObject* object, QXmlStreamWriter& out)
 		//write fitPlane
 		out.writeStartElement("PLANE");
 	}
-	else if (ccTrace::isTrace(object))
+	else if (ccCompassTrace::isTrace(object))
 	{
 		//write trace
 		out.writeStartElement("TRACE");
@@ -398,10 +398,10 @@ int WriteObjectXML(ccHObject* object, QXmlStreamWriter& out)
 	if (object->isA(CC_TYPES::POLY_LINE))
 	{
 		ccPolyline* poly = static_cast<ccPolyline*>(object);
-		ccTrace* trace = nullptr;
-		if (ccTrace::isTrace(object))
+		ccCompassTrace* trace = nullptr;
+		if (ccCompassTrace::isTrace(object))
 		{
-			trace = static_cast<ccTrace*>(object);
+			trace = static_cast<ccCompassTrace*>(object);
 		}
 
 		QString x;

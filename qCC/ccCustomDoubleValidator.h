@@ -75,3 +75,5 @@ class ccCustomDoubleValidator : public QValidator
 	}
 };
 
+#endif // CC_CUSTOM_DOUBLE_VALIDATOR_HEADER
+

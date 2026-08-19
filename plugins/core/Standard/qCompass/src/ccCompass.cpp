@@ -48,14 +48,14 @@
 #include "ccSNECloud.h"
 #include "ccThicknessTool.h"
 #include "ccTopologyTool.h"
-#include "ccTraceTool.h"
+#include "ccCompassTraceTool.h"
 
 //initialize default static pars
 bool ccCompass::drawName = false;
 bool ccCompass::drawStippled = true;
 bool ccCompass::drawNormals = true;
 bool ccCompass::fitPlanes = true;
-int ccCompass::costMode = ccTrace::DARK;
+int ccCompass::costMode = ccCompassTrace::DARK;
 bool ccCompass::mapMode = false;
 int ccCompass::mapTo = ccGeoObject::LOWER_BOUNDARY;
 
@@ -69,9 +69,9 @@ public:
 
 	ccHObject* buildObject(const QString& metaName) override
 	{
-		if (metaName == ccTrace::GetClassName())
+		if (metaName == ccCompassTrace::GetClassName())
 		{
-			return new ccTrace;
+			return new ccCompassTrace;
 		}
 		else
 		{
@@ -88,7 +88,7 @@ ccCompass::ccCompass(QObject* parent)
 {
 	//initialize all tools
 	m_fitPlaneTool = new ccFitPlaneTool();
-	m_traceTool = new ccTraceTool();
+	m_traceTool = new ccCompassTraceTool();
 	m_lineationTool = new ccLineationTool();
 	m_thicknessTool = new ccThicknessTool();
 	m_topologyTool = new ccTopologyTool();
@@ -441,7 +441,7 @@ void ccCompass::tryLoading(ccHObject* obj, std::vector<int>& originals, std::vec
 
 	//is object already represented by a ccCompass class?
 	if (dynamic_cast<ccFitPlane*>(obj)
-		|| dynamic_cast<ccTrace*>(obj)
+		|| dynamic_cast<ccCompassTrace*>(obj)
 		|| dynamic_cast<ccPointPair*>(obj) //n.b. several classes inherit from PointPair, so this cast will still succeed for them
 		|| dynamic_cast<ccGeoObject*>(obj)
 		|| dynamic_cast<ccSNECloud*>(obj))
@@ -492,10 +492,10 @@ void ccCompass::tryLoading(ccHObject* obj, std::vector<int>& originals, std::vec
 	if (p)
 	{
 		//are we a trace?
-		if (ccTrace::isTrace(obj))
+		if (ccCompassTrace::isTrace(obj))
 		{
 
-			ccTrace* trace = new ccTrace(p);
+			ccCompassTrace* trace = new ccCompassTrace(p);
 			//since the cloud can't be a child of the trace instance, we want to be notified
 			//whenever it's deleted (in which case we'll have to clear the trace to avoid a crash)
 			ccHObject* cloud = dynamic_cast<ccHObject*>(p->getAssociatedCloud());
@@ -814,7 +814,7 @@ bool ccCompass::eventFilter(QObject* obj, QEvent* event)
 	//update cost mode (just in case it has changed) & fit plane params
 	ccCompass::costMode = m_dlg->getCostMode();
 	ccCompass::fitPlanes = m_dlg->planeFitMode();
-	ccTrace::COST_MODE = ccCompass::costMode;
+	ccCompassTrace::COST_MODE = ccCompass::costMode;
 
 	if (event->type() == QEvent::MouseButtonDblClick)
 	{
@@ -1157,11 +1157,11 @@ void ccCompass::fitPlaneToGeoObject()
 	ccPointCloud* points = new ccPointCloud(); //create point cloud for storing points
 	for (unsigned i = 0; i < upper->getChildrenNumber(); i++)
 	{
-		if (ccTrace::isTrace(upper->getChild(i)))
+		if (ccCompassTrace::isTrace(upper->getChild(i)))
 		{
-			ccTrace* t = dynamic_cast<ccTrace*>(upper->getChild(i));
+			ccCompassTrace* t = dynamic_cast<ccCompassTrace*>(upper->getChild(i));
 
-			if (t != nullptr) //can in rare cases be a null ptr (dynamic cast will fail for traces that haven't been converted to ccTrace objects)
+			if (t != nullptr) //can in rare cases be a null ptr (dynamic cast will fail for traces that haven't been converted to ccCompassTrace objects)
 			{
 				points->reserve(points->size() + t->size()); //make space
 
@@ -1197,11 +1197,11 @@ void ccCompass::fitPlaneToGeoObject()
 		ccHObject* lower = obj->getRegion(ccGeoObject::LOWER_BOUNDARY);
 		for (unsigned i = 0; i < lower->getChildrenNumber(); i++)
 		{
-			if (ccTrace::isTrace(lower->getChild(i)))
+			if (ccCompassTrace::isTrace(lower->getChild(i)))
 			{
-				ccTrace* t = dynamic_cast<ccTrace*>(lower->getChild(i));
+				ccCompassTrace* t = dynamic_cast<ccCompassTrace*>(lower->getChild(i));
 
-				if (t != nullptr) //can in rare cases be a null ptr (dynamic cast will fail for traces that haven't been converted to ccTrace objects)
+				if (t != nullptr) //can in rare cases be a null ptr (dynamic cast will fail for traces that haven't been converted to ccCompassTrace objects)
 				{
 					points->reserve(points->size() + t->size()); //make space
 
@@ -1251,12 +1251,12 @@ void ccCompass::recalculateFitPlanes()
 		//is parent of the plane a trace object?
 		ccHObject* parent = plane->getParent();
 
-		if (ccTrace::isTrace(parent)) //add to recalculate list
+		if (ccCompassTrace::isTrace(parent)) //add to recalculate list
 		{
 			//recalculate the fit plane
-			ccTrace* t = dynamic_cast<ccTrace*>(parent);
+			ccCompassTrace* t = dynamic_cast<ccCompassTrace*>(parent);
 
-			if (t != nullptr) //can in rare cases be a null ptr (dynamic cast will fail for traces that haven't been converted to ccTrace objects)
+			if (t != nullptr) //can in rare cases be a null ptr (dynamic cast will fail for traces that haven't been converted to ccCompassTrace objects)
 			{
 				ccFitPlane* p = t->fitPlane();
 				if (p)
@@ -1276,12 +1276,12 @@ void ccCompass::recalculateFitPlanes()
 		for (unsigned c = 0; c < plane->getChildrenNumber(); c++)
 		{
 			ccHObject* child = plane->getChild(c);
-			if (ccTrace::isTrace(child)) //add to recalculate list
+			if (ccCompassTrace::isTrace(child)) //add to recalculate list
 			{
 				//recalculate the fit plane
-				ccTrace* t = dynamic_cast<ccTrace*>(child);
+				ccCompassTrace* t = dynamic_cast<ccCompassTrace*>(child);
 
-				if (t != nullptr) //can in rare cases be a null ptr (dynamic cast will fail for traces that haven't been converted to ccTrace objects)
+				if (t != nullptr) //can in rare cases be a null ptr (dynamic cast will fail for traces that haven't been converted to ccCompassTrace objects)
 				{
 					ccFitPlane* p = t->fitPlane();
 
@@ -1553,7 +1553,7 @@ void ccCompass::estimateStructureNormals()
 
 		//option 2 - selected object is a trace or has children that are traces
 		objs.clear();
-		if (ccTrace::isTrace(o))
+		if (ccCompassTrace::isTrace(o))
 		{
 			//selected object is a trace
 			objs.push_back(o);
@@ -1565,13 +1565,13 @@ void ccCompass::estimateStructureNormals()
 		}
 		for (ccHObject* o2 : objs)
 		{
-			if (ccTrace::isTrace(o2) && o2->isEnabled())
+			if (ccCompassTrace::isTrace(o2) && o2->isEnabled())
 			{
 				//is it a trace?
-				ccTrace* t = dynamic_cast<ccTrace*> (o2);
+				ccCompassTrace* t = dynamic_cast<ccCompassTrace*> (o2);
 				if (t != nullptr)
 				{
-					//can in rare cases be a null ptr (dynamic cast will fail for traces that haven't been converted to ccTrace objects)
+					//can in rare cases be a null ptr (dynamic cast will fail for traces that haven't been converted to ccCompassTrace objects)
 					datasets.push_back({ t, nullptr }); //store data for processing
 					pinchClouds.push_back(new ccPointCloud()); //push empty cloud (no pinch nodes).
 				}
@@ -1614,7 +1614,7 @@ void ccCompass::estimateStructureNormals()
 
 			//search for traces in this region
 			ccHObject::Container objs;
-			if (ccTrace::isTrace(regions[r]))
+			if (ccCompassTrace::isTrace(regions[r]))
 			{
 				//given object is a trace
 				objs.push_back(regions[r]);
@@ -1626,10 +1626,10 @@ void ccCompass::estimateStructureNormals()
 			}
 			for (ccHObject* c : objs)
 			{
-				if (ccTrace::isTrace(c) && c->isEnabled()) //is it a trace?
+				if (ccCompassTrace::isTrace(c) && c->isEnabled()) //is it a trace?
 				{
-					ccTrace* t = dynamic_cast<ccTrace*>(c);
-					if (t != nullptr) //can in rare cases be a null ptr (dynamic cast will fail for traces that haven't been converted to ccTrace objects)
+					ccCompassTrace* t = dynamic_cast<ccCompassTrace*>(c);
+					if (t != nullptr) //can in rare cases be a null ptr (dynamic cast will fail for traces that haven't been converted to ccCompassTrace objects)
 					{
 						//copy points from this trace across into the relevant point cloud for future access
 						points[r]->reserve(points[r]->size() + t->size()); //make space
@@ -2313,7 +2313,7 @@ void ccCompass::estimateStrain()
 	for (ccHObject* o : m_app->getSelectedEntities())
 	{
 		//Is selected object a trace?
-		if (ccTrace::isTrace(o) && o->isEnabled())
+		if (ccCompassTrace::isTrace(o) && o->isEnabled())
 		{
 			lines.push_back(static_cast<ccPolyline*>(o));
 			continue;
@@ -2324,7 +2324,7 @@ void ccCompass::estimateStrain()
 		o->filterChildren(objs, true, CC_TYPES::POLY_LINE); //look for SNE
 		for (ccHObject* c : objs)
 		{
-			if (ccTrace::isTrace(c) && c->isEnabled())
+			if (ccCompassTrace::isTrace(c) && c->isEnabled())
 			{
 				lines.push_back(static_cast<ccPolyline*>(c));
 			}
@@ -2833,7 +2833,7 @@ void ccCompass::estimateP21()
 	for (ccHObject* o : m_app->getSelectedEntities())
 	{
 		//Is selected object a trace?
-		if (ccTrace::isTrace(o))
+		if (ccCompassTrace::isTrace(o))
 		{ 
 			lines.push_back(static_cast<ccPolyline*>(o));
 			continue;
@@ -2868,7 +2868,7 @@ void ccCompass::estimateP21()
 		o->filterChildren(objs, true, CC_TYPES::POLY_LINE); //look for SNE
 		for (ccHObject* c : objs)
 		{
-			if (ccTrace::isTrace(c))
+			if (ccCompassTrace::isTrace(c))
 			{
 				lines.push_back(static_cast<ccPolyline*>(c));
 			}
@@ -3277,13 +3277,13 @@ void ccCompass::distributeSelection()
 //recompute entirely each selected trace (useful if the cost function has changed)
 void ccCompass::recalculateSelectedTraces()
 {
-	ccTrace::COST_MODE = m_dlg->getCostMode(); //update cost mode
+	ccCompassTrace::COST_MODE = m_dlg->getCostMode(); //update cost mode
 
 	for (ccHObject* obj : m_app->getSelectedEntities())
 	{
-		if (ccTrace::isTrace(obj))
+		if (ccCompassTrace::isTrace(obj))
 		{
-			ccTrace* trc = static_cast<ccTrace*>(obj);
+			ccCompassTrace* trc = static_cast<ccCompassTrace*>(obj);
 			trc->recalculatePath();
 		}
 	}

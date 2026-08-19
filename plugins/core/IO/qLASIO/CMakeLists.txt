@@ -8,7 +8,7 @@ if (PLUGIN_IO_QLAS)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
     find_package(LASzip MODULE REQUIRED)
 
-    target_compile_definitions(${PROJECT_NAME} PRIVATE -DQT_FORCE_ASSERTS)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE -DQT_FORCE_ASSERTS -DLASZIP_API_VERSION)
 
     target_link_libraries(${PROJECT_NAME} LASzip::LASzip)
 

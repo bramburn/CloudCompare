@@ -151,3 +151,9 @@ macos_bundle_dependencies.json
 macos_bundle_warnings.json
 *.egg-info
 
+# Local-only paths (do not commit)
+/vcpkg/                 # vcpkg lives inside the repo at C:\dev\CloudCompare\vcpkg
+                        # per the local setup; its own .gitignore excludes install/
+                        # and buildtrees/, but we don't track its source either.
+.pi/                    # pi-coding-agent scratch state (loops, bindings)
+

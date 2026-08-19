@@ -41,6 +41,7 @@ const sidebars = {
       items: [
         'getting-started/overview',
         'getting-started/prerequisites',
+        'getting-started/running',
         'getting-started/quick-tour',
       ],
     },

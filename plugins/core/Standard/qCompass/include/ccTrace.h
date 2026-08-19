@@ -18,7 +18,7 @@
 //##########################################################################
 
 /**
- * @file ccTrace.h
+ * @file ccCompassTrace.h
  *
  * @brief Trace polyline class
  *
@@ -51,15 +51,15 @@
 #include <deque>
 
 /**
- * @class ccTrace
+ * @class ccCompassTrace
  *
  * @brief Trace polyline
  *
  * Polyline controlled by waypoints using least-cost path algorithm
  * for picking fracture traces and lithological contacts.
  */
-class ccTrace : 
-	public ccPolyline, 
+class ccCompassTrace :
+	public ccPolyline,
 	public ccMeasurement
 {
 public:
@@ -67,16 +67,16 @@ public:
 	 * @brief Create trace
 	 * @param[in] associatedCloud Associated point cloud
 	 */
-	ccTrace(ccPointCloud* associatedCloud = nullptr);
+	ccCompassTrace(ccPointCloud* associatedCloud = nullptr);
 	
 	/**
 	 * @brief Create from polyline
 	 * @param[in] poly Source polyline
 	 */
-	ccTrace(ccPolyline* poly);
+	ccCompassTrace(ccPolyline* poly);
 	
 	/// Destructor
-	~ccTrace() override {}
+	~ccCompassTrace() override {}
 
 	/// Get class name
 	static QString GetClassName() { return "CompassTrace"; }

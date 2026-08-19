@@ -89,7 +89,44 @@ class ccRegistrationDlg : public QDialog
 	/// Get model entity
 	ccHObject* getModelEntity();
 
-	// 48 more lines - truncated for brevity
+	/// Get data entity
+	ccHObject* getDataEntity();
+
+	/// Use data scalar field as weights
+	bool useDataSFAsWeights() const;
+
+	/// Use model scalar field as weights
+	bool useModelSFAsWeights() const;
+
+	/// Use cloud-to-mesh signed distances
+	bool useC2MSignedDistances(bool& robust) const;
+
+	/// Get normals matching option
+	CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING normalsMatchingOption() const;
+
+	/// Adjust scale during registration
+	bool adjustScale() const;
+
+	/// Get max thread count
+	int getMaxThreadCount() const;
+
+	/// Get transformation filters
+	int getTransformationFilters() const;
+
+	/// Update the GUI state
+	void updateGUI();
+
+	/// Swap model and data entities
+	void swapModelAndData();
+
+	/// Save current parameters for next session
+	void saveParameters() const;
+
+  protected:
+	// Members
+	ccHObject* dataEntity = nullptr;
+	ccHObject* modelEntity = nullptr;
+	QRadioButton* errorCriterion = nullptr;
 };
 
 #endif // CC_REGISTRATION_DLG_HEADER

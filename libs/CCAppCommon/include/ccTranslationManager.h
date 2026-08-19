@@ -114,3 +114,5 @@ class CCAPPCOMMON_LIB_API ccTranslationManager : public QObject
   private: // members
 	/// Registered translator files
 	TranslatorFileList mTranslatorFileInfo;
+};
+

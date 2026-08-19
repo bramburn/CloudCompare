@@ -200,24 +200,24 @@ int ccCompassDlg::getCostMode()
 {
 	int out = 0;
 	if (m_dark->isChecked())
-		out = out | ccTrace::MODE::DARK;
+		out = out | ccCompassTrace::MODE::DARK;
 	if (m_light->isChecked())
-		out = out | ccTrace::MODE::LIGHT;
+		out = out | ccCompassTrace::MODE::LIGHT;
 	if (m_rgb->isChecked())
-		out = out | ccTrace::MODE::RGB;
+		out = out | ccCompassTrace::MODE::RGB;
 	if (m_curve->isChecked())
-		out = out | ccTrace::MODE::CURVE;
+		out = out | ccCompassTrace::MODE::CURVE;
 	if (m_grad->isChecked())
-		out = out | ccTrace::MODE::GRADIENT;
+		out = out | ccCompassTrace::MODE::GRADIENT;
 	if (m_dist->isChecked())
-		out = out | ccTrace::MODE::DISTANCE;
+		out = out | ccCompassTrace::MODE::DISTANCE;
 	if (m_scalar->isChecked())
-		out = out | ccTrace::MODE::SCALAR;
+		out = out | ccCompassTrace::MODE::SCALAR;
 	if (m_scalar_inv->isChecked())
-		out = out | ccTrace::MODE::INV_SCALAR;
+		out = out | ccCompassTrace::MODE::INV_SCALAR;
 
 	if (out == 0) 
-		return ccTrace::MODE::DISTANCE; //default to distance if everything has been unchecked
+		return ccCompassTrace::MODE::DISTANCE; //default to distance if everything has been unchecked
 
 	return out;
 }

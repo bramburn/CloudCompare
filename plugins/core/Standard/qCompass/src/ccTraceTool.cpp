@@ -19,39 +19,39 @@
 #include <QMainWindow>
 #include <QMessageBox>
 
-#include "ccTraceTool.h"
+#include "ccCompassTraceTool.h"
 #include "ccCompass.h"
 
-ccTraceTool::ccTraceTool()
+ccCompassTraceTool::ccCompassTraceTool()
 	: ccTool( )
 {
 }
 
 //called when the tool is set to active (for initialization)
-void ccTraceTool::toolActivated()
+void ccCompassTraceTool::toolActivated()
 {
 	//try "pick-up" selected trace
 	onNewSelection(m_app->getSelectedEntities());
 }
 
-void ccTraceTool::toolDisactivated()
+void ccCompassTraceTool::toolDisactivated()
 {
 	accept(); //accept any changes
 }
 
 
 //called when a point in a point cloud gets picked while this tool is active
-void ccTraceTool::pointPicked(ccHObject* insertPoint, unsigned itemIdx, ccPointCloud* cloud, const CCVector3& P)
+void ccCompassTraceTool::pointPicked(ccHObject* insertPoint, unsigned itemIdx, ccPointCloud* cloud, const CCVector3& P)
 {
 	//try and fetch the trace object (returns null if the id is invalid)
-	ccTrace* t = dynamic_cast<ccTrace*>(m_app->dbRootObject()->find(m_trace_id));
+	ccCompassTrace* t = dynamic_cast<ccCompassTrace*>(m_app->dbRootObject()->find(m_trace_id));
 
 	m_changed = true; //trace has been modified
 
 	//no active trace -> make a new one
 	if (!t)
 	{
-		t = new ccTrace(cloud);
+		t = new ccCompassTrace(cloud);
 		//since the cloud can't be a child of the trace instance, we want to be notified
 		//whenever it's deleted (in which case we'll have to clear the trace to avoid a crash)
 		if (cloud)
@@ -71,7 +71,7 @@ void ccTraceTool::pointPicked(ccHObject* insertPoint, unsigned itemIdx, ccPointC
 	}
 
 	//if cost function is gradient/curvature then check appropriate SFs have been defined
-	if (ccTrace::COST_MODE & ccTrace::GRADIENT) //gradient cost is active
+	if (ccCompassTrace::COST_MODE & ccCompassTrace::GRADIENT) //gradient cost is active
 	{
 		if (m_precompute_gradient & !t->isGradientPrecomputed()) //not already computed
 		{
@@ -91,7 +91,7 @@ void ccTraceTool::pointPicked(ccHObject* insertPoint, unsigned itemIdx, ccPointC
 			}
 		}
 	}
-	if (ccTrace::COST_MODE & ccTrace::CURVE) //curvature cost is active
+	if (ccCompassTrace::COST_MODE & ccCompassTrace::CURVE) //curvature cost is active
 	{
 		if (m_precompute_curvature & !t->isCurvaturePrecomputed()) //not already computed?
 		{
@@ -133,16 +133,16 @@ void ccTraceTool::pointPicked(ccHObject* insertPoint, unsigned itemIdx, ccPointC
 }
 
 //called when "Return" or "Space" is pressed, or the "Accept Button" is clicked or the tool is disactivated
-void ccTraceTool::accept()
+void ccCompassTraceTool::accept()
 {
 	//finish trace
 	finishCurrentTrace();
 }
 
 //called when the "Escape" is pressed, or the "Cancel" button is clicked
-void ccTraceTool::cancel()
+void ccCompassTraceTool::cancel()
 {
-	ccTrace* t = dynamic_cast<ccTrace*>(m_app->dbRootObject()->find(m_trace_id));
+	ccCompassTrace* t = dynamic_cast<ccCompassTrace*>(m_app->dbRootObject()->find(m_trace_id));
 
 	if (t)
 	{
@@ -156,7 +156,7 @@ void ccTraceTool::cancel()
 	}
 }
 
-void ccTraceTool::onNewSelection(const ccHObject::Container& selectedEntities)
+void ccCompassTraceTool::onNewSelection(const ccHObject::Container& selectedEntities)
 {
 	//can we pick up a new trace?
 	if (selectedEntities.size() > 0) //non-empty selection
@@ -176,10 +176,10 @@ void ccTraceTool::onNewSelection(const ccHObject::Container& selectedEntities)
 	}
 }
 
-void ccTraceTool::finishCurrentTrace()
+void ccCompassTraceTool::finishCurrentTrace()
 {
 	//find current trace [if there is one]
-	ccTrace* t = dynamic_cast<ccTrace*>(m_app->dbRootObject()->find(m_trace_id));
+	ccCompassTrace* t = dynamic_cast<ccCompassTrace*>(m_app->dbRootObject()->find(m_trace_id));
 
 	if (t)
 	{
@@ -254,11 +254,11 @@ void ccTraceTool::finishCurrentTrace()
 	}
 }
 
-bool ccTraceTool::pickupTrace(ccHObject* obj)
+bool ccCompassTraceTool::pickupTrace(ccHObject* obj)
 {
-	//is selected object a ccTrace?
-	ccTrace* t = dynamic_cast<ccTrace*>(obj); //try casting to ccTrace
-	if (t) //the object is a ccTrace!
+	//is selected object a ccCompassTrace?
+	ccCompassTrace* t = dynamic_cast<ccCompassTrace*>(obj); //try casting to ccCompassTrace
+	if (t) //the object is a ccCompassTrace!
 	{
 		//finish the previous trace
 		finishCurrentTrace();
@@ -298,15 +298,15 @@ bool ccTraceTool::pickupTrace(ccHObject* obj)
 }
 
 //if this returns true, the undo button is enabled in the gui
-bool ccTraceTool::canUndo()
+bool ccCompassTraceTool::canUndo()
 {
 	return true; //yes - we can undo!
 }
 
 //called when the undo button is clicked
-void ccTraceTool::undo()
+void ccCompassTraceTool::undo()
 {
-	ccTrace* t = dynamic_cast<ccTrace*>(m_app->dbRootObject()->find(m_trace_id));
+	ccCompassTrace* t = dynamic_cast<ccCompassTrace*>(m_app->dbRootObject()->find(m_trace_id));
 	if (t)
 	{
 		t->undoLast();

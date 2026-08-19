@@ -15,15 +15,15 @@
 //#                                                                        #
 //##########################################################################
 
-#include "ccTrace.h"
+#include "ccCompassTrace.h"
 
 #include <GeometricalAnalysisTools.h>
 
 #include <queue>
 
-int ccTrace::COST_MODE = ccTrace::MODE::DARK; //set default cost mode
+int ccCompassTrace::COST_MODE = ccCompassTrace::MODE::DARK; //set default cost mode
 
-ccTrace::ccTrace(ccPointCloud* associatedCloud/*=nullptr*/)
+ccCompassTrace::ccCompassTrace(ccPointCloud* associatedCloud/*=nullptr*/)
 	: ccPolyline(associatedCloud)
 {
 	setMetaData("class_name", GetClassName());
@@ -33,7 +33,7 @@ ccTrace::ccTrace(ccPointCloud* associatedCloud/*=nullptr*/)
 	init(associatedCloud);
 }
 
-ccTrace::ccTrace(ccPolyline* poly)
+ccCompassTrace::ccCompassTrace(ccPolyline* poly)
 	: ccPolyline(nullptr)
 {
 	setMetaData("class_name", GetClassName());
@@ -109,7 +109,7 @@ ccTrace::ccTrace(ccPolyline* poly)
 	invalidateBoundingBox(); //update bounding box (for picking)
 }
 
-void ccTrace::init(ccPointCloud* associatedCloud)
+void ccCompassTrace::init(ccPointCloud* associatedCloud)
 {
 	ccPolyline::setAssociatedCloud(associatedCloud);
 	m_cloud = associatedCloud; //store pointer ourselves also
@@ -119,14 +119,14 @@ void ccTrace::init(ccPointCloud* associatedCloud)
 	updateMetadata();
 }
 
-void ccTrace::updateMetadata()
+void ccCompassTrace::updateMetadata()
 {
 	setMetaData("search_r", m_search_r);
-	setMetaData("cost_function", ccTrace::COST_MODE);
+	setMetaData("cost_function", ccCompassTrace::COST_MODE);
 	//TODO - write metadata for structure normal estimates
 }
 
-int ccTrace::insertWaypoint(int pointId)
+int ccCompassTrace::insertWaypoint(int pointId)
 {
 	if (!m_cloud)
 	{
@@ -175,7 +175,7 @@ int ccTrace::insertWaypoint(int pointId)
 	return id;
 }
 
-bool ccTrace::loadWaypointsFrom(const QString& waypoints)
+bool ccCompassTrace::loadWaypointsFrom(const QString& waypoints)
 {
 	m_waypoints.clear();
 
@@ -193,7 +193,7 @@ bool ccTrace::loadWaypointsFrom(const QString& waypoints)
 				}
 				else
 				{
-					ccLog::Warning("[ccTrace::loadWaypointsFrom] Invalid waypoint description:" + str);
+					ccLog::Warning("[ccCompassTrace::loadWaypointsFrom] Invalid waypoint description:" + str);
 				}
 			}
 		}
@@ -201,7 +201,7 @@ bool ccTrace::loadWaypointsFrom(const QString& waypoints)
 	catch (const std::bad_alloc&)
 	{
 		//not enough memory
-		ccLog::Warning("[ccTrace::loadWaypointsFrom] Not enough memory");
+		ccLog::Warning("[ccCompassTrace::loadWaypointsFrom] Not enough memory");
 		return false;
 	}
 
@@ -209,7 +209,7 @@ bool ccTrace::loadWaypointsFrom(const QString& waypoints)
 }
 
 //test if the query point is within a circle bound by segStart & segEnd
-bool ccTrace::InCircle(const CCVector3* segStart, const CCVector3* segEnd, const CCVector3* query)
+bool ccCompassTrace::InCircle(const CCVector3* segStart, const CCVector3* segEnd, const CCVector3* query)
 {
 	//calculate vector Query->Start and Query->End
 	CCVector3 QS(segStart->x - query->x, segStart->y - query->y, segStart->z - query->z);
@@ -221,7 +221,7 @@ bool ccTrace::InCircle(const CCVector3* segStart, const CCVector3* segEnd, const
 	return QS.dot(QE) < 0;
 }
 
-bool ccTrace::optimizePath(int maxIterations)
+bool ccCompassTrace::optimizePath(int maxIterations)
 {
 	bool success = true;
 
@@ -307,7 +307,7 @@ bool ccTrace::optimizePath(int maxIterations)
 	return success;
 }
 
-void ccTrace::finalizePath()
+void ccCompassTrace::finalizePath()
 {
 	//clear existing points in background "polyline"
 	clear();
@@ -325,13 +325,13 @@ void ccTrace::finalizePath()
 	invalidateBoundingBox();
 }
 
-void ccTrace::recalculatePath()
+void ccCompassTrace::recalculatePath()
 {
 	m_trace.clear();
 	optimizePath();
 }
 
-std::deque<int> ccTrace::optimizeSegment(int start, int end, int offset)
+std::deque<int> ccCompassTrace::optimizeSegment(int start, int end, int offset)
 {
 	//check handle to point cloud
 	if (!m_cloud)
@@ -508,7 +508,7 @@ std::deque<int> ccTrace::optimizeSegment(int start, int end, int offset)
 	return {};
 }
 
-int ccTrace::getSegmentCost(int p1, int p2)
+int ccCompassTrace::getSegmentCost(int p1, int p2)
 {
 	if (!m_cloud)
 	{
@@ -544,7 +544,7 @@ int ccTrace::getSegmentCost(int p1, int p2)
 	return cost;
 }
 
-int ccTrace::getSegmentCostRGB(int p1, int p2)
+int ccCompassTrace::getSegmentCostRGB(int p1, int p2)
 {
 	if (!m_cloud)
 	{
@@ -580,7 +580,7 @@ int ccTrace::getSegmentCostRGB(int p1, int p2)
 		(p2_rgb.b - m_end_rgb[2]) * (p2_rgb.b - m_end_rgb[2]))) / 3.5; //N.B. the divide by 3.5 scales this cost function to range between 0 & 255
 }
 
-int ccTrace::getSegmentCostDark(int p1, int p2)
+int ccCompassTrace::getSegmentCostDark(int p1, int p2)
 {
 	if (!m_cloud)
 	{
@@ -595,13 +595,13 @@ int ccTrace::getSegmentCostDark(int p1, int p2)
 	return (p2_rgb.r + p2_rgb.g + p2_rgb.b); //note: this will naturally give a maximum of 765 (=255 + 255 + 255)
 }
 
-int ccTrace::getSegmentCostLight(int p1, int p2)
+int ccCompassTrace::getSegmentCostLight(int p1, int p2)
 {
 	//return the opposite of getCostDark
 	return 765 - getSegmentCostDark(p1, p2);
 }
 
-int ccTrace::getSegmentCostCurve(int p1, int p2)
+int ccCompassTrace::getSegmentCostCurve(int p1, int p2)
 {
 	if (!m_cloud)
 	{
@@ -647,7 +647,7 @@ int ccTrace::getSegmentCostCurve(int p1, int p2)
 	}
 }
 
-int ccTrace::getSegmentCostGrad(int p1, int p2, float search_r)
+int ccCompassTrace::getSegmentCostGrad(int p1, int p2, float search_r)
 {
 	if (!m_cloud)
 	{
@@ -713,12 +713,12 @@ int ccTrace::getSegmentCostGrad(int p1, int p2, float search_r)
 	}
 }
 
-int ccTrace::getSegmentCostDist(int p1, int p2)
+int ccCompassTrace::getSegmentCostDist(int p1, int p2)
 {
 	return 255;
 }
 
-int ccTrace::getSegmentCostScalar(int p1, int p2)
+int ccCompassTrace::getSegmentCostScalar(int p1, int p2)
 {
 	if (!m_cloud)
 	{
@@ -735,7 +735,7 @@ int ccTrace::getSegmentCostScalar(int p1, int p2)
 	return (sf->getValue(p2)-sf->getMin()) * (765 / (sf->getMax()-sf->getMin())); //return scalar field value mapped to range 0 - 765
 }
 
-int ccTrace::getSegmentCostScalarInv(int p1, int p2)
+int ccCompassTrace::getSegmentCostScalarInv(int p1, int p2)
 {
 	if (!m_cloud)
 	{
@@ -752,7 +752,7 @@ int ccTrace::getSegmentCostScalarInv(int p1, int p2)
 }
 
 //functions for calculating cost SFs
-void ccTrace::buildGradientCost(QWidget* parent)
+void ccCompassTrace::buildGradientCost(QWidget* parent)
 {
 	if (!m_cloud)
 	{
@@ -836,7 +836,7 @@ void ccTrace::buildGradientCost(QWidget* parent)
 	m_cloud->getScalarField(gIdx)->computeMinAndMax();
 }
 
-void ccTrace::buildCurvatureCost(QWidget* parent)
+void ccCompassTrace::buildCurvatureCost(QWidget* parent)
 {
 	if (!m_cloud)
 	{
@@ -900,7 +900,7 @@ void ccTrace::buildCurvatureCost(QWidget* parent)
 	m_cloud->getScalarField(idx)->computeMinAndMax();
 }
 
-bool ccTrace::isGradientPrecomputed()
+bool ccCompassTrace::isGradientPrecomputed()
 {
 	if (!m_cloud)
 	{
@@ -911,7 +911,7 @@ bool ccTrace::isGradientPrecomputed()
 	return idx != -1; //was something found?
 }
 
-bool ccTrace::isCurvaturePrecomputed()
+bool ccCompassTrace::isCurvaturePrecomputed()
 {
 	if (!m_cloud)
 	{
@@ -922,7 +922,7 @@ bool ccTrace::isCurvaturePrecomputed()
 	return idx != -1; //was something found?
 }
 
-ccFitPlane* ccTrace::fitPlane(int surface_effect_tolerance, float min_planarity)
+ccFitPlane* ccCompassTrace::fitPlane(int surface_effect_tolerance, float min_planarity)
 {
 	if (!m_cloud)
 	{
@@ -997,7 +997,7 @@ ccFitPlane* ccTrace::fitPlane(int surface_effect_tolerance, float min_planarity)
 	return p;
 }
 
-void ccTrace::bakePathToScalarField()
+void ccCompassTrace::bakePathToScalarField()
 {
 	if (!m_cloud)
 	{
@@ -1018,7 +1018,7 @@ void ccTrace::bakePathToScalarField()
 	}
 }
 
-float ccTrace::calculateOptimumSearchRadius()
+float ccCompassTrace::calculateOptimumSearchRadius()
 {
 	if (!m_cloud)
 	{
@@ -1066,7 +1066,7 @@ float ccTrace::calculateOptimumSearchRadius()
 }
 
 static QSharedPointer<ccSphere> c_unitPointMarker(nullptr);
-void ccTrace::drawMeOnly(CC_DRAW_CONTEXT& context)
+void ccCompassTrace::drawMeOnly(CC_DRAW_CONTEXT& context)
 {
 	if (!m_cloud)
 	{
@@ -1223,7 +1223,7 @@ void ccTrace::drawMeOnly(CC_DRAW_CONTEXT& context)
 	}
 }
 
-bool ccTrace::isTrace(ccHObject* object) //return true if object is a valid trace [regardless of it's class type]
+bool ccCompassTrace::isTrace(ccHObject* object) //return true if object is a valid trace [regardless of it's class type]
 {
 	if (object->hasMetaData("ccCompassType"))
 	{
@@ -1232,7 +1232,7 @@ bool ccTrace::isTrace(ccHObject* object) //return true if object is a valid trac
 	return false;
 }
 
-void ccTrace::onDeletionOf(const ccHObject* obj)
+void ccCompassTrace::onDeletionOf(const ccHObject* obj)
 {
 	if (m_cloud == obj)
 	{
@@ -1242,7 +1242,7 @@ void ccTrace::onDeletionOf(const ccHObject* obj)
 	ccPolyline::onDeletionOf(obj); //remove dependencies, etc.
 }
 
-void ccTrace::setAssociatedCloud(GenericIndexedCloudPersist* cloud)
+void ccCompassTrace::setAssociatedCloud(GenericIndexedCloudPersist* cloud)
 {
 	ccPolyline::setAssociatedCloud(cloud);
 
@@ -1250,7 +1250,7 @@ void ccTrace::setAssociatedCloud(GenericIndexedCloudPersist* cloud)
 	init(cld);
 }
 
-bool ccTrace::fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap)
+bool ccCompassTrace::fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap)
 {
 	if (!ccPolyline::fromFile_MeOnly(in, dataVersion, flags, oldToNewIDMap))
 	{

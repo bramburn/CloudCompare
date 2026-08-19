@@ -109,3 +109,43 @@ class ccComparisonDlg : public QDialog
 	void cancelAndExit();
 
   protected:
+	// Internal helpers
+	void releaseOctrees();
+	void updateDisplay(bool showSF, bool showRef);
+	bool isValid();
+	bool prepareEntitiesForComparison();
+	int  determineBestOctreeLevel(double maxSearchDist);
+	bool computeApproxDistances();
+
+	// UI slots
+	void maxDistUpdated();
+	void enableCompute2D(bool state);
+	int  getBestOctreeLevel();
+	void locaModelChanged(int index);
+	void showHisto();
+
+  protected:
+	// Compared entity
+	ccHObject*           m_compEnt            = nullptr;
+	ccPointCloud*        m_compCloud          = nullptr;
+	ccOctree::Shared     m_compOctree;
+	bool                 m_compOctreeIsPartial = false;
+	bool                 m_compSFVisibility    = false;
+	QString              m_oldSfName;
+	QString              m_sfName;
+
+	// Reference entity
+	ccHObject*           m_refEnt             = nullptr;
+	ccGenericPointCloud* m_refCloud           = nullptr;
+	ccGenericMesh*       m_refMesh            = nullptr;
+	ccOctree::Shared     m_refOctree;
+	bool                 m_refOctreeIsPartial = false;
+	bool                 m_refVisibility      = false;
+
+	// Comparison config / state
+	CC_COMPARISON_TYPE   m_compType           = CLOUDCLOUD_DIST;
+	bool                 m_noDisplay          = false;
+	int                  m_bestOctreeLevel    = 0;
+};
+
+#endif // CC_COMPARISON_DIALOG_HEADER

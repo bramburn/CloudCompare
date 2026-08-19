@@ -1,9 +1,9 @@
 @echo off
 REM ============================================================================
-REM CloudCompare incremental build script
+REM CloudCompare incremental build script (in-repo)
 REM ----------------------------------------------------------------------------
-REM Lives in the repo (tools/) alongside cc-configure.cmd. Use this for
-REM source-only changes after the initial `cmake --fresh` configure.
+REM Lives at C:\dev\CloudCompare\tools\cc-build.cmd alongside cc-configure.cmd.
+REM Use this for source-only changes after the initial `cmake --fresh` configure.
 REM
 REM Usage:    tools\cc-build.cmd
 REM Effect:   Incremental build into C:\dev\CloudCompare\build\.

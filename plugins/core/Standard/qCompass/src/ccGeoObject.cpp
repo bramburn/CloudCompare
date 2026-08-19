@@ -270,7 +270,7 @@ void ccGeoObject::recurseChildren(ccHObject* par, bool highlight)
 		}
 
 		//draw labels (except for trace objects and tips, when the child plane object will hold the useful info)
-		if (!ccTrace::isTrace(par) && !ccPinchNode::isPinchNode(par))
+		if (!ccCompassTrace::isTrace(par) && !ccPinchNode::isPinchNode(par))
 		{
 			par->showNameIn3D(highlight);
 		}

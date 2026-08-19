@@ -33,6 +33,9 @@
 
 class ccBoundingBoxEditorDlg;
 class ccGLWindowInterface;
+class ccPointCloud;
+class ccGenericPointCloud;
+class ccProgressDialog;
 class QWidget;
 class QFrame;
 class QComboBox;
@@ -88,3 +91,28 @@ class cc2Point5DimEditor
 
 	/// Get fill empty cells strategy
 	ccRasterGrid::EmptyCellFillOption getFillEmptyCellsStrategy(QComboBox* comboBox) const;
+
+  public:
+	/// Convert raster grid to point cloud
+	ccPointCloud* convertGridToCloud(bool                                               exportHeightStats,
+	                                 bool                                               exportSFStats,
+	                                 const std::vector<ccRasterGrid::ExportableFields>& exportedStatistics,
+	                                 bool                                               projectSFs,
+	                                 bool                                               projectColors,
+	                                 bool                                               resampleInputCloudXY,
+	                                 bool                                               resampleInputCloudZ,
+	                                 ccGenericPointCloud*                               inputCloud,
+	                                 double                                             percentileValue,
+	                                 bool                                               exportToOriginalCS,
+	                                 bool                                               appendGridSizeToSFNames,
+	                                 ccProgressDialog*                                  progressDialog = nullptr) const;
+
+  protected:
+	// Members
+	ccBoundingBoxEditorDlg* m_bbEditorDlg = nullptr;
+	ccGLWindowInterface*     m_glWindow    = nullptr;
+	ccPointCloud*            m_rasterCloud = nullptr;
+	ccRasterGrid             m_grid;
+};
+
+#endif // CC_2_5D_EDITOR_HEADER

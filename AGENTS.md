@@ -32,6 +32,7 @@ Goal-level docs (`AGENTS_*.md` at the repo root) describe **in-flight projects**
 | Goal | Doc | Status | Subsystems touched |
 |---|---|---|---|
 | **Manual dual-screen point-cloud registration** (Faro Scene Classic-style: two synchronized 3D viewports, manual point-pair picking, live transform preview) | [`AGENTS_REGISTRATION.md`](AGENTS_REGISTRATION.md) + [`docs/context/registration/`](docs/context/registration/) | Goal & design only — no plugin yet. Planned as a Standard plugin at `plugins/core/Standard/qManualRegistration/`. | Plugin system (`CCPluginAPI`, `ccMainAppInterface`), GL viewport (`qCC_glWindow`, `ccGLWindow`), picking (`ccPickingHub`, `ccPickingListener`), registration math (`CCCoreLib::HornRegistrationTools` + Umeyama), transform application (`ccDrawableObject::setGLTransformation` vs `ccPointCloud::applyRigidTransformation`). |
+| **Spherical scan browser** (Google Street View for ReCap RCS/RCP: 360° spherical panorama view from each registered scan station, station-jump navigation, click-to-measure) | [`PRD/scan-view/`](PRD/scan-view/) | PRD complete, implementation not started. Planned as a Standard plugin at `plugins/core/Standard/qScanBrowser/`. Phase 1 = colour panorama skybox + bubble-view drag navigation. Phase 2 = range-image depth + measurements. Phase 3 = correspondence view + annotations. | ReCap SDK (`RCStructuredScan`, `RCSphericalModel`, `getColor`, `getRange`), `ccOverlayDialog`, `ccGLWindowInterface::bubbleViewMode`, `ccGBLSensor` spherical depth map, OpenGL sphere texture rendering. |
 
 **Convention:** if you start a new goal that touches 3+ subsystems and deserves its own context folder, name the doc `AGENTS_<GOAL>.md` and put layered context under `docs/context/<goal>/`. Add a row to the table above.
 
@@ -51,14 +52,14 @@ git pull --recurse-submodules
 
 ## Build commands
 
-Use the wrapper scripts at `C:\dev\tools\` (they call `vcvars64.bat` and pin the right toolchain):
+Use the wrapper scripts at `tools/` inside the repo (they call `vcvars64.bat` and pin the right toolchain):
 
 ```powershell
 # Configure (re-run when changing plugins, with --fresh)
-& C:\dev\tools\cc-configure.cmd
+& 'C:\dev\CloudCompare\tools\cc-configure.cmd'
 
 # Build (incremental, ~6-15 min cold, <30 s warm)
-& C:\dev\tools\cc-build.cmd
+& 'C:\dev\CloudCompare\tools\cc-build.cmd'
 ```
 
 Or manually from *x64 Native Tools Command Prompt for VS 2022*:
@@ -72,13 +73,24 @@ cmake -S C:\dev\CloudCompare -B C:\dev\CloudCompare\build -G Ninja --fresh `
 cmake --build C:\dev\CloudCompare\build --config Release --parallel 16
 ```
 
-**Run the build:**
+**Run the build — no install needed:**
 
 ```powershell
 & 'C:\dev\CloudCompare\build\qCC\deployqt\CloudCompare.exe'
 ```
 
-The `deployqt\` subfolders are self-contained (~70 MB) — `windeployqt` ran during build and bundled Qt6 runtime + all plugin DLLs alongside the exe. No PATH manipulation needed.
+The `deployqt\` folder is a fully self-contained ~70 MB bundle: `windeployqt` copied every Qt6 runtime DLL and every enabled plugin DLL alongside the `.exe`. No PATH, no registry, no system install. Copy the folder to any other Windows x64 machine and it runs.
+
+**Iteration loop:**
+
+```powershell
+& 'C:\dev\CloudCompare\tools\cc-configure.cmd'   # only when changing plugins or CMake options
+& 'C:\dev\CloudCompare\tools\cc-build.cmd'       # incremental: < 30 s for source-only changes
+& 'C:\dev\CloudCompare\build\qCC\deployqt\CloudCompare.exe'
+```
+
+- **Rebuild only** (no re-configure) for: source edits, UI changes, plugin logic changes.
+- **Re-configure + rebuild** for: toggling plugins, changing CMake flags, switching Qt version.
 
 ## Test commands
 
@@ -161,17 +173,16 @@ npm start          # http://localhost:3000/CloudCompare/
 - `cmake/` — CMake helpers (Qt detection, compiler options, deployqt logic) — see [`cmake/AGENTS.md`](cmake/AGENTS.md)
 - `.ci/` — CI scripts (reference for canonical build invocations)
 
-## Plugin set in this build (18 enabled)
+## Plugin set in this build (16 enabled)
 
-I/O: `qCoreIO` (OBJ/PLY/BIN) — default.
+I/O: `qCoreIO` (OBJ/PLY/BIN) — default. **`qLASIO`** (LAS/LAZ via LASzip).
 GL: `qEDL`, `qSSAO`.
-Standard: `qAnimation`, `qBroom`, `qCSF`, `qM3C2`, `qPoissonRecon`, `qRANSAC_SD`, `qSRA`, `qHPR`, `qPCV`, `qColorimetricSegmenter`, `qMPlane`, `qVoxFall`, `qCompass`, `qCanupo`, `3DFin`.
+Standard: `qAnimation`, `qBroom`, `qCSF`, `qM3C2`, `qPoissonRecon`, `qHPR`, `qPCV`, `qColorimetricSegmenter`, `qMPlane`, `qVoxFall`, `qCanupo`, `3DFin`.
 
 **Disabled — need external libs (priority order for surveying):**
 
 | Plugin | Needs | Notes |
 |---|---|---|
-| `qLASIO` | LASzip | **#1 priority** — LAS/LAZ (LiDAR) |
 | `qE57IO` | Xerces-C++ | E57 format |
 | `qPDALIO` | PDAL | LAS + DEMs |
 | `qPCL` | PCL | **Big one** — ICP, registration, filters, segmentation |
@@ -193,27 +204,122 @@ Standard: `qAnimation`, `qBroom`, `qCSF`, `qM3C2`, `qPoissonRecon`, `qRANSAC_SD`
 | `qCSVMatrixIO` | — | CSV matrix |
 | `qTreeIso` | Eigen3 (optional) | Works as-is |
 
-Option flag names are e.g. `PLUGIN_IO_QLAS`, `PLUGIN_STANDARD_QPCL`, `PLUGIN_STANDARD_3DFIN` — first line of each plugin's `CMakeLists.txt`.
+**Disabled — Qt 6.8.3 incompatible (requires fix upstream):**
 
-## Adding a plugin (vcpkg recipe)
+| Plugin | Issue |
+|---|---|
+| `qCompass` | `ccTrace` class name collides with Qt 6.8.3's internal `ccTrace` struct in `qvectornd.h` — causes cascading header parse failures across all translation units. |
+| `qRANSAC_SD` | Same `ccTrace`/`ccMapWindow` namespace pollution. |
+| `qSRA` | Same root cause. |
+| `qReCapIO` | Missing `info.json` (renamed to `qReCapIO.json`); also needs Autodesk ReCap SDK v26. |
+
+Option flag names are e.g. `PLUGIN_IO_QLAS`, `PLUGIN_STANDARD_QPCL`, `PLUGIN_STANDARD_3DFIN`, `PLUGIN_IO_QRECAP` — first line of each plugin's `CMakeLists.txt`.
+
+## Local toolchain locations
+
+This machine keeps several tools **inside or right next to the repo** rather
+than in `Program Files`, so the build is fully self-contained. Always reference
+these from the repo, not from a system path:
+
+| Path | What | Notes |
+|---|---|---|
+| `C:\dev\CloudCompare\` | This repo (cloned fork) | All source, build, plugins, deploy bundle live here. |
+| `C:\dev\CloudCompare\vcpkg\` | vcpkg install (cloned from `microsoft/vcpkg`) | **By design** — the vcpkg tree lives inside the repo. `.gitignore` excludes it from git; don't `git add vcpkg/`. The toolchain file is `C:\dev\CloudCompare\vcpkg\scripts\buildsystems\vcpkg.cmake`. Installed ports go under `vcpkg\installed\x64-windows\`. |
+| `C:\dev\CloudCompare\tools\` | Build wrapper scripts (`cc-configure.cmd`, `cc-build.cmd`) | These call `vcvars64.bat` and pin the right toolchain. They live in the repo so they track the local plugin set. |
+| `C:\ReCapSDK_v26.0.2\` | Autodesk ReCap SDK (RCS/RCP import) | Only needed for `qReCapIO`. Not currently enabled (broken + SDK not installed). |
+| `C:\dev\tools\cmake-4.3.0\` | CMake 4.3.0 (pinned) | **NOT 4.4.2** — bundled `hidapi` submodule caps at 4.3. The wrapper scripts invoke `cmake` via PATH. |
+| `C:\dev\tools\Qt\6.8.3\msvc2022_64\` | Qt 6.8.3 (installed via aqtinstall) | System-style install but kept under `C:\dev\tools\` for clarity. |
+
+## Adding a plugin (vcpkg)
+
+vcpkg is installed at `C:\dev\CloudCompare\vcpkg` and integrated with MSVC.
+The in-repo configure script `C:\dev\CloudCompare\tools\cc-configure.cmd` already includes
+`-DCMAKE_TOOLCHAIN_FILE=C:/dev/CloudCompare/vcpkg/scripts/buildsystems/vcpkg.cmake`
+and `-DCMAKE_PREFIX_PATH=…;C:/dev/CloudCompare/vcpkg/installed/x64-windows;…`.
+
+To enable a plugin that needs a vcpkg library:
 
 ```powershell
-git clone https://github.com/microsoft/vcpkg C:\dev\vcpkg
-C:\dev\vcpkg\bootstrap-vcpkg.bat
-C:\dev\vcpkg\vcpkg integrate install
+# Install the library
+C:\dev\CloudCompare\vcpkg\vcpkg.exe install laszip:x64-windows     # → qLASIO (already enabled)
+C:\dev\CloudCompare\vcpkg\vcpkg.exe install xerces-c:x64-windows   # → qE57IO
+C:\dev\CloudCompare\vcpkg\vcpkg.exe install draco:x64-windows      # → qDracoIO
+C:\dev\CloudCompare\vcpkg\vcpkg.exe install pdal:x64-windows       # → qPDALIO
+C:\dev\CloudCompare\vcpkg\vcpkg.exe install pcl:x64-windows        # → qPCL (~30-60 min build)
 
-# Surveying priorities
-C:\dev\vcpkg\vcpkg install laszip:x64-windows     # → qLASIO
-C:\dev\vcpkg\vcpkg install xerces-c:x64-windows   # → qE57IO
-C:\dev\vcpkg\vcpkg install draco:x64-windows      # → qDracoIO
-C:\dev\vcpkg\vcpkg install pdal:x64-windows       # → qPDALIO
-C:\dev\vcpkg\vcpkg install pcl:x64-windows        # → qPCL (~30-60 min build)
-
-# Always edit C:\dev\tools\cc-configure.cmd and add:
-#   -DCMAKE_PREFIX_PATH=C:/dev/vcpkg/installed/x64-windows
+# Edit C:\dev\CloudCompare\tools\cc-configure.cmd and add:
 #   -DPLUGIN_IO_QLAS=ON  (or whichever plugin)
-# then re-run the configure + build.
+# then re-run configure + build.
 ```
+
+## Adding a plugin with a locally-installed SDK (non-vcpkg)
+
+Some SDKs (Autodesk ReCap SDK, FARO SDK, etc.) cannot be installed via vcpkg
+and must be downloaded manually from the vendor under an NDA/subscription.
+These are called **locally-installed SDK plugins**. The guardrails are:
+
+1. **SDK binaries are never committed to the repo.** The SDK lives in a local path
+   outside the repo (e.g. `C:\ReCapSDK_v26.0.2`). The plugin's `CMakeLists.txt`
+   references it via a `RECAP_SDK_ROOT` variable that defaults to the local path.
+2. **DLLs are copied at build time.** The plugin's CMake has a `POST_BUILD` custom
+   command that copies `.dll` files from the local SDK `Bin/` into the plugin's
+   output directory. `windeployqt` then bundles them automatically.
+3. **CI does not build these plugins.** They are gated behind an explicit
+   `-DPLUGIN_IO_QRECAP=ON` flag. The slim Windows CI workflow does not enable
+   them, so the plugin's CMake must not fail if the SDK is absent (use
+   `find_library` with a clear `FATAL_ERROR` message, not a hard hard-coded path).
+
+### qReCapIO example (Autodesk ReCap SDK v26 — RCS/RCP import)
+
+> ⚠️ **Currently disabled.** The plugin folder has `qReCapIO.json` but the CMake macro
+> expects `info.json` — it was renamed at some point but the CMakeLists was not updated.
+> Additionally, the Autodesk ReCap SDK v26 must be installed at `C:\ReCapSDK_v26.0.2` with
+> all 13 `.lib` files present. Until both are fixed, the plugin is disabled.
+
+**SDK location:** `C:\ReCapSDK_v26.0.2` (set by `RECAP_SDK_ROOT` in the plugin's CMakeLists)
+
+**Plugin folder:** `plugins/core/IO/qReCapIO/`
+
+**Files created:**
+
+```
+qReCapIO/
+├── CMakeLists.txt          ← finds 13 *.lib files; POST_BUILD copies *.dll
+├── qReCapIO.json           ← plugin metadata
+├── include/
+│   ├── CMakeLists.txt      ← public includes + RECAP_SDK_ROOT/Include
+│   ├── qReCapIO.h          ← plugin class (Q_OBJECT, addFileIORFilter)
+│   └── ReCapFilter.h       ← FileIOFilter subclass
+└── src/
+    ├── CMakeLists.txt      ← sources + target_link_libraries(${RECAP_LIB_LIST})
+    ├── qReCapIO.cpp        ← registerCommands() adds ReCapFilter to app
+    └── ReCapFilter.cpp     ← RCScan::loadFile → IRCPointIterator → ccPointCloud
+```
+
+**Configure:**
+```powershell
+& 'C:\dev\CloudCompare\tools\cc-configure.cmd'   # already has -DPLUGIN_IO_QRECAP=ON
+```
+
+**How the data flows:**
+```
+RCScan::loadFile()
+  → RCScan::createPointIterator(settings)   # RCPointIteratorSettings
+    → IRCPointIterator::getPoint().getPosition()   # RCVector3d → CCVector3
+    → IRCPointIterator::getPoint().getColor()      # RCVector4ub → RGB888 SF
+    → IRCPointIterator::getPoint().getIntensity()   # float → [0,255] SF
+    → IRCPointIterator::getPoint().getNormal()      # → ccNormalVectors table
+    → iter->close()
+  → ccPointCloud added to container
+```
+
+**To add another locally-installed SDK plugin:** follow the same pattern —
+`RECAP_SDK_ROOT` variable in CMake, `find_library` loop, `POST_BUILD` DLL copy,
+`FileIOFilter` subclass, `addFileIORFilter` in `registerCommands()`.
+
+**Known limitation:** the `RCTransform → ccGLMatrix` conversion in the current
+`ReCapFilter.cpp` applies only the translation. The 3×3 rotation component needs
+verification against a real `.rcs` file before being used on production survey data.
 
 ## ⚠️ Critical gotchas (read before re-configuring)
 
@@ -242,7 +348,8 @@ Every change should follow the **Feature Workflow** documented in [`AGENTS-plugi
 1. **Is the change a plugin?** Almost always yes — copy `plugins/example/ExamplePlugin` (Standard), `ExampleIOPlugin` (I/O) or `ExampleGLPlugin` (GL) and follow the rename recipe.
 2. **Edit an existing plugin?** Edit in place; the build picks it up next configure. No new wiring needed.
 3. **Remove a plugin?** Delete its folder, drop its `option()` and `add_subdirectory()` lines from the parent `CMakeLists.txt`, drop the `-DPLUGIN_*=ON` from `cc-configure.cmd`.
-4. **Need to change a core lib (rare)?** Read [`AGENTS-architecture.md`](AGENTS-architecture.md) first to understand the layer you're crossing, then read [`AGENTS-libs.md`](AGENTS-libs.md) to see who links against it.
+4. **Plugin needs a vendor SDK that can't go in vcpkg?** Follow the **locally-installed SDK pattern** (see §"Adding a plugin with a locally-installed SDK"). The SDK stays on the local machine; CMake copies `.dll`s at build time; the plugin's `CMakeLists.txt` fails gracefully with a clear `FATAL_ERROR` if the SDK is absent.
+5. **Need to change a core lib (rare)?** Read [`AGENTS-architecture.md`](AGENTS-architecture.md) first to understand the layer you're crossing, then read [`AGENTS-libs.md`](AGENTS-libs.md) to see who links against it.
 
 The short rule: **don't modify `qCC/`, `ccViewer/`, `libs/qCC_db`, `libs/qCC_io`, `libs/qCC_glWindow` for a new feature**. Put it in `plugins/`.
 
@@ -295,3 +402,40 @@ To see a docs deploy: GitHub → Actions → "Deploy docs site to GitHub Pages" 
 - `cmake/CMakeExternalLibs.cmake` — Qt 6 `find_package()` + component list (any new plugin that needs Qt modules should respect this).
 - `cmake/DeployQt.cmake` — windeployqt invocation that produces the `deployqt\` bundle.
 - `plugins/core/CMakeLists.txt` — plugin enumeration; add new plugin subdirs here.
+
+## Qt 6 Migration (Qt 6.8.3)
+
+Four tracking issues on upstream: [#2367](https://github.com/CloudCompare/CloudCompare/issues/2367) (critical API removals), [#2368](https://github.com/CloudCompare/CloudCompare/issues/2368) (deprecated patterns), [#2369](https://github.com/CloudCompare/CloudCompare/issues/2369) (build config), [#2370](https://github.com/CloudCompare/CloudCompare/issues/2370) (signals/slot MOC). Label `qt6:migration` should be applied once org admin creates it.
+
+**FIXED — already migrated (no action needed):**
+- CMake build system: `find_package(Qt6)`, `qt6_wrap_ui()`, `Qt6::Widgets`, `Qt6::OpenGLWidgets` — all correct
+- `QOpenGLWidget` / `QOpenGLVersionFunctionsFactory` — canonical Qt 6 pattern throughout (except GL plugins — now fixed)
+- `QCustomPlot` vendored lib — has dual-mode `Q_ENUM_NS` / `Q_ENUMS` guards ✅
+- `QRegExp`, `QSignalMapper`, `Q_FOREACH` in project code — none found
+- `QDesktopWidget`, `QWebEngine`, `QProcess::startDetached` — none found
+
+**FIXED — all critical Qt 6 migration fixes applied (2026-08-19):**
+- `QKeySequence::Cancel` → `QKeySequence(Qt::Key_Escape)` — `libs/CCPluginAPI/src/ccOverlayDialog.cpp:40`
+- `QColorDialog::getColor` 4-arg → dialog-object pattern — 10 occurrences across `CCAppCommon`, `qCC`, `qCloudLayers`
+- `QItemSelectionModel::clear()` → `clearSelection()` — `qCC/db_tree/ccDBRoot.cpp:954,1007`
+- `qCC/translations/CMakeLists.txt` → derives Qt6 path from `Qt6::lconvert` target (translations now bundling)
+- `QHeaderView::setResizeMode()` → `setSectionResizeMode()` — all 5 files already migrated (confirmed clean)
+- `QScopedPointer` → `std::unique_ptr` — 11 files across `qCC_io`, `qCC_db`, plugins (all fixed)
+- `Q_SIGNALS`/`Q_EMIT`/`Q_SLOTS` → Qt6 style — 6 `.h` + 5 `.cpp` files (all fixed)
+- `qRegisterMetaType<T>("T")` string-arg → `qRegisterMetaType<T>()` — `Mouse3DInput.cpp`
+- Metatype declarations added: `ccGLMatrixd`, `CCVector3d`, `CCVector3`, `std::unordered_set<int>`
+- `qEDL` / `qSSAO` GL plugins → `QOpenGLVersionFunctionsFactory::get<>()` pattern (all 4 files fixed)
+- Dead `QGLFormat` in `#if 0` block removed — `ccGLWindowInterface.cpp`
+- `qt5.natvis` → `qt6.natvis` + CMakeLists.txt refs updated
+- `BUILD.md` Qt 5 example paths → Qt 6 paths updated
+
+**Remaining warnings (compile but should be cleaned up):**
+- `ccGLWindowStereo` uses legacy `QWindow`+manual-context pattern — should mirror `ccGLWindow`'s `QOpenGLWidget` inheritance
+- `QOffscreenSurface` construction: format set after construction — defensively fragile in Qt 6
+- GL plugins (`qEDL`, `qSSAO`): `initializeOpenGLFunctions()` on stored member → `QOpenGLVersionFunctionsFactory::get<>()`
+- `ccGLWindowStereo`: legacy `QWindow`+manual-context pattern → should mirror `ccGLWindow`'s `QOpenGLWidget` inheritance
+- `QScopedPointer` → `std::unique_ptr` — ~11 files in `qCC_io`, `qCC_db`, plugins
+- `Q_SIGNALS`/`Q_EMIT`/`Q_SLOTS` macros → Qt 6 style (`signals:`/`emit`/`slots:`)
+- Metatype registration gaps: `ccGLMatrixd`, `CCVector3d`, `std::vector<float>`, `std::unordered_set<int>` in queued signals
+
+**Cosmetic:** `qt5.natvis` filename → rename to `qt6.natvis`; `BUILD.md` has Qt 5.15.2 example paths that should be Qt 6 paths.

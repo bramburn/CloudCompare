@@ -38,6 +38,9 @@ namespace CCCoreLib
 	class GenericProgressCallback;
 }
 
+// Forward declarations
+class ccPointCloud;
+
 /**
  * @brief Point cloud interpolator
  *
