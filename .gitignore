@@ -157,3 +157,56 @@ macos_bundle_warnings.json
                         # and buildtrees/, but we don't track its source either.
 .pi/                    # pi-coding-agent scratch state (loops, bindings)
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Experimental workspace (sandbox for LLM-driven experiments)
+# ─────────────────────────────────────────────────────────────────────────────
+# Track the structure (AGENTS.md, templates/, docs/, session READMEs, source).
+# Ignore build outputs and per-session state.
+
+# Cargo / Rust build outputs (any nested depth)
+/experimental/**/target/
+/experimental/**/Cargo.lock
+
+# CMake / MSVC build outputs
+/experimental/**/build/
+/experimental/**/build-*/
+/experimental/**/[Bb]in/
+/perimental/**/[Oo]bj/
+/experimental/**/[Dd]ebug/
+/experimental/**/[Rr]elease/
+/experimental/**/CMakeCache.txt
+/experimental/**/CMakeFiles/
+/perimental/**/CMakeUserPresets.json
+/experimental/**/cmake_install.cmake
+/experimental/**/Makefile
+/experimental/**/*.vcxproj.user
+
+# Qt MOC / UIC auto-generated
+/experimental/**/moc_*.cpp
+/experimental/**/moc_*.h
+/experimental/**/qrc_*.cpp
+/experimental/**/ui_*.h
+/experimental/**/.qmake.stash
+
+# VS / VSCode
+/experimental/**/.vs/
+/experimental/**/.vscode/
+/perimental/**/.idea/
+
+# Runtime artifacts (logs, Sentry, screenshots from GUI sessions)
+/experimental/**/logs/
+/perimental/**/results/
+/perimental/**/*.log
+/perimental/**/*.pdb
+/perimental/**/*.ilk
+
+# Generated test data dumps
+/experimental/**/data/
+!/experimental/**/data/.gitkeep
+
+# Per-session scratch — sessions are tracked, but heavy scratch is not
+# (sessions/<date>-<topic>/scratch/, /tmp/, /cache/ are ephemeral)
+/experimental/sessions/**/scratch/
+/experimental/sessions/**/tmp/
+/perimental/sessions/**/cache/
+

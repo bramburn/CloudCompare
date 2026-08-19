@@ -1,0 +1,32 @@
+[package]
+name = "rust_cxx_app_template"
+version = "0.1.0"
+edition = "2021"
+authors = ["bramburn <noreply@example.com>"]
+description = "Template: Rust + CXX FFI. Rust calls C++ or vice versa."
+
+[lib]
+name = "rust_cxx_app_template"
+path = "src/lib.rs"
+crate-type = ["staticlib"]  # so a C++ GUI can link against this
+
+[[bin]]
+name = "demo_cli"
+path = "src/main.rs"
+
+[dependencies]
+# CXX — the FFI bridge generator. See build.rs and src/lib.rs.
+cxx = "1.0"
+log = "0.4"
+env_logger = "0.11"
+
+[build-dependencies]
+cxx-build = "1.0"
+
+[dev-dependencies]
+# For tests
+approx = "0.5"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
