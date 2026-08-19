@@ -48,7 +48,10 @@ jobs:
           host: windows
           target: desktop
           arch: win64_msvc2022_64
-          modules: 'qtimageformats qtsvg qttools'
+          # Qt 6.8 base desktop install already includes Core/Gui/Widgets/Network/
+          # OpenGL/Svg — qtsvg and qttools were moved out of the modules index
+          # for 6.8. Adding qtimageformats for TIFF/JPEG support.
+          modules: 'qtimageformats'
           cache: true
 
       - name: Pin CMake to 4.3.0 (hidapi submodule caps at 4.3)
