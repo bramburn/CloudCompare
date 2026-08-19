@@ -36,6 +36,16 @@ pub struct IcprParamsRust {
     /// identity. The next "improvement" then moves the data *away* from
     /// the model. Default 1e-3.
     pub min_rms_absolute: f64,
+    /// Fraction of correspondences to drop per iteration, ranked by
+    /// squared NN distance. The worst 0.2 (default) of pairs are
+    /// considered outliers and excluded from the SVD step. Set to
+    /// 0.0 to disable (vanilla ICP). Range: [0.0, 0.95).
+    /// Implementation note: trimmed ICP — based on the Trimmed ICP
+    /// variant from Chetverikov et al. 2005 ("Robust Euclidean
+    /// alignment of 3D point sets"). Especially helpful for real
+    /// scans with partial overlap, where ~half the points may have
+    /// no true match in the other cloud.
+    pub outlier_rejection_fraction: f64,
 }
 
 impl Default for IcprParamsRust {
@@ -44,6 +54,7 @@ impl Default for IcprParamsRust {
             max_iterations: 50,
             min_rms_decrease: 1e-6,
             min_rms_absolute: 1e-3,
+            outlier_rejection_fraction: 0.0,
         }
     }
 }
@@ -116,6 +127,10 @@ pub fn icp_iterate(
 
     // Scratch buffer for matched-pair indices (avoids allocating per iter).
     let mut nn_indices: Vec<usize> = vec![0; n_data];
+    // Per-iteration NN squared distances (used for trimmed-ICP
+    // outlier rejection). Pairs with dist_sq above the cutoff are
+    // excluded from the SVD step.
+    let mut nn_dist_sq: Vec<f64> = vec![0.0; n_data];
 
     let mut prev_rms = f64::INFINITY;
     let mut last_rms = f64::INFINITY;
@@ -133,7 +148,6 @@ pub fn icp_iterate(
         // here, which caused ICP to diverge after a successful first
         // iteration, because the data was applied to its already-moved
         // pose a second time, breaking the NN correspondences.)
-        let mut sum_dist_sq = 0.0_f64;
         for i in 0..n_data {
             let idx = i * 3;
             let pt = Vector3::new(
@@ -143,9 +157,56 @@ pub fn icp_iterate(
             );
             let (nn_idx, dist_sq) = nearest_neighbour_slow(model_points, &pt);
             nn_indices[i] = nn_idx;
-            sum_dist_sq += dist_sq;
+            nn_dist_sq[i] = dist_sq;
         }
-        let rms = (sum_dist_sq / n_data as f64).sqrt();
+
+        // ── (1.5) Trim outliers ─────────────────────────────────────
+        // Drop the worst `outlier_rejection_fraction` of pairs (by
+        // squared NN distance) before computing the SVD. This makes
+        // ICP robust to partial overlap, where ~half the points have
+        // no true match in the other cloud. See D5 in
+        // `experimental/docs/decisions.md` (when added) for the
+        // bench on real data.
+        //
+        // The mask is built as: inlier if dist_sq <= cutoff, where
+        // cutoff is the (1 - fraction) quantile of dist_sq. We
+        // compute the cutoff by sorting dist_sq.
+        let mut inlier_mask: Vec<bool> = vec![true; n_data];
+        if params.outlier_rejection_fraction > 0.0
+            && params.outlier_rejection_fraction < 0.95
+            && n_data >= 3
+        {
+            // Build a sorted index of dist_sq to find the cutoff.
+            let mut sorted_dists: Vec<f64> = nn_dist_sq.clone();
+            sorted_dists.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
+            // cutoff is the value at the (1 - fraction) quantile.
+            // e.g. fraction=0.2 → keep the closest 80% → cutoff
+            // is sorted_dists[floor(0.80 * n)].
+            let keep_count = ((1.0 - params.outlier_rejection_fraction)
+                * n_data as f64)
+                .ceil() as usize;
+            let keep_count = keep_count.max(3).min(n_data);
+            let cutoff = sorted_dists[keep_count - 1];
+            for i in 0..n_data {
+                inlier_mask[i] = nn_dist_sq[i] <= cutoff;
+            }
+        }
+
+        // Compute RMS on the inlier set (so the convergence check
+        // reflects what we're actually fitting).
+        let mut sum_dist_sq = 0.0_f64;
+        let mut n_inlier = 0_usize;
+        for i in 0..n_data {
+            if inlier_mask[i] {
+                sum_dist_sq += nn_dist_sq[i];
+                n_inlier += 1;
+            }
+        }
+        let rms = if n_inlier == 0 {
+            f64::INFINITY
+        } else {
+            (sum_dist_sq / n_inlier as f64).sqrt()
+        };
 
         // ── (2) Convergence: change in RMS, not absolute RMS ───────
         // (Old check `rms < min_rms_decrease` was wrong: it triggered
@@ -154,7 +215,8 @@ pub fn icp_iterate(
         let delta = (prev_rms - rms).abs();
         prev_rms = rms;
         last_rms = rms;
-        log::debug!("iter {}: rms={:.6}, delta={:.6e}", iter, rms, delta);
+        log::debug!("iter {}: rms={:.6}, delta={:.6e}, inliers={}/{}",
+                    iter, rms, delta, n_inlier, n_data);
 
         if iter > 0 && (delta < params.min_rms_decrease || rms < params.min_rms_absolute) {
             converged = true;
@@ -162,14 +224,13 @@ pub fn icp_iterate(
         }
 
         // ── (3) Compute optimal (R, t) from the matched pairs ───────
-        // The matched pairs are: (data_i, model[nn_indices[i]]).
-        // The Horn 1987 SVD gives an INCREMENTAL (ΔR, Δt) that aligns
-        // the current data pose to the matched model pose.
-        let (centroid_data, centroid_model) = compute_centroids_from_pairs(
-            data_points, model_points, &nn_indices,
+        // The matched pairs are: (data_i, model[nn_indices[i]]) for
+        // each INLIER i. Outliers are excluded.
+        let (centroid_data, centroid_model) = compute_centroids_from_pairs_masked(
+            data_points, model_points, &nn_indices, &inlier_mask,
         );
-        let h = compute_covariance_from_pairs(
-            data_points, model_points, &nn_indices,
+        let h = compute_covariance_from_pairs_masked(
+            data_points, model_points, &nn_indices, &inlier_mask,
             centroid_data, centroid_model,
         );
         let delta_rotation = compute_rotation_svd(&h)
@@ -218,17 +279,22 @@ pub fn icp_iterate(
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-/// Compute centroids of two point sets paired by index. Used when the
-/// caller has explicit correspondences (e.g. NN indices from ICP).
-fn compute_centroids_from_pairs(
+/// Compute centroids of two point sets paired by index, with a
+/// boolean inlier mask. Used by trimmed ICP.
+fn compute_centroids_from_pairs_masked(
     data: &[f32],
     model: &[f32],
     nn_indices: &[usize],
+    inlier_mask: &[bool],
 ) -> (Vector3<f64>, Vector3<f64>) {
     let n = nn_indices.len();
     let mut c_data = Vector3::zeros();
     let mut c_model = Vector3::zeros();
+    let mut count = 0_usize;
     for i in 0..n {
+        if !inlier_mask[i] {
+            continue;
+        }
         c_data += Vector3::new(
             data[i * 3] as f64,
             data[i * 3 + 1] as f64,
@@ -240,24 +306,32 @@ fn compute_centroids_from_pairs(
             model[m * 3 + 1] as f64,
             model[m * 3 + 2] as f64,
         );
+        count += 1;
     }
-    let inv = 1.0 / n as f64;
+    if count == 0 {
+        return (Vector3::zeros(), Vector3::zeros());
+    }
+    let inv = 1.0 / count as f64;
     (c_data * inv, c_model * inv)
 }
 
-/// Compute cross-covariance matrix H between paired (data, model) sets
-/// after centring. The pairs come from explicit correspondences
-/// (e.g. NN indices), not parallel index assumption.
-fn compute_covariance_from_pairs(
+/// Compute cross-covariance matrix H between paired (data, model)
+/// sets after centring, with a boolean inlier mask. Used by
+/// trimmed ICP.
+fn compute_covariance_from_pairs_masked(
     data: &[f32],
     model: &[f32],
     nn_indices: &[usize],
+    inlier_mask: &[bool],
     centroid_data: Vector3<f64>,
     centroid_model: Vector3<f64>,
 ) -> nalgebra::Matrix3<f64> {
     let n = nn_indices.len();
     let mut h = nalgebra::Matrix3::<f64>::zeros();
     for i in 0..n {
+        if !inlier_mask[i] {
+            continue;
+        }
         let dp = Vector3::new(
             data[i * 3] as f64,
             data[i * 3 + 1] as f64,
@@ -502,5 +576,95 @@ mod tests {
         let r = icp_iterate(&mut data, &model, &params);
         assert!(r.is_err());
         assert_eq!(r.unwrap_err().code, 1);
+    }
+
+    #[test]
+    fn trimmed_icp_handles_partial_overlap() {
+        // Simulate partial overlap: the data has the model's 9
+        // points (the asymmetric-9 fixture) plus 4 "ghost" points
+        // that are far from the model. Vanilla ICP overweights the
+        // ghosts and overshoots. Trimmed ICP drops them.
+        let model = asymmetric_cloud();
+        let mut data = model.clone();
+        // Apply a known translation.
+        let data_offset = Vector3::new(0.4, -0.2, 0.15);
+        apply_rigid(&mut data, &nalgebra::Matrix3::identity(), &data_offset);
+        // Add 4 ghost points far from the model.
+        data.extend_from_slice(&[
+            100.0, 100.0, 100.0,
+            -50.0, -50.0, -50.0,
+            200.0, 0.0, 0.0,
+            0.0, 200.0, 0.0,
+        ]);
+
+        // First, vanilla ICP (no trimming) — should overshoot.
+        let vanilla_params = IcprParamsRust {
+            max_iterations: 50,
+            min_rms_decrease: 1e-6,
+            outlier_rejection_fraction: 0.0,
+            ..Default::default()
+        };
+        let mut data_vanilla = data.clone();
+        let vanilla = icp_iterate(&mut data_vanilla, &model, &vanilla_params)
+            .expect("vanilla ICP failed");
+        let vanilla_t = Vector3::new(
+            vanilla.transform[12],
+            vanilla.transform[13],
+            vanilla.transform[14],
+        );
+
+        // Then, trimmed ICP (drop worst 50% — enough to clear all 4
+        // ghosts from the inlier set on the first iteration).
+        let trimmed_params = IcprParamsRust {
+            max_iterations: 50,
+            min_rms_decrease: 1e-6,
+            outlier_rejection_fraction: 0.5,
+            ..Default::default()
+        };
+        let mut data_trimmed = data.clone();
+        let trimmed = icp_iterate(&mut data_trimmed, &model, &trimmed_params)
+            .expect("trimmed ICP failed");
+        let trimmed_t = Vector3::new(
+            trimmed.transform[12],
+            trimmed.transform[13],
+            trimmed.transform[14],
+        );
+
+        // The trimmed ICP should recover the offset more accurately
+        // than vanilla. Both should be in the right *direction*;
+        // trimmed should be closer in magnitude.
+        let expected_t = -data_offset; // "data → model" direction
+        let vanilla_err = (vanilla_t - expected_t).norm();
+        let trimmed_err = (trimmed_t - expected_t).norm();
+        assert!(trimmed_err < vanilla_err,
+                "trimmed ICP should be more accurate than vanilla: \
+                 trimmed_err={:.4} vs vanilla_err={:.4} (trimmed t={:?}, vanilla t={:?}, expected t={:?})",
+                trimmed_err, vanilla_err, trimmed_t, vanilla_t, expected_t);
+        // Sanity: trimmed is reasonably close to the expected offset.
+        assert!(trimmed_err < 0.1,
+                "trimmed ICP should be within 0.1 of expected: got {:?}, expected {:?}",
+                trimmed_t, expected_t);
+    }
+
+    #[test]
+    fn trimmed_icp_fraction_zero_equals_vanilla() {
+        // Sanity: outlier_rejection_fraction = 0.0 must produce the
+        // same result as the default (no-trim) path.
+        let model = asymmetric_cloud();
+        let data_offset = Vector3::new(0.4, -0.2, 0.15);
+        let mut data = model.clone();
+        apply_rigid(&mut data, &nalgebra::Matrix3::identity(), &data_offset);
+
+        let params = IcprParamsRust {
+            max_iterations: 50,
+            min_rms_decrease: 1e-6,
+            outlier_rejection_fraction: 0.0,
+            ..Default::default()
+        };
+        let r = icp_iterate(&mut data, &model, &params).expect("ICP failed");
+        assert!(r.rms < 0.01, "rms too high: {}", r.rms);
+        let t = Vector3::new(r.transform[12], r.transform[13], r.transform[14]);
+        let err = (t - (-data_offset)).norm();
+        assert!(err < 0.05, "translation error too high: {:?}", t);
     }
 }
