@@ -1,5 +1,11 @@
-#pragma once
-
+/**
+ * @file FastGlobalRegistrationFilter.h
+ *
+ * @brief Fast Global Registration filter.
+ *
+ * @details Filter for point cloud registration using
+ * the Fast Global Registration algorithm.
+ */
 //##########################################################################
 //#                                                                        #
 //#                       CLOUDCOMPARE PLUGIN: qPCL                        #
