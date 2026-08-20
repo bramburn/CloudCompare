@@ -26,6 +26,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
+/**
+ * @file FastGlobalRegistration.h
+ *
+ * @brief Fast Global Registration algorithm.
+ *
+ * @details Implementation of the Fast Global Registration
+ * algorithm by Zhou et al. for point cloud registration.
+ *
+ * Based on "Fast Global Registration" (ECCV 2016).
+ */
+
 #include <vector>
 
 #include <Eigen/Core>
