@@ -19,6 +19,15 @@
 
 #include "ccIOPluginInterface.h"
 
+/**
+ * @file ExampleIOPlugin.h
+ *
+ * @brief Example I/O plugin template.
+ *
+ * @details Template plugin demonstrating file I/O
+ * filter integration.
+ */
+
 /** Replace 'ExampleIOPlugin' by your own plugin class name throughout and then
 	check 'ExampleIOPlugin.cpp' for more directions.
 
