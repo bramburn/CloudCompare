@@ -18,6 +18,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccReservedIDs.h ✅
 - qCC/ccCommandLineParser.h ✅
 - qCC/ccCommandLineParser.cpp ✅
+- qCC/db_tree/ccDBRoot.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -108,3 +109,10 @@ libs/
 - `docs: enhance ccCommandLineParser.cpp Doxygen @file documentation` - 2026-08-25
   - Enhanced @file with detailed @details
   - Header already had comprehensive documentation
+
+- `docs: enhance ccDBRoot.h Doxygen documentation` - 2026-08-25
+  - Added detailed @file with architecture overview
+  - Enhanced @class documentation for ccDBRoot and ccCustomQTreeView
+  - Added @brief for dbTreeSelectionInfo struct members
+  - Added @param, @note for all public methods
+  - Organized documentation with @section and @par blocks
