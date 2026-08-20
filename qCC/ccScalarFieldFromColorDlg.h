@@ -21,11 +21,25 @@
 /**
  * @file ccScalarFieldFromColorDlg.h
  *
- * @brief Scalar field from color dialog
+ * @brief Scalar field from color dialog for extracting SFs from color channels.
  *
- * Dialog for extracting scalar fields from color channels.
+ * @details Dialog for extracting scalar fields from RGB(A) color channels.
+ *
+ * Converts color information to scalar fields for analysis:
+ * - **R channel**: Red intensity as scalar field
+ * - **G channel**: Green intensity as scalar field
+ * - **B channel**: Blue intensity as scalar field
+ * - **Alpha channel**: Transparency as scalar field
+ * - **Composite**: Grayscale intensity (weighted average of RGB)
+ *
+ * Useful for:
+ * - Analyzing intensity data encoded in colors
+ * - Extracting individual color channels for processing
+ * - Creating grayscale representations
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccScalarField
  */
 
 #include <ui_scalarFieldFromColorDlg.h>
@@ -33,9 +47,13 @@
 class ccPointCloud;
 
 /**
- * @brief Scalar field from color dialog
+ * @brief Dialog for extracting scalar fields from color channels.
  *
- * Extract scalar fields from color channels.
+ * @details Provides a UI for choosing which color channels to
+ * extract as scalar fields.
+ *
+ * @extends QDialog
+ * @extends Ui::scalarFieldFromColorDlg
  */
 class ccScalarFieldFromColorDlg : public QDialog
     , public Ui::scalarFieldFromColorDlg
@@ -44,24 +62,40 @@ class ccScalarFieldFromColorDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] parent Parent widget
+	 * @brief Construct the dialog.
+	 *
+	 * @param[in] parent Parent widget.
 	 */
 	explicit ccScalarFieldFromColorDlg(QWidget* parent = nullptr);
 
-	/// Get R channel flag
+	/**
+	 * @brief Check if R channel should be extracted.
+	 * @return true if R channel is selected.
+	 */
 	bool getRStatus() const;
 
-	/// Get G channel flag
+	/**
+	 * @brief Check if G channel should be extracted.
+	 * @return true if G channel is selected.
+	 */
 	bool getGStatus() const;
 
-	/// Get B channel flag
+	/**
+	 * @brief Check if B channel should be extracted.
+	 * @return true if B channel is selected.
+	 */
 	bool getBStatus() const;
 
-	/// Get Alpha channel flag
+	/**
+	 * @brief Check if Alpha channel should be extracted.
+	 * @return true if Alpha channel is selected.
+	 */
 	bool getAlphaStatus() const;
 
-	/// Get Composite channel flag
+	/**
+	 * @brief Check if composite/grayscale should be extracted.
+	 * @return true if composite is selected.
+	 */
 	bool getCompositeStatus() const;
 };
 

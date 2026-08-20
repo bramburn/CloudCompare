@@ -79,6 +79,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccExtrudePolylineDlg.h ✅
 - qCC/ccInnerRect2DFinder.h ✅
 - qCC/ccQCustomPlot.h ✅
+- qCC/ccScalarFieldFromColorDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -458,3 +459,8 @@ libs/
   - Enhanced @file with QCustomPlot extensions overview
   - Added @class documentation for QCPBarsWithText, QCPColoredBars
   - Documented QCPSelectableCursor, QCPHiddenArea, QCPArrow
+
+- `docs: enhance ccScalarFieldFromColorDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with color channel extraction overview
+  - Added @class documentation
+  - Documented R/G/B/Alpha/Composite channel getters
