@@ -77,6 +77,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccFilterByValueDlg.h ✅
 - qCC/ccExportCoordToSFDlg.h ✅
 - qCC/ccExtrudePolylineDlg.h ✅
+- qCC/ccInnerRect2DFinder.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -446,3 +447,8 @@ libs/
   - Enhanced @file with mesh extrusion overview
   - Added @class documentation
   - Documented heightAbove and depthBelow methods
+
+- `docs: enhance ccInnerRect2DFinder.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with inscribed rectangle algorithm overview
+  - Added @class documentation
+  - Documented Rect struct and process method
