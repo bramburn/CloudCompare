@@ -83,6 +83,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccRegistrationDlg.h ✅
 - qCC/ccEnvelopeExtractorDlg.h ✅
 - qCC/ccEntitySelectionDlg.h ✅
+- qCC/ccCommandCrossSection.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -482,3 +483,8 @@ libs/
   - Enhanced @file with entity selection overview
   - Added @class documentation with usage example
   - Documented static convenience methods
+
+- `docs: enhance ccCommandCrossSection.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with cross section CLI overview
+  - Added @class documentation with usage example
+  - Documented readVector helper
