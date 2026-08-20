@@ -1,4 +1,13 @@
-#pragma once
+/**
+ * @file FastGlobalRegistrationDlg.h
+ *
+ * @brief Fast Global Registration dialog.
+ *
+ * @details Dialog for configuring fast global registration
+ * parameters using PCL.
+ *
+ * @extends QDialog
+ */
 
 //##########################################################################
 //#                                                                        #
