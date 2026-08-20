@@ -103,6 +103,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccShortcutDialog.h ✅
 - qCC/ccSensorComputeScatteringAnglesDlg.h ✅
 - qCC/ccSectionExtractionSubDlg.h ✅
+- qCC/mainwindow.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -602,3 +603,8 @@ libs/
   - Enhanced @file with section extraction parameters overview
   - Added @class documentation
   - Documented envelope type, thickness, and multi-pass options
+
+- `docs: enhance mainwindow.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with main window architecture overview
+  - Added key components documentation
+  - Documented singleton pattern and usage example
