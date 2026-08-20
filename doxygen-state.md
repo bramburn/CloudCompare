@@ -1128,6 +1128,24 @@ libs/
 - `docs: enhance PcdFilter.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with PCD filter overview
 
+- `docs: enhance BaseFilter.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with PCL base filter overview
+
+- `docs: enhance FastGlobalRegistrationDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with fast global registration dialog overview
+
+- `docs: enhance MLSDialog.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with MLS dialog overview
+
+- `docs: enhance NormalEstimationDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with normal estimation dialog overview
+
+- `docs: enhance SIFTExtractDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with SIFT extraction dialog overview
+
+- `docs: enhance StatisticalOutliersRemoverDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with statistical outliers remover dialog overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
