@@ -1038,6 +1038,33 @@ libs/
 - `docs: enhance qCanupoDisclaimerDialog.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with CANUPO disclaimer overview
 
+- `docs: enhance CSFExport.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with CSF export macro overview
+
+- `docs: enhance AnglesCustomPlot.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with angle custom plot overview
+
+- `docs: enhance G3Point.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with G3Point plugin overview
+
+- `docs: enhance G3PointDialog.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with G3Point dialog overview
+
+- `docs: enhance G3PointDisclaimer.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with G3Point disclaimer overview
+
+- `docs: enhance G3PointPlots.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with G3Point plots overview
+
+- `docs: enhance G3PointAction.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with G3Point action overview
+
+- `docs: enhance GrainsAsEllipsoids.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with grains ellipsoid overview
+
+- `docs: enhance WolmanCustomPlot.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with Wolman plot overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
