@@ -89,6 +89,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccSubsamplingDlg.h ✅
 - qCC/ccSmoothPolylineDlg.h ✅
 - qCC/ccVolumeCalcTool.h ✅
+- qCC/ccUnrollDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -518,3 +519,8 @@ libs/
   - Enhanced @file with volume calculation overview
   - Added @class documentation
   - Documented ReportInfo struct and ComputeVolume method
+
+- `docs: enhance ccUnrollDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with developable surface unrolling overview
+  - Added @class documentation
+  - Documented axis, radius, and angle range parameters

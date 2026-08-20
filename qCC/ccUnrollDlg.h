@@ -12,17 +12,24 @@
 // #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        #
+// #                                                                        //
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
 
 /**
  * @file ccUnrollDlg.h
  *
- * @brief Unroll dialog
+ * @brief Unroll dialog for projecting clouds onto developable surfaces.
  *
- * Dialog for unrolling clouds on cylinder or cone.
+ * @details Dialog for unrolling (projecting) point clouds onto
+ * developable surfaces like cylinders and cones.
+ *
+ * "Unrolling" transforms a 3D curved surface into a 2D plane
+ * by projecting points radially. Useful for:
+ * - Cylindrical objects (pipes, tunnels)
+ * - Conical surfaces
+ * - Unwrapping scanned surfaces
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
  */
@@ -38,9 +45,18 @@ namespace Ui
 }
 
 /**
- * @brief Unroll dialog
+ * @brief Dialog for unrolling clouds onto developable surfaces.
  *
- * Unroll clouds on cylinder or cone.
+ * @details Provides a UI for configuring surface unrolling parameters.
+ *
+ * Features:
+ * - Cylindrical unrolling
+ * - Conical unrolling
+ * - Custom axis definition
+ * - Angle range limiting
+ * - Export deviation scalar field
+ *
+ * @extends QDialog
  */
 class ccUnrollDlg : public QDialog
 {
@@ -48,62 +64,147 @@ class ccUnrollDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] dbRootEntity Database root entity
-	 * @param[in] parent Parent widget
+	 * @brief Construct the unroll dialog.
+	 *
+	 * @param[in] dbRootEntity Database root for entity selection.
+	 * @param[in] parent Parent widget.
 	 */
 	explicit ccUnrollDlg(ccHObject* dbRootEntity, QWidget* parent = nullptr);
-	
-	/// Destructor
+
+	/**
+	 * @brief Destructor.
+	 */
 	~ccUnrollDlg() override;
 
-	/// Get unroll type
+	/**
+	 * @brief Get the unroll type.
+	 * @return Unroll mode (cylinder, cone, etc.).
+	 */
 	ccPointCloud::UnrollMode getType() const;
-	/// Get axis
+
+	/**
+	 * @brief Get the axis direction.
+	 * @return Axis vector.
+	 */
 	CCVector3d getAxis() const;
-	/// Get axis position auto flag
+
+	/**
+	 * @brief Check if axis position is automatic.
+	 * @return true if auto.
+	 */
 	bool isAxisPositionAuto() const;
-	/// Get use arbitrary output CS flag
+
+	/**
+	 * @brief Check if using arbitrary output CS.
+	 * @return true if arbitrary.
+	 */
 	bool useArbitraryOutputCS() const;
-	/// Get remove stretched triangles flag
+
+	/**
+	 * @brief Check if stretched triangles should be removed.
+	 * @return true if removing.
+	 */
 	bool removeStretchedTriangles() const;
-	/// Get axis position
+
+	/**
+	 * @brief Get the axis position.
+	 * @return Axis position vector.
+	 */
 	CCVector3 getAxisPosition() const;
-	/// Get angle range
+
+	/**
+	 * @brief Get the angle range.
+	 *
+	 * @param[out] start_deg Start angle in degrees.
+	 * @param[out] stop_deg Stop angle in degrees.
+	 */
 	void getAngleRange(double& start_deg, double& stop_deg) const;
-	/// Get radius
+
+	/**
+	 * @brief Get the cylinder radius.
+	 * @return Radius value.
+	 */
 	double getRadius() const;
-	/// Get cone half angle
+
+	/**
+	 * @brief Get the cone half angle.
+	 * @return Angle in degrees.
+	 */
 	double getConeHalfAngle() const;
-	/// Get export deviation SF flag
+
+	/**
+	 * @brief Check if exporting deviation SF.
+	 * @return true if exporting.
+	 */
 	bool exportDeviationSF() const;
-	/// Get conical proj span ratio
+
+	/**
+	 * @brief Get conical projection span ratio.
+	 * @return Span ratio.
+	 */
 	double getConicalProjSpanRatio() const;
 
-	/// Save to persistent settings
+	/**
+	 * @brief Save settings.
+	 */
 	void toPersistentSettings() const;
-	/// Load from persistent settings
+
+	/**
+	 * @brief Load settings.
+	 */
 	void fromPersistentSettings();
-	/// Set configuration
+
+	/**
+	 * @brief Set configuration.
+	 *
+	 * @param[in] cloudsOnly Only show cloud-related options.
+	 */
 	void setConfiguration(bool cloudsOnly);
 
-  protected:
-	/// Handle shape type changed
+  protected slots:
+	/**
+	 * @brief Handle shape type change.
+	 * @param[in] index New type.
+	 */
 	void shapeTypeChanged(int index);
-	/// Handle projection type changed
+
+	/**
+	 * @brief Handle projection type change.
+	 * @param[in] index New type.
+	 */
 	void projectionTypeChanged(int index);
-	/// Handle axis dimension changed
+
+	/**
+	 * @brief Handle axis dimension change.
+	 * @param[in] index New dimension.
+	 */
 	void axisDimensionChanged(int index);
-	/// Handle axis auto state changed
+
+	/**
+	 * @brief Handle axis auto state change.
+	 * @param[in] checkState Auto state.
+	 */
 	void axisAutoStateChanged(int checkState);
-	/// Load parameters from entity
+
+	/**
+	 * @brief Load parameters from selected entity.
+	 */
 	void loadParametersFromEntity();
-	/// Set axis from clipboard
+
+	/**
+	 * @brief Load axis from clipboard.
+	 */
 	void axisFromClipboard();
-	/// Set center from clipboard
+
+	/**
+	 * @brief Load center from clipboard.
+	 */
 	void centerFromClipboard();
 
   protected:
+	//! UI definition
 	Ui::UnrollDialog* m_ui;
-	ccHObject*        m_dbRootEntity;
+
+	//! Database root entity
+	ccHObject* m_dbRootEntity;
 };
