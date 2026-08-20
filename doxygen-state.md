@@ -48,6 +48,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/cc2.5DimEditor.h ✅
 - qCC/ccClippingBoxRepeatDlg.h ✅
 - qCC/ccComparisonDlg.h ✅
+- qCC/ccCustomDoubleValidator.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -273,3 +274,8 @@ libs/
   - Enhanced @file with cloud/mesh comparison overview
   - Added @class documentation
   - Documented CC_COMPARISON_TYPE enum and all methods
+
+- `docs: enhance ccCustomDoubleValidator.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with decimal separator support overview
+  - Added @class documentation
+  - Documented validate() override
