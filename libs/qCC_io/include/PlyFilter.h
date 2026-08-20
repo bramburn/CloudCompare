@@ -3,17 +3,49 @@
 // #                              CLOUDCOMPARE                              #
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
-// #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
+
+/**
+ * @file PlyFilter.h
+ *
+ * @brief PLY (Polygon Library) file filter.
+ *
+ * @details Stanford PLY file format filter for loading and saving
+ * point clouds and meshes.
+ *
+ * ## Overview
+ *
+ * PlyFilter supports:
+ * - ASCII and binary PLY formats
+ * - Point clouds and meshes
+ * - Custom properties and colors
+ * - Texture coordinates
+ *
+ * ## Usage
+ *
+ * @code
+ * PlyFilter filter;
+ * CC_FILE_ERROR err = filter.loadFile("cloud.ply", container, params);
+ *
+ * // Set output format
+ * PlyFilter::SetDefaultOutputFormat(PLY_ASCII);
+ * PlyFilter::SetAddSFPrefix(true);
+ * filter.saveToFile(entity, "output.ply", saveParams);
+ * @endcode
+ *
+ * @extends FileIOFilter
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 
 #ifndef CC_PLY_FILTER_HEADER
 #define CC_PLY_FILTER_HEADER
@@ -21,7 +53,7 @@
 #include "FileIOFilter.h"
 #include "rply.h"
 
-/// PLY format types
+//! PLY format type names.
 static const char e_ply_type_names[][12] = {
     "PLY_INT8",
     "PLY_UINT8",
@@ -41,62 +73,143 @@ static const char e_ply_type_names[][12] = {
     "PLY_DOUBLE",
     "PLY_LIST"};
 
-/// PLY storage modes
+//! PLY storage mode names.
 static const char e_ply_storage_mode_names[][24] =
     {"PLY_BIG_ENDIAN", "PLY_LITTLE_ENDIAN", "PLY_ASCII", "PLY_DEFAULT"};
 
 /**
- * @brief PLY property
+ * @brief PLY property structure.
  */
 struct plyProperty
 {
+	//! PLY property handle.
 	p_ply_property prop;
-	const char*    propName;
-	e_ply_type     type;
-	e_ply_type     length_type;
-	e_ply_type     value_type;
-	int            elemIndex;
+
+	//! Property name.
+	const char* propName;
+
+	//! Property type.
+	e_ply_type type;
+
+	//! List length type.
+	e_ply_type length_type;
+
+	//! List value type.
+	e_ply_type value_type;
+
+	//! Element index.
+	int elemIndex;
 };
 
 /**
- * @brief PLY element
+ * @brief PLY element structure.
  */
 struct plyElement
 {
-	p_ply_element            elem;
-	const char*              elementName;
-	long                     elementInstances;
+	//! PLY element handle.
+	p_ply_element elem;
+
+	//! Element name.
+	const char* elementName;
+
+	//! Number of instances.
+	long elementInstances;
+
+	//! Properties.
 	std::vector<plyProperty> properties;
-	int                      propertiesCount;
-	bool                     isFace;
+
+	//! Property count.
+	int propertiesCount;
+
+	//! Is face element.
+	bool isFace;
 };
 
 /**
- * @brief PLY filter
+ * @brief PLY file filter.
  *
- * Stanford PLY file filter.
+ * @details Stanford PLY file format filter.
+ *
+ * @extends FileIOFilter
  */
 class QCC_IO_LIB_API PlyFilter : public FileIOFilter
 {
   public:
+	/**
+	 * @brief Create PLY filter.
+	 */
 	PlyFilter();
 
-	// static accessors
+	/**
+	 * @brief Set default output format.
+	 *
+	 * @param[in] format Storage format.
+	 */
 	static void SetDefaultOutputFormat(e_ply_storage_mode format);
-	//! Sets whether the 'scalar_' prefix should be added to the scalar field names at saving time (true by default)
+
+	/**
+	 * @brief Set scalar field prefix.
+	 *
+	 * @param[in] state Add 'scalar_' prefix to SF names.
+	 */
 	static void SetAddSFPrefix(bool state);
 
 	// inherited from FileIOFilter
+	/**
+	 * @brief Load PLY file.
+	 *
+	 * @param[in] filename File path.
+	 * @param[out] container Entity container.
+	 * @param[in] parameters Load parameters.
+	 *
+	 * @return Error code.
+	 */
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	/**
+	 * @brief Check if can save.
+	 *
+	 * @param[in] type Entity type.
+	 * @param[out] multiple Multiple objects.
+	 * @param[out] exclusive Exclusive save.
+	 *
+	 * @return true if can save.
+	 */
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+
+	/**
+	 * @brief Save to PLY file.
+	 *
+	 * @param[in] entity Entity to save.
+	 * @param[in] filename File path.
+	 * @param[in] parameters Save parameters.
+	 *
+	 * @return Error code.
+	 */
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 
-	//! Custom loading method
+	/**
+	 * @brief Load with texture.
+	 *
+	 * @param[in] filename PLY file path.
+	 * @param[in] textureFilename Texture file path.
+	 * @param[out] container Entity container.
+	 * @param[in] parameters Load parameters.
+	 *
+	 * @return Error code.
+	 */
 	CC_FILE_ERROR loadFile(const QString& filename, const QString& textureFilename, ccHObject& container, LoadParameters& parameters);
 
   private:
-	//! Internal method
+	/**
+	 * @brief Internal save method.
+	 *
+	 * @param[in] entity Entity to save.
+	 * @param[in] filename File path.
+	 * @param[in] storageType Storage format.
+	 *
+	 * @return Error code.
+	 */
 	CC_FILE_ERROR saveToFile(ccHObject* entity, QString filename, e_ply_storage_mode storageType);
 };
 

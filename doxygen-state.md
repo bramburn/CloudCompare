@@ -870,6 +870,11 @@ libs/
   - Added @file, @class, @brief documentation
   - Documented facade detection and visualization
 
+- `docs: enhance PlyFilter.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with PLY format overview
+  - Added @struct documentation for plyProperty and plyElement
+  - Added @class documentation for PlyFilter
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
