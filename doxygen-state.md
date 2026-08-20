@@ -80,6 +80,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccInnerRect2DFinder.h ✅
 - qCC/ccQCustomPlot.h ✅
 - qCC/ccScalarFieldFromColorDlg.h ✅
+- qCC/ccRegistrationDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -464,3 +465,8 @@ libs/
   - Enhanced @file with color channel extraction overview
   - Added @class documentation
   - Documented R/G/B/Alpha/Composite channel getters
+
+- `docs: enhance ccRegistrationDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with ICP registration overview
+  - Added @class documentation
+  - Documented convergence, sampling, and weight options
