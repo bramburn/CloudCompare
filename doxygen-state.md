@@ -22,6 +22,8 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccAboutDialog.h ✅
 - qCC/ccAboutDialog.cpp ✅
 - qCC/ccEntityAction.h ✅
+- qCC/pluginManager/ccPluginUIManager.h ✅
+- qCC/pluginManager/ccPluginUIManager.cpp ✅
 
 ### In Progress
 - (next file to be selected)
@@ -130,3 +132,8 @@ libs/
   - Organized functions by category
   - Added @param for all parameters
   - Documented enum classes
+
+- `docs: add Doxygen comments to ccPluginUIManager.h and cpp` - 2026-08-25
+  - Enhanced @file, @class documentation
+  - Added @brief for all methods
+  - Added @param documentation
