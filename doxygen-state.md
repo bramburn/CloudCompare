@@ -54,6 +54,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccNoiseFilterDlg.h ✅
 - qCC/ccNormalComputationDlg.h ✅
 - qCC/ccOrderChoiceDlg.h ✅
+- qCC/ccOrthoSectionGenerationDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -308,3 +309,8 @@ libs/
   - Enhanced @file with role assignment overview
   - Added @class documentation
   - Documented swap functionality
+
+- `docs: enhance ccOrthoSectionGenerationDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with orthogonal section generation overview
+  - Added @class documentation
+  - Documented step and width parameters
