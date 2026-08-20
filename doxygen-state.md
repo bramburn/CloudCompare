@@ -145,6 +145,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccInteractor.h ✅
 - libs/qCC_db/ccKdTree.h ✅
 - libs/qCC_db/ccPlanarEntityInterface.h ✅
+- libs/qCC_db/ccSingleton.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -853,3 +854,8 @@ libs/
   - Enhanced @file with planar entity interface overview
   - Added @class documentation
   - Documented normal vector management
+
+- `docs: enhance ccSingleton.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with singleton template overview
+  - Added @struct documentation
+  - Documented thread safety considerations
