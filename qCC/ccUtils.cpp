@@ -15,6 +15,17 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccUtils.cpp
+ *
+ * @brief Implementation of utility functions for CloudCompare.
+ *
+ * @details Implements the ccUtils namespace functions for common
+ * operations like displaying warnings and clipboard interaction.
+ *
+ * @see ccUtils.h
+ */
+
 #include "ccUtils.h"
 
 #include "ccConsole.h"
@@ -25,6 +36,13 @@
 
 namespace ccUtils
 {
+	/**
+	 * @brief Display a warning about locked vertices.
+	 *
+	 * @param[in] meshName The name of the mesh whose vertices are locked.
+	 * @param[in] displayAsError If true, displays as an error message;
+	 *                           if false, displays as a warning.
+	 */
 	void DisplayLockedVerticesWarning(const QString& meshName, bool displayAsError)
 	{
 		QString message = QString("Vertices of mesh '%1' are locked (they may be shared by multiple entities for instance).\nYou should call this method directly on the vertices cloud.\n(warning: all entities depending on this cloud will be impacted!)").arg(meshName);
@@ -35,6 +53,18 @@ namespace ccUtils
 			ccConsole::Warning(message);
 	}
 
+	/**
+	 * @brief Read a 3D vector from the system clipboard.
+	 *
+	 * @param[out] vector The parsed 3D vector. Only modified if successful.
+	 * @param[in] sendErrors If true, error messages are sent to the console.
+	 *
+	 * @return true if a valid 3D vector was successfully parsed.
+	 *
+	 * @details Parses the clipboard text as a 3D vector. Accepts various
+	 * formats including space, semicolon, or comma-separated values,
+	 * with optional brackets.
+	 */
 	bool GetVectorFromClipboard(CCVector3d& vector, bool sendErrors /*=true*/)
 	{
 		const QClipboard* clipboard = QApplication::clipboard();

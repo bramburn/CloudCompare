@@ -8,6 +8,8 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 ### Completed
 - qCC/ccConsole.h ✅
 - qCC/ccConsole.cpp ✅
+- qCC/ccUtils.h ✅
+- qCC/ccUtils.cpp ✅
 
 ### In Progress
 - (next file to be selected)
@@ -66,3 +68,9 @@ libs/
   - Documented all public/private methods with @param, @return, @note, @warning
   - Added @see cross-references
   - Documented member variables with @brief descriptions
+
+- `docs: add Doxygen comments to ccUtils.h and ccUtils.cpp` - 2026-08-25
+  - Enhanced namespace documentation
+  - Added detailed @param, @return, @details documentation
+  - Added format documentation for GetVectorFromClipboard
+  - Added @date, @see tags
