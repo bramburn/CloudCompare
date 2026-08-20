@@ -10,6 +10,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccConsole.cpp ✅
 - qCC/ccUtils.h ✅
 - qCC/ccUtils.cpp ✅
+- qCC/ccCommon.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -74,3 +75,9 @@ libs/
   - Added detailed @param, @return, @details documentation
   - Added format documentation for GetVectorFromClipboard
   - Added @date, @see tags
+
+- `docs: enhance ccCommon.h Doxygen documentation` - 2026-08-25
+  - Cleaned up duplicate #define statements
+  - Added detailed @brief for each scalar field constant
+  - Added @file, @see documentation
+  - Enhanced @defgroup documentation
