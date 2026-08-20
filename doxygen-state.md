@@ -121,6 +121,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/CCPluginAPI/ccArgumentParser.h ✅
 - libs/CCPluginAPI/ccInfoDlg.h ✅
 - libs/CCPluginAPI/ccPersistentSettings.h ✅
+- libs/CCPluginAPI/ccPickingListener.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -710,3 +711,8 @@ libs/
   - Enhanced @file with settings keys overview
   - Added @class documentation for ccPS namespace
   - Documented all settings categories
+
+- `docs: enhance ccPickingListener.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with picking listener interface overview
+  - Added @class documentation
+  - Documented PickedItem struct
