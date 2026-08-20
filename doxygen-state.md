@@ -52,6 +52,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccInterpolationDlg.h ✅
 - qCC/ccItemSelectionDlg.h ✅
 - qCC/ccNoiseFilterDlg.h ✅
+- qCC/ccNormalComputationDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -296,3 +297,8 @@ libs/
 - `docs: enhance ccNoiseFilterDlg.h Doxygen documentation` - 2026-08-26
   - Enhanced @file with noise filtering overview
   - Added @class documentation
+
+- `docs: enhance ccNormalComputationDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with normal computation overview
+  - Added @class documentation
+  - Documented all getters, setters, and orientation options
