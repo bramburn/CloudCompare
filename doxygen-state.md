@@ -92,6 +92,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccUnrollDlg.h ✅
 - qCC/ccSectionExtractionTool.h ✅
 - qCC/ccSelectChildrenDlg.h ✅
+- qCC/ccScalarFieldsManagerDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -536,3 +537,8 @@ libs/
   - Enhanced @file with children selection overview
   - Added @class documentation
   - Documented type/name filtering methods
+
+- `docs: enhance ccScalarFieldsManagerDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with scalar field management overview
+  - Added @class documentation
+  - Documented SFAttributes enum and statistics methods
