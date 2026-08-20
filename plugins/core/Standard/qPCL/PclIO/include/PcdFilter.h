@@ -1,3 +1,12 @@
+/**
+ * @file PcdFilter.h
+ *
+ * @brief PCD format filter.
+ *
+ * @details Point Cloud Data (PCD) file format filter
+ * for PCL integration.
+ */
+
 //##########################################################################
 //#                                                                        #
 //#                              CLOUDCOMPARE                              #
