@@ -88,6 +88,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccScaleDlg.h ✅
 - qCC/ccSubsamplingDlg.h ✅
 - qCC/ccSmoothPolylineDlg.h ✅
+- qCC/ccVolumeCalcTool.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -512,3 +513,8 @@ libs/
   - Enhanced @file with Chaikin smoothing overview
   - Added @class documentation
   - Documented iteration count and ratio parameters
+
+- `docs: enhance ccVolumeCalcTool.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with volume calculation overview
+  - Added @class documentation
+  - Documented ReportInfo struct and ComputeVolume method
