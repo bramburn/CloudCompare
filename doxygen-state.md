@@ -136,6 +136,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccClipBox.h ✅
 - libs/qCC_db/ccColorBasedEntityPicking.h ✅
 - libs/qCC_db/ccColorTypes.h ✅
+- libs/qCC_db/ccCylinder.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -799,3 +800,8 @@ libs/
   - Enhanced @file with color types overview
   - Added @class documentation for RgbTpl and RgbaTpl templates
   - Documented predefined colors and conversion functions
+
+- `docs: enhance ccCylinder.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with cylinder primitive overview
+  - Added @class documentation
+  - Documented radius and height parameters
