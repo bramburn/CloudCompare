@@ -1188,6 +1188,24 @@ libs/
 - `docs: enhance knncpp.h Doxygen documentation` - 2026-08-27 (submodule)
   - Enhanced @file with KNN library overview
 
+- `docs: enhance TreeIso.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with TreeIso tree isolation overview
+
+- `docs: enhance qTreeIsoCommands.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with TreeIso CLI overview
+
+- `docs: enhance qVoxFallDialog.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with VoxFall dialog overview
+
+- `docs: enhance qVoxFallDisclaimerDialog.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with VoxFall disclaimer overview
+- `docs: enhance qVoxFallProcess.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with VoxFall process overview
+- `docs: enhance qVoxFallTools.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with VoxFall tools overview
+- `docs: enhance qVoxFallCommands.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with VoxFall CLI overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
