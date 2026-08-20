@@ -62,6 +62,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccPtsSamplingDlg.h ✅
 - qCC/ccMatchScalesDlg.h ✅
 - qCC/ccKrigingParamsDialog.h ✅
+- qCC/ccLabelingDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -356,3 +357,8 @@ libs/
   - Enhanced @file with Kriging overview
   - Added @class documentation
   - Documented variogram parameters
+
+- `docs: enhance ccLabelingDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with connected components overview
+  - Added @class documentation
+  - Documented octree level and min points parameters

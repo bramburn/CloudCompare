@@ -20,19 +20,43 @@
 /**
  * @file ccLabelingDlg.h
  *
- * @brief Labeling dialog
+ * @brief Labeling dialog for connected components labeling parameters.
  *
- * Dialog for connected components labeling parameters.
+ * @details Dialog for configuring connected components labeling (also known
+ * as blob labeling or cluster identification).
+ *
+ * Connected components labeling groups points that are spatially connected
+ * into distinct clusters/objects. This is useful for:
+ * - Segmentation of point clouds
+ * - Object detection
+ * - Statistical analysis of clusters
+ *
+ * Parameters:
+ * - **Octree level**: Resolution for connectivity testing
+ * - **Minimum points**: Minimum cluster size to keep
+ * - **Random colors**: Assign random colors to each cluster
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccEntityAction::labelConnectedComponents()
  */
 
 #include <ui_labelingDlg.h>
 
 /**
- * @brief Labeling dialog
+ * @brief Dialog for connected components labeling parameters.
  *
- * Configure connected components labeling parameters.
+ * @details Provides a UI for setting up connected components
+ * labeling parameters.
+ *
+ * The labeling algorithm:
+ * 1. Uses octree structure for efficient neighbor queries
+ * 2. Groups points that are connected (within threshold)
+ * 3. Assigns a unique label to each connected component
+ * 4. Optionally colors each component differently
+ *
+ * @extends QDialog
+ * @extends Ui::LabelingDialog
  */
 class ccLabelingDlg : public QDialog
     , public Ui::LabelingDialog
@@ -41,26 +65,45 @@ class ccLabelingDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] parent Parent widget
+	 * @brief Construct the labeling dialog.
+	 *
+	 * @param[in] parent Parent widget.
 	 */
 	explicit ccLabelingDlg(QWidget* parent = nullptr);
 
-	/// Get octree level
+	/**
+	 * @brief Get the octree level.
+	 * @return Octree subdivision level.
+	 */
 	int getOctreeLevel();
 
-	/// Get min points per component
+	/**
+	 * @brief Get the minimum points per component.
+	 * @return Minimum cluster size.
+	 */
 	int getMinPointsNb();
 
-	/// Get random colors flag
+	/**
+	 * @brief Check if random colors are enabled.
+	 * @return true if random colors should be assigned.
+	 */
 	bool randomColors();
 
-	/// Set octree level
+	/**
+	 * @brief Set the octree level.
+	 * @param[in] octreeLevel Level to set.
+	 */
 	void setOctreeLevel(int octreeLevel);
 
-	/// Set min points per component
+	/**
+	 * @brief Set the minimum points per component.
+	 * @param[in] minPointsNb Minimum cluster size.
+	 */
 	void setMinPointsNb(int minPointsNb);
 
-	/// Set random colors flag
+	/**
+	 * @brief Set random colors mode.
+	 * @param[in] state Random colors state.
+	 */
 	void setRandomColors(bool state);
 };
