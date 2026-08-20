@@ -3,17 +3,36 @@
 // #                              CLOUDCOMPARE                              #
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
-// #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
+
+/**
+ * @file LASOpenDlg.h
+ *
+ * @brief LAS file open dialog.
+ *
+ * @details Dialog for selecting which LAS fields to load
+ * when opening a LAS/LAZ file.
+ *
+ * ## Features
+ *
+ * - Select which fields to load
+ * - Extra bytes/EVLR selection
+ * - Auto-skip mode for batch processing
+ * - RGB mode selection
+ *
+ * @extends QDialog
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 
 #ifndef CC_LAS_OPEN_DIALOG
 #define CC_LAS_OPEN_DIALOG
@@ -32,11 +51,11 @@
 #include <CCGeom.h>
 
 /**
- * @class LASOpenDlg
+ * @brief LAS open dialog.
  *
- * @brief LAS open dialog
+ * @details Dialog for selecting LAS fields to load.
  *
- * Choose LAS fields to load.
+ * @extends QDialog
  */
 class LASOpenDlg : public QDialog
     , public Ui::OpenLASFileDialog
@@ -44,50 +63,104 @@ class LASOpenDlg : public QDialog
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Create dialog.
+	 *
+	 * @param[in] parent Parent widget.
+	 */
 	explicit LASOpenDlg(QWidget* parent = nullptr);
 
-	//! Sets available dimensions
+	/**
+	 * @brief Set available dimensions.
+	 *
+	 * @param[in] dimensions Available dimension names.
+	 */
 	void setDimensions(const std::vector<std::string>& dimensions);
 
-	//! Whether to load a given field
+	/**
+	 * @brief Check if field should be loaded.
+	 *
+	 * @param[in] field LAS field.
+	 *
+	 * @return true if selected.
+	 */
 	bool doLoad(LAS_FIELDS field) const;
 
-	//! Clears the 'extra bytes' record
+	/**
+	 * @brief Clear EVLR records.
+	 */
 	void clearEVLRs();
 
-	//! Sets the information about the file
-	void setInfos(QString           filename,
-	              unsigned          pointCount,
-	              const CCVector3d& bbMin,
-	              const CCVector3d& bbMax);
+	/**
+	 * @brief Set file information.
+	 *
+	 * @param[in] filename File name.
+	 * @param[in] pointCount Number of points.
+	 * @param[in] bbMin Bounding box min.
+	 * @param[in] bbMax Bounding box max.
+	 */
+	void setInfos(QString filename, unsigned pointCount, const CCVector3d& bbMin, const CCVector3d& bbMax);
 
-	//! Adds an 'extra bytes' record entry
+	/**
+	 * @brief Add EVLR record entry.
+	 *
+	 * @param[in] description EVLR description.
+	 */
 	void addEVLR(QString description);
 
-	//! Returns whether an EVLR is selected for laoding or not
+	/**
+	 * @brief Check if EVLR should be loaded.
+	 *
+	 * @param[in] index EVLR index.
+	 *
+	 * @return true if selected.
+	 */
 	bool doLoadEVLR(size_t index) const;
 
-	//! Auto-skip mode (to use the same parameters for ALL files afterwards)
+	/**
+	 * @brief Check auto-skip mode.
+	 *
+	 * @return true if auto-skip enabled.
+	 */
 	inline bool autoSkipMode() const
 	{
 		return m_autoSkip;
 	}
 
-	//! Whether 8-bit RGB mode is forced or not
+	/**
+	 * @brief Check forced 8-bit RGB mode.
+	 *
+	 * @return true if forced.
+	 */
 	bool forced8bitRgbMode() const;
 
-	//! Resets the "apply all" flag (if set)
+	/**
+	 * @brief Reset apply all flag.
+	 */
 	void resetApplyAll();
 
-	//! Returns the timeshift (if any)
+	/**
+	 * @brief Get time shift.
+	 *
+	 * @param[out] timeShift Time shift value.
+	 *
+	 * @return true if shift is set.
+	 */
 	bool getTimeShift(double& timeShift) const;
 
   protected:
+	/**
+	 * @brief Handle apply all.
+	 */
 	void onApplyAll();
+
+	/**
+	 * @brief Handle browse.
+	 */
 	void onBrowse();
 
-  protected:
+  private:
+	//! Auto-skip mode.
 	bool m_autoSkip;
 };
 
