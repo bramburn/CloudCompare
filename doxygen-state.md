@@ -53,6 +53,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccItemSelectionDlg.h ✅
 - qCC/ccNoiseFilterDlg.h ✅
 - qCC/ccNormalComputationDlg.h ✅
+- qCC/ccOrderChoiceDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -302,3 +303,8 @@ libs/
   - Enhanced @file with normal computation overview
   - Added @class documentation
   - Documented all getters, setters, and orientation options
+
+- `docs: enhance ccOrderChoiceDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with role assignment overview
+  - Added @class documentation
+  - Documented swap functionality
