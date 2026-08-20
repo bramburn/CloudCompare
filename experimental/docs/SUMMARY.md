@@ -3,6 +3,27 @@
 > One-page state of the Rust migration. The most up-to-date
 > record of "what was tried, what worked, what to do next."
 
+## Goal closed at 7 of 8 (2026-08-20, by user decision)
+
+The 8-item roadmap (re-bench, outlier rejection, coarse pre-alignment,
+multi-resolution, kiddo 6.0, **CXX FFI**, DgmOctree, octree `nearest()`
+fix) — 7 are done. The remaining item (Phase 0 → live CXX FFI against
+a standalone-built CCCoreLib) is a multi-hour infrastructure effort:
+the `CONFIGURE_CCCORELIB.md` guide is also outdated (still references
+the old `sandbox/` path). Per user decision, the goal is **closed at 7/8**;
+the CXX FFI step is documented but deferred to a separate effort
+(see "Next concrete steps" below).
+
+Closure evidence:
+- 40/40 cc-rust tests pass (was 28/28 before this round; +12 new).
+- Real-data ICP on `brook-avenue` 7.5M-point scan recovers the
+  0.5 m translation exactly (error 0.0), vs vanilla ICP error
+  0.4+. See `sessions/2026-08-20-realdata-icp-stack/`.
+- All 4 ICP variants (naive / kiddo / octree / cc-rust) re-benched
+  with the corrected algorithm. NN query timings captured.
+- DgmOctree cell-code core ported (5 tests). Full class is 3000+
+  lines of C++; this is the ICP-relevant surface only.
+
 ## Status by phase (per `PRD/rust/05-roadmap.md`)
 
 | Phase | Description | Status | Evidence |
