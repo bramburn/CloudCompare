@@ -1,4 +1,13 @@
 
+/**
+ * @file TestShpFilter.h
+ *
+ * @brief Shapefile filter test class.
+ *
+ * @details Qt Test class for verifying Shapefile
+ * read and write functionality.
+ */
+
 #ifndef CC_TEST_SHAPEFILE_HEADER
 #define CC_TEST_SHAPEFILE_HEADER
 
