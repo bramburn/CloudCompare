@@ -1,4 +1,3 @@
-#pragma once
 // ##########################################################################
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
@@ -6,23 +5,58 @@
 // #  This program is free software; you can redistribute it and/or modify  #
 // #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
-// #                                                                        #
+// #                                                                        //
 // #  This program is distributed in the hope that it will be useful,       #
-// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        #
+// #                                                                        //
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
 
 /**
  * @file ccColorScaleEditorWidget.h
  *
- * @brief Color scale editor widget
+ * @brief Color scale editor widgets for creating custom color ramps.
  *
- * Widget for editing color scales.
+ * @details Provides widgets for visually editing color scales used in
+ * scalar field visualization.
+ *
+ * ## Overview
+ *
+ * The color scale editor consists of several components:
+ * - **ColorBarWidget**: Displays the color gradient
+ * - **SlidersWidget**: Draggable color stops
+ * - **SliderLabelWidget**: Labels showing position values
+ * - **ccColorScaleEditorWidget**: Main editor combining all components
+ *
+ * ## Color Scale Structure
+ *
+ * Color scales are defined by:
+ * - A set of color stops at relative positions [0.0, 1.0]
+ * - Each stop has a position and a color
+ * - Linear interpolation between stops
+ *
+ * ## Usage
+ *
+ * @code
+ * ccColorScale::Shared scale = ccColorScale::Create("My Scale");
+ *
+ * ccColorScaleEditorWidget editor(this);
+ * editor.importColorScale(scale);
+ *
+ * if (editor.exec() == QDialog::Accepted) {
+ *     editor.exportColorScale(scale);
+ * }
+ * @endcode
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccColorScale for the color scale data structure
  */
+
+#pragma once
 
 // Inspired from ccColorScaleEditorWidget by Richard Steffen (LGPL 2.1)
 
@@ -35,9 +69,12 @@
 #include <ccColorScale.h>
 
 /**
- * @class ColorScaleElementSlider
+ * @brief Single color stop as an interactive widget.
  *
- * @brief Color scale element as a widget
+ * @details A draggable widget representing a single color stop
+ * in a color scale.
+ *
+ * @extends QWidget
  */
 class CCPLUGIN_LIB_API ColorScaleElementSlider : public QWidget
     , public ccColorScaleElement
@@ -45,113 +82,183 @@ class CCPLUGIN_LIB_API ColorScaleElementSlider : public QWidget
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Construct a color element slider.
+	 *
+	 * @param[in] relativePos Position (0.0-1.0).
+	 * @param[in] color Element color.
+	 * @param[in] parent Parent widget.
+	 * @param[in] orientation Horizontal or vertical.
+	 */
 	ColorScaleElementSlider(double          relativePos = 0.0,
 	                        QColor          color       = Qt::black,
 	                        QWidget*        parent      = nullptr,
 	                        Qt::Orientation orientation = Qt::Horizontal);
 
-	//! Sets selection state
-	inline void setSelected(bool state)
+	/**
+	 * @brief Set selection state.
+	 *
+	 * @param[in] state Selection state.
+	 */
+	void setSelected(bool state)
 	{
 		m_selected = state;
 	}
 
-	//! Returns selection state
-	inline bool isSelected() const
+	/**
+	 * @brief Get selection state.
+	 *
+	 * @return true if selected.
+	 */
+	bool isSelected() const
 	{
 		return m_selected;
 	}
 
-	//! Comparison operator between two (pointers on) color scale elements
+	/**
+	 * @brief Compare two elements by position.
+	 */
 	static bool IsSmaller(const ColorScaleElementSlider* e1, const ColorScaleElementSlider* e2)
 	{
 		return e1->getRelativePos() < e2->getRelativePos();
 	}
 
   protected:
-	// inherited from QWidget
+	//! Paint the element.
 	void paintEvent(QPaintEvent* e) override;
 
+  private:
 	//! Selection state
 	bool m_selected;
 
-	//! Widget orientation
+	//! Orientation
 	Qt::Orientation m_orientation;
 };
 
-//! Set of color scale elements (widgets)
+/**
+ * @brief Container for color element sliders.
+ *
+ * @details Manages a set of color stop widgets with sorting
+ * and selection capabilities.
+ */
 class CCPLUGIN_LIB_API ColorScaleElementSliders
 {
   public:
-	//! Type of the set of elements
+	//! Type for the set of elements.
 	using Set = QList<ColorScaleElementSlider*>;
 
-	//! Adds a slider element and sort the whole set
-	/** Should be used instead of push_back/push_front!
-	 **/
+	/**
+	 * @brief Add a slider and sort.
+	 *
+	 * @param[in] slider Slider to add.
+	 */
 	void addSlider(ColorScaleElementSlider* slider);
 
-	//! Returns the size (shortcut)
-	inline int size() const
+	/**
+	 * @brief Get number of sliders.
+	 *
+	 * @return Count.
+	 */
+	int size() const
 	{
 		return m_list.size();
 	}
 
-	//! Sorts the set
+	/**
+	 * @brief Sort sliders by position.
+	 */
 	void sort();
 
-	//! Remove all sliders
+	/**
+	 * @brief Clear all sliders.
+	 */
 	void clear();
 
-	//! Remove a given slider
+	/**
+	 * @brief Remove slider at index.
+	 *
+	 * @param[in] i Index.
+	 */
 	void removeAt(int i);
 
-	//! Returns the currently selected slider index (or -1 if none)
+	/**
+	 * @brief Get selected slider index.
+	 *
+	 * @return Index, or -1.
+	 */
 	int selected() const;
 
-	//! Returns the index of a given slider
+	/**
+	 * @brief Get index of slider.
+	 *
+	 * @param[in] slider Slider.
+	 *
+	 * @return Index.
+	 */
 	int indexOf(ColorScaleElementSlider* slider);
 
-	//! Returns a given element
-	inline ColorScaleElementSlider* element(int index)
-	{
-		return m_list.at(index);
-	}
-	//! Returns a given element (const version)
-	inline const ColorScaleElementSlider* element(int index) const
+	/**
+	 * @brief Get slider at index.
+	 *
+	 * @param[in] index Slider index.
+	 *
+	 * @return Slider widget.
+	 */
+	ColorScaleElementSlider* element(int index)
 	{
 		return m_list.at(index);
 	}
 
-	//! Return the set of elements
-	inline Set& elements()
+	/**
+	 * @brief Get slider at index (const).
+	 */
+	const ColorScaleElementSlider* element(int index) const
 	{
-		return m_list;
+		return m_list.at(index);
 	}
-	//! Return the set of elements (const version)
-	inline const Set& elements() const
+
+	/**
+	 * @brief Get all sliders.
+	 */
+	Set& elements()
 	{
 		return m_list;
 	}
 
-  protected:
-	//! Set of elements
+	/**
+	 * @brief Get all sliders (const).
+	 */
+	const Set& elements() const
+	{
+		return m_list;
+	}
+
+  private:
+	//! Set of slider widgets.
 	Set m_list;
 };
 
-//! Shared set of color scale elements (widgets)
+//! Shared pointer to slider set.
 using SharedColorScaleElementSliders = QSharedPointer<ColorScaleElementSliders>;
 
-//! Base color scale editor (sub)Widget
-/** A widget with a margin (along a preferred orientation)
- **/
+/**
+ * @brief Base widget with margin.
+ *
+ * @details Base class for editor components with configurable margin.
+ */
 class CCPLUGIN_LIB_API ColorScaleEditorBaseWidget : public QWidget
 {
 	Q_OBJECT
 
   public:
-	//! Defautl constructor
+	/**
+	 * @brief Construct base widget.
+	 *
+	 * @param[in] sliders Slider set.
+	 * @param[in] orientation Layout orientation.
+	 * @param[in] margin Content margin.
+	 * @param[in] parent Parent widget.
+	 */
 	ColorScaleEditorBaseWidget(SharedColorScaleElementSliders sliders,
 	                           Qt::Orientation                orientation,
 	                           int                            margin,
@@ -163,224 +270,381 @@ class CCPLUGIN_LIB_API ColorScaleEditorBaseWidget : public QWidget
 	{
 	}
 
-	//! Returns useful length
+	/**
+	 * @brief Get content length.
+	 *
+	 * @return Length minus margins.
+	 */
 	int length() const
 	{
 		return (m_orientation == Qt::Horizontal ? contentsRect().width() : contentsRect().height()) - 2 * m_margin;
 	}
 
-	//! Sets associated sliders set
+	/**
+	 * @brief Set sliders.
+	 *
+	 * @param[in] sliders New slider set.
+	 */
 	virtual void setSliders(SharedColorScaleElementSliders sliders)
 	{
 		m_sliders = sliders;
 		update();
 	}
 
-	//! Returns orientation
+	/**
+	 * @brief Get orientation.
+	 */
 	Qt::Orientation getOrientation() const
 	{
 		return m_orientation;
 	}
-	//! Returns margin
+
+	/**
+	 * @brief Get margin.
+	 */
 	int getMargin() const
 	{
 		return m_margin;
 	}
 
   protected:
-	//! Associated sliders
+	//! Slider set.
 	SharedColorScaleElementSliders m_sliders;
 
-	//! Orientation
+	//! Orientation.
 	Qt::Orientation m_orientation;
 
-	//! Margin
+	//! Margin.
 	int m_margin;
 };
 
-//! Color bar widget
+/**
+ * @brief Color gradient bar display.
+ *
+ * @details Shows the color gradient from start to end.
+ */
 class CCPLUGIN_LIB_API ColorBarWidget : public ColorScaleEditorBaseWidget
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Construct color bar.
+	 *
+	 * @param[in] sliders Slider set.
+	 * @param[in] parent Parent widget.
+	 * @param[in] orientation Layout orientation.
+	 */
 	ColorBarWidget(SharedColorScaleElementSliders sliders, QWidget* parent = nullptr, Qt::Orientation orientation = Qt::Horizontal);
 
   signals:
-
-	//! Signal emitted when the mouse (left) button is clicked
-	/** \param relativePos relative click position (between 0 and 1)
-	 **/
+	/**
+	 * @brief Emitted when bar is clicked.
+	 *
+	 * @param[in] relativePos Click position (0.0-1.0).
+	 */
 	void pointClicked(double relativePos);
 
   protected:
-	// inherited from QWidget
+	//! Paint the gradient.
 	void paintEvent(QPaintEvent* e) override;
+
+	//! Handle mouse click.
 	void mousePressEvent(QMouseEvent* e) override;
 };
 
-//! All sliders widget
+/**
+ * @brief Interactive color stop sliders.
+ *
+ * @details Displays draggable color stop widgets for editing
+ * a color scale.
+ */
 class CCPLUGIN_LIB_API SlidersWidget : public ColorScaleEditorBaseWidget
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Construct sliders widget.
+	 *
+	 * @param[in] sliders Slider set.
+	 * @param[in] parent Parent widget.
+	 * @param[in] orientation Layout orientation.
+	 */
 	SlidersWidget(SharedColorScaleElementSliders sliders, QWidget* parent = nullptr, Qt::Orientation orientation = Qt::Horizontal);
 
-	//! Manually selects a slider
+	/**
+	 * @brief Select a slider.
+	 *
+	 * @param[in] index Slider index.
+	 * @param[in] silent Suppress signals.
+	 */
 	void select(int index, bool silent = false);
 
-	//! Adds a new slider widget
-	/** \param relativePos slider position (relatively to scale boundaries [0.0,1.0])
-	\param color slider color
-	\return created slider (pointer on)
-	**/
+	/**
+	 * @brief Add a new color stop.
+	 *
+	 * @param[in] relativePos Position (0.0-1.0).
+	 * @param[in] color Stop color.
+	 *
+	 * @return Created slider.
+	 */
 	ColorScaleElementSlider* addNewSlider(double relativePos, QColor color);
 
-	//! Updates slider position
+	/**
+	 * @brief Update slider position.
+	 *
+	 * @param[in] index Slider index.
+	 */
 	void updateSliderPos(int index);
 
-	//! Updates all sliders positions
+	/**
+	 * @brief Update all slider positions.
+	 */
 	void updateAllSlidersPos();
 
   signals:
-
-	//! Signal emitted when a slider is changed (position or color)
+	/**
+	 * @brief Emitted when slider changes.
+	 *
+	 * @param[in] index Slider index.
+	 */
 	void sliderModified(int index);
 
-	//! Signal emitted when a slider is selected
+	/**
+	 * @brief Emitted when slider selected.
+	 *
+	 * @param[in] index Slider index.
+	 */
 	void sliderSelected(int index);
 
   protected:
-	// inherited from QWidget
+	//! Handle mouse press.
 	void mousePressEvent(QMouseEvent* e) override;
+
+	//! Handle mouse move.
 	void mouseMoveEvent(QMouseEvent* e) override;
-	// virtual void mouseReleaseEvent(QMouseEvent* e);
+
+	//! Handle double-click.
 	void mouseDoubleClickEvent(QMouseEvent* e) override;
+
+	//! Handle resize.
 	void resizeEvent(QResizeEvent* e) override;
 };
 
-//! All sliders labels widget
+/**
+ * @brief Labels for slider positions.
+ *
+ * @details Shows position values below sliders.
+ */
 class CCPLUGIN_LIB_API SliderLabelWidget : public ColorScaleEditorBaseWidget
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Construct label widget.
+	 *
+	 * @param[in] sliders Slider set.
+	 * @param[in] parent Parent widget.
+	 * @param[in] orientation Layout orientation.
+	 */
 	SliderLabelWidget(SharedColorScaleElementSliders sliders, QWidget* parent = nullptr, Qt::Orientation orientation = Qt::Horizontal);
 
-	//! Sets text color
-	inline void setTextColor(QColor color)
+	/**
+	 * @brief Set text color.
+	 *
+	 * @param[in] color Text color.
+	 */
+	void setTextColor(QColor color)
 	{
 		m_textColor = color;
 	}
 
-	//! Sets displayed numbers precision
-	inline void setPrecision(int precision)
+	/**
+	 * @brief Set number precision.
+	 *
+	 * @param[in] precision Decimal places.
+	 */
+	void setPrecision(int precision)
 	{
 		m_precision = precision;
 	}
 
   protected:
-	// inherited from QWidget
+	//! Paint labels.
 	void paintEvent(QPaintEvent* e) override;
 
-	//! Text color
+  private:
+	//! Text color.
 	QColor m_textColor;
 
-	//! Precision
+	//! Decimal precision.
 	int m_precision;
 };
 
-//! Color scale editor dialog
+/**
+ * @brief Main color scale editor widget.
+ *
+ * @details Complete editor for creating and editing color scales
+ * with interactive color stops.
+ */
 class CCPLUGIN_LIB_API ccColorScaleEditorWidget : public ColorScaleEditorBaseWidget
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Construct the editor.
+	 *
+	 * @param[in] parent Parent widget.
+	 * @param[in] orientation Layout orientation.
+	 */
 	ccColorScaleEditorWidget(QWidget* parent = nullptr, Qt::Orientation orientation = Qt::Horizontal);
 
-	//! Destructor
+	/**
+	 * @brief Destructor.
+	 */
 	~ccColorScaleEditorWidget() override = default;
 
-	//! Returns the current number of color scale steps
-	inline int getStepCount() const
+	/**
+	 * @brief Get number of color steps.
+	 *
+	 * @return Step count.
+	 */
+	int getStepCount() const
 	{
 		return (m_sliders ? m_sliders->size() : 0);
 	}
 
-	//! Returns a given slider (pointer on)
-	inline const ColorScaleElementSlider* getStep(int index)
+	/**
+	 * @brief Get step at index.
+	 *
+	 * @param[in] index Step index.
+	 *
+	 * @return Slider widget.
+	 */
+	const ColorScaleElementSlider* getStep(int index)
 	{
 		return m_sliders ? m_sliders->elements().at(index) : nullptr;
 	}
 
-	//! Sets a given slider color
+	/**
+	 * @brief Set step color.
+	 *
+	 * @param[in] index Step index.
+	 * @param[in] color New color.
+	 */
 	void setStepColor(int index, QColor color);
 
-	//! Sets a given slider relative position
+	/**
+	 * @brief Set step position.
+	 *
+	 * @param[in] index Step index.
+	 * @param[in] relativePos New position (0.0-1.0).
+	 */
 	void setStepRelativePosition(int index, double relativePos);
 
-	//! Returns currently selected step index
-	inline int getSelectedStepIndex() const
+	/**
+	 * @brief Get selected step index.
+	 *
+	 * @return Index, or -1.
+	 */
+	int getSelectedStepIndex() const
 	{
 		return m_sliders ? m_sliders->selected() : -1;
 	}
 
-	//! Sets currently selected step index
+	/**
+	 * @brief Set selected step.
+	 *
+	 * @param[in] index Step index.
+	 * @param[in] silent Suppress signals.
+	 */
 	void setSelectedStepIndex(int index, bool silent = false);
 
-	//! Deletes a given step
-	/** Warning: first and last steps shouldn't be deleted!
-	 **/
+	/**
+	 * @brief Delete a step.
+	 *
+	 * @param[in] index Step to delete.
+	 *
+	 * @note First and last steps cannot be deleted.
+	 */
 	void deleteStep(int index);
 
-	//! Exports the current color scale
+	/**
+	 * @brief Export to color scale.
+	 *
+	 * @param[out] destScale Destination scale.
+	 */
 	void exportColorScale(ccColorScale::Shared& destScale) const;
 
-	//! Imports the current color scale
+	/**
+	 * @brief Import from color scale.
+	 *
+	 * @param[in] scale Source scale.
+	 */
 	void importColorScale(ccColorScale::Shared scale);
 
-	//! Sets whether to show the color elements labels or not
+	/**
+	 * @brief Show/hide labels.
+	 *
+	 * @param[in] state Show state.
+	 */
 	void showLabels(bool state);
 
-	//! Sets the labels color
+	/**
+	 * @brief Set label color.
+	 *
+	 * @param[in] color Label color.
+	 */
 	void setLabelColor(QColor color);
 
-	//! Sets the labels precision
+	/**
+	 * @brief Set label precision.
+	 *
+	 * @param[in] precision Decimal places.
+	 */
 	void setLabelPrecision(int precision);
 
-	// inherited from ColorScaleEditorBaseWidget
+	// From ColorScaleEditorBaseWidget
+	/**
+	 * @brief Set sliders.
+	 */
 	void setSliders(SharedColorScaleElementSliders sliders) override;
 
   signals:
-
-	//! Signal emitted when a slider is selected
+	/**
+	 * @brief Emitted when step selected.
+	 *
+	 * @param[in] index Step index.
+	 */
 	void stepSelected(int index);
 
-	//! Signal emitted when a slider is modified
+	/**
+	 * @brief Emitted when step modified.
+	 *
+	 * @param[in] index Step index.
+	 */
 	void stepModified(int index);
 
-  protected:
-	//! Slot called when a 'point' is clicked on the color bar
+  protected slots:
+	//! Handle point clicked.
 	void onPointClicked(double relativePos);
 
-	//! Slot called when a slider is moved or its color is changed
+	//! Handle slider modified.
 	void onSliderModified(int sliderIndex);
 
-	//! Slot called when a slider is selected
+	//! Handle slider selected.
 	void onSliderSelected(int sliderIndex);
 
-  protected:
-	//! Associated color bar
+  private:
+	//! Color bar widget.
 	ColorBarWidget* m_colorBarWidget;
 
-	//! Associated sliders widget
+	//! Sliders widget.
 	SlidersWidget* m_slidersWidget;
 
-	//! Associated (sliders) labels widget
+	//! Labels widget.
 	SliderLabelWidget* m_labelsWidget;
 };
