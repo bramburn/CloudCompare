@@ -85,6 +85,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccEntitySelectionDlg.h ✅
 - qCC/ccCommandCrossSection.h ✅
 - qCC/ccCommandRaster.h ✅
+- qCC/ccScaleDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -494,3 +495,8 @@ libs/
   - Enhanced @file with raster CLI commands overview
   - Added @class documentation for CommandRasterize and CommandVolume25D
   - Documented usage examples
+
+- `docs: enhance ccScaleDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with entity scaling overview
+  - Added @class documentation
+  - Documented uniform and non-uniform scaling
