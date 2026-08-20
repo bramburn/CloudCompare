@@ -1086,6 +1086,15 @@ libs/
 - `docs: enhance ccMPlaneDlgController.h Doxygen documentation` - 2026-08-27 (submodule)
   - Enhanced @file with dialog controller overview
 
+- `docs: enhance profileImportDlg.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with profile import dialog overview
+
+- `docs: enhance qAutoSeg.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with automatic segmentation plugin overview
+
+- `docs: enhance qManualSeg.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with manual segmentation plugin overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
