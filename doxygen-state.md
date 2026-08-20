@@ -97,6 +97,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccSensorComputeDistancesDlg.h ✅
 - qCC/ccSetSFAsVec3Dlg.h ✅
 - qCC/ccTracePolylineTool.h ✅
+- qCC/ccWaveformDialog.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -566,3 +567,8 @@ libs/
   - Enhanced @file with polyline tracing overview
   - Added @class documentation
   - Documented SegmentGLParams and polyline creation workflow
+
+- `docs: enhance ccWaveformDialog.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with waveform visualization overview
+  - Added @class documentation for ccWaveWidget and ccWaveDialog
+  - Documented waveform curve parameters and peak markers
