@@ -15,6 +15,17 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file MLSDialog.h
+ *
+ * @brief Moving Least Squares dialog.
+ *
+ * @details Dialog for configuring Moving Least Squares
+ * smoothing parameters.
+ *
+ * @extends QDialog
+ */
+
 #ifndef MLSDIALOG_H
 #define MLSDIALOG_H
 
