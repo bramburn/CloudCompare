@@ -98,6 +98,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccSetSFAsVec3Dlg.h ✅
 - qCC/ccTracePolylineTool.h ✅
 - qCC/ccWaveformDialog.h ✅
+- qCC/ccGraphicalSegmentationOptionsDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -572,3 +573,8 @@ libs/
   - Enhanced @file with waveform visualization overview
   - Added @class documentation for ccWaveWidget and ccWaveDialog
   - Documented waveform curve parameters and peak markers
+
+- `docs: enhance ccGraphicalSegmentationOptionsDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with segmentation options overview
+  - Added @class documentation
+  - Documented static key methods for settings

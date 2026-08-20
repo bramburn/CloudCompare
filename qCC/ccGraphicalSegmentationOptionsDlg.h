@@ -21,11 +21,23 @@
 /**
  * @file ccGraphicalSegmentationOptionsDlg.h
  *
- * @brief Segmentation options dialog
+ * @brief Segmentation options dialog for point cloud segmentation.
  *
- * Dialog for segmentation tool options.
+ * @details Dialog for configuring options used by the graphical
+ * segmentation tool.
+ *
+ * Segmentation separates a point cloud into:
+ * - **Remaining points**: Outside the segmented region
+ * - **Segmented points**: Inside the segmented region
+ *
+ * Options include:
+ * - Segmented/Remaining suffix naming
+ * - Segmentation mode (include/exclude)
+ * - Display preferences
  *
  * @author CloudCompare project
+ *
+ * @see ccGraphicalSegmentationTool
  */
 
 // Qt
@@ -35,9 +47,14 @@
 #include <ui_graphicalSegmentationOptionsDlg.h>
 
 /**
- * @brief Segmentation options dialog
+ * @brief Dialog for segmentation tool configuration.
  *
- * Configure segmentation tool options.
+ * @details Provides options for the graphical segmentation process
+ * including naming conventions and display settings.
+ *
+ * Settings are persisted to application settings.
+ *
+ * @extends QDialog
  */
 class ccGraphicalSegmentationOptionsDlg : public QDialog
     , public Ui::GraphicalSegmentationOptionsDlg
@@ -46,28 +63,43 @@ class ccGraphicalSegmentationOptionsDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] windowTitle Window title
-	 * @param[in] parent Parent widget
+	 * @brief Construct the options dialog.
+	 *
+	 * @param[in] windowTitle Window title.
+	 * @param[in] parent Parent widget.
 	 */
 	ccGraphicalSegmentationOptionsDlg(const QString windowTitle = QString(), QWidget* parent = nullptr);
 
-	/// Accept dialog
-	void accept();
+	/**
+	 * @brief Accept and save settings.
+	 */
+	void accept() override;
 
-	/// Segmentation tool options key
+	/**
+	 * @brief Get settings key for segmentation tool options.
+	 *
+	 * @return Settings key.
+	 */
 	static QString SegmentationToolOptionsKey()
 	{
 		return "SegmentationToolOptions";
 	}
-	
-	/// Remaining suffix key
+
+	/**
+	 * @brief Get settings key for remaining suffix.
+	 *
+	 * @return Settings key.
+	 */
 	static QString RemainingSuffixKey()
 	{
 		return "Remaining";
 	}
-	
-	/// Segmented suffix key
+
+	/**
+	 * @brief Get settings key for segmented suffix.
+	 *
+	 * @return Settings key.
+	 */
 	static QString SegmentedSuffixKey()
 	{
 		return "Segmented";
