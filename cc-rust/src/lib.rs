@@ -42,6 +42,6 @@ pub use coarse_align::{
     coarse_align, apply_transform_in_place, CoarseAlignResult,
 };
 pub use dgm_octree::{
-    DgmOctree, compute_cell_code, get_cell_pos, get_bit_shift,
+    DgmOctree, DgmOctreeNN, compute_cell_code, get_cell_pos, get_bit_shift,
     MAX_OCTREE_LEVEL,
 };

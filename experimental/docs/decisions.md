@@ -424,6 +424,151 @@ synthetic Gaussian.
 
 ---
 
+## D9. 2026-08-20 — Cell-code-ordered NN in DgmOctree (closes the gap to kiddo)
+
+**Context:** The D8 trait dispatch lets any NN plug into `icp_with_nn`,
+but the only fast NN was kiddo. The hand-rolled octree in
+`03-handrolled-octree/` was 36x slower than kiddo because its
+`search()` falls back to depth-first traversal without AABB pruning.
+The `DgmOctree` port in `cc-rust/src/dgm_octree.rs` is the
+production-quality version of the octree (matches CCCoreLib's
+`DgmOctree.cpp`), but its `nearest_neighbor` was a brute-force O(n)
+scan — no cell-code benefit. D9 was supposed to add the
+cell-code-ordered search to make DgmOctree a real competitor to
+kiddo.
+
+**Decisions:**
+
+- **Cell-code addressing with MSB-first bit placement.** A
+  cell code is a u64 where each level contributes 3 bits (one
+  per axis). The level-1 (topmost, largest) bits go in the
+  HIGHEST bit positions; the level-L (bottommost, smallest)
+  bits go in the LOWEST. This matches the standard binary
+  subdivision spatial cell index (`cell_pos.x = level-1_x * 2^(L-1) +
+  ... + level-L_x * 2^0`) and the C++ convention. The recursive
+  `compute_cell_code` puts the level-1 bits first (highest
+  shift = `(level - depth) * 3` for `depth = 1`); `get_cell_pos`
+  reads them back in the same order; `pack_cell_pos` (the
+  inverse) is used by the NN search to look up cell codes from
+  the shell-expansion coordinates.
+- **Pre-sorted indices and cell ranges cached on the struct.**
+  Originally, `nearest_neighbor` re-sorted the points by cell
+  code and rebuilt the cell → range map on **every call** — an
+  O(n log n) cost per query, much worse than brute force. The
+  fix: do the sort once in `build()` and cache `sorted_indices`
+  (the points reordered by code) and `cell_ranges: HashMap<u64,
+  (start, end)>` (a map from cell code to its [s, e) range in
+  the sorted array). Per-query cost drops to pay-per-query
+  only: no per-query sort, no per-query cell-map construction,
+  O(1) cell lookup via the HashMap. Memory: a `HashMap<u64, (u, u)>`
+  with one entry per populated cell, so it scales with the
+  point count, not the maximum possible at `build_level` (a
+  dense `Vec<Option<...>>` at level 8 would be 16M slots
+  × 24 bytes = 384 MB).
+- **Chebyshev-distance shell expansion with AABB pruning.**
+  Same algorithm as CCCoreLib's
+  `DgmOctree::findNearestNeighborsStartingFromCell`. For each
+  shell d=0, 1, 2, ..., visit all cells at Chebyshev distance
+  d from the query's cell. For each cell, compute the spatial
+  min distance from the query to the cell's AABB. If that
+  exceeds the current best squared distance, skip the cell.
+  Otherwise look up the cell's range in the HashMap (O(1))
+  and scan its points (~4 points per cell at the optimal
+  build level).
+- **C++-style jump optimisation.** When the query is outside
+  the cloud's bbox, skip the empty shells between the query
+  and the cloud. `dist_to_border[axis]` is the number of cells
+  between the query's cell and the cloud's border on that axis
+  (in cell units); `start_d = max(dist_to_border)` is the
+  first shell that can possibly contain a cloud point. This
+  matches the C++ algorithm in `DgmOctree.cpp` lines
+  1212-1235.
+- **Correct `minDistToBorder` accounting for the early
+  termination.** The first attempt used `(d * cell_max_dim)^2
+  > best_d2` as the early-termination check. This is
+  incorrect when the query is near a cell face: the
+  per-axis AABB min distance to a d=1 cell is just
+  `min_dist_to_border` (the distance from the query to the
+  shared face), not `cell_max_dim`. The naive check
+  incorrectly terminates before visiting the d=1 cells and
+  misses the NN. The correct check is
+  `((d-1) * cell_max_dim + min_dist_to_border)^2 > best_d2`
+  for d ≥ 1 (inside the bbox) or
+  `(d * cell_max_dim + min_dist_to_border)^2 > best_d2` for
+  d > start_d (outside, after the jump). This is the P18
+  lesson.
+
+**Source:**
+- `cc-rust/src/dgm_octree.rs` — the `DgmOctreeNN` adapter
+  and the refactored `DgmOctree::build` and
+  `DgmOctree::nearest_neighbor`.
+- `experimental/scenarios/2026-08-19-icp-variants/04-dgm-octree/` —
+  the 4th ICP variant in the comparison scenario, using
+  `DgmOctreeNN` to drive `icp_with_nn`.
+- `experimental/scenarios/2026-08-20-icp-nn-comparison/` —
+  the cross-variant end-to-end bench, now with 4 NNs.
+
+**Verification (D9 deliverable, 2026-08-20, run.ps1):**
+
+- **47/47 tests pass** in `cc-rust` (was 43 after D8, +4 for
+  D9: `d9_nearest_matches_brute_force_on_small_fixture`,
+  `d9_nearest_matches_brute_force_on_gaussian`,
+  `d9_nearest_is_faster_than_brute_force_on_gaussian_5k`,
+  `dgm_octree_nn_plugs_into_icp_with_nn`).
+- **All four variants agree on correctness** at every size
+  tested (identical RMS, identical iteration count) — the
+  DgmOctreeNN trait dispatch is correct.
+- **Per-query cost (Gaussian, 1000 queries, release build):**
+
+  | Variant | N=2k | N=5k | N=10k | N=50k |
+  |---|---|---|---|---|
+  | `01-naive-on2` | (skipped, O(n²)) | | | |
+  | `02-kiddo-kdtree` | **0.29** us/q | **0.28** us/q | **0.50** us/q | **0.54** us/q |
+  | `03-handrolled-octree` | 6.42 us/q | 18.87 us/q | 42.23 us/q | 510.66 us/q |
+  | `04-dgm-octree` (D9) | 0.64 us/q | 0.78 us/q | 0.69 us/q | 1.03 us/q |
+
+  D9 is **~10-500x faster** than the hand-rolled octree (which
+  has no AABB pruning), and **~2x slower** than kiddo. The
+  constant factor vs kiddo comes from the cell-code HashMap
+  lookup + AABB min-distance check on every shell cell;
+  kiddo's B-tree descent has fewer indirections.
+- **End-to-end ICP wall time (NN-driven, Gaussian, seed=42):**
+
+  | Variant | N=2k | N=5k | N=10k | N=50k |
+  |---|---|---|---|---|
+  | `02-kiddo-kdtree` | **0.020 s** | **0.092 s** | **0.171 s** | **1.156 s** |
+  | `04-dgm-octree` (D9) | 0.031 s | 0.211 s | 0.388 s | 2.723 s |
+  | `03-handrolled-octree` | 0.418 s | 3.867 s | 29.971 s | 859.084 s |
+
+  D9 is the second-best ICP NN. The 2-3x wall-time gap to
+  kiddo at N=50k is the NN cost (above) plus the Rust
+  HashMap overhead; for production use, kiddo is the
+  recommended default. D9's value is matching the C++
+  `DgmOctree` semantics in pure Rust — any code that was
+  written against the C++ API can be ported to use D9
+  with no algorithm change.
+
+**Status of the original "broken octree" claim (D8):**
+ADDRESSED. The hand-rolled octree in `03-handrolled-octree/`
+remains a learning exercise (no AABB pruning), but D9
+demonstrates the correct algorithm in the
+`04-dgm-octree/` variant.
+
+**When to revisit:**
+- For real-data (N ≥ 100k) we have not yet measured D9. The
+  kiddo advantage is expected to widen because the cell-code
+  HashMap becomes the dominant cost (every cell lookup is a
+  hash + a few AABB ops) while kiddo's B-tree descent is
+  O(log n) with no hashing.
+- The query-on-cell-face bug (P18) suggests a follow-up:
+  for ICP queries that come from the data array, the data
+  and model share the same cell addressing, so a "hint"
+  pointer to the data point's cell could be passed to
+  `nearest()` to skip the cell-code computation. This is a
+  small constant-factor win; defer.
+
+---
+
 ## Adding a new decision
 
 When you make an architectural decision in a session:

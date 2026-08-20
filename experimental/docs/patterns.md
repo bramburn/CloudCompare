@@ -434,41 +434,6 @@ symmetric, prefer ICP variants that search over rotations
 `asymmetric-9` cloud used by ICP tests is too symmetric for
 PCA to recover rotations beyond ~5°).
 
-**Pattern:** When writing characterisation tests for any algorithm
-that uses SVD (rotation estimation, point-set registration,
-procrustes analysis), the input cloud must be **non-symmetric**
-along all three axes. Pure-cube corners are a classic trap.
-
-The 8 corners of the unit cube are at (0/1, 0/1, 0/1). Translating
-this cube by any axis-aligned vector (e.g. (1, 0, 0)) gives a
-matched-pair distribution where the cross-covariance H has a
-zero column/row in the direction of the translation:
-
-```text
-H = Σ (data_i − c_data)(model_i − c_model)^T
-  = diag(0, 2, 2)    for a +X translation of the cube
-```
-
-H is rank 2 in 3D. The SVD has infinitely many valid decompositions
-because the missing axis can take any sign. nalgebra picks one
-deterministically but it is, in general, a reflection rather than
-a rotation.
-
-**Fix:** add at least one off-axis point to break the symmetry. The
-"asymmetric-9" fixture in `experimental/fixtures/synthetic/asymmetric-9.toml`
-is the canonical example: 8 cube corners plus one point at
-(1.5, 0.3, 0.7). The off-axis point makes H full-rank, so the SVD
-returns a unique rotation.
-
-**Symptom of the bug:** ICP tests pass on paper (the test "asserts"
-the right answer) but the recovered transform has a +/−X flip that
-the assertion doesn't catch because the test only checks magnitude
-or RMS, not the sign of individual components.
-
-**Source:** `experimental/fixtures/synthetic/asymmetric-9.toml`,
-`cc-rust/src/registration.rs::tests::asymmetric_cloud` (D4, fixture
-swap landed 2026-08-19).
-
 ---
 
 ## P16. 2026-08-20 — Pluggable NN trait + adapter pattern (D8)
@@ -601,7 +566,8 @@ RMS was 0 immediately, and SVD returned the identity transform
 **Pattern:** when benchmarking N variants on the same data
 input, snapshot the input before each run. Either:
 
-`ust
+`
+ust
 // Option A: clone the template into a fresh buffer per variant.
 let data_template = data.clone();
 for icp_fn in [icp_naive, icp_kiddo, icp_octree] {
@@ -639,6 +605,90 @@ trivial alignment.
 experimental/sessions/2026-08-20-d8-realdata-all-nns/src/main.rs
 (2026-08-20). The session's AGENTS.md and decisions.md
 also document this gotcha.
+
+---
+
+## P18. 2026-08-20 — Cell-code NN: early-termination check must use `minDistToBorder` (D9)
+
+**Problem:** When implementing a cell-code-ordered NN search
+(Chebyshev shell expansion with AABB pruning), the natural early-
+termination check is `(d * cell_max_dim)² > best_d2`: if the
+minimum distance from the query to any cell in shell d (≈ d
+cells × cell_size) exceeds the current best squared distance,
+no further cell can contain a closer point. This is the same
+form as the per-cell AABB check, just on the whole shell at
+once.
+
+But the check is **wrong when the query is near a cell face**.
+The per-axis AABB min distance to a d=1 cell is just
+`min_dist_to_border` (the distance from the query to the shared
+face), not `cell_max_dim`. The naive check uses the cell-size
+distance from the cell *center*, which is only correct when
+the query IS at the cell center. When the query is anywhere
+else, the closest d=1 cell can be much nearer than
+`cell_max_dim`, and the naive check incorrectly terminates
+before visiting it.
+
+**Concrete failure case (5k Gaussian, level 6, seed 99):**
+query at `(-0.28, -0.15, -0.48)`. Cell (26, 27, 25) is the
+query's cell; the NN is in cell (27, 27, 25) (Chebyshev
+distance 1, just across the +X face). The query is at
+distance 0.001 from the +X face, so `min_dist_to_border = 0.001`.
+The naive check `(1 * 0.064)² > 0.0024` is `0.0041 > 0.0024`
+= true, so the search terminates at d=1 without ever visiting
+the d=1 cells. The returned NN is a point in the query's own
+cell at d²=0.0024, but the actual NN is at d²=0.0023 in the
+adjacent cell.
+
+**Pattern:** the correct lower bound on the AABB min distance
+to the most-aligned cell in shell d is:
+
+- **Inside the bbox:** `min_dist_to_border + (d - 1) * cell_max_dim`
+  for d ≥ 1. The (d - 1) captures the fact that the d=1 cells
+  share a face with the query's cell, so the per-axis distance
+  is just `min_dist_to_border` (the query is already partway
+  into the cell).
+- **Outside the bbox** (after the C++-style jump
+  optimisation): `min_dist_to_border + d * cell_max_dim` for
+  d > start_d. The first valid shell (d=start_d) is one cell
+  further out from the query than the cell *index* distance
+  suggests, because the query is on the wrong side of the
+  cell border.
+
+The check is then: if `lower_bound² > best_d2`, terminate.
+
+**Why this works:** the per-axis AABB min distance to the
+"most-aligned" cell in shell d is the AABB min distance from
+the query to the cell's AABB on its dominant axis. Going
+through the cells in the dominant direction, the AABB min
+distance grows by one cell per shell (after the first
+d=1 cell, which shares a face). The formula above captures
+this.
+
+**Symptom of the bug:** the D9 test on 5k Gaussian (200
+queries) showed D9 returning a slightly non-optimal NN for
+query 6 specifically — the NN was in an adjacent cell, but
+the search terminated at d=1 because of the bad check. The
+brute force on the same fixture returned a different index
+with a 0.0001 lower d². The 500-pt Gaussian test didn't
+catch it because the larger cell size at level 5 made the
+naive check less likely to fail by accident.
+
+**What would have caught it sooner:** a correctness
+assertion in the perf test (compare the D9 NN to the brute
+force NN on the same queries). The original test only
+checked timing, so a slightly-wrong NN went unnoticed.
+
+**What you do NOT do:** don't use `(d * cell_max_dim)² > best_d2`
+as the early-termination check. The per-axis distance
+accounts for `min_dist_to_border`; the shell-distance check
+does not. The C++ algorithm in `DgmOctree.cpp` uses
+`ComputeMinDistanceToCellBorder` for exactly this reason.
+
+**Source:** `cc-rust/src/dgm_octree.rs::nearest_neighbor`
+(D9, fix landed 2026-08-20). The 5k Gaussian correctness
+test in the same file is the regression test; the bug
+existed in the previous version of the function.
 
 ---
 ## Adding a new pattern

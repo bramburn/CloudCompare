@@ -1,17 +1,18 @@
 id = "2026-08-20-icp-nn-comparison"
 question = "With the D8 trait dispatch, which NN gives the fastest end-to-end ICP?"
 
-# Lifecycle state. This scenario is the **D8 deliverable**: it
+# Lifecycle state. This scenario is the **D8 + D9 deliverable**: it
 # proves the new `NearestNeighbour` trait produces end-to-end NN-
 # driven ICP, and it picks a winner based on the same fixture
-# across all three variants. The three sibling scenarios under
+# across all four variants. The sibling scenarios under
 # `2026-08-19-icp-variants/` (01-naive-on2, 02-kiddo-kdtree,
-# 03-handrolled-octree) are the unit-tested implementations; this
-# scenario is the cross-variant comparison.
+# 03-handrolled-octree, 04-dgm-octree) are the unit-tested
+# implementations; this scenario is the cross-variant comparison.
 #
-# Status: **benchmarked** (3 NNs, identical RMS, NN-query timings
-# captured; the ICP-wall-time story is the negative result that
-# at small N the SVD + f32/f64 casts dominate the NN cost).
+# Status: **benchmarked** (4 NNs, identical RMS, NN-query timings
+# captured; the ICP-wall-time story is that D9 is 2-3x slower than
+# kiddo at the same RMS, and the hand-rolled octree is 100-300x
+# slower than D9 because it has no AABB pruning).
 status = "benchmarked"
 
 owner = "rust-migration"
@@ -21,20 +22,21 @@ reference = { cpp = "CCCoreLib/src/RegistrationTools.cpp" }
 
 # Valid fixtures. The asymmetric-9 is the canonical non-degenerate
 # test cloud; the Gaussian generator in the comparison bin is the
-# scaling fixture (we run at 2k / 5k / 10k).
+# scaling fixture (we run at 2k / 5k / 10k / 50k).
 fixtures = [
     "synthetic/asymmetric-9.toml",
     "synthetic/cube-8.toml",
     "real/brook-avenue-splice.toml",   # optional: missing → skipped
 ]
 
-# Variants. Same three as 2026-08-19-icp-variants. This scenario
+# Variants. Same four as 2026-08-19-icp-variants. This scenario
 # does not re-implement them; it consumes their `icp_bench` binaries
 # and parses their output.
 variants = [
     "01-naive-on2",
     "02-kiddo-kdtree",
     "03-handrolled-octree",
+    "04-dgm-octree",
 ]
 
 # What this scenario measures. Note `nn_query_us` is the per-query
@@ -56,10 +58,10 @@ metrics = [
 
 # What the winner must demonstrate.
 promotion = { required = [
-    "all_three_variants_agree_on_correctness",
+    "all_four_variants_agree_on_correctness",
     "nn_query_timings_recorded_for_at_least_3_sizes",
     "icp_wall_timings_recorded_for_at_least_3_sizes",
     "decisions_md_picks_a_winner_with_evidence",
 ] }
 
-tags = ["icp", "nearest-neighbour", "rust", "phase-2", "d8", "comparison"]
+tags = ["icp", "nearest-neighbour", "rust", "phase-2", "d8", "d9", "comparison"]

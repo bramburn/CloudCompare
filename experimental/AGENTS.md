@@ -246,6 +246,29 @@ deliverable is in two places:
   than the broken octree** (0.22s vs 217s). This is the
   on-the-bench validation that the D8 trait dispatch works
   on real survey data, not just synthetic Gaussian.
+
+## D9 (cell-code-ordered NN in DgmOctree) — active deliverable
+
+The D9 algorithm ports CCCoreLib's
+`DgmOctree::findNearestNeighborsStartingFromCell` to pure
+Rust. End-to-end:
+
+- **4 NNs compared** in
+  scenarios/2026-08-20-icp-nn-comparison/ — naive, kiddo,
+  hand-rolled octree (no AABB pruning), and D9 cell-code.
+  All four agree on RMS at every size tested. D9 is the
+  **second-fastest** at every size (~0.6-1.0 us/q), ~10-500x
+  faster than the hand-rolled octree but ~2x slower than
+  kiddo. The 2x gap to kiddo is the HashMap + AABB check
+  overhead; for production use, kiddo is the recommended
+  default. D9's value is matching the C++ DgmOctree semantics
+  in pure Rust.
+- **D9 correctness lesson** captured in P18 (patterns.md):
+  the early-termination check must use `minDistToBorder` to
+  account for the per-axis AABB distance, not just the cell
+  index distance. The naive `(d * cell_max_dim)^2 > best_d2`
+  check incorrectly terminates before visiting cells
+  adjacent to a query on the cell face.
 ## Quick checklist for an agent finishing a session
 
 - [ ] Session builds green

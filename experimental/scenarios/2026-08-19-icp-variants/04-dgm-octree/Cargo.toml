@@ -1,0 +1,31 @@
+[package]
+name = "icp_v4_dgm_octree"
+version = "0.1.0"
+edition = "2021"
+description = "ICP variant 4: DgmOctree cell-code-ordered nearest-neighbour (D9). O(d^3) shells with AABB pruning, C++-style jump optimisation."
+
+[lib]
+name = "icp_v4_dgm_octree"
+path = "src/lib.rs"
+
+[dependencies]
+# Use the corrected ICP implementation from cc-rust. The scenario
+# only compares the *nearest-neighbour* data structure, not the
+# surrounding algorithm. See D8 in experimental/docs/decisions.md
+# and patterns P12/P13/P14 for the bug history. D9 in the same
+# doc is the cell-code-ordered NN.
+cc_rust = { path = "../../../../cc-rust" }
+nalgebra = "0.34"
+log = "0.4"
+env_logger = "0.11"
+
+[dev-dependencies]
+approx = "0.5"
+
+[[bin]]
+name = "icp_bench"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+lto = "thin"

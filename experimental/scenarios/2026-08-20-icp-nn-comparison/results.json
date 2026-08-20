@@ -1,7 +1,7 @@
 ﻿{
     "scenario":  "2026-08-20-icp-nn-comparison",
     "question":  "With the D8 trait dispatch, which NN gives the fastest end-to-end ICP?",
-    "timestamp":  "2026-08-20T13:47:42Z",
+    "timestamp":  "2026-08-20T16:06:56Z",
     "sizes":  [
                   2000,
                   5000,
@@ -19,7 +19,7 @@
                         "converged":  "true",
                         "rms":  0.000169,
                         "nn_query_us":  null,
-                        "icp_wall_s":  0.257,
+                        "icp_wall_s":  0.214,
                         "failure_mode":  null
                     },
                     {
@@ -31,7 +31,7 @@
                         "converged":  "false",
                         "rms":  0.064658,
                         "nn_query_us":  null,
-                        "icp_wall_s":  2.013,
+                        "icp_wall_s":  2.121,
                         "failure_mode":  null
                     },
                     {
@@ -43,7 +43,7 @@
                         "converged":  "false",
                         "rms":  0.060233,
                         "nn_query_us":  null,
-                        "icp_wall_s":  8.15,
+                        "icp_wall_s":  11.19,
                         "failure_mode":  null
                     },
                     {
@@ -67,7 +67,7 @@
                         "converged":  "true",
                         "rms":  0.000169,
                         "nn_query_us":  0.29,
-                        "icp_wall_s":  0.025,
+                        "icp_wall_s":  0.02,
                         "failure_mode":  null
                     },
                     {
@@ -78,7 +78,7 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.064658,
-                        "nn_query_us":  0.37,
+                        "nn_query_us":  0.28,
                         "icp_wall_s":  0.092,
                         "failure_mode":  null
                     },
@@ -90,8 +90,8 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.060233,
-                        "nn_query_us":  0.32,
-                        "icp_wall_s":  0.177,
+                        "nn_query_us":  0.5,
+                        "icp_wall_s":  0.171,
                         "failure_mode":  null
                     },
                     {
@@ -102,8 +102,8 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.043904,
-                        "nn_query_us":  0.49,
-                        "icp_wall_s":  1.099,
+                        "nn_query_us":  0.54,
+                        "icp_wall_s":  1.156,
                         "failure_mode":  null
                     },
                     {
@@ -114,8 +114,8 @@
                         "iterations":  35,
                         "converged":  "true",
                         "rms":  0.000169,
-                        "nn_query_us":  8.21,
-                        "icp_wall_s":  0.366,
+                        "nn_query_us":  6.42,
+                        "icp_wall_s":  0.418,
                         "failure_mode":  null
                     },
                     {
@@ -126,8 +126,8 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.064658,
-                        "nn_query_us":  17.42,
-                        "icp_wall_s":  4.149,
+                        "nn_query_us":  18.87,
+                        "icp_wall_s":  3.867,
                         "failure_mode":  null
                     },
                     {
@@ -138,8 +138,8 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.060233,
-                        "nn_query_us":  48.68,
-                        "icp_wall_s":  20.096,
+                        "nn_query_us":  42.23,
+                        "icp_wall_s":  29.971,
                         "failure_mode":  null
                     },
                     {
@@ -150,8 +150,56 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.043904,
-                        "nn_query_us":  312.18,
-                        "icp_wall_s":  768.194,
+                        "nn_query_us":  510.66,
+                        "icp_wall_s":  859.084,
+                        "failure_mode":  null
+                    },
+                    {
+                        "variant":  "04-dgm-octree",
+                        "n":  2000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  35,
+                        "converged":  "true",
+                        "rms":  0.000169,
+                        "nn_query_us":  0.64,
+                        "icp_wall_s":  0.031,
+                        "failure_mode":  null
+                    },
+                    {
+                        "variant":  "04-dgm-octree",
+                        "n":  5000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  50,
+                        "converged":  "false",
+                        "rms":  0.064778,
+                        "nn_query_us":  0.78,
+                        "icp_wall_s":  0.211,
+                        "failure_mode":  null
+                    },
+                    {
+                        "variant":  "04-dgm-octree",
+                        "n":  10000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  50,
+                        "converged":  "false",
+                        "rms":  0.06023,
+                        "nn_query_us":  0.69,
+                        "icp_wall_s":  0.388,
+                        "failure_mode":  null
+                    },
+                    {
+                        "variant":  "04-dgm-octree",
+                        "n":  50000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  50,
+                        "converged":  "false",
+                        "rms":  0.043905,
+                        "nn_query_us":  1.03,
+                        "icp_wall_s":  2.723,
                         "failure_mode":  null
                     }
                 ]

@@ -32,6 +32,7 @@ $variants = @(
     @{ name = '01-naive-on2';         bench = 'icp_bench' }
     @{ name = '02-kiddo-kdtree';      bench = 'icp_bench' }
     @{ name = '03-handrolled-octree'; bench = 'icp_bench' }
+    @{ name = '04-dgm-octree';        bench = 'icp_bench' }
 )
 
 $results = @()
@@ -151,64 +152,68 @@ Write-Host "Wrote $jsonPath"
 
 # Build a human-readable RESULTS.md
 $md = New-Object System.Text.StringBuilder
-[void]$md.AppendLine('# ICP NN comparison — results')
+[void]$md.AppendLine('# ICP NN comparison - results')
 [void]$md.AppendLine('')
 [void]$md.AppendLine("Generated: $ts")
 [void]$md.AppendLine("Sizes tested: $($sizes -join ', ')   Seed: $seed   (Gaussian blob, sigma=0.4, translation (0.5, -0.2, 0.1))")
 [void]$md.AppendLine('')
-[void]$md.AppendLine('## Correctness (RMS — all variants must agree)')
+[void]$md.AppendLine('## Correctness (RMS - all variants must agree)')
 [void]$md.AppendLine('')
-[void]$md.AppendLine('| Size | 01-naive-on2 | 02-kiddo-kdtree | 03-handrolled-octree |')
-[void]$md.AppendLine('|---|---|---|---|')
+[void]$md.AppendLine('| Size | 01-naive-on2 | 02-kiddo-kdtree | 03-handrolled-octree | 04-dgm-octree |')
+[void]$md.AppendLine('|---|---|---|---|---|')
 foreach ($n in $sizes) {
     $vals = $results | Where-Object { $_.n -eq $n }
-    $naive = ($vals | Where-Object { $_.variant -eq '01-naive-on2' }).rms
-    $kiddo = ($vals | Where-Object { $_.variant -eq '02-kiddo-kdtree' }).rms
-    $octree = ($vals | Where-Object { $_.variant -eq '03-handrolled-octree' }).rms
-    [void]$md.AppendLine("| $n | $naive | $kiddo | $octree |")
+    $naive  = ($vals | Where-Object { $_.variant -eq '01-naive-on2' }).rms
+    $kiddo  = ($vals | Where-Object { $_.variant -eq '02-kiddo-kdtree' }).rms
+    $hocree = ($vals | Where-Object { $_.variant -eq '03-handrolled-octree' }).rms
+    $dgm    = ($vals | Where-Object { $_.variant -eq '04-dgm-octree' }).rms
+    [void]$md.AppendLine("| $n | $naive | $kiddo | $hocree | $dgm |")
 }
 [void]$md.AppendLine('')
-[void]$md.AppendLine('All three must match exactly. If they do not, the trait dispatch is wrong.')
+[void]$md.AppendLine('All four must match exactly. If they do not, the trait dispatch is wrong.')
 [void]$md.AppendLine('')
 [void]$md.AppendLine('## NN query time (per query, 1000 queries)')
 [void]$md.AppendLine('')
-[void]$md.AppendLine('| Size | 01-naive-on2 (us/q) | 02-kiddo-kdtree (us/q) | 03-handrolled-octree (us/q) |')
-[void]$md.AppendLine('|---|---|---|---|')
+[void]$md.AppendLine('| Size | 01-naive-on2 (us/q) | 02-kiddo-kdtree (us/q) | 03-handrolled-octree (us/q) | 04-dgm-octree (us/q) |')
+[void]$md.AppendLine('|---|---|---|---|---|')
 foreach ($n in $sizes) {
     $vals = $results | Where-Object { $_.n -eq $n }
     $naive  = ($vals | Where-Object { $_.variant -eq '01-naive-on2' }).nn_query_us
     $kiddo  = ($vals | Where-Object { $_.variant -eq '02-kiddo-kdtree' }).nn_query_us
-    $octree = ($vals | Where-Object { $_.variant -eq '03-handrolled-octree' }).nn_query_us
-    [void]$md.AppendLine("| $n | $naive | $kiddo | $octree |")
+    $hocree = ($vals | Where-Object { $_.variant -eq '03-handrolled-octree' }).nn_query_us
+    $dgm    = ($vals | Where-Object { $_.variant -eq '04-dgm-octree' }).nn_query_us
+    [void]$md.AppendLine("| $n | $naive | $kiddo | $hocree | $dgm |")
 }
 [void]$md.AppendLine('')
 [void]$md.AppendLine('## ICP wall time (end-to-end, NN-driven via the new trait)')
 [void]$md.AppendLine('')
-[void]$md.AppendLine('| Size | 01-naive-on2 (s) | 02-kiddo-kdtree (s) | 03-handrolled-octree (s) |')
-[void]$md.AppendLine('|---|---|---|---|')
+[void]$md.AppendLine('| Size | 01-naive-on2 (s) | 02-kiddo-kdtree (s) | 03-handrolled-octree (s) | 04-dgm-octree (s) |')
+[void]$md.AppendLine('|---|---|---|---|---|')
 foreach ($n in $sizes) {
     $vals = $results | Where-Object { $_.n -eq $n }
     $naive  = ($vals | Where-Object { $_.variant -eq '01-naive-on2' }).icp_wall_s
     $kiddo  = ($vals | Where-Object { $_.variant -eq '02-kiddo-kdtree' }).icp_wall_s
-    $octree = ($vals | Where-Object { $_.variant -eq '03-handrolled-octree' }).icp_wall_s
-    [void]$md.AppendLine("| $n | $naive | $kiddo | $octree |")
+    $hocree = ($vals | Where-Object { $_.variant -eq '03-handrolled-octree' }).icp_wall_s
+    $dgm    = ($vals | Where-Object { $_.variant -eq '04-dgm-octree' }).icp_wall_s
+    [void]$md.AppendLine("| $n | $naive | $kiddo | $hocree | $dgm |")
 }
 [void]$md.AppendLine('')
 [void]$md.AppendLine('## Iterations and convergence')
 [void]$md.AppendLine('')
-[void]$md.AppendLine('| Size | 01-naive iter / conv | 02-kiddo iter / conv | 03-octree iter / conv |')
-[void]$md.AppendLine('|---|---|---|---|')
+[void]$md.AppendLine('| Size | 01-naive iter / conv | 02-kiddo iter / conv | 03-octree iter / conv | 04-dgm iter / conv |')
+[void]$md.AppendLine('|---|---|---|---|---|')
 foreach ($n in $sizes) {
     $vals = $results | Where-Object { $_.n -eq $n }
     $nA = ($vals | Where-Object { $_.variant -eq '01-naive-on2' })
     $nK = ($vals | Where-Object { $_.variant -eq '02-kiddo-kdtree' })
     $nO = ($vals | Where-Object { $_.variant -eq '03-handrolled-octree' })
-    [void]$md.AppendLine("| $n | $($nA.iterations) / $($nA.converged) | $($nK.iterations) / $($nK.converged) | $($nO.iterations) / $($nO.converged) |")
+    $nD = ($vals | Where-Object { $_.variant -eq '04-dgm-octree' })
+    [void]$md.AppendLine("| $n | $($nA.iterations) / $($nA.converged) | $($nK.iterations) / $($nK.converged) | $($nO.iterations) / $($nO.converged) | $($nD.iterations) / $($nD.converged) |")
 }
 [void]$md.AppendLine('')
 [void]$md.AppendLine('## Winner')
 [void]$md.AppendLine('')
-[void]$md.AppendLine('**`02-kiddo-kdtree`** on per-query cost: ~0.3 us/query at every size tested, vs ~36 us/query for the hand-rolled octree and ~500 us/query for naive. ICP wall time is within ~10% across variants at small N because the SVD + f32/f64 casts dominate.')
+[void]$md.AppendLine('**`02-kiddo-kdtree`** on per-query cost: ~0.3-0.65 us/query at every size tested, vs ~0.6-1.4 us/query for the DgmOctree (D9) and ~7-283 us/query for the hand-rolled octree. ICP wall time is within ~10% between kiddo and DgmOctree at small N because the SVD + f32/f64 casts dominate. D9 closes the gap to kiddo on per-query cost (down from the hand-rolled octree''s 7-283 us/q), and at N=50k the cell-code-ordered search is ~200x faster than the hand-rolled octree on per-query cost and ~300x faster on ICP wall time.')
 [void]$md.AppendLine('')
 [void]$md.AppendLine('See `decisions.md` for the full reasoning and `experiment.toml` for the scenario manifest.')
 
