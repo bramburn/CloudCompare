@@ -71,6 +71,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccFitSphereDlg.h ✅
 - qCC/ccSORFilterDlg.h ✅
 - qCC/ccHistogramWindow.h ✅
+- qCC/ccGBLSensorProjectionDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -410,3 +411,8 @@ libs/
   - Enhanced @file with histogram visualization overview
   - Added @class documentation
   - Documented HISTOGRAM_COLOR_SCHEME and SFInteractionMode enums
+
+- `docs: enhance ccGBLSensorProjectionDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with GBL sensor overview
+  - Added @class documentation
+  - Documented sensor initialization methods

@@ -20,11 +20,24 @@
 /**
  * @file ccGBLSensorProjectionDlg.h
  *
- * @brief GBL sensor projection dialog
+ * @brief GBL sensor projection dialog for ground-based lidar sensors.
  *
- * Dialog for GBL (ground-based lidar) sensor parameters.
+ * @details Dialog for configuring GBL (Ground-Based Lidar) sensor
+ * projection parameters.
+ *
+ * GBL sensors are terrestrial laser scanners that capture 3D point clouds
+ * from a fixed position. They typically provide:
+ * - Spherical coordinates (range, azimuth, elevation)
+ * - Intensity/reflectance values
+ * - Multiple return information
+ * - Timestamp data
+ *
+ * The projection dialog configures how to convert from the sensor's
+ * native spherical coordinates to Cartesian 3D coordinates.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccGBLSensor
  */
 
 #include <ui_gblSensorProjectDlg.h>
@@ -32,9 +45,20 @@
 class ccGBLSensor;
 
 /**
- * @brief GBL sensor projection dialog
+ * @brief Dialog for GBL sensor projection parameters.
  *
- * Configure GBL sensor projection parameters.
+ * @details Provides a UI for configuring ground-based lidar sensor
+ * projection settings.
+ *
+ * Parameters typically include:
+ * - Sensor position (X, Y, Z)
+ * - Sensor orientation (heading, pitch, roll)
+ * - Range limits (min/max distance)
+ * - Scan resolution
+ * - Output coordinate system
+ *
+ * @extends QDialog
+ * @extends Ui::GBLSensorProjectDialog
  */
 class ccGBLSensorProjectionDlg : public QDialog
     , public Ui::GBLSensorProjectDialog
@@ -43,26 +67,41 @@ class ccGBLSensorProjectionDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] parent Parent widget
+	 * @brief Construct the GBL sensor projection dialog.
+	 *
+	 * @param[in] parent Parent widget.
 	 */
 	explicit ccGBLSensorProjectionDlg(QWidget* parent = nullptr);
 
-	/// Initialize with previous values
+	/**
+	 * @brief Initialize with previous values.
+	 *
+	 * @details Loads saved values from the last session.
+	 */
 	void initWithPrevious();
-	
-	/// Save values for next time
+
+	/**
+	 * @brief Save values for next time.
+	 *
+	 * @details Persists current settings for future use.
+	 */
 	void saveForNextTime();
 
 	/**
-	 * @brief Initialize with GBL sensor
-	 * @param[in] sensor GBL sensor
+	 * @brief Initialize with an existing GBL sensor.
+	 *
+	 * @param[in] sensor GBL sensor to configure.
+	 *
+	 * @details Populates dialog fields from the sensor's parameters.
 	 */
 	void initWithGBLSensor(const ccGBLSensor* sensor);
 
 	/**
-	 * @brief Update GBL sensor
-	 * @param[in] sensor GBL sensor
+	 * @brief Update a GBL sensor with dialog values.
+	 *
+	 * @param[in] sensor GBL sensor to update.
+	 *
+	 * @details Applies the configured parameters to the sensor.
 	 */
 	void updateGBLSensor(ccGBLSensor* sensor);
 };
