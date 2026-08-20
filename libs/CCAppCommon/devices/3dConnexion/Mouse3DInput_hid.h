@@ -1,3 +1,12 @@
+/**
+ * @file Mouse3DInput_hid.h
+ *
+ * @brief HID worker for 3D mouse (macOS).
+ *
+ * @details Internal header for HID worker thread
+ * used on macOS for 3DConnexion device communication.
+ */
+
 #pragma once
 
 // ##########################################################################
