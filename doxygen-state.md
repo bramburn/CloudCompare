@@ -31,6 +31,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccPointListPickingDlg.h ✅
 - qCC/ccPointListPickingDlg.cpp ✅
 - qCC/ccGraphicalTransformationTool.h ✅
+- qCC/ccIsolines.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -167,3 +168,10 @@ libs/
   - Enhanced @file, @class documentation with architecture context
   - Documented transformation modes (basic, advanced)
   - Added @brief for all slots, enums, and protected members
+
+- `docs: enhance ccIsolines.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with marching squares algorithm overview
+  - Added comprehensive @class documentation with usage example
+  - Documented marching squares configuration codes
+  - Added @brief for all template methods
+  - Added @note about saddle point disambiguation
