@@ -19,6 +19,15 @@
 
 #include "ccGLPluginInterface.h"
 
+/**
+ * @file ExampleGLPlugin.h
+ *
+ * @brief Example GL plugin template.
+ *
+ * @details Template plugin demonstrating OpenGL post-processing
+ * filter integration.
+ */
+
 /** Replace 'ExampleGLPlugin' by your own plugin class name throughout and then
 	check 'ExampleGLPlugin.cpp' for more directions.
 
