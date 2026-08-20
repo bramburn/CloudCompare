@@ -12,25 +12,41 @@
 // #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        #
+// #                                                                        //
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
 
 /**
  * @file ccSectionExtractionTool.h
  *
- * @brief Section extraction tool
+ * @brief Section extraction tool for interactive profile extraction.
  *
- * Tool for extracting sections from point clouds.
+ * @details Tool for extracting 2D sections/profiles from point clouds
+ * by drawing polylines in the 3D view.
+ *
+ * Features:
+ * - Interactive polyline drawing
+ * - Multiple section support
+ * - Section envelope extraction
+ * - Orthogonal section generation
+ * - Unfolding to 2D
+ *
+ * Usage:
+ * 1. Add clouds to the pool
+ * 2. Draw polylines to define sections
+ * 3. Configure extraction parameters
+ * 4. Extract points or envelopes
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccOverlayDialog
+ * @see ccEnvelopeExtractor
  */
-// Local
+
 #include "ccEnvelopeExtractor.h"
 #include "ccOverlayDialog.h"
 
-// qCC_db
 #include <ccHObject.h>
 
 class ccGenericPointCloud;
@@ -43,77 +59,237 @@ namespace Ui
 }
 
 /**
- * @brief Section extraction tool
+ * @brief Section extraction tool for profile generation.
  *
- * Extract sections from point clouds.
+ * @details Provides an overlay dialog for interactive section extraction.
+ *
+ * Workflow:
+ * 1. Add clouds to process
+ * 2. Draw polyline paths defining sections
+ * 3. Set extraction parameters
+ * 4. Extract points along sections
+ * 5. Optionally extract envelopes
+ *
+ * @extends ccOverlayDialog
  */
 class ccSectionExtractionTool : public ccOverlayDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Process states.
+	 */
+	enum ProcessStates
+	{
+		PAUSED  = 32,
+		STARTED = 64,
+		RUNNING = 128,
+	};
+
+	/**
+	 * @brief Construct the section extraction tool.
+	 *
+	 * @param[in] parent Parent widget.
+	 */
 	explicit ccSectionExtractionTool(QWidget* parent);
-	//! Destructor
+
+	/**
+	 * @brief Destructor.
+	 */
 	~ccSectionExtractionTool() override;
 
-	//! Adds a cloud to the 'clouds' pool
+	/**
+	 * @brief Add a cloud to the clouds pool.
+	 *
+	 * @param[in] cloud Cloud to add.
+	 * @param[in] alreadyInDB Whether cloud is already in DB.
+	 * @return true on success.
+	 */
 	bool addCloud(ccGenericPointCloud* cloud, bool alreadyInDB = true);
-	//! Adds a polyline to the 'sections' pool
-	/** \warning: if this method returns true, the class takes the ownership of the cloud!
-	 **/
+
+	/**
+	 * @brief Add a polyline to the sections pool.
+	 *
+	 * @param[in] poly Polyline to add.
+	 * @param[in] alreadyInDB Whether polyline is already in DB.
+	 * @return true on success.
+	 *
+	 * @warning If true, ownership is taken by this class.
+	 */
 	bool addPolyline(ccPolyline* poly, bool alreadyInDB = true);
 
-	//! Removes all registered entities (clouds & polylines)
+	/**
+	 * @brief Remove all entities.
+	 */
 	void removeAllEntities();
 
 	// inherited from ccOverlayDialog
+	/**
+	 * @brief Link with a 3D window.
+	 */
 	bool linkWith(ccGLWindowInterface* win) override;
+
+	/**
+	 * @brief Start the tool.
+	 */
 	bool start() override;
+
+	/**
+	 * @brief Stop the tool.
+	 *
+	 * @param[in] accepted Whether to apply changes.
+	 */
 	void stop(bool accepted) override;
 
-  protected:
+  protected slots:
+	/**
+	 * @brief Undo last action.
+	 */
 	void undo();
+
+	/**
+	 * @brief Reset the tool.
+	 *
+	 * @param[in] askForConfirmation Prompt user.
+	 * @return true on success.
+	 */
 	bool reset(bool askForConfirmation = true);
+
+	/**
+	 * @brief Apply extraction.
+	 */
 	void apply();
+
+	/**
+	 * @brief Cancel and close.
+	 */
 	void cancel();
+
+	/**
+	 * @brief Add point to current polyline.
+	 *
+	 * @param[in] x Screen X.
+	 * @param[in] y Screen Y.
+	 */
 	void addPointToPolyline(int x, int y);
-	void closePolyLine(int x = 0, int y = 0); // arguments for compatibility with ccGlWindow::rightButtonClicked signal
+
+	/**
+	 * @brief Close the current polyline.
+	 *
+	 * @param[in] x Screen X.
+	 * @param[in] y Screen Y.
+	 */
+	void closePolyLine(int x = 0, int y = 0);
+
+	/**
+	 * @brief Update polyline preview.
+	 *
+	 * @param[in] x Screen X.
+	 * @param[in] y Screen Y.
+	 * @param[in] buttons Mouse buttons.
+	 */
 	void updatePolyLine(int x, int y, Qt::MouseButtons buttons);
-	void enableSectionEditingMode(bool);
+
+	/**
+	 * @brief Toggle section editing mode.
+	 *
+	 * @param[in] enabled Enable/disable.
+	 */
+	void enableSectionEditingMode(bool enabled);
+
+	/**
+	 * @brief Import polylines from DB.
+	 */
 	void doImportPolylinesFromDB();
-	void setVertDimension(int);
-	void entitySelected(ccHObject*);
+
+	/**
+	 * @brief Set vertical dimension.
+	 *
+	 * @param[in] index Dimension index.
+	 */
+	void setVertDimension(int index);
+
+	/**
+	 * @brief Handle entity selection.
+	 *
+	 * @param[in] entity Selected entity.
+	 */
+	void entitySelected(ccHObject* entity);
+
+	/**
+	 * @brief Generate orthogonal sections.
+	 */
 	void generateOrthoSections();
+
+	/**
+	 * @brief Extract points along sections.
+	 */
 	void extractPoints();
+
+	/**
+	 * @brief Unfold sections to 2D.
+	 */
 	void unfoldPoints();
+
+	/**
+	 * @brief Export sections.
+	 */
 	void exportSections();
 
-	//! To capture overridden shortcuts (pause button, etc.)
-	void onShortcutTriggered(int);
+	/**
+	 * @brief Handle shortcut trigger.
+	 *
+	 * @param[in] id Shortcut ID.
+	 */
+	void onShortcutTriggered(int id);
 
   protected:
-	//! Projects a 2D (screen) point to 3D
-	// CCVector3 project2Dto3D(int x, int y) const;
-
-	//! Cancels currently edited polyline
+	/**
+	 * @brief Cancel current polyline.
+	 */
 	void cancelCurrentPolyline();
 
-	//! Deletes currently selected polyline
+	/**
+	 * @brief Delete selected polyline.
+	 */
 	void deleteSelectedPolyline();
 
-	//! Adds a 'step' on the undo stack
+	/**
+	 * @brief Add undo step.
+	 */
 	void addUndoStep();
 
-	//! Convert one or several ReferenceCloud instances to a single cloud and add it to the main DB
+	/**
+	 * @brief Extract section cloud.
+	 *
+	 * @param[in] refClouds Reference clouds.
+	 * @param[in] sectionIndex Section index.
+	 * @param[out] cloudGenerated Whether cloud was generated.
+	 * @return true on success.
+	 */
 	bool extractSectionCloud(const std::vector<CCCoreLib::ReferenceCloud*>& refClouds,
 	                         unsigned                                       sectionIndex,
 	                         bool&                                          cloudGenerated);
 
-	//! Extract the envelope from a set of 2D points and add it to the main DB
+	/**
+	 * @brief Extract section envelope.
+	 *
+	 * @param[in] originalSection Original polyline.
+	 * @param[in] originalSectionCloud Cloud along section.
+	 * @param[in] unrolledSectionCloud 2D cloud (Z=0).
+	 * @param[in] sectionIndex Section index.
+	 * @param[in] type Envelope type.
+	 * @param[in] maxEdgeLength Max edge length.
+	 * @param[in] multiPass Use multi-pass.
+	 * @param[in] splitEnvelope Split envelope.
+	 * @param[out] envelopeGenerated Whether envelope was generated.
+	 * @param[in] visualDebugMode Debug visualization.
+	 * @return true on success.
+	 */
 	bool extractSectionEnvelope(const ccPolyline*                 originalSection,
 	                            const ccPointCloud*               originalSectionCloud,
-	                            ccPointCloud*                     unrolledSectionCloud, //'2D' cloud with Z = 0
+	                            ccPointCloud*                     unrolledSectionCloud,
 	                            unsigned                          sectionIndex,
 	                            ccEnvelopeExtractor::EnvelopeType type,
 	                            PointCoordinateType               maxEdgeLength,
@@ -122,24 +298,30 @@ class ccSectionExtractionTool : public ccOverlayDialog
 	                            bool&                             envelopeGenerated,
 	                            bool                              visualDebugMode = false);
 
-	//! Creates (if necessary) and returns a group to store entities in the main DB
+	/**
+	 * @brief Get export group.
+	 *
+	 * @param[out] defaultGroupID Group ID.
+	 * @param[in] defaultName Default name.
+	 * @return Export group.
+	 */
 	ccHObject* getExportGroup(unsigned& defaultGroupID, const QString& defaultName);
 
-	//! Imported entity
+	/**
+	 * @brief Imported entity wrapper.
+	 */
 	template <class EntityType>
 	struct ImportedEntity
 	{
-		//! Default constructor
 		ImportedEntity()
-		    : entity(0)
+		    : entity(nullptr)
 		    , originalDisplay(nullptr)
 		    , isInDB(false)
 		    , backupColorShown(false)
-		    , backupWidth(1)
+		    , backupWidth(0)
 		{
 		}
 
-		//! Copy constructor
 		ImportedEntity(const ImportedEntity& section)
 		    : entity(section.entity)
 		    , originalDisplay(section.originalDisplay)
@@ -150,7 +332,6 @@ class ccSectionExtractionTool : public ccOverlayDialog
 			backupColor = section.backupColor;
 		}
 
-		//! Constructor from an entity
 		ImportedEntity(EntityType* e, bool alreadyInDB)
 		    : entity(e)
 		    , originalDisplay(e->getDisplay())
@@ -158,14 +339,11 @@ class ccSectionExtractionTool : public ccOverlayDialog
 		    , backupColorShown(false)
 		    , backupWidth(0)
 		{
-			// specific case: polylines
 			if (e->isA(CC_TYPES::POLY_LINE))
 			{
 				ccPolyline* poly = reinterpret_cast<ccPolyline*>(e);
-				// backup color
 				backupColor      = poly->getColor();
 				backupColorShown = poly->colorsShown();
-				// backup thickness
 				backupWidth = poly->getWidth();
 			}
 		}
@@ -178,74 +356,68 @@ class ccSectionExtractionTool : public ccOverlayDialog
 		EntityType*         entity;
 		ccGenericGLDisplay* originalDisplay;
 		bool                isInDB;
-
-		// backup info (for polylines only)
 		ccColor::Rgb        backupColor;
 		bool                backupColorShown;
 		PointCoordinateType backupWidth;
 	};
 
-	//! Section
+	//! Section type
 	using Section = ImportedEntity<ccPolyline>;
 
-	//! Releases a polyline
-	/** The polyline is removed from display. Then it is
-	    deleted if the polyline is not already in DB.
-	**/
-	void releasePolyline(Section* section);
-
-	//! Cloud
+	//! Cloud type
 	using Cloud = ImportedEntity<ccGenericPointCloud>;
 
-	//! Type of the pool of active sections
+	//! Section pool
 	using SectionPool = QList<Section>;
 
-	//! Type of the pool of clouds
+	//! Cloud pool
 	using CloudPool = QList<Cloud>;
 
-	//! Process states
-	enum ProcessStates
-	{
-		//...			= 1,
-		//...			= 2,
-		//...			= 4,
-		//...			= 8,
-		//...			= 16,
-		PAUSED  = 32,
-		STARTED = 64,
-		RUNNING = 128,
-	};
+	/**
+	 * @brief Release a polyline.
+	 *
+	 * @param[in] section Section to release.
+	 */
+	void releasePolyline(Section* section);
 
-	//! Deselects the currently selected polyline
+	/**
+	 * @brief Select a polyline.
+	 *
+	 * @param[in] poly Polyline to select.
+	 * @param[in] autoRefreshDisplay Auto-refresh.
+	 */
 	void selectPolyline(Section* poly, bool autoRefreshDisplay = true);
 
-	//! Updates the global clouds bounding-box
+	/**
+	 * @brief Update clouds bounding box.
+	 */
 	void updateCloudsBox();
 
-  private: // members
-	//! Associated UI
+  private:
+	//! UI definition
 	Ui::SectionExtractionDlg* m_UI;
 
-	//! Pool of active sections
+	//! Section pool
 	SectionPool m_sections;
 
-	//! Selected polyline (if any)
+	//! Selected polyline
 	Section* m_selectedPoly;
 
-	//! Pool of clouds
+	//! Cloud pool
 	CloudPool m_clouds;
 
-	//! Current process state
+	//! Process state
 	unsigned m_state;
 
-	//! Last 'undo' count
+	//! Undo count per section
 	std::vector<size_t> m_undoCount;
 
 	//! Currently edited polyline
 	ccPolyline* m_editedPoly;
-	//! Segmentation polyline vertices
+
+	//! Edited polyline vertices
 	ccPointCloud* m_editedPolyVertices;
 
-	//! Global clouds bounding-box
+	//! Clouds bounding box
 	ccBBox m_cloudsBox;
 };

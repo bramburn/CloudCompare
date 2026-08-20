@@ -90,6 +90,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccSmoothPolylineDlg.h ✅
 - qCC/ccVolumeCalcTool.h ✅
 - qCC/ccUnrollDlg.h ✅
+- qCC/ccSectionExtractionTool.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -524,3 +525,8 @@ libs/
   - Enhanced @file with developable surface unrolling overview
   - Added @class documentation
   - Documented axis, radius, and angle range parameters
+
+- `docs: enhance ccSectionExtractionTool.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with section extraction overview
+  - Added @class documentation
+  - Documented ImportedEntity template and pool management
