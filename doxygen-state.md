@@ -35,6 +35,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccPointPickingGenericInterface.h ✅
 - qCC/ccAlignDlg.h ✅
 - qCC/ccApplyTransformationDlg.h ✅
+- qCC/ccClippingBoxTool.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -193,4 +194,10 @@ libs/
 - `docs: enhance ccApplyTransformationDlg.h Doxygen documentation` - 2026-08-26
   - Enhanced @file with transformation input formats overview
   - Added @class documentation explaining input methods
+  - Documented all slot handlers
+
+- `docs: enhance ccClippingBoxTool.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with clipping box features overview
+  - Added @class documentation
+  - Documented ExtractSlicesAndContours() static method
   - Documented all slot handlers
