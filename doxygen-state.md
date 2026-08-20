@@ -138,6 +138,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccColorTypes.h ✅
 - libs/qCC_db/ccCylinder.h ✅
 - libs/qCC_db/ccDrawableObject.h ✅
+- libs/qCC_db/ccFacet.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -811,3 +812,8 @@ libs/
   - Enhanced @file with drawable object interface overview
   - Added @class documentation
   - Documented display state management and GL transformations
+
+- `docs: enhance ccFacet.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with facet planar surface overview
+  - Added @class documentation
+  - Documented Create factory method and facet properties
