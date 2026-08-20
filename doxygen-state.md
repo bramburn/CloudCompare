@@ -1065,6 +1065,12 @@ libs/
 - `docs: enhance WolmanCustomPlot.h Doxygen documentation` - 2026-08-27 (submodule)
   - Enhanced @file with Wolman plot overview
 
+- `docs: enhance fastMarchingForFacetExtraction.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with Fast Marching facet extraction overview
+
+- `docs: enhance qMPlane.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with MPlane plugin overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
