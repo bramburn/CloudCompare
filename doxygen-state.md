@@ -104,6 +104,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccSensorComputeScatteringAnglesDlg.h ✅
 - qCC/ccSectionExtractionSubDlg.h ✅
 - qCC/mainwindow.h ✅
+- ccViewer/ccviewer.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -608,3 +609,8 @@ libs/
   - Enhanced @file with main window architecture overview
   - Added key components documentation
   - Documented singleton pattern and usage example
+
+- `docs: enhance ccViewer/ccviewer.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with ccViewer overview
+  - Added @class documentation
+  - Documented view presets and entity display controls
