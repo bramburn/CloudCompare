@@ -19,9 +19,17 @@
 /**
  * @file ccExtrudePolylineDlg.h
  *
- * @brief Extrude polyline dialog
+ * @brief Extrude polyline dialog for creating meshes from polylines.
  *
- * Dialog for extruding polylines into meshes.
+ * @details Dialog for configuring parameters when extruding a 2D polyline
+ * into a 3D mesh.
+ *
+ * Extrusion creates a mesh by extending the polyline in the perpendicular
+ * direction (typically the Z axis):
+ * - Height above: How far to extend upward from the polyline plane
+ * - Depth below: How far to extend downward from the polyline plane
+ *
+ * This creates a "prism" or "wall" mesh from the polyline outline.
  *
  * @author CloudCompare project
  */
@@ -29,9 +37,17 @@
 #include <ui_extrudePolylineDlg.h>
 
 /**
- * @brief Extrude polyline dialog
+ * @brief Dialog for polyline extrusion parameters.
  *
- * Configure polyline extrusion parameters.
+ * @details Provides a UI for setting the extrusion height
+ * and depth when converting a 2D polyline to a 3D mesh.
+ *
+ * The dialog allows setting:
+ * - Height above the polyline plane
+ * - Depth below the polyline plane
+ *
+ * @extends QDialog
+ * @extends Ui::ExtrudePolylineDialog
  */
 class ccExtrudePolylineDlg : public QDialog
     , public Ui::ExtrudePolylineDialog
@@ -40,19 +56,34 @@ class ccExtrudePolylineDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] parent Parent widget
+	 * @brief Construct the extrusion dialog.
+	 *
+	 * @param[in] parent Parent widget.
 	 */
 	explicit ccExtrudePolylineDlg(QWidget* parent = nullptr);
 
-	/// Get height above
+	/**
+	 * @brief Get height above the polyline.
+	 * @return Height value.
+	 */
 	double heightAbove() const;
-	/// Get depth below
+
+	/**
+	 * @brief Get depth below the polyline.
+	 * @return Depth value.
+	 */
 	double depthBelow() const;
 
-	/// Set height above
+	/**
+	 * @brief Set height above the polyline.
+	 * @param[in] value Height value.
+	 */
 	void setHeightAbove(double value);
-	/// Set depth below
+
+	/**
+	 * @brief Set depth below the polyline.
+	 * @param[in] value Depth value.
+	 */
 	void setDepthBelow(double value);
 };
 

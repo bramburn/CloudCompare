@@ -76,6 +76,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccScalarFieldArithmeticsDlg.h ✅
 - qCC/ccFilterByValueDlg.h ✅
 - qCC/ccExportCoordToSFDlg.h ✅
+- qCC/ccExtrudePolylineDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -440,3 +441,8 @@ libs/
   - Enhanced @file with coordinate export overview
   - Added @class documentation
   - Documented exportX/Y/Z methods
+
+- `docs: enhance ccExtrudePolylineDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with mesh extrusion overview
+  - Added @class documentation
+  - Documented heightAbove and depthBelow methods
