@@ -93,6 +93,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccSectionExtractionTool.h ✅
 - qCC/ccSelectChildrenDlg.h ✅
 - qCC/ccScalarFieldsManagerDlg.h ✅
+- qCC/ccStatisticalTestDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -542,3 +543,8 @@ libs/
   - Enhanced @file with scalar field management overview
   - Added @class documentation
   - Documented SFAttributes enum and statistics methods
+
+- `docs: enhance ccStatisticalTestDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with statistical test overview
+  - Added @class documentation
+  - Documented neighbor count and probability parameters
