@@ -1,9 +1,21 @@
 /**
  * @file ccCommandLineParser.cpp
- * @brief Command line parser implementation
- * @details Implements the command line interface for CloudCompare batch processing,
- * including command registration, parsing, and entity management.
+ *
+ * @brief Command line parser implementation for CloudCompare.
+ *
+ * @details Implements the command line interface for CloudCompare batch
+ * processing. This file contains:
+ * - Command registration and management
+ * - Argument parsing and execution
+ * - Entity (clouds, meshes) management
+ * - Export functionality
+ * - Plugin command integration
+ *
+ * The parser handles single-quote delimited arguments, silent mode,
+ * and provides various output methods for different message levels.
+ *
  * @see ccCommandLineParser
+ * @see ccCommandLineInterface
  */
 
 #include "ccCommandLineParser.h"

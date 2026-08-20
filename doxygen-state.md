@@ -16,6 +16,8 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccApplication.h ✅
 - qCC/ccApplication.cpp ✅
 - qCC/ccReservedIDs.h ✅
+- qCC/ccCommandLineParser.h ✅
+- qCC/ccCommandLineParser.cpp ✅
 
 ### In Progress
 - (next file to be selected)
@@ -102,3 +104,7 @@ libs/
   - Added detailed @file, @enum documentation
   - Added @var documentation for each enum value
   - Added @note about plugin usage restrictions
+
+- `docs: enhance ccCommandLineParser.cpp Doxygen @file documentation` - 2026-08-25
+  - Enhanced @file with detailed @details
+  - Header already had comprehensive documentation
