@@ -57,6 +57,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccOrthoSectionGenerationDlg.h ✅
 - qCC/ccPlaneEditDlg.h ✅
 - qCC/ccPointPropertiesDlg.h ✅
+- qCC/ccPrimitiveDistanceDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -326,3 +327,8 @@ libs/
   - Enhanced @file with point picking modes overview
   - Added @class documentation
   - Documented Mode enum and measurement features
+
+- `docs: enhance ccPrimitiveDistanceDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with primitive distance options overview
+  - Added @class documentation
+  - Documented signed distance and bounded plane options
