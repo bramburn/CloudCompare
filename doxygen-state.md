@@ -915,6 +915,16 @@ libs/
   - Added @class documentation
   - Documented save options
 
+- `docs: enhance LasScalarField.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with LAS scalar field mapping overview
+  - Added @struct documentation
+  - Documented field IDs and ranges
+
+- `docs: enhance LasSaver.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with LAS saver overview
+  - Added @class documentation
+  - Documented save parameters and workflow
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
