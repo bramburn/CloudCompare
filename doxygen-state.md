@@ -1155,6 +1155,30 @@ libs/
 - `docs: enhance NormalEstimation.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with normal estimation filter overview
 
+- `docs: enhance MLSSmoothingUpsampling.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with MLS smoothing filter overview
+
+- `docs: enhance StatisticalOutliersRemover.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with statistical outliers remover overview
+
+- `docs: enhance FastGlobalRegistrationFilter.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with FGR filter overview
+
+- `docs: enhance cc2sm.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with CC to PCL converter overview
+
+- `docs: enhance sm2cc.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with PCL to CC converter overview
+
+- `docs: enhance PCLCloud.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with PCL cloud type overview
+
+- `docs: enhance PCLConv.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with PCL conversion macros overview
+
+- `docs: enhance copy.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with cloud copy utilities overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
