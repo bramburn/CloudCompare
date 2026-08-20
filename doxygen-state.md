@@ -41,6 +41,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccColorGradientDlg.h ✅
 - qCC/ccBoundingBoxEditorDlg.h ✅
 - qCC/ccColorLevelsDlg.h ✅
+- qCC/ccColorFromScalarDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -231,3 +232,8 @@ libs/
   - Enhanced @file with color levels adjustment overview
   - Added @class documentation
   - Documented CHANNELS enum and ScaleColorFields method
+
+- `docs: enhance ccColorFromScalarDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with scalar-to-color mapping overview
+  - Added @class documentation with channel descriptions
+  - Documented all slots and protected members
