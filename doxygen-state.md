@@ -1098,6 +1098,18 @@ libs/
 - `docs: enhance qcustomplot.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with QCustomPlot widget overview
 
+- `docs: enhance ccMPlaneErrors.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with MPlane error classes overview
+
+- `docs: enhance ccMPlanePoint.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with MPlane point class overview
+
+- `docs: enhance JsonRPCPlugin.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with JSON-RPC plugin overview
+
+- `docs: enhance jsonrpcserver.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with JSON-RPC server overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
