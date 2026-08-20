@@ -140,6 +140,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccDrawableObject.h ✅
 - libs/qCC_db/ccFacet.h ✅
 - libs/qCC_db/ccGBLSensor.h ✅
+- libs/qCC_db/ccRasterGrid.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -823,3 +824,8 @@ libs/
   - Enhanced @file with ground-based LiDAR sensor overview
   - Added @class documentation
   - Documented yaw/pitch parameters and rotation order
+
+- `docs: enhance ccRasterGrid.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with raster grid overview
+  - Added @struct documentation for ccRasterCell and ccRasterGrid
+  - Documented grid cell properties and interpolation
