@@ -112,6 +112,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/db_tree/sfEditDlg.h ✅
 - qCC/pluginManager/ccPluginInfoDlg.h ✅
 - libs/CCPluginAPI/ccMainAppInterface.h ✅
+- libs/CCPluginAPI/ccOverlayDialog.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -656,3 +657,8 @@ libs/
   - Enhanced @file with plugin interface overview
   - Added @class documentation with usage example
   - Documented all virtual methods
+
+- `docs: enhance ccOverlayDialog.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with overlay dialog overview
+  - Added @class documentation with lifecycle example
+  - Documented shortcut override mechanism
