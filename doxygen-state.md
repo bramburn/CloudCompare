@@ -1179,6 +1179,15 @@ libs/
 - `docs: enhance copy.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with cloud copy utilities overview
 
+- `docs: enhance my_point_types.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with custom PCL point types overview
+
+- `docs: enhance ccTreeIsoDlg.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with TreeIso dialog overview
+
+- `docs: enhance knncpp.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with KNN library overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
