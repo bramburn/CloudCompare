@@ -1,4 +1,11 @@
-#pragma once
+/**
+ * @file NormalEstimation.h
+ *
+ * @brief Normal estimation filter.
+ *
+ * @details Filter for computing point cloud normals
+ * using PCL normal estimation.
+ */
 
 //##########################################################################
 //#                                                                        #
