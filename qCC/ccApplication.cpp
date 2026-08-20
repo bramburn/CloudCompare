@@ -1,15 +1,3 @@
-/**
- * @file ccApplication.cpp
- *
- * @brief CloudCompare Qt Application implementation
- *
- * Implements CloudCompare-specific application initialization, version
- * management, and platform-specific event handling.
- *
- * @see ccApplication for the class definition
- * @see ccApplicationBase for base class implementation
- */
-
 // ##########################################################################
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
@@ -27,6 +15,18 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccApplication.cpp
+ *
+ * @brief CloudCompare Qt Application implementation.
+ *
+ * @details Implements CloudCompare-specific application initialization,
+ * version management, and platform-specific event handling.
+ *
+ * @see ccApplication
+ * @see ccApplicationBase
+ */
+
 #include <QtGlobal>
 
 #ifdef Q_OS_MAC
@@ -39,9 +39,9 @@
 #include "mainwindow.h"
 
 /**
- * @brief Maps file format versions to minimum required CloudCompare versions
+ * @brief Maps file format versions to minimum required CloudCompare versions.
  *
- * This static lookup table maps internal file format version numbers
+ * @details This static lookup table maps internal file format version numbers
  * to the earliest CloudCompare version capable of reading files
  * saved with that format version.
  *
@@ -54,7 +54,7 @@
 struct FileVersionToCCVersion : QMap<short, QString>
 {
 	/**
-	 * @brief Initialize the version mapping table
+	 * @brief Initialize the version mapping table.
 	 *
 	 * Populates the map with known file version to CloudCompare version
 	 * correspondence. Versions are added chronologically.
@@ -100,11 +100,11 @@ struct FileVersionToCCVersion : QMap<short, QString>
 	}
 
 	/**
-	 * @brief Look up the minimum CloudCompare version for a file version
+	 * @brief Look up the minimum CloudCompare version for a file version.
 	 *
-	 * @param[in] fileVersion The internal file format version number
+	 * @param[in] fileVersion The internal file format version number.
 	 * @return QString describing the minimum required CloudCompare version,
-	 *         or "Unknown version" if the version is not in the table
+	 *         or "Unknown version" if the version is not in the table.
 	 */
 	QString getMinCCVersion(short fileVersion) const
 	{
@@ -122,11 +122,26 @@ struct FileVersionToCCVersion : QMap<short, QString>
 //! Static instance of the version mapping table
 static FileVersionToCCVersion s_fileVersionToCCVersion;
 
+/**
+ * @brief Get minimum CloudCompare version for a file format version.
+ *
+ * @param[in] fileVersion Internal file format version number.
+ * @return QString describing the minimum required CloudCompare version.
+ *
+ * @see GetMinCCVersionForFileVersion() in header.
+ */
 QString ccApplication::GetMinCCVersionForFileVersion(short fileVersion)
 {
 	return s_fileVersionToCCVersion.getMinCCVersion(fileVersion);
 }
 
+/**
+ * @brief Construct the CloudCompare application.
+ *
+ * @param[in] argc Reference to argument count from main().
+ * @param[in] argv Array of argument strings from main().
+ * @param[in] isCommandLine True if running in command-line (non-GUI) mode.
+ */
 ccApplication::ccApplication(int& argc, char** argv, bool isCommandLine)
     : ccApplicationBase(argc, argv, isCommandLine, QString("2.14.beta (%1)").arg(__DATE__))
 {
@@ -135,24 +150,23 @@ ccApplication::ccApplication(int& argc, char** argv, bool isCommandLine)
 	FileIO::setWriterInfo(applicationName(), versionStr());
 }
 
+/**
+ * @brief Handle application-level events.
+ *
+ * @param[in] inEvent The event to process.
+ * @return true if the event was handled, false otherwise.
+ *
+ * @details Processes special Qt events, particularly:
+ * - QEvent::FileOpen: macOS file association handling
+ *
+ * On macOS, when CloudCompare is set as the default application
+ * for a file type and a file is double-clicked in Finder,
+ * Qt sends a QEvent::FileOpen event. This handler processes
+ * the event by loading the file into the main window.
+ */
 bool ccApplication::event(QEvent* inEvent)
 {
 #ifdef Q_OS_MAC
-	/**
-	 * @brief Handle macOS file open events
-	 *
-	 * On macOS, when CloudCompare is set as the default application
-	 * for a file type and a file is double-clicked in Finder,
-	 * Qt sends a QEvent::FileOpen event. This handler processes
-	 * the event by loading the file into the main window.
-	 *
-	 * @param[in] inEvent The Qt event (cast to QFileOpenEvent on macOS)
-	 * @return true if the event was handled, false otherwise
-	 *
-	 * @note Only processed on macOS. Other platforms use different
-	 *       mechanisms for file associations.
-	 * @see MainWindow::addToDB() for file loading
-	 */
 	switch (inEvent->type())
 	{
 	case QEvent::FileOpen:

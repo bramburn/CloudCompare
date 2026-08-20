@@ -13,6 +13,8 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccCommon.h ✅
 - qCC/ccRecentFiles.h ✅
 - qCC/ccRecentFiles.cpp ✅
+- qCC/ccApplication.h ✅
+- qCC/ccApplication.cpp ✅
 
 ### In Progress
 - (next file to be selected)
@@ -89,3 +91,8 @@ libs/
   - Added @param, @return, @details for all methods
   - Added @par usage examples
   - Added @brief for private members
+
+- `docs: enhance ccApplication.cpp Doxygen documentation` - 2026-08-25
+  - Moved @file to correct position after GPL header
+  - Added @brief to all method implementations
+  - Enhanced FileVersionToCCVersion struct documentation
