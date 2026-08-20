@@ -1,45 +1,68 @@
-#pragma once
 // ##########################################################################
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
-// #                                                                        #
+// #                                                                        //
 // #  This program is free software; you can redistribute it and/or modify  #
 // #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
-// #                                                                        #
+// #                                                                        //
 // #  This program is distributed in the hope that it will be useful,       #
-// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        #
+// #                                                                        //
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
 
 /**
  * @file ccQtHelpers.h
  *
- * @brief Qt helper utilities
+ * @brief Qt utility helper functions.
  *
- * Utility functions for Qt widgets and threading.
+ * @details Provides common utility functions for Qt widgets
+ * and threading operations.
+ *
+ * ## Overview
+ *
+ * This namespace/class provides:
+ * - Button styling utilities
+ * - Thread count management
+ *
+ * ## Usage
+ *
+ * @code
+ * // Set button background color
+ * ccQtHelpers::SetButtonColor(myButton, Qt::red);
+ *
+ * // Get optimal thread count for processing
+ * int threads = ccQtHelpers::GetMaxThreadCount();
+ * @endcode
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
  */
+
+#pragma once
 
 // Qt
 #include <QAbstractButton>
 #include <QThread>
 
 /**
- * @brief Qt helper functions
+ * @brief Qt helper utilities.
+ *
+ * @details Common utility functions for Qt operations.
  */
 class ccQtHelpers
 {
   public:
 	/**
-	 * @brief Set button background color
-	 * @param[in] button Button to modify
-	 * @param[in] col Color to set
+	 * @brief Set button background color.
+	 *
+	 * @param[in] button Button to modify.
+	 * @param[in] col Color to set.
+	 *
+	 * @note Uses stylesheet for styling.
 	 */
 	static void SetButtonColor(QAbstractButton* button, const QColor& col)
 	{
@@ -53,9 +76,14 @@ class ccQtHelpers
 	}
 
 	/**
-	 * @brief Get ideal thread count
-	 * @param[in] idealThreadCount Base thread count
-	 * @return Adjusted thread count
+	 * @brief Get optimal thread count.
+	 *
+	 * @param[in] idealThreadCount Base thread count.
+	 *
+	 * @return Adjusted thread count.
+	 *
+	 * @note Reduces count slightly for very high core counts
+	 *       to avoid resource contention.
 	 */
 	static int GetMaxThreadCount(int idealThreadCount)
 	{
@@ -74,8 +102,11 @@ class ccQtHelpers
 	}
 
 	/**
-	 * @brief Get ideal thread count (uses Qt)
-	 * @return Ideal thread count for this machine
+	 * @brief Get optimal thread count.
+	 *
+	 * @return Ideal thread count for this machine.
+	 *
+	 * @note Uses QThread::idealThreadCount() as base.
 	 */
 	static int GetMaxThreadCount()
 	{

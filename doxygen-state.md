@@ -122,6 +122,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/CCPluginAPI/ccInfoDlg.h ✅
 - libs/CCPluginAPI/ccPersistentSettings.h ✅
 - libs/CCPluginAPI/ccPickingListener.h ✅
+- libs/CCPluginAPI/ccQtHelpers.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -716,3 +717,8 @@ libs/
   - Enhanced @file with picking listener interface overview
   - Added @class documentation
   - Documented PickedItem struct
+
+- `docs: enhance ccQtHelpers.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with Qt helper utilities overview
+  - Added @class documentation
+  - Documented thread count optimization
