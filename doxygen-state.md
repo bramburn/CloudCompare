@@ -65,6 +65,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccLabelingDlg.h ✅
 - qCC/ccLibAlgorithms.h ✅
 - qCC/ccPointPairRegistrationDlg.h ✅
+- qCC/ccEnvelopeExtractor.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -374,3 +375,8 @@ libs/
   - Enhanced @file with Horn's algorithm overview
   - Added @class documentation
   - Documented EntityContext struct and registration flow
+
+- `docs: enhance ccEnvelopeExtractor.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with envelope extraction overview
+  - Added @class documentation
+  - Documented EnvelopeType enum and extraction methods
