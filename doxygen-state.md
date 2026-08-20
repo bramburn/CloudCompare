@@ -24,6 +24,8 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccEntityAction.h ✅
 - qCC/pluginManager/ccPluginUIManager.h ✅
 - qCC/pluginManager/ccPluginUIManager.cpp ✅
+- qCC/ccAdjustZoomDlg.h ✅
+- qCC/ccAdjustZoomDlg.cpp ✅
 
 ### In Progress
 - (next file to be selected)
@@ -137,3 +139,9 @@ libs/
   - Enhanced @file, @class documentation
   - Added @brief for all methods
   - Added @param documentation
+
+- `docs: enhance ccAdjustZoomDlg.h and ccAdjustZoomDlg.cpp` - 2026-08-26
+  - Enhanced @file, @class documentation with architecture context
+  - Added @details about synchronized parameter controls
+  - Documented slot handlers and conversion formulas
+  - Added @par usage example
