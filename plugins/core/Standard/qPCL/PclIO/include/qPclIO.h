@@ -1,3 +1,15 @@
+/**
+ * @file qPclIO.h
+ *
+ * @brief PCL I/O plugin.
+ *
+ * @details Plugin for Point Cloud Library (PCL) PCD format
+ * file import/export.
+ *
+ * @extends QObject
+ * @extends ccIOPluginInterface
+ */
+
 #ifndef Q_PCL_IO_PLUGIN_HEADER
 #define Q_PCL_IO_PLUGIN_HEADER
 
