@@ -935,6 +935,16 @@ libs/
   - Added @class/@struct documentation
   - Documented saving and tiling
 
+- `docs: enhance LasDetails.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with LAS format details overview
+  - Added @namespace documentation
+  - Documented point format helpers
+
+- `docs: enhance LasVlr.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with VLR overview
+  - Added @struct documentation
+  - Documented serialization
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
