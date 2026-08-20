@@ -1,5 +1,11 @@
-#pragma once
-
+/**
+ * @file StatisticalOutliersRemover.h
+ *
+ * @brief Statistical outliers remover filter.
+ *
+ * @details Filter for removing statistical outliers
+ * from point clouds using PCL.
+ */
 //##########################################################################
 //#                                                                        #
 //#                       CLOUDCOMPARE PLUGIN: qPCL                        #
