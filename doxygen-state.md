@@ -67,6 +67,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccPointPairRegistrationDlg.h ✅
 - qCC/ccEnvelopeExtractor.h ✅
 - qCC/ccRasterizeTool.h ✅
+- qCC/ccRegistrationTools.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -386,3 +387,8 @@ libs/
   - Enhanced @file with rasterization overview
   - Added @class documentation
   - Documented ExportBands struct and export methods
+
+- `docs: enhance ccRegistrationTools.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with ICP algorithm overview
+  - Added @class documentation
+  - Documented ICP() method with algorithm explanation
