@@ -945,6 +945,10 @@ libs/
   - Added @struct documentation
   - Documented serialization
 
+- `docs: enhance PdmsParser.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with PDMS parser overview
+  - Added @class documentation
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
