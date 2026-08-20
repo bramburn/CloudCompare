@@ -102,6 +102,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccGraphicalSegmentationTool.h ✅
 - qCC/ccShortcutDialog.h ✅
 - qCC/ccSensorComputeScatteringAnglesDlg.h ✅
+- qCC/ccSectionExtractionSubDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -596,3 +597,8 @@ libs/
   - Enhanced @file with scattering angles computation overview
   - Added @class documentation
   - Documented degrees/radians output option
+
+- `docs: enhance ccSectionExtractionSubDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with section extraction parameters overview
+  - Added @class documentation
+  - Documented envelope type, thickness, and multi-pass options
