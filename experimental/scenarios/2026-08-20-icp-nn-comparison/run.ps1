@@ -14,9 +14,15 @@ $ErrorActionPreference = 'Stop'
 
 $here    = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sibling = Join-Path $here '..\2026-08-19-icp-variants'
-$sizes   = @(2000, 5000, 10000)
+$sizes   = @(2000, 5000, 10000, 50000)
 $seed    = 42
 $ts      = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ssZ')
+
+# At large N (50k) the naive O(n²) ICP is too slow for a quick
+# bench (>10 min). Skip it there; kiddo + octree are the
+# realistic options at that scale anyway. The kiddo advantage
+# is already clear at 10k.
+$skipVariantsAt50k = @('01-naive-on2')
 
 if (-not (Test-Path $sibling)) {
     throw "sibling scenario folder not found: $sibling"
@@ -59,6 +65,25 @@ foreach ($v in $variants) {
     }
 
     foreach ($n in $sizes) {
+        # Skip variants that are too slow at this size.
+        if ($n -ge 50000 -and $skipVariantsAt50k -contains $v.name) {
+            Write-Host "=== Skipping $($v.name) at N=$n (too slow: O(n^2) per iter) ==="
+            $row = [ordered]@{
+                variant       = $v.name
+                n             = $n
+                build_success = $true
+                test_success  = $true
+                iterations    = $null
+                converged     = $null
+                rms           = $null
+                nn_query_us   = $null
+                icp_wall_s    = $null
+                failure_mode  = 'skipped: too slow at N=50k (O(n^2))'
+            }
+            $results += [pscustomobject]$row
+            continue
+        }
+
         Write-Host "=== Running $($v.name) at N=$n ==="
         # The bench binary writes informational lines to stderr
         # (via eprintln!). PowerShell treats stderr as a non-

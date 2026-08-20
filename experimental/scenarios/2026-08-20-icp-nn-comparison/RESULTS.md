@@ -1,7 +1,7 @@
 ﻿# ICP NN comparison â€” results
 
-Generated: 2026-08-20T12:55:59Z
-Sizes tested: 2000, 5000, 10000   Seed: 42   (Gaussian blob, sigma=0.4, translation (0.5, -0.2, 0.1))
+Generated: 2026-08-20T13:47:42Z
+Sizes tested: 2000, 5000, 10000, 50000   Seed: 42   (Gaussian blob, sigma=0.4, translation (0.5, -0.2, 0.1))
 
 ## Correctness (RMS â€” all variants must agree)
 
@@ -10,6 +10,7 @@ Sizes tested: 2000, 5000, 10000   Seed: 42   (Gaussian blob, sigma=0.4, translat
 | 2000 | 0.000169 | 0.000169 | 0.000169 |
 | 5000 | 0.064658 | 0.064658 | 0.064658 |
 | 10000 | 0.060233 | 0.060233 | 0.060233 |
+| 50000 |  | 0.043904 | 0.043904 |
 
 All three must match exactly. If they do not, the trait dispatch is wrong.
 
@@ -17,17 +18,19 @@ All three must match exactly. If they do not, the trait dispatch is wrong.
 
 | Size | 01-naive-on2 (us/q) | 02-kiddo-kdtree (us/q) | 03-handrolled-octree (us/q) |
 |---|---|---|---|
-| 2000 |  | 0.3 | 7.41 |
-| 5000 |  | 0.28 | 16.96 |
-| 10000 |  | 0.31 | 36.97 |
+| 2000 |  | 0.29 | 8.21 |
+| 5000 |  | 0.37 | 17.42 |
+| 10000 |  | 0.32 | 48.68 |
+| 50000 |  | 0.49 | 312.18 |
 
 ## ICP wall time (end-to-end, NN-driven via the new trait)
 
 | Size | 01-naive-on2 (s) | 02-kiddo-kdtree (s) | 03-handrolled-octree (s) |
 |---|---|---|---|
-| 2000 | 0.238 | 0.021 | 0.354 |
-| 5000 | 2.005 | 0.077 | 3.93 |
-| 10000 | 7.505 | 0.175 | 19.762 |
+| 2000 | 0.257 | 0.025 | 0.366 |
+| 5000 | 2.013 | 0.092 | 4.149 |
+| 10000 | 8.15 | 0.177 | 20.096 |
+| 50000 |  | 1.099 | 768.194 |
 
 ## Iterations and convergence
 
@@ -36,6 +39,7 @@ All three must match exactly. If they do not, the trait dispatch is wrong.
 | 2000 | 35 / true | 35 / true | 35 / true |
 | 5000 | 50 / false | 50 / false | 50 / false |
 | 10000 | 50 / false | 50 / false | 50 / false |
+| 50000 |  /  | 50 / false | 50 / false |
 
 ## Winner
 

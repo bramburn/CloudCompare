@@ -370,22 +370,38 @@ the wall-time numbers were not a real comparison.
   converged flag) — the trait dispatch is correct.
 - **End-to-end ICP wall time (NN-driven, Gaussian, seed=42):**
 
-  | Variant | N=2k | N=5k | N=10k | Speedup @ 10k |
-  |---|---|---|---|---|
-  | `01-naive-on2` | 0.247 s | 2.03 s | 7.54 s | 1.0× |
-  | `02-kiddo-kdtree` | **0.021 s** | **0.080 s** | **0.175 s** | **43×** |
-  | `03-handrolled-octree` | 0.359 s | 3.34 s | 18.5 s | 0.41× |
+  | Variant | N=2k | N=5k | N=10k | N=50k | Speedup @ 10k |
+  |---|---|---|---|---|---|
+  | `01-naive-on2` | 0.247 s | 2.03 s | 7.54 s | (skipped, O(n²)) | 1.0× |
+  | `02-kiddo-kdtree` | **0.021 s** | **0.080 s** | **0.175 s** | **1.10 s** | **43×** |
+  | `03-handrolled-octree` | 0.359 s | 3.34 s | 18.5 s | 768 s | 0.41× |
 
-  kiddo is **43× faster than naive at 10k** end-to-end. The
-  hand-rolled octree is *slower* than naive because its
-  `search()` falls back to depth-first traversal without AABB
-  pruning (the per-child AABB isn't preserved through the
-  recursion, so `min_dist_sq` can't fire at the internal-node
-  level). The hand-rolled octree was a learning exercise for
-  the DgmOctree port (D-phase 3), not a tuned implementation.
-  The DgmOctree port in `cc-rust/src/dgm_octree.rs` will be
-  the production-quality version; the D9 candidate is the
+  kiddo is **43× faster than naive at 10k** and **~700× faster
+  than the broken octree at 50k** end-to-end. The hand-rolled
+  octree is *slower* than naive because its `search()` falls
+  back to depth-first traversal without AABB pruning (the
+  per-child AABB isn't preserved through the recursion, so
+  `min_dist_sq` can't fire at the internal-node level). The
+  hand-rolled octree was a learning exercise for the DgmOctree
+  port (D-phase 3), not a tuned implementation. The DgmOctree
+  port in `cc-rust/src/dgm_octree.rs` will be the
+  production-quality version; the D9 candidate is the
   cell-code-ordered NN search in that octree.
+- **End-to-end on real data (D8 deliverable on the brook-avenue
+  scan, 2026-08-20):**
+
+  | Variant | Iterations | Wall (s) | RMS | Recovered tx |
+  |---|---|---|---|---|
+  | `01-naive-on2` | 13 | 51.6 | 0.000001 | -0.5000 ✓ |
+  | `02-kiddo-kdtree` | 13 | **0.22** | 0.000001 | -0.5000 ✓ |
+  | `03-handrolled-octree` | 13 | 217.0 | 0.000001 | -0.5000 ✓ |
+
+  All three NNs recover the 0.5m translation exactly (tx_err
+  = 0.0000) on the 49,729-point subsample of the brook-avenue
+  scan. kiddo is **230× faster than naive** and **1000× faster
+  than the broken octree** end-to-end on real survey data.
+  See `sessions/2026-08-20-d8-realdata-all-nns/` for the
+  full test.
 
 **Promotion of the scenario:** the scenario
 `2026-08-19-icp-variants` can now move from `benchmarked` to
@@ -393,7 +409,10 @@ the wall-time numbers were not a real comparison.
 `2026-08-20-icp-nn-comparison` provides the end-to-end
 numbers, the kiddo variant is picked as the winner, and
 `scenarios/2026-08-19-icp-variants/decisions.md` will be
-updated to reflect that.
+updated to reflect that. The real-data session
+`2026-08-20-d8-realdata-all-nns` is the on-the-bench validation
+that the trait dispatch works on real survey data, not just
+synthetic Gaussian.
 
 **When to revisit:**
 - D9 (cell-code-ordered NN in DgmOctree) is the next work

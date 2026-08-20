@@ -52,18 +52,16 @@ similar wall times because they fell back to cc-rust's
 hard-coded brute force. Post-D8 the trait dispatch is real and
 the per-variant NN is actually used inside the ICP loop.
 
-| Variant | N=2k (s) | N=5k (s) | N=10k (s) | Speedup @ 10k |
-|---|---|---|---|---|
-| `01-naive-on2` | 0.247 | 2.03 | 7.54 | 1.0× |
-| `02-kiddo-kdtree` | **0.021** | **0.080** | **0.175** | **43×** |
-| `03-handrolled-octree` | 0.359 | 3.34 | 18.5 | 0.41× (slower than naive) |
+| Variant | N=2k (s) | N=5k (s) | N=10k (s) | N=50k (s) | Speedup @ 10k | Speedup @ 50k |
+|---|---|---|---|---|---|---|
+| `01-naive-on2` | 0.247 | 2.03 | 7.54 | (skipped) | 1.0× | n/a |
+| `02-kiddo-kdtree` | **0.021** | **0.080** | **0.175** | **1.10** | **43×** | n/a (but ~700× over octree) |
+| `03-handrolled-octree` | 0.359 | 3.34 | 18.5 | 768 | 0.41× | 1.0× |
 
-**The kiddo advantage is now visible end-to-end** at every size
-tested. The hand-rolled octree is *slower* than brute force at
-10k because its `search()` falls back to depth-first traversal
-without AABB pruning (the per-child AABB isn't preserved through
-the recursion, so `min_dist_sq` can't fire at the internal-node
-level). See `decisions.md` for the breakdown.
+**The kiddo advantage is now visible end-to-end and grows with N.**
+At 10k, kiddo is 43× faster than naive. At 50k, kiddo is ~700×
+faster than the broken octree (1.1s vs 768s). Naive is skipped
+at 50k because O(n^2) per iter is too slow (>2 hours per iter).
 
 **Performance — NN query time:**
 

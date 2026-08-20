@@ -1,0 +1,47 @@
+{
+  "iterations": 30,
+  "las_file": "D:\\82 BROOK AVENUE\\output\\2026-08-13-09-46-35_82 brook avenue.splice.las",
+  "max_rms_diff": 2.1974152204094075e-9,
+  "max_tx_err": 2.1195759103420642e-7,
+  "n_subsample": 49729,
+  "n_total": 7459206,
+  "question": "D8 end-to-end: same data, same ICP algorithm, different NN — compare wall time and correctness.",
+  "results": [
+    {
+      "converged": true,
+      "iterations": 13,
+      "recovered_tx": -0.49999978804240897,
+      "recovered_ty": -3.7942456737963e-8,
+      "recovered_tz": 1.371466858076948e-7,
+      "rms": 1.0616104490417852e-6,
+      "tx_err": 2.1195759103420642e-7,
+      "variant": "01-naive-on2",
+      "wall_seconds": 46.2723271
+    },
+    {
+      "converged": true,
+      "iterations": 13,
+      "recovered_tx": -0.49999979559546964,
+      "recovered_ty": -3.446353912472076e-8,
+      "recovered_tz": 1.4270383913905695e-7,
+      "rms": 1.0638078642621946e-6,
+      "tx_err": 2.04404530357305e-7,
+      "variant": "02-kiddo-kdtree",
+      "wall_seconds": 0.2154929
+    },
+    {
+      "converged": true,
+      "iterations": 13,
+      "recovered_tx": -0.49999978804240897,
+      "recovered_ty": -3.7942456737963e-8,
+      "recovered_tz": 1.371466858076948e-7,
+      "rms": 1.0616104490417852e-6,
+      "tx_err": 2.1195759103420642e-7,
+      "variant": "03-handrolled-octree",
+      "wall_seconds": 188.9645458
+    }
+  ],
+  "scenario": "2026-08-20-d8-realdata-all-nns",
+  "stride": 150,
+  "translation": 0.5
+}

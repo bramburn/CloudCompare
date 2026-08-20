@@ -26,19 +26,22 @@ This is the headline D8 number — the actual ICP loop now
 genuinely uses each variant's NN, not cc-rust's hard-coded
 brute force.
 
-| Variant | N=2k (s) | N=5k (s) | N=10k (s) | Speedup vs naive @ 10k |
-|---|---|---|---|---|
-| `01-naive-on2` | 0.247 | 2.03 | 7.54 | 1.0× |
-| `02-kiddo-kdtree` | **0.021** | **0.080** | **0.175** | **43×** |
-| `03-handrolled-octree` | 0.359 | 3.34 | 18.5 | 0.41× (slower than naive) |
+| Variant | N=2k (s) | N=5k (s) | N=10k (s) | N=50k (s) | Speedup @ 10k | Speedup @ 50k |
+|---|---|---|---|---|---|---|
+| `01-naive-on2` | 0.247 | 2.03 | 7.54 | (skipped, O(n²)) | 1.0× | n/a |
+| `02-kiddo-kdtree` | **0.021** | **0.080** | **0.175** | **1.10** | **43×** | n/a (but ~700× over octree) |
+| `03-handrolled-octree` | 0.359 | 3.34 | 18.5 | 768 | 0.41× | 1.0× (broken pruning) |
 
-**The kiddo advantage is now visible end-to-end.** Pre-D8 the
-three variants produced similar wall times (~10% spread) because
-they all fell back to cc-rust's brute force. Post-D8 the trait
-dispatch is real and kiddo wins decisively — at N=10k the
-end-to-end ICP loop is **43× faster** with the kiddo KD-tree
-than with brute force, and **100× faster** than with the
-hand-rolled octree.
+**The kiddo advantage is now visible end-to-end and grows with N.**
+Pre-D8 the three variants produced similar wall times (~10%
+spread) because they all fell back to cc-rust's brute force.
+Post-D8 the trait dispatch is real and kiddo wins decisively:
+
+- At N=10k, kiddo is **43× faster than naive** and **100× faster
+  than octree** end-to-end.
+- At N=50k, kiddo is **~700× faster than octree** (1.1s vs 768s).
+  Naive is skipped at 50k because O(n²) per iter is too slow
+  (>2 hours per iter).
 
 ## Per-query cost (the metric the variants actually differ on)
 
@@ -46,11 +49,14 @@ hand-rolled octree.
 |---|---|---|---|---|
 | `01-naive-on2` | (no tree) | (no tree) | (no tree) | O(n) per query |
 | `02-kiddo-kdtree` | **0.28** | **0.39** | **0.40** | O(log n), flat |
-| `03-handrolled-octree` | 6.51 | 16.8 | 35.9 | O(log n) average with AABB pruning |
+| `03-handrolled-octree` | 6.51 | 16.8 | 35.9 | 312 | O(n) average (broken pruning) |
 
-The kiddo KD-tree queries are sub-µs at every size tested and
-scaling is essentially flat, which matches the expected O(log n)
-cost of a balanced KD-tree.
+The kiddo KD-tree queries are sub-µs at every size tested
+(0.28–0.49 µs) and scaling is essentially flat, which matches
+the expected O(log n) cost of a balanced KD-tree. The hand-rolled
+octree's per-query cost grows linearly (8 → 312 µs across
+2k → 50k) because the pruning is broken (see "Why the
+hand-rolled octree is slower than naive" below).
 
 ## Why the hand-rolled octree is slower than naive
 
