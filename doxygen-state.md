@@ -1146,6 +1146,15 @@ libs/
 - `docs: enhance StatisticalOutliersRemoverDlg.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with statistical outliers remover dialog overview
 
+- `docs: enhance ExtractSIFT.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with SIFT extraction filter overview
+
+- `docs: enhance FastGlobalRegistration.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with FGR algorithm overview
+
+- `docs: enhance NormalEstimation.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with normal estimation filter overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
