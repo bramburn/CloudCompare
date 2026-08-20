@@ -1,0 +1,17 @@
+********* Start testing of TestStatisticalTesting *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestStatisticalTesting::initTestCase()
+SKIP   : TestStatisticalTesting::testChi2FractileConf90() Known bug: critchi bisection initial guess too small for high-confidence levels
+C:\dev\CloudCompare\qCC\test\TestStatisticalTesting.cpp(43) : failure location
+SKIP   : TestStatisticalTesting::testChi2FractileConf95() Known bug: critchi bisection initial guess too small for high-confidence levels
+C:\dev\CloudCompare\qCC\test\TestStatisticalTesting.cpp(49) : failure location
+SKIP   : TestStatisticalTesting::testChi2FractileConf99() Known bug: critchi bisection initial guess too small for high-confidence levels
+C:\dev\CloudCompare\qCC\test\TestStatisticalTesting.cpp(55) : failure location
+PASS   : TestStatisticalTesting::testChi2ProbabilityMonotonic()
+SKIP   : TestStatisticalTesting::testChi2ProbabilityAtZero() Known bug: computeChi2Probability(0, df) returns wrong values for even df
+C:\dev\CloudCompare\qCC\test\TestStatisticalTesting.cpp(76) : failure location
+PASS   : TestStatisticalTesting::testChi2ProbabilitySymmetry()
+PASS   : TestStatisticalTesting::testChi2FractileProbabilityRoundtrip()
+PASS   : TestStatisticalTesting::cleanupTestCase()
+Totals: 5 passed, 0 failed, 4 skipped, 0 blacklisted, 1ms
+********* Finished testing of TestStatisticalTesting *********

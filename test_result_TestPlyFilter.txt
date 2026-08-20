@@ -1,0 +1,21 @@
+********* Start testing of TestPlyFilter *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestPlyFilter::initTestCase()
+PASS   : TestPlyFilter::testLoadAsciiMinimal()
+PASS   : TestPlyFilter::testLoadAsciiWithColors()
+PASS   : TestPlyFilter::testLoadAsciiWithScalarField()
+QWARN  : TestPlyFilter::testSaveLoadRoundtrip() FileIO::setWriterInfo has not been called
+PASS   : TestPlyFilter::testSaveLoadRoundtrip()
+QWARN  : TestPlyFilter::testSaveLoadRoundtripWithColors() FileIO::setWriterInfo has not been called
+PASS   : TestPlyFilter::testSaveLoadRoundtripWithColors()
+PASS   : TestPlyFilter::testSetDefaultOutputFormat()
+PASS   : TestPlyFilter::testSetAddSFPrefix()
+PASS   : TestPlyFilter::testCanSave()
+PASS   : TestPlyFilter::testLoadNonexistentFile()
+QWARN  : TestPlyFilter::testSaveWithMesh() FileIO::setWriterInfo has not been called
+PASS   : TestPlyFilter::testSaveWithMesh()
+PASS   : TestPlyFilter::testSaveNullEntity()
+PASS   : TestPlyFilter::testSaveEmptyFilename()
+PASS   : TestPlyFilter::cleanupTestCase()
+Totals: 14 passed, 0 failed, 0 skipped, 0 blacklisted, 35ms
+********* Finished testing of TestPlyFilter *********

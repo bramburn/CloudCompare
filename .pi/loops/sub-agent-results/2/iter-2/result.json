@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "loopId": "2",
+  "iterId": 2,
+  "status": "failed",
+  "startedAt": "2026-08-20T10:55:03.412Z",
+  "finishedAt": "2026-08-20T10:55:05.527Z",
+  "durationMs": 2115,
+  "tokens": {
+    "in": 0,
+    "out": 0,
+    "total": 0
+  },
+  "costUsd": 0,
+  "exitCode": 1,
+  "processSignal": null,
+  "resultPath": null,
+  "preview": "(failed) no result.md",
+  "childSessionPath": "c:\\dev\\CloudCompare\\.pi\\loops\\sub-agent-results\\2\\iter-2\\session.jsonl",
+  "errorMessage": "exit 1"
+}

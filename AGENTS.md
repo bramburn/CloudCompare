@@ -428,39 +428,63 @@ To see a docs deploy: GitHub → Actions → "Deploy docs site to GitHub Pages" 
 - `qCC/test/CMakeLists.txt` — test binary wiring; if you add a new test target, copy the existing `add_executable` + `target_link_libraries` + `add_test` pattern.
 - `plugins/core/CMakeLists.txt` — plugin enumeration; add new plugin subdirs here.
 
-## Qt 6 Migration (Qt 6.8.3)
+## Qt 6 Migration (Qt 6.8.3) — 2026-08-19
 
-Four tracking issues on upstream: [#2367](https://github.com/CloudCompare/CloudCompare/issues/2367) (critical API removals), [#2368](https://github.com/CloudCompare/CloudCompare/issues/2368) (deprecated patterns), [#2369](https://github.com/CloudCompare/CloudCompare/issues/2369) (build config), [#2370](https://github.com/CloudCompare/CloudCompare/issues/2370) (signals/slot MOC). Label `qt6:migration` should be applied once org admin creates it.
-
-**FIXED — already migrated (no action needed):**
-- CMake build system: `find_package(Qt6)`, `qt6_wrap_ui()`, `Qt6::Widgets`, `Qt6::OpenGLWidgets` — all correct
-- `QOpenGLWidget` / `QOpenGLVersionFunctionsFactory` — canonical Qt 6 pattern throughout (except GL plugins — now fixed)
-- `QCustomPlot` vendored lib — has dual-mode `Q_ENUM_NS` / `Q_ENUMS` guards ✅
+### Already migrated (no action needed)
+- CMake build system: `find_package(Qt6)`, `qt6_wrap_ui()`, `Qt6::Widgets`, `Qt6::OpenGLWidgets`
+- `QOpenGLWidget` / `QOpenGLVersionFunctionsFactory` — canonical Qt 6 pattern
+- `QCustomPlot` vendored lib — dual-mode `Q_ENUM_NS` / `Q_ENUMS` guards ✅
 - `QRegExp`, `QSignalMapper`, `Q_FOREACH` in project code — none found
 - `QDesktopWidget`, `QWebEngine`, `QProcess::startDetached` — none found
 
-**FIXED — all critical Qt 6 migration fixes applied (2026-08-19):**
-- `QKeySequence::Cancel` → `QKeySequence(Qt::Key_Escape)` — `libs/CCPluginAPI/src/ccOverlayDialog.cpp:40`
-- `QColorDialog::getColor` 4-arg → dialog-object pattern — 10 occurrences across `CCAppCommon`, `qCC`, `qCloudLayers`
-- `QItemSelectionModel::clear()` → `clearSelection()` — `qCC/db_tree/ccDBRoot.cpp:954,1007`
-- `qCC/translations/CMakeLists.txt` → derives Qt6 path from `Qt6::lconvert` target (translations now bundling)
-- `QHeaderView::setResizeMode()` → `setSectionResizeMode()` — all 5 files already migrated (confirmed clean)
-- `QScopedPointer` → `std::unique_ptr` — 11 files across `qCC_io`, `qCC_db`, plugins (all fixed)
-- `Q_SIGNALS`/`Q_EMIT`/`Q_SLOTS` → Qt6 style — 6 `.h` + 5 `.cpp` files (all fixed)
-- `qRegisterMetaType<T>("T")` string-arg → `qRegisterMetaType<T>()` — `Mouse3DInput.cpp`
-- Metatype declarations added: `ccGLMatrixd`, `CCVector3d`, `CCVector3`, `std::unordered_set<int>`
-- `qEDL` / `qSSAO` GL plugins → `QOpenGLVersionFunctionsFactory::get<>()` pattern (all 4 files fixed)
-- Dead `QGLFormat` in `#if 0` block removed — `ccGLWindowInterface.cpp`
-- `qt5.natvis` → `qt6.natvis` + CMakeLists.txt refs updated
-- `BUILD.md` Qt 5 example paths → Qt 6 paths updated
+### Fixed — critical migration fixes applied
+| Fix | Files | Notes |
+|-----|-------|-------|
+| `QVariant::typeToName(var.type())` → `var.typeName()` | 2 files | Qt 6 removed `QVariant::typeToName()` |
+| `Q_EMIT` → `emit` | ~20 files | `QT_NO_KEYWORDS` defined in QCC_DB_LIB |
+| `Q_SIGNALS` → `signals:` | ~14 files | |
+| `Q_SLOT` → `slots:` | ~9 files | |
+| `signals::` (C++ label typo) → `signals:` | 14 files | double-colon is invalid in MOC; include order matters — `#include <QObject>` must come before any file that uses `signals:` |
+| `QKeySequence::Cancel` → `QKeySequence(Qt::Key_Escape)` | `ccOverlayDialog.cpp:40` | |
+| `QColorDialog::getColor` 4-arg → dialog-object pattern | 10 files | Qt 6 removed the static helper |
+| `QItemSelectionModel::clear()` → `clearSelection()` | `ccDBRoot.cpp` | |
+| `qRegisterMetaType<T>("T")` → `qRegisterMetaType<T>()` | `Mouse3DInput.cpp` | string arg removed in Qt 6 |
+| `QHeaderView::setResizeMode()` → `setSectionResizeMode()` | 5 files | |
+| `QScopedPointer` → `std::unique_ptr` | 11 files | |
+| `qEDL`/`qSSAO` GL → `QOpenGLVersionFunctionsFactory::get<>()` | 4 files | |
+| `qt5.natvis` → `qt6.natvis` | CMakeLists.txt | |
+| `ccGLWindowStereo` dead `QGLFormat` in `#if 0` | `ccGLWindowInterface.cpp` | removed |
+| `ccViewportParameters.h` missing accessors | added `cameraCenterDirect()` + `focalDistanceDirect()` | for test code needing direct member access |
+| Test files: `CCCoreLib::LoadParameters` → `FileIOFilter::LoadParameters` | `TestImageFilter.cpp`, `TestPlyFilter.cpp`, `TestDxfFilter.cpp` | `LoadParameters`/`SaveParameters` are nested in `class FileIOFilter`, not in `CCCoreLib` |
+| Test files: removed bogus `CC_FILE_ERROR::` scope prefix | same test files | `CC_FILE_ERROR` is a plain enum; `::` prefix causes MSVC C2589 under `/permissive-` |
+| Test files: `CC_FERR_FILE_WAS_NOT_FOUND` → `CC_FERR_UNKNOWN_FILE` | same test files | bogus enum value that doesn't exist in `CC_FILE_ERROR` |
+| Test files: `saveParams.alwaysDisplayLoadDialog` → `alwaysDisplaySaveDialog` | same test files | `SaveParameters` has `alwaysDisplaySaveDialog`, not `alwaysDisplayLoadDialog` |
+| `TestDistributions.cpp`: `using CCCoreLib::GenericDistribution::ScalarContainer` | namespace-scope using of nested class is invalid C++ → use `using ScalarContainer = CCCoreLib::GenericDistribution::ScalarContainer` | |
+| `TestConsole` CMakeLists.txt: added `ccConsole.cpp` + all libs | `qCC/test/CMakeLists.txt` | `ccConsole` static methods are defined in `ccConsole.cpp`, not exported from any library. Test must compile it directly. |
 
-**Remaining warnings (compile but should be cleaned up):**
+### Key lessons from this migration
+
+**`LoadParameters`/`SaveParameters` are `FileIOFilter::` nested structs.**
+Not in `CCCoreLib`. The forward declaration `namespace CCCoreLib { class GenericProgressCallback; class ReferenceCloud; }` in `ccGenericPointCloud.h` is a red herring — `LoadParameters` was never in `CCCoreLib`. Fix: `FileIOFilter::LoadParameters` and `FileIOFilter::SaveParameters`.
+
+**`CC_FILE_ERROR` is a plain enum — no `::` scope prefix.**
+Under MSVC `/permissive-` mode, qualified-name lookup fails on plain enums. Use bare enum values: `CC_FERR_NO_ERROR`, `CC_FERR_UNKNOWN_FILE`, etc. No `CC_FILE_ERROR::` prefix.
+
+**`CC_FERR_FILE_WAS_NOT_FOUND` does not exist.** Only `CC_FERR_UNKNOWN_FILE` exists. Any test using the former will compile-fail silently or link-fail.
+
+**`signals::` (double-colon) is a typo — `signals:` (no colon) is correct.**
+The C++ label syntax `signals::` is invalid MOC syntax. Qt signal/slot keywords are: `signals:` (no `::`), `slots:` (no `::`), and `emit` (no `Q_`). Include order matters: `#include <QObject>` must appear before any file that declares `signals:` in a class.
+
+**`ScalarContainer` is nested inside `GenericDistribution`.**
+`using CCCoreLib::GenericDistribution::ScalarContainer` at namespace scope is invalid C++. Use a typedef: `using ScalarContainer = CCCoreLib::GenericDistribution::ScalarContainer;`.
+
+**`ccConsole` methods need `ccConsole.cpp` in the test binary.**
+`ccConsole` static methods (`Init`, `TheInstance`, `ReleaseInstance`, `SetRefreshCycle`, `EnableQtMessages`) are defined in `qCC/ccConsole.cpp`, not exported from any library. Any test using `ccConsole` must add `${CMAKE_CURRENT_LIST_DIR}/../ccConsole.cpp` to its `add_executable()` and link all required libs.
+
+**Parallel build (`-j16`) causes silent failures.**
+Some compilation jobs fail silently under high parallelism, leaving missing `.obj` files that cause link errors. Rebuild until all targets complete cleanly.
+
+### Remaining warnings (compile but should be cleaned up)
 - `ccGLWindowStereo` uses legacy `QWindow`+manual-context pattern — should mirror `ccGLWindow`'s `QOpenGLWidget` inheritance
 - `QOffscreenSurface` construction: format set after construction — defensively fragile in Qt 6
-- GL plugins (`qEDL`, `qSSAO`): `initializeOpenGLFunctions()` on stored member → `QOpenGLVersionFunctionsFactory::get<>()`
-- `ccGLWindowStereo`: legacy `QWindow`+manual-context pattern → should mirror `ccGLWindow`'s `QOpenGLWidget` inheritance
-- `QScopedPointer` → `std::unique_ptr` — ~11 files in `qCC_io`, `qCC_db`, plugins
-- `Q_SIGNALS`/`Q_EMIT`/`Q_SLOTS` macros → Qt 6 style (`signals:`/`emit`/`slots:`)
-- Metatype registration gaps: `ccGLMatrixd`, `CCVector3d`, `std::vector<float>`, `std::unordered_set<int>` in queued signals
-
-**Cosmetic:** `qt5.natvis` filename → rename to `qt6.natvis`; `BUILD.md` has Qt 5.15.2 example paths that should be Qt 6 paths.
+- `QColorDialog::getColor` still used in 5 files (compiles but deprecated)

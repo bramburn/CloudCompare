@@ -1,0 +1,28 @@
+********* Start testing of TestDistributions *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestDistributions::initTestCase()
+PASS   : TestDistributions::testNormalPDFPeakAtMu()
+PASS   : TestDistributions::testNormalPDFPositive()
+PASS   : TestDistributions::testNormalPDFAtInfinity()
+PASS   : TestDistributions::testNormalPFromZeroAtMu()
+PASS   : TestDistributions::testNormalPFromZeroIsCdf()
+PASS   : TestDistributions::testNormalSetGetParameters()
+PASS   : TestDistributions::testNormalSetInvalidVariance()
+PASS   : TestDistributions::testNormalComputeParameters()
+PASS   : TestDistributions::testNormalComputeParametersAllNAN()
+PASS   : TestDistributions::testNormalComputeRobustParameters()
+PASS   : TestDistributions::testNormalChi2Dist()
+PASS   : TestDistributions::testNormalChi2DistInvalid()
+PASS   : TestDistributions::testNormalChi2DistNClasses1()
+PASS   : TestDistributions::testNormalGetName()
+PASS   : TestDistributions::testWeibullSetGetParameters()
+PASS   : TestDistributions::testWeibullPDFPositive()
+PASS   : TestDistributions::testWeibullPFromZero()
+PASS   : TestDistributions::testWeibullMode()
+PASS   : TestDistributions::testWeibullSkewness()
+PASS   : TestDistributions::testWeibullComputeParameters()
+PASS   : TestDistributions::testWeibullGetOtherParameters()
+PASS   : TestDistributions::testWeibullGetName()
+PASS   : TestDistributions::cleanupTestCase()
+Totals: 24 passed, 0 failed, 0 skipped, 0 blacklisted, 3ms
+********* Finished testing of TestDistributions *********

@@ -1,0 +1,17 @@
+********* Start testing of TestScalarField *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestScalarField::initTestCase()
+PASS   : TestScalarField::testComputeMeanScalarValue()
+PASS   : TestScalarField::testComputeMeanScalarValueEmpty()
+PASS   : TestScalarField::testComputeScalarFieldExtremas()
+SKIP   : TestScalarField::testComputeScalarFieldExtremasNoSF() computeScalarFieldExtremas crashes on cloud with no active SF
+C:\dev\CloudCompare\qCC\test\TestScalarField.cpp(114) : failure location
+PASS   : TestScalarField::testCountScalarFieldValidValues()
+PASS   : TestScalarField::testComputeScalarFieldHistogram()
+PASS   : TestScalarField::testComputeScalarFieldHistogramSingleBin()
+PASS   : TestScalarField::testApplyScalarFieldGaussianFilter()
+PASS   : TestScalarField::testComputeKmeans()
+PASS   : TestScalarField::testComputeKmeansK1()
+PASS   : TestScalarField::cleanupTestCase()
+Totals: 11 passed, 0 failed, 1 skipped, 0 blacklisted, 17ms
+********* Finished testing of TestScalarField *********

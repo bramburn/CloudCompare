@@ -73,12 +73,12 @@ private slots:
 		double fovX_deg = 60.0;
 		double aspect = 16.0 / 9.0;
 		double fovX_rad = fovX_deg * M_PI / 180.0;
-		double fovY_rad = 2.0 * std::atan(std::tan(fovX_rad / 2.0) * aspect);
+		// Vertical FOV: fovY = 2 * atan(tan(fovX/2) * height/width)
+		// 2*atan(tan(30°) * 9/16) = 2*atan(0.288675) ≈ 2*0.2803 rad ≈ 36.9°
+		double fovY_rad = 2.0 * std::atan(std::tan(fovX_rad / 2.0) * (1.0 / aspect));
 		double fovY_deg = fovY_rad * 180.0 / M_PI;
-		// With 60° horizontal FOV and 16:9 aspect, vertical FOV should be ~36.9°? No:
-		// tan(30°) ≈ 0.577, * 1.778 ≈ 1.026, atan(1.026) ≈ 0.795 rad ≈ 45.6°
-		QVERIFY(fovY_deg > 40.0);
-		QVERIFY(fovY_deg < 50.0);
+		QVERIFY(fovY_deg > 30.0);
+		QVERIFY(fovY_deg < 45.0);
 	}
 
 	void testRotationMatrixDeterminant()

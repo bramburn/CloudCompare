@@ -42,7 +42,7 @@ private slots:
 	{
 		// Default sensor type is UNKNOWN
 		ccSensor sensor("test");
-		QCOMPARE(sensor.getSensorType(), UNKNOWN_SENSOR);
+		QCOMPARE(sensor.getType(), UNKNOWN_SENSOR);
 	}
 
 	void testSphericalToCartesianMath()

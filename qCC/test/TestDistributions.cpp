@@ -21,6 +21,7 @@
 #include <ScalarField.h>
 #include <NormalDistribution.h>
 #include <WeibullDistribution.h>
+#include <GenericDistribution.h>
 
 #include <QTest>
 #include <QString>
@@ -30,9 +31,13 @@
 using CCCoreLib::NormalDistribution;
 using CCCoreLib::WeibullDistribution;
 using CCCoreLib::ScalarField;
-using ScalarContainer = CCCoreLib::GenericDistribution::ScalarContainer;
+using CCCoreLib::GenericDistribution;
 using CCCoreLib::GenericCloud;
 using CCCoreLib::NAN_VALUE;
+
+// Concrete ScalarContainer wrappers from GenericDistribution.h
+using SFAsScalarContainer = CCCoreLib::GenericDistribution::SFAsScalarContainer;
+using VectorAsScalarContainer = CCCoreLib::GenericDistribution::VectorAsScalarContainer;
 
 // Helper: create a cloud with N points and one activated SF containing the given values
 static ccPointCloud* makeCloudWithSF(const std::vector<ScalarType>& values)
@@ -132,12 +137,10 @@ private slots:
 
 	void testNormalComputeParameters()
 	{
-		// Compute parameters from known values: mean=2, variance=0.5
+		// Compute parameters from known values: mean=2, variance=2/3
 		// Values: 1, 2, 3 — mean=2, variance=((1-2)^2+(2-2)^2+(3-2)^2)/3 = 2/3
-		ScalarContainer values;
-		values.addElement(1.0f);
-		values.addElement(2.0f);
-		values.addElement(3.0f);
+		std::vector<ScalarType> vec = {1.0f, 2.0f, 3.0f};
+		VectorAsScalarContainer values(vec);
 
 		NormalDistribution dist;
 		QVERIFY(dist.computeParameters(values));
@@ -145,15 +148,17 @@ private slots:
 		ScalarType mu = 0, sigma2 = 0;
 		dist.getParameters(mu, sigma2);
 		QCOMPARE(mu, 2.0f);
-		QCOMPARE(sigma2, 2.0f / 3.0f); // population variance
+		// Population variance = 2/3. Use double to avoid float precision mismatch
+		// in Qt's QFUZZYCOMPARE: float(2/3)=0.66666669 vs double(2/3)=0.66666666...
+		QVERIFY2(std::abs(static_cast<double>(sigma2) - 2.0/3.0) < 1e-10,
+		         "sigma2 should equal 2/3 (population variance of {1,2,3})");
 	}
 
 	void testNormalComputeParametersAllNAN()
 	{
 		// All-NAN input should fail
-		ScalarContainer values;
-		values.addElement(NAN_VALUE);
-		values.addElement(NAN_VALUE);
+		std::vector<ScalarType> vec = {NAN_VALUE, NAN_VALUE};
+		VectorAsScalarContainer values(vec);
 
 		NormalDistribution dist;
 		QVERIFY(!dist.computeParameters(values));
@@ -164,12 +169,8 @@ private slots:
 	{
 		// Values: mostly 0..1, with two extreme outliers (100, -100)
 		// Robust should filter outliers and compute mean ≈ 0.5
-		ScalarContainer values;
-		values.addElement(0.0f);
-		values.addElement(0.5f);
-		values.addElement(1.0f);
-		values.addElement(100.0f);
-		values.addElement(-100.0f);
+		std::vector<ScalarType> vec = {0.0f, 0.5f, 1.0f, 100.0f, -100.0f};
+		VectorAsScalarContainer values(vec);
 
 		NormalDistribution dist;
 		// nSigma=2: filter to within 2*stddev
@@ -186,12 +187,12 @@ private slots:
 	{
 		// Two identical distributions: chi2 distance should be near zero
 		// Create a cloud with values drawn from N(0, 1)
-		ScalarContainer values;
+		std::vector<ScalarType> vec;
 		for (int i = 0; i < 100; ++i)
 		{
-			float v = static_cast<float>(i) / 10.0f; // 0.0 to 9.9
-			values.addElement(v);
+			vec.push_back(static_cast<float>(i) / 10.0f); // 0.0 to 9.9
 		}
+		VectorAsScalarContainer values(vec);
 
 		NormalDistribution dist;
 		QVERIFY(dist.computeParameters(values));
@@ -200,8 +201,10 @@ private slots:
 		QVERIFY(cloud != nullptr);
 
 		// Chi2 distance with 5 classes
-		double chi2 = dist.computeChi2Dist(cloud, 5);
-		QVERIFY(chi2 >= 0.0);
+		// Note: requires cloud size >= nClasses*nClasses (5*5=25 elements)
+		// Test cloud has only 10 points, so use 3 classes instead (3*3=9 <= 10)
+		double chi2 = dist.computeChi2Dist(cloud, 3);
+		QVERIFY2(chi2 >= 0.0, "chi2 distance must be non-negative");
 
 		delete cloud;
 	}
@@ -286,10 +289,8 @@ private slots:
 	void testWeibullComputeParameters()
 	{
 		// Fit Weibull to positive values
-		ScalarContainer values;
-		values.addElement(1.0f);
-		values.addElement(2.0f);
-		values.addElement(3.0f);
+		std::vector<ScalarType> vec = {1.0f, 2.0f, 3.0f};
+		VectorAsScalarContainer values(vec);
 
 		WeibullDistribution dist;
 		// Fit may or may not succeed depending on data; we just verify it doesn't crash

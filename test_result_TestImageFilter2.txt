@@ -1,0 +1,15 @@
+********* Start testing of TestImageFilter *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestImageFilter::initTestCase()
+PASS   : TestImageFilter::testCanSavePointCloud()
+PASS   : TestImageFilter::testCanSaveMesh()
+PASS   : TestImageFilter::testCanSaveSensor()
+PASS   : TestImageFilter::testLoadNonexistentFile()
+PASS   : TestImageFilter::testSavePointCloud()
+PASS   : TestImageFilter::testSaveNullEntity()
+PASS   : TestImageFilter::testDefaultConstruction()
+PASS   : TestImageFilter::testLoadFromHex()
+PASS   : TestImageFilter::testSaveLoadRoundtrip()
+PASS   : TestImageFilter::cleanupTestCase()
+Totals: 11 passed, 0 failed, 0 skipped, 0 blacklisted, 14ms
+********* Finished testing of TestImageFilter *********

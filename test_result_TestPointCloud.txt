@@ -1,0 +1,27 @@
+********* Start testing of TestPointCloud *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestPointCloud::initTestCase()
+PASS   : TestPointCloud::constructEmpty()
+PASS   : TestPointCloud::constructNamed()
+PASS   : TestPointCloud::reserveAllocatesCapacity()
+PASS   : TestPointCloud::resizeGrowsWithZeroFill()
+PASS   : TestPointCloud::reserveAndAddPoints()
+PASS   : TestPointCloud::boundingBoxEmpty()
+PASS   : TestPointCloud::boundingBoxTwoPoints()
+PASS   : TestPointCloud::setAndGetName()
+PASS   : TestPointCloud::globalShiftRoundtrip()
+PASS   : TestPointCloud::globalShiftDefault()
+PASS   : TestPointCloud::globalScaleRoundtrip()
+PASS   : TestPointCloud::globalScaleDefault()
+PASS   : TestPointCloud::addScalarField()
+PASS   : TestPointCloud::scalarFieldStatistics()
+PASS   : TestPointCloud::deleteScalarField()
+PASS   : TestPointCloud::addColorsPerPoint()
+PASS   : TestPointCloud::colorsNotAllocatedByDefault()
+PASS   : TestPointCloud::normalsNotAllocatedByDefault()
+PASS   : TestPointCloud::clearEmptiesCloud()
+PASS   : TestPointCloud::sizeAndCapacity()
+PASS   : TestPointCloud::classIdIsPointCloud()
+PASS   : TestPointCloud::cleanupTestCase()
+Totals: 23 passed, 0 failed, 0 skipped, 0 blacklisted, 2ms
+********* Finished testing of TestPointCloud *********

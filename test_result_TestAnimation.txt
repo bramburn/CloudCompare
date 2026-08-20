@@ -1,0 +1,14 @@
+********* Start testing of TestAnimation *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestAnimation::initTestCase()
+PASS   : TestAnimation::testInterpolatePosition()
+PASS   : TestAnimation::testInterpolatePositionEndpoints()
+PASS   : TestAnimation::testInterpolateWithNaN()
+PASS   : TestAnimation::testInterpolateFOV()
+PASS   : TestAnimation::testInterpolateOutOfRange()
+PASS   : TestAnimation::testConstructorAccessors()
+PASS   : TestAnimation::testNextView()
+PASS   : TestAnimation::testInterpolatePivot()
+PASS   : TestAnimation::cleanupTestCase()
+Totals: 10 passed, 0 failed, 0 skipped, 0 blacklisted, 4ms
+********* Finished testing of TestAnimation *********

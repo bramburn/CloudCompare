@@ -1,0 +1,12 @@
+********* Start testing of TestDxfFilter *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestDxfFilter::initTestCase()
+PASS   : TestDxfFilter::testCanSavePointCloud()
+PASS   : TestDxfFilter::testCanSaveMesh()
+PASS   : TestDxfFilter::testLoadNonexistentFile()
+QWARN  : TestDxfFilter::testSavePointCloud() FileIO::setWriterInfo has not been called
+PASS   : TestDxfFilter::testSavePointCloud()
+PASS   : TestDxfFilter::testSaveNullEntity()
+PASS   : TestDxfFilter::cleanupTestCase()
+Totals: 7 passed, 0 failed, 0 skipped, 0 blacklisted, 10ms
+********* Finished testing of TestDxfFilter *********

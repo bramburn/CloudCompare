@@ -11,9 +11,9 @@
       "status": "active",
       "recurring": true,
       "createdAt": 1787079158932,
-      "updatedAt": 1787176801026,
+      "updatedAt": 1787223902816,
       "expiresAt": 1787683958932,
-      "fireCount": 147
+      "fireCount": 151
     },
     {
       "id": "2",
@@ -25,14 +25,18 @@
       "status": "active",
       "recurring": true,
       "createdAt": 1787084752777,
-      "updatedAt": 1787121913107,
+      "updatedAt": 1787223608244,
       "expiresAt": 1787689552777,
       "fireCount": 94,
       "priority": "normal",
       "isolation": "sub-agent",
       "subAgent": {
         "iterationTimeoutMs": 600000
-      }
+      },
+      "iterCount": 3,
+      "cumulativeTokens": 0,
+      "cumulativeCostUsd": 0,
+      "consecutiveFailures": 3
     }
   ]
 }

@@ -1,0 +1,17 @@
+********* Start testing of TestStatisticalTesting *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestStatisticalTesting::initTestCase()
+FAIL!  : TestStatisticalTesting::testChi2FractileConf90() 'f > 2.0' returned FALSE. ()
+C:\dev\CloudCompare\qCC\test\TestStatisticalTesting.cpp(40) : failure location
+FAIL!  : TestStatisticalTesting::testChi2FractileConf95() 'f > 4.0' returned FALSE. ()
+C:\dev\CloudCompare\qCC\test\TestStatisticalTesting.cpp(48) : failure location
+FAIL!  : TestStatisticalTesting::testChi2FractileConf99() 'f > 9.0' returned FALSE. ()
+C:\dev\CloudCompare\qCC\test\TestStatisticalTesting.cpp(56) : failure location
+PASS   : TestStatisticalTesting::testChi2ProbabilityMonotonic()
+FAIL!  : TestStatisticalTesting::testChi2ProbabilityAtZero() 'p <= 1e-6' returned FALSE. ()
+C:\dev\CloudCompare\qCC\test\TestStatisticalTesting.cpp(78) : failure location
+PASS   : TestStatisticalTesting::testChi2ProbabilitySymmetry()
+PASS   : TestStatisticalTesting::testChi2FractileProbabilityRoundtrip()
+PASS   : TestStatisticalTesting::cleanupTestCase()
+Totals: 5 passed, 4 failed, 0 skipped, 0 blacklisted, 4ms
+********* Finished testing of TestStatisticalTesting *********

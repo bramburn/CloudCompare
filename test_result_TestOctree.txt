@@ -1,0 +1,13 @@
+********* Start testing of TestOctree *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestOctree::initTestCase()
+PASS   : TestOctree::testBuildEmpty()
+PASS   : TestOctree::testBuildSinglePoint()
+PASS   : TestOctree::testBuildKnownPoints()
+PASS   : TestOctree::testOctreeLevelForCell()
+PASS   : TestOctree::testOctreeBitShift()
+PASS   : TestOctree::testOctreeBoundsAfterBuild()
+PASS   : TestOctree::testOctreeAlternativeTruncateAtLevel()
+PASS   : TestOctree::cleanupTestCase()
+Totals: 9 passed, 0 failed, 0 skipped, 0 blacklisted, 3ms
+********* Finished testing of TestOctree *********

@@ -1,0 +1,32 @@
+********* Start testing of TestDistributions *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestDistributions::initTestCase()
+PASS   : TestDistributions::testNormalPDFPeakAtMu()
+PASS   : TestDistributions::testNormalPDFPositive()
+PASS   : TestDistributions::testNormalPDFAtInfinity()
+PASS   : TestDistributions::testNormalPFromZeroAtMu()
+PASS   : TestDistributions::testNormalPFromZeroIsCdf()
+PASS   : TestDistributions::testNormalSetGetParameters()
+PASS   : TestDistributions::testNormalSetInvalidVariance()
+FAIL!  : TestDistributions::testNormalComputeParameters() Compared doubles are not the same (fuzzy compare)
+   Actual   (sigma2)     : 0.666666666667
+   Expected (2.0f / 3.0f): 0.666666686535
+C:\dev\CloudCompare\qCC\test\TestDistributions.cpp(151) : failure location
+PASS   : TestDistributions::testNormalComputeParametersAllNAN()
+PASS   : TestDistributions::testNormalComputeRobustParameters()
+FAIL!  : TestDistributions::testNormalChi2Dist() 'chi2 >= 0.0' returned FALSE. ()
+C:\dev\CloudCompare\qCC\test\TestDistributions.cpp(202) : failure location
+PASS   : TestDistributions::testNormalChi2DistInvalid()
+PASS   : TestDistributions::testNormalChi2DistNClasses1()
+PASS   : TestDistributions::testNormalGetName()
+PASS   : TestDistributions::testWeibullSetGetParameters()
+PASS   : TestDistributions::testWeibullPDFPositive()
+PASS   : TestDistributions::testWeibullPFromZero()
+PASS   : TestDistributions::testWeibullMode()
+PASS   : TestDistributions::testWeibullSkewness()
+PASS   : TestDistributions::testWeibullComputeParameters()
+PASS   : TestDistributions::testWeibullGetOtherParameters()
+PASS   : TestDistributions::testWeibullGetName()
+PASS   : TestDistributions::cleanupTestCase()
+Totals: 22 passed, 2 failed, 0 skipped, 0 blacklisted, 2ms
+********* Finished testing of TestDistributions *********

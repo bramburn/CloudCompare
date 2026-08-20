@@ -1,0 +1,13 @@
+********* Start testing of TestGLUtilsMath *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestGLUtilsMath::initTestCase()
+PASS   : TestGLUtilsMath::testViewMatrixTrigonometry()
+PASS   : TestGLUtilsMath::testViewMatrixOrthogonalComplement()
+FAIL!  : TestGLUtilsMath::testPerspectiveFOVConversion() 'fovY_deg < 50.0' returned FALSE. ()
+C:\dev\CloudCompare\qCC\test\TestGLUtils.cpp(81) : failure location
+PASS   : TestGLUtilsMath::testRotationMatrixDeterminant()
+PASS   : TestGLUtilsMath::testEulerToMatrixRoundtrip()
+PASS   : TestGLUtilsMath::testDepthRangeConversion()
+PASS   : TestGLUtilsMath::cleanupTestCase()
+Totals: 7 passed, 1 failed, 0 skipped, 0 blacklisted, 1ms
+********* Finished testing of TestGLUtilsMath *********

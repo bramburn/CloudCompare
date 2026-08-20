@@ -1,0 +1,20 @@
+********* Start testing of TestCSF *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestCSF::initTestCase()
+PASS   : TestCSF::testVec3Length()
+PASS   : TestCSF::testVec3Normalized()
+PASS   : TestCSF::testVec3Arithmetic()
+PASS   : TestCSF::testVec3DotCross()
+PASS   : TestCSF::testParticleTimeStepMovable()
+PASS   : TestCSF::testParticleTimeStepUnmovable()
+PASS   : TestCSF::testParticleOffsetPos()
+PASS   : TestCSF::testClothTerrainCollision()
+PASS   : TestCSF::testClothTerrainCollisionMixed()
+PASS   : TestCSF::testClothToMesh()
+PASS   : TestCSF::testClothToMeshSingleCell()
+PASS   : TestCSF::testCloud2CloudDistFlatGround()
+PASS   : TestCSF::testCloud2CloudDistPointAboveCloth()
+PASS   : TestCSF::testClothTimeStepDamping()
+PASS   : TestCSF::cleanupTestCase()
+Totals: 16 passed, 0 failed, 0 skipped, 0 blacklisted, 4ms
+********* Finished testing of TestCSF *********

@@ -1,0 +1,18 @@
+********* Start testing of TestGLMatrix *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestGLMatrix::initTestCase()
+PASS   : TestGLMatrix::testIdentityTimesVector()
+PASS   : TestGLMatrix::testMatrixMultiplication90DegZ()
+PASS   : TestGLMatrix::testInverse()
+PASS   : TestGLMatrix::testInverseSingular()
+PASS   : TestGLMatrix::testTranspose()
+PASS   : TestGLMatrix::testTrace()
+PASS   : TestGLMatrix::testDeterminant()
+PASS   : TestGLMatrix::testDeterminantZero()
+PASS   : TestGLMatrix::testInitFromQuaternion()
+PASS   : TestGLMatrix::testToQuaternion()
+PASS   : TestGLMatrix::testToGlArray()
+PASS   : TestGLMatrix::testTranslationExtraction()
+PASS   : TestGLMatrix::cleanupTestCase()
+Totals: 14 passed, 0 failed, 0 skipped, 0 blacklisted, 2ms
+********* Finished testing of TestGLMatrix *********

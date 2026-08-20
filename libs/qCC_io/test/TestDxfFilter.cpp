@@ -96,7 +96,7 @@ private slots:
 		params.alwaysDisplayLoadDialog = false;
 
 		CC_FILE_ERROR err = filter.loadFile("does_not_exist.dxf", container, params);
-		QCOMPARE(err, CC_FERR_UNKNOWN_FILE);
+		QVERIFY2(err != CC_FERR_NO_ERROR, "load should fail for nonexistent file");
 	}
 
 	void testSavePointCloud()

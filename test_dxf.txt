@@ -1,0 +1,15 @@
+********* Start testing of TestDxfFilter *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows server2019
+PASS   : TestDxfFilter::initTestCase()
+PASS   : TestDxfFilter::testCanSavePointCloud()
+PASS   : TestDxfFilter::testCanSaveMesh()
+FAIL!  : TestDxfFilter::testLoadNonexistentFile() Compared values are not the same
+   Actual   (err)                 : 5
+   Expected (CC_FERR_UNKNOWN_FILE): 2
+C:\dev\CloudCompare\libs\qCC_io\test\TestDxfFilter.cpp(99) : failure location
+QWARN  : TestDxfFilter::testSavePointCloud() FileIO::setWriterInfo has not been called
+PASS   : TestDxfFilter::testSavePointCloud()
+PASS   : TestDxfFilter::testSaveNullEntity()
+PASS   : TestDxfFilter::cleanupTestCase()
+Totals: 6 passed, 1 failed, 0 skipped, 0 blacklisted, 6ms
+********* Finished testing of TestDxfFilter *********

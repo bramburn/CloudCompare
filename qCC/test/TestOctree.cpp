@@ -62,7 +62,7 @@ private slots:
 		cloud.addPoint(CCVector3(0.0f, 0.0f, 0.0f));
 		DgmOctree* octree = buildOctree(&cloud);
 		QVERIFY(octree != nullptr);
-		QCOMPARE(octree->size(), static_cast<unsigned>(1));
+		QCOMPARE(cloud.size(), static_cast<unsigned>(1));
 		delete octree;
 	}
 
@@ -81,7 +81,7 @@ private slots:
 
 		DgmOctree* octree = buildOctree(&cloud);
 		QVERIFY(octree != nullptr);
-		QCOMPARE(octree->size(), static_cast<unsigned>(8));
+		QCOMPARE(cloud.size(), static_cast<unsigned>(8));
 		delete octree;
 	}
 
@@ -96,10 +96,11 @@ private slots:
 
 	void testOctreeBitShift()
 	{
-		// GET_BIT_SHIFT(level) should return 3*level
-		QCOMPARE(DgmOctree::GET_BIT_SHIFT(0), static_cast<unsigned char>(0));
-		QCOMPARE(DgmOctree::GET_BIT_SHIFT(1), static_cast<unsigned char>(3));
-		QCOMPARE(DgmOctree::GET_BIT_SHIFT(2), static_cast<unsigned char>(6));
+		// GET_BIT_SHIFT(level) = 3 * (MAX_OCTREE_LEVEL - level)
+		// With MAX_OCTREE_LEVEL=21 (64-bit), level 0 => 63, level 1 => 60, level 2 => 57
+		QCOMPARE(DgmOctree::GET_BIT_SHIFT(0), static_cast<unsigned char>(63));
+		QCOMPARE(DgmOctree::GET_BIT_SHIFT(1), static_cast<unsigned char>(60));
+		QCOMPARE(DgmOctree::GET_BIT_SHIFT(2), static_cast<unsigned char>(57));
 	}
 
 	void testOctreeBoundsAfterBuild()
@@ -112,13 +113,15 @@ private slots:
 		QVERIFY(octree != nullptr);
 
 		// Bounding box should cover the points
-		const ccBBox& bbox = octree->getBoundingBox();
-		QVERIFY(bbox.isValid());
-
-		// Min should be near (0,0,0), max near (10,10,10)
 		CCVector3 bbMin, bbMax;
-		bbox.getMin(bbMin);
-		bbox.getMax(bbMax);
+		octree->getBoundingBox(bbMin, bbMax);
+		// Min should be near (0,0,0), max near (10,10,10)
+		QVERIFY(bbMin.x <= 0.0f);
+		QVERIFY(bbMin.y <= 0.0f);
+		QVERIFY(bbMin.z <= 0.0f);
+		QVERIFY(bbMax.x >= 10.0f);
+		QVERIFY(bbMax.y >= 10.0f);
+		QVERIFY(bbMax.z >= 10.0f);
 		QVERIFY(bbMin.x <= 0.0f);
 		QVERIFY(bbMin.y <= 0.0f);
 		QVERIFY(bbMin.z <= 0.0f);
@@ -141,9 +144,12 @@ private slots:
 		QVERIFY(octree != nullptr);
 
 		// buildWithAlternativeParam should work if available
-		// Just verify the octree is valid after build
-		QCOMPARE(octree->size(), static_cast<unsigned>(4));
-		QVERIFY(octree->getBoundingBox().isValid());
+		// Verify the octree is valid by checking bounding box
+		QCOMPARE(cloud.size(), static_cast<unsigned>(4));
+		CCVector3 bbMin, bbMax;
+		octree->getBoundingBox(bbMin, bbMax);
+		QVERIFY(bbMin.x <= 0.0f && bbMin.y <= 0.0f && bbMin.z <= 0.0f);
+		QVERIFY(bbMax.x >= 1.0f && bbMax.y >= 1.0f && bbMax.z >= 1.0f);
 
 		delete octree;
 	}

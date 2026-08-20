@@ -69,18 +69,17 @@ class TestGlobalShift : public QObject
 		// 14267 / 1000 = 14.267 → int(14.267) * 1000 = 14000 → negated = -14000
 		QCOMPARE(resultAbove.x, -14000.0);
 
-		// Negative value → sign preserved, rounded toward zero
+		// Negative value → sign-preserving shift (to bring toward zero)
+		// |x| = 626146 >= 10000 → shift = -(-626146) = +626146, rounded = +626000
 		CCVector3d negative = CCVector3d(-626146.0, 0.0, 0.0);
 		CCVector3d resultNeg = ccGlobalShiftManager::BestShift(negative);
-		// |x| = 626146 >= 10000 → shift needed
-		// 626146 / 1000 = 626.146 → int(626.146) * 1000 = 626000 → negated = -626000
-		QCOMPARE(resultNeg.x, -626000.0);
+		QCOMPARE(resultNeg.x, 626000.0); // was -626000.0 — BestShift shifts negative coords TOWARD zero (+)
 
-		// Very large negative → rounds with sign
+		// Very large negative → same positive-shift logic
+		// |x| = 2200000 >= 10000 → shift = -(-2200000) = +2200000, rounded = +2200000
 		CCVector3d bigNeg = CCVector3d(-2200000.0, 0.0, 0.0);
 		CCVector3d resultBigNeg = ccGlobalShiftManager::BestShift(bigNeg);
-		// 2200000 / 1000 = 2200 → int(2200) * 1000 = 2200000 → negated = -2200000
-		QCOMPARE(resultBigNeg.x, -2200000.0);
+		QCOMPARE(resultBigNeg.x, 2200000.0); // was -2200000.0 — BestShift is always positive for |x| >= MAX
 
 		// Zero → no shift
 		CCVector3d zero = CCVector3d(0.0, 0.0, 0.0);
@@ -96,8 +95,8 @@ class TestGlobalShift : public QObject
 		QCOMPARE(resultMulti.x, -15000.0);
 		// y: 500 < 10000 → no shift
 		QCOMPARE(resultMulti.y, 0.0);
-		// z: |-23000|=23000 >= 10000 → -int(23000/1000)*1000 = -23000
-		QCOMPARE(resultMulti.z, -23000.0);
+		// z: |-23000|=23000 >= 10000 → shift = -(-23000) = +23000
+		QCOMPARE(resultMulti.z, 23000.0); // was -23000.0 — BestShift always positive for |z| >= MAX
 	}
 
 	void testBestScale()
