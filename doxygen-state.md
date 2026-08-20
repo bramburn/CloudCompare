@@ -32,6 +32,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccPointListPickingDlg.cpp ✅
 - qCC/ccGraphicalTransformationTool.h ✅
 - qCC/ccIsolines.h ✅
+- qCC/ccPointPickingGenericInterface.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -175,3 +176,8 @@ libs/
   - Documented marching squares configuration codes
   - Added @brief for all template methods
   - Added @note about saddle point disambiguation
+
+- `docs: enhance ccPointPickingGenericInterface.h` - 2026-08-26
+  - Enhanced @file and @class documentation
+  - Documented picking flow and PickedItem structure
+  - Added usage pattern example
