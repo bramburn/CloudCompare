@@ -111,6 +111,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/db_tree/matrixDisplayDlg.h ✅
 - qCC/db_tree/sfEditDlg.h ✅
 - qCC/pluginManager/ccPluginInfoDlg.h ✅
+- libs/CCPluginAPI/ccMainAppInterface.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -650,3 +651,8 @@ libs/
   - Enhanced @file with plugin info dialog overview
   - Added @class documentation
   - Documented plugin list and filtering
+
+- `docs: enhance ccMainAppInterface.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with plugin interface overview
+  - Added @class documentation with usage example
+  - Documented all virtual methods
