@@ -15,6 +15,14 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file PCLCloud.h
+ *
+ * @brief PCL cloud type definition.
+ *
+ * @details Type definition for PCLPointCloud2 that
+ * handles version differences.
+ */
 #ifndef PCL_CLOUD_H
 #define PCL_CLOUD_H
 
