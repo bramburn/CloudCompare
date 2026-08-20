@@ -101,6 +101,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccGraphicalSegmentationOptionsDlg.h ✅
 - qCC/ccGraphicalSegmentationTool.h ✅
 - qCC/ccShortcutDialog.h ✅
+- qCC/ccSensorComputeScatteringAnglesDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -590,3 +591,8 @@ libs/
   - Enhanced @file with keyboard shortcut dialogs overview
   - Added @class documentation for ccShortcutEditDialog and ccShortcutDialog
   - Documented conflict detection and settings persistence
+
+- `docs: enhance ccSensorComputeScatteringAnglesDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with scattering angles computation overview
+  - Added @class documentation
+  - Documented degrees/radians output option
