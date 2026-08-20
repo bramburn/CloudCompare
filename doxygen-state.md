@@ -114,6 +114,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/CCPluginAPI/ccMainAppInterface.h ✅
 - libs/CCPluginAPI/ccOverlayDialog.h ✅
 - libs/CCPluginAPI/ccPickingHub.h ✅
+- libs/CCPluginAPI/ccColorScaleSelector.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -668,3 +669,8 @@ libs/
   - Enhanced @file with picking hub overview
   - Added @class documentation with usage example
   - Documented listener management and picking modes
+
+- `docs: enhance ccColorScaleSelector.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with color scale selector overview
+  - Added @class documentation
+  - Documented built-in color scales
