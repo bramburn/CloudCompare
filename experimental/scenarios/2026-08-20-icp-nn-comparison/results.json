@@ -1,7 +1,7 @@
 ﻿{
     "scenario":  "2026-08-20-icp-nn-comparison",
     "question":  "With the D8 trait dispatch, which NN gives the fastest end-to-end ICP?",
-    "timestamp":  "2026-08-20T16:06:56Z",
+    "timestamp":  "2026-08-20T18:43:55Z",
     "sizes":  [
                   2000,
                   5000,
@@ -19,7 +19,7 @@
                         "converged":  "true",
                         "rms":  0.000169,
                         "nn_query_us":  null,
-                        "icp_wall_s":  0.214,
+                        "icp_wall_s":  0.26,
                         "failure_mode":  null
                     },
                     {
@@ -31,7 +31,7 @@
                         "converged":  "false",
                         "rms":  0.064658,
                         "nn_query_us":  null,
-                        "icp_wall_s":  2.121,
+                        "icp_wall_s":  2.003,
                         "failure_mode":  null
                     },
                     {
@@ -43,7 +43,7 @@
                         "converged":  "false",
                         "rms":  0.060233,
                         "nn_query_us":  null,
-                        "icp_wall_s":  11.19,
+                        "icp_wall_s":  7.576,
                         "failure_mode":  null
                     },
                     {
@@ -66,8 +66,8 @@
                         "iterations":  35,
                         "converged":  "true",
                         "rms":  0.000169,
-                        "nn_query_us":  0.29,
-                        "icp_wall_s":  0.02,
+                        "nn_query_us":  0.3,
+                        "icp_wall_s":  0.021,
                         "failure_mode":  null
                     },
                     {
@@ -78,7 +78,7 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.064658,
-                        "nn_query_us":  0.28,
+                        "nn_query_us":  0.29,
                         "icp_wall_s":  0.092,
                         "failure_mode":  null
                     },
@@ -90,8 +90,8 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.060233,
-                        "nn_query_us":  0.5,
-                        "icp_wall_s":  0.171,
+                        "nn_query_us":  0.43,
+                        "icp_wall_s":  0.166,
                         "failure_mode":  null
                     },
                     {
@@ -102,8 +102,8 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.043904,
-                        "nn_query_us":  0.54,
-                        "icp_wall_s":  1.156,
+                        "nn_query_us":  0.53,
+                        "icp_wall_s":  1.029,
                         "failure_mode":  null
                     },
                     {
@@ -114,8 +114,8 @@
                         "iterations":  35,
                         "converged":  "true",
                         "rms":  0.000169,
-                        "nn_query_us":  6.42,
-                        "icp_wall_s":  0.418,
+                        "nn_query_us":  6.4,
+                        "icp_wall_s":  0.345,
                         "failure_mode":  null
                     },
                     {
@@ -126,8 +126,8 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.064658,
-                        "nn_query_us":  18.87,
-                        "icp_wall_s":  3.867,
+                        "nn_query_us":  15.89,
+                        "icp_wall_s":  3.572,
                         "failure_mode":  null
                     },
                     {
@@ -138,8 +138,8 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.060233,
-                        "nn_query_us":  42.23,
-                        "icp_wall_s":  29.971,
+                        "nn_query_us":  39.14,
+                        "icp_wall_s":  18.532,
                         "failure_mode":  null
                     },
                     {
@@ -150,8 +150,8 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.043904,
-                        "nn_query_us":  510.66,
-                        "icp_wall_s":  859.084,
+                        "nn_query_us":  278.23,
+                        "icp_wall_s":  740.464,
                         "failure_mode":  null
                     },
                     {
@@ -162,7 +162,7 @@
                         "iterations":  35,
                         "converged":  "true",
                         "rms":  0.000169,
-                        "nn_query_us":  0.64,
+                        "nn_query_us":  0.49,
                         "icp_wall_s":  0.031,
                         "failure_mode":  null
                     },
@@ -174,8 +174,8 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.064778,
-                        "nn_query_us":  0.78,
-                        "icp_wall_s":  0.211,
+                        "nn_query_us":  0.87,
+                        "icp_wall_s":  0.188,
                         "failure_mode":  null
                     },
                     {
@@ -186,8 +186,8 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.06023,
-                        "nn_query_us":  0.69,
-                        "icp_wall_s":  0.388,
+                        "nn_query_us":  0.65,
+                        "icp_wall_s":  0.342,
                         "failure_mode":  null
                     },
                     {
@@ -198,8 +198,8 @@
                         "iterations":  50,
                         "converged":  "false",
                         "rms":  0.043905,
-                        "nn_query_us":  1.03,
-                        "icp_wall_s":  2.723,
+                        "nn_query_us":  0.91,
+                        "icp_wall_s":  2.162,
                         "failure_mode":  null
                     }
                 ]

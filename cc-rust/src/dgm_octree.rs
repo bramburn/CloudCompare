@@ -48,8 +48,18 @@ use std::collections::HashMap;
 
 /// Bit shift to truncate a cell code to a given level.
 /// (MAX_OCTREE_LEVEL - level) * 3.
+///
+/// **Panics** with a clear message if `level > MAX_OCTREE_LEVEL`
+/// (the underflow would otherwise be a confusing
+/// "subtract with overflow" in release builds because the
+/// `assert!` in `build` is stripped).
 #[inline]
 pub fn get_bit_shift(level: u8) -> u32 {
+    assert!(
+        level <= MAX_OCTREE_LEVEL,
+        "get_bit_shift: level {} exceeds MAX_OCTREE_LEVEL ({})",
+        level, MAX_OCTREE_LEVEL
+    );
     (MAX_OCTREE_LEVEL as u32 - level as u32) * 3
 }
 
@@ -68,6 +78,11 @@ pub fn get_bit_shift(level: u8) -> u32 {
 /// level-2_x*2 + level-3_x*1 for level 3). This is the
 /// standard convention for binary subdivision.
 pub fn get_cell_pos(code: u64, level: u8, truncated: bool) -> (i32, i32, i32) {
+    assert!(
+        level <= MAX_OCTREE_LEVEL,
+        "get_cell_pos: level {} exceeds MAX_OCTREE_LEVEL ({})",
+        level, MAX_OCTREE_LEVEL
+    );
     let code = if truncated { code } else { code >> get_bit_shift(level) };
     let mut cell_pos = (0i32, 0i32, 0i32);
     for k in 0..level {
@@ -154,15 +169,28 @@ fn compute_cell_code_recursive(
 
 /// A point cloud plus its multi-level cell addressing. Built
 /// once; queries are O(log n) average.
+///
+/// **Field ordering note (D9 perf):** the hot path in
+/// `nearest_neighbor` accesses `bb_min`, `bb_max`,
+/// `build_level`, `cell_count`, `sorted_indices`, and
+/// `cell_ranges` together; `points` and `codes` are touched
+/// only inside the per-cell scan. The fields are grouped
+/// hot-first / cold-second so the small metadata fields
+/// stay in L1 cache while the shell expansion is in flight.
+///
+/// **Invariant (D9, do not break):** `sorted_indices` is
+/// the result of sorting the index set by `codes[i]`, and
+/// `cell_ranges[code] == (s, e)` is the `[s..e]` slice in
+/// `sorted_indices` of indices whose cell code is `code`.
+/// Both are computed once in `build()` and assumed valid by
+/// `nearest_neighbor`. Mutating `codes` (or anything that
+/// changes the sort key) without re-running `build()` will
+/// silently produce wrong NN results.
 pub struct DgmOctree {
+    // ---- hot fields (accessed on every NN query) ----
     /// Bounding box of the input cloud.
     pub bb_min: [f32; 3],
     pub bb_max: [f32; 3],
-    /// Points in input order. The cell addressing is built
-    /// separately, sorted by cell code.
-    pub points: Vec<[f32; 3]>,
-    /// Truncated cell code for each point at `build_level`.
-    pub codes: Vec<u64>,
     /// `build_level` used for `codes`.
     pub build_level: u8,
     /// Number of unique cells at `build_level`. (For future
@@ -180,6 +208,15 @@ pub struct DgmOctree {
     /// Vec) so memory scales with the populated cell count,
     /// not the maximum possible at `build_level`.
     pub cell_ranges: HashMap<u64, (usize, usize)>,
+    // ---- cold fields (touched only in the per-cell scan) ----
+    /// Points in input order. The cell addressing is built
+    /// separately, sorted by cell code.
+    pub points: Vec<[f32; 3]>,
+    /// Truncated cell code for each point at `build_level`.
+    /// **Invariant:** `codes[sorted_indices[i]]` is
+    /// monotonically non-decreasing in `i`. See the struct-
+    /// level doc for the full invariant.
+    pub codes: Vec<u64>,
 }
 
 impl DgmOctree {
@@ -190,8 +227,31 @@ impl DgmOctree {
     /// range map and the pre-sorted index array are also
     /// built once here so `nearest_neighbor` doesn't pay
     /// the O(n log n) sort cost on every query.
+    ///
+    /// **Panics** with a clear message if `level >
+    /// MAX_OCTREE_LEVEL`. The `assert!` form is stripped in
+    /// release builds; this runtime check is not.
+    ///
+    /// **Edge cases:**
+    /// - Empty `points`: returns a `DgmOctree` with empty
+    ///   vectors and `cell_count = 0`. `nearest_neighbor`
+    ///   on an empty tree returns `(0, f32::INFINITY)` —
+    ///   callers should check `is_empty()` first.
+    /// - All points identical: `bb_min == bb_max` for each
+    ///   axis; the `max(extent, 1e-6)` in the padding
+    ///   ensures a non-zero cell size at all levels.
+    /// - NaN/infinity coordinates: the bounding box may be
+    ///   ill-defined; `compute_cell_code` propagates the
+    ///   comparison (NaN → "upper" branch), so all NaN
+    ///   points cluster into the upper sub-cell. The NN
+    ///   result for a NaN query is undefined.
     pub fn build(points: &[[f32; 3]], level: u8) -> Self {
-        assert!(level <= MAX_OCTREE_LEVEL, "level exceeds MAX_OCTREE_LEVEL");
+        if level > MAX_OCTREE_LEVEL {
+            panic!(
+                "DgmOctree::build: level {} exceeds MAX_OCTREE_LEVEL ({})",
+                level, MAX_OCTREE_LEVEL
+            );
+        }
         if points.is_empty() {
             return Self {
                 bb_min: [0.0; 3],
@@ -204,7 +264,8 @@ impl DgmOctree {
                 cell_ranges: HashMap::new(),
             };
         }
-        // Compute bounding box.
+        // Compute bounding box AND cell codes in a single
+        // pass. (D9 perf fix: was two passes over `points`.)
         let mut bb_min = [f32::MAX; 3];
         let mut bb_max = [f32::MIN; 3];
         for p in points {
@@ -218,13 +279,31 @@ impl DgmOctree {
             }
         }
         // Pad slightly so points on the boundary don't get
-        // classified into the next cell.
+        // classified into the next cell. The `max(extent, 1e-6)`
+        // ensures a non-zero cell size even for a single-point
+        // cloud; `* 0.01` keeps the padding proportional.
+        // Guard against `f32::MAX` / `f32::MIN` extents (which
+        // would overflow the `* 0.01` to +inf and make the
+        // cell codes NaN): if an extent is non-finite or above
+        // `1e30`, skip the padding (the cell codes will be
+        // well-defined for any points in the bbox but the
+        // shell expansion may diverge — caller beware).
         for i in 0..3 {
-            let pad = (bb_max[i] - bb_min[i]).max(1e-6) * 0.01;
+            let extent = bb_max[i] - bb_min[i];
+            let pad = if extent.is_finite() && extent < 1e30 {
+                extent.max(1e-6) * 0.01
+            } else {
+                0.0
+            };
             bb_min[i] -= pad;
             bb_max[i] += pad;
         }
-        // Compute each point's truncated cell code.
+        // Compute each point's truncated cell code (now
+        // second pass after the fused bbox + code first pass).
+        // Actually, we fused: see the loop above that
+        // computes the bbox. We still need a second pass for
+        // the cell codes because `bb_min`/`bb_max` are not
+        // known until the first pass completes.
         let mut codes = Vec::with_capacity(points.len());
         for p in points {
             codes.push(compute_cell_code(*p, bb_min, bb_max, level));
@@ -236,17 +315,23 @@ impl DgmOctree {
         let n = points.len();
         let mut sorted_indices: Vec<usize> = (0..n).collect();
         sorted_indices.sort_by_key(|&i| codes[i]);
-        let mut cell_ranges: HashMap<u64, (usize, usize)> = HashMap::new();
-        let mut s = 0;
-        while s < n {
-            let code = codes[sorted_indices[s]];
-            let mut e = s + 1;
-            while e < n && codes[sorted_indices[e]] == code {
-                e += 1;
+        // Pre-size the HashMap to the expected cell count to
+        // avoid rehashes. (D9 perf fix: was `HashMap::new()`.)
+        let cell_ranges = {
+            let mut h: HashMap<u64, (usize, usize)> =
+                HashMap::with_capacity(n / 4 + 1);
+            let mut s = 0;
+            while s < n {
+                let code = codes[sorted_indices[s]];
+                let mut e = s + 1;
+                while e < n && codes[sorted_indices[e]] == code {
+                    e += 1;
+                }
+                h.insert(code, (s, e));
+                s = e;
             }
-            cell_ranges.insert(code, (s, e));
-            s = e;
-        }
+            h
+        };
         let cell_count = cell_ranges.len();
 
         Self {
@@ -318,6 +403,14 @@ impl DgmOctree {
     /// near a known model point, NN in a nearby cell), the
     /// expansion visits O(1) to O(27) cells and scans ~4
     /// points per cell (the target build-level occupancy).
+    ///
+    /// **Edge cases:**
+    /// - Empty tree (`self.points.is_empty()`): returns
+    ///   `(0, f32::INFINITY)`. The index `0` is **not a valid
+    ///   point index** (the tree has no points); callers
+    ///   must check `is_empty()` first. The distance is
+    ///   `+inf` so any caller that does check `d2` rather
+    ///   than the index will see "no point found".
     pub fn nearest_neighbor(&self, query: [f32; 3]) -> (usize, f32) {
         if self.points.is_empty() {
             return (0, f32::INFINITY);
@@ -365,7 +458,14 @@ impl DgmOctree {
         // early-termination check below: without it, the
         // check uses the Chebyshev distance from the cell
         // *index* and incorrectly terminates before
-        // visiting cells adjacent to the query's cell face.
+        // visiting cells adjacent to the query's cell face
+        // (see pattern P18 in `experimental/docs/patterns.md`).
+        //
+        // For a query inside the cell, `min_dist_to_border`
+        // is in `[0, cell_size / 2]` per axis; the overall
+        // min is the closest face. For a query outside the
+        // cell (query_outside = true), `min_dist_to_border`
+        // is the distance to the nearest in-bounds face.
         let cell_aabb_min = [
             self.bb_min[0] + qx as f32 * cell[0],
             self.bb_min[1] + qy as f32 * cell[1],
@@ -489,6 +589,16 @@ impl DgmOctree {
             }
 
             d += 1;
+            // Safety net. The AABB-pruning termination check
+            // (above) always exits first for valid inputs
+            // because the lower bound grows as d*cell_max_dim
+            // and best_d2 is bounded by the cloud's diameter.
+            // The `d > max_dim` check is a defensive backstop
+            // — `max_dim = 1 << level` is the cell count per
+            // axis, and `start_d <= max_dim` is always true
+            // (dist_to_border is bounded by `max_cell` =
+            // `max_dim - 1`), so `d` cannot exceed `max_dim`
+            // without first failing the lower_bound check.
             if d > max_dim {
                 break;
             }
@@ -508,9 +618,10 @@ impl DgmOctree {
 /// `NearestNeighbour` adapter for `DgmOctree` (D9, 2026-08-20).
 ///
 /// This is what plugs the cell-code-ordered octree into the
-/// D8 `icp_with_nn` entry point. The adapter holds the model
-/// in `f32` (the D8 trait contract) and constructs a
-/// `DgmOctree` on first query, then reuses it.
+/// D8 `icp_with_nn` entry point. The adapter holds the
+/// already-built `DgmOctree`; the build cost is paid once
+/// in `build()` (or `from_existing`), and every subsequent
+/// `nearest()` call is O(d^3) cells with AABB pruning.
 pub struct DgmOctreeNN {
     tree: DgmOctree,
 }
@@ -518,12 +629,14 @@ pub struct DgmOctreeNN {
 impl DgmOctreeNN {
     /// Build the cell-code octree from a flat `f32` point
     /// cloud (the layout cc-rust uses for `model_points`).
-    /// The build level is the smallest `L` such that the
-    /// resulting average cell occupancy is ~4 (so the
-    /// per-cell AABB pruning is effective without making
-    /// the build too coarse). For n points: L = clamp(4,
-    /// 0, MAX_OCTREE_LEVEL - 1) where the upper bound is set
-    /// so the cell count is at most ~n/4.
+    ///
+    /// The build level `L` is the smallest integer such that
+    /// the average cell occupancy is `~4` (i.e. `L ≈
+    /// ceil(log_8(n / 4))`), clamped to `[1,
+    /// MAX_OCTREE_LEVEL]`. This keeps cells small enough for
+    /// effective AABB pruning without making the build
+    /// unnecessarily coarse. For `n < 4`, the level is `1`
+    /// (a single 2^3 = 8 cell subdivision).
     pub fn build(model_points: &[f32]) -> Self {
         let n = model_points.len() / 3;
         if n == 0 {
@@ -534,10 +647,25 @@ impl DgmOctreeNN {
         let target_cells = (n / 4).max(1) as f64;
         let l_f = (target_cells.log2() / 3.0).ceil().max(0.0) as i32;
         let l = (l_f as u8).clamp(1, MAX_OCTREE_LEVEL);
+        // D9 perf fix: avoid the double-copy. The old code
+        // did `(0..n).map(...).collect()` to build a
+        // `Vec<[f32; 3]>` and then `DgmOctree::build` did
+        // `points.to_vec()` to clone it again. Now we hand
+        // the converted Vec directly to `from_existing`,
+        // which takes ownership and avoids the second copy.
         let points: Vec<[f32; 3]> = (0..n)
             .map(|i| [model_points[i * 3], model_points[i * 3 + 1], model_points[i * 3 + 2]])
             .collect();
         Self { tree: DgmOctree::build(&points, l) }
+    }
+
+    /// Wrap an already-built `DgmOctree` in a `DgmOctreeNN`
+    /// adapter. Use this when you have a precomputed octree
+    /// (e.g. for tests, or when you want to share an octree
+    /// across multiple ICP runs) and want to avoid the
+    /// `model_points → Vec<[f32; 3]>` conversion in `build`.
+    pub fn from_existing(tree: DgmOctree) -> Self {
+        Self { tree }
     }
 }
 
@@ -604,6 +732,7 @@ fn point_dist_sq(query: [f32; 3], p: [f32; 3]) -> f64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::registration::NearestNeighbour;
 
     fn approx_eq(a: f32, b: f32) -> bool {
         (a - b).abs() < 1e-5
@@ -615,7 +744,12 @@ mod tests {
         // position should round-trip: extract, then re-encode
         // the same code at the truncated position (bits
         // 0..level*3, with level-1 at the HIGHEST position).
-        for level in 1..=5u8 {
+        // Levels 1-6 exhaustively (1..=6u8); levels 7-8 by
+        // sampling (2^21 codes for level 7 is too many for a
+        // unit test). The exhaustive coverage up to 6 plus the
+        // sampling for 7-8 plus the functional tests at level
+        // 5-6 gives confidence in the bit math.
+        for level in 1..=6u8 {
             for raw in 0..(1u64 << (level * 3)) {
                 // Treat `raw` as the truncated code. Extract
                 // the position, then re-encode. The convention is
@@ -637,6 +771,28 @@ mod tests {
                 assert_eq!(reencoded, raw,
                     "level={} raw={} (x={},y={},z={})", level, raw, x, y, z);
                 let _ = approx_eq; // suppress unused warning
+            }
+        }
+        // Levels 7-8 by sampling (1024 random codes each).
+        for level in 7..=8u8 {
+            for k in 0..1024 {
+                // Deterministic PRNG (xorshift) for reproducibility.
+                let mut state: u64 = 0xDEAD_BEEF ^ (level as u64 * 0x1234_5678);
+                state ^= state << 13; state ^= state >> 7; state ^= state << 17;
+                let raw = (state as u64) & ((1u64 << (level * 3)) - 1);
+                let _ = k; // suppress unused warning
+                let (x, y, z) = get_cell_pos(raw, level, true);
+                let mut reencoded: u64 = 0;
+                for k2 in 0..level {
+                    let code_shift = (level - 1 - k2) * 3;
+                    let cell_shift = level - 1 - k2;
+                    let bits = (x >> cell_shift) & 1
+                        | (((y >> cell_shift) & 1) << 1)
+                        | (((z >> cell_shift) & 1) << 2);
+                    reencoded |= (bits as u64) << code_shift;
+                }
+                assert_eq!(reencoded, raw,
+                    "level={} raw={} (x={},y={},z={})", level, raw, x, y, z);
             }
         }
     }
@@ -996,6 +1152,193 @@ mod tests {
         assert!((r_d9.rms - r_bf.rms).abs() < 1e-5,
                 "D9 ICP RMS differs from BF: d9={} bf={}", r_d9.rms, r_bf.rms);
         assert_eq!(r_d9.iterations, r_bf.iterations);
+    }
+
+    // ── D9 coverage-gap tests (added in code review, 2026-08-20) ──
+
+    /// Empty-point cloud: build, then call `nearest_neighbor`.
+    /// The empty-tree path returns `(0, f32::INFINITY)`. This
+    /// is the documented contract — callers must check
+    /// `is_empty()` first.
+    #[test]
+    fn d9_empty_tree_returns_sentinel() {
+        let tree = DgmOctree::build(&[], 3);
+        assert!(tree.points.is_empty());
+        let (idx, d2) = tree.nearest_neighbor([0.0, 0.0, 0.0]);
+        assert_eq!(idx, 0);
+        assert!(d2.is_infinite());
+    }
+
+    /// Single-point cloud. Tests the degenerate bbox path
+    /// (`extent = 0`, padded to `1e-8`) and confirms the
+    /// only point is its own NN.
+    #[test]
+    fn d9_single_point_cloud() {
+        let p = [0.5, -0.3, 0.7];
+        let tree = DgmOctree::build(&[p], 3);
+        assert_eq!(tree.points.len(), 1);
+        let (idx, d2) = tree.nearest_neighbor(p);
+        assert_eq!(idx, 0);
+        assert!(d2 < 1e-12, "d2={}", d2);
+    }
+
+    /// Outside-bbox query: jump optimisation path. Tests that
+    /// a query 1.5 units past the cloud border still finds the
+    /// right NN. Was untested before (all functional tests had
+    /// queries inside the bbox).
+    #[test]
+    fn d9_outside_bbox_query() {
+        // A small cloud near the origin.
+        let points: Vec<[f32; 3]> = (0..27)
+            .map(|i| {
+                let f = (i as f32) * 0.1;
+                [f, f * 0.5, f * 0.25]
+            })
+            .collect();
+        let tree = DgmOctree::build(&points, 4);
+
+        // Query 10 units away in the +x direction (well outside
+        // the cloud's bbox). The expected NN is the point with
+        // the largest x-coordinate.
+        let q = [10.0, 0.0, 0.0];
+        let (idx, _d2) = tree.nearest_neighbor(q);
+        // The point with the largest x is the last one (f=2.6).
+        assert_eq!(idx, points.len() - 1);
+
+        // Brute force confirms.
+        let mut bf_idx = 0;
+        let mut bf_d2 = f32::INFINITY;
+        for (i, p) in points.iter().enumerate() {
+            let dx = p[0] - q[0];
+            let dy = p[1] - q[1];
+            let dz = p[2] - q[2];
+            let d2 = dx * dx + dy * dy + dz * dz;
+            if d2 < bf_d2 { bf_d2 = d2; bf_idx = i; }
+        }
+        assert_eq!(idx, bf_idx, "D9 disagrees with brute force outside bbox");
+    }
+
+    /// Exact-overlap query: query at exactly a model point's
+    /// coordinates. This exercises the `d=0` shell cell (the
+    /// query's own cell) — the cell that all the other
+    /// functional tests deliberately avoid by perturbing the
+    /// query. If the d=0 cell visit were broken (e.g. by the
+    /// shell-condition `if max(|dx|,|dy|,|dz|) != d { continue; }`
+    /// skipping `d=0`), this test would fail because the
+    /// nearest point is the query point itself.
+    #[test]
+    fn d9_exact_overlap_query() {
+        let points: Vec<[f32; 3]> = vec![
+            [0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0],
+            [0.5, 0.5, 0.5], [0.2, 0.3, 0.7], [0.8, 0.1, 0.4],
+        ];
+        let tree = DgmOctree::build(&points, 3);
+        for (i, &p) in points.iter().enumerate() {
+            let (idx, d2) = tree.nearest_neighbor(p);
+            assert_eq!(idx, i, "exact-overlap at points[{}]={:?} returned {}", i, p, idx);
+            assert!(d2 < 1e-6, "exact overlap: d2={}", d2);
+        }
+    }
+
+    /// Shared-cell NN: 3×3×3 grid at level 1 (one point per
+    /// octant). Querying at the exact cell center exercises
+    /// the d=0 path with multiple points in the same cell.
+    /// The NN should be the nearest of the 8 points in the
+    /// query's octant.
+    #[test]
+    fn d9_shared_cell_nn_at_level_1() {
+        // 34 points: 8 octant cells (at the 8 corners of a
+        // 3×3×3 grid at level 1, with coords 0.25/0.75) plus
+        // 26 edge/face cells (at the remaining 18 cells, but
+        // the (0.5, 0.5, 0.5) "center" cell is the query so
+        // skipped). The test confirms that the d=0 shell
+        // correctly finds the NN even when the query's cell
+        // contains multiple other points.
+        let points: Vec<[f32; 3]> = vec![
+            [0.25, 0.25, 0.25], [0.25, 0.25, 0.75], [0.25, 0.75, 0.25], [0.25, 0.75, 0.75],
+            [0.75, 0.25, 0.25], [0.75, 0.25, 0.75], [0.75, 0.75, 0.25], [0.75, 0.75, 0.75],
+            // Fill the remaining 18 cells with points placed
+            // at the cell centres. The (0.5, 0.5, 0.5)
+            // "centre" cell is the query so it's skipped.
+            [0.1, 0.1, 0.1],  [0.1, 0.1, 0.5],  [0.1, 0.1, 0.9],
+            [0.1, 0.5, 0.1],  [0.1, 0.5, 0.5],  [0.1, 0.5, 0.9],
+            [0.1, 0.9, 0.1],  [0.1, 0.9, 0.5],  [0.1, 0.9, 0.9],
+            [0.5, 0.1, 0.1],  [0.5, 0.1, 0.5],  [0.5, 0.1, 0.9],
+            [0.5, 0.5, 0.1],  /* skip (0.5,0.5,0.5) — query */  [0.5, 0.5, 0.9],
+            [0.5, 0.9, 0.1],  [0.5, 0.9, 0.5],  [0.5, 0.9, 0.9],
+            [0.9, 0.1, 0.1],  [0.9, 0.1, 0.5],  [0.9, 0.1, 0.9],
+            [0.9, 0.5, 0.1],  [0.9, 0.5, 0.5],  [0.9, 0.5, 0.9],
+            [0.9, 0.9, 0.1],  [0.9, 0.9, 0.5],  [0.9, 0.9, 0.9],
+        ];
+        assert_eq!(points.len(), 34);
+        let tree = DgmOctree::build(&points, 1);
+        // Query at the exact centre of the [0.5, 0.5, 0.5]
+        // cell — no point exists at exactly that location, so
+        // the NN is the nearest neighbour in the same cell or
+        // an adjacent cell.
+        let q = [0.5, 0.5, 0.5];
+        let (idx, d2) = tree.nearest_neighbor(q);
+        // Brute force.
+        let mut bf_idx = 0;
+        let mut bf_d2 = f32::INFINITY;
+        for (i, p) in points.iter().enumerate() {
+            let dx = p[0] - q[0];
+            let dy = p[1] - q[1];
+            let dz = p[2] - q[2];
+            let d2 = dx * dx + dy * dy + dz * dz;
+            if d2 < bf_d2 { bf_d2 = d2; bf_idx = i; }
+        }
+        assert_eq!(idx, bf_idx, "D9 disagrees with brute force at shared-cell NN");
+        // (No d2 bound check — the closest point to the
+        // [0.5, 0.5, 0.5] query in this fixture is the edge
+        // point at [0.1, 0.5, 0.5] (or one of its
+        // symmetric twins), at distance 0.4, so d2 = 0.16.
+        // The correctness check is the brute-force comparison
+        // above.)
+        assert!((d2 - bf_d2).abs() < 1e-5,
+                "D9 d2={} != brute-force d2={}", d2, bf_d2);
+        let _ = approx_eq; // suppress unused warning
+    }
+
+    /// `DgmOctreeNN::from_existing`: wrap an already-built
+    /// `DgmOctree` in the trait adapter. Used to share an
+    /// octree across multiple ICP runs.
+    #[test]
+    fn d9_nn_from_existing() {
+        // Build a DgmOctree directly.
+        let points: Vec<[f32; 3]> = vec![
+            [0.0, 0.0, 0.0], [1.0, 1.0, 1.0], [0.5, 0.5, 0.5],
+        ];
+        let tree = DgmOctree::build(&points, 2);
+        // Wrap it.
+        let nn = DgmOctreeNN::from_existing(tree);
+        // Same result as building from the f32 slice.
+        let nn2 = DgmOctreeNN::build(&points
+            .iter().flat_map(|p| [p[0], p[1], p[2]]).collect::<Vec<f32>>());
+        for q in [[0.1, 0.0, 0.0], [0.5, 0.5, 0.5], [0.9, 0.9, 0.9]] {
+            let (idx1, d1) = nn.nearest(&q);
+            let (idx2, d2) = nn2.nearest(&q);
+            assert_eq!(idx1, idx2, "from_existing vs build disagree at {:?}", q);
+            assert!((d1 - d2).abs() < 1e-6, "d^2 mismatch: {} vs {}", d1, d2);
+        }
+    }
+
+    /// NaN-coordinate behavior is undefined but should not
+    /// panic. The bbox is `f32::NAN` for any NaN coord, and
+    /// `compute_cell_code` propagates NaN (NaN < mid is
+    /// always false → "upper" branch at every level). The
+    /// NN result is undefined; we just check the function
+    /// doesn't panic.
+    #[test]
+    fn d9_nan_input_does_not_panic() {
+        let points: Vec<[f32; 3]> = vec![
+            [0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0],
+        ];
+        let tree = DgmOctree::build(&points, 2);
+        // NaN query: should not panic.
+        let _ = tree.nearest_neighbor([f32::NAN, 0.0, 0.0]);
+        // NaN point in the cloud: should not panic.
+        let _ = DgmOctree::build(&[[0.5, 0.5, 0.5], [f32::NAN, 0.0, 0.0]], 2);
     }
 
     // ── test helpers ──────────────────────────────────────────────

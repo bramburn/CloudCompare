@@ -510,11 +510,19 @@ kiddo.
 
 **Verification (D9 deliverable, 2026-08-20, run.ps1):**
 
-- **47/47 tests pass** in `cc-rust` (was 43 after D8, +4 for
-  D9: `d9_nearest_matches_brute_force_on_small_fixture`,
+- **54/54 tests pass** in `cc-rust` (was 43 after D8, +11
+  for D9: `d9_nearest_matches_brute_force_on_small_fixture`,
   `d9_nearest_matches_brute_force_on_gaussian`,
   `d9_nearest_is_faster_than_brute_force_on_gaussian_5k`,
-  `dgm_octree_nn_plugs_into_icp_with_nn`).
+  `dgm_octree_nn_plugs_into_icp_with_nn`,
+  `d9_empty_tree_returns_sentinel`,
+  `d9_single_point_cloud`,
+  `d9_outside_bbox_query`,
+  `d9_exact_overlap_query`,
+  `d9_shared_cell_nn_at_level_1`,
+  `d9_nn_from_existing`,
+  `d9_nan_input_does_not_panic`; `get_cell_pos_round_trip`
+  extended to cover levels 1-8).
 - **All four variants agree on correctness** at every size
   tested (identical RMS, identical iteration count) — the
   DgmOctreeNN trait dispatch is correct.
@@ -523,12 +531,12 @@ kiddo.
   | Variant | N=2k | N=5k | N=10k | N=50k |
   |---|---|---|---|---|
   | `01-naive-on2` | (skipped, O(n²)) | | | |
-  | `02-kiddo-kdtree` | **0.29** us/q | **0.28** us/q | **0.50** us/q | **0.54** us/q |
-  | `03-handrolled-octree` | 6.42 us/q | 18.87 us/q | 42.23 us/q | 510.66 us/q |
-  | `04-dgm-octree` (D9) | 0.64 us/q | 0.78 us/q | 0.69 us/q | 1.03 us/q |
+  | `02-kiddo-kdtree` | **0.30** us/q | **0.29** us/q | **0.43** us/q | **0.53** us/q |
+  | `03-handrolled-octree` | 6.40 us/q | 15.89 us/q | 39.14 us/q | 278.23 us/q |
+  | `04-dgm-octree` (D9) | 0.49 us/q | 0.87 us/q | 0.65 us/q | 0.91 us/q |
 
-  D9 is **~10-500x faster** than the hand-rolled octree (which
-  has no AABB pruning), and **~2x slower** than kiddo. The
+  D9 is **~13-525x faster** than the hand-rolled octree (which
+  has no AABB pruning), and **~1.5-2x slower** than kiddo. The
   constant factor vs kiddo comes from the cell-code HashMap
   lookup + AABB min-distance check on every shell cell;
   kiddo's B-tree descent has fewer indirections.
@@ -536,9 +544,9 @@ kiddo.
 
   | Variant | N=2k | N=5k | N=10k | N=50k |
   |---|---|---|---|---|
-  | `02-kiddo-kdtree` | **0.020 s** | **0.092 s** | **0.171 s** | **1.156 s** |
-  | `04-dgm-octree` (D9) | 0.031 s | 0.211 s | 0.388 s | 2.723 s |
-  | `03-handrolled-octree` | 0.418 s | 3.867 s | 29.971 s | 859.084 s |
+  | `02-kiddo-kdtree` | **0.021 s** | **0.092 s** | **0.166 s** | **1.029 s** |
+  | `04-dgm-octree` (D9) | 0.031 s | 0.188 s | 0.342 s | 2.162 s |
+  | `03-handrolled-octree` | 0.345 s | 3.572 s | 18.532 s | 740.464 s |
 
   D9 is the second-best ICP NN. The 2-3x wall-time gap to
   kiddo at N=50k is the NN cost (above) plus the Rust

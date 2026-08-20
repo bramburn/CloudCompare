@@ -30,23 +30,23 @@ brute force.
 
 | Variant | N=2k (s) | N=5k (s) | N=10k (s) | N=50k (s) | Speedup @ 10k | Speedup @ 50k |
 |---|---|---|---|---|---|---|
-| `01-naive-on2` | 0.25 | 2.12 | 11.19 | (skipped, O(n^2)) | 1.0x | n/a |
-| `02-kiddo-kdtree` | **0.020** | **0.092** | **0.171** | **1.156** | **65x** | n/a (vs naive) |
-| `03-handrolled-octree` | 0.42 | 3.87 | 29.97 | 859.08 | 0.4x | 1.0x (broken pruning) |
-| `04-dgm-octree` (D9) | 0.031 | 0.211 | 0.388 | 2.723 | 29x | 315x (vs handrolled) |
+| `01-naive-on2` | 0.26 | 2.00 | 7.58 | (skipped, O(n^2)) | 1.0x | n/a |
+| `02-kiddo-kdtree` | **0.021** | **0.092** | **0.166** | **1.029** | **46x** | n/a (vs naive) |
+| `03-handrolled-octree` | 0.345 | 3.572 | 18.532 | 740.464 | 0.4x | 1.0x (broken pruning) |
+| `04-dgm-octree` (D9) | 0.031 | 0.188 | 0.342 | 2.162 | 22x | 342x (vs handrolled) |
 
 **The kiddo advantage is now visible end-to-end and grows with N.**
 Pre-D8 the variants produced similar wall times (~10% spread)
 because they all fell back to cc-rust's brute force. Post-D8
 the trait dispatch is real and kiddo wins decisively:
 
-- At N=10k, kiddo is **65x faster than naive** and **172x faster
+- At N=10k, kiddo is **46x faster than naive** and **112x faster
   than the hand-rolled octree** end-to-end.
-- At N=50k, kiddo is **~743x faster than the hand-rolled octree**
-  (1.156s vs 859s). Naive is skipped at 50k because O(n^2) per
+- At N=50k, kiddo is **~719x faster than the hand-rolled octree**
+  (1.029s vs 740.464s). Naive is skipped at 50k because O(n^2) per
   iter is too slow (>2 hours per iter).
-- At N=50k, the D9 cell-code-ordered octree is **315x faster
-  than the hand-rolled octree** (2.723s vs 859s) but **2.4x
+- At N=50k, the D9 cell-code-ordered octree is **342x faster
+  than the hand-rolled octree** (2.162s vs 740.464s) but **2.1x
   slower than kiddo**. The D9 gap to kiddo is the HashMap
   overhead in the cell lookup + AABB min-distance check; for
   production use, kiddo is the recommended default.
@@ -55,17 +55,17 @@ the trait dispatch is real and kiddo wins decisively:
 
 | Variant | N=2k (us/q) | N=5k (us/q) | N=10k (us/q) | N=50k (us/q) | Scaling |
 |---|---|---|---|---|---|
-| `02-kiddo-kdtree` | **0.29** | **0.28** | **0.50** | **0.54** | O(log n), flat |
-| `03-handrolled-octree` | 6.42 | 18.87 | 42.23 | 510.66 | O(n) per query (broken pruning) |
-| `04-dgm-octree` (D9) | 0.64 | 0.78 | 0.69 | 1.03 | O(d^3) cells, AABB-pruned |
+| `02-kiddo-kdtree` | **0.30** | **0.29** | **0.43** | **0.53** | O(log n), flat |
+| `03-handrolled-octree` | 6.40 | 15.89 | 39.14 | 278.23 | O(n) per query (broken pruning) |
+| `04-dgm-octree` (D9) | 0.49 | 0.87 | 0.65 | 0.91 | O(d^3) cells, AABB-pruned |
 
 The kiddo KD-tree queries are sub-us at every size tested
-(0.28-0.54 us) and scaling is essentially flat, which matches
+(0.29-0.53 us) and scaling is essentially flat, which matches
 the expected O(log n) cost of a balanced KD-tree. The D9
 cell-code-ordered search is also sub-us at every size and
-~2-3x slower than kiddo due to the HashMap + AABB overhead.
+~1.5-2x slower than kiddo due to the HashMap + AABB overhead.
 The hand-rolled octree's per-query cost grows linearly
-(6 -> 511 us across 2k -> 50k) because the pruning is broken.
+(6 -> 278 us across 2k -> 50k) because the pruning is broken.
 
 ## Why the hand-rolled octree is slower than naive
 

@@ -15,7 +15,6 @@ path = "src/lib.rs"
 # and patterns P12/P13/P14 for the bug history. D9 in the same
 # doc is the cell-code-ordered NN.
 cc_rust = { path = "../../../../cc-rust" }
-nalgebra = "0.34"
 log = "0.4"
 env_logger = "0.11"
 

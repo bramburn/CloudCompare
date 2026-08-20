@@ -18,17 +18,13 @@
 //!   check doesn't miss cells adjacent to the query's cell face.
 
 use cc_rust::dgm_octree::DgmOctree;
-use cc_rust::registration::{icp_with_nn, IcprErrorRust, NearestNeighbour};
+use cc_rust::registration::{icp_with_nn, IcprErrorRust};
 
 /// ICP parameters — re-export the corrected cc-rust type.
 pub use cc_rust::registration::IcprParamsRust as IcpParams;
 
 /// ICP result — re-export the corrected cc-rust type.
 pub use cc_rust::registration::IcprResultRust as IcpResult;
-
-/// Re-export so the comparison scenario and main.rs can use the
-/// same `NearestNeighbour` type name as the other variants.
-pub use cc_rust::registration::NearestNeighbour as NnTrait;
 
 /// Re-export the D9 octree type so main.rs can call into it
 /// directly for the standalone NN-query benchmark.
