@@ -18,6 +18,14 @@
 #include <FileIOFilter.h>
 
 /**
+ * @file ReCapFilter.h
+ *
+ * @brief ReCap file filter.
+ *
+ * @details Autodesk ReCap RCS/RCP file filter.
+ */
+
+/**
  * @brief ReCap file filter
  *
  * Read Autodesk ReCap RCS (ReCap Station) and RCP (ReCap Photo) files
