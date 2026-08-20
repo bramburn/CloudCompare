@@ -106,6 +106,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/mainwindow.h ✅
 - ccViewer/ccviewer.h ✅
 - ccViewer/ccViewerApplication.h ✅
+- ccViewer/ccviewerlog.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -620,3 +621,8 @@ libs/
   - Enhanced @file with application class overview
   - Added @class documentation
   - Documented event handling and viewer lifecycle
+
+- `docs: enhance ccViewer/ccviewerlog.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with minimalist logger overview
+  - Added @class documentation
+  - Documented error-only message display

@@ -11,18 +11,23 @@
 //! along a diagonal). For the ICP use case (random-ish point
 //! clouds), the average is much closer to log n.
 //!
-//! As of 2026-08-19, the surrounding ICP algorithm lives in
-//! `cc-rust/src/registration.rs` and has been fixed (see D4 in
-//! experimental/docs/decisions.md). This variant provides only
-//! the NN; the algorithm is the same as 01-naive-on2.
+//! **D8 (2026-08-20):** the `Octree` is now wrapped in a
+//! `OctreeNN` adapter that implements the `NearestNeighbour`
+//! trait from cc-rust. The ICP loop runs via `icp_with_nn` so
+//! the per-iteration NN search really is the octree, not
+//! cc-rust's hard-coded brute force.
 
-use cc_rust::registration as icp;
+use cc_rust::registration::{icp_with_nn, IcprErrorRust, NearestNeighbour};
 
 /// ICP parameters — re-export the corrected cc-rust type.
-pub use icp::IcprParamsRust as IcpParams;
+pub use cc_rust::registration::IcprParamsRust as IcpParams;
 
 /// ICP result — re-export the corrected cc-rust type.
-pub use icp::IcprResultRust as IcpResult;
+pub use cc_rust::registration::IcprResultRust as IcpResult;
+
+/// Re-export so the comparison scenario and main.rs can use the
+/// same `NearestNeighbour` type name as the other variants.
+pub use cc_rust::registration::NearestNeighbour as NnTrait;
 
 /// One entry in a leaf: the original index in the input array
 /// plus the point. Storing the index is what makes `nearest()`
@@ -206,39 +211,6 @@ impl Octree {
                 }
             }
             OctreeNode::Internal { children } => {
-                // Process children in order of closest AABB distance first.
-                // This is the "best-first" variant of octree NN search and
-                // is what makes the pruning effective.
-                let mut child_dists: [(usize, f32); 8] = [
-                    (0, 0.0), (1, 0.0), (2, 0.0), (3, 0.0),
-                    (4, 0.0), (5, 0.0), (6, 0.0), (7, 0.0),
-                ];
-                // We need the AABB of each child to compute its min distance.
-                // The original AABB is in the Octree, but in search we only
-                // have a node. We rely on the AABB-per-child invariant: each
-                // child lives in the parent's AABB shrunk by the octant
-                // boundaries. We don't have the parent AABB here, so we
-                // accept the worst case and pass the AABB through instead.
-                // For ICP the small constant factor doesn't matter.
-                //
-                // NOTE: without the parent AABB in this signature we can't
-                // compute exact child AABBs. To keep the leaf comparison
-                // correct, we fall back to a depth-first traversal and
-                // prune only at the leaf level via the parent's AABB.
-                // The "best-first" ordering is approximated by visiting
-                // children 0..7 in order; for the Gaussian fixtures used
-                // in the benchmarks this is close enough.
-                for (i, c) in children.iter().enumerate() {
-                    // Conservative: assume child AABB is at most the size
-                    // of the parent. We can't prune here without the AABB.
-                    // The real pruning happens at the leaf level.
-                    child_dists[i].0 = i;
-                    child_dists[i].1 = 0.0;
-                    let _ = c; // suppress unused warning
-                }
-                // Depth-first traversal. We rely on early-out at the
-                // leaf level (the min_dist_sq against the leaf's AABB
-                // is implicit in the per-point comparison).
                 for c in children {
                     Self::search(c, query, best_idx, best_dist_sq);
                 }
@@ -247,32 +219,45 @@ impl Octree {
     }
 }
 
-/// ICP wrapper. Uses the corrected cc-rust ICP algorithm, with
-/// the hand-rolled octree as the NN data structure.
+/// Adapter that implements the cc-rust `NearestNeighbour` trait
+/// over the hand-rolled `Octree`. Same wrapping pattern as
+/// `KiddoNN`: zero-cost aside from the trait dispatch (the
+/// method just delegates to `Octree::nearest`).
+pub struct OctreeNN {
+    octree: Octree,
+}
+
+impl OctreeNN {
+    /// Build the underlying octree from a flat f32 point cloud
+    /// (the layout cc-rust uses for `model_points`).
+    pub fn build(model_points: &[f32]) -> Self {
+        let n_model = model_points.len() / 3;
+        let points: Vec<[f32; 3]> = (0..n_model)
+            .map(|i| [model_points[i * 3], model_points[i * 3 + 1], model_points[i * 3 + 2]])
+            .collect();
+        Self { octree: Octree::from_points(&points) }
+    }
+}
+
+impl NearestNeighbour for OctreeNN {
+    fn nearest(&self, query: &[f32; 3]) -> (usize, f32) {
+        self.octree.nearest(*query)
+    }
+}
+
+/// Build an octree-backed NN over an f32 point cloud.
+pub fn build_nn(model_points: &[f32]) -> OctreeNN {
+    OctreeNN::build(model_points)
+}
+
+/// End-to-end ICP driven by the hand-rolled octree NN.
 pub fn icp_iterate(
     data_points: &mut [f32],
     model_points: &[f32],
     params: &IcpParams,
-) -> Result<IcpResult, icp::IcprErrorRust> {
-    // We can't plug our octree into cc-rust's ICP without changing
-    // the signature. For now, expose a benchmark entry point that
-    // times just the octree build + query phases. The actual ICP
-    // iteration is run through cc-rust.
-    let n_model = model_points.len() / 3;
-    let model_arr: Vec<[f32; 3]> = (0..n_model)
-        .map(|i| [model_points[i*3], model_points[i*3+1], model_points[i*3+2]])
-        .collect();
-    let tree = Octree::from_points(&model_arr);
-
-    // Run the corrected ICP via cc-rust. Note: this uses the brute-
-    // force NN internally. The octree above is exposed separately
-    // for benchmark and correctness testing; full integration would
-    // require refactoring cc-rust's ICP signature to accept an NN
-    // trait object. That's a separate decision (D8 candidate).
-    let _ = tree; // octree is built for benchmark/correctness; the
-                  // actual ICP iteration below uses cc-rust's NN.
-
-    icp::icp_iterate(data_points, model_points, params)
+) -> Result<IcpResult, IcprErrorRust> {
+    let nn = build_nn(model_points);
+    icp_with_nn(data_points, model_points, &nn, params)
 }
 
 pub fn default_params() -> IcpParams {
@@ -324,11 +309,10 @@ mod tests {
         assert!(d < 0.01, "got d² = {}", d);
     }
 
+    /// D8 (2026-08-20): end-to-end octree-driven ICP converges
+    /// on the asymmetric-9 fixture.
     #[test]
     fn icp_via_cc_rust() {
-        // The 8-cube corners are degenerate (see P14 in
-        // experimental/docs/patterns.md), so use the asymmetric-9
-        // fixture. The corrected ICP via cc-rust should converge.
         let model: Vec<f32> = vec![
             0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0,
             1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0,
@@ -348,5 +332,27 @@ mod tests {
 
         let r = icp_iterate(&mut data, &model, &default_params()).expect("ICP failed");
         assert!(r.rms < 0.01, "rms too high: {}", r.rms);
+    }
+
+    /// D8: confirm the trait adapter and the octree's direct
+    /// nearest() agree on the same point cloud.
+    #[test]
+    fn octree_nn_agrees_with_direct_query() {
+        let pts = vec![
+            [0.0, 0.0, 0.0],
+            [1.0, 2.0, 3.0],
+            [-1.0, -2.0, -3.0],
+        ];
+        let tree = Octree::from_points(&pts);
+        let nn = OctreeNN { octree: Octree::from_points(&pts) };
+        for q in [[0.1, 0.0, 0.0], [0.9, 1.9, 2.95], [-0.5, -1.0, -1.5]] {
+            let (idx_trait, d_trait) = nn.nearest(&q);
+            let (idx_direct, d_direct) = tree.nearest(q);
+            assert_eq!(idx_trait, idx_direct,
+                       "trait and direct disagree on {:?}: trait={} direct={}",
+                       q, idx_trait, idx_direct);
+            assert!((d_trait - d_direct).abs() < 1e-6,
+                    "d² disagree on {:?}: trait={} direct={}", q, d_trait, d_direct);
+        }
     }
 }

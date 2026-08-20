@@ -289,6 +289,122 @@ Phase 0 deliverable in the roadmap.
 
 ---
 
+## D8. 2026-08-20 — `NearestNeighbour` trait + `icp_with_nn` (ICP NN pluggability)
+
+**Context:** The three ICP variants under
+`scenarios/2026-08-19-icp-variants/` (naive, kiddo, hand-rolled
+octree) all wanted to plug their own NN into the ICP loop, but
+cc-rust's `icp_iterate` signature did not accept a custom NN.
+Each variant built its tree for timing and then fell back to
+cc-rust's brute force for the actual ICP iteration — so the
+"ICP wall time" column in the old `decisions.md` was measuring
+cc-rust's brute force, not the variant's NN. The scenario was
+"benchmarked" but could not be promoted to "selected" because
+the wall-time numbers were not a real comparison.
+
+**Decisions:**
+
+- **Add a `NearestNeighbour` trait** to
+  `cc-rust/src/registration.rs`:
+
+  ```rust
+  pub trait NearestNeighbour {
+      fn nearest(&self, query: &[f32; 3]) -> (usize, f32);
+  }
+  ```
+
+  Single method, object-safe, no lifetime. The index is the
+  position of the matched point in the original model slice the
+  structure was built from. The distance is squared (matches
+  the RMS convention used everywhere else in the file).
+- **Add `icp_with_nn<N: NearestNeighbour + ?Sized>(data, model,
+  nn, params)`** as the new NN-driven entry point. The original
+  `icp_iterate` is now a thin wrapper that uses a `BruteForceNN`
+  adapter — so all 40 existing tests pass unchanged.
+- **Add a `BruteForceNN<'a>` adapter** over an `&[f32]` model
+  slice. This is the default NN for `icp_iterate` and is
+  exported for callers who want to use brute force explicitly
+  with the new entry point.
+- **Add `icp_multi_resolution_with_nn`** that takes a
+  caller-supplied NN. The per-level ICP loops use brute force
+  against the *subsampled* model (rebuilding a fresh
+  `BruteForceNN` per level) to avoid the match-the-NN-to-the-
+  wrong-model bug that the obvious refactor would have
+  introduced. The caller's NN is reserved for the final
+  summary RMS, which is the only step that actually touches
+  the full-resolution data. See the doc comment on
+  `icp_multi_resolution_with_nn` for the rationale.
+- **Each variant implements the trait:**
+  - `01-naive-on2`: `pub type NaiveNN<'a> = BruteForceNN<'a>;`
+    (zero-cost alias — naive has no per-instance state).
+  - `02-kiddo-kdtree`: `KiddoNN` wraps the kiddo `KdTree` and
+    adapts the f32 trait contract to the f64 kiddo internals.
+  - `03-handrolled-octree`: `OctreeNN` wraps the `Octree` and
+    delegates `nearest()` to `Octree::nearest`.
+- **Each variant's `icp_iterate` now calls `icp_with_nn` with
+  its own adapter.** Pre-D8 the wrapper fell back to cc-rust's
+  brute force internally. Post-D8 the trait dispatch is real
+  and the per-iteration NN search is genuinely the variant's
+  NN.
+
+**Source:**
+- `cc-rust/src/registration.rs` — trait, adapter, refactored
+  `icp_iterate` and `icp_multi_resolution`.
+- `scenarios/2026-08-19-icp-variants/01-naive-on2/src/lib.rs` —
+  naive adapter.
+- `scenarios/2026-08-19-icp-variants/02-kiddo-kdtree/src/lib.rs` —
+  kiddo adapter.
+- `scenarios/2026-08-19-icp-variants/03-handrolled-octree/src/lib.rs` —
+  hand-rolled octree adapter.
+- `scenarios/2026-08-20-icp-nn-comparison/` — cross-variant
+  end-to-end bench (D8 deliverable).
+
+**Verification (D8 deliverable, 2026-08-20, run.ps1):**
+
+- **43/43 tests pass** in `cc-rust` (was 40/40, +3 for D8
+  trait tests: `icp_with_nn_matches_icp_iterate`,
+  `icp_with_nn_dispatches_to_trait`,
+  `icp_multi_resolution_with_nn_matches_legacy`).
+- **All three variants agree on correctness** at every size
+  tested (identical RMS, identical iteration count, identical
+  converged flag) — the trait dispatch is correct.
+- **End-to-end ICP wall time (NN-driven, Gaussian, seed=42):**
+
+  | Variant | N=2k | N=5k | N=10k | Speedup @ 10k |
+  |---|---|---|---|---|
+  | `01-naive-on2` | 0.247 s | 2.03 s | 7.54 s | 1.0× |
+  | `02-kiddo-kdtree` | **0.021 s** | **0.080 s** | **0.175 s** | **43×** |
+  | `03-handrolled-octree` | 0.359 s | 3.34 s | 18.5 s | 0.41× |
+
+  kiddo is **43× faster than naive at 10k** end-to-end. The
+  hand-rolled octree is *slower* than naive because its
+  `search()` falls back to depth-first traversal without AABB
+  pruning (the per-child AABB isn't preserved through the
+  recursion, so `min_dist_sq` can't fire at the internal-node
+  level). The hand-rolled octree was a learning exercise for
+  the DgmOctree port (D-phase 3), not a tuned implementation.
+  The DgmOctree port in `cc-rust/src/dgm_octree.rs` will be
+  the production-quality version; the D9 candidate is the
+  cell-code-ordered NN search in that octree.
+
+**Promotion of the scenario:** the scenario
+`2026-08-19-icp-variants` can now move from `benchmarked` to
+**`selected`**: the new comparison scenario
+`2026-08-20-icp-nn-comparison` provides the end-to-end
+numbers, the kiddo variant is picked as the winner, and
+`scenarios/2026-08-19-icp-variants/decisions.md` will be
+updated to reflect that.
+
+**When to revisit:**
+- D9 (cell-code-ordered NN in DgmOctree) is the next work
+  item. The trait is ready; DgmOctree just needs an
+  `impl NearestNeighbour` block.
+- For real-data (N ≥ 100k) we have not yet measured; the
+  speedup is expected to grow because kiddo's per-query cost
+  is bounded while naive's is O(n).
+
+---
+
 ## Adding a new decision
 
 When you make an architectural decision in a session:

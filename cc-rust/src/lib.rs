@@ -33,8 +33,10 @@ pub use scalar_field::{
     compute_stats, compare, ScalarStats, ScalarError,
 };
 pub use registration::{
-    icp_iterate, IcprParamsRust as IcprParams, IcprResultRust as IcprResult,
+    icp_iterate, icp_with_nn, icp_multi_resolution, icp_multi_resolution_with_nn,
+    IcprParamsRust as IcprParams, IcprResultRust as IcprResult,
     IcprErrorRust as IcprError,
+    NearestNeighbour, BruteForceNN,
 };
 pub use coarse_align::{
     coarse_align, apply_transform_in_place, CoarseAlignResult,

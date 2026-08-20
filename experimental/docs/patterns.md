@@ -471,6 +471,105 @@ swap landed 2026-08-19).
 
 ---
 
+## P16. 2026-08-20 — Pluggable NN trait + adapter pattern (D8)
+
+**Problem:** The ICP loop needs a nearest-neighbour search, and
+the right NN structure depends on the data: brute force is
+simple and correct, kiddo is a fast pure-Rust KD-tree, and the
+DgmOctree port will eventually need its own cell-code-ordered
+descent. The original `icp_iterate` hard-coded brute force, so
+variants could not plug in their own NN — they built a tree for
+timing and then fell back to cc-rust's brute force, which made
+cross-variant bench numbers meaningless (the wall time was
+dominated by cc-rust's brute force, not the variant's NN).
+
+**Pattern:** Define a minimal, object-safe trait and a default
+adapter. The trait is the contract; the adapter is the
+fallback.
+
+```rust
+pub trait NearestNeighbour {
+    fn nearest(&self, query: &[f32; 3]) -> (usize, f32);
+}
+
+pub struct BruteForceNN<'a> { model: &'a [f32] }
+impl<'a> NearestNeighbour for BruteForceNN<'a> {
+    fn nearest(&self, query: &[f32; 3]) -> (usize, f32) {
+        // O(n) scan; identical math to the old
+        // `nearest_neighbour_slow` helper.
+    }
+}
+
+pub fn icp_with_nn<N: NearestNeighbour + ?Sized>(
+    data: &mut [f32], model: &[f32], nn: &N, params: &IcprParamsRust,
+) -> Result<IcprResultRust, IcprErrorRust> { /* full ICP loop */ }
+
+// Backward-compatible wrapper.
+pub fn icp_iterate(data: &mut [f32], model: &[f32], params: &IcprParamsRust)
+    -> Result<IcprResultRust, IcprErrorRust>
+{
+    let nn = BruteForceNN::new(model);
+    icp_with_nn(data, model, &nn, params)
+}
+```
+
+Each variant implements the trait by wrapping its own structure:
+
+- `01-naive-on2` — `pub type NaiveNN<'a> = BruteForceNN<'a>;`
+  (zero-cost alias).
+- `02-kiddo-kdtree` — `KiddoNN` wraps the kiddo `KdTree` and
+  adapts the f32 trait contract to the f64 kiddo internals.
+- `03-handrolled-octree` — `OctreeNN` wraps the `Octree` and
+  delegates `nearest()` to `Octree::nearest`.
+
+Each variant then calls `icp_with_nn` with its own adapter:
+
+```rust
+let nn = build_nn(model_points);
+icp_with_nn(data_points, model_points, &nn, params)
+```
+
+**Why this works:**
+
+- **Single-method trait is object-safe** (`&dyn NearestNeighbour`
+  works, no `where Self: Sized` issue). The ICP loop can be
+  generic over `N: NearestNeighbour + ?Sized` and accept both
+  concrete types and trait objects.
+- **The default `BruteForceNN` adapter is the fallback.** It
+  is identical to the old hard-coded scan, so legacy code
+  that calls `icp_iterate` keeps working unchanged. The 40
+  pre-D8 tests pass without modification.
+- **Variants are zero-cost wrappers.** `NaiveNN` is a type
+  alias, `KiddoNN` adds one f32→f64 cast per query, `OctreeNN`
+  adds one trait dispatch per query. The trait itself is
+  monomorphised, so there's no vtable cost in release.
+
+**Symptom of getting it wrong:** if the trait is generic over
+a lifetime and you try to make it object-safe, the borrow
+checker will reject it. If the trait takes the model slice
+by value, every call clones the model. If the adapter does
+anything fancy (locks, allocations) inside `nearest()`, the
+per-query cost goes from µs to ms. Keep it simple: the trait
+is a thin contract, the adapter is a thin wrapper.
+
+**What you do NOT do:** don't make the trait return a borrowed
+slice — the model might be local to the calling function. Don't
+make the trait take a `&mut self` — ICP queries the model
+concurrently across iterations and a `&mut` would prevent
+that. Don't use generic associated types for the return —
+keep it `(usize, f32)`.
+
+**Source:** `cc-rust/src/registration.rs::NearestNeighbour`,
+`cc-rust/src/registration.rs::BruteForceNN`,
+`cc-rust/src/registration.rs::icp_with_nn`,
+`scenarios/2026-08-19-icp-variants/*/src/lib.rs` (the three
+adapter implementations), D8 in
+`experimental/docs/decisions.md` (the trait + dispatch
+decision), and the `2026-08-20-icp-nn-comparison` scenario
+(the cross-variant end-to-end bench).
+
+---
+
 ## Adding a new pattern
 
 When you find a pattern that:

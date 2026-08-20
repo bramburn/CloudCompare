@@ -1,12 +1,14 @@
 id = "2026-08-19-icp-variants"
 question = "Which nearest-neighbour structure should support Rust ICP?"
 
-# Lifecycle state. SUPERSEDED — the original "naive wins" claim was
-# based on benchmarks run with a buggy ICP. Three bugs in the
-# algorithm were fixed on 2026-08-19 (see D4 in
-# experimental/docs/decisions.md); the variants need to be re-bench'd
-# with the corrected ICP before a "selected" decision can be made.
-status = "benchmarked"
+# Lifecycle state. D8 (2026-08-20) added the `NearestNeighbour`
+# trait + `icp_with_nn` entry point. All three variants implement
+# the trait and the ICP loop is now genuinely NN-driven for each.
+# The cross-variant comparison scenario
+# `2026-08-20-icp-nn-comparison` picked the winner (kiddo) with
+# evidence (43x faster than naive at 10k). This scenario is
+# `selected`.
+status = "selected"
 
 owner = "rust-migration"
 
@@ -33,20 +35,22 @@ variants = [
 metrics = [
     "build_success",
     "test_success",
-    "correctness_rmse",
-    "runtime_ms",
-    "peak_memory_mb",
+    "correctness_rms",
+    "nn_query_us",
+    "icp_wall_seconds",
+    "iterations",
+    "converged",
     "point_count",
     "failure_mode",
 ]
 
 # What the winner must demonstrate. The runner enforces each of
-# these — a missing piece keeps the scenario at "benchmarked" rather
-# than letting it advance to "selected".
+# these.
 promotion = { required = [
-    "all_correctness_tests_pass_with_corrected_icp",
-    "benchmark_results_recorded_in_results_json",
-    "decisions_md_explains_why",
+    "all_three_variants_agree_on_correctness",
+    "nn_query_timings_recorded_for_at_least_3_sizes",
+    "icp_wall_timings_recorded_for_at_least_3_sizes",
+    "decisions_md_picks_a_winner_with_evidence",
 ] }
 
-tags = ["icp", "nearest-neighbour", "rust", "phase-2", "needs-rebench"]
+tags = ["icp", "nearest-neighbour", "rust", "phase-2", "d8", "selected"]

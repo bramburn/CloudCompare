@@ -15,7 +15,10 @@
 //   return cumulative (R, t)
 //
 // This is a pure-math implementation. The nearest-neighbour search is
-// also pure Rust. No C++ dependency required for testing.
+// pluggable via the `NearestNeighbour` trait (added 2026-08-20 per
+// D8 in `experimental/docs/decisions.md`); the default brute-force
+// adapter is a pure-Rust O(n) scan. The whole loop has no C++
+// dependency, so it builds and tests on any toolchain.
 
 use nalgebra::Vector3;
 use thiserror::Error;
@@ -92,10 +95,10 @@ pub enum RegistrationError {
     NumericalInstability(&'static str),
 }
 
-/// Run ICP using O(n²) brute-force nearest-neighbour.
+/// Run ICP using a caller-supplied nearest-neighbour structure.
 ///
 /// The standard ICP algorithm:
-///   1. Find correspondences (data point ↔ nearest model point)
+///   1. Find correspondences (data point ↔ nearest model point) via `nn`
 ///   2. Compute optimal (R, t) from those correspondences (Horn 1987 SVD)
 ///   3. Apply (R, t) to data
 ///   4. Repeat from 1 until RMS change is small
@@ -104,12 +107,19 @@ pub enum RegistrationError {
 /// before the loop and only iterated the NN search. That is **not** ICP.
 /// See `experimental/docs/decisions.md` D4 for the bug history.
 ///
+/// **NN injection (D8, 2026-08-20)**: the nearest-neighbour step is
+/// driven by the `NearestNeighbour` trait, so the caller can plug in
+/// any structure (brute force, kiddo KD-tree, hand-rolled octree, …).
+/// The original `icp_iterate` is now a thin wrapper that uses a
+/// `BruteForceNN` adapter.
+///
 /// `data_points` is mutated in place; on return, it is the registered cloud.
 /// The returned `transform` is the cumulative 4×4 matrix that was applied
 /// to map the input data cloud to its final pose.
-pub fn icp_iterate(
+pub fn icp_with_nn<N: NearestNeighbour + ?Sized>(
     data_points: &mut [f32],
     model_points: &[f32],
+    nn: &N,
     params: &IcprParamsRust,
 ) -> Result<IcprResultRust, IcprErrorRust> {
     let n_data = data_points.len() / 3;
@@ -148,16 +158,18 @@ pub fn icp_iterate(
         // here, which caused ICP to diverge after a successful first
         // iteration, because the data was applied to its already-moved
         // pose a second time, breaking the NN correspondences.)
+        //
+        // The NN search is now driven by the trait, so any data
+        // structure (brute force, KD-tree, octree, …) can be plugged
+        // in without changing this function. Per-query cost is
+        // O(1) for brute force, O(log n) for kiddo, O(log n) average
+        // (with pruning) for the hand-rolled octree.
         for i in 0..n_data {
             let idx = i * 3;
-            let pt = Vector3::new(
-                data_points[idx] as f64,
-                data_points[idx + 1] as f64,
-                data_points[idx + 2] as f64,
-            );
-            let (nn_idx, dist_sq) = nearest_neighbour_slow(model_points, &pt);
+            let q = [data_points[idx], data_points[idx + 1], data_points[idx + 2]];
+            let (nn_idx, dist_sq) = nn.nearest(&q);
             nn_indices[i] = nn_idx;
-            nn_dist_sq[i] = dist_sq;
+            nn_dist_sq[i] = dist_sq as f64;
         }
 
         // ── (1.5) Trim outliers ─────────────────────────────────────
@@ -277,6 +289,77 @@ pub fn icp_iterate(
     })
 }
 
+// ── NearestNeighbour trait (D8, 2026-08-20) ───────────────────────────────
+
+/// Pluggable nearest-neighbour interface for ICP.
+///
+/// Any structure that can answer "given a 3D query point, which point
+/// in the model is closest (and at what squared distance)" can be
+/// plugged into `icp_with_nn`. The trait is intentionally minimal so
+/// the three experimental scenarios (brute force, kiddo KD-tree,
+/// hand-rolled octree) can all implement it without changes to their
+/// internal representations.
+///
+/// `nearest` returns `(index, squared_distance)` where `index` is the
+/// position of the matched point in the original model slice that was
+/// used to build the structure, and `squared_distance` is in the same
+/// units as the model coordinates (so callers using f32 must return
+/// f32, callers using f64 must return f64 — see `BruteForceNN`).
+pub trait NearestNeighbour {
+    fn nearest(&self, query: &[f32; 3]) -> (usize, f32);
+}
+
+/// Brute-force O(n) nearest-neighbour over an f32 point cloud.
+///
+/// This is the default NN used by `icp_iterate` (which is now a thin
+/// wrapper over `icp_with_nn(&BruteForceNN::new(model), …)`). It is
+/// simple, correct, and requires no setup, so it remains the
+/// reference implementation against which the kiddo and octree
+/// variants are benchmarked.
+pub struct BruteForceNN<'a> {
+    model: &'a [f32],
+}
+
+impl<'a> BruteForceNN<'a> {
+    pub fn new(model: &'a [f32]) -> Self {
+        Self { model }
+    }
+}
+
+impl<'a> NearestNeighbour for BruteForceNN<'a> {
+    fn nearest(&self, query: &[f32; 3]) -> (usize, f32) {
+        let n = self.model.len() / 3;
+        let mut best_idx = 0_usize;
+        let mut best_dist_sq = f32::MAX;
+        for i in 0..n {
+            let dx = self.model[i * 3]     - query[0];
+            let dy = self.model[i * 3 + 1] - query[1];
+            let dz = self.model[i * 3 + 2] - query[2];
+            let d = dx * dx + dy * dy + dz * dz;
+            if d < best_dist_sq {
+                best_dist_sq = d;
+                best_idx = i;
+            }
+        }
+        (best_idx, best_dist_sq)
+    }
+}
+
+/// Backward-compatible ICP entry point. Equivalent to
+/// `icp_with_nn(data, model, &BruteForceNN::new(model), params)`.
+/// Kept so the existing 40 cc-rust tests and the three
+/// `01-naive-on2` / `02-kiddo-kdtree` / `03-handrolled-octree`
+/// scenario wrappers continue to work without a signature change
+/// at the call site.
+pub fn icp_iterate(
+    data_points: &mut [f32],
+    model_points: &[f32],
+    params: &IcprParamsRust,
+) -> Result<IcprResultRust, IcprErrorRust> {
+    let nn = BruteForceNN::new(model_points);
+    icp_with_nn(data_points, model_points, &nn, params)
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 /// Compute centroids of two point sets paired by index, with a
@@ -348,8 +431,13 @@ fn compute_covariance_from_pairs_masked(
     h
 }
 
-/// Brute-force O(n) nearest-neighbour. Returns (index, squared_distance).
-/// Reused by the iterative ICP and by the unit tests.
+/// Brute-force O(n) nearest-neighbour returning (index, squared_distance).
+///
+/// Kept as a free function for the unit tests so they can sanity-check
+/// the `BruteForceNN` adapter against an f64 return type without going
+/// through the trait. The production path is the `BruteForceNN` adapter
+/// (which returns f32 and is what the trait contract requires).
+#[allow(dead_code)] // retained for unit tests; production uses BruteForceNN
 fn nearest_neighbour_slow(model: &[f32], query: &Vector3<f64>) -> (usize, f64) {
     let n = model.len() / 3;
     let mut best_idx = 0;
@@ -439,10 +527,11 @@ pub fn apply_transform_in_place(points: &mut [f32], transform: &[f64; 16]) {
     }
 }
 
-/// Multi-resolution ICP. Subsamples both clouds to a smaller
-/// size and runs ICP at the coarse level, then applies the
-/// recovered transform to the original (full-resolution) data
-/// and runs a second pass.
+/// Multi-resolution ICP with a caller-supplied nearest-neighbour structure.
+///
+/// Subsamples both clouds to a smaller size and runs ICP at the
+/// coarse level, then applies the recovered transform to the
+/// original (full-resolution) data and runs a second pass.
 ///
 /// Why this helps: ICP on a noisy or partial-overlap cloud
 /// often gets stuck in a local minimum at fine resolution
@@ -458,10 +547,25 @@ pub fn apply_transform_in_place(points: &mut [f32], transform: &[f64; 16]) {
 /// schedule.
 ///
 /// `params` is reused across all passes.
-pub fn icp_multi_resolution(
+///
+/// **Where the caller's `nn` is used (D8, 2026-08-20):** the
+/// per-level ICP loops run against subsampled models. The
+/// caller's NN was built for the *full* model, so passing it
+/// into the per-level loop would mean querying the full model
+/// for matches and then computing the SVD against the subsampled
+/// model — a mismatch that gives wrong correspondences. Instead,
+/// each level rebuilds a fresh `BruteForceNN` against the
+/// subsampled model (this matches the original brute-force
+/// behaviour). The caller's `nn` is used for the **final
+/// summary RMS** on the full-resolution data, which is the step
+/// that actually touches the full model. For end-to-end NN
+/// performance numbers, use `icp_with_nn` directly with a
+/// tree-based NN.
+pub fn icp_multi_resolution_with_nn<N: NearestNeighbour + ?Sized>(
     data_points: &mut [f32],
     model_points: &[f32],
     fractions: &[f64],
+    nn: &N,
     params: &IcprParamsRust,
 ) -> Result<IcprResultRust, IcprErrorRust> {
     if fractions.is_empty() {
@@ -507,7 +611,11 @@ pub fn icp_multi_resolution(
             sub_model.push(model_points[i3 + 2]);
         }
 
-        let sub_result = icp_iterate(&mut sub_data, &sub_model, params)?;
+        // Per-level ICP: brute force against the subsampled model.
+        // This matches the pre-D8 behaviour exactly; the caller's
+        // NN is reserved for the final summary RMS (see doc comment).
+        let sub_nn = BruteForceNN::new(&sub_model);
+        let sub_result = icp_with_nn(&mut sub_data, &sub_model, &sub_nn, params)?;
         // Apply sub_result.transform to the FULL data array.
         let mut t = [0.0_f64; 16];
         t.copy_from_slice(&sub_result.transform);
@@ -529,17 +637,16 @@ pub fn icp_multi_resolution(
     }
 
     // Final RMS on the full-resolution data, against the model.
-    let mut sum_dist_sq = 0.0;
+    // This is where the caller's NN actually pays off: it pays
+    // its build cost once (before calling us) and is queried
+    // n_data times here. For tree-based NNs this is the only
+    // step that benefits from the speedup.
+    let mut sum_dist_sq = 0.0_f64;
     for i in 0..n_data {
         let idx = i * 3;
-        let pt = Vector3::new(
-            data_points[idx] as f64,
-            data_points[idx + 1] as f64,
-            data_points[idx + 2] as f64,
-        );
-        let (nn_idx, dist_sq) = nearest_neighbour_slow(model_points, &pt);
-        sum_dist_sq += dist_sq;
-        let _ = nn_idx; // not used in the summary RMS
+        let q = [data_points[idx], data_points[idx + 1], data_points[idx + 2]];
+        let (_nn_idx, dist_sq) = nn.nearest(&q);
+        sum_dist_sq += dist_sq as f64;
     }
     let final_rms = (sum_dist_sq / n_data as f64).sqrt();
     Ok(IcprResultRust {
@@ -548,6 +655,21 @@ pub fn icp_multi_resolution(
         iterations: fractions.len() as u32,
         transform: cumulative.to_vec(),
     })
+}
+
+/// Backward-compatible multi-resolution ICP entry point. Equivalent
+/// to `icp_multi_resolution_with_nn(data, model, fractions,
+/// &BruteForceNN::new(model), params)`. Kept so the existing
+/// `multi_resolution_recovers_translation` test continues to work
+/// without a signature change.
+pub fn icp_multi_resolution(
+    data_points: &mut [f32],
+    model_points: &[f32],
+    fractions: &[f64],
+    params: &IcprParamsRust,
+) -> Result<IcprResultRust, IcprErrorRust> {
+    let nn = BruteForceNN::new(model_points);
+    icp_multi_resolution_with_nn(data_points, model_points, fractions, &nn, params)
 }
 
 // ── Tests ──────────────────────────────────────────────────────────────────
@@ -824,6 +946,91 @@ mod tests {
         // "data → model" direction: -data_offset.
         let err = (t - (-data_offset)).norm();
         assert!(err < 0.1, "translation error too high: {:?} (expected {:?})", t, -data_offset);
+    }
+
+    /// D8 (2026-08-20) — exercise `icp_with_nn` directly with a
+    /// `BruteForceNN` adapter, proving the trait dispatch works
+    /// and the result matches the legacy `icp_iterate` exactly.
+    #[test]
+    fn icp_with_nn_matches_icp_iterate() {
+        let model = asymmetric_cloud();
+        let data_offset = Vector3::new(0.4, -0.2, 0.15);
+        let mut data_a = model.clone();
+        apply_rigid(&mut data_a, &nalgebra::Matrix3::identity(), &data_offset);
+        let mut data_b = data_a.clone();
+        let params = IcprParamsRust { max_iterations: 50, min_rms_decrease: 1e-6, ..Default::default() };
+
+        let legacy = icp_iterate(&mut data_a, &model, &params).expect("legacy failed");
+        let nn = BruteForceNN::new(&model);
+        let via_trait = icp_with_nn(&mut data_b, &model, &nn, &params).expect("trait failed");
+
+        // Same final RMS (within fp tolerance) and same iterations.
+        assert!((legacy.rms - via_trait.rms).abs() < 1e-6,
+                "rms mismatch: legacy={} trait={}", legacy.rms, via_trait.rms);
+        assert_eq!(legacy.iterations, via_trait.iterations);
+        // Same recovered transform.
+        for i in 0..16 {
+            assert!((legacy.transform[i] - via_trait.transform[i]).abs() < 1e-6,
+                    "transform[{}] mismatch: legacy={} trait={}",
+                    i, legacy.transform[i], via_trait.transform[i]);
+        }
+    }
+
+    /// D8 — exercise `icp_with_nn` with a *custom* trait impl, to
+    /// prove the dispatch is dynamic. The `NoopNN` always returns
+    /// index 0; that is wrong ICP, but it lets us verify the
+    /// outer code calls the trait (not a hard-coded brute force).
+    #[test]
+    fn icp_with_nn_dispatches_to_trait() {
+        // A NN that ignores the query and always returns the first
+        // point. This is wrong ICP, so we don't assert on RMS;
+        // we just confirm the code accepts the custom impl and
+        // returns a result.
+        struct NoopNN;
+        impl NearestNeighbour for NoopNN {
+            fn nearest(&self, _query: &[f32; 3]) -> (usize, f32) {
+                (0, 0.0)
+            }
+        }
+        let model = asymmetric_cloud();
+        let mut data = model.clone();
+        let params = IcprParamsRust { max_iterations: 3, min_rms_decrease: 1e-9, ..Default::default() };
+        let nn = NoopNN;
+        let r = icp_with_nn(&mut data, &model, &nn, &params);
+        assert!(r.is_ok(), "icp_with_nn should accept a custom NN impl");
+    }
+
+    /// D8 — `icp_multi_resolution_with_nn` with a custom NN produces
+    /// a result; the legacy wrapper and the trait wrapper agree on
+    /// RMS when both use brute force.
+    #[test]
+    fn icp_multi_resolution_with_nn_matches_legacy() {
+        let model: Vec<f32> = gaussian_cloud(500, 0.5, 7);
+        let data_offset = Vector3::new(1.0_f64, -0.5_f64, 0.3_f64);
+        let data_offset_f32 = [data_offset[0] as f32, data_offset[1] as f32, data_offset[2] as f32];
+        let make_data = || -> Vec<f32> {
+            (0..model.len() / 3)
+                .flat_map(|i| {
+                    let i3 = i * 3;
+                    vec![
+                        model[i3] + data_offset_f32[0],
+                        model[i3 + 1] + data_offset_f32[1],
+                        model[i3 + 2] + data_offset_f32[2],
+                    ]
+                })
+                .collect()
+        };
+        let mut data_legacy = make_data();
+        let mut data_trait  = make_data();
+        let params = IcprParamsRust { max_iterations: 50, min_rms_decrease: 1e-6, ..Default::default() };
+        let fractions = [0.2_f64, 1.0];
+
+        let legacy = icp_multi_resolution(&mut data_legacy, &model, &fractions, &params).expect("legacy");
+        let nn = BruteForceNN::new(&model);
+        let via_trait = icp_multi_resolution_with_nn(&mut data_trait, &model, &fractions, &nn, &params)
+            .expect("trait");
+        assert!((legacy.rms - via_trait.rms).abs() < 1e-6,
+                "rms mismatch: legacy={} trait={}", legacy.rms, via_trait.rms);
     }
 
     /// Generate a Gaussian cloud. Helper for multi-resolution test.

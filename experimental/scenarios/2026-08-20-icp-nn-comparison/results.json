@@ -1,0 +1,121 @@
+﻿{
+    "scenario":  "2026-08-20-icp-nn-comparison",
+    "question":  "With the D8 trait dispatch, which NN gives the fastest end-to-end ICP?",
+    "timestamp":  "2026-08-20T12:55:59Z",
+    "sizes":  [
+                  2000,
+                  5000,
+                  10000
+              ],
+    "seed":  42,
+    "results":  [
+                    {
+                        "variant":  "01-naive-on2",
+                        "n":  2000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  35,
+                        "converged":  "true",
+                        "rms":  0.000169,
+                        "nn_query_us":  null,
+                        "icp_wall_s":  0.238,
+                        "failure_mode":  null
+                    },
+                    {
+                        "variant":  "01-naive-on2",
+                        "n":  5000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  50,
+                        "converged":  "false",
+                        "rms":  0.064658,
+                        "nn_query_us":  null,
+                        "icp_wall_s":  2.005,
+                        "failure_mode":  null
+                    },
+                    {
+                        "variant":  "01-naive-on2",
+                        "n":  10000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  50,
+                        "converged":  "false",
+                        "rms":  0.060233,
+                        "nn_query_us":  null,
+                        "icp_wall_s":  7.505,
+                        "failure_mode":  null
+                    },
+                    {
+                        "variant":  "02-kiddo-kdtree",
+                        "n":  2000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  35,
+                        "converged":  "true",
+                        "rms":  0.000169,
+                        "nn_query_us":  0.3,
+                        "icp_wall_s":  0.021,
+                        "failure_mode":  null
+                    },
+                    {
+                        "variant":  "02-kiddo-kdtree",
+                        "n":  5000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  50,
+                        "converged":  "false",
+                        "rms":  0.064658,
+                        "nn_query_us":  0.28,
+                        "icp_wall_s":  0.077,
+                        "failure_mode":  null
+                    },
+                    {
+                        "variant":  "02-kiddo-kdtree",
+                        "n":  10000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  50,
+                        "converged":  "false",
+                        "rms":  0.060233,
+                        "nn_query_us":  0.31,
+                        "icp_wall_s":  0.175,
+                        "failure_mode":  null
+                    },
+                    {
+                        "variant":  "03-handrolled-octree",
+                        "n":  2000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  35,
+                        "converged":  "true",
+                        "rms":  0.000169,
+                        "nn_query_us":  7.41,
+                        "icp_wall_s":  0.354,
+                        "failure_mode":  null
+                    },
+                    {
+                        "variant":  "03-handrolled-octree",
+                        "n":  5000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  50,
+                        "converged":  "false",
+                        "rms":  0.064658,
+                        "nn_query_us":  16.96,
+                        "icp_wall_s":  3.93,
+                        "failure_mode":  null
+                    },
+                    {
+                        "variant":  "03-handrolled-octree",
+                        "n":  10000,
+                        "build_success":  true,
+                        "test_success":  true,
+                        "iterations":  50,
+                        "converged":  "false",
+                        "rms":  0.060233,
+                        "nn_query_us":  36.97,
+                        "icp_wall_s":  19.762,
+                        "failure_mode":  null
+                    }
+                ]
+}
