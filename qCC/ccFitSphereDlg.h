@@ -20,9 +20,22 @@
 /**
  * @file ccFitSphereDlg.h
  *
- * @brief Fit sphere dialog
+ * @brief Fit sphere dialog for sphere fitting parameters.
  *
- * Dialog for sphere fitting parameters.
+ * @details Dialog for configuring parameters when fitting a sphere
+ * to point cloud data.
+ *
+ * Sphere fitting is used to:
+ * - Detect and measure spherical objects (targets, markers)
+ * - Remove spherical noise/outliers
+ * - Create primitive representations of round objects
+ *
+ * Parameters:
+ * - **Max outliers ratio**: Maximum fraction of points that can
+ *   be outliers while still considering the fit valid
+ * - **Confidence**: Statistical confidence level for the fit
+ * - **Auto detect radius**: Automatically determine sphere radius
+ * - **Sphere radius**: Manual radius value (if not auto-detecting)
  *
  * @author Daniel Girardeau-Montaut
  */
@@ -33,9 +46,17 @@
 #include <QDialog>
 
 /**
- * @brief Fit sphere dialog
+ * @brief Dialog for sphere fitting parameters.
  *
- * Configure sphere fitting parameters.
+ * @details Provides a UI for setting up sphere fitting parameters.
+ *
+ * The dialog allows configuration of:
+ * - Outlier tolerance
+ * - Statistical confidence
+ * - Radius detection mode
+ *
+ * @extends QDialog
+ * @extends Ui::FitSphereDialog
  */
 class ccFitSphereDlg : public QDialog
     , public Ui::FitSphereDialog
@@ -44,12 +65,13 @@ class ccFitSphereDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] maxOutliersRatio Max outliers ratio
-	 * @param[in] confidence Confidence level
-	 * @param[in] autoDetectSphereRadius Auto detect radius
-	 * @param[in] sphereRadius Sphere radius
-	 * @param[in] parent Parent widget
+	 * @brief Construct the sphere fitting dialog.
+	 *
+	 * @param[in] maxOutliersRatio Maximum outliers ratio.
+	 * @param[in] confidence Statistical confidence level.
+	 * @param[in] autoDetectSphereRadius Auto-detect radius.
+	 * @param[in] sphereRadius Manual radius value.
+	 * @param[in] parent Parent widget.
 	 */
 	ccFitSphereDlg(double   maxOutliersRatio,
 	               double   confidence,
@@ -57,12 +79,27 @@ class ccFitSphereDlg : public QDialog
 	               double   sphereRadius,
 	               QWidget* parent = nullptr);
 
-	/// Get max outliers ratio
+	/**
+	 * @brief Get maximum outliers ratio.
+	 * @return Maximum fraction of outliers allowed.
+	 */
 	double maxOutliersRatio() const;
-	/// Get confidence
+
+	/**
+	 * @brief Get confidence level.
+	 * @return Confidence level (0-1).
+	 */
 	double confidence() const;
-	/// Get auto detect sphere radius
+
+	/**
+	 * @brief Check if radius is auto-detected.
+	 * @return true if radius should be auto-detected.
+	 */
 	bool autoDetectSphereRadius() const;
-	/// Get sphere radius
+
+	/**
+	 * @brief Get sphere radius.
+	 * @return Sphere radius value.
+	 */
 	double sphereRadius() const;
 };

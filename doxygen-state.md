@@ -68,6 +68,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccEnvelopeExtractor.h ✅
 - qCC/ccRasterizeTool.h ✅
 - qCC/ccRegistrationTools.h ✅
+- qCC/ccFitSphereDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -392,3 +393,8 @@ libs/
   - Enhanced @file with ICP algorithm overview
   - Added @class documentation
   - Documented ICP() method with algorithm explanation
+
+- `docs: enhance ccFitSphereDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with sphere fitting overview
+  - Added @class documentation
+  - Documented fitting parameters
