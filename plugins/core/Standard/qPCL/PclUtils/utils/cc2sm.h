@@ -15,6 +15,14 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file cc2sm.h
+ *
+ * @brief CloudCompare to PCL cloud converter.
+ *
+ * @details Utility for converting CloudCompare point clouds
+ * to PCL PointCloud format.
+ */
 #ifndef Q_PCL_PLUGIN_CC2SM_H
 #define Q_PCL_PLUGIN_CC2SM_H
 
