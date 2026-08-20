@@ -17,6 +17,14 @@
 //
 //#ifdef LP_PCL_PATCH_ENABLED
 
+/**
+ * @file copy.h
+ *
+ * @brief PCL cloud copy utilities.
+ *
+ * @details Functions for copying scalar fields and colors
+ * between CloudCompare and PCL point clouds.
+ */
 #ifndef qPCL_COPY_H
 #define qPCL_COPY_H
 
