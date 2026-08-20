@@ -1,5 +1,14 @@
 #pragma once
 
+/**
+ * @file fastMarchingForFacetExtraction.h
+ *
+ * @brief Fast Marching for facet extraction.
+ *
+ * @details Fast Marching algorithm implementation for planar
+ * facets extraction from point clouds.
+ */
+
 //##########################################################################
 //#                                                                        #
 //#                     CLOUDCOMPARE PLUGIN: qFacets                       #
