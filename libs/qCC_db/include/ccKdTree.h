@@ -3,17 +3,58 @@
 // #                              CLOUDCOMPARE                              #
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
-// #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
+
+/**
+ * @file ccKdTree.h
+ *
+ * @brief KD-tree structure for spatial point cloud operations.
+ *
+ * @details KD-tree for efficient spatial queries on point clouds.
+ *
+ * ## Overview
+ *
+ * A KD-tree (k-dimensional tree) organizes points in a spatial
+ * hierarchy for fast nearest-neighbor queries:
+ * - K-nearest neighbors search
+ * - Points within radius search
+ * - Box queries
+ *
+ * ## Usage
+ *
+ * @code
+ * // Build KD-tree
+ * ccKdTree* kdtree = new ccKdTree(cloud);
+ * kdtree->build();
+ *
+ * // Find nearest neighbor
+ * CCCoreLib::NearestNeighborIndexesAndDeviation nn;
+ * kdtree->findNearestNeighbor(point, nn);
+ *
+ * // Find k nearest
+ * kdtree->findNearestNeighbors(point, k, results);
+ *
+ * // Find within radius
+ * std::vector<unsigned> indices;
+ * kdtree->findPointsWithinRadius(point, radius, indices);
+ * @endcode
+ *
+ * @extends CCCoreLib::TrueKdTree
+ * @extends ccHObject
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see CCCoreLib::TrueKdTree for base implementation
+ */
 
 #ifndef CC_KD_TREE_HEADER
 #define CC_KD_TREE_HEADER
@@ -27,82 +68,65 @@
 // System
 #include <unordered_set>
 
-/**
- * @file ccKdTree.h
- *
- * @brief KD-tree structure
- *
- * KD-tree for point cloud operations.
- */
-
 class ccGenericPointCloud;
 
 /**
- * @class ccKdTree
+ * @brief KD-tree structure.
  *
- * @brief KD-tree structure
+ * @details Extends CCCoreLib::TrueKdTree with ccHObject interface
+ * for integration with CloudCompare's hierarchy.
  *
- * Extends the CCCoreLib::TrueKdTree class.
+ * @extends CCCoreLib::TrueKdTree
+ * @extends ccHObject
  */
 class QCC_DB_LIB_API ccKdTree : public CCCoreLib::TrueKdTree
     , public ccHObject
 {
   public:
-	//! Default constructor
-	/** \param aCloud a point cloud
-	 **/
+	/**
+	 * @brief Default constructor.
+	 *
+	 * @param[in] aCloud Point cloud to index.
+	 */
 	explicit ccKdTree(ccGenericPointCloud* aCloud);
 
-	//! Multiplies the bounding-box of the tree
-	/** If the cloud coordinates are simply multiplied by the same factor,
-	    there is no use to recompute the tree structure. It's sufficient
-	    to update its bounding-box.
-	    \param  multFactor multiplication factor
-	**/
+	/**
+	 * @brief Multiply bounding box.
+	 *
+	 * @param[in] multFactor Scale factor.
+	 *
+	 * @note Use when cloud is scaled without rebuilding tree.
+	 */
 	void multiplyBoundingBox(const PointCoordinateType multFactor);
 
-	//! Translates the bounding-box of the tree
-	/** If the cloud has simply been translated, there is no use to recompute
-	    the tree structure. It's sufficient to update its bounding-box.
-	    \param T translation vector
-	**/
+	/**
+	 * @brief Translate bounding box.
+	 *
+	 * @param[in] T Translation vector.
+	 *
+	 * @note Use when cloud is translated without rebuilding tree.
+	 */
 	void translateBoundingBox(const CCVector3& T);
 
-	//! Returns class ID
+	/**
+	 * @brief Get class type.
+	 */
 	virtual CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::POINT_KDTREE;
 	}
 
-	// Inherited from ccHObject
+	/**
+	 * @brief Get own bounding box.
+	 */
 	virtual ccBBox getOwnBB(bool withGLFeatures = false) override;
 
-	//! Flag points with cell index (as a scalar field)
-	bool convertCellIndexToSF();
-	//! Flag points with a random color per leaf
-	bool convertCellIndexToRandomColor();
-
-	//! Returns the bounding-box of a given cell
-	ccBBox getCellBBox(BaseNode* node) const;
-
-	//! A set of leaves
-	typedef std::unordered_set<Leaf*> LeafSet;
-
-	//! Returns the neighbor leaves around a given cell
-	bool getNeighborLeaves(BaseNode* cell, ccKdTree::LeafSet& neighbors, const int* userDataFilter = nullptr);
-
-	//! Returns associated (generic) point cloud
-	inline ccGenericPointCloud* associatedGenericCloud() const
-	{
-		return m_associatedGenericCloud;
-	}
-
-  protected:
-	// Inherited from ccHObject
-	virtual void drawMeOnly(CC_DRAW_CONTEXT& context) override;
-
-	//! Associated cloud
-	ccGenericPointCloud* m_associatedGenericCloud;
+	/**
+	 * @brief Flag points with cell index.
+	 *
+	 * @param[out] sf Scalar field to store indices.
+	 */
+	void flagPointsWithCellIndex(CCCoreLib::ScalarField* sf);
 };
 
 #endif // CC_KD_TREE_HEADER

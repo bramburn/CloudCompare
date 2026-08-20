@@ -143,6 +143,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccRasterGrid.h ✅
 - libs/qCC_db/ccIndexedTransformation.h ✅
 - libs/qCC_db/ccInteractor.h ✅
+- libs/qCC_db/ccKdTree.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -841,3 +842,8 @@ libs/
   - Enhanced @file with interactor interface overview
   - Added @class documentation
   - Documented click and move handling methods
+
+- `docs: enhance ccKdTree.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with KD-tree spatial structure overview
+  - Added @class documentation
+  - Documented nearest neighbor operations
