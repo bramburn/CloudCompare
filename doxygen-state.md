@@ -120,6 +120,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/CCPluginAPI/ccCommandLineInterface.h ✅
 - libs/CCPluginAPI/ccArgumentParser.h ✅
 - libs/CCPluginAPI/ccInfoDlg.h ✅
+- libs/CCPluginAPI/ccPersistentSettings.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -704,3 +705,8 @@ libs/
   - Enhanced @file with information dialog overview
   - Added @class documentation
   - Documented usage comparison with other dialogs
+
+- `docs: enhance ccPersistentSettings.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with settings keys overview
+  - Added @class documentation for ccPS namespace
+  - Documented all settings categories
