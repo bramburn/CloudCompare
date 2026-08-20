@@ -30,6 +30,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccCropTool.cpp ✅
 - qCC/ccPointListPickingDlg.h ✅
 - qCC/ccPointListPickingDlg.cpp ✅
+- qCC/ccGraphicalTransformationTool.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -161,3 +162,8 @@ libs/
   - Documented export formats (XYZ, IXYZ, GXYZ, LXYZ)
   - Added @details about point picking and label management
   - Added @brief for all slots and protected members
+
+- `docs: enhance ccGraphicalTransformationTool.h` - 2026-08-26
+  - Enhanced @file, @class documentation with architecture context
+  - Documented transformation modes (basic, advanced)
+  - Added @brief for all slots, enums, and protected members
