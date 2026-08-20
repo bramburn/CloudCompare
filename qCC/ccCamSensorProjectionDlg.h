@@ -21,11 +21,21 @@
 /**
  * @file ccCamSensorProjectionDlg.h
  *
- * @brief Camera sensor projection dialog
+ * @brief Camera sensor projection dialog for configuring projection parameters.
  *
- * Dialog for camera sensor projection parameters.
+ * @details Dialog for setting up camera sensor projection parameters
+ * when projecting 3D points onto a 2D image plane.
+ *
+ * Used with ccCameraSensor for:
+ * - Calibrating camera parameters
+ * - Setting intrinsic camera properties (focal length, principal point)
+ * - Configuring distortion models
+ * - Projecting point clouds onto camera images
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccCameraSensor
+ * @see ccGBLSensor
  */
 
 #include <ui_camSensorProjectDlg.h>
@@ -33,9 +43,20 @@
 class ccCameraSensor;
 
 /**
- * @brief Camera sensor projection dialog
+ * @brief Dialog for configuring camera sensor projection parameters.
  *
- * Configure camera sensor projection parameters.
+ * @details Provides a UI for setting up or modifying camera sensor
+ * parameters used in perspective projection.
+ *
+ * Parameters typically include:
+ * - Focal length (fx, fy)
+ * - Principal point (cx, cy)
+ * - Image dimensions
+ * - Distortion coefficients
+ * - Projection model (pinhole, fisheye, etc.)
+ *
+ * @extends QDialog
+ * @extends Ui::CamSensorProjectDialog
  */
 class ccCamSensorProjectionDlg : public QDialog
     , public Ui::CamSensorProjectDialog
@@ -44,20 +65,29 @@ class ccCamSensorProjectionDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] parent Parent widget
+	 * @brief Construct the camera sensor projection dialog.
+	 *
+	 * @param[in] parent Parent widget.
 	 */
 	explicit ccCamSensorProjectionDlg(QWidget* parent = nullptr);
 
 	/**
-	 * @brief Initialize with camera sensor
-	 * @param[in] sensor Camera sensor
+	 * @brief Initialize dialog with an existing camera sensor.
+	 *
+	 * @param[in] sensor Camera sensor to configure.
+	 *
+	 * @details Populates the dialog fields with values from
+	 * the given sensor for editing.
 	 */
 	void initWithCamSensor(const ccCameraSensor* sensor);
 
 	/**
-	 * @brief Update camera sensor
-	 * @param[in] sensor Camera sensor
+	 * @brief Update a camera sensor with dialog values.
+	 *
+	 * @param[in] sensor Camera sensor to update.
+	 *
+	 * @details Applies the parameters set in the dialog
+	 * to the specified camera sensor.
 	 */
 	void updateCamSensor(ccCameraSensor* sensor);
 };

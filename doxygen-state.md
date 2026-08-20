@@ -44,6 +44,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccColorFromScalarDlg.h ✅
 - qCC/ccAskThreeDoubleValuesDlg.h ✅
 - qCC/ccAskTwoDoubleValuesDlg.h ✅
+- qCC/ccCamSensorProjectionDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -249,3 +250,8 @@ libs/
   - Enhanced @file with use cases overview
   - Added @class documentation
   - Documented constructor parameters
+
+- `docs: enhance ccCamSensorProjectionDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with camera projection overview
+  - Added @class documentation
+  - Documented initWithCamSensor and updateCamSensor methods
