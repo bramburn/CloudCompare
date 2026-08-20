@@ -46,6 +46,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccAskTwoDoubleValuesDlg.h ✅
 - qCC/ccCamSensorProjectionDlg.h ✅
 - qCC/cc2.5DimEditor.h ✅
+- qCC/ccClippingBoxRepeatDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -261,3 +262,8 @@ libs/
   - Enhanced @file with 2.5D raster data overview
   - Added @class documentation
   - Documented grid management and conversion methods
+
+- `docs: enhance ccClippingBoxRepeatDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with repeat mode overview
+  - Added @class documentation
+  - Documented flat/repeat dimension methods
