@@ -87,6 +87,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccCommandRaster.h ✅
 - qCC/ccScaleDlg.h ✅
 - qCC/ccSubsamplingDlg.h ✅
+- qCC/ccSmoothPolylineDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -506,3 +507,8 @@ libs/
   - Enhanced @file with subsampling methods overview
   - Added @class documentation
   - Documented CC_SUBSAMPLING_METHOD enum
+
+- `docs: enhance ccSmoothPolylineDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with Chaikin smoothing overview
+  - Added @class documentation
+  - Documented iteration count and ratio parameters
