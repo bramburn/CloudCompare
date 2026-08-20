@@ -42,6 +42,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccBoundingBoxEditorDlg.h ✅
 - qCC/ccColorLevelsDlg.h ✅
 - qCC/ccColorFromScalarDlg.h ✅
+- qCC/ccAskThreeDoubleValuesDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -237,3 +238,8 @@ libs/
   - Enhanced @file with scalar-to-color mapping overview
   - Added @class documentation with channel descriptions
   - Documented all slots and protected members
+
+- `docs: enhance ccAskThreeDoubleValuesDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with use cases overview
+  - Added @class documentation
+  - Documented constructor parameters and checkbox functionality
