@@ -60,6 +60,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccPrimitiveDistanceDlg.h ✅
 - qCC/ccPrimitiveFactoryDlg.h ✅
 - qCC/ccPtsSamplingDlg.h ✅
+- qCC/ccMatchScalesDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -344,3 +345,8 @@ libs/
   - Enhanced @file with mesh sampling overview
   - Added @class documentation
   - Documented density vs total points modes
+
+- `docs: enhance ccMatchScalesDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with scale matching overview
+  - Added @class documentation
+  - Documented algorithm selection

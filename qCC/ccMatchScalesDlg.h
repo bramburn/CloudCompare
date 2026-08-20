@@ -21,11 +21,18 @@
 /**
  * @file ccMatchScalesDlg.h
  *
- * @brief Match scales dialog
+ * @brief Match scales dialog for scale matching algorithm selection.
  *
- * Dialog for scale matching algorithm selection.
+ * @details Dialog for selecting the algorithm used to match the
+ * scale/resolution of two point clouds.
+ *
+ * Scale matching is used before registration to normalize
+ * the sampling density or resolution of clouds that may
+ * have been captured at different scales.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccLibAlgorithms::ScaleMatchingAlgorithm
  */
 
 #include <ui_matchScalesDlg.h>
@@ -34,9 +41,19 @@
 #include "ccLibAlgorithms.h"
 
 /**
- * @brief Match scales dialog
+ * @brief Dialog for selecting scale matching algorithm.
  *
- * Select scale matching algorithm.
+ * @details Provides a UI for choosing the algorithm to use
+ * when matching the scale of two point clouds.
+ *
+ * Scale matching algorithms can include:
+ * - Subsampling to match lowest density
+ * - Upsampling to match highest density
+ * - Gaussian filtering
+ * - Bilateral filtering
+ *
+ * @extends QDialog
+ * @extends Ui::MatchScalesDialog
  */
 class ccMatchScalesDlg : public QDialog
     , public Ui::MatchScalesDialog
@@ -45,22 +62,32 @@ class ccMatchScalesDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] entities Available entities
-	 * @param[in] defaultSelectedIndex Default selected index
-	 * @param[in] parent Parent widget
+	 * @brief Construct the match scales dialog.
+	 *
+	 * @param[in] entities Available entities to match.
+	 * @param[in] defaultSelectedIndex Default selection index.
+	 * @param[in] parent Parent widget.
 	 */
 	ccMatchScalesDlg(const ccHObject::Container& entities,
 	                 int                         defaultSelectedIndex = 0,
 	                 QWidget*                    parent               = nullptr);
 
-	/// Get selected index
+	/**
+	 * @brief Get the selected entity index.
+	 * @return Index of selected entity.
+	 */
 	int getSelectedIndex() const;
 
-	/// Set selected algorithm
+	/**
+	 * @brief Set the selected algorithm.
+	 * @param[in] algorithm Algorithm to select.
+	 */
 	void setSelectedAlgorithm(ccLibAlgorithms::ScaleMatchingAlgorithm algorithm);
 
-	/// Get selected algorithm
+	/**
+	 * @brief Get the selected algorithm.
+	 * @return Selected algorithm.
+	 */
 	ccLibAlgorithms::ScaleMatchingAlgorithm getSelectedAlgorithm() const;
 };
 
