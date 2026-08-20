@@ -15,6 +15,17 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file NormalEstimationDlg.h
+ *
+ * @brief Normal estimation dialog.
+ *
+ * @details Dialog for configuring normal estimation
+ * parameters using PCL.
+ *
+ * @extends QDialog
+ */
+
 #ifndef Q_PCL_PLUGIN_NORMAL_ESTIMATION_DIALOG_HEADER
 #define Q_PCL_PLUGIN_NORMAL_ESTIMATION_DIALOG_HEADER
 
