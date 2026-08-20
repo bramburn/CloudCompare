@@ -1,3 +1,12 @@
+/**
+ * @file qcustomplot.h
+ *
+ * @brief QCustomPlot charting widget.
+ *
+ * @details Modern, easy-to-use plotting widget for Qt.
+ * Provides 2D graphs, axes, legends, and interactions.
+ */
+
 /***************************************************************************
 **                                                                        **
 **  QCustomPlot, an easy to use, modern plotting widget for Qt            **
