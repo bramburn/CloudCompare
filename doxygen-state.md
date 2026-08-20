@@ -1110,6 +1110,18 @@ libs/
 - `docs: enhance jsonrpcserver.h Doxygen documentation` - 2026-08-27 (submodule)
   - Enhanced @file with JSON-RPC server overview
 
+- `docs: enhance cc3DMouseManager.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with 3D mouse manager overview
+
+- `docs: enhance Mouse3DInput.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with 3D mouse input overview
+
+- `docs: enhance Mouse3DInput_hid.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with HID worker overview
+
+- `docs: enhance TestShpFilter.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with shapefile test overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
