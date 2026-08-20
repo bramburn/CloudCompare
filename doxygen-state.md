@@ -38,6 +38,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccClippingBoxTool.h ✅
 - qCC/ccComputeOctreeDlg.h ✅
 - qCC/ccContourLinesGenerator.h ✅
+- qCC/ccColorGradientDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -213,3 +214,8 @@ libs/
   - Enhanced @file with contour generation overview
   - Added @class documentation with usage example
   - Documented Parameters struct fields
+
+- `docs: enhance ccColorGradientDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with gradient type overview
+  - Added @class documentation
+  - Documented GradientType enum

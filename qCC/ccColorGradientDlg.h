@@ -21,11 +21,20 @@
 /**
  * @file ccColorGradientDlg.h
  *
- * @brief Color gradient dialog
+ * @brief Color gradient dialog for configuring color ramps.
  *
- * Dialog for configuring color gradients.
+ * @details Dialog for setting up color gradient parameters when
+ * applying color gradients to entities. Supports:
+ * - Default gradient (smooth color transition)
+ * - Two-color gradient (simple ramp)
+ * - Banding mode (stepped colors)
+ *
+ * Used by various color-related operations in CloudCompare
+ * such as coloring by height, intensity, or scalar fields.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccEntityAction::setColorGradient()
  */
 
 // Qt
@@ -33,9 +42,20 @@
 #include <ui_colorGradientDlg.h>
 
 /**
- * @brief Color gradient dialog
+ * @brief Dialog for configuring color gradient settings.
  *
- * Configure color gradient settings.
+ * @details Provides a UI for setting up color gradients used
+ * when coloring entities. The user can choose:
+ *
+ * 1. **Default**: Smooth color transition between two colors
+ *
+ * 2. **Two Colors**: Simple gradient from color 1 to color 2
+ *
+ * 3. **Banding**: Stepped colors at regular intervals
+ *    (useful for creating contour-like effects)
+ *
+ * @extends QDialog
+ * @extends Ui::ColorGradientDialog
  */
 class ccColorGradientDlg : public QDialog
     , public Ui::ColorGradientDialog
@@ -44,52 +64,72 @@ class ccColorGradientDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] parent Parent widget
+	 * @brief Gradient types.
 	 */
-	explicit ccColorGradientDlg(QWidget* parent);
-
-	/// Gradient type
 	enum GradientType
 	{
-		Default,   //!< Default gradient
-		TwoColors, //!< Two colors
-		Banding    //!< Banding mode
+		Default,    //!< Smooth gradient transition
+		TwoColors,  //!< Simple two-color ramp
+		Banding     //!< Stepped/banded gradient
 	};
 
 	/**
-	 * @brief Get gradient type
-	 * @return Gradient type
+	 * @brief Construct the color gradient dialog.
+	 *
+	 * @param[in] parent Parent widget.
+	 */
+	explicit ccColorGradientDlg(QWidget* parent);
+
+	/**
+	 * @brief Get the selected gradient type.
+	 *
+	 * @return Gradient type.
 	 */
 	GradientType getType() const;
-	
+
 	/**
-	 * @brief Set gradient type
-	 * @param[in] type Gradient type
+	 * @brief Set the gradient type.
+	 *
+	 * @param[in] type Gradient type to select.
 	 */
 	void setType(GradientType type);
 
 	/**
-	 * @brief Get gradient colors
-	 * @param[out] first First color
-	 * @param[out] second Second color
+	 * @brief Get the selected gradient colors.
+	 *
+	 * @param[out] first First color (start of gradient).
+	 * @param[out] second Second color (end of gradient).
 	 */
 	void getColors(QColor& first, QColor& second) const;
 
 	/**
-	 * @brief Get banding frequency
-	 * @return Banding frequency
+	 * @brief Get the banding frequency.
+	 *
+	 * @return Number of bands.
+	 *
+	 * @details Only meaningful when type is Banding.
 	 */
 	double getBandingFrequency() const;
 
 	/**
-	 * @brief Get dimension
-	 * @return Ramp dimension
+	 * @brief Get the ramp dimension.
+	 *
+	 * @return Dimension (1, 2, or 3).
+	 *
+	 * @details Specifies whether the gradient applies to
+	 * 1D (height), 2D (XY), or 3D (XYZ) coordinates.
 	 */
 	unsigned char getDimension() const;
 
-  protected:
+  protected slots:
+	/**
+	 * @brief Handle first color selection.
+	 */
 	void changeFirstColor();
+
+	/**
+	 * @brief Handle second color selection.
+	 */
 	void changeSecondColor();
 };
 
