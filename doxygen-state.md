@@ -55,6 +55,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccNormalComputationDlg.h ✅
 - qCC/ccOrderChoiceDlg.h ✅
 - qCC/ccOrthoSectionGenerationDlg.h ✅
+- qCC/ccPlaneEditDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -314,3 +315,8 @@ libs/
   - Enhanced @file with orthogonal section generation overview
   - Added @class documentation
   - Documented step and width parameters
+
+- `docs: enhance ccPlaneEditDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with plane editing overview
+  - Added @class documentation
+  - Documented dip/dip direction and picking features

@@ -21,14 +21,29 @@
 /**
  * @file ccPlaneEditDlg.h
  *
- * @brief Plane edit dialog
+ * @brief Plane edit dialog for creating or editing plane primitives.
  *
- * Dialog for creating or editing plane parameters.
+ * @details Dialog for creating new plane primitives or editing
+ * existing ones. Supports both interactive picking and manual
+ * parameter input.
+ *
+ * Plane parameters:
+ * - Position (X, Y, Z)
+ * - Dip direction (azimuth angle)
+ * - Dip angle (inclination from horizontal)
+ * - Normal vector
+ *
+ * Interactive features:
+ * - Pick point to set plane center
+ * - Adjust dip/dip direction (geological convention)
+ * - Set custom normal vector
  *
  * @author SAGE Ingenierie
+ *
+ * @see ccPlane
+ * @see ccPickingListener
  */
 
-// Local
 #include "ccPickingListener.h"
 
 #include <ui_planeEditDlg.h>
@@ -45,9 +60,20 @@ class ccHObject;
 class ccPickingHub;
 
 /**
- * @brief Plane edit dialog
+ * @brief Dialog for creating or editing plane parameters.
  *
- * Create or edit plane parameters.
+ * @details Provides a UI for setting up plane primitives
+ * with support for both manual input and interactive picking.
+ *
+ * Features:
+ * - Manual parameter input (position, dip, dip direction)
+ * - Interactive point picking to set plane center
+ * - Normal vector specification
+ * - Geological convention support (dip/dip direction)
+ *
+ * @extends QDialog
+ * @extends ccPickingListener
+ * @extends Ui::PlaneEditDlg
  */
 class ccPlaneEditDlg : public QDialog
     , public ccPickingListener
@@ -57,52 +83,87 @@ class ccPlaneEditDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] pickingHub Picking hub
-	 * @param[in] parent Parent widget
+	 * @brief Construct the plane edit dialog.
+	 *
+	 * @param[in] pickingHub Picking hub for interactive selection.
+	 * @param[in] parent Parent widget.
 	 */
 	explicit ccPlaneEditDlg(ccPickingHub* pickingHub, QWidget* parent);
 
-	/// Destructor
+	/**
+	 * @brief Destructor.
+	 */
 	virtual ~ccPlaneEditDlg();
 
 	/**
-	 * @brief Initialize with existing plane
-	 * @param[in] plane Plane to edit
+	 * @brief Initialize with an existing plane.
+	 *
+	 * @param[in] plane Plane to edit.
+	 *
+	 * @details Populates the dialog fields with values
+	 * from an existing plane for editing.
 	 */
 	void initWithPlane(ccPlane* plane);
 
 	/**
-	 * @brief Update plane with current parameters
-	 * @param[in] plane Plane to update
+	 * @brief Update a plane with current parameters.
+	 *
+	 * @param[in] plane Plane to update.
+	 *
+	 * @details Applies the current dialog values to the plane.
 	 */
 	void updatePlane(ccPlane* plane);
 
-	/// Handle item picked
+	/**
+	 * @brief Handle item picked.
+	 *
+	 * @param[in] pi Picked item information.
+	 */
 	virtual void onItemPicked(const PickedItem& pi) override;
 
-  public:
-	/// Pick point as center
-	void pickPointAsCenter(bool);
-	/// Handle dip direction changed
-	void onDipDirChanged(double);
-	/// Handle dip direction modified
-	void onDipDirModified(bool);
-	/// Handle normal changed
-	void onNormalChanged(double);
+  public slots:
+	/**
+	 * @brief Pick selected point as plane center.
+	 *
+	 * @param[in] state Checkbox state.
+	 */
+	void pickPointAsCenter(bool state);
 
-  protected:
-	/// Save params and accept
+	/**
+	 * @brief Handle dip direction change.
+	 *
+	 * @param[in] value New dip direction angle.
+	 */
+	void onDipDirChanged(double value);
+
+	/**
+	 * @brief Handle dip direction modification.
+	 *
+	 * @param[in] state Modification state.
+	 */
+	void onDipDirModified(bool state);
+
+	/**
+	 * @brief Handle normal vector change.
+	 *
+	 * @param[in] value New normal angle.
+	 */
+	void onNormalChanged(double value);
+
+  protected slots:
+	/**
+	 * @brief Save parameters and accept dialog.
+	 */
 	void saveParamsAndAccept();
 
-  protected: // members
-	/// Picking window
+  protected:
+	//! Picking window
 	ccGLWindowInterface* m_pickingWin;
 
-	/// Associated plane
+	//! Associated plane
 	ccPlane* m_associatedPlane;
 
-	/// Picking hub
+	//! Picking hub
 	ccPickingHub* m_pickingHub;
 };
 
