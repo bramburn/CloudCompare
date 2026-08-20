@@ -72,6 +72,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccSORFilterDlg.h ✅
 - qCC/ccHistogramWindow.h ✅
 - qCC/ccGBLSensorProjectionDlg.h ✅
+- qCC/ccGeomFeaturesDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -416,3 +417,8 @@ libs/
   - Enhanced @file with GBL sensor overview
   - Added @class documentation
   - Documented sensor initialization methods
+
+- `docs: enhance ccGeomFeaturesDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with geometric features overview
+  - Added @class documentation
+  - Documented Option struct and feature selection
