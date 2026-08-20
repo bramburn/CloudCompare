@@ -3,32 +3,82 @@
 // #                              CLOUDCOMPARE                              #
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
-// #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
-
-#ifndef CC_DRAWABLE_OBJECT_HEADER
-#define CC_DRAWABLE_OBJECT_HEADER
 
 /**
  * @file ccDrawableObject.h
  *
- * @brief Drawable object interface
+ * @brief Drawable object interface for 3D rendering.
  *
- * Base interface for entities that can render themselves
- * in 3D views. Provides visibility, color, and drawing
+ * @details Base interface for entities that can render themselves
+ * in 3D views. Provides visibility, color, materials, and drawing
  * management.
  *
+ * ## Overview
+ *
+ * ccDrawableObject provides:
+ * - **Visibility management**: Show/hide entities
+ * - **Color management**: Colors, materials, temporary colors
+ * - **Normal display**: Show/hide normals
+ * - **Scalar field display**: SF visualization
+ * - **Display association**: Link to GL windows
+ * - **GL transformation**: Temporary display transformations
+ * - **Clipping planes**: OpenGL clipping
+ *
+ * ## Display State Stack
+ *
+ * Use push/pop display state to save and restore:
+ * - Visibility
+ * - Colors display
+ * - Normals display
+ * - SF display
+ * - Temporary color
+ * - Name display
+ * - Associated display
+ *
+ * ## Usage
+ *
+ * @code
+ * // Show/hide entity
+ * entity->setVisible(true);
+ * entity->toggleVisibility();
+ *
+ * // Show colors and normals
+ * entity->showColors(true);
+ * entity->showNormals(true);
+ *
+ * // Temporary color override
+ * entity->setTempColor(ccColor::red, true);
+ *
+ * // Save and restore display state
+ * entity->pushDisplayState();
+ * entity->showSF(false);
+ * // ... operations ...
+ * entity->popDisplayState();
+ *
+ * // GL transformation (display only)
+ * entity->setGLTransformation(glMatrix);
+ * entity->rotateGL(rotation);
+ * @endcode
+ *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccHObject for hierarchical objects
+ * @see ccGenericGLDisplay for display management
  */
+
+#ifndef CC_DRAWABLE_OBJECT_HEADER
+#define CC_DRAWABLE_OBJECT_HEADER
+
 // Local
 #include "ccGLDrawContext.h"
 
@@ -38,57 +88,75 @@
 class ccGenericGLDisplay;
 
 /**
- * @brief Clipping plane equation
+ * @brief Clipping plane equation.
  */
 struct ccClipPlane
 {
+	//! Plane equation (A, B, C, D).
 	Tuple4Tpl<double> equation;
 };
+
+/**
+ * @brief Container of clipping planes.
+ */
 using ccClipPlaneSet = std::vector<ccClipPlane>;
 
 /**
- * @brief Generic interface for drawable entities
+ * @brief Generic interface for drawable entities.
+ *
+ * @details Provides common drawing and display functionality
+ * for all entities that render in 3D views.
  */
 class QCC_DB_LIB_API ccDrawableObject
 {
   public:
 	/**
-	 * @brief Default constructor
+	 * @brief Default constructor.
 	 */
 	ccDrawableObject();
+
 	/**
-	 * @brief Copy constructor
-	 * @param[in] object Source object
+	 * @brief Copy constructor.
+	 *
+	 * @param[in] object Source object.
 	 */
 	ccDrawableObject(const ccDrawableObject& object);
 
+	/**
+	 * @brief Destructor.
+	 */
 	virtual ~ccDrawableObject() = default;
 
   public: // drawing and drawing options
 	/**
-	 * @brief Draw the entity
-	 * @param[in] context Drawing context
+	 * @brief Draw the entity.
+	 *
+	 * @param[in] context Drawing context.
 	 */
 	virtual void draw(CC_DRAW_CONTEXT& context) = 0;
 
 	/**
-	 * @brief Check if visible
-	 * @return true if entity is visible
+	 * @brief Check if visible.
+	 *
+	 * @return true if visible.
 	 */
 	inline virtual bool isVisible() const
 	{
 		return m_visible;
 	}
+
 	/**
-	 * @brief Set visibility
-	 * @param[in] state Visibility state
+	 * @brief Set visibility.
+	 *
+	 * @param[in] state Visibility state.
 	 */
 	inline virtual void setVisible(bool state)
 	{
 		m_visible = state;
 	}
+
 	/**
-	 * @brief Toggle visibility
+	 * @brief Toggle visibility.
 	 */
 	inline virtual void toggleVisibility()
 	{
@@ -96,124 +164,179 @@ class QCC_DB_LIB_API ccDrawableObject
 	}
 
 	/**
-	 * @brief Check if visibility is locked
-	 * @return true if locked
+	 * @brief Check if visibility is locked.
+	 *
+	 * @return true if locked.
 	 */
 	inline virtual bool isVisibilityLocked() const
 	{
 		return m_lockedVisibility;
 	}
+
 	/**
-	 * @brief Lock/unlock visibility
-	 * @param[in] state Lock state
+	 * @brief Lock/unlock visibility.
+	 *
+	 * @param[in] state Lock state.
 	 */
 	inline virtual void lockVisibility(bool state)
 	{
 		m_lockedVisibility = state;
 	}
 
-	//! Returns whether entity is selected or not
+	/**
+	 * @brief Check if selected.
+	 */
 	inline virtual bool isSelected() const
 	{
 		return m_selected;
 	}
-	//! Selects/unselects entity
+
+	/**
+	 * @brief Set selection state.
+	 *
+	 * @param[in] state Selection state.
+	 */
 	inline virtual void setSelected(bool state)
 	{
 		m_selected = state;
 	}
 
-	//! Returns main OpenGL parameters for this entity
-	/** These parameters are deduced from the visibility states
-	    of its different features (points, normals, etc.).
-	    \param params a glDrawParams structure
-	**/
+	/**
+	 * @brief Get drawing parameters.
+	 *
+	 * @param[out] params Drawing parameters.
+	 */
 	virtual void getDrawingParameters(glDrawParams& params) const;
 
-	//! Returns whether colors are enabled or not
+  public: // colors
+	/**
+	 * @brief Check if has colors.
+	 */
 	inline virtual bool hasColors() const
 	{
 		return false;
 	}
-	//! Returns whether colors are shown or not
+
+	/**
+	 * @brief Check if colors are shown.
+	 */
 	inline virtual bool colorsShown() const
 	{
 		return m_colorsDisplayed;
 	}
-	//! Sets colors visibility
+
+	/**
+	 * @brief Set colors visibility.
+	 *
+	 * @param[in] state Display state.
+	 */
 	inline virtual void showColors(bool state)
 	{
 		m_colorsDisplayed = state;
 	}
-	//! Toggles colors display state
+
+	/**
+	 * @brief Toggle colors display.
+	 */
 	inline virtual void toggleColors()
 	{
 		showColors(!colorsShown());
 	}
 
-	//! Returns whether normals are enabled or not
+  public: // normals
+	/**
+	 * @brief Check if has normals.
+	 */
 	inline virtual bool hasNormals() const
 	{
 		return false;
 	}
-	//! Returns whether normals are shown or not
+
+	/**
+	 * @brief Check if normals are shown.
+	 */
 	inline virtual bool normalsShown() const
 	{
 		return m_normalsDisplayed;
 	}
-	//! Sets normals visibility
+
+	/**
+	 * @brief Set normals visibility.
+	 *
+	 * @param[in] state Display state.
+	 */
 	inline virtual void showNormals(bool state)
 	{
 		m_normalsDisplayed = state;
 	}
-	//! Toggles normals display state
+
+	/**
+	 * @brief Toggle normals display.
+	 */
 	inline virtual void toggleNormals()
 	{
 		showNormals(!normalsShown());
 	}
 
   public: // scalar fields
-	//! Returns whether an active scalar field is available or not
+	/**
+	 * @brief Check if has displayed scalar field.
+	 */
 	inline virtual bool hasDisplayedScalarField() const
 	{
 		return false;
 	}
 
-	//! Returns whether one or more scalar fields are instantiated
-	/** \warning doesn't mean a scalar field is currently displayed
-	    (see ccDrawableObject::hasDisplayedScalarField).
-	**/
+	/**
+	 * @brief Check if has any scalar fields.
+	 *
+	 * @note Different from hasDisplayedScalarField().
+	 */
 	inline virtual bool hasScalarFields() const
 	{
 		return false;
 	}
 
-	//! Sets active scalarfield visibility
+	/**
+	 * @brief Set scalar field visibility.
+	 *
+	 * @param[in] state Display state.
+	 */
 	inline virtual void showSF(bool state)
 	{
 		m_sfDisplayed = state;
 	}
 
-	//! Toggles SF display state
+	/**
+	 * @brief Toggle SF display.
+	 */
 	inline virtual void toggleSF()
 	{
 		showSF(!sfShown());
 	}
 
-	//! Returns whether active scalar field is visible
+	/**
+	 * @brief Check if SF is shown.
+	 */
 	inline virtual bool sfShown() const
 	{
 		return m_sfDisplayed;
 	}
 
-  public: //(Mesh) materials
-	//! Toggles material display state
+  public: // materials
+	/**
+	 * @brief Toggle material display.
+	 */
 	virtual void toggleMaterials()
 	{
 	} // does nothing by default!
 
-  public: // Name display in 3D
-	//! Sets whether name should be displayed in 3D or not
+  public: // name display in 3D
+	/**
+	 * @brief Set name display in 3D.
+	 *
+	 * @param[in] state Display state.
+	 */
 	inline virtual void showNameIn3D(bool state)
 	{
 		m_showNameIn3D = state;
@@ -221,158 +344,210 @@ class QCC_DB_LIB_API ccDrawableObject
 			m_nameIn3DPosIsValid = false;
 	}
 
-	//! Returns whether name is displayed in 3D or not
+	/**
+	 * @brief Check if name is shown in 3D.
+	 */
 	inline virtual bool nameShownIn3D() const
 	{
 		return m_showNameIn3D;
 	}
 
-	//! Toggles name in 3D display state
+	/**
+	 * @brief Toggle name in 3D display.
+	 */
 	inline virtual void toggleShowName()
 	{
 		showNameIn3D(!nameShownIn3D());
 	}
 
-  public: // Temporary color
-	//! Returns whether colors are currently overridden by a temporary (unique) color
-	/** See ccDrawableObject::setTempColor.
-	 **/
+  public: // temporary color
+	/**
+	 * @brief Check if color is overridden.
+	 */
 	inline virtual bool isColorOverridden() const
 	{
 		return m_colorIsOverridden;
 	}
 
-	//! Returns current temporary (unique) color
+	/**
+	 * @brief Get temporary color.
+	 */
 	inline virtual const ccColor::Rgba& getTempColor() const
 	{
 		return m_tempColor;
 	}
 
-	//! Sets current temporary (unique)
-	/** \param col rgba color
-	    \param autoActivate auto activates temporary color
-	**/
+	/**
+	 * @brief Set temporary RGBA color.
+	 *
+	 * @param[in] col RGBA color.
+	 * @param[in] autoActivate Auto-activate temporary color.
+	 */
 	virtual void setTempColor(const ccColor::Rgba& col, bool autoActivate = true);
 
-	//! Sets current temporary (unique)
-	/** \param col rgb color
-	    \param autoActivate auto activates temporary color
-	**/
+	/**
+	 * @brief Set temporary RGB color.
+	 *
+	 * @param[in] col RGB color.
+	 * @param[in] autoActivate Auto-activate temporary color.
+	 */
 	virtual void setTempColor(const ccColor::Rgb& col, bool autoActivate = true);
 
-	//! Set temporary color activation state
+	/**
+	 * @brief Enable/disable temporary color.
+	 *
+	 * @param[in] state Enable state.
+	 */
 	inline virtual void enableTempColor(bool state)
 	{
 		m_colorIsOverridden = state;
 	}
 
-  public: // associated display management
-	//! Unlinks entity from a GL display (only if it belongs to it of course)
+  public: // display management
+	/**
+	 * @brief Remove from display.
+	 *
+	 * @param[in] win Display to remove from.
+	 */
 	virtual void removeFromDisplay(const ccGenericGLDisplay* win);
 
-	//! Sets associated GL display
+	/**
+	 * @brief Set associated display.
+	 *
+	 * @param[in] win GL display.
+	 */
 	virtual void setDisplay(ccGenericGLDisplay* win);
 
-	//! Returns associated GL display
+	/**
+	 * @brief Get associated display.
+	 */
 	inline virtual ccGenericGLDisplay* getDisplay() const
 	{
 		return m_currentDisplay;
 	}
 
-	//! Redraws associated GL display
+	/**
+	 * @brief Redraw associated display.
+	 */
 	virtual void redrawDisplay();
 
-	//! Sets associated GL display 'refreshable' before global refresh
-	/** Only tagged displays will be refreshed when ccGenericGLDisplay::refresh
-	    is called (see also MainWindow::RefreshAllGLWindow,
-	    MainWindow::refreshAll and ccDrawableObject::refreshDisplay).
-	**/
+	/**
+	 * @brief Prepare display for refresh.
+	 */
 	virtual void prepareDisplayForRefresh();
 
-	//! Refreshes associated GL display
-	/** See ccGenericGLDisplay::refresh. The display will only be updated
-	    if it has been 'prepared for refresh' (see prepareDisplayForRefresh).
-	**/
+	/**
+	 * @brief Refresh display.
+	 *
+	 * @param[in] only2D Only refresh 2D elements.
+	 */
 	virtual void refreshDisplay(bool only2D = false);
 
-  public: // Transformation matrix management (for display only)
-	//! Associates entity with a GL transformation (rotation + translation)
-	/** \warning FOR DISPLAY PURPOSE ONLY (i.e. should only be temporary)
-	    If the associated GL transformation is enabled (see
-	    ccDrawableObject::enableGLTransformation), it will
-	    be applied before displaying this entity.
-	    However it will not be taken into account by any CCCoreLib algorithm
-	    (distance computation, etc.) for instance.
-	    Note: GL transformation is automatically enabled.
-	**/
+  public: // GL transformation (display only)
+	/**
+	 * @brief Set GL transformation.
+	 *
+	 * @warning FOR DISPLAY PURPOSE ONLY.
+	 * This transformation is only applied for display and
+	 * is not considered by CCCoreLib algorithms.
+	 *
+	 * @param[in] trans Transformation matrix.
+	 */
 	virtual void setGLTransformation(const ccGLMatrix& trans);
 
-	//! Enables/disables associated GL transformation
-	/** See ccDrawableObject::setGLTransformation.
-	 **/
+	/**
+	 * @brief Enable/disable GL transformation.
+	 *
+	 * @param[in] state Enable state.
+	 */
 	virtual void enableGLTransformation(bool state);
 
-	//! Returns whether a GL transformation is enabled or not
+	/**
+	 * @brief Check if GL transformation is enabled.
+	 */
 	inline virtual bool isGLTransEnabled() const
 	{
 		return m_glTransEnabled;
 	}
 
-	//! Returns associated GL transformation
-	/** See ccDrawableObject::setGLTransformation.
-	 **/
+	/**
+	 * @brief Get GL transformation.
+	 */
 	inline virtual const ccGLMatrix& getGLTransformation() const
 	{
 		return m_glTrans;
 	}
 
-	//! Resets associated GL transformation
-	/** GL transformation is reset to identity.
-	    Note: GL transformation is automatically disabled.
-	    See ccDrawableObject::setGLTransformation.
-	**/
+	/**
+	 * @brief Reset GL transformation to identity.
+	 */
 	virtual void resetGLTransformation();
 
-	//! Multiplies (left) current GL transformation by a rotation matrix
-	/** 'GLtrans = M * GLtrans'
-	    Note: GL transformation is automatically enabled.
-	    See ccDrawableObject::setGLTransformation.
-	**/
+	/**
+	 * @brief Multiply GL transformation.
+	 *
+	 * GLtrans = M * GLtrans
+	 *
+	 * @param[in] rotMat Rotation matrix.
+	 */
 	virtual void rotateGL(const ccGLMatrix& rotMat);
 
-	//! Translates current GL transformation by a rotation matrix
-	/** 'GLtrans = GLtrans + T'
-	    Note: GL transformation is automatically enabled.
-	    See ccDrawableObject::setGLTransformation.
-	**/
+	/**
+	 * @brief Translate GL transformation.
+	 *
+	 * GLtrans = GLtrans + T
+	 *
+	 * @param[in] trans Translation vector.
+	 */
 	virtual void translateGL(const CCVector3& trans);
 
   public: // clipping planes
-	//! Removes all clipping planes (if any)
+	/**
+	 * @brief Remove all clipping planes.
+	 */
 	virtual void removeAllClipPlanes()
 	{
 		m_clipPlanes.resize(0);
 	}
 
-	//! Registers a new clipping plane
-	/** \return false if the planes couldn't be added (not enough memory)
-	 **/
+	/**
+	 * @brief Add clipping plane.
+	 *
+	 * @param[in] plane Clipping plane equation.
+	 *
+	 * @return true if added successfully.
+	 */
 	virtual bool addClipPlanes(const ccClipPlane& plane);
 
-	//! Enables or disables clipping planes (OpenGL)
-	/** \warning If enabling the clipping planes, be sure to call this method AFTER the modelview matrix has been set.
-	 **/
+	/**
+	 * @brief Toggle clipping planes.
+	 *
+	 * @param[in] context Drawing context.
+	 * @param[in] enable Enable state.
+	 *
+	 * @warning Call AFTER modelview matrix is set.
+	 */
 	virtual void toggleClipPlanes(CC_DRAW_CONTEXT& context, bool enable);
 
-  public: // push and pop display state
-	//! Display state
+  public: // display state stack
+	/**
+	 * @brief Display state structure.
+	 */
 	struct DisplayState
 	{
+		/**
+		 * @brief Default constructor.
+		 */
 		DisplayState()
 		{
 		}
+
+		/**
+		 * @brief Copy from drawable object.
+		 */
 		DisplayState(const ccDrawableObject& dobj);
 
+		//! Shared pointer type.
 		using Shared = QSharedPointer<DisplayState>;
 
 		bool                visible           = false;
@@ -384,62 +559,74 @@ class QCC_DB_LIB_API ccDrawableObject
 		ccGenericGLDisplay* display           = nullptr;
 	};
 
-	//! Pushes the current display state
+	/**
+	 * @brief Push current display state.
+	 *
+	 * @return true if successful.
+	 */
 	virtual bool pushDisplayState();
 
-	//! Pops the last pushed display state
+	/**
+	 * @brief Pop last pushed display state.
+	 *
+	 * @param[in] apply Apply the state.
+	 */
 	virtual void popDisplayState(bool apply = true);
 
-	//! Applies a display state
+	/**
+	 * @brief Apply a display state.
+	 *
+	 * @param[in] state State to apply.
+	 */
 	virtual void applyDisplayState(const DisplayState& state);
 
-  protected: // members
-	//! Specifies whether the object is visible or not
-	/** Note: this does not influence the children visibility
-	 **/
+  protected:
+	//! Visibility state.
 	bool m_visible;
 
-	//! Specifies whether the object is selected or not
+	//! Selection state.
 	bool m_selected;
 
-	//! Specifies whether the visibility can be changed by user or not
+	//! Visibility lock state.
 	bool m_lockedVisibility;
 
-	//! Specifies whether colors should be displayed
+	//! Colors display state.
 	bool m_colorsDisplayed;
-	//! Specifies whether normals should be displayed
+
+	//! Normals display state.
 	bool m_normalsDisplayed;
-	//! Specifies whether scalar field should be displayed
+
+	//! Scalar field display state.
 	bool m_sfDisplayed;
 
-	//! Temporary (unique) color
+	//! Temporary color.
 	ccColor::Rgba m_tempColor;
-	//! Temporary (unique) color activation state
+
+	//! Temporary color activation state.
 	bool m_colorIsOverridden;
 
-	//! Current GL transformation
-	/** See ccDrawableObject::setGLTransformation.
-	 **/
+	//! Current GL transformation.
 	ccGLMatrix m_glTrans;
-	//! Current GL transformation activation state
-	/** See ccDrawableObject::setGLTransformation.
-	 **/
+
+	//! GL transformation enabled state.
 	bool m_glTransEnabled;
 
-	//! Whether name is displayed in 3D or not
+	//! Name display in 3D state.
 	bool m_showNameIn3D;
-	//! Last 2D position of the '3D' name
+
+	//! Last 3D name position.
 	CCVector3d m_nameIn3DPos;
-	//! Whether the last 2D position of the '3D' name is valid or not
+
+	//! 3D name position validity.
 	bool m_nameIn3DPosIsValid;
 
-	//! Currently associated GL display
+	//! Current GL display.
 	ccGenericGLDisplay* m_currentDisplay;
 
-	//! Active clipping planes (used for display only)
+	//! Active clipping planes.
 	ccClipPlaneSet m_clipPlanes;
 
-	//! The stack of pushed display states
+	//! Display state stack.
 	std::vector<DisplayState::Shared> m_displayStateStack;
 };
 
