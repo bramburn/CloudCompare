@@ -15,6 +15,13 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file PCLConv.h
+ *
+ * @brief PCL conversion macros.
+ *
+ * @details Macros for PCL version-specific conversions.
+ */
 #ifndef PCL_CONVERSIONS_H
 #define PCL_CONVERSIONS_H
 
