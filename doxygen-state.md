@@ -39,6 +39,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccComputeOctreeDlg.h ✅
 - qCC/ccContourLinesGenerator.h ✅
 - qCC/ccColorGradientDlg.h ✅
+- qCC/ccBoundingBoxEditorDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -219,3 +220,8 @@ libs/
   - Enhanced @file with gradient type overview
   - Added @class documentation
   - Documented GradientType enum
+
+- `docs: enhance ccBoundingBoxEditorDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with bounding box editing features overview
+  - Added @class documentation
+  - Documented square mode, 2D mode, and base box constraints
