@@ -21,11 +21,24 @@
 /**
  * @file ccScalarFieldArithmeticsDlg.h
  *
- * @brief Scalar field arithmetics dialog
+ * @brief Scalar field arithmetics dialog for mathematical operations.
  *
- * Dialog for scalar field arithmetic operations.
+ * @details Dialog for performing arithmetic and mathematical operations
+ * on scalar fields.
+ *
+ * Operations include:
+ * - **Binary operations**: +, -, *, /, MIN, MAX (between two SFs)
+ * - **Unary operations**: SQRT, POW2, POW3, ABS, SQRT, etc.
+ * - **Trigonometric**: SIN, COS, TAN, ASIN, ACOS, ATAN
+ * - **Exponential/Log**: EXP, LOG, LOG10
+ * - **Other**: INVERSE, SET, INT
+ *
+ * Operations can be applied in-place (modifying the existing SF)
+ * or create a new scalar field.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccScalarField
  */
 
 #include <QDialog>
@@ -38,83 +51,125 @@ namespace Ui
 }
 
 /**
- * @brief Scalar field arithmetics dialog
+ * @brief Dialog for scalar field arithmetic operations.
  *
- * Perform arithmetic operations on scalar fields.
+ * @details Provides a UI for performing mathematical operations
+ * on point cloud scalar fields.
+ *
+ * Features:
+ * - Binary operations between two SFs
+ * - Unary operations on a single SF
+ * - Mixed mode (SF op constant value)
+ * - In-place or new SF output
+ *
+ * @extends QDialog
  */
 class ccScalarFieldArithmeticsDlg : public QDialog
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
-	ccScalarFieldArithmeticsDlg(ccPointCloud* cloud, QWidget* parent = nullptr);
-	~ccScalarFieldArithmeticsDlg() override;
-
-	//! Arithmetic operations
+	/**
+	 * @brief Arithmetic operations.
+	 */
 	enum Operation
-	{ /* Operations requiring two SFs */
-	  PLUS     = 0,
-	  MINUS    = 1,
-	  MULTIPLY = 2,
-	  DIVIDE   = 3,
-	  MIN      = 4,
-	  MAX      = 5,
-	  /* Operations requiring only one SF */
-	  SQRT    = 6,
-	  POW2    = 7,
-	  POW3    = 8,
-	  EXP     = 9,
-	  LOG     = 10,
-	  LOG10   = 11,
-	  COS     = 12,
-	  SIN     = 13,
-	  TAN     = 14,
-	  ACOS    = 15,
-	  ASIN    = 16,
-	  ATAN    = 17,
-	  INT     = 18,
-	  INVERSE = 19,
-	  SET     = 20,
-	  ABS     = 21,
-	  /* Invalid enum. (always last) */
-	  INVALID = 255
+	{
+		/* Binary operations (require two SFs) */
+		PLUS     = 0, //!< Addition
+		MINUS    = 1, //!< Subtraction
+		MULTIPLY = 2, //!< Multiplication
+		DIVIDE   = 3, //!< Division
+		MIN      = 4, //!< Minimum
+		MAX      = 5, //!< Maximum
+
+		/* Unary operations (require one SF) */
+		SQRT    = 6,  //!< Square root
+		POW2    = 7,  //!< Square (x^2)
+		POW3    = 8,  //!< Cube (x^3)
+		EXP     = 9,  //!< Exponential (e^x)
+		LOG     = 10, //!< Natural logarithm
+		LOG10   = 11, //!< Base-10 logarithm
+		COS     = 12, //!< Cosine
+		SIN     = 13, //!< Sine
+		TAN     = 14, //!< Tangent
+		ACOS    = 15, //!< Arc cosine
+		ASIN    = 16, //!< Arc sine
+		ATAN    = 17, //!< Arc tangent
+		INT     = 18, //!< Integer (truncate)
+		INVERSE = 19, //!< Inverse (1/x)
+		SET     = 20, //!< Set to constant value
+		ABS     = 21, //!< Absolute value
+
+		/* Invalid enum (always last) */
+		INVALID = 255
 	};
 
-	//! Returns selected operation
-	Operation getOperation() const;
-
-	//! Returns the operation enumerator based on its name
-	static Operation GetOperationByName(const QString& name);
-
-	//! Returns operation name
-	static QString GetOperationName(Operation op, const QString& sf1, const QString& sf2 = QString());
-
-	//! Applies operation on a given cloud
-	/** Should be applied on the same cloud as the one input to the constructor
-	    Otherwise you'd better know what you're doing ;).
-	    \param cloud cloud on which to apply the SF operation
-	    \return success
-	**/
-	bool apply(ccPointCloud* cloud);
-
-	//! Secondary SF descriptor
+	/**
+	 * @brief Secondary SF descriptor for binary operations.
+	 */
 	struct SF2
 	{
-		bool   isConstantValue = true;
-		double constantValue   = 0.0;
-		int    sfIndex         = -1;
+		bool   isConstantValue = true; //!< Use constant vs. SF
+		double constantValue   = 0.0;   //!< Constant value
+		int    sfIndex         = -1;    //!< SF index
 	};
 
-	//! Applies operation on a given cloud
-	/** \param cloud cloud on which to apply the SF operation
-	    \param op operation
-	    \param sf1Idx first (or only) scalar field index
-	    \param inplace whether the operation should be applied in place (SF1). Otherwise a new SF will be created.
-	    \param sf2 secondary scalar field / value (only for PLUS, MINUS, MULTIPLY, DIVIDE, MIN and MAX operations)
-	    \param parent parent widget (optional)
-	    \return success
-	**/
+	/**
+	 * @brief Construct the arithmetic dialog.
+	 *
+	 * @param[in] cloud Point cloud with scalar fields.
+	 * @param[in] parent Parent widget.
+	 */
+	ccScalarFieldArithmeticsDlg(ccPointCloud* cloud, QWidget* parent = nullptr);
+
+	/**
+	 * @brief Destructor.
+	 */
+	~ccScalarFieldArithmeticsDlg() override;
+
+	/**
+	 * @brief Get the selected operation.
+	 * @return Selected operation.
+	 */
+	Operation getOperation() const;
+
+	/**
+	 * @brief Get operation by name.
+	 *
+	 * @param[in] name Operation name.
+	 * @return Operation enum.
+	 */
+	static Operation GetOperationByName(const QString& name);
+
+	/**
+	 * @brief Get operation name.
+	 *
+	 * @param[in] op Operation.
+	 * @param[in] sf1 First SF name.
+	 * @param[in] sf2 Second SF name.
+	 * @return Formatted operation name.
+	 */
+	static QString GetOperationName(Operation op, const QString& sf1, const QString& sf2 = QString());
+
+	/**
+	 * @brief Apply operation on a cloud.
+	 *
+	 * @param[in] cloud Cloud to apply operation on.
+	 * @return true on success.
+	 */
+	bool apply(ccPointCloud* cloud);
+
+	/**
+	 * @brief Apply operation on a cloud.
+	 *
+	 * @param[in] cloud Cloud to apply operation on.
+	 * @param[in] op Operation to perform.
+	 * @param[in] sf1Idx First SF index.
+	 * @param[in] inplace Apply in-place or create new SF.
+	 * @param[in] sf2 Secondary SF/value.
+	 * @param[in] parent Parent widget.
+	 * @return true on success.
+	 */
 	static bool Apply(ccPointCloud* cloud,
 	                  Operation     op,
 	                  int           sf1Idx,
@@ -122,20 +177,36 @@ class ccScalarFieldArithmeticsDlg : public QDialog
 	                  SF2*          sf2    = nullptr,
 	                  QWidget*      parent = nullptr);
 
-  protected:
-	//! Called when the operation combo-box is modified
+  protected slots:
+	/**
+	 * @brief Handle operation change.
+	 *
+	 * @param[in] index New operation index.
+	 */
 	void onOperationIndexChanged(int index);
 
-	//! Called when the SF2 combo-box is modified
+	/**
+	 * @brief Handle SF2 selection change.
+	 *
+	 * @param[in] index New SF2 index.
+	 */
 	void onSF2IndexChanged(int index);
 
   protected:
-	//! Returns first selected SF index
+	/**
+	 * @brief Get first SF index.
+	 * @return SF1 index.
+	 */
 	int getSF1Index();
-	//! Returns second selected SF index
+
+	/**
+	 * @brief Get second SF index.
+	 * @return SF2 index.
+	 */
 	int getSF2Index();
 
   private:
+	//! UI definition
 	Ui::SFArithmeticsDlg* m_ui;
 };
 

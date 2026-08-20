@@ -73,6 +73,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccHistogramWindow.h ✅
 - qCC/ccGBLSensorProjectionDlg.h ✅
 - qCC/ccGeomFeaturesDlg.h ✅
+- qCC/ccScalarFieldArithmeticsDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -422,3 +423,8 @@ libs/
   - Enhanced @file with geometric features overview
   - Added @class documentation
   - Documented Option struct and feature selection
+
+- `docs: enhance ccScalarFieldArithmeticsDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with arithmetic operations overview
+  - Added @class documentation
+  - Documented Operation enum and SF2 struct
