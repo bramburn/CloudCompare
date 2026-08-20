@@ -47,6 +47,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccCamSensorProjectionDlg.h ✅
 - qCC/cc2.5DimEditor.h ✅
 - qCC/ccClippingBoxRepeatDlg.h ✅
+- qCC/ccComparisonDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -267,3 +268,8 @@ libs/
   - Enhanced @file with repeat mode overview
   - Added @class documentation
   - Documented flat/repeat dimension methods
+
+- `docs: enhance ccComparisonDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with cloud/mesh comparison overview
+  - Added @class documentation
+  - Documented CC_COMPARISON_TYPE enum and all methods
