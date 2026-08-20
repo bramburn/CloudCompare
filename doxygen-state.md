@@ -930,6 +930,11 @@ libs/
   - Added @class documentation
   - Documented loading process and template methods
 
+- `docs: enhance LasScalarFieldSaver.h and LasTiler.h Doxygen documentation` - 2026-08-27
+  - Enhanced both files with documentation
+  - Added @class/@struct documentation
+  - Documented saving and tiling
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
