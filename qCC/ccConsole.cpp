@@ -14,12 +14,22 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
+
 /**
  * @file ccConsole.cpp
- * @brief Console widget implementation
- * @details Implements the logging console widget for CloudCompare with
- * support for text output, warning/error messages, and clipboard operations.
- * @see ccConsole, ccLog
+ *
+ * @brief Console widget implementation for CloudCompare.
+ *
+ * @details Implements the ccConsole class which provides centralized logging
+ * and message display functionality. This file contains:
+ * - Singleton console instance management
+ * - Qt message handler integration
+ * - Thread-safe message queuing and display
+ * - File-based logging support
+ * - Error dialog integration
+ *
+ * @see ccConsole
+ * @see ccLog
  */
 
 #include "ccConsole.h"
@@ -59,11 +69,12 @@ bool       ccConsole::s_showQtMessagesInConsole = false;
 bool       ccConsole::s_redirectToStdOut        = false;
 static int s_refreshCycle_ms                    = 1000;
 
-/*** ccCustomQListWidget ***/
+/*** ccCustomQListWidget implementation ***/
 
 /**
- * @brief Constructor
- * @param parent Parent widget
+ * @brief Constructor for ccCustomQListWidget.
+ *
+ * @param[in] parent Parent QWidget (optional).
  */
 ccCustomQListWidget::ccCustomQListWidget(QWidget* parent)
     : QListWidget(parent)
@@ -71,8 +82,13 @@ ccCustomQListWidget::ccCustomQListWidget(QWidget* parent)
 }
 
 /**
- * @brief Handles key press events for copy operations
- * @param event Key event
+ * @brief Handles key press events for clipboard copy operations.
+ *
+ * @param[in,out] event The key event to process.
+ *
+ * @details When the user presses a copy keyboard shortcut (Ctrl+C),
+ * all currently selected items are copied to the system clipboard
+ * as newline-separated text.
  */
 void ccCustomQListWidget::keyPressEvent(QKeyEvent* event)
 {
@@ -97,8 +113,12 @@ void ccCustomQListWidget::keyPressEvent(QKeyEvent* event)
 }
 
 /**
- * @brief Sets the console refresh cycle
- * @param cycle_ms Refresh interval in milliseconds
+ * @brief Set the console refresh cycle interval.
+ *
+ * @param[in] cycle_ms Refresh interval in milliseconds. Must be positive.
+ *
+ * @note If the console is currently in auto-refresh mode, this
+ * method restarts the timer with the new interval.
  */
 void ccConsole::SetRefreshCycle(int cycle_ms /*=1000*/)
 {
@@ -123,9 +143,11 @@ void ccConsole::SetRefreshCycle(int cycle_ms /*=1000*/)
 }
 
 /**
- * @brief Gets the singleton console instance
- * @param autoInit Create instance if it doesn't exist
- * @return Console instance or nullptr
+ * @brief Get the singleton console instance.
+ *
+ * @param[in] autoInit If true and no instance exists, creates a minimal
+ *                    temporary instance.
+ * @return Pointer to the console instance, or nullptr if not initialized.
  */
 ccConsole* ccConsole::TheInstance(bool autoInit /*=true*/)
 {
@@ -139,8 +161,9 @@ ccConsole* ccConsole::TheInstance(bool autoInit /*=true*/)
 }
 
 /**
- * @brief Releases the console singleton
- * @param flush Flush pending messages before releasing
+ * @brief Release and destroy the console singleton.
+ *
+ * @param[in] flush If true, flushes any pending messages first.
  */
 void ccConsole::ReleaseInstance(bool flush /*=true*/)
 {
@@ -154,7 +177,7 @@ void ccConsole::ReleaseInstance(bool flush /*=true*/)
 }
 
 /**
- * @brief Constructor
+ * @brief Default constructor.
  */
 ccConsole::ccConsole()
     : m_textDisplay(nullptr)
@@ -165,13 +188,29 @@ ccConsole::ccConsole()
 }
 
 /**
- * @brief Destructor
+ * @brief Destructor.
+ *
+ * @details Closes any open log file and releases resources.
  */
 ccConsole::~ccConsole()
 {
 	setLogFile(QString()); // to close/delete any active stream
 }
 
+/**
+ * @brief Custom Qt message handler.
+ *
+ * @param[in] type Message severity level (QtDebugMsg, QtWarningMsg, etc.).
+ * @param[in] context Qt message log context (file, line, function).
+ * @param[in] msg The message text.
+ *
+ * @details This function intercepts Qt's internal messages (qDebug,
+ * qWarning, qCritical, qFatal) and forwards them to the CloudCompare
+ * logging system if Qt message forwarding is enabled.
+ *
+ * In debug mode, messages are also printed to stdout/stderr for
+ * visibility in development environments.
+ */
 static void MyMessageOutput(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
 #ifndef QT_DEBUG
@@ -233,8 +272,14 @@ static void MyMessageOutput(QtMsgType type, const QMessageLogContext& context, c
 }
 
 /**
- * @brief Enables/disables Qt message forwarding to console
- * @param state True to enable, false to disable
+ * @brief Enable or disable forwarding of Qt messages to the console.
+ *
+ * @param[in] state true to enable Qt message forwarding, false to disable.
+ *
+ * @details When enabled, Qt's internal messages (qDebug, qWarning,
+ * qCritical, qFatal) are forwarded to the ccConsole logging system.
+ *
+ * @note The setting is persisted to application settings.
  */
 void ccConsole::EnableQtMessages(bool state)
 {
@@ -294,8 +339,12 @@ bool ccConsole::autoRefresh() const
 }
 
 /**
- * @brief Sets auto-refresh mode
- * @param state True to enable auto-refresh
+ * @brief Enable or disable automatic message refresh.
+ *
+ * @param[in] state true to enable auto-refresh, false to disable.
+ *
+ * @details When enabled, the refresh timer starts and messages are
+ * automatically displayed at the interval set by SetRefreshCycle().
  */
 void ccConsole::setAutoRefresh(bool state)
 {
@@ -312,7 +361,16 @@ void ccConsole::setAutoRefresh(bool state)
 }
 
 /**
- * @brief Refreshes the console display
+ * @brief Refresh the console display by processing queued messages.
+ *
+ * @details Moves all pending messages from the internal queue to the
+ * display widget and/or log file. Messages are color-coded based on
+ * severity:
+ * - Red: Error messages
+ * - Magenta: Warning messages
+ * - Blue (debug only): Debug messages
+ *
+ * @note This method is thread-safe and can be called from any thread.
  */
 void ccConsole::refresh()
 {
@@ -379,9 +437,15 @@ void ccConsole::refresh()
 }
 
 /**
- * @brief Logs a message to the console
- * @param message Message text
- * @param level Log level (see ccLog)
+ * @brief Process and display a log message.
+ *
+ * @param[in] message The formatted message text to log.
+ * @param[in] level Message severity level (see ccLog constants).
+ *
+ * @details Implementation of ccLog::logMessage().
+ * - Messages are filtered by current verbosity level
+ * - In debug mode without a display widget, messages go to stdout/stderr
+ * - Error messages on the main thread trigger a QMessageBox dialog
  */
 void ccConsole::logMessage(const QString& message, int level)
 {
@@ -443,6 +507,16 @@ void ccConsole::logMessage(const QString& message, int level)
 	}
 }
 
+/**
+ * @brief Set or clear the log file for persistent message logging.
+ *
+ * @param[in] filename Path to log file. If empty, logging to file is disabled.
+ * @return true if file was successfully opened/closed, false on error.
+ *
+ * @details If a file is already open, it is closed before opening the new one.
+ * Setting an empty filename closes the current log file.
+ * When a file is opened, auto-refresh is automatically enabled.
+ */
 bool ccConsole::setLogFile(const QString& filename)
 {
 	// close previous stream (if any)
