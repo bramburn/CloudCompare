@@ -7,13 +7,33 @@
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        #
+// #                                                                        //
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
+
+/**
+ * @file ccPropertiesTreeDelegate.h
+ *
+ * @brief Properties tree delegate for entity property editing.
+ *
+ * @details Qt item delegate for displaying and editing object properties
+ * in the CloudCompare database tree.
+ *
+ * Properties handled:
+ * - Object name and visibility
+ * - Color settings (RGB, scalar field, normals)
+ * - Display options (wireframe, stippling)
+ * - Sensor parameters
+ * - Primitive dimensions
+ * - Image settings
+ * - Transformation matrices
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
 
 #ifndef CC_ITEM_DELEGATE_HEADER
 #define CC_ITEM_DELEGATE_HEADER
@@ -22,15 +42,6 @@
 #include <ccArray.h>
 #include <ccPointCloud.h>
 
-/**
- * @file ccPropertiesTreeDelegate.h
- *
- * @brief Properties tree delegate
- *
- * Delegate for displaying object properties.
- *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- */
 // Qt
 #include <QStyledItemDelegate>
 
@@ -60,47 +71,83 @@ class QStandardItem;
 class QStandardItemModel;
 
 /**
- * @brief Properties tree delegate
+ * @brief Delegate for entity property editing.
  *
- * Delegate for GUI properties list.
+ * @details Provides a Qt item delegate that displays and allows
+ * editing of entity properties in a tree view.
+ *
+ * Supports many entity types:
+ * - Point clouds
+ * - Meshes
+ * - Sensors (camera, GBL)
+ * - Primitives (spheres, cones, etc.)
+ * - Polylines
+ * - Images
+ * - Labels
+ * - Coordinate systems
+ *
+ * @extends QStyledItemDelegate
  */
 class ccPropertiesTreeDelegate : public QStyledItemDelegate
 {
 	Q_OBJECT
 
   public:
-	//! Delegate items roles
+	/**
+	 * @brief Property roles for items.
+	 */
 	enum CC_PROPERTY_ROLE
 	{
 		OBJECT_NO_PROPERTY = 0,
+
+		// General
 		OBJECT_NAME,
 		OBJECT_VISIBILITY,
 		OBJECT_CURRENT_DISPLAY,
+
+		// Normals
 		OBJECT_NORMALS_SHOWN,
+		OBJECT_CLOUD_DRAW_NORMALS,
+		OBJECT_CLOUD_NORMAL_COLOR,
+		OBJECT_CLOUD_NORMAL_LENGTH,
+
+		// Colors
 		OBJECT_COLOR_SOURCE,
-		OBJECT_POLYLINE_WIDTH,
-		OBJECT_SENSOR_DRAW_FRUSTUM,
-		OBJECT_SENSOR_DRAW_FRUSTUM_PLANES,
-		OBJECT_SF_SHOW_SCALE,
-		OBJECT_OCTREE_LEVEL,
-		OBJECT_OCTREE_TYPE,
-		OBJECT_MESH_WIRE,
-		OBJECT_MESH_STIPPLING,
+		OBJECT_CLOUD_SF_EDITOR,
 		OBJECT_CURRENT_SCALAR_FIELD,
 		OBJECT_CURRENT_COLOR_RAMP,
-		OBJECT_IMAGE_ALPHA,
-		OBJECT_APPLY_IMAGE_VIEWPORT,
-		OBJECT_APPLY_SENSOR_VIEWPORT,
-		OBJECT_CLOUD_SF_EDITOR,
-		OBJECT_SENSOR_MATRIX_EDITOR,
+		OBJECT_COLOR_RAMP_STEPS,
+
+		// Display
+		OBJECT_MESH_WIRE,
+		OBJECT_MESH_STIPPLING,
+		OBJECT_SF_SHOW_SCALE,
+
+		// Octree
+		OBJECT_OCTREE_LEVEL,
+		OBJECT_OCTREE_TYPE,
+
+		// Point cloud
+		OBJECT_CLOUD_POINT_SIZE,
+		OBJECT_CLOUD_USE_LOD,
+
+		// Polyline
+		OBJECT_POLYLINE_WIDTH,
+
+		// Sensor
+		OBJECT_SENSOR_DRAW_FRUSTUM,
+		OBJECT_SENSOR_DRAW_FRUSTUM_PLANES,
 		OBJECT_SENSOR_DISPLAY_SCALE,
 		OBJECT_SENSOR_UNCERTAINTY,
-		OBJECT_COLOR_RAMP_STEPS,
-		OBJECT_MATERIALS,
-		OBJECT_APPLY_LABEL_VIEWPORT,
-		OBJECT_UPDATE_LABEL_VIEWPORT,
-		OBJECT_LABEL_DISP_2D,
-		OBJECT_LABEL_POINT_LEGEND,
+		OBJECT_SENSOR_INDEX,
+		OBJECT_SENSOR_MATRIX_EDITOR,
+		OBJECT_APPLY_SENSOR_VIEWPORT,
+
+		// Image
+		OBJECT_IMAGE_ALPHA,
+		OBJECT_APPLY_IMAGE_VIEWPORT,
+
+		// Primitive
 		OBJECT_PRIMITIVE_PRECISION,
 		OBJECT_CIRCLE_RESOLUTION,
 		OBJECT_SPHERE_RADIUS,
@@ -109,51 +156,120 @@ class ccPropertiesTreeDelegate : public QStyledItemDelegate
 		OBJECT_CONE_HEIGHT,
 		OBJECT_CONE_BOTTOM_RADIUS,
 		OBJECT_CONE_TOP_RADIUS,
-		OBJECT_CLOUD_POINT_SIZE,
-		OBJECT_NAME_IN_3D,
+
+		// Facet
 		OBJECT_FACET_CONTOUR,
 		OBJECT_FACET_MESH,
+
+		// Plane
 		OBJECT_PLANE_NORMAL_VECTOR,
-		OBJECT_SENSOR_INDEX,
+
+		// Material
+		OBJECT_MATERIALS,
+
+		// Label
+		OBJECT_APPLY_LABEL_VIEWPORT,
+		OBJECT_UPDATE_LABEL_VIEWPORT,
+		OBJECT_LABEL_DISP_2D,
+		OBJECT_LABEL_POINT_LEGEND,
+
+		// Transformation
 		OBJECT_SHOW_TRANS_BUFFER_PATH,
 		OBJECT_SHOW_TRANS_BUFFER_TRIHDERONS,
 		OBJECT_TRANS_BUFFER_TRIHDERONS_SCALE,
 		OBJECT_HISTORY_MATRIX_EDITOR,
 		OBJECT_GLTRANS_MATRIX_EDITOR,
+
+		// Coordinate system
 		OBJECT_COORDINATE_SYSTEM_DISP_PLANES,
 		OBJECT_COORDINATE_SYSTEM_DISP_AXES,
 		OBJECT_COORDINATE_SYSTEM_AXES_WIDTH,
 		OBJECT_COORDINATE_SYSTEM_DISP_SCALE,
+
+		// Name in 3D
+		OBJECT_NAME_IN_3D,
+
+		// Octree
+		OBJECT_SENSOR_INDEX,
+
+		// Header
 		TREE_VIEW_HEADER,
-		OBJECT_CLOUD_NORMAL_COLOR,
-		OBJECT_CLOUD_NORMAL_LENGTH,
-		OBJECT_CLOUD_DRAW_NORMALS,
-		OBJECT_CLOUD_USE_LOD,
 	};
 
-	//! Default constructor
+	/**
+	 * @brief Construct the delegate.
+	 *
+	 * @param[in] _model Item model.
+	 * @param[in] _view Item view.
+	 * @param[in] parent Parent object.
+	 */
 	ccPropertiesTreeDelegate(QStandardItemModel* _model, QAbstractItemView* _view, QObject* parent = nullptr);
 
-	//! Default destructor
+	/**
+	 * @brief Destructor.
+	 */
 	~ccPropertiesTreeDelegate() override;
 
 	// inherited from QStyledItemDelegate
-	QSize    sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
-	QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
-	void     updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
-	void     setEditorData(QWidget* editor, const QModelIndex& index) const override;
+	/**
+	 * @brief Get size hint.
+	 */
+	QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
+	/**
+	 * @brief Create editor widget.
+	 */
+	QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+
+	/**
+	 * @brief Update editor geometry.
+	 */
+	void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+
+	/**
+	 * @brief Set editor data from model.
+	 */
+	void setEditorData(QWidget* editor, const QModelIndex& index) const override;
+
+	/**
+	 * @brief Unbind from current object.
+	 */
 	void unbind();
 
-	//! Fill property view with QItems corresponding to object's type
+	/**
+	 * @brief Fill model with object properties.
+	 *
+	 * @param[in] hObject Object to display.
+	 */
 	void fillModel(ccHObject* hObject);
 
-	//! Returns currently bound object
+	/**
+	 * @brief Get currently bound object.
+	 *
+	 * @return Current object.
+	 */
 	ccHObject* getCurrentObject();
 
   signals:
+	/**
+	 * @brief Emitted when object properties change.
+	 *
+	 * @param[in] hObject Changed object.
+	 */
 	void ccObjectPropertiesChanged(ccHObject* hObject) const;
+
+	/**
+	 * @brief Emitted when object appearance changes.
+	 *
+	 * @param[in] hObject Changed object.
+	 */
 	void ccObjectAppearanceChanged(ccHObject* hObject) const;
+
+	/**
+	 * @brief Emitted when object and children appearance changes.
+	 *
+	 * @param[in] hObject Changed object.
+	 */
 	void ccObjectAndChildrenAppearanceChanged(ccHObject* hObject) const;
 
   private:
@@ -229,16 +345,32 @@ class ccPropertiesTreeDelegate : public QStyledItemDelegate
 	template <class Type, int N, class ComponentType>
 	void fillWithCCArray(const ccArray<Type, N, ComponentType>*);
 
-	//! Returns whether the editor is wide (i.e. spans on two columns) or not
+	/**
+	 * @brief Check if editor is wide.
+	 *
+	 * @param[in] itemData Property role.
+	 *
+	 * @return true if wide (two columns).
+	 */
 	bool isWideEditor(int itemData) const;
 
-	//! Updates the current model (assuming object is the same)
+	/**
+	 * @brief Update model for same object.
+	 */
 	void updateModel();
 
-	ccHObject*          m_currentObject;
+  private:
+	//! Current object
+	ccHObject* m_currentObject;
+
+	//! Item model
 	QStandardItemModel* m_model;
-	QAbstractItemView*  m_view;
-	CC_PROPERTY_ROLE    m_lastFocusItemRole;
+
+	//! Item view
+	QAbstractItemView* m_view;
+
+	//! Last focused item role
+	CC_PROPERTY_ROLE m_lastFocusItemRole;
 };
 
 #endif

@@ -107,6 +107,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - ccViewer/ccviewer.h ✅
 - ccViewer/ccViewerApplication.h ✅
 - ccViewer/ccviewerlog.h ✅
+- qCC/db_tree/ccPropertiesTreeDelegate.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -626,3 +627,8 @@ libs/
   - Enhanced @file with minimalist logger overview
   - Added @class documentation
   - Documented error-only message display
+
+- `docs: enhance ccPropertiesTreeDelegate.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with properties tree delegate overview
+  - Added @class documentation
+  - Documented CC_PROPERTY_ROLE enum with all property types
