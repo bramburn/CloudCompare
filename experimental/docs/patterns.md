@@ -570,6 +570,77 @@ decision), and the `2026-08-20-icp-nn-comparison` scenario
 
 ---
 
+
+---
+
+## P17. 2026-08-20 — Clone the input when benchmarking N variants side-by-side
+
+**Problem:** ICP mutates the data array in place — the recovered
+transform is applied to data_points before returning. When you
+run the same ICP algorithm with different NNs (the D8 trait
+bench), the second variant sees data that the first variant
+has *already* moved to the model. On a 49k-point real-data
+test, this manifested as:
+
+`
+=== 01-naive-on2 (brute force NN) ===   iterations=13 wall=46s rms=0.000001  tx=(-0.5000) OK
+=== 02-kiddo-kdtree (KD-tree NN) ===   iterations=2  wall=0.02s rms=0.000001 tx=(-0.0000) BUG
+`
+
+The kiddo ICP reported converged=true after 2 iterations with
+RMS=0.000001. The recovered translation was (0, 0, 0). The
+numbers *looked* correct (RMS matches naive exactly, only 2
+iterations, "converged"). But the translation was wrong.
+
+**Root cause:** between the two icp_iterate calls, the
+data slice was shared. The naive ICP had already moved the
+data to the model — so the kiddo ICP saw data == model,
+RMS was 0 immediately, and SVD returned the identity transform
+("data is already at model, no transform needed").
+
+**Pattern:** when benchmarking N variants on the same data
+input, snapshot the input before each run. Either:
+
+`ust
+// Option A: clone the template into a fresh buffer per variant.
+let data_template = data.clone();
+for icp_fn in [icp_naive, icp_kiddo, icp_octree] {
+    let mut data = data_template.clone();
+    icp_fn(&mut data, &model, &params);
+}
+
+// Option B: refactor ICP to return the transform without
+// mutating the input (then the bench doesn't need a clone).
+pub fn icp_iterate_pure(data: &[f32], model: &[f32], params: &IcprParamsRust)
+    -> Result<IcprResultRust, IcprErrorRust>;
+// Returns the transform; caller applies it if needed.
+`
+
+Option A is the smaller change and is what the
+2026-08-20-d8-realdata-all-nns session does. Option B is the
+right long-term refactor for a public API (the in-place
+mutation is convenient for one-shot ICP but awkward for
+benchmarks and undo-able editors).
+
+**Symptom of getting it wrong:** RMS values are identical
+across all variants (the variants agree on the correspondences
+in the *final* pose, because the data is already at the model
+when they run). The recovered transforms are wildly different
+across variants. The "converged" flag is 	rue after only 2
+iterations on every variant.
+
+**What would have caught it sooner:** an assertion in the test
+that the recovered translation has the expected magnitude and
+direction. The existing RMS assertion alone is not enough —
+RMS can be 0 for both a correct alignment and a "data == model"
+trivial alignment.
+
+**Source:** the test-bug fix in
+experimental/sessions/2026-08-20-d8-realdata-all-nns/src/main.rs
+(2026-08-20). The session's AGENTS.md and decisions.md
+also document this gotcha.
+
+---
 ## Adding a new pattern
 
 When you find a pattern that:

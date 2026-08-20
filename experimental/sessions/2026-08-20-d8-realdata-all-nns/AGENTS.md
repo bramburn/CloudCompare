@@ -49,6 +49,34 @@ cargo build --release
 Pop-Location
 ```
 
+
+## Gotcha: clone the data per variant (P17)
+
+**The first run of this session had a subtle bug.** The session
+calls each variant's icp_iterate in sequence. icp_iterate
+mutates the data array in place — it applies the recovered
+transform to the data before returning. So when the second
+variant ran, the data had already been moved to the model by
+the first variant, and the second variant saw data == model.
+
+**Symptom:** every variant reported converged=true after only
+2 iterations with RMS = 0.000001 (the "perfect" alignment of
+data to model). The recovered translations were wildly
+different: naive recovered -0.5 (correct), kiddo and octree
+recovered 0 (wrong, because the trivial "data == model" is
+the identity transform).
+
+**Why the RMS check didn't catch it:** the test asserts "all
+3 NNs produce the same RMS" — which is true, they all
+produce 0.000001. But the assertion doesn't check that the
+*recovered translation* is meaningful. A data == model
+trivial alignment is a 0.000001 RMS that says nothing.
+
+**Fix:** clone the shifted-data template before each variant
+call (see src/main.rs, lines 70-90). This is captured as
+**pattern P17** in ../../docs/patterns.md — the lesson is
+generic: any time you benchmark N variants of an in-place
+algorithm, snapshot the input per variant.
 ## Expected outcome
 
 - All 3 NNs produce the same RMS (within 1e-3) — trait

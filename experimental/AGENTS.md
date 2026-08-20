@@ -211,6 +211,41 @@ When the winner is picked:
 - CI integration. Experimental builds are local-only; CI is in `.github/workflows/`.
 - Performance benchmarks in CI. Run them locally, record the result, move on.
 
+
+## Known gotchas (must-read before benchmarking)
+
+- **In-place mutation across N-sided benchmarks (P17).** When
+  comparing N variants of an algorithm that mutates its input
+  (ICP, multi-resolution ICP, anything that applies a transform
+  to its data array), snapshot the input before each run.
+  Otherwise the first run moves the data to the model and the
+  remaining variants see data == model, RMS = 0, identity
+  transform — *correct-looking* but wrong. Symptom: every
+  variant reports converged=true after 2 iterations with
+  RMS = 0.000001 and wildly different recovered transforms.
+  Fix: clone the data template per variant. See pattern P17
+  in docs/patterns.md for the full write-up and the
+  sessions/2026-08-20-d8-realdata-all-nns/ test that
+  surfaced this.
+
+## D8 (NearestNeighbour trait) — active deliverable
+
+The D8 trait + icp_with_nn entry point in cc-rust is the
+foundation for pluggable NNs in ICP. The end-to-end D8
+deliverable is in two places:
+
+- **Synthetic Gaussian (sizes 2k / 5k / 10k / 50k):**
+  scenarios/2026-08-20-icp-nn-comparison/ — kiddo is **43x
+  faster than naive at 10k** and **~700x faster than the
+  broken octree at 50k**. Naive is skipped at 50k (O(n^2)
+  per iter is too slow).
+- **Real data (brook-avenue 7.5M-point scan, 49,729-point
+  subsample):** sessions/2026-08-20-d8-realdata-all-nns/ —
+  all 3 NNs recover the 0.5m translation exactly; kiddo is
+  **230x faster than naive** (0.22s vs 46s) and **880x faster
+  than the broken octree** (0.22s vs 217s). This is the
+  on-the-bench validation that the D8 trait dispatch works
+  on real survey data, not just synthetic Gaussian.
 ## Quick checklist for an agent finishing a session
 
 - [ ] Session builds green
