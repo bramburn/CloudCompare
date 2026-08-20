@@ -49,6 +49,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccClippingBoxRepeatDlg.h ✅
 - qCC/ccComparisonDlg.h ✅
 - qCC/ccCustomDoubleValidator.h ✅
+- qCC/ccInterpolationDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -279,3 +280,8 @@ libs/
   - Enhanced @file with decimal separator support overview
   - Added @class documentation
   - Documented validate() override
+
+- `docs: enhance ccInterpolationDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with interpolation methods overview
+  - Added @class documentation
+  - Documented getter/setter methods
