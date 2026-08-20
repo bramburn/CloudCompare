@@ -56,6 +56,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccOrderChoiceDlg.h ✅
 - qCC/ccOrthoSectionGenerationDlg.h ✅
 - qCC/ccPlaneEditDlg.h ✅
+- qCC/ccPointPropertiesDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -320,3 +321,8 @@ libs/
   - Enhanced @file with plane editing overview
   - Added @class documentation
   - Documented dip/dip direction and picking features
+
+- `docs: enhance ccPointPropertiesDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with point picking modes overview
+  - Added @class documentation
+  - Documented Mode enum and measurement features

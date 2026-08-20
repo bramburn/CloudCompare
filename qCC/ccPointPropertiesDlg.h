@@ -22,13 +22,22 @@
 /**
  * @file ccPointPropertiesDlg.h
  *
- * @brief Point properties dialog
+ * @brief Point properties dialog for picking, distance, and angle measurement.
  *
- * Dialog for point picking, distance, angle measurement.
+ * @details Dialog for interactive point picking with measurement capabilities:
+ * - Point information display (coordinates, scalar values)
+ * - Point-to-point distance measurement
+ * - Angle measurement between three points
+ * - Rectangular zone picking
+ *
+ * Extends ccPointPickingGenericInterface for the picking infrastructure.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccPointPickingGenericInterface
+ * @see cc2DLabel
  */
-// Local
+
 #include <ui_pointPropertiesDlg.h>
 
 class cc2DLabel;
@@ -36,9 +45,26 @@ class cc2DViewportLabel;
 class ccHObject;
 
 /**
- * @brief Point properties dialog
+ * @brief Dialog for point picking and measurements.
  *
- * Point picking, distance, and angle measurement.
+ * @details Provides interactive point picking with multiple modes:
+ *
+ * 1. **Point Info Mode**: Click on a point to see its properties
+ *    (coordinates, scalar field values, color, etc.)
+ *
+ * 2. **Point-to-Point Distance**: Click two points to measure
+ *    the distance between them
+ *
+ * 3. **Angle Mode**: Click three points to measure the angle
+ *    at the middle point
+ *
+ * 4. **Rectangular Zone**: Define a rectangular region by
+ *    clicking two opposite corners
+ *
+ * Labels are created for each measurement and can be exported.
+ *
+ * @extends ccPointPickingGenericInterface
+ * @extends Ui::PointPropertiesDlg
  */
 class ccPointPropertiesDlg : public ccPointPickingGenericInterface
     , public Ui::PointPropertiesDlg
@@ -46,55 +72,133 @@ class ccPointPropertiesDlg : public ccPointPickingGenericInterface
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Default constructor.
+	 *
+	 * @param[in] pickingHub Picking hub for point selection.
+	 * @param[in] parent Parent widget.
+	 */
 	explicit ccPointPropertiesDlg(ccPickingHub* pickingHub, QWidget* parent);
-	//! Default destructor
+
+	/**
+	 * @brief Destructor.
+	 */
 	virtual ~ccPointPropertiesDlg();
 
 	// inherited from ccPointPickingGenericInterface
+	/**
+	 * @brief Start the dialog.
+	 * @return true on success.
+	 */
 	virtual bool start() override;
+
+	/**
+	 * @brief Stop the dialog.
+	 * @param[in] state Final state.
+	 */
 	virtual void stop(bool state) override;
+
+	/**
+	 * @brief Link with a 3D window.
+	 * @param[in] win Window to link with.
+	 * @return true on success.
+	 */
 	virtual bool linkWith(ccGLWindowInterface* win) override;
 
-  protected:
+  signals:
+	/**
+	 * @brief Emitted when a new label is created.
+	 * @param[in] label The created label.
+	 */
+	void newLabel(ccHObject* label);
+
+  protected slots:
+	/**
+	 * @brief Close the dialog.
+	 */
 	void onClose();
+
+	/**
+	 * @brief Activate point properties display mode.
+	 */
 	void activatePointPropertiesDisplay();
+
+	/**
+	 * @brief Activate distance display mode.
+	 */
 	void activateDistanceDisplay();
+
+	/**
+	 * @brief Activate angle display mode.
+	 */
 	void activateAngleDisplay();
+
+	/**
+	 * @brief Activate 2D zone picking mode.
+	 */
 	void activate2DZonePicking();
+
+	/**
+	 * @brief Initialize the dialog state.
+	 */
 	void initializeState();
+
+	/**
+	 * @brief Export the current label.
+	 */
 	void exportCurrentLabel();
+
+	/**
+	 * @brief Update 2D zone rectangle.
+	 * @param[in] x X coordinate.
+	 * @param[in] y Y coordinate.
+	 * @param[in] buttons Mouse buttons pressed.
+	 */
 	void update2DZone(int x, int y, Qt::MouseButtons buttons);
+
+	/**
+	 * @brief Process clicked point.
+	 * @param[in] x X coordinate.
+	 * @param[in] y Y coordinate.
+	 */
 	void processClickedPoint(int x, int y);
+
+	/**
+	 * @brief Close the 2D zone.
+	 */
 	void close2DZone();
 
-	//! To capture overridden shortcuts (pause button, etc.)
-	void onShortcutTriggered(int);
-
-  signals:
-
-	//! Signal emitted when a new label is created
-	void newLabel(ccHObject*);
+	/**
+	 * @brief Handle shortcut trigger.
+	 * @param[in] id Shortcut ID.
+	 */
+	void onShortcutTriggered(int id);
 
   protected:
-	//! Picking mode
+	/**
+	 * @brief Picking modes.
+	 */
 	enum Mode
 	{
-		POINT_INFO,
-		POINT_POINT_DISTANCE,
-		POINTS_ANGLE,
-		RECT_ZONE
+		POINT_INFO,         //!< Display point information
+		POINT_POINT_DISTANCE, //!< Measure distance between two points
+		POINTS_ANGLE,        //!< Measure angle at middle point
+		RECT_ZONE            //!< Define rectangular zone
 	};
 
 	// inherited from ccPointPickingGenericInterface
+	/**
+	 * @brief Process a picked point.
+	 * @param[in] picked Picked item information.
+	 */
 	void processPickedPoint(const PickedItem& picked) override;
 
 	//! Current picking mode
 	Mode m_pickingMode;
 
-	//! Associated 3D label
+	//! 3D label for displaying measurements
 	cc2DLabel* m_label;
 
-	//! Associated 2D label
+	//! 2D viewport label for rectangular zone
 	cc2DViewportLabel* m_rect2DLabel;
 };
