@@ -124,6 +124,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/CCPluginAPI/ccPickingListener.h ✅
 - libs/CCPluginAPI/ccQtHelpers.h ✅
 - libs/CCPluginAPI/ccRenderToFileDlg.h ✅
+- libs/qCC_db/ccBBox.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -728,3 +729,8 @@ libs/
   - Enhanced @file with render to file dialog overview
   - Added @class documentation
   - Documented export format options
+
+- `docs: enhance ccBBox.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with bounding box overview
+  - Added @class documentation
+  - Documented spatial query and rendering
