@@ -1,3 +1,6 @@
+#ifndef CCVIEWERAPPLICATION_H
+#define CCVIEWERAPPLICATION_H
+
 // ##########################################################################
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
@@ -7,33 +10,21 @@
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        //
+// #                                                                        #
 // #          COPYRIGHT: CloudCompare project                               #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
 
 /**
  * @file ccViewerApplication.h
  *
- * @brief ccViewer Qt application class.
+ * @brief Viewer application
  *
- * @details Application class for the ccViewer lightweight viewer.
- *
- * Manages:
- * - Qt event processing
- * - Application-wide settings
- * - Viewer instance lifecycle
- *
- * @extends ccApplicationBase
- *
- * @see ccViewer for the main window
+ * ccViewer Qt Application class.
  */
-
-#ifndef CCVIEWERAPPLICATION_H
-#define CCVIEWERAPPLICATION_H
 
 // Common
 #include <ccApplicationBase.h>
@@ -41,52 +32,26 @@
 class ccViewer;
 
 /**
- * @brief Application class for ccViewer.
+ * @class ccViewerApplication
  *
- * @details Qt application subclass for the ccViewer
- * lightweight point cloud viewer.
+ * @brief Viewer application
  *
- * Handles:
- * - Application initialization
- * - Event processing
- * - Viewer instance management
- *
- * @extends ccApplicationBase
+ * ccViewer Qt Application class.
  */
 class ccViewerApplication : public ccApplicationBase
 {
 	Q_OBJECT
 
   public:
-	/**
-	 * @brief Construct the application.
-	 *
-	 * @param[in] argc Argument count.
-	 * @param[in] argv Argument vector.
-	 * @param[in] isCommandLine CLI mode flag.
-	 */
 	ccViewerApplication(int& argc, char** argv, bool isCommandLine);
 
-	/**
-	 * @brief Set the viewer instance.
-	 *
-	 * @param[in] inViewer Viewer instance.
-	 */
 	void setViewer(ccViewer* inViewer);
 
   protected:
-	/**
-	 * @brief Handle Qt events.
-	 *
-	 * @param[in] inEvent Event to process.
-	 *
-	 * @return true if event was handled.
-	 */
 	bool event(QEvent* inEvent) override;
 
   private:
-	//! Viewer instance
 	ccViewer* mViewer;
 };
 
-#endif // CCVIEWERAPPLICATION_H
+#endif

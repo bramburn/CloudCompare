@@ -14,23 +14,11 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
-
 /**
  * @file ccAdjustZoomDlg.cpp
- *
- * @brief Implementation of the zoom adjustment dialog.
- *
- * @details Implements the ccAdjustZoomDlg class which provides precise
- * camera focal distance control for orthographic 3D views.
- *
- * The dialog maintains consistency between three interrelated parameters:
- * - Focal distance (camera zoom)
- * - Pixel size (world units per pixel)
- * - Pixel count (pixels per world unit)
- *
- * When the user changes any parameter, the others are automatically
- * recalculated to maintain geometric consistency with the viewport.
- *
+ * @brief Implementation of the zoom adjustment dialog
+ * @details Allows users to adjust camera focal distance and pixel size
+ * for precise zoom control in 3D views.
  * @see ccAdjustZoomDlg
  */
 
@@ -40,15 +28,11 @@
 #include "ccGLWindowInterface.h"
 
 /**
- * @brief Construct the adjust zoom dialog.
- *
- * @param[in] win The 3D window to adjust zoom for.
- * @param[in] parent Parent widget (optional).
- *
- * @details Initializes the dialog with current viewport parameters from
- * the specified GL window. Sets up the UI and connects signal handlers
- * for synchronized updates between focal distance, pixel size, and
- * pixel count controls.
+ * @brief Constructor
+ * @param win GL window to adjust zoom for
+ * @param parent Parent widget
+ * @details Initializes the dialog with current viewport parameters
+ * including window dimensions, focal distance, and pixel size.
  */
 ccAdjustZoomDlg::ccAdjustZoomDlg(ccGLWindowInterface* win, QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::Tool)
@@ -60,7 +44,6 @@ ccAdjustZoomDlg::ccAdjustZoomDlg(ccGLWindowInterface* win, QWidget* parent /*=nu
 
 	if (win)
 	{
-		// Display window title and dimensions
 		windowLabel->setText(QString("%1 [%2 x %3]").arg(win->getWindowTitle()).arg(win->glWidth()).arg(win->glHeight()));
 
 		const ccViewportParameters& params = win->getViewportParameters();
@@ -73,7 +56,6 @@ ccAdjustZoomDlg::ccAdjustZoomDlg(ccGLWindowInterface* win, QWidget* parent /*=nu
 			m_windowWidth_pix = 1;
 		}
 
-		// Compute the distance-to-width ratio for unit conversions
 		m_distanceToWidthRatio = params.computeDistanceToWidthRatio(win->glWidth(), win->glHeight());
 		if (m_distanceToWidthRatio <= 0.0)
 		{
@@ -81,7 +63,6 @@ ccAdjustZoomDlg::ccAdjustZoomDlg(ccGLWindowInterface* win, QWidget* parent /*=nu
 			m_distanceToWidthRatio = 1.0;
 		}
 
-		// Initialize spin boxes with current values
 		double focalDist = params.getFocalDistance();
 		focalDoubleSpinBox->setValue(focalDist);
 
@@ -93,19 +74,14 @@ ccAdjustZoomDlg::ccAdjustZoomDlg(ccGLWindowInterface* win, QWidget* parent /*=nu
 		windowLabel->setText("Error");
 	}
 
-	// Connect spin box signals for synchronized updates
 	connect(focalDoubleSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ccAdjustZoomDlg::onFocalChanged);
 	connect(pixelSizeDoubleSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ccAdjustZoomDlg::onPixelSizeChanged);
 	connect(pixelCountSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &ccAdjustZoomDlg::onPixelCountChanged);
 }
 
 /**
- * @brief Get the currently configured focal distance.
- *
- * @return Focal distance value from the spin box.
- *
- * @details Returns the focal distance that should be applied to the
- * viewport after the dialog is accepted.
+ * @brief Gets the currently configured focal distance
+ * @return Focal distance value from the spin box
  */
 double ccAdjustZoomDlg::getFocalDistance() const
 {
@@ -113,14 +89,10 @@ double ccAdjustZoomDlg::getFocalDistance() const
 }
 
 /**
- * @brief Handle focal distance spin box changes.
- *
- * @param[in] focalDist New focal distance value.
- *
+ * @brief Handles focal distance spin box changes
+ * @param focalDist New focal distance value
  * @details Recalculates pixel size based on the new focal distance,
  * maintaining consistency with the distance-to-width ratio.
- *
- * Formula: pixelSize = (focalDist * ratio * pixelCount) / windowWidth
  */
 void ccAdjustZoomDlg::onFocalChanged(double focalDist)
 {
@@ -133,14 +105,10 @@ void ccAdjustZoomDlg::onFocalChanged(double focalDist)
 }
 
 /**
- * @brief Handle pixel size spin box changes.
- *
- * @param[in] pixelSizeNPixels New pixel size value.
- *
+ * @brief Handles pixel size spin box changes
+ * @param pixelSizeNPixels New pixel size value
  * @details Recalculates focal distance based on the new pixel size,
  * maintaining consistency with the viewport parameters.
- *
- * Formula: focalDist = (pixelSize * windowWidth) / (pixelCount * ratio)
  */
 void ccAdjustZoomDlg::onPixelSizeChanged(double pixelSizeNPixels)
 {
@@ -153,14 +121,10 @@ void ccAdjustZoomDlg::onPixelSizeChanged(double pixelSizeNPixels)
 }
 
 /**
- * @brief Handle pixel count spin box changes.
- *
- * @param[in] pixelCount New pixel count value.
- *
+ * @brief Handles pixel count spin box changes
+ * @param pixelCount New pixel count value
  * @details Recalculates pixel size based on the new pixel count,
- * which represents how many screen pixels correspond to one world unit.
- *
- * Formula: pixelSize = (focalDist * ratio * pixelCount) / windowWidth
+ * which represents how many screen pixels correspond to one unit.
  */
 void ccAdjustZoomDlg::onPixelCountChanged(int pixelCount)
 {

@@ -20,35 +20,11 @@
 /**
  * @file ccConsole.h
  *
- * @brief Console widget and logging infrastructure for CloudCompare.
+ * @brief Console/logging widget
  *
- * @details The ccConsole class provides a centralized logging and message
- * display system for the CloudCompare application. It handles:
- * - Display of informational, warning, and error messages in a GUI list widget
- * - Thread-safe message queuing with automatic refresh
- * - Optional logging to file
- * - Qt message handler integration (qDebug, qWarning, etc.)
- * - Automatic popup dialogs for critical errors
- *
- * @section usage Usage
- *
- * The console is typically initialized at application startup:
- * @code
- * ccConsole::Init(ui.consoleWidget);  // Attach to GUI list widget
- * ccLog::Print("Application started");
- * ccLog::Warning("Something might be wrong");
- * ccLog::Error("Critical failure!");
- * @endcode
- *
- * @section threading Thread Safety
- *
- * This class is reentrant but not fully thread-safe for concurrent calls
- * to logMessage. Use the ccLog static methods from any thread - they
- * internally handle synchronization.
+ * Console widget and logging infrastructure.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- * @see ccLog
- * @see MainWindow::ccConsole
  */
 // qCC_db
 #include <ccLog.h>
@@ -63,16 +39,7 @@ class MainWindow;
 class QTextStream;
 
 /**
- * @brief Custom QListWidget with enhanced copy functionality.
- *
- * @details Extends QListWidget to provide convenient keyboard-based
- * copy operations. When the user presses Ctrl+C (or another copy
- * shortcut), all selected items are copied to the clipboard as
- * newline-separated text.
- *
- * @note Currently only implements copy; paste is not supported.
- *
- * @extends QListWidget
+ * @brief Custom list widget with copy support
  */
 class ccCustomQListWidget : public QListWidget
 {
@@ -86,29 +53,9 @@ class ccCustomQListWidget : public QListWidget
 };
 
 /**
- * @brief Central console/logging interface for CloudCompare.
+ * @brief Console
  *
- * @details The ccConsole class serves as the primary logging and message
- * display system. It inherits from ccLog to receive log messages and
- * displays them in an associated QListWidget.
- *
- * Key features:
- * - Singleton pattern: use TheInstance() to access
- * - Message queuing with automatic refresh timer
- * - Thread-safe logging from multiple threads
- * - Optional file logging
- * - Automatic error dialogs
- * - Integration with Qt's message handling system
- *
- * @section modes Operating Modes
- *
- * - Debug mode: All messages are also sent to stdout/stderr
- * - Release mode: Only messages with attached widget are displayed
- * - Error handling: Critical errors show blocking QMessageBox dialogs
- *
- * @extends QObject
- * @extends ccLog
- * @nosubgrouping
+ * Logging console with widget output.
  */
 class ccConsole : public QObject
     , public ccLog
@@ -116,180 +63,101 @@ class ccConsole : public QObject
 	Q_OBJECT
 
   public:
-	/**
-	 * @brief Destructor.
-	 *
-	 * Cleans up resources including closing any open log files
-	 * and stopping the refresh timer.
-	 */
+	//! Destructor
 	~ccConsole() override;
 
-	/**
-	 * @brief Initialize the console singleton.
-	 *
-	 * @details Sets up the console with optional widget attachments.
-	 * This method should be called exactly once during application startup.
-	 *
-	 * @warning In release mode, no messages are output unless a valid
-	 * 'textDisplay' widget is provided. Error messages only appear as
-	 * blocking QMessageBox dialogs if a 'parentWidget' is specified.
-	 *
-	 * @warning In debug mode, all messages are also sent to the system
-	 * console (stdout/stderr via printf).
-	 *
-	 * @param[in] textDisplay Optional QListWidget for displaying messages.
-	 *                        If nullptr, messages are queued but not displayed
-	 *                        in the GUI (useful for headless/CLI mode).
-	 * @param[in] parentWidget Optional parent widget for error message dialogs.
-	 *                         If nullptr, error dialogs are not shown.
-	 * @param[in] parentWindow Optional reference to MainWindow for forcing
-	 *                         console visibility when warnings arrive.
-	 * @param[in] redirectToStdOut If true, messages are also printed to stdout.
-	 *                              Useful for CLI mode with redirected output.
-	 */
+	//! Inits console (and optionaly associates it with a text output widget)
+	/** WARNING: in release mode, no message will be output if no 'textDisplay'
+	    widget is defined. Moreover, error messages will only appear in a
+	    (blocking) QMessageBox if a 'parentWidget' widget is defined.
+	    In debug mode, all message are sent to system console (with 'printf').
+	    \param textDisplay text output widget (optional)
+	    \param parentWidget parent widget (optional)
+	    \param parentWindow parent window (if any - optional)
+	    \param redirectToStdOut whether to redirect log messages to the system std::out output or not (optional)
+	**/
 	static void Init(QListWidget* textDisplay      = nullptr,
 	                 QWidget*     parentWidget     = nullptr,
 	                 MainWindow*  parentWindow     = nullptr,
 	                 bool         redirectToStdOut = false);
 
-	/**
-	 * @brief Get the singleton console instance.
-	 *
-	 * @param[in] autoInit If true and no instance exists, creates a temporary
-	 *                    instance with no attached widgets.
-	 * @return Pointer to the console instance, or nullptr if not initialized
-	 *         and autoInit is false.
-	 */
+	//! Returns the (unique) static instance
+	/** \param autoInit automatically initialize the console instance (with no widget!) if not done already
+	 **/
 	static ccConsole* TheInstance(bool autoInit = true);
 
-	/**
-	 * @brief Release and destroy the console singleton.
-	 *
-	 * @param[in] flush If true (default), flushes any pending messages
-	 *                  before destroying the instance.
-	 */
+	//! Releases unique instance
 	static void ReleaseInstance(bool flush = true);
 
-	/**
-	 * @brief Set the console refresh cycle interval.
-	 *
-	 * @param[in] cycle_ms Refresh interval in milliseconds. Must be positive.
-	 *                    Default is 1000ms (1 second).
-	 *
-	 * @warning If cycle_ms <= 0, the call is ignored and a warning is logged.
-	 */
+	//! Sets the console refresh time
+	/** \param cycle_ms Refresh cycle (ms) - must be strictly positive
+	 **/
 	static void SetRefreshCycle(int cycle_ms = 1000);
 
-	/**
-	 * @brief Enable or disable automatic message refresh.
-	 *
-	 * @param[in] state true to enable auto-refresh, false to disable.
-	 *
-	 * @see autoRefresh()
-	 */
+	//! Sets auto-refresh state
 	void setAutoRefresh(bool state);
 
-	/**
-	 * @brief Check if auto-refresh is currently active.
-	 * @return true if auto-refresh timer is running, false otherwise.
-	 *
-	 * @see setAutoRefresh()
-	 */
+	//! Whether auto-refresh is in progress
 	bool autoRefresh() const;
 
-	/**
-	 * @brief Set or clear the log file for persistent message logging.
-	 *
-	 * @param[in] filename Path to log file. If empty, logging to file is disabled.
-	 * @return true if file was successfully opened/closed, false on error.
-	 */
+	//! Sets log file
 	bool setLogFile(const QString& filename);
 
-	/**
-	 * @brief Enable or disable forwarding of Qt messages to the console.
-	 *
-	 * @param[in] state true to enable Qt message forwarding, false to disable.
-	 *
-	 * @note Setting is persisted to application settings.
-	 */
+	//! Whether to show Qt messages (qDebug / qWarning / etc.) in Console
 	static void EnableQtMessages(bool state);
 
-	/**
-	 * @brief Check if Qt message forwarding is enabled.
-	 * @return true if Qt messages are being forwarded to the console.
-	 */
+	//! Returns whether to show Qt messages (qDebug / qWarning / etc.) in Console or not
 	static bool QtMessagesEnabled()
 	{
 		return s_showQtMessagesInConsole;
 	}
 
-	/**
-	 * @brief Get the parent widget used for error dialogs.
-	 * @return Pointer to the parent widget, or nullptr if not set.
-	 */
+	//! Returns the parent widget (if any)
 	inline QWidget* parentWidget()
 	{
 		return m_parentWidget;
 	}
 
   public:
-	/**
-	 * @brief Refresh the console display by processing queued messages.
-	 *
-	 * Moves all pending messages from the queue to the display
-	 * widget and/or log file. This method is typically called automatically
-	 * by the refresh timer, but can be called manually to force immediate display.
-	 */
+	//! Refreshes console (display all messages still in queue)
 	void refresh();
 
   protected:
-	/**
-	 * @brief Default constructor.
-	 *
-	 * @warning Constructor is protected to enforce singleton usage.
-	 */
+	//! Default constructor
+	/** Constructor is protected to avoid using this object as a non static class.
+	 **/
 	ccConsole();
 
-	/**
-	 * @brief Process and display a log message.
-	 *
-	 * @param[in] message The message text to log.
-	 * @param[in] level Message severity level (see ccLog constants).
-	 *
-	 * @extends ccLog::logMessage()
-	 */
+	// inherited from ccLog
 	void logMessage(const QString& message, int level) override;
 
-	/** @brief Associated text display widget for message output. */
+	//! Associated text display widget
 	QListWidget* m_textDisplay;
 
-	/** @brief Parent widget for error message dialogs. */
+	//! Parent widget
 	QWidget* m_parentWidget;
 
-	/** @brief Reference to the main window. */
+	//! Parent window (if any)
 	MainWindow* m_parentWindow;
 
-	/** @brief Mutex for thread-safe message queue access. */
+	//! Mutex for concurrent thread access to console
 	QMutex m_mutex;
 
-	/** @brief Type for queued message items (message text + severity level). */
+	//! Queue element type (message + color)
 	using ConsoleItemType = QPair<QString, int>;
 
-	/** @brief Queue of messages awaiting display. */
+	//! Queue for incoming messages
 	QVector<ConsoleItemType> m_queue;
 
-	/** @brief Timer for automatic refresh. */
+	//! Timer for auto-refresh
 	QTimer m_timer;
 
-	/** @brief Log file for persistent message logging. */
+	//! Log file
 	QFile m_logFile;
-
-	/** @brief Stream for writing to the log file. */
+	//! Log file stream
 	QTextStream* m_logStream;
 
-	/** @brief Whether to forward Qt messages to the console. */
+	//! Whether to show Qt messages (qDebug / qWarning / etc.) in Console
 	static bool s_showQtMessagesInConsole;
-
-	/** @brief Whether to also print messages to stdout. */
 	static bool s_redirectToStdOut;
 };

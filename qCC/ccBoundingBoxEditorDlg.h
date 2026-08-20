@@ -21,26 +21,11 @@
 /**
  * @file ccBoundingBoxEditorDlg.h
  *
- * @brief Bounding box editor dialog for editing 3D bounding box extents.
+ * @brief Bounding box editor dialog
  *
- * @details Interactive dialog for manually editing axis-aligned bounding
- * boxes. Used throughout CloudCompare for:
- * - Defining regions of interest
- * - Cropping entities
- * - Setting up raster grid extents
- * - Configuring clipping boxes
- *
- * Features:
- * - Numeric input for min/max coordinates
- * - "Square" mode to enforce equal X/Y dimensions
- * - 2D mode (lock one dimension)
- * - Base box constraints (box must be within base)
- * - Custom axis orientation
+ * Dialog for editing 3D bounding box extents.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccBBox
- * @see ccCropTool
  */
 
 #include <ui_boundingBoxEditorDlg.h>
@@ -49,24 +34,9 @@
 #include <ccBBox.h>
 
 /**
- * @brief Dialog for editing 3D bounding box dimensions.
+ * @brief Bounding box editor dialog
  *
- * @details Provides an interactive UI for entering and modifying
- * axis-aligned bounding boxes. The dialog allows editing:
- * - Minimum and maximum X, Y, Z coordinates
- * - Box dimensions (width, height, depth)
- * - Box center position
- *
- * Features:
- * - **Square mode**: Enforces equal X and Y dimensions (useful for
- *   square tiles or voxels)
- * - **2D mode**: Locks one dimension (X, Y, or Z) for 2D editing
- * - **Base box constraint**: Ensures edited box stays within a
- *   base/parent bounding box
- * - **Custom axes**: Allows arbitrary X/Y/Z axis directions
- *
- * @extends QDialog
- * @extends Ui::BoundingBoxEditorDialog
+ * Dialog for editing 3D bounding box dimensions.
  */
 class ccBoundingBoxEditorDlg : public QDialog
     , public Ui::BoundingBoxEditorDialog
@@ -75,18 +45,16 @@ class ccBoundingBoxEditorDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the bounding box editor.
-	 *
-	 * @param[in] showBoxAxes Whether to show axis orientation widgets.
-	 * @param[in] showRasterGridImage Whether to show raster grid preview.
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] showBoxAxes Show box axes
+	 * @param[in] showRasterGridImage Show raster grid image
+	 * @param[in] parent Parent widget
 	 */
 	explicit ccBoundingBoxEditorDlg(bool showBoxAxes, bool showRasterGridImage, QWidget* parent = nullptr);
 
 	/**
-	 * @brief Get the current bounding box.
-	 *
-	 * @return Current bounding box.
+	 * @brief Get bounding box
+	 * @return Current bounding box
 	 */
 	inline const ccBBox& getBox() const
 	{
@@ -94,191 +62,77 @@ class ccBoundingBoxEditorDlg : public QDialog
 	}
 
 	/**
-	 * @brief Set the bounding box.
-	 *
-	 * @param[in] box Bounding box to display.
+	 * @brief Set bounding box
+	 * @param[in] box Bounding box
 	 */
 	void setBox(const ccBBox& box);
 
 	/**
-	 * @brief Set the base bounding box.
-	 *
-	 * @param[in] box Base/parent bounding box.
-	 * @param[in] isMinimal If true, edited box must be at least as large
-	 *                     as the base box; if false, edited box must
-	 *                     be contained within the base box.
+	 * @brief Set base box
+	 * @param[in] box Base box
+	 * @param[in] isMinimal Require box to be at least this large
 	 */
 	void setBaseBBox(const ccBBox& box, bool isMinimal = true);
 
-	/**
-	 * @brief Set custom box axes.
-	 *
-	 * @param[in] X Custom X axis direction.
-	 * @param[in] Y Custom Y axis direction.
-	 * @param[in] Z Custom Z axis direction.
-	 *
-	 * @details Allows the bounding box to use arbitrary axis directions
-	 * instead of the default world axes.
-	 */
+	/// Set box axes
 	void setBoxAxes(const CCVector3& X, const CCVector3& Y, const CCVector3& Z);
 
-	/**
-	 * @brief Get the box axes.
-	 *
-	 * @param[out] X X axis direction.
-	 * @param[out] Y Y axis direction.
-	 * @param[out] Z Z axis direction.
-	 */
+	/// Get box axes
 	void getBoxAxes(CCVector3d& X, CCVector3d& Y, CCVector3d& Z);
 
 	/**
-	 * @brief Show inclusion warning.
-	 *
-	 * @param[in] state Whether to warn if box is outside base.
+	 * @brief Show inclusion warning
+	 * @param[in] state Show state
 	 */
 	void showInclusionWarning(bool state)
 	{
 		m_showInclusionWarning = state;
 	}
 
-	/**
-	 * @brief Force square mode.
-	 *
-	 * @param[in] state Enable/disable square mode.
-	 */
+	/// Force keep square mode
 	void forceKeepSquare(bool state);
 
-	/**
-	 * @brief Check if square mode is active.
-	 *
-	 * @return true if square mode is enabled.
-	 */
+	/// Check keep square mode
 	bool keepSquare() const;
 
 	/**
-	 * @brief Set 2D editing mode.
-	 *
-	 * @param[in] state Enable/disable 2D mode.
-	 * @param[in] dim Which dimension to lock (0=X, 1=Y, 2=Z).
+	 * @brief Set 2D mode
+	 * @param[in] state 2D mode
+	 * @param[in] dim Hidden dimension
 	 */
 	void set2DMode(bool state, unsigned char dim);
 
   public:
-	/**
-	 * @brief Execute the dialog.
-	 *
-	 * @return QDialog::Accepted or QDialog::Rejected.
-	 */
-	virtual int exec() override;
+	// overloaded from QDialog
+	virtual int exec();
 
-  protected slots:
-	/**
-	 * @brief Handle square mode activation.
-	 *
-	 * @param[in] state Square mode state.
-	 */
-	void squareModeActivated(bool state);
-
-	/**
-	 * @brief Reset to default box.
-	 */
+  protected:
+	void squareModeActivated(bool);
 	void resetToDefault();
-
-	/**
-	 * @brief Reset to last saved box.
-	 */
 	void resetToLast();
-
-	/**
-	 * @brief Cancel and close.
-	 */
 	void cancel();
-
-	/**
-	 * @brief Save box and accept dialog.
-	 */
 	void saveBoxAndAccept();
+	int  computeBestDialogHeight(bool showBoxAxes, bool showRasterGridImage) const;
 
-	/**
-	 * @brief Compute optimal dialog height.
-	 *
-	 * @param[in] showBoxAxes Whether box axes are shown.
-	 * @param[in] showRasterGridImage Whether raster preview is shown.
-	 * @return Optimal height in pixels.
-	 */
-	int computeBestDialogHeight(bool showBoxAxes, bool showRasterGridImage) const;
+	void updateXWidth(double);
+	void updateYWidth(double);
+	void updateZWidth(double);
 
-	/**
-	 * @brief Handle X width change.
-	 *
-	 * @param[in] value New X width.
-	 */
-	void updateXWidth(double value);
-
-	/**
-	 * @brief Handle Y width change.
-	 *
-	 * @param[in] value New Y width.
-	 */
-	void updateYWidth(double value);
-
-	/**
-	 * @brief Handle Z width change.
-	 *
-	 * @param[in] value New Z width.
-	 */
-	void updateZWidth(double value);
-
-	/**
-	 * @brief Update current bounding box.
-	 *
-	 * @param[in] dummy Unused parameter.
-	 */
 	void updateCurrentBBox(double dummy = 0.0);
-
-	/**
-	 * @brief Reflect changes in UI.
-	 *
-	 * @param[in] dummy Unused parameter.
-	 */
 	void reflectChanges(int dummy = 0);
 
-	/**
-	 * @brief Handle axis value change.
-	 *
-	 * @param[in] value New axis value.
-	 */
-	void onAxisValueChanged(double value);
+	void onAxisValueChanged(double);
 
-	/**
-	 * @brief Load values from clipboard.
-	 */
 	void fromClipboardClicked();
-
-	/**
-	 * @brief Save values to clipboard.
-	 */
 	void toClipboardClicked();
 
   protected:
-	/**
-	 * @brief Check if box is within base box.
-	 */
 	void checkBaseInclusion();
 
-	//! Base/parent bounding box
 	ccBBox m_baseBBox;
-
-	//! Whether base box is a minimum constraint
 	bool m_baseBoxIsMinimal;
-
-	//! Current bounding box
 	ccBBox m_currentBBox;
-
-	//! Initial bounding box
 	ccBBox m_initBBox;
-
-	//! Whether to show inclusion warning
 	bool m_showInclusionWarning;
 };
 

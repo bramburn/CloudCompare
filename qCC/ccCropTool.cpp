@@ -14,25 +14,11 @@
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
 // #                                                                        #
 // ##########################################################################
-
 /**
  * @file ccCropTool.cpp
- *
- * @brief Implementation of the crop tool for point clouds and meshes.
- *
- * @details Implements the ccCropTool::Crop() static method which provides
- * cropping functionality using an axis-aligned bounding box (AABB).
- *
- * For point clouds:
- * - Creates a ReferenceCloud of points within the box bounds
- * - Returns a partial clone preserving colors and scalar fields
- *
- * For meshes:
- * - Uses ManualSegmentationTools::segmentMeshWithAABox() to cut triangles
- * - Generates inside and/or outside mesh portions
- * - Preserves per-vertex features (colors, scalar fields) via interpolation
- * - Preserves per-triangle features (materials, texture coordinates)
- *
+ * @brief Crop tool implementation for point clouds and meshes
+ * @details Provides the Crop function to extract portions of entities
+ * using a bounding box. Supports both inside/outside cropping modes.
  * @see ccCropTool
  */
 

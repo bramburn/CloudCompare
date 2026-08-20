@@ -21,26 +21,9 @@
 /**
  * @file ccGraphicalTransformationTool.h
  *
- * @brief Graphical transformation tool for interactive entity manipulation.
+ * @brief Graphical transformation tool
  *
- * @details Provides an interactive overlay dialog for transforming entities
- * (point clouds, meshes, etc.) using mouse gestures and UI controls.
- *
- * Features:
- * - Mouse-driven rotation and translation in 3D view
- * - Rotation around arbitrary axes
- * - Translation along arbitrary vectors
- * - Advanced mode with reference point/axis selection
- * - Real-time preview of transformations
- * - Apply/cancel workflow
- *
- * The tool displays the transformation matrix and allows fine control
- * over translation and rotation parameters.
- *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccOverlayDialog
- * @see ccGLMatrixd
+ * Mouse-driven transformation of entities.
  */
 
 // Local
@@ -53,21 +36,11 @@
 class ccGLWindowInterface;
 
 /**
- * @brief Graphical transformation tool for interactive entity manipulation.
+ * @class ccGraphicalTransformationTool
  *
- * @details An overlay dialog that provides interactive transformation
- * controls for selected entities. Users can:
- * - Drag entities in the 3D view to translate them
- * - Use rotation handles to rotate around axes
- * - Enter precise translation/rotation values
- * - Use advanced mode with custom reference points/axes
+ * @brief Graphical transformation tool
  *
- * The tool maintains a transformation matrix that is applied to
- * selected entities. Transformations can be applied incrementally
- * or all at once.
- *
- * @extends ccOverlayDialog
- * @extends Ui::GraphicalTransformationDlg
+ * Dialog + mechanism for graphical transformation of entities.
  */
 class ccGraphicalTransformationTool : public ccOverlayDialog
     , public Ui::GraphicalTransformationDlg
@@ -75,300 +48,164 @@ class ccGraphicalTransformationTool : public ccOverlayDialog
 	Q_OBJECT
 
   public:
-	/**
-	 * @brief Construct the transformation tool.
-	 *
-	 * @param[in] parent Parent widget.
-	 */
+	//! Default constructor
 	explicit ccGraphicalTransformationTool(QWidget* parent);
-
-	/**
-	 * @brief Destructor.
-	 */
+	//! Default destructor
 	virtual ~ccGraphicalTransformationTool();
 
 	// inherited from ccOverlayDialog
-	/**
-	 * @brief Link the tool with a 3D view.
-	 *
-	 * @param[in] win Window to link with.
-	 * @return true if linking succeeded.
-	 */
 	virtual bool linkWith(ccGLWindowInterface* win) override;
-
-	/**
-	 * @brief Start the transformation mode.
-	 *
-	 * @return true if started successfully.
-	 */
 	virtual bool start() override;
-
-	/**
-	 * @brief Stop the transformation mode.
-	 *
-	 * @param[in] state Final state to apply.
-	 */
 	virtual void stop(bool state) override;
 
-	/**
-	 * @brief Clear advanced mode reference entities.
-	 */
+	//! unselect all advanced mode references
 	void clearAdvModeEntities();
 
-	/**
-	 * @brief Add an entity to the transformation set.
-	 *
-	 * @param[in] anObject Entity to add.
-	 * @return true if the entity is eligible for transformation.
-	 *
-	 * @details Only entities in the "to transform" set will be
-	 * moved when the transformation is applied.
-	 */
+	//! Adds an entity to the 'selected' entities set
+	/** Only the 'selected' entities are moved.
+	    \return success, if the entity is eligible for graphical transformation
+	**/
 	bool addEntity(ccHObject* anObject);
 
-	/**
-	 * @brief Get the number of valid entities.
-	 *
-	 * @return Number of entities in the transformation set.
-	 */
+	//! Returns the number of valid entities (see addEntity)
 	unsigned getNumberOfValidEntities() const;
 
-	/**
-	 * @brief Get the entities to be transformed.
-	 *
-	 * @return Reference to the container of entities.
-	 */
+	//! Returns the 'to be transformed' entities set (see addEntity)
 	const ccHObject& getValidEntities() const
 	{
 		return m_toTransform;
 	}
 
-	/**
-	 * @brief Set the rotation center.
-	 *
-	 * @param[in] center New rotation center.
-	 */
+	//! Sets the rotation center
 	void setRotationCenter(CCVector3d& center);
 
-	/**
-	 * @brief Get transformation for arbitrary vector translation.
-	 *
-	 * @param[in] vec Translation vector.
-	 * @return Transformation matrix.
-	 */
+	//! Returns the transform for translating along an arbitrary vector
 	ccGLMatrixd arbitraryVectorTranslation(const CCVector3& vec);
 
-	/**
-	 * @brief Get transformation for arbitrary vector rotation.
-	 *
-	 * @param[in] angle Rotation angle in radians.
-	 * @param[in] vec Rotation axis vector.
-	 * @return Transformation matrix.
-	 */
+	//! Returns the transform for rotation around an arbitrary vector
 	ccGLMatrixd arbitraryVectorRotation(double angle, const CCVector3d&);
 
   protected:
-	/**
-	 * @brief Rotation axis selection enum.
-	 */
+	//! rotComboBox enum
 	enum rotComboBoxItems
 	{
-		XYZ,   //!< Rotate around all three axes
-		X,     //!< Rotate around X axis
-		Y,     //!< Rotate around Y axis
-		Z,     //!< Rotate around Z axis
-		NONE   //!< No rotation
+		XYZ,
+		X,
+		Y,
+		Z,
+		NONE
 	};
 
-	/**
-	 * @brief Apply the current transformation to entities.
-	 */
+	//! Applies transformation to selected entities
 	void apply();
 
-	/**
-	 * @brief Reset transformation to identity.
-	 */
+	//! Resets transformation
 	void reset();
 
-	/**
-	 * @brief Cancel without applying transformation.
-	 */
+	//! Cancels (no transformation is applied)
 	void cancel();
 
-	/**
-	 * @brief Pause/resume transformation mode.
-	 *
-	 * @param[in] state true to pause, false to resume.
-	 */
-	void pause(bool state);
+	//! Pauses the transformation mode
+	void pause(bool);
 
-	/**
-	 * @brief Toggle advanced mode UI visibility.
-	 *
-	 * @param[in] state true to enable advanced mode.
-	 */
+	//! Togggles the visibility of the advanced mode ui
 	void advModeToggle(bool state);
 
-	/**
-	 * @brief Update transform when translate reference changes.
-	 *
-	 * @param[in] index Reference index.
-	 */
+	//! Updates the transform for advanced mode rotation when translate ref changed
 	void advTranslateRefUpdate(int index);
 
-	/**
-	 * @brief Update transform when rotate reference changes.
-	 *
-	 * @param[in] index Reference index.
-	 */
+	//! Updates the transform for advanced mode rotation when rotate ref changed
 	void advRotateRefUpdate(int index);
 
-	/**
-	 * @brief Update rotation combo box selection.
-	 *
-	 * @param[in] index Selected rotation axis.
-	 */
 	void advRotateComboBoxUpdate(int index);
 
-	/**
-	 * @brief Toggle rotation center to reference object.
-	 *
-	 * @param[in] state Radio button state.
-	 */
+	//! Updates the axis center of rotation to the ref object in adv rotate/translate mode
 	void advRefAxisRadioToggled(bool state);
 
-	/**
-	 * @brief Toggle incremental translation fields.
-	 */
+	//! Enables/disables incremental translation field in accordance with the state of tx/ty/tz checkboxes
 	void incrementalTranslationToggle();
 
-	/**
-	 * @brief Toggle incremental rotation fields.
-	 *
-	 * @param[in] selectedRotationItem Current rotation item.
-	 */
+	//! Enables/disables incremental rotation field in accordance with the state of the rotComboBox
 	void incrementalRotationToggle(const rotComboBoxItems& selectedRotationItem);
 
-	/**
-	 * @brief Toggle rotation center to object center.
-	 *
-	 * @param[in] state Radio button state.
-	 */
+	//! Updates the axis center of rotation to the object center in adv rotate/translate mode
 	void advObjectAxisRadioToggled(bool state);
 
-	/**
-	 * @brief Update the display message based on mode.
-	 */
+	//! Updates the top center display message according to the mode
 	void updateDisplayMessage();
 
-	/**
-	 * @brief Apply graphical translation to selected entities.
-	 *
-	 * @param[in] Translation vector.
-	 */
+	//! Applies translation (graphically) to selected entities
 	void glTranslate(const CCVector3d&);
 
-	/**
-	 * @brief Apply graphical rotation to selected entities.
-	 *
-	 * @param[in] rot Rotation matrix.
-	 */
+	//! Applies rotation (graphically) to selected entities
 	void glRotate(const ccGLMatrixd&);
 
-	/**
-	 * @brief Apply incremental transform from spin boxes.
-	 *
-	 * @param[in] forward true to apply forward, false to reverse.
-	 */
+	//! Applies rotation and translation factors set on incremental Spin boxes to selected entities
 	void incrementalTransform(bool forward = true);
 
-	/**
-	 * @brief Handle keyboard shortcut triggers.
-	 *
-	 * @param[in] id Shortcut identifier.
-	 */
+	//! To capture overridden shortcuts (pause button, etc.)
 	void onShortcutTriggered(int);
 
-	/**
-	 * @brief Clear all state and unlink.
-	 */
+	//! Clear all variables and 'unlink' dialog
 	void clear();
 
-	/**
-	 * @brief Update GL transformation matrices.
-	 */
+	//! Updates all selected entities GL transformation matrices
 	void updateAllGLTransformations();
 
-	/**
-	 * @brief Populate advanced mode item list.
-	 */
+	//! Sets Advanced translate/rotation mode reference items
 	void populateAdvModeItems();
 
-	/**
-	 * @brief Set advanced translate reference transform.
-	 *
-	 * @param[in] translateRef Reference entity.
-	 * @return true if set successfully.
-	 */
+	//! Sets the translation transform used in advanced translate/rotate mode
 	bool setAdvTranslationTransform(ccHObject* translateRef);
 
-	/**
-	 * @brief Set advanced rotation axis.
-	 *
-	 * @param[in] rotateRef Reference entity.
-	 * @param[in] selectedAxis Selected rotation axis.
-	 * @return true if set successfully.
-	 */
+	//! Sets the rotation transform used in advanced translate/rotate mode
 	bool setAdvRotationAxis(ccHObject* rotateRef, rotComboBoxItems selectedAxis);
 
-	/**
-	 * @brief Check if entity is in transformation list.
-	 *
-	 * @param[in] entity Entity to check.
-	 * @return true if entity is being transformed.
-	 */
+	//! Check if the entitry is in m_toTransform
 	bool entityInTransformList(ccHObject* entity);
 
-	//! Advanced mode flag
+	//! Flag for advanced mode
 	bool m_advMode;
 
-	//! Flag if rotation reference is a child of entities
+	//! Flag if the rotation reference object is in m_toTransform
 	bool m_advRotateRefIsChild;
 
-	//! Flag if translate reference is a child of entities
+	//! Flag if the translate reference object is in m_toTransform
 	bool m_advTranslateRefIsChild;
 
-	//! Container of entities to transform
+	//! List of entities to be transformed
 	ccHObject m_toTransform;
 
-	//! Advanced mode translate reference entity
+	//! Current advanced translate mode ref object
 	ccHObject* m_advTranslateRef = nullptr;
 
-	//! Advanced mode rotate reference entity
+	//! Current advanced rotate mode ref object
 	ccHObject* m_advRotateRef = nullptr;
 
-	//! Current rotation matrix
+	//! Current rotation
 	ccGLMatrixd m_rotation;
 
-	//! Current translation vector
+	//! Current translation
 	CCVector3d m_translation;
 
-	//! Current position matrix
+	//! Current position
 	ccGLMatrixd m_position;
 
-	//! Advanced mode translation transform
+	//! Transform used in advanced translate/rotate mode
 	ccGLMatrixd m_advTranslationTransform;
 
-	//! Advanced mode rotation axis vector
+	//! Current rotation axis vector for adv translate/rotate mode (not neccesarily rotation center)
 	CCVector3d m_advRotationAxis;
 
-	//! Advanced mode rotation reference object center
+	//! Current reference object for rotation center point
 	CCVector3 m_advRotationRefObjCenter;
 
-	//! Rotation center (center of gravity of selected entities)
+	//! Rotation center
+	/** The rotation center is actually the center of gravity of the selected 'entities'
+	 **/
 	CCVector3d m_rotationCenter;
 
-	//! Advanced mode available objects list
+	//! Objects found in the dbtree for adv transate/rotate
 	ccHObject::Container m_advancedModeObjectList;
 };
 

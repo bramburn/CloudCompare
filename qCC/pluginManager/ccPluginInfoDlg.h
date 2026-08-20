@@ -1,3 +1,5 @@
+#ifndef CCPLUGININFODLG_H
+#define CCPLUGININFODLG_H
 // ##########################################################################
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
@@ -7,36 +9,23 @@
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        //
+// #                                                                        #
 // #          COPYRIGHT: CloudCompare project                               #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
 
 /**
  * @file ccPluginInfoDlg.h
  *
- * @brief Plugin information display dialog.
+ * @brief Plugin info dialog
  *
- * @details Dialog for displaying information about available CloudCompare
- * plugins including their names, types, descriptions, and authors.
- *
- * Features:
- * - List of all available plugins
- * - Enable/disable plugin toggles
- * - Plugin metadata display
- * - Search/filter functionality
+ * Dialog for displaying plugin information.
  *
  * @author CloudCompare project
- *
- * @see ccPluginUIManager for plugin management
- * @see ccPluginInterface for plugin interface
  */
-
-#ifndef CCPLUGININFODLG_H
-#define CCPLUGININFODLG_H
 
 #include <QDialog>
 #include <QList>
@@ -54,18 +43,9 @@ namespace Ui
 }
 
 /**
- * @brief Plugin information dialog.
+ * @brief Plugin info dialog
  *
- * @details Displays a list of available plugins with their metadata
- * and allows toggling their enabled state.
- *
- * Features:
- * - Scrollable plugin list
- * - Enable/disable toggles
- * - Plugin details panel
- * - Search filtering
- *
- * @extends QDialog
+ * Display information about available plugins.
  */
 class ccPluginInfoDlg : public QDialog
 {
@@ -73,80 +53,41 @@ class ccPluginInfoDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the plugin info dialog.
-	 *
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
 	 */
 	explicit ccPluginInfoDlg(QWidget* parent = nullptr);
-
-	/**
-	 * @brief Destructor.
-	 */
+	
+	/// Destructor
 	~ccPluginInfoDlg() override;
 
-	/**
-	 * @brief Set the plugin search paths.
-	 *
-	 * @param[in] pluginPaths Directories to search for plugins.
-	 */
+	/// Set plugin paths
 	void setPluginPaths(const QStringList& pluginPaths);
-
-	/**
-	 * @brief Set the loaded plugin list.
-	 *
-	 * @param[in] pluginList List of loaded plugins.
-	 */
+	/// Set plugin list
 	void setPluginList(const QList<ccPluginInterface*>& pluginList);
 
   private:
-	/**
-	 * @brief User role for plugin pointer storage.
-	 */
+	/// User role for plugin pointer
 	enum
 	{
 		PLUGIN_PTR = Qt::UserRole + 1
 	};
 
-	/**
-	 * @brief Get plugin from item data.
-	 *
-	 * @param[in] item Standard item.
-	 *
-	 * @return Plugin interface.
-	 */
+	/// Get plugin from item data
 	const ccPluginInterface* pluginFromItemData(const QStandardItem* item) const;
 
-	/**
-	 * @brief Handle selection change.
-	 *
-	 * @param[in] current Current index.
-	 * @param[in] previous Previous index.
-	 */
+	/// Handle selection changed
 	void selectionChanged(const QModelIndex& current, const QModelIndex& previous);
-
-	/**
-	 * @brief Handle item change.
-	 *
-	 * @param[in] item Changed item.
-	 */
+	/// Handle item changed
 	void itemChanged(QStandardItem* item);
 
-	/**
-	 * @brief Update plugin info display.
-	 *
-	 * @param[in] plugin Selected plugin.
-	 */
+	/// Update plugin info display
 	void updatePluginInfo(const ccPluginInterface* plugin);
 
-  private:
-	//! UI definition
 	Ui::ccPluginInfoDlg* m_UI;
 
-	//! Proxy model for filtering
 	QSortFilterProxyModel* m_ProxyModel;
-
-	//! Item model for plugin list
-	QStandardItemModel* m_ItemModel;
+	QStandardItemModel*    m_ItemModel;
 };
 
 #endif

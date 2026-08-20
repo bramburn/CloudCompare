@@ -21,20 +21,9 @@
 /**
  * @file ccFilterByValueDlg.h
  *
- * @brief Filter by value dialog for scalar field range filtering.
+ * @brief Filter by value dialog
  *
- * @details Dialog for filtering points based on scalar field values.
- * Allows the user to select a range of values and choose what
- * to do with filtered/unfiltered points.
- *
- * Modes:
- * - **Export**: Keep only points within the selected range
- * - **Split**: Create separate clouds for in-range and out-of-range points
- *
- * This is useful for:
- * - Removing noise based on sensor values
- * - Extracting specific height ranges
- * - Selecting points by intensity
+ * Dialog for filtering points by scalar value.
  *
  * @author Daniel Girardeau-Montaut
  */
@@ -45,18 +34,9 @@
 #include <QDialog>
 
 /**
- * @brief Dialog for filtering points by scalar value range.
+ * @brief Filter by value dialog
  *
- * @details Provides a UI for filtering point clouds based on
- * scalar field values.
- *
- * The dialog shows:
- * - Current min/max values in the cloud
- * - User-selected filter range
- * - Histogram visualization (optional)
- *
- * @extends QDialog
- * @extends Ui::FilterByValueDialog
+ * Filter points by scalar value range.
  */
 class ccFilterByValueDlg : public QDialog
     , public Ui::FilterByValueDialog
@@ -65,23 +45,12 @@ class ccFilterByValueDlg : public QDialog
 
   public:
 	/**
-	 * @brief Filter modes.
-	 */
-	enum Mode
-	{
-		EXPORT, //!< Export only in-range points
-		SPLIT,  //!< Split into two clouds
-		CANCEL   //!< Cancel operation
-	};
-
-	/**
-	 * @brief Construct the filter dialog.
-	 *
-	 * @param[in] minRange Minimum value in the range selector.
-	 * @param[in] maxRange Maximum value in the range selector.
-	 * @param[in] minVal Minimum possible value (SF minimum).
-	 * @param[in] maxVal Maximum possible value (SF maximum).
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] minRange Minimum range value
+	 * @param[in] maxRange Maximum range value
+	 * @param[in] minVal Minimum scalar value
+	 * @param[in] maxVal Maximum scalar value
+	 * @param[in] parent Parent widget
 	 */
 	ccFilterByValueDlg(double   minRange,
 	                   double   maxRange,
@@ -89,28 +58,29 @@ class ccFilterByValueDlg : public QDialog
 	                   double   maxVal = 1.0e9,
 	                   QWidget* parent = nullptr);
 
+	/// Mode
+	enum Mode
+	{
+		EXPORT, //!< Export filtered
+		SPLIT,  //!< Split at boundaries
+		CANCEL   //!< Cancel
+	};
+
 	/**
-	 * @brief Get the selected filter mode.
-	 * @return Mode selected by user.
+	 * @brief Get mode
+	 * @return Mode
 	 */
 	Mode mode() const
 	{
 		return m_mode;
 	}
 
-  protected slots:
-	/**
-	 * @brief Handle export button.
-	 */
+  protected:
 	void onExport()
 	{
 		m_mode = EXPORT;
 		accept();
 	}
-
-	/**
-	 * @brief Handle split button.
-	 */
 	void onSplit()
 	{
 		m_mode = SPLIT;
@@ -118,7 +88,6 @@ class ccFilterByValueDlg : public QDialog
 	}
 
   protected:
-	//! Selected mode
 	Mode m_mode;
 };
 

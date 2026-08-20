@@ -1,3 +1,4 @@
+#pragma once
 // ##########################################################################
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
@@ -7,61 +8,25 @@
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        //
+// #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
+
+#include "CCPluginAPI.h"
 
 /**
  * @file ccColorScaleEditorDlg.h
  *
- * @brief Dialog for creating and editing color scales.
+ * @brief Color scale editor dialog
  *
- * @details Modal dialog for creating, editing, and managing color scales
- * used in scalar field visualization.
- *
- * ## Features
- *
- * - Create new color scales
- * - Edit existing scales
- * - Relative vs. absolute mode
- * - Custom labels
- * - Import/export scales
- * - Delete scales
- *
- * ## Scale Modes
- *
- * ### Relative Mode
- * Colors are distributed evenly across the [0,1] range.
- * Good for normalized data.
- *
- * ### Absolute Mode
- * Colors map to actual scalar values.
- * Good for data with known min/max bounds.
- *
- * ## Usage
- *
- * @code
- * ccColorScaleEditorDialog dialog(manager, app, currentScale, this);
- * if (dialog.exec() == QDialog::Accepted) {
- *     ccColorScale::Shared scale = dialog.getActiveScale();
- *     // Use the scale
- * }
- * @endcode
+ * Dialog for creating and editing color scales.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccColorScaleEditorWidget for the editor widget
- * @see ccColorScalesManager for scale management
  */
-
-#pragma once
-
-#include "CCPluginAPI.h"
-
 // qCC_db
 #include <ccColorScale.h>
 
@@ -79,18 +44,9 @@ namespace Ui
 }
 
 /**
- * @brief Dialog for color scale creation and editing.
+ * @brief Color scale editor dialog
  *
- * @details Provides a complete interface for managing color scales.
- *
- * Features:
- * - Visual color stop editing
- * - Relative/absolute modes
- * - Custom labels
- * - Scale import/export
- * - Built-in scale management
- *
- * @extends QDialog
+ * Create and edit color scales for scalar fields.
  */
 class CCPLUGIN_LIB_API ccColorScaleEditorDialog : public QDialog
 {
@@ -98,229 +54,116 @@ class CCPLUGIN_LIB_API ccColorScaleEditorDialog : public QDialog
 
   public:
 	/**
-	 * @brief Construct the editor dialog.
-	 *
-	 * @param[in] manager Color scales manager.
-	 * @param[in] mainApp Main application interface.
-	 * @param[in] currentScale Scale to edit.
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] manager Color scales manager
+	 * @param[in] mainApp Main application interface
+	 * @param[in] currentScale Current scale to edit
+	 * @param[in] parent Parent widget
 	 */
 	ccColorScaleEditorDialog(ccColorScalesManager* manager,
 	                         ccMainAppInterface*   mainApp,
 	                         ccColorScale::Shared  currentScale = ccColorScale::Shared(nullptr),
 	                         QWidget*              parent       = nullptr);
 
-	/**
-	 * @brief Destructor.
-	 */
+	//! Destructor
 	~ccColorScaleEditorDialog() override;
 
-	/**
-	 * @brief Set associated scalar field.
-	 *
-	 * @param[in] sf Scalar field.
-	 */
+	//! Sets associated scalar field (optional)
 	void setAssociatedScalarField(ccScalarField* sf);
 
-	/**
-	 * @brief Set active scale.
-	 *
-	 * @param[in] currentScale Scale to edit.
-	 */
+	//! Sets active scale
 	void setActiveScale(ccColorScale::Shared currentScale);
 
-	/**
-	 * @brief Get the active scale.
-	 *
-	 * @return Currently edited scale.
-	 */
+	//! Returns active scale
 	ccColorScale::Shared getActiveScale()
 	{
 		return m_colorScale;
 	}
 
-  protected slots:
-	/**
-	 * @brief Handle color scale change.
-	 *
-	 * @param[in] index New scale index.
-	 */
-	void colorScaleChanged(int index);
+  protected:
+	void colorScaleChanged(int);
+	void relativeModeChanged(int);
 
-	/**
-	 * @brief Handle mode change.
-	 *
-	 * @param[in] index Mode index.
-	 */
-	void relativeModeChanged(int index);
+	void onStepSelected(int);
 
-	/**
-	 * @brief Handle step selection.
-	 *
-	 * @param[in] index Selected step.
-	 */
-	void onStepSelected(int index);
+	void onStepModified(int);
 
-	/**
-	 * @brief Handle step modification.
-	 *
-	 * @param[in] index Modified step.
-	 */
-	void onStepModified(int index);
-
-	/**
-	 * @brief Delete selected step.
-	 */
 	void deletecSelectedStep();
 
-	/**
-	 * @brief Change selected step color.
-	 */
 	void changeSelectedStepColor();
 
-	/**
-	 * @brief Change selected step value.
-	 *
-	 * @param[in] value New value.
-	 */
-	void changeSelectedStepValue(double value);
+	void changeSelectedStepValue(double);
 
-	/**
-	 * @brief Handle custom labels change.
-	 */
 	void onCustomLabelsListChanged();
+	void toggleCustomLabelsList(bool);
 
-	/**
-	 * @brief Toggle custom labels.
-	 *
-	 * @param[in] state Show state.
-	 */
-	void toggleCustomLabelsList(bool state);
-
-	/**
-	 * @brief Copy current scale.
-	 */
 	void copyCurrentScale();
-
-	/**
-	 * @brief Save current scale.
-	 *
-	 * @return true on success.
-	 */
 	bool saveCurrentScale();
-
-	/**
-	 * @brief Delete current scale.
-	 */
 	void deleteCurrentScale();
-
-	/**
-	 * @brief Rename current scale.
-	 */
 	void renameCurrentScale();
 
-	/**
-	 * @brief Export current scale.
-	 */
 	void exportCurrentScale();
-
-	/**
-	 * @brief Import scale.
-	 */
 	void importScale();
 
-	/**
-	 * @brief Create new scale.
-	 */
 	void createNewScale();
 
-	/**
-	 * @brief Apply changes.
-	 */
 	void onApply();
-
-	/**
-	 * @brief Close dialog.
-	 */
 	void onClose();
 
   protected:
-	/**
-	 * @brief Update main combo box.
-	 */
+	//! Updates main combox box with color scales manager
 	void updateMainComboBox();
 
-	/**
-	 * @brief Set modification flag.
-	 *
-	 * @param[in] state Modified state.
-	 */
+	//! Sets modification flag state
 	void setModified(bool state);
 
-	/**
-	 * @brief Check if can change scale.
-	 *
-	 * @return true if user allows change.
-	 */
+	//! If the current scale has been modified, ask the user what to do
+	/** \return whether user allows the change or not
+	 **/
 	bool canChangeCurrentScale();
 
-	/**
-	 * @brief Check if in relative mode.
-	 *
-	 * @return true if relative.
-	 */
+	//! Returns whether current edited scale is 'relative' (true) or 'absolute' (false)
+	/** Warning: may not be the same state as the current scale (m_colorScale)
+	    If current modifications have not been saved yet!
+	**/
 	bool isRelativeMode() const;
 
-	/**
-	 * @brief Set scale mode.
-	 *
-	 * @param[in] isRelative Use relative mode.
-	 */
+	//! Sets current mode for active scale between 'relative' (true) or 'absolute' (false)
+	/** Warning: may not be the same state as the current scale (m_colorScale)
+	    If current modifications have not been saved yet!
+	**/
 	void setScaleModeToRelative(bool isRelative);
 
-	/**
-	 * @brief Check custom labels.
-	 *
-	 * @param[in] showWarnings Show warnings.
-	 *
-	 * @return true if valid.
-	 */
+	//! Checks the custom labels list
 	bool checkCustomLabelsList(bool showWarnings);
 
-	/**
-	 * @brief Export custom labels.
-	 *
-	 * @param[out] labels Label set.
-	 *
-	 * @return Error message or empty.
-	 */
+	//! Exports the custom labels list
+	/** \return Error description (if any)
+	 **/
 	QString exportCustomLabelsList(ccColorScale::LabelSet& labels) const;
 
-  private:
-	//! Color scales manager
+	//! Color scale manager
 	ccColorScalesManager* m_manager;
 
-	//! Current color scale
+	//! Current active color scale
 	ccColorScale::Shared m_colorScale;
 
-	//! Editor widget
+	//! Color scale editor widget
 	ccColorScaleEditorWidget* m_scaleWidget;
 
 	//! Associated scalar field
 	ccScalarField* m_associatedSF;
 
-	//! Modified flag
+	//! Modification flag
 	bool m_modified;
 
-	//! Min absolute value
+	//! Current min boundary for absolute scales
 	double m_minAbsoluteVal;
-
-	//! Max absolute value
+	//! Current max boundary for absolute scales
 	double m_maxAbsoluteVal;
 
-	//! Main application interface
+	//! Associated application (interface)
 	ccMainAppInterface* m_mainApp;
 
-	//! UI definition
 	Ui::ColorScaleEditorDlg* m_ui;
 };

@@ -375,7 +375,7 @@ add_test(NAME TestStatisticalTesting COMMAND TestStatisticalTesting)
 # T4-G: ccConsole (Init, RefreshCycle, QtMessagesEnabled)
 add_executable(TestConsole
     TestConsole.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/../ccConsole.cpp
+    ${qCC_SOURCE_DIR}/ccConsole.cpp
 )
 
 target_link_libraries(TestConsole
@@ -385,7 +385,7 @@ target_link_libraries(TestConsole
         QCC_DB_LIB
         CCCoreLib
         CCPluginAPI
-        libs/CCFbo/CC_FBO_LIB
+        CCFbo
         Qt6::Widgets
         Qt6::OpenGL
         Qt6::OpenGLWidgets

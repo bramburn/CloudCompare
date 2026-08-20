@@ -29,32 +29,12 @@
 /**
  * @file ccDBRoot.h
  *
- * @brief Database tree root and management for CloudCompare.
+ * @brief Database root
  *
- * @details This module provides the database tree management functionality
- * for CloudCompare. The database tree displays all loaded entities
- * (point clouds, meshes, primitives, etc.) in a hierarchical structure.
- *
- * Key responsibilities:
- * - Maintains the hierarchical entity tree (ccHObject)
- * - Provides QAbstractItemModel interface for QTreeView
- * - Handles selection management across the tree
- * - Manages the properties panel for selected entities
- * - Provides context menu actions for entity manipulation
- *
- * @section architecture Architecture
- *
- * The database tree is implemented as a Qt Model/View architecture:
- * - ccDBRoot: QAbstractItemModel (the model)
- * - ccCustomQTreeView: QTreeView (the view)
- * - ccPropertiesTreeDelegate: displays entity properties
+ * Database tree management and selection handling.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccHObject
- * @see MainWindow
  */
-
 // System
 #include <unordered_set>
 
@@ -65,210 +45,109 @@ class ccPropertiesTreeDelegate;
 class ccHObject;
 
 /**
- * @brief Statistics about the current selection in the database tree.
+ * @brief Selection statistics
  *
- * @details Provides counts of different entity types and components
- * within the current selection. Used to enable/disable menu actions
- * based on what is selected.
+ * Statistics about current selection.
  */
 struct dbTreeSelectionInfo
 {
-	size_t selCount          = 0;  //!< Total selected entities count
-	size_t sfCount           = 0;  //!< Selected entities with scalar fields
-	size_t colorCount        = 0;  //!< Selected entities with colors
-	size_t normalsCount      = 0;  //!< Selected entities with normals
-	size_t octreeCount       = 0;  //!< Selected entities with octrees
-	size_t cloudCount        = 0;  //!< Selected point clouds
-	size_t gridCound         = 0;  //!< Selected 2D grids
-	size_t groupCount        = 0;  //!< Selected groups
-	size_t polylineCount     = 0;  //!< Selected polylines
-	size_t planeCount        = 0;  //!< Selected planes
-	size_t circleCount       = 0;  //!< Selected circles
-	size_t meshCount         = 0;  //!< Selected meshes
-	size_t primitiveCount    = 0;  //!< Selected primitives
-	size_t imageCount        = 0;  //!< Selected images
-	size_t sensorCount       = 0;  //!< Selected sensors
-	size_t gblSensorCount    = 0;  //!< Selected GBLS sensors
-	size_t cameraSensorCount = 0;  //!< Selected camera sensors
-	size_t kdTreeCount       = 0;  //!< Selected KD-trees
+	size_t selCount          = 0;
+	size_t sfCount           = 0;
+	size_t colorCount        = 0;
+	size_t normalsCount      = 0;
+	size_t octreeCount       = 0;
+	size_t cloudCount        = 0;
+	size_t gridCound         = 0;
+	size_t groupCount        = 0;
+	size_t polylineCount     = 0;
+	size_t planeCount        = 0;
+	size_t circleCount       = 0;
+	size_t meshCount         = 0;
+	size_t primitiveCount    = 0;
+	size_t imageCount        = 0;
+	size_t sensorCount       = 0;
+	size_t gblSensorCount    = 0;
+	size_t cameraSensorCount = 0;
+	size_t kdTreeCount       = 0;
 };
 
-/**
- * @brief Custom QTreeView with advanced selection behavior.
- *
- * @details Extends QTreeView to customize how selections are handled
- * when clicking on items. Currently provides specific behavior for
- * handling multi-selection with modifier keys.
- *
- * @extends QTreeView
- */
+//! Custom QTreeView widget (for advanced selection behavior)
 class ccCustomQTreeView : public QTreeView
 {
 	Q_OBJECT
 
   public:
-	/**
-	 * @brief Construct the custom tree view.
-	 *
-	 * @param[in] parent Parent widget.
-	 */
+	//! Default constructor
 	explicit ccCustomQTreeView(QWidget* parent)
 	    : QTreeView(parent)
 	{
 	}
 
   protected:
-	/**
-	 * @brief Determine selection behavior for an index.
-	 *
-	 * @param[in] index Model index.
-	 * @param[in] event Associated event (if any).
-	 * @return Selection flags.
-	 */
+	// inherited from QTreeView
 	QItemSelectionModel::SelectionFlags selectionCommand(const QModelIndex& index, const QEvent* event = nullptr) const override;
 };
 
-/**
- * @brief Database tree root for CloudCompare.
- *
- * @details The ccDBRoot class is the root of the entity hierarchy in
- * CloudCompare. It serves as a QAbstractItemModel for the Qt tree view
- * that displays all loaded entities.
- *
- * The class manages:
- * - The root ccHObject that contains all entities
- * - Selection state and selection-based operations
- * - Properties panel for displaying selected entity details
- * - Context menus for entity manipulation
- *
- * @extends QAbstractItemModel
- *
- * @par Usage
- * @code
- * ccDBRoot* dbRoot = new ccDBRoot(ui.dbTreeView, ui.propertiesView, this);
- * dbRoot->addElement(newEntity);
- * @endcode
- *
- * @see ccHObject
- * @see ccCustomQTreeView
- * @see ccPropertiesTreeDelegate
- */
+//! GUI database tree root
 class ccDBRoot : public QAbstractItemModel
 {
 	Q_OBJECT
 
   public:
-	/**
-	 * @brief Construct the database tree root.
-	 *
-	 * @param[in] dbTreeWidget Widget for displaying the database tree.
-	 * @param[in] propertiesTreeWidget Widget for displaying entity properties.
-	 * @param[in] parent Parent QObject.
-	 */
+	//! Default constructor
+	/** \param dbTreeWidget widget for DB tree display
+	    \param propertiesTreeWidget widget for selected entity's properties tree display
+	    \param parent widget QObject parent
+	**/
 	ccDBRoot(ccCustomQTreeView* dbTreeWidget, QTreeView* propertiesTreeWidget, QObject* parent = nullptr);
 
-	/**
-	 * @brief Destructor.
-	 *
-	 * @details Cleans up the tree root and all child entities.
-	 */
+	//! Destructor
 	~ccDBRoot() override;
 
-	/**
-	 * @brief Get the root entity of the database tree.
-	 *
-	 * @return Pointer to the root ccHObject.
-	 */
+	//! Returns associated root object
 	ccHObject* getRootEntity();
 
-	/**
-	 * @brief Hide the properties view panel.
-	 */
+	//! Hides properties view
 	void hidePropertiesView();
-
-	/**
-	 * @brief Update the properties view for the current selection.
-	 */
+	//! Updates properties view
 	void updatePropertiesView();
 
-	/**
-	 * @brief Add an entity to the database tree.
-	 *
-	 * @param[in] object Entity to add.
-	 * @param[in] autoExpand Whether to automatically expand the tree to show the new entity.
-	 */
+	//! Adds an element to the DB tree
 	void addElement(ccHObject* object, bool autoExpand = true);
 
-	/**
-	 * @brief Remove an entity from the database tree.
-	 *
-	 * @param[in] object Entity to remove.
-	 *
-	 * @note Calls prepareDisplayForRefresh on the object before removal.
-	 */
+	//! Removes an element from the DB tree
+	/** Automatically calls prepareDisplayForRefresh on the object.
+	 **/
 	void removeElement(ccHObject* object);
 
-	/**
-	 * @brief Remove multiple entities from the database tree.
-	 *
-	 * @param[in,out] objects Container of entities to remove.
-	 *
-	 * @note Faster than calling removeElement() multiple times.
-	 * @note The input container is cleared after this operation.
-	 */
+	//! Removes several elements at once from the DB tree
+	/** Faster than multiple calls to removeElement.
+	    Automatically calls prepareDisplayForRefresh on the objects.
+	    \warning The input container will be cleared.
+	**/
 	void removeElements(ccHObject::Container& objects);
 
-	/**
-	 * @brief Find an entity by its unique ID.
-	 *
-	 * @param[in] uniqueID Unique identifier to search for.
-	 * @return Pointer to the entity, or nullptr if not found.
-	 */
+	//! Finds an element in DB
 	ccHObject* find(int uniqueID) const;
 
-	/**
-	 * @brief Count selected entities of a specific type.
-	 *
-	 * @param[in] filter Entity type filter (default: all types).
-	 * @return Number of selected entities matching the filter.
-	 */
+	//! Returns the number of selected entities in DB tree (optionally with a given type)
 	int countSelectedEntities(CC_CLASS_ENUM filter = CC_TYPES::OBJECT);
 
-	/**
-	 * @brief Get all selected entities.
-	 *
-	 * @param[out] selectedEntities Container to store selected entities.
-	 * @param[in] filter Entity type filter (default: all types).
-	 * @param[out] info Optional pointer to receive selection statistics.
-	 * @return Number of selected entities.
-	 */
+	//! Returns selected entities in DB tree (optionally with a given type and additional information)
 	size_t getSelectedEntities(ccHObject::Container& selectedEntities,
 	                           CC_CLASS_ENUM         filter = CC_TYPES::OBJECT,
 	                           dbTreeSelectionInfo*  info   = nullptr);
 
-	/**
-	 * @brief Expand or collapse an entity in the tree.
-	 *
-	 * @param[in] object Entity to expand/collapse.
-	 * @param[in] state true to expand, false to collapse.
-	 */
+	//! Expands tree at a given node
 	void expandElement(ccHObject* object, bool state);
 
-	/**
-	 * @brief Unselect a specific entity.
-	 *
-	 * @param[in] obj Entity to unselect.
-	 */
+	//! Unselects a given entity
 	void unselectEntity(ccHObject* obj);
 
-	/**
-	 * @brief Unselect all entities.
-	 */
+	//! Unselects all entities
 	void unselectAllEntities();
 
-	/**
-	 * @brief Unload all entities from the database.
-	 */
+	//! Unloads all entities
 	void unloadAll();
 
 	// inherited from QAbstractItemModel
@@ -288,278 +167,59 @@ class ccDBRoot : public QAbstractItemModel
 		return Qt::MoveAction;
 	}
 
-	/**
-	 * @brief Change selection state based on selection deltas.
-	 *
-	 * @param[in] selected Items that became selected.
-	 * @param[in] deselected Items that became deselected.
-	 */
 	void changeSelection(const QItemSelection& selected, const QItemSelection& deselected);
-
-	/**
-	 * @brief Reflect a property change on an entity.
-	 *
-	 * @param[in] obj Entity whose property changed.
-	 */
 	void reflectObjectPropChange(ccHObject* obj);
-
-	/**
-	 * @brief Redraw a specific entity in the 3D view.
-	 *
-	 * @param[in] object Entity to redraw.
-	 */
 	void redrawCCObject(ccHObject* object);
-
-	/**
-	 * @brief Redraw an entity and all its children.
-	 *
-	 * @param[in] object Root entity to redraw.
-	 */
 	void redrawCCObjectAndChildren(ccHObject* object);
-
-	/**
-	 * @brief Update an entity in the tree.
-	 *
-	 * @param[in] object Entity to update.
-	 */
 	void updateCCObject(ccHObject* object);
-
-	/**
-	 * @brief Delete all selected entities.
-	 */
 	void deleteSelectedEntities();
 
-	/**
-	 * @brief Select a specific entity.
-	 *
-	 * @param[in] obj Entity to select.
-	 * @param[in] forceAdditiveSelection If true, add to existing selection.
-	 *
-	 * @note If Ctrl is pressed, behaves as additive selection.
-	 */
+	//! Selects a given entity
+	/** If ctrl is pressed by the user at the same time,
+	    previous selection will be simply updated accordingly.
+	    \param obj entity to select
+	    \param forceAdditiveSelection whether to force additive selection (just as if CTRL key is pressed) or not
+	**/
 	void selectEntity(ccHObject* obj, bool forceAdditiveSelection = false);
 
-	/**
-	 * @brief Select multiple entities by their unique IDs.
-	 *
-	 * @param[in] entIDs Set of unique IDs to select.
-	 */
+	//! Selects multiple entities at once (shortcut to the other version)
+	/** \param entIDs list of the IDs of the entities to select
+	 **/
 	void selectEntities(std::unordered_set<int> entIDs);
 
-	/**
-	 * @brief Select multiple entities.
-	 *
-	 * @param[in] entities Set of entities to select.
-	 * @param[in] incremental If true, add to existing selection.
-	 */
+	//! Selects multiple entities at once
+	/** \param entities set of the entities to 'select'
+	    \param incremental whether to 'add' the input set to the selected entities set or to use it as replacement
+	**/
 	void selectEntities(const ccHObject::Container& entities, bool incremental = false);
 
-  signals:
-	/**
-	 * @brief Emitted when the selection changes.
-	 */
-	void selectionChanged();
-
-	/**
-	 * @brief Emitted when the database becomes empty.
-	 */
-	void dbIsEmpty();
-
-	/**
-	 * @brief Emitted when the database becomes non-empty.
-	 */
-	void dbIsNotEmptyAnymore();
-
-  protected:
-	/**
-	 * @brief Align the 3D view camera with an entity.
-	 *
-	 * @param[in] reverse If true, use the entity's inverse normal.
-	 */
-	void alignCameraWithEntity(bool reverse);
-
-	/**
-	 * @brief Show properties for an entity.
-	 *
-	 * @param[in] obj Entity to show properties for.
-	 */
-	void showPropertiesView(ccHObject* obj);
-
-	/**
-	 * @brief Sorting rules for entities.
-	 */
-	enum SortRules
-	{
-		SORT_A2Z,      //!< Sort alphabetically A to Z
-		SORT_Z2A,      //!< Sort alphabetically Z to A
-		SORT_BY_TYPE   //!< Sort by entity type
-	};
-
-	/**
-	 * @brief Sort children of selected entities.
-	 *
-	 * @param[in] rule Sorting rule to apply.
-	 */
-	void sortSelectedEntitiesChildren(SortRules rule);
-
-	/**
-	 * @brief Expand or collapse selected items.
-	 *
-	 * @param[in] expand true to expand, false to collapse.
-	 */
-	void expandOrCollapseSelectedItems(bool expand);
-
-	/**
-	 * @brief Select children by type and/or name.
-	 *
-	 * @param[in] type Entity type to select.
-	 * @param[in] typeIsExclusive If true, only select entities of this exact type.
-	 * @param[in] name Name filter (can be regex).
-	 * @param[in] nameIsRegex If true, treat name as regex pattern.
-	 */
-	void selectChildrenByTypeAndName(CC_CLASS_ENUM type,
-	                                 bool          typeIsExclusive = true,
-	                                 QString       name            = QString(),
-	                                 bool          nameIsRegex     = false);
-
-	//! Entity property toggle types
+  private:
+	//! Entity property that can be toggled
 	enum TOGGLE_PROPERTY
 	{
-		TG_ENABLE,      //!< Enable/disable entity
-		TG_VISIBLE,     //!< Show/hide entity
-		TG_COLOR,       //!< Show/hide color
-		TG_SF,          //!< Show/hide scalar field
-		TG_NORMAL,      //!< Show/hide normals
-		TG_MATERIAL,    //!< Show/hide materials
-		TG_3D_NAME      //!< Show/hide 3D name
+		TG_ENABLE,
+		TG_VISIBLE,
+		TG_COLOR,
+		TG_SF,
+		TG_NORMAL,
+		TG_MATERIAL,
+		TG_3D_NAME
 	};
 
-	/**
-	 * @brief Toggle a property on selected entities.
-	 *
-	 * @param[in] prop Property to toggle.
-	 */
+	//! Toggles a given property (enable state, visibility, normal, color, SF, etc.) on selected entities
 	void toggleSelectedEntitiesProperty(TOGGLE_PROPERTY prop);
 
-	//! Root ccHObject containing all entities
-	ccHObject* m_treeRoot;
-
-	//! Widget for displaying the database tree
-	QTreeView* m_dbTreeWidget;
-
-	//! Widget for displaying entity properties
-	QTreeView* m_propertiesTreeWidget;
-
-	//! Model for properties tree
-	QStandardItemModel* m_propertiesModel;
-
-	//! Delegate for properties tree
-	ccPropertiesTreeDelegate* m_ccPropDelegate;
-
-	//! Context menu actions
-	QAction* m_expandSelectedItems;              //!< Expand selected items
-	QAction* m_collapseSelectedItems;             //!< Collapse selected items
-	QAction* m_gatherInformation;                //!< Gather entity information
-	QAction* m_sortChildrenAZ;                    //!< Sort A to Z
-	QAction* m_sortChildrenZA;                   //!< Sort Z to A
-	QAction* m_sortChildrenType;                  //!< Sort by type
-	QAction* m_selectByTypeAndName;              //!< Select by type/name
-	QAction* m_exportImages;                      //!< Export images
-	QAction* m_deleteSelectedEntities;            //!< Delete selected
-	QAction* m_toggleSelectedEntities;            //!< Enable/disable
-	QAction* m_toggleSelectedEntitiesVisibility;  //!< Show/hide
-	QAction* m_toggleSelectedEntitiesColor;      //!< Show/hide color
-	QAction* m_toggleSelectedEntitiesNormals;     //!< Show/hide normals
-	QAction* m_toggleSelectedEntitiesMat;         //!< Show/hide materials
-	QAction* m_toggleSelectedEntitiesSF;          //!< Show/hide scalar field
-	QAction* m_toggleSelectedEntities3DName;      //!< Show/hide 3D name
-	QAction* m_addEmptyGroup;                     //!< Add empty group
-	QAction* m_alignCameraWithEntity;             //!< Align camera
-	QAction* m_alignCameraWithEntityReverse;      //!< Align camera (reverse)
-	QAction* m_enableBubbleViewMode;              //!< Enable bubble view
-	QAction* m_editLabelScalarValue;              //!< Edit scalar value
-
-	//! Last context menu position
-	QPoint m_contextMenuPos;
-
-  private:
-	/**
-	 * @brief Show the context menu at current position.
-	 */
 	void showContextMenu(const QPoint&);
 
-	/**
-	 * @brief Expand all branches.
-	 */
 	void expandBranches();
-
-	/**
-	 * @brief Collapse all branches.
-	 */
 	void collapseBranches();
-
-	/**
-	 * @brief Gather recursive information on selected entities.
-	 */
 	void gatherRecursiveInformation();
-
-	/**
-	 * @brief Sort children alphabetically (A to Z).
-	 */
 	void sortChildrenAZ();
-
-	/**
-	 * @brief Sort children alphabetically (Z to A).
-	 */
 	void sortChildrenZA();
-
-	/**
-	 * @brief Sort children by type.
-	 */
 	void sortChildrenType();
-
-	/**
-	 * @brief Show dialog to select by type and name.
-	 */
 	void selectByTypeAndName();
-
-	/**
-	 * @brief Export selected images.
-	 */
 	void exportImages();
 
-	/**
-	 * @brief Add an empty group to the database.
-	 */
-	void addEmptyGroup();
-
-	/**
-	 * @brief Align camera with entity (direct).
-	 */
-	void alignCameraWithEntityDirect()
-	{
-		alignCameraWithEntity(false);
-	}
-
-	/**
-	 * @brief Align camera with entity (indirect).
-	 */
-	void alignCameraWithEntityIndirect()
-	{
-		alignCameraWithEntity(true);
-	}
-
-	/**
-	 * @brief Enable bubble view mode.
-	 */
-	void enableBubbleViewMode();
-
-	/**
-	 * @brief Edit scalar value via 2D label.
-	 */
-	void editLabelScalarValue();
-
-	//! Inline toggles
 	inline void toggleSelectedEntities()
 	{
 		toggleSelectedEntitiesProperty(TG_ENABLE);
@@ -588,6 +248,112 @@ class ccDBRoot : public QAbstractItemModel
 	{
 		toggleSelectedEntitiesProperty(TG_3D_NAME);
 	}
+
+	void addEmptyGroup();
+	void alignCameraWithEntityDirect()
+	{
+		alignCameraWithEntity(false);
+	}
+	void alignCameraWithEntityIndirect()
+	{
+		alignCameraWithEntity(true);
+	}
+	void enableBubbleViewMode();
+	void editLabelScalarValue();
+
+  signals:
+	void selectionChanged();
+	void dbIsEmpty();
+	void dbIsNotEmptyAnymore();
+
+  protected:
+	//! Aligns the camera with the currently selected entity
+	/** \param reverse whether to use the entity's normal (false) or its inverse (true)
+	 **/
+	void alignCameraWithEntity(bool reverse);
+
+	//! Shows properties view for a given element
+	void showPropertiesView(ccHObject* obj);
+
+	//! Entities sorting schemes
+	enum SortRules
+	{
+		SORT_A2Z,
+		SORT_Z2A,
+		SORT_BY_TYPE
+	};
+
+	//! Sorts selected entities children
+	void sortSelectedEntitiesChildren(SortRules rule);
+
+	//! Expands or collapses selected items
+	void expandOrCollapseSelectedItems(bool expand);
+
+	//! Selects objects by type and/or name
+	void selectChildrenByTypeAndName(CC_CLASS_ENUM type,
+	                                 bool          typeIsExclusive = true,
+	                                 QString       name            = QString(),
+	                                 bool          nameIsRegex     = false);
+
+	//! Associated DB root
+	ccHObject* m_treeRoot;
+
+	//! Associated widget for DB tree
+	QTreeView* m_dbTreeWidget;
+
+	//! Associated widget for selected entity's properties tree
+	QTreeView* m_propertiesTreeWidget;
+
+	//! Selected entity's properties data model
+	QStandardItemModel* m_propertiesModel;
+	//! Selected entity's properties delegate
+	ccPropertiesTreeDelegate* m_ccPropDelegate;
+
+	//! Context menu action: expand selected tree items
+	QAction* m_expandSelectedItems;
+	//! Context menu action: collapse selected tree items
+	QAction* m_collapseSelectedItems;
+	//! Context menu action: gather (recursive) information on selected entities
+	QAction* m_gatherInformation;
+	//! Context menu action: sort children in alphabetical order
+	QAction* m_sortChildrenAZ;
+	//! Context menu action: sort children in reverse alphabetical order
+	QAction* m_sortChildrenZA;
+	//! Context menu action: sort children by type
+	QAction* m_sortChildrenType;
+	//! Context menu action: select object by type and/or by name
+	QAction* m_selectByTypeAndName;
+	//! Context menu action: export images
+	QAction* m_exportImages;
+	//! Context menu action: delete selected entities
+	QAction* m_deleteSelectedEntities;
+	//! Context menu action: enabled/disable selected entities
+	QAction* m_toggleSelectedEntities;
+	//! Context menu action: hide/show selected entities
+	QAction* m_toggleSelectedEntitiesVisibility;
+	//! Context menu action: hide/show selected entities color
+	QAction* m_toggleSelectedEntitiesColor;
+	//! Context menu action: hide/show selected entities normals
+	QAction* m_toggleSelectedEntitiesNormals;
+	//! Context menu action: hide/show selected entities materials/textures
+	QAction* m_toggleSelectedEntitiesMat;
+	//! Context menu action: hide/show selected entities SF
+	QAction* m_toggleSelectedEntitiesSF;
+	//! Context menu action: hide/show selected entities 3D name
+	QAction* m_toggleSelectedEntities3DName;
+	//! Context menu action: add empty group
+	QAction* m_addEmptyGroup;
+	//! Context menu action: use 3-points labels or planes to orient camera
+	QAction* m_alignCameraWithEntity;
+	//! Context menu action: reverse of m_alignCameraWithEntity
+	QAction* m_alignCameraWithEntityReverse;
+	//! Context menu action: enable bubble-view (on a sensor)
+	QAction* m_enableBubbleViewMode;
+	//! Context menu action: change current scalar value (via a 2D label)
+	QAction* m_editLabelScalarValue;
+
+	//! Last context menu pos
+	QPoint m_contextMenuPos;
 };
 
 #endif

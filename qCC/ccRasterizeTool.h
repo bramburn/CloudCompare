@@ -20,28 +20,12 @@
 /**
  * @file ccRasterizeTool.h
  *
- * @brief Rasterize tool for converting point clouds to raster grids.
+ * @brief Rasterize tool
  *
- * @details Tool for converting 3D point clouds to 2.5D raster grids
- * (gridded elevation models / DEMs).
- *
- * Features:
- * - Multiple projection directions (X, Y, Z)
- * - Multiple interpolation methods (average, min, max, etc.)
- * - Empty cell filling strategies
- * - Output as cloud, mesh, image, or GeoTIFF
- * - Contour line generation
- * - Hillshade computation
- *
- * @extends QDialog
- * @extends cc2Point5DimEditor
+ * Tool for converting point clouds to raster grids.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see cc2Point5DimEditor
- * @see ccRasterGrid
  */
-
 // Local
 #include "cc2.5DimEditor.h"
 
@@ -59,19 +43,9 @@ namespace Ui
 }
 
 /**
- * @brief Tool for converting point clouds to raster grids.
+ * @brief Rasterize tool
  *
- * @details Provides a complete interface for rasterizing point clouds
- * into 2.5D grids (Digital Elevation Models).
- *
- * Key features:
- * - **Projection**: X, Y, or Z direction
- * - **Interpolation**: MIN, MAX, AVG, etc.
- * - **Output formats**: Cloud, mesh, image, GeoTIFF, ASCII
- * - **Derived products**: Contours, hillshade, X-ray
- *
- * @extends QDialog
- * @extends cc2Point5DimEditor
+ * Convert point clouds to raster grids.
  */
 class ccRasterizeTool : public QDialog
     , public cc2Point5DimEditor
@@ -79,309 +53,163 @@ class ccRasterizeTool : public QDialog
 	Q_OBJECT
 
   public:
-	/**
-	 * @brief Bands to export.
-	 */
-	struct ExportBands
-	{
-		bool height    = true;    //!< Export height values
-		bool rgb       = false;   //!< Export RGB colors
-		bool density   = false;   //!< Export point density
-		bool visibleSF = false;   //!< Export visible scalar field
-		bool allSFs    = false;   //!< Export all scalar fields
-	};
-
-	/**
-	 * @brief Construct the rasterize tool.
-	 *
-	 * @param[in] cloud Point cloud to rasterize.
-	 * @param[in] parent Parent widget.
-	 */
+	//! Default constructor
 	ccRasterizeTool(ccGenericPointCloud* cloud, QWidget* parent = nullptr);
 
-	/**
-	 * @brief Destructor.
-	 */
+	//! Destructor
 	~ccRasterizeTool() override;
 
-	/**
-	 * @brief Export as GeoTIFF file.
-	 *
-	 * @param[in] outputFilename Output file path.
-	 * @param[in] exportBands Bands to export.
-	 * @param[in] fillEmptyCellsStrategy Strategy for empty cells.
-	 * @param[in] grid Raster grid to export.
-	 * @param[in] gridBBox Grid bounding box.
-	 * @param[in] Z Projection dimension.
-	 * @param[in] customHeightForEmptyCells Custom height for empty cells.
-	 * @param[in] originCloud Original cloud (for coordinate system).
-	 * @param[in] visibleSfIndex Visible scalar field index.
-	 *
-	 * @return true on success.
-	 */
+  public: // raster export
+	//! Bands to be exported
+	struct ExportBands
+	{
+		bool height    = true;
+		bool rgb       = false;
+		bool density   = false;
+		bool visibleSF = false;
+		bool allSFs    = false;
+	};
+
+	//! Exports a raster grid as a geotiff file
 	static bool ExportGeoTiff(const QString&                    outputFilename,
 	                          const ExportBands&                exportBands,
 	                          ccRasterGrid::EmptyCellFillOption fillEmptyCellsStrategy,
 	                          const ccRasterGrid&               grid,
-	                          const ccBBox&                    gridBBox,
+	                          const ccBBox&                     gridBBox,
 	                          unsigned char                     Z,
 	                          double                            customHeightForEmptyCells = std::numeric_limits<double>::quiet_NaN(),
 	                          ccGenericPointCloud*              originCloud               = nullptr,
 	                          int                               visibleSfIndex            = -1);
 
-  private slots:
-	/**
-	 * @brief Export grid as point cloud.
-	 *
-	 * @param[in] autoExport Auto-export mode.
-	 * @return Generated cloud.
-	 */
+  private:
+	//! Exports the grid as a cloud
 	ccPointCloud* generateCloud(bool autoExport = true);
 
-	/**
-	 * @brief Export grid as raster image.
-	 */
+	//! Exports the grid as a raster
 	void generateRaster() const;
 
-	/**
-	 * @brief Export grid as mesh.
-	 */
+	//! Exports the grid as a mesh
 	void generateMesh();
 
-	/**
-	 * @brief Export contour lines.
-	 */
+	//! Exports the (already generated) contour lines
 	void exportContourLines();
 
-	/**
-	 * @brief Generate contour plot.
-	 */
+	//! Generates a contour plot
 	void generateContours();
 
-	/**
-	 * @brief Generate hillshade.
-	 */
+	//! Generates hillshade
 	void generateHillshade();
 
-	/**
-	 * @brief Generate X-ray scalar field.
-	 */
+	//! Generates an 'x-ray' scalar field
 	void generateXRaySF();
 
-	/**
-	 * @brief Remove all contour lines.
-	 */
+	//! Removes all displayed contour lines
 	void removeContourLines();
 
-	/**
-	 * @brief Test conditions and accept.
-	 */
+	//! Accepts the dialog (if some conditions are met) and save settings
 	void testAndAccept();
-
-	/**
-	 * @brief Test conditions and reject.
-	 */
+	//! Rejects the dialog (if some conditions are met)
 	void testAndReject();
 
-	/**
-	 * @brief Save settings and close.
-	 */
+	//! Save persistent settings and 'accept' dialog
 	void saveSettings();
 
-	/**
-	 * @brief Handle active layer change.
-	 *
-	 * @param[in] index New layer index.
-	 * @param[in] autoRedraw Auto-redraw display.
-	 */
-	void activeLayerChanged(int index, bool autoRedraw = true);
+	//! Called when the active layer changes
+	void activeLayerChanged(int, bool autoRedraw = true);
 
-	/**
-	 * @brief Handle projection direction change.
-	 *
-	 * @param[in] index New direction index.
-	 */
-	void projectionDirChanged(int index);
+	//! Called when the projection direction changes
+	void projectionDirChanged(int);
 
-	/**
-	 * @brief Handle std dev layer change.
-	 *
-	 * @param[in] index New layer index.
-	 */
-	void stdDevLayerChanged(int index);
+	//! Called when the Std Dev layer changes
+	void stdDevLayerChanged(int);
 
-	/**
-	 * @brief Handle projection type change.
-	 *
-	 * @param[in] index New type index.
-	 */
-	void projectionTypeChanged(int index);
+	//! Called when the projection type changes
+	void projectionTypeChanged(int);
 
-	/**
-	 * @brief Handle resample option toggle.
-	 *
-	 * @param[in] state Resample state.
-	 */
-	void resampleOptionToggled(bool state);
+	//! Called when the 'resampled' option changes
+	void resampleOptionToggled(bool);
 
-	/**
-	 * @brief Handle SF projection type change.
-	 *
-	 * @param[in] index New type index.
-	 */
-	void sfProjectionTypeChanged(int index);
+	//! Called when the SF projection type changes
+	void sfProjectionTypeChanged(int);
 
-	/**
-	 * @brief Handle empty cell filling strategy change.
-	 *
-	 * @param[in] index New strategy index.
-	 */
-	void fillEmptyCellStrategyChanged(int index);
-
-	/**
-	 * @brief Handle grid option change.
-	 */
-	void gridOptionChanged();
-
-	/**
-	 * @brief Update grid info display.
-	 *
-	 * @param[in] withNonEmptyCells Include non-empty cell count.
-	 */
-	void updateGridInfo(bool withNonEmptyCells = false);
-
-	/**
-	 * @brief Update grid and 2D display.
-	 */
-	void updateGridAndDisplay();
-
-	/**
-	 * @brief Update cloud name.
-	 *
-	 * @param[in] withNonEmptyCellNumber Include cell count.
-	 */
-	void updateCloudName(bool withNonEmptyCellNumber);
-
-	/**
-	 * @brief Export grid as image.
-	 */
-	void generateImage() const;
-
-	/**
-	 * @brief Export grid as ASCII matrix.
-	 */
-	void generateASCIIMatrix() const;
-
-	/**
-	 * @brief Handle statistics export target change.
-	 *
-	 * @param[in] state Export state.
-	 */
-	void onStatExportTargetChanged(bool state);
-
-	/**
-	 * @brief Show interpolation parameters dialog.
-	 */
-	void showInterpolationParamsDialog();
-
-  private: // standard methods (inherited from cc2Point5DimEditor)
-	/**
-	 * @brief Get grid step.
-	 */
-	double getGridStep() const override;
-
-	/**
-	 * @brief Get projection dimension.
-	 */
-	unsigned char getProjectionDimension() const override;
-
-	/**
-	 * @brief Get projection type.
-	 */
-	ccRasterGrid::ProjectionType getTypeOfProjection() const override;
-
-	/**
-	 * @brief Show grid box editor.
-	 */
+	// Inherited from cc2Point5DimEditor
 	bool showGridBoxEditor() override;
 
-	/**
-	 * @brief Get std dev layer index.
-	 */
-	int getStdDevLayerIndex() const;
+	//! Called when the empty cell filling strategy changes
+	void fillEmptyCellStrategyChanged(int);
 
-	/**
-	 * @brief Get custom height for empty cells.
-	 */
+	//! Called when the an option of the grid generation has changed
+	void gridOptionChanged();
+
+	//! Updates the gid info
+	void updateGridInfo(bool withNonEmptyCells = false);
+
+	//! Update the grid and the 2D display
+	void updateGridAndDisplay();
+
+	//! Update the cloud name (and non-empty cell number if required)
+	void updateCloudName(bool withNonEmptyCellNumber);
+
+	//! Exports the grid as an image
+	void generateImage() const;
+
+	//! Exports the grid as an ASCII matrix
+	void generateASCIIMatrix() const;
+
+	//! Called when a statistics export target changes
+	void onStatExportTargetChanged(bool);
+
+	//! Show the interpolation parametrers dialog (depending on the current interpolation mode)
+	void showInterpolationParamsDialog();
+
+  private: // standard methods
+	// Inherited from cc2Point5DimEditor
+	double                       getGridStep() const override;
+	unsigned char                getProjectionDimension() const override;
+	ccRasterGrid::ProjectionType getTypeOfProjection() const override;
+
+	//! Returns the index of the std. dev. layer (field)
+	int getStdDevLayerIndex() const;
+	//! Returns user defined height for empty cells
 	double getCustomHeightForEmptyCells() const;
 
-	/**
-	 * @brief Get statistics percentile value.
-	 */
+	//! Returns user defined percentile value for SF statistics export
 	double getStatisticsPercentileValue() const;
 
-	/**
-	 * @brief Get extended fill strategy.
-	 */
+	//! Returns strategy for empty cell filling (extended version)
 	ccRasterGrid::EmptyCellFillOption getFillEmptyCellsStrategyExt(double& emptyCellsHeight,
 	                                                               double& minHeight,
 	                                                               double& maxHeight) const;
 
-	/**
-	 * @brief Get exported statistics.
-	 */
+	//! Returns the list of statistics that should be computed on the height values or the scalar fields
 	void getExportedStats(std::vector<ccRasterGrid::ExportableFields>& stats) const;
 
-	/**
-	 * @brief Check if resampling original cloud.
-	 */
+	//! Returns whether the output cloud should use the original cloud or the grid as 'support'
 	bool resampleOriginalCloud() const;
 
-	/**
-	 * @brief Get SF projection type.
-	 */
+	//! Returns type of SF projection
 	ccRasterGrid::ProjectionType getTypeOfSFProjection() const;
 
-	/**
-	 * @brief Update std dev layer combo box.
-	 */
+	//! Updates the std. dev. SF combox status depending on the current state of the other options
 	void updateStdDevLayerComboBox();
 
-	/**
-	 * @brief Mark grid as up-to-date.
-	 */
+	// Inherited from cc2Point5DimEditor
 	void gridIsUpToDate(bool state) override;
 
-	/**
-	 * @brief Load persistent settings.
-	 */
+	//! Load persistent settings
 	void loadSettings();
 
-	/**
-	 * @brief Update the grid.
-	 *
-	 * @param[in] projectSFs Project scalar fields.
-	 * @return true on success.
-	 */
+	//! Updates the grid
 	bool updateGrid(bool projectSFs = false);
 
-	/**
-	 * @brief Check if dialog can close.
-	 */
+	//! Tests if the dialog can be safely closed
 	bool canClose();
 
-	/**
-	 * @brief Add a new contour line.
-	 *
-	 * @param[in] poly Contour polyline.
-	 * @param[in] height Contour height.
-	 */
+	//! Adds a new contour line
 	void addNewContour(ccPolyline* poly, double height);
 
-  protected: // raster grid related
-	/**
-	 * @brief Convert grid to cloud.
-	 */
+  protected: // raster grid related stuff
+	//! Converts the grid to a cloud with scalar field(s)
 	ccPointCloud* convertGridToCloud(bool                                               exportHeightStats,
 	                                 bool                                               exportSFStats,
 	                                 const std::vector<ccRasterGrid::ExportableFields>& exportedStatistics,
@@ -393,32 +221,30 @@ class ccRasterizeTool : public QDialog
 	                                 double                                             percentileValue,
 	                                 bool                                               exportToOriginalCS,
 	                                 bool                                               appendGridSizeToSFNames,
-	                                 ccProgressDialog*                                  progressDialog = nullptr) const override;
+	                                 ccProgressDialog*                                  progressDialog = nullptr) const;
 
-  private:
-	/**
-	 * @brief Layer types.
-	 */
+  private: // members
+	//! Layer types
 	enum LayerType
 	{
-		LAYER_HEIGHT = 0, //!< Height/elevation layer
-		LAYER_RGB    = 1, //!< RGB color layer
-		LAYER_SF     = 2  //!< Scalar field layer
+		LAYER_HEIGHT = 0,
+		LAYER_RGB    = 1,
+		LAYER_SF     = 2
 	};
 
-	//! UI definition
+	//! Associated Qt UI
 	Ui::RasterizeToolDialog* m_UI;
 
-	//! Cloud to rasterize
+	//! Associated cloud
 	ccGenericPointCloud* m_cloud;
 
-	//! Whether cloud has scalar fields
+	//! Whether the cloud has scalar fields
 	bool m_cloudHasScalarFields;
 
 	//! Contour lines
 	std::vector<ccPolyline*> m_contourLines;
 
-	//! Delaunay interpolation parameters
+	//! Delunay interpolation parameters
 	ccRasterGrid::DelaunayInterpolationParams m_delaunayInterpParams;
 
 	//! Kriging parameters

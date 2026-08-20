@@ -21,24 +21,11 @@
 /**
  * @file ccComputeOctreeDlg.h
  *
- * @brief Compute octree dialog for configuring octree computation.
+ * @brief Compute octree dialog
  *
- * @details Dialog for setting up octree computation parameters for
- * point clouds. Allows the user to specify:
- * - Computation mode (automatic or custom)
- * - Minimum cell size
- * - Custom bounding box
- *
- * The octree is a hierarchical spatial data structure that divides
- * 3D space recursively into octants. It's used for:
- * - Fast nearest neighbor queries
- * - Spatial indexing
- * - Level-of-detail rendering
+ * Dialog for configuring octree computation.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see DgmOctree
- * @see ccEntityAction::computeOctree()
  */
 
 #include <ui_computeOctreeDlg.h>
@@ -49,21 +36,9 @@
 class ccBoundingBoxEditorDlg;
 
 /**
- * @brief Dialog for configuring octree computation.
+ * @brief Compute octree dialog
  *
- * @details Provides a UI for setting octree computation parameters.
- * The user can choose from three computation modes:
- *
- * 1. **DEFAULT**: Automatically determine cell size based on
- *    cloud characteristics.
- *
- * 2. **MIN_CELL_SIZE**: Specify a minimum cell size. The octree
- *    will subdivide cells down to this size.
- *
- * 3. **CUSTOM_BBOX**: Define a custom bounding box for the octree.
- *
- * @extends QDialog
- * @extends Ui::ComputeOctreeDialog
+ * Configure octree computation parameters.
  */
 class ccComputeOctreeDlg : public QDialog
     , public Ui::ComputeOctreeDialog
@@ -72,56 +47,43 @@ class ccComputeOctreeDlg : public QDialog
 
   public:
 	/**
-	 * @brief Computation modes for octree generation.
-	 */
-	enum ComputationMode
-	{
-		DEFAULT,       //!< Automatic cell size determination
-		MIN_CELL_SIZE,  //!< User-specified minimum cell size
-		CUSTOM_BBOX     //!< Custom bounding box
-	};
-
-	/**
-	 * @brief Construct the octree computation dialog.
-	 *
-	 * @param[in] baseBBox Base bounding box for the cloud.
-	 * @param[in] minCellSize Minimum allowed cell size.
-	 * @param[in] parent Parent widget.
-	 *
-	 * @details Initializes the dialog with the cloud's bounding box
-	 * and minimum cell size constraints.
+	 * @brief Create dialog
+	 * @param[in] baseBBox Base bounding box
+	 * @param[in] minCellSize Minimum cell size
+	 * @param[in] parent Parent widget
 	 */
 	ccComputeOctreeDlg(const ccBBox& baseBBox,
 	                   double        minCellSize,
 	                   QWidget*      parent = nullptr);
 
+	/// Computation mode
+	enum ComputationMode
+	{
+		DEFAULT,      //!< Default mode
+		MIN_CELL_SIZE, //!< Minimum cell size
+		CUSTOM_BBOX    //!< Custom bbox
+	};
+
 	/**
-	 * @brief Get the selected computation mode.
-	 *
-	 * @return The computation mode.
+	 * @brief Get computation mode
+	 * @return Mode
 	 */
 	ComputationMode getMode() const;
 
 	/**
-	 * @brief Get the minimum cell size.
-	 *
-	 * @return Cell size in world coordinates.
-	 *
-	 * @details Only meaningful when mode is MIN_CELL_SIZE.
+	 * @brief Get minimum cell size
+	 * @return Cell size
 	 */
 	double getMinCellSize() const;
 
 	/**
-	 * @brief Get the custom bounding box.
-	 *
-	 * @return Custom bounding box.
-	 *
-	 * @details Only meaningful when mode is CUSTOM_BBOX.
+	 * @brief Get custom bounding box
+	 * @return Custom bbox
 	 */
 	ccBBox getCustomBBox() const;
 
   protected:
-	//! Bounding box editor for custom bbox mode
+	/// Bounding box editor
 	ccBoundingBoxEditorDlg* m_bbEditorDlg;
 };
 

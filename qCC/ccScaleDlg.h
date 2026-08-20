@@ -12,7 +12,7 @@
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
 // #                    COPYRIGHT: Daniel Girardeau-Montaut                 #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
 
 #ifndef CC_SCALE_DLG_HEADER
@@ -21,21 +21,14 @@
 /**
  * @file ccScaleDlg.h
  *
- * @brief Scale dialog for scaling entities.
+ * @brief Scale dialog
  *
- * @details Dialog for configuring entity scaling parameters.
- *
- * Scaling allows uniformly or non-uniformly scaling entities:
- * - Uniform: Same scale factor for X, Y, Z
- * - Non-uniform: Different scale factors per axis
- *
- * Options:
- * - Keep in place: Scale around center vs. origin
- * - Rescale global shift: Adjust coordinate system offset
+ * Dialog for scaling entities.
  *
  * @author Daniel Girardeau-Montaut
  */
 
+// CC_Lib
 #include <CCGeom.h>
 
 // Qt
@@ -47,17 +40,9 @@ namespace Ui
 }
 
 /**
- * @brief Dialog for scaling entities.
+ * @brief Scale dialog
  *
- * @details Provides a UI for configuring entity scaling parameters.
- *
- * Features:
- * - Separate X, Y, Z scale factors
- * - "All dims at once" for uniform scaling
- * - Keep in place toggle (scale around center)
- * - Global shift adjustment option
- *
- * @extends QDialog
+ * Scale or multiply entities.
  */
 class ccScaleDlg : public QDialog
 {
@@ -65,55 +50,32 @@ class ccScaleDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the scale dialog.
-	 *
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
 	 */
 	explicit ccScaleDlg(QWidget* parent = nullptr);
 
-	/**
-	 * @brief Destructor.
-	 */
+	/// Destructor
 	~ccScaleDlg();
 
-	/**
-	 * @brief Get the scale factors.
-	 * @return Scale factors for X, Y, Z.
-	 */
+	/// Get scales
 	CCVector3d getScales() const;
 
-	/**
-	 * @brief Check if scaling around center.
-	 * @return true if keeping entities in place.
-	 */
+	/// Get keep in place flag
 	bool keepInPlace() const;
 
-	/**
-	 * @brief Check if global shift should be rescaled.
-	 * @return true if rescaling global shift.
-	 */
+	/// Get rescale global shift flag
 	bool rescaleGlobalShift() const;
 
-	/**
-	 * @brief Save dialog state.
-	 */
+	/// Save state
 	void saveState();
 
-  private slots:
-	/**
-	 * @brief Handle all dims toggle.
-	 * @param[in] checked Toggle state.
-	 */
-	void allDimsAtOnceToggled(bool checked);
-
-	/**
-	 * @brief Handle X dimension update.
-	 * @param[in] value New value.
-	 */
-	void fxUpdated(double value);
-
   private:
-	//! UI definition
+	/// Handle all dims toggled
+	void allDimsAtOnceToggled(bool);
+	/// Handle fx updated
+	void fxUpdated(double);
+
 	Ui::ScaleDialog* m_ui;
 };
 

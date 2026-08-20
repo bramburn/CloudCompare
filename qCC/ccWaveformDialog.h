@@ -7,12 +7,12 @@
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
 // #                       COPYRIGHT: CNRS / OSUR                           #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
 
 #ifndef CC_WAVEFORM_DIALOG_HEADER
@@ -21,29 +21,17 @@
 /**
  * @file ccWaveformDialog.h
  *
- * @brief Waveform visualization dialog for waveform-capable sensors.
+ * @brief Waveform dialog
  *
- * @details Dialog and widget for displaying waveform data from
- * terrestrial laser scanners (e.g., Riegl, FARO).
- *
- * Waveforms contain:
- * - Time-resolved return intensity
- * - Multiple echo information
- * - Peak detection
- *
- * Features:
- * - Waveform curve display
- * - Peak markers
- * - Vertical indicators
- * - 2D label visualization
- * - CSV export
+ * Dialog for waveform visualization.
  *
  * @author CNRS / OSUR
  */
-
+// Local
 #include "cc2DLabel.h"
 #include "ccPickingListener.h"
 
+// Qt
 #include <QDialog>
 
 // QCustomPlot
@@ -60,207 +48,103 @@ class ccPointCloud;
 class ccPickingHub;
 
 /**
- * @brief Widget for displaying waveform curves.
+ * @brief Waveform widget
  *
- * @extends QCustomPlot
+ * Widget for displaying waveform data.
  */
 class ccWaveWidget : public QCustomPlot
 {
 	Q_OBJECT
 
   public:
-	/**
-	 * @brief Construct the waveform widget.
-	 *
-	 * @param[in] parent Parent widget.
-	 */
+	//! Default constructor
 	explicit ccWaveWidget(QWidget* parent = nullptr);
 
-	/**
-	 * @brief Destructor.
-	 */
+	//! Destructor
 	~ccWaveWidget() override;
 
-	/**
-	 * @brief Set the title.
-	 *
-	 * @param[in] str Title string.
-	 */
+	//! Sets title
 	void setTitle(const QString& str);
-
-	/**
-	 * @brief Set axis labels.
-	 *
-	 * @param[in] xLabel X-axis label.
-	 * @param[in] yLabel Y-axis label.
-	 */
+	//! Sets axis labels
 	void setAxisLabels(const QString& xLabel, const QString& yLabel);
 
-	/**
-	 * @brief Initialize waveform display.
-	 *
-	 * @param[in] cloud Point cloud.
-	 * @param[in] pointIndex Index of the point.
-	 * @param[in] logScale Use logarithmic scale.
-	 * @param[in] maxValue Maximum amplitude.
-	 */
+	//! Computes the wave (curve) from a given point waveform
 	void init(ccPointCloud* cloud, unsigned pointIndex, bool logScale, double maxValue = 0.0);
 
-	/**
-	 * @brief Clear the display.
-	 */
+	//! Clears the display
 	void clear();
-
-	/**
-	 * @brief Refresh the display.
-	 */
+	//! Updates the display
 	void refresh();
 
-  protected:
-	//! Handle mouse press
+  protected: // methods
+	// mouse events handling
 	void mousePressEvent(QMouseEvent* event) override;
-
-	//! Handle mouse move
 	void mouseMoveEvent(QMouseEvent* event) override;
-
-	//! Handle resize
 	void resizeEvent(QResizeEvent* event) override;
 
-	/**
-	 * @brief Clear internal structures.
-	 */
+	//! Clears internal structures
 	void clearInternal();
 
-	/**
-	 * @brief Update curve width.
-	 *
-	 * @param[in] w Widget width.
-	 * @param[in] h Widget height.
-	 */
+	//! Updates overlay curve width depending on the widget display size
 	void updateCurveWidth(int w, int h);
 
-  protected:
-	//! Title string
-	QString m_titleStr;
-
-	//! Title element
+  protected: // attributes
+	// Title
+	QString         m_titleStr;
 	QCPTextElement* m_titlePlot;
 
 	//! Wave curve
-	QCPGraph* m_curve;
-
-	//! Curve values
+	QCPGraph*           m_curve;
 	std::vector<double> m_curveValues;
+	double              m_dt;
+	double              m_minA, m_maxA;
+	double              m_echoPos;
 
-	//! Time step
-	double m_dt;
-
-	//! Min amplitude
-	double m_minA;
-
-	//! Max amplitude
-	double m_maxA;
-
-	//! Echo position
-	double m_echoPos;
-
-	//! Vertical indicator bar
+	// vertical indicator
 	QCPBarsWithText* m_vertBar;
+	bool             m_drawVerticalIndicator;
+	double           m_verticalIndicatorPositionPercent;
 
-	//! Draw vertical indicator
-	bool m_drawVerticalIndicator;
-
-	//! Vertical indicator position (%)
-	double m_verticalIndicatorPositionPercent;
-
-	//! Peak marker
+	// Peak marker
 	QCPBarsWithText* m_peakBar;
 
 	//! Rendering font
 	QFont m_renderingFont;
 
-	//! Last mouse click position
+	//! Last mouse click
 	QPoint m_lastMouseClick;
 };
 
-/**
- * @brief Waveform dialog for point cloud waveform visualization.
- *
- * @extends QDialog
- * @extends ccPickingListener
- */
+//! Waveform dialog
 class ccWaveDialog : public QDialog
     , public ccPickingListener
 {
 	Q_OBJECT
 
   public:
-	/**
-	 * @brief Construct the waveform dialog.
-	 *
-	 * @param[in] cloud Point cloud with waveforms.
-	 * @param[in] pickingHub Picking hub for point selection.
-	 * @param[in] parent Parent widget.
-	 */
+	//! Default constructor
 	explicit ccWaveDialog(ccPointCloud* cloud, ccPickingHub* pickingHub, QWidget* parent = nullptr);
-
-	/**
-	 * @brief Destructor.
-	 */
+	//! Destructor
 	~ccWaveDialog() override;
 
-	/**
-	 * @brief Get the waveform widget.
-	 *
-	 * @return Waveform widget.
-	 */
+	//! Returns the encapsulated widget
 	inline ccWaveWidget* waveWidget()
 	{
 		return m_widget;
 	}
 
-	/**
-	 * @brief Handle item picked.
-	 *
-	 * @param[in] pi Picked item.
-	 */
+	// inherited from ccPickingListener
 	virtual void onItemPicked(const PickedItem& pi) override;
 
-  protected slots:
-	/**
-	 * @brief Handle point index change.
-	 *
-	 * @param[in] index New index.
-	 */
-	void onPointIndexChanged(int index);
-
-	/**
-	 * @brief Add 2D label for point.
-	 *
-	 * @param[in] cloud Point cloud.
-	 * @param[in] pointIndex Point index.
-	 */
+  protected:
+	void onPointIndexChanged(int);
 	void add2DLabel(ccPointCloud* cloud, unsigned int pointIndex);
-
-	/**
-	 * @brief Update current waveform display.
-	 */
 	void updateCurrentWaveform();
-
-	/**
-	 * @brief Handle picking button toggle.
-	 *
-	 * @param[in] checked Toggle state.
-	 */
-	void onPointPickingButtonToggled(bool checked);
-
-	/**
-	 * @brief Export waveform as CSV.
-	 */
+	void onPointPickingButtonToggled(bool);
 	void onExportWaveAsCSV();
 
-  protected:
-	//! Point cloud
+  protected: // members
+	//! Associated point cloud
 	ccPointCloud* m_cloud;
 
 	//! Wave widget
@@ -269,16 +153,16 @@ class ccWaveDialog : public QDialog
 	//! Picking hub
 	ccPickingHub* m_pickingHub;
 
-	//! GUI definition
+	//! GUI
 	Ui_WaveDialog* m_gui;
 
-	//! Max wave amplitude
+	//! Maximum wave amplitude (for all points)
 	double m_waveMax;
 
-	//! 2D label for visualization
+	//! A 2D label used to visualize the point whose waveform is displayed
 	std::shared_ptr<cc2DLabel> m_label;
 
-	//! Associated display
+	//! The display associated with the cloud whose waveforms are displayed
 	ccGenericGLDisplay* m_display;
 };
 

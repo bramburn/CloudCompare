@@ -57,9 +57,11 @@ private slots:
 
 		ccMesh* mesh = new ccMesh(verts);
 		QCOMPARE(mesh->size(), static_cast<unsigned>(0)); // no triangles yet
+		QCOMPARE(mesh->totalTrianglesCount(), static_cast<unsigned>(0));
 
 		mesh->addTriangle(0, 1, 2);
 		QCOMPARE(mesh->size(), static_cast<unsigned>(1));
+		QCOMPARE(mesh->totalTrianglesCount(), static_cast<unsigned>(1));
 
 		delete mesh;
 	}
@@ -212,6 +214,7 @@ private slots:
 
 		ccMesh* mesh = new ccMesh(verts);
 		QCOMPARE(mesh->size(), static_cast<unsigned>(0));
+		QCOMPARE(mesh->totalTrianglesCount(), static_cast<unsigned>(0));
 
 		CCVector3 bbMin, bbMax;
 		mesh->getBoundingBox(bbMin, bbMax);

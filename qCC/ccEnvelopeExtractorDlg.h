@@ -20,25 +20,12 @@
 /**
  * @file ccEnvelopeExtractorDlg.h
  *
- * @brief Envelope extractor debug dialog for visualizing the extraction algorithm.
+ * @brief Envelope extractor debug dialog
  *
- * @details Debug visualization dialog for the envelope extraction algorithm.
- *
- * This dialog provides step-by-step visualization of the concave hull
- * extraction process, allowing users to:
- * - See intermediate algorithm steps
- * - Pause and resume extraction
- * - Skip ahead
- * - View the progress in real-time
- *
- * This is primarily used for debugging and understanding the algorithm,
- * not for normal use.
+ * Debug dialog for envelope extraction.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccEnvelopeExtractor
  */
-
 // Qt
 #include <QDialog>
 #include <QEventLoop>
@@ -53,20 +40,9 @@ class ccGLWindowInterface;
 class ccHObject;
 
 /**
- * @brief Debug dialog for envelope extraction visualization.
+ * @brief Envelope extractor debug dialog
  *
- * @details Provides step-by-step visualization of the envelope
- * extraction algorithm for debugging and understanding.
- *
- * Features:
- * - Message display with step descriptions
- * - Wait for user input between steps
- * - Skip button to bypass remaining steps
- * - Real-time 2D/3D visualization
- * - Zoom to regions of interest
- *
- * @extends QDialog
- * @extends Ui::EnvelopeExtractorDlg
+ * Debug visualization for envelope extraction.
  */
 class ccEnvelopeExtractorDlg : public QDialog
     , public Ui::EnvelopeExtractorDlg
@@ -74,88 +50,48 @@ class ccEnvelopeExtractorDlg : public QDialog
 	Q_OBJECT
 
   public:
-	/**
-	 * @brief Construct the debug dialog.
-	 *
-	 * @param[in] parent Parent widget.
-	 */
+	//! Default constructor
 	explicit ccEnvelopeExtractorDlg(QWidget* parent = nullptr);
 
-	/**
-	 * @brief Initialize the display.
-	 */
+	//! Initializes the display
 	void init();
 
-	/**
-	 * @brief Display a message.
-	 *
-	 * @param[in] message Message to display.
-	 * @param[in] waitForUserConfirmation Pause and wait.
-	 */
+	//! Display a new message
 	void displayMessage(QString message, bool waitForUserConfirmation = false);
 
-	/**
-	 * @brief Wait for user action.
-	 *
-	 * @param[in] defaultDelay_ms Default delay before continuing.
-	 */
+	//! Waits for user action
 	void waitForUser(unsigned defaultDelay_ms = 100);
 
-	/**
-	 * @brief Get the associated GL window.
-	 * @return Pointer to GL window.
-	 */
+	//! Returns associated GL window
 	inline ccGLWindowInterface* win()
 	{
 		return m_glWindow;
 	}
 
-	/**
-	 * @brief Zoom to a 2D region.
-	 *
-	 * @param[in] bbox Bounding box to zoom to.
-	 */
+	//! Zooms on a given 2D region (3D bouding-box considered in 2D only)
 	void zoomOn(const ccBBox& bbox);
 
-	/**
-	 * @brief Refresh the display.
-	 */
+	//! Forces refresh
 	void refresh();
 
-	/**
-	 * @brief Add entity to display.
-	 *
-	 * @param[in] obj Entity to add.
-	 * @param[in] noDependency No dependency management.
-	 */
+	//! Adds an entity to the (2D/3D) display
 	void addToDisplay(ccHObject* obj, bool noDependency = true);
-
-	/**
-	 * @brief Remove entity from display.
-	 *
-	 * @param[in] obj Entity to remove.
-	 */
+	//! Removes an entity from the (2D/3D) display
 	void removFromDisplay(ccHObject* obj);
 
-	/**
-	 * @brief Check if skipped.
-	 * @return true if user clicked skip.
-	 */
+	//! Returns whether the dialog has been 'skipped' or not
 	bool isSkipped() const;
 
-  protected slots:
-	/**
-	 * @brief Handle skip button click.
-	 */
+  protected:
+	//! When the skip button is clicked
 	void onSkipButtonClicked();
 
   protected:
 	//! Skip flag
 	bool m_skipped;
-
-	//! Event loop for waiting
+	//! Local event loop
 	QEventLoop m_loop;
 
-	//! Associated GL window
+	//! Associated 3D window
 	ccGLWindowInterface* m_glWindow;
 };

@@ -1,3 +1,5 @@
+#pragma once
+
 // ##########################################################################
 // #                                                                        #
 // #                            CLOUDCOMPARE                                #
@@ -7,64 +9,33 @@
 // #  the Free Software Foundation; version 2 of the License.               #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
 
 /**
  * @file ccMainAppInterface.h
  *
- * @brief Main application interface for CloudCompare plugins.
+ * @brief Main application interface for plugins
  *
- * @details Defines the interface that plugins use to interact with
- * the CloudCompare application.
+ * Defines the interface that plugins use to interact with the
+ * CloudCompare application. This includes:
+ * - Window and display management
+ * - Entity database operations
+ * - Overlay dialog registration
+ * - Selection handling
+ * - Logging and console output
  *
- * ## Core Functions
- *
- * This interface provides access to:
- * - **Window Management**: Create/destroy 3D views, get active window
- * - **Entity Database**: Add/remove entities from the DB tree
- * - **Selection**: Get/set selected entities
- * - **Overlay Dialogs**: Register floating dialogs above 3D views
- * - **UI Control**: Freeze/unfreeze UI, update menus
- * - **Logging**: Display messages in the console
- *
- * ## Usage by Plugins
- *
- * Plugins receive a pointer to this interface via their start() method:
- *
- * @code
- * bool MyPlugin::start(ccMainAppInterface* app)
- * {
- *     // Add entity to DB
- *     app->addToDB(myPointCloud);
- *
- *     // Show message
- *     app->dispToConsole("Processing complete", ccMainAppInterface::STD_CONSOLE_MESSAGE);
- *
- *     // Get selected entities
- *     const auto& selected = app->getSelectedEntities();
- *
- *     return true;
- * }
- * @endcode
- *
- * ## Thread Safety
- *
- * Most methods should be called from the main Qt thread.
- * Avoid modifying entities or the DB tree from background threads.
+ * Plugins receive a pointer to this interface via their start() method.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
  * @see ccPluginInterface for plugin interface
  * @see ccOverlayDialog for overlay dialog implementation
  */
-
-#pragma once
 
 // Qt
 #include <QString>
@@ -72,7 +43,6 @@
 // qCC_db
 #include <ccHObject.h>
 #include <ccHObjectCaster.h>
-
 // qCC_gl
 #include <ccGLUtils.h>
 
@@ -84,69 +54,37 @@ class ccOverlayDialog;
 class ccPickingHub;
 
 /**
- * @brief Interface for plugin-application communication.
+ * @brief Main application interface for plugins
  *
- * @details Provides access to CloudCompare's core functionality
- * for plugins.
- *
- * ## Window Management
- *
- * - createGLWindow() / destroyGLWindow()
- * - getActiveGLWindow()
- * - redrawAll() / refreshAll()
- *
- * ## Entity Database
- *
- * - addToDB() / removeFromDB()
- * - dbRootObject()
- * - setSelectedInDB() / getSelectedEntities()
- *
- * ## UI Control
- *
- * - freezeUI() / updateUI()
- * - registerOverlayDialog() / unregisterOverlayDialog()
- * - disableAll() / enableAll()
- *
- * ## Logging
- *
- * - dispToConsole()
- * - forceConsoleDisplay()
- *
- * ## View Control
- *
- * - setView()
- * - toggleActiveWindow*()
- * - zoomOnSelectedEntities()
+ * Provides access to CloudCompare's core functionality from plugins.
+ * This interface is passed to plugins during initialization and provides
+ * methods for window management, entity manipulation, and UI operations.
  */
 class ccMainAppInterface
 {
   public:
-	/**
-	 * @brief Destructor.
-	 */
 	virtual ~ccMainAppInterface() = default;
 
 	/**
-	 * @brief Get the main application window.
-	 *
-	 * @return Pointer to QMainWindow.
+	 * @brief Get the main application window
+	 * @return Pointer to the QMainWindow
 	 */
 	virtual QMainWindow* getMainWindow() = 0;
 
 	/**
-	 * @brief Get the currently active 3D view.
-	 *
-	 * @return Pointer to active GL window, or nullptr.
+	 * @brief Get the currently active 3D view
+	 * @return Pointer to active GL window, or nullptr
 	 */
 	virtual ccGLWindowInterface* getActiveGLWindow() = 0;
 
 	/**
-	 * @brief Create a new 3D view window.
+	 * @brief Create a new 3D view window
 	 *
-	 * @param[out] window Created GL window interface.
-	 * @param[out] widget Encapsulating Qt widget.
+	 * @param[out] window Created GL window interface
+	 * @param[out] widget Encapsulating Qt widget
 	 *
-	 * @warning Destroy via destroyGLWindow(), not directly.
+	 * @warning The window must be destroyed via destroyGLWindow(), not directly
+	 * @note In non-stereo mode, widget is the same as window
 	 *
 	 * @see destroyGLWindow()
 	 */
@@ -156,23 +94,23 @@ class ccMainAppInterface
 		widget = nullptr;
 	}
 
-	/**
-	 * @brief Destroy a GL window.
-	 *
-	 * @param[in] window Window to destroy.
-	 */
+	//! Destroys an instance of GL window created by createGLWindow
 	virtual void destroyGLWindow(ccGLWindowInterface*) const
 	{
 	}
 
 	/**
-	 * @brief Register an overlay dialog.
+	 * @brief Register an overlay dialog
 	 *
 	 * Overlay dialogs float above 3D views and are automatically
 	 * repositioned when the main window is resized.
 	 *
-	 * @param[in] dlg Dialog to register.
-	 * @param[in] pos Position relative to MDI area corner.
+	 * @param[in] dlg Dialog to register
+	 * @param[in] pos Position relative to MDI area corner
+	 *
+	 * @note Call updateOverlayDialogsPlacement() after registering
+	 * @note Consider freezing the UI while an overlay is active
+	 * @note Dialogs are automatically deleted when CloudCompare exits
 	 *
 	 * @see unregisterOverlayDialog()
 	 */
@@ -180,234 +118,156 @@ class ccMainAppInterface
 	{
 	}
 
-	/**
-	 * @brief Unregister an overlay dialog.
-	 *
-	 * @param[in] dlg Dialog to unregister.
-	 */
+	//! Unregisters a MDI area 'overlay' dialog
+	/** \warning Original overlay dialog object will be deleted (see QObject::deleteLater)
+	 **/
 	virtual void unregisterOverlayDialog(ccOverlayDialog* dlg)
 	{
 	}
 
-	/**
-	 * @brief Update overlay dialog positions.
-	 */
+	//! Forces the update of all registered MDI 'overlay' dialogs
 	virtual void updateOverlayDialogsPlacement()
 	{
 	}
 
-	/**
-	 * @brief Get the unique ID generator.
-	 *
-	 * @return Unique ID generator.
-	 */
+	//! Returns the unique ID generator
 	virtual ccUniqueIDGenerator::Shared getUniqueIDGenerator() = 0;
 
-	/**
-	 * @brief Load a file.
-	 *
-	 * @param[in] filename File to load.
-	 * @param[in] silent Suppress error messages.
-	 *
-	 * @return Loaded entity, or nullptr.
-	 */
+	//! Attempts to load a file
 	virtual ccHObject* loadFile(QString filename, bool silent) = 0;
 
-	/**
-	 * @brief Add entity to database.
-	 *
-	 * @param[in] obj Entity to add.
-	 * @param[in] updateZoom Fit camera to new entity.
-	 * @param[in] autoExpandDBTree Expand tree view.
-	 * @param[in] checkDimensions Check dimensions.
-	 * @param[in] autoRedraw Redraw views.
-	 */
+	//! Adds an entity to the main db
+	/** \param obj entity
+	    \param updateZoom updates active GL display zoom to fit the whole scene, including this new entity (addToDisplay must be true)
+	    \param autoExpandDBTree whether DB tree should automatically be expanded
+	    \param checkDimensions whether to check entity's dimensions (and potentially asking the user to shift/rescale it) or not
+	    \param autoRedraw whether to redraw the 3D view automatically or not (warning: if 'updateZoom' is true, the 3D view will always be redrawn)
+	**/
 	virtual void addToDB(ccHObject* obj,
 	                     bool       updateZoom       = false,
 	                     bool       autoExpandDBTree = true,
 	                     bool       checkDimensions  = false,
 	                     bool       autoRedraw       = true) = 0;
 
-	/**
-	 * @brief Remove entity from database.
-	 *
-	 * @param[in] obj Entity to remove.
-	 * @param[in] autoDelete Delete entity.
-	 */
+	//! Removes an entity from main db tree
+	/** Object is automatically detached from its parent.
+	    \param obj entity
+	    \param autoDelete automatically deletes object
+	**/
 	virtual void removeFromDB(ccHObject* obj, bool autoDelete = true) = 0;
 
-	/**
-	 * @brief Context for temporary removal.
-	 */
+	//! Backup "context" for an object
+	/** Used with removeObjectTemporarilyFromDBTree/putObjectBackIntoDBTree.
+	 **/
 	struct ccHObjectContext
 	{
-		ccHObject* parent     = nullptr;
-		int        childFlags = 0;
+		ccHObject* parent      = nullptr;
+		int        childFlags  = 0;
 		int        parentFlags = 0;
 	};
 
-	/**
-	 * @brief Remove object temporarily from DB tree.
-	 *
-	 * @param[in] obj Object to remove.
-	 *
-	 * @return Context for restoration.
-	 *
-	 * @see putObjectBackIntoDBTree()
-	 */
+	//! Removes object temporarily from DB tree
+	/** This method must be called before any modification to the db tree
+	    \warning May change the set of currently selected entities
+	**/
 	virtual ccHObjectContext removeObjectTemporarilyFromDBTree(ccHObject* obj)
 	{
 		return {};
 	}
 
-	/**
-	 * @brief Restore object to DB tree.
-	 *
-	 * @param[in] obj Object to restore.
-	 * @param[in] context Context from removal.
-	 *
-	 * @see removeObjectTemporarilyFromDBTree()
-	 */
+	//! Adds back object to DB tree
+	/** This method should be called once modifications to the db tree are finished
+	    (see removeObjectTemporarilyFromDBTree).
+	**/
 	virtual void putObjectBackIntoDBTree(ccHObject* obj, const ccHObjectContext& context)
 	{
 	}
 
-	/**
-	 * @brief Set entity selection state.
-	 *
-	 * @param[in] obj Entity to select/deselect.
-	 * @param[in] selected Selection state.
-	 */
+	//! Selects or unselects an entity (in db tree)
+	/** \param obj entity
+	    \param selected whether entity should be selected or not
+	**/
 	virtual void setSelectedInDB(ccHObject* obj, bool selected) = 0;
 
-	/**
-	 * @brief Get selected entities.
-	 *
-	 * @return Container of selected entities.
-	 */
+	//! Returns currently selected entities ("read only")
 	virtual const ccHObject::Container& getSelectedEntities() const = 0;
 
-	/**
-	 * @brief Update properties panel.
-	 */
+	//! Updates the 'properties' view (if any)
 	virtual void updatePropertiesView()
 	{
 	}
 
-	/**
-	 * @brief Check if any entity is selected.
-	 *
-	 * @return true if selection exists.
-	 */
+	//! Checks if we have any selections
 	bool haveSelection() const
 	{
 		return !getSelectedEntities().empty();
 	}
 
-	/**
-	 * @brief Check if exactly one entity is selected.
-	 *
-	 * @return true if one entity selected.
-	 */
+	//! Checks if we have exactly one selection
 	bool haveOneSelection() const
 	{
 		return getSelectedEntities().size() == 1;
 	}
 
-	/**
-	 * @brief Console message levels.
-	 */
+	//! Console message level (see dispToConsole)
 	enum ConsoleMessageLevel
 	{
-		STD_CONSOLE_MESSAGE = 0, //!< Standard info message
-		WRN_CONSOLE_MESSAGE = 1, //!< Warning message
-		ERR_CONSOLE_MESSAGE = 2  //!< Error message
+		STD_CONSOLE_MESSAGE = 0,
+		WRN_CONSOLE_MESSAGE = 1,
+		ERR_CONSOLE_MESSAGE = 2,
 	};
 
-	/**
-	 * @brief Display message in console.
-	 *
-	 * @param[in] message Message text.
-	 * @param[in] level Message level.
-	 */
+	//! Prints a message to console
+	/** \param message message
+	    \param level message level (standard, warning, error)
+	**/
 	virtual void dispToConsole(QString message, ConsoleMessageLevel level = STD_CONSOLE_MESSAGE) = 0;
 
-	/**
-	 * @brief Force console visibility.
-	 */
+	//! Forces display of console widget
 	virtual void forceConsoleDisplay()
 	{
 	}
 
-	/**
-	 * @brief Get database root object.
-	 *
-	 * @return Root entity.
-	 */
+	//! Returns DB root (as a ccHObject)
 	virtual ccHObject* dbRootObject() = 0;
 
-	/**
-	 * @brief Redraw all 3D views.
-	 *
-	 * @param[in] only2D Only 2D elements.
-	 */
+	//! Forces redraw of all GL windows
+	/** \param only2D whether to redraw everything (false) or only the 2D layer (true)
+	 **/
 	virtual void redrawAll(bool only2D = false) = 0;
 
-	/**
-	 * @brief Refresh views with pending updates.
-	 *
-	 * @param[in] only2D Only 2D elements.
-	 */
+	//! Redraws all GL windows that have the 'refresh' flag on
+	/** See ccGLWindowInterface::toBeRefreshed and ccDrawableObject::prepareDisplayForRefresh.
+	    \param only2D whether to redraw everything (false) or only the 2D layer (true)
+	**/
 	virtual void refreshAll(bool only2D = false) = 0;
 
-	/**
-	 * @brief Enable all GL windows.
-	 */
+	//! Enables all GL windows
 	virtual void enableAll() = 0;
 
-	/**
-	 * @brief Disable all GL windows.
-	 */
+	//! Disables all GL windows
 	virtual void disableAll() = 0;
 
-	/**
-	 * @brief Disable all except one window.
-	 *
-	 * @param[in] win Window to keep enabled.
-	 */
+	//! Disables all GL windows but the specified one
 	virtual void disableAllBut(ccGLWindowInterface* win) = 0;
 
-	/**
-	 * @brief Update UI to reflect selection state.
-	 */
+	//! Updates UI (menu and properties browser) to reflect current selection state
+	/** This method should be called whenever a change is made to any selected entity
+	 **/
 	virtual void updateUI() = 0;
 
-	/**
-	 * @brief Freeze/unfreeze UI.
-	 *
-	 * @param[in] state Freeze state.
-	 */
+	//! Freezes/unfreezes UI
+	/** \param state freeze state
+	 **/
 	virtual void freezeUI(bool state) = 0;
 
-	/**
-	 * @brief Get color scales manager.
-	 *
-	 * @return Color scales manager.
-	 */
+	//! Returns color scale manager (unique instance)
 	virtual ccColorScalesManager* getColorScalesManager()
 	{
 		return nullptr;
 	}
 
-	/**
-	 * @brief Spawn histogram dialog.
-	 *
-	 * @param[in] histoValues Histogram bins.
-	 * @param[in] minVal Minimum value.
-	 * @param[in] maxVal Maximum value.
-	 * @param[in] title Dialog title.
-	 * @param[in] xAxisLabel X-axis label.
-	 */
+	//! Spawns an histogram dialog
 	virtual void spawnHistogramDialog(const std::vector<unsigned>& histoValues,
 	                                  double                       minVal,
 	                                  double                       maxVal,
@@ -416,60 +276,22 @@ class ccMainAppInterface
 	{
 	}
 
-	/**
-	 * @brief Get picking hub.
-	 *
-	 * @return Picking hub, or nullptr.
-	 */
+	//! Returns the picking hub (if any)
 	virtual ccPickingHub* pickingHub()
 	{
 		return nullptr;
 	}
 
-	/**
-	 * @brief Set view orientation.
-	 *
-	 * @param[in] view View orientation.
-	 */
+	// other useful methods
 	virtual void setView(CC_VIEW_ORIENTATION view) = 0;
 
-	/**
-	 * @brief Toggle centered perspective.
-	 */
-	virtual void toggleActiveWindowCenteredPerspective() = 0;
-
-	/**
-	 * @brief Toggle custom light.
-	 */
-	virtual void toggleActiveWindowCustomLight() = 0;
-
-	/**
-	 * @brief Toggle sun light.
-	 */
-	virtual void toggleActiveWindowSunLight() = 0;
-
-	/**
-	 * @brief Toggle viewer-based perspective.
-	 */
+	virtual void toggleActiveWindowCenteredPerspective()    = 0;
+	virtual void toggleActiveWindowCustomLight()            = 0;
+	virtual void toggleActiveWindowSunLight()               = 0;
 	virtual void toggleActiveWindowViewerBasedPerspective() = 0;
+	virtual void zoomOnSelectedEntities()                   = 0;
+	virtual void setGlobalZoom()                            = 0;
 
-	/**
-	 * @brief Zoom on selected entities.
-	 */
-	virtual void zoomOnSelectedEntities() = 0;
-
-	/**
-	 * @brief Set global zoom.
-	 */
-	virtual void setGlobalZoom() = 0;
-
-	/**
-	 * @brief Increase point size.
-	 */
 	virtual void increasePointSize() = 0;
-
-	/**
-	 * @brief Decrease point size.
-	 */
 	virtual void decreasePointSize() = 0;
 };

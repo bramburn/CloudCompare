@@ -10,9 +10,9 @@
 // #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        //
+// #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
 
 #ifndef CC_VOLUME_CALC_TOOL_HEADER
@@ -24,28 +24,13 @@
 /**
  * @file ccVolumeCalcTool.h
  *
- * @brief Volume calculation tool for computing volumes between surfaces.
+ * @brief Volume calculation tool
  *
- * @details Tool for calculating volume between two point clouds or surfaces.
- *
- * This computes:
- * - Total volume between ground and ceiling surfaces
- * - Added volume (above ground)
- * - Removed volume (below ground)
- * - Surface area
- * - Matching percentage
- *
- * Used for:
- * - Stockpile volume calculations
- * - Cut/fill analysis
- * - Terrain difference analysis
- * - Mining/construction surveys
+ * Tool for calculating volume between two clouds.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see cc2Point5DimEditor
  */
-
+// Qt
 #include <QDialog>
 
 class ccGenericPointCloud;
@@ -58,24 +43,9 @@ namespace Ui
 }
 
 /**
- * @brief Tool for calculating volume between two surfaces.
+ * @brief Volume calculation tool
  *
- * @details Computes volume between two point clouds (ground and ceiling).
- *
- * Can compare:
- * - Two point clouds
- * - Point cloud vs. constant height plane
- * - Two constant height planes
- *
- * Features:
- * - 2.5D raster-based computation
- * - Configurable grid resolution
- * - Empty cell filling strategies
- * - Volume report with statistics
- * - Export results
- *
- * @extends QDialog
- * @extends cc2Point5DimEditor
+ * Calculate volume between two clouds.
  */
 class ccVolumeCalcTool : public QDialog
     , public cc2Point5DimEditor
@@ -83,39 +53,18 @@ class ccVolumeCalcTool : public QDialog
 	Q_OBJECT
 
   public:
-	/**
-	 * @brief Construct the volume calculation tool.
-	 *
-	 * @param[in] cloud1 First cloud (ground).
-	 * @param[in] cloud2 Second cloud (ceiling).
-	 * @param[in] parent Parent widget.
-	 */
+	//! Default constructor
 	ccVolumeCalcTool(ccGenericPointCloud* cloud1, ccGenericPointCloud* cloud2, QWidget* parent = nullptr);
 
-	/**
-	 * @brief Destructor.
-	 */
+	//! Destructor
 	~ccVolumeCalcTool();
 
 	// Inherited from cc2Point5DimEditor
-	/**
-	 * @brief Get grid step.
-	 */
-	virtual double getGridStep() const override;
-
-	/**
-	 * @brief Get projection dimension.
-	 */
-	virtual unsigned char getProjectionDimension() const override;
-
-	/**
-	 * @brief Get projection type.
-	 */
+	virtual double                       getGridStep() const override;
+	virtual unsigned char                getProjectionDimension() const override;
 	virtual ccRasterGrid::ProjectionType getTypeOfProjection() const override;
 
-	/**
-	 * @brief Volume calculation report.
-	 */
+	//! Report info
 	struct ReportInfo
 	{
 		ReportInfo()
@@ -130,47 +79,19 @@ class ccVolumeCalcTool : public QDialog
 		{
 		}
 
-		/**
-		 * @brief Convert to text.
-		 *
-		 * @param[in] precision Decimal precision.
-		 * @return Formatted text.
-		 */
 		QString toText(int precision = 6) const;
 
-		double volume;                    //!< Total volume
-		double addedVolume;              //!< Volume above ground
-		double removedVolume;           //!< Volume below ground
-		double surface;                 //!< Surface area
-		float  matchingPrecent;         //!< Matching percentage
-		float  ceilNonMatchingPercent;  //!< Ceil non-matching %
-		float  groundNonMatchingPercent; //!< Ground non-matching %
-		double averageNeighborsPerCell;  //!< Avg neighbors per cell
+		double volume;
+		double addedVolume;
+		double removedVolume;
+		double surface;
+		float  matchingPrecent;
+		float  ceilNonMatchingPercent;
+		float  groundNonMatchingPercent;
+		double averageNeighborsPerCell;
 	};
 
-	/**
-	 * @brief Compute volume between two surfaces.
-	 *
-	 * @param[in] grid Raster grid.
-	 * @param[in] ground Ground cloud.
-	 * @param[in] ceil Ceiling cloud.
-	 * @param[in] gridBox Grid bounding box.
-	 * @param[in] vertDim Vertical dimension.
-	 * @param[in] gridStep Grid cell size.
-	 * @param[in] gridWidth Grid width.
-	 * @param[in] gridHeight Grid height.
-	 * @param[in] projectionType Projection type.
-	 * @param[in] groundEmptyCellFillStrategy Ground fill strategy.
-	 * @param[in] groundMaxEdgeLength Ground max edge.
-	 * @param[in] ceilEmptyCellFillStrategy Ceil fill strategy.
-	 * @param[in] ceilMaxEdgeLength Ceil max edge.
-	 * @param[out] reportInfo Volume report.
-	 * @param[in] groundHeight Ground constant height.
-	 * @param[in] ceilHeight Ceil constant height.
-	 * @param[in] parentWidget Parent widget.
-	 *
-	 * @return true on success.
-	 */
+	//! Static accessor
 	static bool ComputeVolume(ccRasterGrid&                     grid,
 	                          ccGenericPointCloud*              ground,
 	                          ccGenericPointCloud*              ceil,
@@ -189,166 +110,92 @@ class ccVolumeCalcTool : public QDialog
 	                          double                            ceilHeight,
 	                          QWidget*                          parentWidget = nullptr);
 
-	/**
-	 * @brief Convert volume grid to point cloud.
-	 *
-	 * @param[in] grid Raster grid.
-	 * @param[in] gridBox Grid bounding box.
-	 * @param[in] vertDim Vertical dimension.
-	 * @param[in] exportToOriginalCS Export in original CS.
-	 *
-	 * @return Point cloud representation.
-	 *
-	 * @note The returned cloud must be deleted by caller.
-	 */
+	//! Converts a (volume) grid to a point cloud
 	static ccPointCloud* ConvertGridToCloud(ccRasterGrid& grid,
 	                                        const ccBBox& gridBox,
 	                                        unsigned char vertDim,
 	                                        bool          exportToOriginalCS);
 
-  protected slots:
-	/**
-	 * @brief Save settings and accept.
-	 */
+  protected:
+	//! Accepts the dialog and save settings
 	void saveSettingsAndAccept();
 
-	/**
-	 * @brief Save persistent settings.
-	 */
+	//! Save persistent settings and 'accept' dialog
 	void saveSettings();
 
-	/**
-	 * @brief Handle projection direction change.
-	 * @param[in] index New direction.
-	 */
-	void projectionDirChanged(int index);
+	//! Called when the projection direction changes
+	void projectionDirChanged(int);
 
-	/**
-	 * @brief Handle SF projection type change.
-	 * @param[in] index New type.
-	 */
-	void sfProjectionTypeChanged(int index);
+	//! Called when the SF projection type changes
+	void sfProjectionTypeChanged(int);
 
-	/**
-	 * @brief Handle ground fill strategy change.
-	 * @param[in] index New strategy.
-	 */
-	void groundFillEmptyCellStrategyChanged(int index);
+	// Inherited from cc2Point5DimEditor
+	virtual bool showGridBoxEditor() override;
 
-	/**
-	 * @brief Handle ceil fill strategy change.
-	 * @param[in] index New strategy.
-	 */
-	void ceilFillEmptyCellStrategyChanged(int index);
+	//! Called when the (ground) empty cell filling strategy changes
+	void groundFillEmptyCellStrategyChanged(int);
+	//! Called when the (ceil) empty cell filling strategy changes
+	void ceilFillEmptyCellStrategyChanged(int);
 
-	/**
-	 * @brief Handle grid option change.
-	 */
+	//! Called when the an option of the grid generation has changed
 	void gridOptionChanged();
 
-	/**
-	 * @brief Update grid info display.
-	 */
+	//! Updates the gid info
 	void updateGridInfo();
 
-	/**
-	 * @brief Update grid and display.
-	 */
+	//! Update the grid and the 2D display
 	void updateGridAndDisplay();
 
-	/**
-	 * @brief Swap ground and ceil roles.
-	 */
+	//! Swap roles
 	void swapRoles();
 
-	/**
-	 * @brief Handle ground source change.
-	 * @param[in] index New source.
-	 */
-	void groundSourceChanged(int index);
+	//! Ground source changed
+	void groundSourceChanged(int);
+	//! Ceil source changed
+	void ceilSourceChanged(int);
 
-	/**
-	 * @brief Handle ceil source change.
-	 * @param[in] index New source.
-	 */
-	void ceilSourceChanged(int index);
-
-	/**
-	 * @brief Export to clipboard.
-	 */
+	//! Exports info to clipboard
 	void exportToClipboard() const;
 
-	/**
-	 * @brief Export grid as cloud.
-	 */
+	//! Exports the grid as a point cloud
 	void exportGridAsCloud() const;
 
-	/**
-	 * @brief Set number precision.
-	 * @param[in] precision Decimal places.
-	 */
-	void setDisplayedNumberPrecision(int precision);
+	//! Sets the displayed number precision
+	void setDisplayedNumberPrecision(int);
+
+	//! Returns the ground cloud (or constant height)
+	std::pair<ccGenericPointCloud*, double> getGroundCloud() const;
+
+	//! Returns the ceil cloud (or constant height)
+	std::pair<ccGenericPointCloud*, double> getCeilCloud() const;
 
   protected: // standard methods
 	// Inherited from cc2Point5DimEditor
-	/**
-	 * @brief Show grid box editor.
-	 */
-	virtual bool showGridBoxEditor() override;
-
-	/**
-	 * @brief Mark grid as up-to-date.
-	 */
 	virtual void gridIsUpToDate(bool state) override;
 
-	/**
-	 * @brief Load settings.
-	 */
+	//! Load persistent settings
 	void loadSettings();
 
-	/**
-	 * @brief Update the grid.
-	 * @return true on success.
-	 */
+	//! Updates the grid
 	bool updateGrid();
 
-	/**
-	 * @brief Convert grid to cloud.
-	 *
-	 * @param[in] exportToOriginalCS Use original CS.
-	 * @return Cloud representation.
-	 */
+	//! Converts the grid to a point cloud
 	ccPointCloud* convertGridToCloud(bool exportToOriginalCS) const;
 
-	/**
-	 * @brief Output the report.
-	 * @param[in] info Report to display.
-	 */
+	//! Outputs the report
 	void outputReport(const ReportInfo& info);
 
-	/**
-	 * @brief Get ground cloud or height.
-	 * @return Cloud or constant height.
-	 */
-	std::pair<ccGenericPointCloud*, double> getGroundCloud() const;
-
-	/**
-	 * @brief Get ceil cloud or height.
-	 * @return Cloud or constant height.
-	 */
-	std::pair<ccGenericPointCloud*, double> getCeilCloud() const;
-
   protected: // members
-	//! First cloud
+	//! First associated cloud
 	ccGenericPointCloud* m_cloud1;
-
-	//! Second cloud
+	//! Second associated cloud
 	ccGenericPointCloud* m_cloud2;
 
 	//! Last report
+	/** Only valid if clipboardPushButton is enabled
+	 **/
 	ReportInfo m_lastReport;
 
-	//! UI definition
 	Ui::VolumeCalcDialog* m_ui;
 };
 

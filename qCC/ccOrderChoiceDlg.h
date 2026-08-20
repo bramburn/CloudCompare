@@ -2,7 +2,7 @@
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
 // #                                                                        #
-// #  This program is you can redistribute it and/or modify  #
+// #  This program is free software; you can redistribute it and/or modify  #
 // #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
@@ -21,21 +21,11 @@
 /**
  * @file ccOrderChoiceDlg.h
  *
- * @brief Dialog for assigning roles to two entities.
+ * @brief Order choice dialog
  *
- * @details A dialog that allows the user to assign roles to two
- * entities. This is useful when an operation requires distinguishing
- * between two similar entities (e.g., compared vs. reference,
- * source vs. target).
- *
- * The dialog shows both entities and allows the user to:
- * - See the default role assignment
- * - Swap the roles between entities
- * - Confirm or cancel the assignment
+ * Dialog for assigning roles to two entities.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccComparisonDlg
  */
 
 // Qt
@@ -46,20 +36,9 @@ class ccMainAppInterface;
 class Ui_RoleChoiceDialog;
 
 /**
- * @brief Dialog for assigning roles to two entities.
+ * @brief Order choice dialog
  *
- * @details Provides a UI for assigning roles to two entities
- * when an operation requires distinguishing between them.
- *
- * Example use cases:
- * - Cloud comparison (compared entity vs. reference entity)
- * - Registration (moving entity vs. fixed entity)
- * - Merge operations (source vs. destination)
- *
- * The dialog shows the entity names and their roles,
- * with a button to swap the assignment if needed.
- *
- * @extends QDialog
+ * Assign roles to two entities (e.g. compared/reference).
  */
 class ccOrderChoiceDlg : public QDialog
 {
@@ -67,63 +46,40 @@ class ccOrderChoiceDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the order choice dialog.
-	 *
-	 * @param[in] firstEntity First entity.
-	 * @param[in] firstRole Role description for first entity.
-	 * @param[in] secondEntity Second entity.
-	 * @param[in] secondRole Role description for second entity.
-	 * @param[in] app Application interface.
+	 * @brief Create dialog
+	 * @param[in] firstEntity First entity
+	 * @param[in] firstRole Role of first entity
+	 * @param[in] secondEntity Second entity
+	 * @param[in] secondRole Role of second entity
+	 * @param[in] app Application interface
 	 */
 	ccOrderChoiceDlg(ccHObject*          firstEntity,
 	                 QString             firstRole,
 	                 ccHObject*          secondEntity,
 	                 QString             secondRole,
-	                 ccMainAppInterface* app = nullptr);
+	                 ccMainAppInterface* app = 0);
 
-	/**
-	 * @brief Destructor.
-	 */
+	/// Destructor
 	virtual ~ccOrderChoiceDlg();
 
-	/**
-	 * @brief Get the entity assigned to the first role.
-	 * @return First entity.
-	 */
+	/// Get first entity
 	ccHObject* getFirstEntity();
-
-	/**
-	 * @brief Get the entity assigned to the second role.
-	 * @return Second entity.
-	 */
+	/// Get second entity
 	ccHObject* getSecondEntity();
 
-  protected slots:
-	/**
-	 * @brief Swap the entity assignments.
-	 */
+  protected:
+	/// Swap entities
 	void swap();
 
   protected:
-	/**
-	 * @brief Set colors and labels for entities.
-	 */
+	/// Set colors and labels
 	void setColorsAndLabels();
 
-	//! UI definition
 	Ui_RoleChoiceDialog* m_gui;
-
-	//! Application interface
-	ccMainAppInterface* m_app;
-
-	//! First entity
-	ccHObject* m_firstEnt;
-
-	//! Second entity
-	ccHObject* m_secondEnt;
-
-	//! Whether to use input order
-	bool m_useInputOrder;
+	ccMainAppInterface*  m_app;
+	ccHObject*           m_firstEnt;
+	ccHObject*           m_secondEnt;
+	bool                 m_useInputOrder;
 };
 
 #endif // CC_ORDER_CHOICE_DIALOG_HEADER

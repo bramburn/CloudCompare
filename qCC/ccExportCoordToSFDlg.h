@@ -21,16 +21,9 @@
 /**
  * @file ccExportCoordToSFDlg.h
  *
- * @brief Export coordinate to scalar field dialog.
+ * @brief Export coordinate to SF dialog
  *
- * @details Dialog for choosing which coordinates to export as
- * scalar fields when saving a point cloud.
- *
- * Allows exporting X, Y, and/or Z coordinates as separate
- * scalar fields, which can be useful for:
- * - Creating height maps
- * - Analyzing spatial distributions
- * - Colorizing based on position
+ * Dialog for exporting coordinates to scalar fields.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
  */
@@ -38,13 +31,9 @@
 #include <ui_exportCoordToSFDlg.h>
 
 /**
- * @brief Dialog for choosing coordinates to export as scalar fields.
+ * @brief Export coordinate to SF dialog
  *
- * @details Provides checkboxes for selecting which coordinate
- * axes (X, Y, Z) to export as scalar fields.
- *
- * @extends QDialog
- * @extends Ui::ExportCoordToSFDlg
+ * Choose which coordinates to export as scalar fields.
  */
 class ccExportCoordToSFDlg : public QDialog
     , public Ui::ExportCoordToSFDlg
@@ -53,28 +42,16 @@ class ccExportCoordToSFDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the export dialog.
-	 *
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
 	 */
 	explicit ccExportCoordToSFDlg(QWidget* parent = nullptr);
 
-	/**
-	 * @brief Check if X should be exported.
-	 * @return true if X coordinate should be exported.
-	 */
+	/// Export X
 	bool exportX() const;
-
-	/**
-	 * @brief Check if Y should be exported.
-	 * @return true if Y coordinate should be exported.
-	 */
+	/// Export Y
 	bool exportY() const;
-
-	/**
-	 * @brief Check if Z should be exported.
-	 * @return true if Z coordinate should be exported.
-	 */
+	/// Export Z
 	bool exportZ() const;
 };
 

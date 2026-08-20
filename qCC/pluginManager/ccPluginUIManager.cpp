@@ -15,17 +15,6 @@
 // #                                                                        #
 // ##########################################################################
 
-/**
- * @file ccPluginUIManager.cpp
- *
- * @brief Implementation of plugin UI manager.
- *
- * @details Implements the ccPluginUIManager class which manages the
- * integration of plugin UI elements into CloudCompare.
- *
- * @see ccPluginUIManager
- */
-
 #include "ccPluginUIManager.h"
 
 #include "ccPluginInfoDlg.h"
@@ -44,12 +33,6 @@
 #include <QToolBar>
 #include <QWidget>
 
-/**
- * @brief Construct the plugin UI manager.
- *
- * @param[in] appInterface Application interface for plugin callbacks.
- * @param[in] parent Parent widget.
- */
 ccPluginUIManager::ccPluginUIManager(ccMainAppInterface* appInterface, QWidget* parent)
     : QObject(parent)
     , m_parentWidget(parent)
@@ -68,12 +51,6 @@ ccPluginUIManager::ccPluginUIManager(ccMainAppInterface* appInterface, QWidget* 
 	setupToolbars();
 }
 
-/**
- * @brief Initialize the plugin UI.
- *
- * @details Loads all plugins and creates menus/toolbars for them.
- * Plugins are categorized as core or third-party.
- */
 void ccPluginUIManager::init()
 {
 	auto plugins = ccPluginManager::Get().pluginList();
@@ -248,81 +225,41 @@ void ccPluginUIManager::init()
 	m_showGLFilterToolbar->setChecked(m_glFiltersToolbar->isEnabled());
 }
 
-/**
- * @brief Get the plugins menu.
- *
- * @return Pointer to the plugins menu.
- */
 QMenu* ccPluginUIManager::pluginMenu() const
 {
 	return m_pluginMenu;
 }
 
-/**
- * @brief Get the shader and filter menu.
- *
- * @return Pointer to the shader/filter menu.
- */
 QMenu* ccPluginUIManager::shaderAndFilterMenu() const
 {
 	return m_glFilterMenu;
 }
 
-/**
- * @brief Get the main plugin toolbar.
- *
- * @return Pointer to the main plugin toolbar.
- */
 QToolBar* ccPluginUIManager::mainPluginToolbar()
 {
 	return m_mainPluginToolbar;
 }
 
-/**
- * @brief Get additional plugin toolbars.
- *
- * @return Reference to list of additional toolbars.
- */
 QList<QToolBar*>& ccPluginUIManager::additionalPluginToolbars()
 {
 	return m_additionalPluginToolbars;
 }
 
-/**
- * @brief Get action to show/hide main plugin toolbar.
- *
- * @return Action for toggling toolbar visibility.
- */
 QAction* ccPluginUIManager::actionShowMainPluginToolbar()
 {
 	return m_showPluginToolbar;
 }
 
-/**
- * @brief Get the GL filters toolbar.
- *
- * @return Pointer to the GL filters toolbar.
- */
 QToolBar* ccPluginUIManager::glFiltersToolbar()
 {
 	return m_glFiltersToolbar;
 }
 
-/**
- * @brief Get action to show/hide GL filter toolbar.
- *
- * @return Action for toggling toolbar visibility.
- */
 QAction* ccPluginUIManager::actionShowGLFilterToolbar()
 {
 	return m_showGLFilterToolbar;
 }
 
-/**
- * @brief Update all plugin menus.
- *
- * @details Enables/disables actions based on current state.
- */
 void ccPluginUIManager::updateMenus()
 {
 	ccGLWindowInterface* active3DView  = m_appInterface->getActiveGLWindow();
@@ -336,11 +273,6 @@ void ccPluginUIManager::updateMenus()
 	}
 }
 
-/**
- * @brief Handle selection change.
- *
- * @details Forwards selection change to all standard plugins.
- */
 void ccPluginUIManager::handleSelectionChanged()
 {
 	const ccHObject::Container& selectedEntities = m_appInterface->getSelectedEntities();
@@ -358,11 +290,6 @@ void ccPluginUIManager::handleSelectionChanged()
 	}
 }
 
-/**
- * @brief Show the plugin about dialog.
- *
- * @details Displays information about all loaded plugins.
- */
 void ccPluginUIManager::showAboutDialog() const
 {
 	ccPluginInfoDlg about;
@@ -373,11 +300,6 @@ void ccPluginUIManager::showAboutDialog() const
 	about.exec();
 }
 
-/**
- * @brief Set up plugin actions.
- *
- * @details Creates actions for toolbar toggles and GL filter removal.
- */
 void ccPluginUIManager::setupActions()
 {
 	m_actionRemoveFilter = new QAction(QIcon(":/CC/images/noFilter.png"), tr("Remove Filter"), this);
@@ -394,11 +316,6 @@ void ccPluginUIManager::setupActions()
 	m_showGLFilterToolbar->setEnabled(false);
 }
 
-/**
- * @brief Set up plugin menus.
- *
- * @details Creates the Plugins and Shaders & Filters menus.
- */
 void ccPluginUIManager::setupMenus()
 {
 	m_pluginMenu = new QMenu(tr("Plugins"), m_parentWidget);
@@ -410,14 +327,6 @@ void ccPluginUIManager::setupMenus()
 	m_glFilterActions.setExclusive(true);
 }
 
-/**
- * @brief Add actions from a standard plugin to a menu.
- *
- * @param[in] stdPlugin Plugin to get actions from.
- * @param[in] actions Actions to add.
- *
- * @details If plugin has multiple actions, creates a submenu.
- */
 void ccPluginUIManager::addActionsToMenu(ccStdPluginInterface* stdPlugin, const QList<QAction*>& actions)
 {
 	// If the plugin has more than one action we create its own menu
@@ -443,11 +352,6 @@ void ccPluginUIManager::addActionsToMenu(ccStdPluginInterface* stdPlugin, const 
 	}
 }
 
-/**
- * @brief Set up plugin toolbars.
- *
- * @details Creates the main plugin toolbar and GL filters toolbar.
- */
 void ccPluginUIManager::setupToolbars()
 {
 	m_mainPluginToolbar = new QToolBar(tr("Plugins"), m_parentWidget);
@@ -464,14 +368,6 @@ void ccPluginUIManager::setupToolbars()
 	connect(m_showGLFilterToolbar, &QAction::toggled, m_glFiltersToolbar, &QToolBar::setVisible);
 }
 
-/**
- * @brief Add actions from a standard plugin to a toolbar.
- *
- * @param[in] stdPlugin Plugin to get actions from.
- * @param[in] actions Actions to add.
- *
- * @details If plugin has multiple actions, creates its own toolbar.
- */
 void ccPluginUIManager::addActionsToToolBar(ccStdPluginInterface* stdPlugin, const QList<QAction*>& actions)
 {
 	const QString pluginName = stdPlugin->getName();
@@ -502,11 +398,6 @@ void ccPluginUIManager::addActionsToToolBar(ccStdPluginInterface* stdPlugin, con
 	}
 }
 
-/**
- * @brief Enable the current GL filter.
- *
- * @details Called when a GL filter action is triggered.
- */
 void ccPluginUIManager::enableGLFilter()
 {
 	ccGLWindowInterface* win = m_appInterface->getActiveGLWindow();
@@ -551,11 +442,6 @@ void ccPluginUIManager::enableGLFilter()
 	}
 }
 
-/**
- * @brief Disable all GL filters.
- *
- * @details Removes the current GL filter from the active window.
- */
 void ccPluginUIManager::disableGLFilter()
 {
 	ccGLWindowInterface* win = m_appInterface->getActiveGLWindow();

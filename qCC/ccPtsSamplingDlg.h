@@ -21,45 +21,19 @@
 /**
  * @file ccPtsSamplingDlg.h
  *
- * @brief Points sampling dialog for mesh point sampling.
+ * @brief Points sampling dialog
  *
- * @details Dialog for configuring parameters when sampling points
- * on mesh surfaces. Sampling generates a point cloud from a mesh
- * by placing points on the mesh triangles.
- *
- * Sampling modes:
- * - **Density-based**: Specify points per unit area
- * - **Total points**: Specify total number of points to generate
- *
- * Interpolation options:
- * - Generate normals at sampled points
- * - Interpolate RGB colors from mesh
- * - Interpolate texture coordinates
+ * Dialog for sampling points on a mesh.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccEntityAction::samplePoints()
  */
 
 #include <ui_ptsSamplingDlg.h>
 
 /**
- * @brief Dialog for configuring mesh point sampling.
+ * @brief Points sampling dialog
  *
- * @details Provides a UI for setting up point sampling parameters
- * when converting a mesh to a point cloud.
- *
- * Two sampling modes:
- * 1. **Density mode**: Points per surface unit (e.g., points/m²)
- * 2. **Total points mode**: Exact number of points to generate
- *
- * Interpolation options preserve mesh properties on sampled points:
- * - Normals for surface orientation
- * - RGB colors for visualization
- * - Texture coordinates for mapping
- *
- * @extends QDialog
- * @extends Ui::PointsSamplingDialog
+ * Configure point sampling parameters on mesh.
  */
 class ccPtsSamplingDlg : public QDialog
     , public Ui::PointsSamplingDialog
@@ -68,70 +42,32 @@ class ccPtsSamplingDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the points sampling dialog.
-	 *
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
 	 */
 	explicit ccPtsSamplingDlg(QWidget* parent = nullptr);
 
-	/**
-	 * @brief Check if normals should be generated.
-	 * @return true if normals generation is enabled.
-	 */
+	/// Get generate normals flag
 	bool generateNormals() const;
-
-	/**
-	 * @brief Check if RGB colors should be interpolated.
-	 * @return true if RGB interpolation is enabled.
-	 */
+	/// Get interpolate RGB flag
 	bool interpolateRGB() const;
-
-	/**
-	 * @brief Check if texture should be interpolated.
-	 * @return true if texture interpolation is enabled.
-	 */
+	/// Get interpolate texture flag
 	bool interpolateTexture() const;
 
-	/**
-	 * @brief Check if density mode is used.
-	 * @return true if density-based sampling is enabled.
-	 */
+	/// Get use density flag
 	bool useDensity() const;
-
-	/**
-	 * @brief Get the density value.
-	 * @return Points per unit area.
-	 */
+	/// Get density value
 	double getDensityValue() const;
-
-	/**
-	 * @brief Get the number of points to generate.
-	 * @return Number of points.
-	 */
+	/// Get points number
 	unsigned getPointsNumber() const;
 
-	/**
-	 * @brief Set the number of points.
-	 * @param[in] count Number of points.
-	 */
+	/// Set points number
 	void setPointsNumber(int count);
-
-	/**
-	 * @brief Set the density value.
-	 * @param[in] density Points per unit area.
-	 */
+	/// Set density value
 	void setDensityValue(double density);
-
-	/**
-	 * @brief Set whether to generate normals.
-	 * @param[in] state Generation state.
-	 */
+	/// Set generate normals
 	void setGenerateNormals(bool state);
-
-	/**
-	 * @brief Set whether to use density mode.
-	 * @param[in] state Density mode state.
-	 */
+	/// Set use density
 	void setUseDensity(bool state);
 };
 

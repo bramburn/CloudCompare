@@ -21,29 +21,14 @@
 /**
  * @file ccPlaneEditDlg.h
  *
- * @brief Plane edit dialog for creating or editing plane primitives.
+ * @brief Plane edit dialog
  *
- * @details Dialog for creating new plane primitives or editing
- * existing ones. Supports both interactive picking and manual
- * parameter input.
- *
- * Plane parameters:
- * - Position (X, Y, Z)
- * - Dip direction (azimuth angle)
- * - Dip angle (inclination from horizontal)
- * - Normal vector
- *
- * Interactive features:
- * - Pick point to set plane center
- * - Adjust dip/dip direction (geological convention)
- * - Set custom normal vector
+ * Dialog for creating or editing plane parameters.
  *
  * @author SAGE Ingenierie
- *
- * @see ccPlane
- * @see ccPickingListener
  */
 
+// Local
 #include "ccPickingListener.h"
 
 #include <ui_planeEditDlg.h>
@@ -60,20 +45,9 @@ class ccHObject;
 class ccPickingHub;
 
 /**
- * @brief Dialog for creating or editing plane parameters.
+ * @brief Plane edit dialog
  *
- * @details Provides a UI for setting up plane primitives
- * with support for both manual input and interactive picking.
- *
- * Features:
- * - Manual parameter input (position, dip, dip direction)
- * - Interactive point picking to set plane center
- * - Normal vector specification
- * - Geological convention support (dip/dip direction)
- *
- * @extends QDialog
- * @extends ccPickingListener
- * @extends Ui::PlaneEditDlg
+ * Create or edit plane parameters.
  */
 class ccPlaneEditDlg : public QDialog
     , public ccPickingListener
@@ -83,87 +57,52 @@ class ccPlaneEditDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the plane edit dialog.
-	 *
-	 * @param[in] pickingHub Picking hub for interactive selection.
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] pickingHub Picking hub
+	 * @param[in] parent Parent widget
 	 */
 	explicit ccPlaneEditDlg(ccPickingHub* pickingHub, QWidget* parent);
 
-	/**
-	 * @brief Destructor.
-	 */
+	/// Destructor
 	virtual ~ccPlaneEditDlg();
 
 	/**
-	 * @brief Initialize with an existing plane.
-	 *
-	 * @param[in] plane Plane to edit.
-	 *
-	 * @details Populates the dialog fields with values
-	 * from an existing plane for editing.
+	 * @brief Initialize with existing plane
+	 * @param[in] plane Plane to edit
 	 */
 	void initWithPlane(ccPlane* plane);
 
 	/**
-	 * @brief Update a plane with current parameters.
-	 *
-	 * @param[in] plane Plane to update.
-	 *
-	 * @details Applies the current dialog values to the plane.
+	 * @brief Update plane with current parameters
+	 * @param[in] plane Plane to update
 	 */
 	void updatePlane(ccPlane* plane);
 
-	/**
-	 * @brief Handle item picked.
-	 *
-	 * @param[in] pi Picked item information.
-	 */
+	/// Handle item picked
 	virtual void onItemPicked(const PickedItem& pi) override;
 
-  public slots:
-	/**
-	 * @brief Pick selected point as plane center.
-	 *
-	 * @param[in] state Checkbox state.
-	 */
-	void pickPointAsCenter(bool state);
-
-	/**
-	 * @brief Handle dip direction change.
-	 *
-	 * @param[in] value New dip direction angle.
-	 */
-	void onDipDirChanged(double value);
-
-	/**
-	 * @brief Handle dip direction modification.
-	 *
-	 * @param[in] state Modification state.
-	 */
-	void onDipDirModified(bool state);
-
-	/**
-	 * @brief Handle normal vector change.
-	 *
-	 * @param[in] value New normal angle.
-	 */
-	void onNormalChanged(double value);
-
-  protected slots:
-	/**
-	 * @brief Save parameters and accept dialog.
-	 */
-	void saveParamsAndAccept();
+  public:
+	/// Pick point as center
+	void pickPointAsCenter(bool);
+	/// Handle dip direction changed
+	void onDipDirChanged(double);
+	/// Handle dip direction modified
+	void onDipDirModified(bool);
+	/// Handle normal changed
+	void onNormalChanged(double);
 
   protected:
-	//! Picking window
+	/// Save params and accept
+	void saveParamsAndAccept();
+
+  protected: // members
+	/// Picking window
 	ccGLWindowInterface* m_pickingWin;
 
-	//! Associated plane
+	/// Associated plane
 	ccPlane* m_associatedPlane;
 
-	//! Picking hub
+	/// Picking hub
 	ccPickingHub* m_pickingHub;
 };
 

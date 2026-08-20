@@ -20,25 +20,14 @@
 /**
  * @file ccEntitySelectionDlg.h
  *
- * @brief Entity selection dialog for choosing entities from the database tree.
+ * @brief Entity selection dialog
  *
- * @details Dialog for selecting one or more entities from the CloudCompare
- * database tree.
- *
- * Provides a UI for choosing entities with:
- * - Single or multi-selection mode
- * - Entity type filtering (optional)
- * - Visual preview of selected entities
- * - Search/filter functionality
- *
- * Static convenience methods allow quick entity picking without
- * explicitly creating a dialog instance.
+ * Dialog for selecting entities from a list.
  *
  * @author CloudCompare project
- *
- * @see ccHObject
  */
 
+// qCC_db
 #include <ccHObject.h>
 
 // Qt
@@ -47,30 +36,9 @@
 class Ui_EntitySelectionDialog;
 
 /**
- * @brief Dialog for selecting entities from a list.
+ * @brief Entity selection dialog
  *
- * @details Provides a UI for selecting entities from the database tree.
- *
- * Features:
- * - Single selection mode (returns one entity)
- * - Multi-selection mode (returns multiple entities)
- * - Select all/none buttons
- * - Entity type display with icons
- *
- * Usage:
- * @code
- * // Single selection
- * int index = ccEntitySelectionDialog::SelectEntity(entities, 0, this);
- *
- * // Multi selection
- * std::vector<int> indexes;
- * if (ccEntitySelectionDialog::SelectEntities(entities, indexes, this))
- * {
- *     // Process selected entities
- * }
- * @endcode
- *
- * @extends QDialog
+ * Select one or multiple entities from a list.
  */
 class ccEntitySelectionDialog : public QDialog
 {
@@ -78,13 +46,12 @@ class ccEntitySelectionDialog : public QDialog
 
   public:
 	/**
-	 * @brief Construct the entity selection dialog.
-	 *
-	 * @param[in] entities Available entities.
-	 * @param[in] multiSelectionEnabled Allow multiple selections.
-	 * @param[in] defaultSelectedIndex Index to select by default.
-	 * @param[in] parent Parent widget.
-	 * @param[in] label Dialog label text.
+	 * @brief Create dialog
+	 * @param[in] entities Available entities
+	 * @param[in] multiSelectionEnabled Allow multiple selection
+	 * @param[in] defaultSelectedIndex Default selected index
+	 * @param[in] parent Parent widget
+	 * @param[in] label Dialog label
 	 */
 	ccEntitySelectionDialog(const ccHObject::Container& entities,
 	                        bool                        multiSelectionEnabled,
@@ -92,32 +59,28 @@ class ccEntitySelectionDialog : public QDialog
 	                        QWidget*                    parent               = nullptr,
 	                        QString                     label                = QString());
 
-	/**
-	 * @brief Destructor.
-	 */
+	/// Destructor
 	virtual ~ccEntitySelectionDialog();
 
 	/**
-	 * @brief Get selected index (single selection).
-	 * @return Selected index, or -1 if none.
+	 * @brief Get selected index (single selection)
+	 * @return Selected index
 	 */
 	int getSelectedIndex() const;
 
 	/**
-	 * @brief Get selected indexes (multi selection).
-	 * @param[out] indexes Selected indexes.
+	 * @brief Get selected indexes (multi selection)
+	 * @param[out] indexes Selected indexes
 	 */
 	void getSelectedIndexes(std::vector<int>& indexes) const;
 
 	/**
-	 * @brief Select a single entity (static convenience method).
-	 *
-	 * @param[in] entities Available entities.
-	 * @param[in] defaultSelectedIndex Default selection.
-	 * @param[in] parent Parent widget.
-	 * @param[in] label Dialog label.
-	 *
-	 * @return Selected index, or -1 if cancelled.
+	 * @brief Select single entity
+	 * @param[in] entities Available entities
+	 * @param[in] defaultSelectedIndex Default selected index
+	 * @param[in] parent Parent widget
+	 * @param[in] label Dialog label
+	 * @return Selected index
 	 */
 	static int SelectEntity(const ccHObject::Container& entities,
 	                        int                         defaultSelectedIndex = 0,
@@ -125,32 +88,25 @@ class ccEntitySelectionDialog : public QDialog
 	                        QString                     label                = QString());
 
 	/**
-	 * @brief Select multiple entities (static convenience method).
-	 *
-	 * @param[in] entities Available entities.
-	 * @param[out] indexes Selected indexes.
-	 * @param[in] parent Parent widget.
-	 * @param[in] label Dialog label.
-	 *
-	 * @return true if selection was made, false if cancelled.
+	 * @brief Select multiple entities
+	 * @param[in] entities Available entities
+	 * @param[out] indexes Selected indexes
+	 * @param[in] parent Parent widget
+	 * @param[in] label Dialog label
+	 * @return true if selection was made
 	 */
 	static bool SelectEntities(const ccHObject::Container& entities,
 	                           std::vector<int>&           indexes,
 	                           QWidget*                    parent = nullptr,
 	                           QString                     label  = QString());
 
-  public slots:
-	/**
-	 * @brief Select all entities.
-	 */
+  public:
+	/// Select all
 	void selectAll();
-
-	/**
-	 * @brief Deselect all entities.
-	 */
+	/// Select none
 	void selectNone();
 
   protected:
-	//! UI definition
+	/// UI
 	Ui_EntitySelectionDialog* m_ui;
 };

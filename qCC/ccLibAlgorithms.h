@@ -20,21 +20,11 @@
 /**
  * @file ccLibAlgorithms.h
  *
- * @brief Common algorithms for point cloud processing.
+ * @brief Library algorithms
  *
- * @details Provides common algorithms used throughout CloudCompare
- * for point cloud processing tasks:
- *
- * - Geometric characteristic computation (curvature, roughness, etc.)
- * - Scalar field gradient computation
- * - Scale matching algorithms
- *
- * These are wrapper functions that interface with CCCoreLib
- * algorithms while handling CloudCompare-specific UI and progress.
+ * Common algorithms for point cloud processing.
  *
  * @author CloudCompare project
- *
- * @see CCCoreLib::GeometricalAnalysisTools
  */
 
 #include "ccHObject.h"
@@ -47,145 +37,80 @@ class ccGenericPointCloud;
 class ccProgressDialog;
 
 /**
- * @brief Library algorithms namespace.
+ * @brief Library algorithms namespace
  *
- * @details Contains common point cloud processing algorithms.
+ * Common algorithms for processing.
  */
 namespace ccLibAlgorithms
 {
-	/**
-	 * @brief Get default kernel size for a single cloud.
-	 *
-	 * @param[in] cloud Point cloud.
-	 * @param[in] knn Number of neighbors (default 12).
-	 * @return Default kernel size based on cloud characteristics.
-	 */
+	//! Returns a default first guess for algorithms kernel size (one cloud)
 	double GetDefaultCloudKernelSize(ccGenericPointCloud* cloud, unsigned knn = 12);
 
-	/**
-	 * @brief Get default kernel size for multiple clouds.
-	 *
-	 * @param[in] entities Container of point clouds.
-	 * @param[in] knn Number of neighbors (default 12).
-	 * @return Default kernel size based on cloud characteristics.
-	 */
+	//! Returns a default first guess for algorithms kernel size (several clouds)
 	double GetDefaultCloudKernelSize(const ccHObject::Container& entities, unsigned knn = 12);
 
 	/*** CCCoreLib "standalone" algorithms ***/
 
-	/**
-	 * @brief Geometric characteristic with sub-option.
-	 */
+	//! Geometric characteristic (with sub option)
 	struct GeomCharacteristic
 	{
-		/**
-		 * @brief Construct a geometric characteristic.
-		 *
-		 * @param[in] c Characteristic type.
-		 * @param[in] option Sub-option for the characteristic.
-		 */
 		GeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic c, int option = 0)
 		    : charac(c)
 		    , subOption(option)
 		{
 		}
 
-		//! Characteristic type
 		CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic charac;
-
-		//! Sub-option
-		int subOption = 0;
+		int                                                     subOption = 0;
 	};
 
-	//! Set of geometric characteristics
+	//! Set of GeomCharacteristic instances
 	typedef std::vector<GeomCharacteristic> GeomCharacteristicSet;
 
-	/**
-	 * @brief Compute multiple geometric characteristics.
-	 *
-	 * @param[in] characteristics Characteristics to compute.
-	 * @param[in] radius Neighborhood radius.
-	 * @param[in,out] entities Entities to process.
-	 * @param[in] roughnessUpDir Roughness computation up direction.
-	 * @param[in] parent Parent widget.
-	 * @return true on success.
-	 */
+	//! Computes geometrical characteristics (see GeometricalAnalysisTools::GeomCharacteristic) on a set of entities
 	bool ComputeGeomCharacteristics(const GeomCharacteristicSet& characteristics,
 	                                PointCoordinateType          radius,
-	                                ccHObject::Container&      entities,
-	                                const CCVector3*           roughnessUpDir = nullptr,
-	                                QWidget*                   parent         = nullptr);
+	                                ccHObject::Container&        entities,
+	                                const CCVector3*             roughnessUpDir = nullptr,
+	                                QWidget*                     parent         = nullptr);
 
-	/**
-	 * @brief Compute a single geometric characteristic.
-	 *
-	 * @param[in] algo Characteristic to compute.
-	 * @param[in] subOption Sub-option for the characteristic.
-	 * @param[in] radius Neighborhood radius.
-	 * @param[in,out] entities Entities to process.
-	 * @param[in] roughnessUpDir Roughness computation up direction.
-	 * @param[in] parent Parent widget.
-	 * @param[in] progressDialog Progress dialog.
-	 * @return true on success.
-	 */
+	//! Computes a geometrical characteristic (see GeometricalAnalysisTools::GeomCharacteristic) on a set of entities
 	bool ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic algo,
 	                               int                                                     subOption,
 	                               PointCoordinateType                                     radius,
-	                               ccHObject::Container&                                  entities,
-	                               const CCVector3*                                       roughnessUpDir = nullptr,
-	                               QWidget*                                               parent         = nullptr,
-	                               ccProgressDialog*                                      progressDialog = nullptr);
+	                               ccHObject::Container&                                   entities,
+	                               const CCVector3*                                        roughnessUpDir = nullptr,
+	                               QWidget*                                                parent         = nullptr,
+	                               ccProgressDialog*                                       progressDialog = nullptr);
 
-	/**
-	 * @brief CCCoreLib algorithms handled by ApplyCCLibAlgorithm.
-	 */
+	// CCCoreLib algorithms handled by the 'ApplyCCCoreLibAlgorithm' method
 	enum CC_LIB_ALGORITHM
 	{
-		CCLIB_ALGO_SF_GRADIENT, //!< Scalar field gradient
+		CCLIB_ALGO_SF_GRADIENT,
 	};
 
-	/**
-	 * @brief Apply a CCCoreLib algorithm.
-	 *
-	 * @param[in] algo Algorithm to apply.
-	 * @param[in,out] entities Entities to process.
-	 * @param[in] parent Parent widget.
-	 * @param[in] additionalParameters Algorithm-specific parameters.
-	 * @return true on success.
-	 */
+	//! Applies a standard CCCoreLib algorithm (see CC_LIB_ALGORITHM) on a set of entities
 	bool ApplyCCLibAlgorithm(CC_LIB_ALGORITHM      algo,
 	                         ccHObject::Container& entities,
 	                         QWidget*              parent               = nullptr,
 	                         void**                additionalParameters = nullptr);
 
-	/**
-	 * @brief Scale matching algorithms.
-	 */
+	//! Scale matching algorithms
 	enum ScaleMatchingAlgorithm
 	{
-		BB_MAX_DIM,  //!< Match using bounding box max dimension
-		BB_VOLUME,   //!< Match using bounding box volume
-		PCA_MAX_DIM, //!< Match using PCA max dimension
-		ICP_SCALE    //!< Match using ICP scale computation
+		BB_MAX_DIM,
+		BB_VOLUME,
+		PCA_MAX_DIM,
+		ICP_SCALE
 	};
 
-	/**
-	 * @brief Apply a scale matching algorithm.
-	 *
-	 * @param[in] algo Scale matching algorithm.
-	 * @param[in,out] entities Entities to match.
-	 * @param[in] icpRmsDiff ICP RMS difference threshold.
-	 * @param[in] icpFinalOverlap ICP final overlap.
-	 * @param[in] refEntityIndex Reference entity index.
-	 * @param[in] parent Parent widget.
-	 * @return true on success.
-	 */
+	//! Applies a standard CCCoreLib algorithm (see CC_LIB_ALGORITHM) on a set of entities
 	bool ApplyScaleMatchingAlgorithm(ScaleMatchingAlgorithm algo,
 	                                 ccHObject::Container&  entities,
 	                                 double                 icpRmsDiff,
 	                                 int                    icpFinalOverlap,
 	                                 unsigned               refEntityIndex = 0,
-	                                 QWidget*              parent         = nullptr);
+	                                 QWidget*               parent         = nullptr);
 } // namespace ccLibAlgorithms
 
 #endif

@@ -18,47 +18,26 @@
 #ifndef CC_NORMAL_COMPUTATION_DLG_HEADER
 #define CC_NORMAL_COMPUTATION_DLG_HEADER
 
+#include <ui_normalComputationDlg.h>
+
 /**
  * @file ccNormalComputationDlg.h
  *
- * @brief Normal computation dialog for configuring normal estimation.
+ * @brief Normal computation dialog
  *
- * @details Dialog for setting up parameters for point cloud normal
- * computation and orientation.
- *
- * Features:
- * - Local model selection (plane, quadric, etc.)
- * - Neighborhood radius configuration
- * - Normal orientation options
- * - Scan grid and sensor support
- *
- * Normal computation uses local surface fitting to estimate
- * the normal direction at each point.
+ * Dialog for configuring normal computation parameters.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccNormalVectors
- * @see CCCoreLib::LOCAL_MODEL_TYPES
  */
-
 // qCC_db
 #include <ccNormalVectors.h>
 
 class ccPointCloud;
 
 /**
- * @brief Dialog for configuring normal computation parameters.
+ * @brief Normal computation dialog
  *
- * @details Provides a UI for setting up normal estimation parameters.
- *
- * Parameters include:
- * - **Local model**: Surface type to fit (plane, quadric, etc.)
- * - **Radius**: Neighborhood size for local fitting
- * - **Orientation**: How to orient normals (MST, scan grids, sensors)
- * - **Preferred direction**: Base orientation for consistent normals
- *
- * @extends QDialog
- * @extends Ui::NormalComputationDlg
+ * Configure normal computation parameters.
  */
 class ccNormalComputationDlg : public QDialog
     , public Ui::NormalComputationDlg
@@ -67,136 +46,76 @@ class ccNormalComputationDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the normal computation dialog.
-	 *
-	 * @param[in] withScanGrid Whether selection contains structured clouds.
-	 * @param[in] withSensor Whether selection contains sensors.
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] withScanGrid Whether selection has structured clouds
+	 * @param[in] withSensor Whether selection has sensors
+	 * @param[in] parent Parent widget
 	 */
 	explicit ccNormalComputationDlg(bool withScanGrid, bool withSensor, QWidget* parent = nullptr);
 
-	/**
-	 * @brief Get the local model type.
-	 * @return Local surface model type.
-	 */
+	//! Returns the local model chosen for normal computation
 	CCCoreLib::LOCAL_MODEL_TYPES getLocalModel() const;
 
-	/**
-	 * @brief Set the local model type.
-	 * @param[in] model Model type to use.
-	 */
+	//! Sets the local model chosen for normal computation
 	void setLocalModel(CCCoreLib::LOCAL_MODEL_TYPES model);
 
-	/**
-	 * @brief Set the default radius.
-	 * @param[in] radius Neighborhood radius.
-	 */
+	//! Sets default value for local neighbourhood radius
 	void setRadius(PointCoordinateType radius);
 
-	/**
-	 * @brief Set the preferred orientation.
-	 * @param[in] orientation Preferred direction.
-	 */
+	//! Sets the preferred orientation
 	void setPreferredOrientation(ccNormalVectors::Orientation orientation);
 
-	/**
-	 * @brief Set the cloud for auto radius estimation.
-	 * @param[in] cloud Cloud to analyze.
-	 */
+	//! Sets the currently selected cloud (required for 'auto' feature)
 	void setCloud(ccPointCloud* cloud);
 
-	/**
-	 * @brief Check if scan grids should be used for computation.
-	 * @return true if scan grids should be used.
-	 */
+	//! Returns whether scan grids should be used for computation
 	bool useScanGridsForComputation() const;
 
-	/**
-	 * @brief Get the minimum grid triangle angle.
-	 * @return Angle in degrees.
-	 */
+	//! Returns the min angle for grid triangles
 	double getMinGridAngle_deg() const;
 
-	/**
-	 * @brief Set the minimum grid triangle angle.
-	 * @param[in] value Angle in degrees.
-	 */
+	//! Sets the min angle for grid triangles
 	void setMinGridAngle_deg(double value);
 
-	/**
-	 * @brief Get the neighborhood radius.
-	 * @return Radius value.
-	 */
+	//! Returns local neighbourhood radius
 	PointCoordinateType getRadius() const;
 
-	/**
-	 * @brief Check if normals should be oriented.
-	 * @return true if orientation should be applied.
-	 */
+	//! Returns whether normals should be oriented or not
 	bool orientNormals() const;
 
-	/**
-	 @brief Set whether to orient normals.
-	 @param[in] state Orientation state.
-	 */
+	//! Sets whether normals should be oriented or not
 	void setOrientNormals(bool state);
 
-	/**
-	 * @brief Check if scan grids should be used for orientation.
-	 * @return true if scan grids should be used.
-	 */
+	//! Returns whether scan grids should be used for normals orientation
 	bool useScanGridsForOrientation() const;
 
-	/**
-	 * @brief Check if sensors should be used for orientation.
-	 * @return true if sensors should be used.
-	 */
+	//! Returns whether scan grids should be used for normals computation
 	bool useSensorsForOrientation() const;
 
-	/**
-	 * @brief Check if preferred orientation should be used.
-	 * @return true if preferred orientation is enabled.
-	 */
+	//! Returns whether a preferred orientation should be used
 	bool usePreferredOrientation() const;
 
-	/**
-	 * @brief Get the preferred orientation.
-	 * @return Orientation direction.
-	 */
+	//! Returns the preferred orientation (if any)
 	ccNormalVectors::Orientation getPreferredOrientation() const;
 
-	/**
-	 * @brief Check if MST should be used for orientation.
-	 * @return true if Minimum Spanning Tree should be used.
-	 */
+	//! Returns whether a Minimum Spanning Tree (MST) should be used for normals orientation
 	bool useMSTOrientation() const;
 
-	/**
-	 * @brief Get the MST neighbor count.
-	 * @return Number of neighbors.
-	 */
+	//! Returns the number of neighbors for Minimum Spanning Tree (MST)
 	int getMSTNeighborCount() const;
 
-	/**
-	 * @brief Set the MST neighbor count.
-	 * @param[in] n Number of neighbors.
-	 */
+	//! Sets the number of neighbors for Minimum Spanning Tree (MST)
 	void setMSTNeighborCount(int n);
 
-  protected slots:
-	/**
-	 * @brief Handle local model change.
-	 * @param[in] index New model index.
-	 */
+  protected:
+	//! On local model change
 	void localModelChanged(int index);
 
-	/**
-	 * @brief Auto-estimate the radius.
-	 */
+	//! Automatically estimate the local surface radius
 	void autoEstimateRadius();
 
   protected:
-	//! Cloud for auto estimation
+	//! Selected cloud
 	ccPointCloud* m_cloud;
 };
 

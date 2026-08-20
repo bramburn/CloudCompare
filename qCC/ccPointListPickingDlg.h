@@ -21,25 +21,9 @@
 /**
  * @file ccPointListPickingDlg.h
  *
- * @brief Point list picking dialog for interactive point selection.
+ * @brief Point list picking dialog
  *
- * @details Provides an interactive dialog for picking and managing a list of
- * points on a point cloud or mesh. Users can:
- * - Pick points by clicking in the 3D view
- * - Reorder picked points
- * - Export points to new entities (cloud, polyline)
- * - Export points to ASCII files in various formats
- *
- * This dialog is used for:
- * - Registration (select corresponding points on two clouds)
- * - Measurement (pick specific points for distance/angle calculation)
- * - Annotation (mark points of interest)
- *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccPointPickingGenericInterface
- * @see ccPickingHub
- * @see cc2DLabel
+ * Dialog for picking a list of points.
  */
 
 // GUI
@@ -54,25 +38,11 @@
 class cc2DLabel;
 
 /**
- * @brief Point list picking dialog for interactive point selection.
+ * @class ccPointListPickingDlg
  *
- * @details An overlay dialog that allows users to pick points on a point cloud
- * or mesh by clicking in the 3D view. Picked points are stored as labels
- * and can be exported in various formats.
+ * @brief Point list picking dialog
  *
- * Key features:
- * - Interactive point picking in 3D view
- * - Point reordering and deletion
- * - Export to new point cloud
- * - Export to polyline
- * - Export to ASCII files (xyz, ixyz, gxyz, lxyz formats)
- *
- * The dialog maintains a list of cc2DLabel objects associated with the
- * picked points. Labels store both 3D coordinates and screen position
- * for visual feedback.
- *
- * @extends ccPointPickingGenericInterface
- * @extends Ui::PointListPickingDlg
+ * Dialog/interactor to graphically pick a list of points.
  */
 class ccPointListPickingDlg : public ccPointPickingGenericInterface
     , public Ui::PointListPickingDlg
@@ -80,179 +50,82 @@ class ccPointListPickingDlg : public ccPointPickingGenericInterface
 	Q_OBJECT
 
   public:
-	/**
-	 * @brief Construct the point list picking dialog.
-	 *
-	 * @param[in] pickingHub The picking hub for handling 3D point picking.
-	 * @param[in] parent Parent widget (optional).
-	 */
+	//! Default constructor
 	explicit ccPointListPickingDlg(ccPickingHub* pickingHub, QWidget* parent);
 
-	/**
-	 * @brief Link the dialog with an entity for picking.
-	 *
-	 * @param[in] entity Point cloud or mesh to pick points from.
-	 *
-	 * @details Associates the dialog with a specific entity. The user
-	 * will only be able to pick points on this entity.
-	 */
+	//! Associates dialog with a cloud or a mesh
 	void linkWithEntity(ccHObject* entity);
 
-  protected slots:
-	/**
-	 * @brief Apply changes and close the dialog.
-	 *
-	 * @details Commits the picked points and closes the dialog.
-	 * The picked labels remain associated with the entity.
-	 */
+  protected:
+	//! Applies changes and exit
 	void applyAndExit();
-
-	/**
-	 * @brief Cancel changes and close the dialog.
-	 *
-	 * @details Discards any newly picked points and removes them
-	 * from the entity. Closes the dialog.
-	 */
+	//! Cancels process and exit
 	void cancelAndExit();
-
-	/**
-	 * @brief Export picked points to a new point cloud.
-	 *
-	 * @details Creates a new point cloud containing all picked points.
-	 * The cloud is added to the database tree.
-	 */
+	//! Exports list to a new cloud
 	void exportToNewCloud();
-
-	/**
-	 * @brief Export picked points to a new polyline.
-	 *
-	 * @details Creates a new polyline connecting the picked points
-	 * in order. The polyline is added to the database tree.
-	 */
+	//! Exports list to a polyline
 	void exportToNewPolyline();
-
-	/**
-	 * @brief Remove the last picked point from the list.
-	 *
-	 * @details Deletes the most recently added point from the list.
-	 */
+	//! Removes last inserted point from list
 	void removeLastEntry();
-
-	/**
-	 * @brief Export to ASCII file (XYZ format).
-	 *
-	 * Exports only the 3D coordinates: x y z per line.
-	 */
+	//! Exports list to an 'xyz' ASCII file
 	inline void exportToASCII_xyz()
 	{
 		return exportToASCII(PLP_ASCII_EXPORT_XYZ);
 	}
-
-	/**
-	 * @brief Export to ASCII file (IXYZ format).
-	 *
-	 * Exports index and 3D coordinates: index x y z per line.
-	 */
+	//! Exports list to an 'ixyz' ASCII file
 	inline void exportToASCII_ixyz()
 	{
 		return exportToASCII(PLP_ASCII_EXPORT_IXYZ);
 	}
-
-	/**
-	 * @brief Export to ASCII file (GXYZ format).
-	 *
-	 * Exports global coordinates: X Y Z per line (double precision).
-	 */
+	//! Exports list to an 'gxyz' ASCII file
 	inline void exportToASCII_gxyz()
 	{
 		return exportToASCII(PLP_ASCII_EXPORT_GXYZ);
 	}
-
-	/**
-	 * @brief Export to ASCII file (LXYZ format).
-	 *
-	 * Exports local coordinates relative to first point: X Y Z per line.
-	 */
+	//! Exports list to an 'lxyz' ASCII file
 	inline void exportToASCII_lxyz()
 	{
 		return exportToASCII(PLP_ASCII_EXPORT_LXYZ);
 	}
 
-	/**
-	 * @brief Handle marker size spin box changes.
-	 *
-	 * @param[in] size New marker size.
-	 *
-	 * @details Updates the visual marker size for picked points.
-	 */
-	void markerSizeChanged(int size);
-
-	/**
-	 * @brief Handle start index spin box changes.
-	 *
-	 * @param[in] index New start index.
-	 *
-	 * @details Updates the displayed index offset for labels.
-	 */
+	//! Redraw window when marker size changes
+	void markerSizeChanged(int);
+	//! Redraw window when starting index changes
 	void startIndexChanged(int);
-
-	/**
-	 * @brief Update the point list widget.
-	 *
-	 * @details Refreshes the list display with current picked points.
-	 */
+	//! Updates point list widget
 	void updateList();
 
   protected:
-	/**
-	 * @brief Process a picked point from the 3D view.
-	 *
-	 * @param[in] picked Information about the picked point.
-	 *
-	 * @details Called when the user clicks in the 3D view. Creates
-	 * a new label for the picked point and adds it to the list.
-	 */
+	// inherited from ccPointPickingGenericInterface
 	void processPickedPoint(const PickedItem& picked) override;
 
-	/**
-	 * @brief Get all currently picked points as labels.
-	 *
-	 * @param[out] pickedPoints Vector to store the labels.
-	 * @return Number of picked points.
-	 */
+	//! Gets current (visible) picked points from the associated cloud
 	unsigned getPickedPoints(std::vector<cc2DLabel*>& pickedPoints);
 
-	/**
-	 * @brief ASCII export formats.
-	 */
+	//! Export format
+	/** See exportToASCII.
+	 **/
 	enum ExportFormat
 	{
-		PLP_ASCII_EXPORT_XYZ,  //!< x y z (float)
-		PLP_ASCII_EXPORT_IXYZ, //!< index x y z (float)
-		PLP_ASCII_EXPORT_GXYZ, //!< X Y Z (double precision)
-		PLP_ASCII_EXPORT_LXYZ  //!< Local coordinates (relative to first point)
+		PLP_ASCII_EXPORT_XYZ,
+		PLP_ASCII_EXPORT_IXYZ,
+		PLP_ASCII_EXPORT_GXYZ,
+		PLP_ASCII_EXPORT_LXYZ
 	};
 
-	/**
-	 * @brief Export points to an ASCII file.
-	 *
-	 * @param[in] format Export format to use.
-	 */
+	//! Exports list to an ASCII file
 	void exportToASCII(ExportFormat format);
 
-	//! Associated point cloud or mesh for picking
+	//! Associated cloud or mesh
 	ccHObject* m_associatedEntity;
 
-	//! Last existing label ID when dialog was opened
+	//! Last existing label unique ID on load
 	unsigned m_lastPreviousID;
-
-	//! Container for ordered labels
+	//! Ordered labels container
 	ccHObject* m_orderedLabelsContainer;
-
-	//! Points to delete if user cancels
+	//! Existing picked points that the user wants to delete (for proper "cancel" mechanism)
 	ccHObject::Container m_toBeDeleted;
-
-	//! New points added by user (for proper cancel)
+	//! New picked points that the user has selected (for proper "cancel" mechanism)
 	ccHObject::Container m_toBeAdded;
 };
 

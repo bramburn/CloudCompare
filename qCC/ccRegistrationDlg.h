@@ -21,27 +21,11 @@
 /**
  * @file ccRegistrationDlg.h
  *
- * @brief Registration dialog for ICP-based point cloud alignment.
+ * @brief Registration dialog
  *
- * @details Dialog for configuring ICP (Iterative Closest Point) registration
- * parameters.
- *
- * ICP registration iteratively aligns two point clouds by:
- * 1. Finding corresponding point pairs
- * 2. Computing optimal transformation
- * 3. Applying transformation and repeating
- *
- * Parameters include:
- * - Convergence criteria (max iterations, RMS threshold)
- * - Sampling options (random sampling, farthest point removal)
- * - Transformation model (rigid, similarity)
- * - Weight options (scalar field weights)
- * - Normals matching strategy
+ * Dialog for configuring point cloud/mesh registration (ICP).
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccRegistrationTools
- * @see CCCoreLib::ICPRegistrationTools
  */
 
 #include <QDialog>
@@ -54,20 +38,9 @@
 class ccHObject;
 
 /**
- * @brief Dialog for configuring ICP registration parameters.
+ * @brief Registration dialog
  *
- * @details Provides a UI for setting up ICP registration parameters.
- *
- * Convergence options:
- * - Max iterations: Stop after N iterations
- * - RMS decrease: Stop when improvement is below threshold
- *
- * Sampling options:
- * - Random sampling limit for performance
- * - Farthest point removal for robustness
- *
- * @extends QDialog
- * @extends Ui::RegistrationDialog
+ * Configure ICP registration parameters.
  */
 class ccRegistrationDlg : public QDialog
     , public Ui::RegistrationDialog
@@ -76,155 +49,83 @@ class ccRegistrationDlg : public QDialog
 
   public:
 	/**
-	 * @brief Convergence method types.
-	 */
-	typedef CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE ConvergenceMethod;
-
-	/**
-	 * @brief Construct the registration dialog.
-	 *
-	 * @param[in] data Data cloud (will be transformed).
-	 * @param[in] model Reference model cloud.
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] data Data entity
+	 * @param[in] model Model entity
+	 * @param[in] parent Parent widget
 	 */
 	ccRegistrationDlg(ccHObject* data, ccHObject* model, QWidget* parent = nullptr);
 
-	/**
-	 * @brief Destructor.
-	 */
+	/// Destructor
 	virtual ~ccRegistrationDlg();
 
-	/**
-	 * @brief Get convergence method.
-	 * @return Convergence method.
-	 */
+	/// Convergence method type
+	typedef CCCoreLib::ICPRegistrationTools::CONVERGENCE_TYPE ConvergenceMethod;
+
+	/// Get convergence method
 	ConvergenceMethod getConvergenceMethod() const;
 
-	/**
-	 * @brief Get maximum iteration count.
-	 * @return Max iterations.
-	 *
-	 * @note Only applicable for ITERATION_REG convergence.
-	 */
+	/// Get max iterations (only for ITERATION_REG)
 	unsigned getMaxIterationCount() const;
 
-	/**
-	 * @brief Get final overlap percentage.
-	 * @return Overlap (0-100).
-	 */
+	/// Get final overlap
 	unsigned getFinalOverlap() const;
 
-	/**
-	 * @brief Get minimum RMS decrease threshold.
-	 * @return Minimum RMS decrease.
-	 *
-	 * @note Only applicable for MAX_ERROR_REG convergence.
-	 */
+	/// Get min RMS decrease (only for MAX_ERROR_REG)
 	double getMinRMSDecrease() const;
 
-	/**
-	 * @brief Get absolute minimum RMS decrease.
-	 * @return Absolute minimum value.
-	 */
+	/// Get absolute minimum RMS decrease
 	static double GetAbsoluteMinRMSDecrease();
 
-	/**
-	 * @brief Set minimum RMS decrease.
-	 * @param[in] value New threshold.
-	 */
+	/// Set min RMS decrease (only for MAX_ERROR_REG)
 	void setMinRMSDecrease(double value);
 
-	/**
-	 * @brief Check if farthest points should be removed.
-	 * @return true if removal is enabled.
-	 */
+	/// Get remove farthest points flag
 	bool removeFarthestPoints() const;
 
-	/**
-	 * @brief Get random sampling limit.
-	 * @return Maximum random sample size.
-	 */
+	/// Get random sampling limit
 	unsigned randomSamplingLimit() const;
 
-	/**
-	 * @brief Get the model entity.
-	 * @return Model/reference entity.
-	 */
+	/// Get model entity
 	ccHObject* getModelEntity();
 
-	/**
-	 * @brief Get the data entity.
-	 * @return Data entity to be transformed.
-	 */
+	/// Get data entity
 	ccHObject* getDataEntity();
 
-	/**
-	 * @brief Check if data SF is used as weights.
-	 * @return true if data weights enabled.
-	 */
+	/// Use data scalar field as weights
 	bool useDataSFAsWeights() const;
 
-	/**
-	 * @brief Check if model SF is used as weights.
-	 * @return true if model weights enabled.
-	 */
+	/// Use model scalar field as weights
 	bool useModelSFAsWeights() const;
 
-	/**
-	 * @brief Get cloud-to-mesh signed distances option.
-	 *
-	 * @param[out] robust Use robust fitting.
-	 * @return true if C2M signed distances enabled.
-	 */
+	/// Use cloud-to-mesh signed distances
 	bool useC2MSignedDistances(bool& robust) const;
 
-	/**
-	 * @brief Get normals matching option.
-	 * @return Normals matching strategy.
-	 */
+	/// Get normals matching option
 	CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING normalsMatchingOption() const;
 
-	/**
-	 * @brief Check if scale adjustment is enabled.
-	 * @return true if scale adjustment is on.
-	 */
+	/// Adjust scale during registration
 	bool adjustScale() const;
 
-	/**
-	 * @brief Get maximum thread count.
-	 * @return Thread count.
-	 */
+	/// Get max thread count
 	int getMaxThreadCount() const;
 
-	/**
-	 * @brief Get transformation filter flags.
-	 * @return Filter flags.
-	 */
+	/// Get transformation filters
 	int getTransformationFilters() const;
 
-	/**
-	 * @brief Update GUI state.
-	 */
+	/// Update the GUI state
 	void updateGUI();
 
-	/**
-	 * @brief Swap model and data entities.
-	 */
+	/// Swap model and data entities
 	void swapModelAndData();
 
-	/**
-	 * @brief Save parameters for next session.
-	 */
+	/// Save current parameters for next session
 	void saveParameters() const;
 
   protected:
-	//! Data entity
+	// Members
 	ccHObject* dataEntity = nullptr;
-
-	//! Model entity
 	ccHObject* modelEntity = nullptr;
-
-	//! Error criterion radio button
 	QRadioButton* errorCriterion = nullptr;
 };
 

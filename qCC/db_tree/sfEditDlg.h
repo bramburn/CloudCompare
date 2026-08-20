@@ -7,37 +7,26 @@
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        //
+// #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
+
+#ifndef CC_SF_EDIT_DIALOG_HEADER
+#define CC_SF_EDIT_DIALOG_HEADER
 
 /**
  * @file sfEditDlg.h
  *
- * @brief Scalar field display parameters editor widget.
+ * @brief Scalar field edit dialog
  *
- * @details Widget for configuring scalar field visualization parameters
- * including display range, saturation, and color mapping options.
- *
- * Parameters:
- * - **Display range**: Min/max values shown in view
- * - **Saturation range**: Values mapped to full color
- * - **NaN handling**: Show NaN points in gray
- * - **Scale**: Linear or logarithmic
- * - **Symmetrical**: Center on zero
+ * Widget for editing scalar field display parameters.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccScalarField for scalar field implementation
- * @see ccHistogramWindow for histogram display
  */
-
-#ifndef CC_SF_EDIT_DIALOG_HEADER
-#define CC_SF_EDIT_DIALOG_HEADER
 
 // Qt
 #include <QWidget>
@@ -51,19 +40,9 @@ namespace Ui
 }
 
 /**
- * @brief Scalar field display parameters editor.
+ * @brief Scalar field edit dialog
  *
- * @details Widget for configuring how scalar field values are
- * displayed in the 3D view.
- *
- * Features:
- * - Display range sliders and spinboxes
- * - Saturation range control
- * - Logarithmic scale option
- * - Symmetrical scale (centered on zero)
- * - NaN handling
- *
- * @extends QWidget
+ * Scalar field display parameters editor.
  */
 class sfEditDlg : public QWidget
 {
@@ -71,160 +50,68 @@ class sfEditDlg : public QWidget
 
   public:
 	/**
-	 * @brief Construct the SF editor.
-	 *
-	 * @param[in] parent Parent widget.
+	 * @brief Create widget
+	 * @param[in] parent Parent widget
 	 */
 	explicit sfEditDlg(QWidget* parent = nullptr);
 
-	/**
-	 * @brief Destructor.
-	 */
+	/// Destructor
 	~sfEditDlg();
 
 	/**
-	 * @brief Fill dialog with scalar field.
-	 *
-	 * @param[in] sf Scalar field to configure.
+	 * @brief Fill with scalar field
+	 * @param[in] sf Scalar field
 	 */
 	void fillDialogWith(ccScalarField* sf);
 
-  public slots:
-	/**
-	 * @brief Handle min value spinbox change.
-	 *
-	 * @param[in] val New minimum.
-	 */
-	void minValSBChanged(double val);
+  public:
+	/// Handle min value spinbox changed
+	void minValSBChanged(double);
+	/// Handle max value spinbox changed
+	void maxValSBChanged(double);
+	/// Handle min saturation spinbox changed
+	void minSatSBChanged(double);
+	/// Handle max saturation spinbox changed
+	void maxSatSBChanged(double);
 
-	/**
-	 * @brief Handle max value spinbox change.
-	 *
-	 * @param[in] val New maximum.
-	 */
-	void maxValSBChanged(double val);
+	/// Handle min value from histogram changed
+	void minValHistoChanged(double);
+	/// Handle max value from histogram changed
+	void maxValHistoChanged(double);
+	/// Handle min saturation from histogram changed
+	void minSatHistoChanged(double);
+	/// Handle max saturation from histogram changed
+	void maxSatHistoChanged(double);
 
-	/**
-	 * @brief Handle min saturation spinbox change.
-	 *
-	 * @param[in] val New min saturation.
-	 */
-	void minSatSBChanged(double val);
-
-	/**
-	 * @brief Handle max saturation spinbox change.
-	 *
-	 * @param[in] val New max saturation.
-	 */
-	void maxSatSBChanged(double val);
-
-	/**
-	 * @brief Handle min value from histogram change.
-	 *
-	 * @param[in] val New minimum.
-	 */
-	void minValHistoChanged(double val);
-
-	/**
-	 * @brief Handle max value from histogram change.
-	 *
-	 * @param[in] val New maximum.
-	 */
-	void maxValHistoChanged(double val);
-
-	/**
-	 * @brief Handle min saturation from histogram change.
-	 *
-	 * @param[in] val New min saturation.
-	 */
-	void minSatHistoChanged(double val);
-
-	/**
-	 * @brief Handle max saturation from histogram change.
-	 *
-	 * @param[in] val New max saturation.
-	 */
-	void maxSatHistoChanged(double val);
-
-	/**
-	 * @brief Handle NaN in gray toggle.
-	 *
-	 * @param[in] state Show NaN in gray.
-	 */
-	void nanInGrayChanged(bool state);
-
-	/**
-	 * @brief Handle always show 0 toggle.
-	 *
-	 * @param[in] state Always show zero.
-	 */
-	void alwaysShow0Changed(bool state);
-
-	/**
-	 * @brief Handle symmetrical scale toggle.
-	 *
-	 * @param[in] state Symmetrical scale.
-	 */
-	void symmetricalScaleChanged(bool state);
-
-	/**
-	 * @brief Handle log scale toggle.
-	 *
-	 * @param[in] state Logarithmic scale.
-	 */
-	void logScaleChanged(bool state);
+	/// Handle NaN in gray changed
+	void nanInGrayChanged(bool);
+	/// Handle always show 0 changed
+	void alwaysShow0Changed(bool);
+	/// Handle symmetrical scale changed
+	void symmetricalScaleChanged(bool);
+	/// Handle log scale changed
+	void logScaleChanged(bool);
 
   signals:
-	/**
-	 * @brief Emitted when SF parameters change.
-	 */
+
+	/// Emitted when SF display parameters change
 	void entitySFHasChanged();
 
   protected:
-	/**
-	 * @brief Convert display spinbox to slider.
-	 *
-	 * @param[in] val Spinbox value.
-	 *
-	 * @return Slider position.
-	 */
+	/// Convert spinbox to slider value
 	double dispSpin2slider(double val) const;
-
-	/**
-	 * @brief Convert saturation spinbox to slider.
-	 *
-	 * @param[in] val Spinbox value.
-	 *
-	 * @return Slider position.
-	 */
+	/// Convert saturation spinbox to slider value
 	double satSpin2slider(double val) const;
-
-	/**
-	 * @brief Convert slider to display spinbox.
-	 *
-	 * @param[in] pos Slider position.
-	 *
-	 * @return Spinbox value.
-	 */
+	/// Convert slider to spinbox value
 	double dispSlider2spin(int pos) const;
-
-	/**
-	 * @brief Convert saturation slider to spinbox.
-	 *
-	 * @param[in] pos Slider position.
-	 *
-	 * @return Spinbox value.
-	 */
+	/// Convert saturation slider to spinbox value
 	double satSlider2spin(int pos) const;
 
-  private:
-	//! Associated scalar field
+	/// Associated scalar field
 	ccScalarField* m_associatedSF;
-
-	//! Associated histogram
+	/// Associated histogram
 	ccHistogramWindow* m_associatedSFHisto;
 
-	//! UI definition
 	Ui::SFEditDlg* m_ui;
 };
 

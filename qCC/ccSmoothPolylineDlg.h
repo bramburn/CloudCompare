@@ -12,32 +12,22 @@
 // #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        //
+// #                                                                        #
 // #                    COPYRIGHT: CloudCompare project                     #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
 
 /**
  * @file ccSmoothPolylineDlg.h
  *
- * @brief Smooth polyline dialog for Chaikin smoothing.
+ * @brief Smooth polyline dialog
  *
- * @details Dialog for configuring polyline smoothing using the Chaikin algorithm.
- *
- * Chaikin smoothing is a corner-cutting algorithm that produces smooth curves
- * by recursively cutting corners of a polyline. It:
- * - Preserves the overall shape of the polyline
- * - Creates visually smooth curves
- * - Does not require tangent information
- * - Works well for survey profiles and boundaries
- *
- * Parameters:
- * - **Iterations**: Number of smoothing passes (more = smoother)
- * - **Ratio**: Position of cut points (0.0-0.5, default 0.5)
+ * Dialog for smoothing polylines using Chaikin algorithm.
  *
  * @author CloudCompare project
  */
 
+// qCC_db
 #include <ccHObject.h>
 
 // Qt
@@ -46,61 +36,35 @@
 class Ui_SmoothPolylineDialog;
 
 /**
- * @brief Dialog for polyline smoothing using Chaikin algorithm.
+ * @brief Smooth polyline dialog
  *
- * @details Provides a UI for configuring Chaikin smoothing parameters.
- *
- * The Chaikin algorithm works by:
- * 1. Cutting each corner at 1/4 and 3/4 positions
- * 2. Creating new points at these positions
- * 3. Repeating for desired iterations
- *
- * @extends QDialog
+ * Smooth polylines using Chaikin algorithm.
  */
 class ccSmoothPolylineDialog : public QDialog
 {
   public:
 	/**
-	 * @brief Construct the smooth polyline dialog.
-	 *
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
 	 */
 	ccSmoothPolylineDialog(QWidget* parent = nullptr);
 
-	/**
-	 * @brief Destructor.
-	 */
+	/// Destructor
 	virtual ~ccSmoothPolylineDialog();
 
-	/**
-	 * @brief Set the iteration count.
-	 *
-	 * @param[in] count Number of smoothing iterations.
-	 */
+	/// Set iteration count
 	void setIerationCount(int count);
 
-	/**
-	 * @brief Set the smoothing ratio.
-	 *
-	 * @param[in] ratio Cut ratio (0.0-0.5).
-	 */
+	/// Set smoothing ratio
 	void setRatio(double ratio);
 
-	/**
-	 * @brief Get the iteration count.
-	 *
-	 * @return Number of iterations.
-	 */
+	/// Get iteration count
 	int getIerationCount() const;
 
-	/**
-	 * @brief Get the smoothing ratio.
-	 *
-	 * @return Cut ratio.
-	 */
+	/// Get smoothing ratio
 	double getRatio() const;
 
   protected:
-	//! UI definition
+	/// UI
 	Ui_SmoothPolylineDialog* m_ui;
 };

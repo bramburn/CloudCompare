@@ -20,22 +20,11 @@
 /**
  * @file ccContourLinesGenerator.h
  *
- * @brief Contour lines generator from raster grids.
+ * @brief Contour lines generator
  *
- * @details Generates contour lines (isolines) from raster grids using
- * the marching squares algorithm. Contour lines connect points
- * of equal value (typically elevation or height).
- *
- * The generator:
- * - Extracts contour lines at specified altitude levels
- * - Filters contours by minimum vertex count
- * - Optionally projects contours onto altitude surfaces
- * - Handles empty/no-data cells
+ * Generator for contour lines from raster grids.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccIsolines
- * @see ccRasterGrid
  */
 
 struct ccRasterGrid;
@@ -50,90 +39,36 @@ class QWidget;
 #include <vector>
 
 /**
- * @brief Generator for contour lines from raster grids.
+ * @brief Contour lines generator
  *
- * @details Provides static methods for generating contour lines
- * (isolines) from raster grids. Contour lines are polylines
- * connecting points of equal value in the raster.
- *
- * Usage example:
- * @code
- * ccContourLinesGenerator::Parameters params;
- * params.startAltitude = 0.0;
- * params.maxAltitude = 100.0;
- * params.step = 10.0;  // 10m contours
- * params.minVertexCount = 3;  // Ignore small contours
- *
- * std::vector<ccPolyline*> contours;
- * ccContourLinesGenerator::GenerateContourLines(
- *     raster, gridOrigin, params, contours);
- * @endcode
+ * Generate contour lines from raster grids.
  */
 class ccContourLinesGenerator
 {
   public:
 	/**
-	 * @brief Parameters for contour line generation.
+	 * @brief Generation parameters
 	 */
 	struct Parameters
 	{
-		//! Starting altitude for contour generation
-		double startAltitude = 0.0;
-
-		//! Maximum altitude for contour generation
-		double maxAltitude = 0.0;
-
-		//! Altitude step between contours
-		double step = 0.0;
-
-		//! Optional scalar field containing altitude values per cell
-		/** If set, overrides startAltitude/maxAltitude/step.
-		 *  Each cell can have a different base altitude.
-		 */
-		ccScalarField* altitudes = nullptr;
-
-		//! Minimum vertex count for output contours
-		/** Contours with fewer vertices than this are discarded.
-		 *  Set to 0 to disable filtering.
-		 */
-		int minVertexCount = 3;
-
-		//! Whether to project contours onto altitude surfaces
-		/** If true, Z values are interpolated from the raster.
-		 */
-		bool projectContourOnAltitudes = false;
-
-		//! Value representing empty/no-data cells
-		double emptyCellsValue = std::numeric_limits<double>::quiet_NaN();
-
-		//! Parent widget for progress dialog
-		QWidget* parentWidget = nullptr;
-
-		//! Whether to ignore raster border cells
-		bool ignoreBorders = false;
+		double         startAltitude             = 0.0;
+		double         maxAltitude               = 0.0;
+		double         step                      = 0.0;
+		ccScalarField* altitudes                 = nullptr;
+		int            minVertexCount            = 3;
+		bool           projectContourOnAltitudes = false;
+		double         emptyCellsValue           = std::numeric_limits<double>::quiet_NaN();
+		QWidget* parentWidget  = nullptr;
+		bool     ignoreBorders = false;
 	};
 
 	/**
-	 * @brief Generate contour lines from a raster grid.
-	 *
-	 * @param[in] rasterGrid Raster grid to extract contours from.
-	 * @param[in] gridMinCornerXY Minimum corner of the grid in world coords.
-	 * @param[in] params Generation parameters.
-	 * @param[out] contourLines Generated contour polylines.
-	 *
-	 * @return true on success, false on error.
-	 *
-	 * @details Extracts contour lines from the raster at the specified
-	 * altitude intervals. The number of contours generated depends
-	 * on the range (maxAltitude - startAltitude) / step.
-	 *
-	 * Each generated contour is a ccPolyline that can be:
-	 * - Added to the database tree
-	 * - Exported to file
-	 * - Styled (color, width, etc.)
-	 *
-	 * @note The caller owns the returned polylines and is
-	 * responsible for deleting them.
+	 * @brief Generate contour lines
+	 * @param[in] rasterGrid Raster grid
+	 * @param[in] gridMinCornerXY Grid min corner
+	 * @param[in] params Generation parameters
+	 * @param[out] contourLines Generated contour lines
+	 * @return true on success
 	 */
 	static bool GenerateContourLines(ccRasterGrid*             rasterGrid,
 	                                 const CCVector2d&         gridMinCornerXY,

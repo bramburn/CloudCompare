@@ -21,45 +21,21 @@
 /**
  * @file ccOrthoSectionGenerationDlg.h
  *
- * @brief Ortho section generation dialog for creating sections along a path.
+ * @brief Ortho section generation dialog
  *
- * @details Dialog for configuring orthogonal section generation
- * parameters. Orthogonal sections are cross-sectional slices
- * extracted perpendicular to a path (e.g., along a polyline).
- *
- * Used for:
- * - Generating profile sections along a survey line
- * - Creating cross-sections for structural analysis
- * - Extracting slices perpendicular to a path
- *
- * Parameters:
- * - Path length for normalization
- * - Generation step (spacing between sections)
- * - Section width (width of each section)
- * - Auto-save option
+ * Dialog for generating orthogonal sections.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccClippingBoxTool
  */
 
+// Qt
 #include <QDialog>
 #include <ui_orthoSectionGenerationDlg.h>
 
 /**
- * @brief Dialog for generating orthogonal sections.
+ * @brief Ortho section generation dialog
  *
- * @details Provides a UI for setting up orthogonal section
- * generation along a path.
- *
- * Features:
- * - Configurable section spacing (step)
- * - Section width setting
- * - Path length for normalization
- * - Auto-save option for generated sections
- *
- * @extends QDialog
- * @extends Ui::OrthoSectionGenerationDlg
+ * Generate orthogonal sections along a path.
  */
 class ccOrthoSectionGenerationDlg : public QDialog
     , public Ui::OrthoSectionGenerationDlg
@@ -68,71 +44,35 @@ class ccOrthoSectionGenerationDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the ortho section generation dialog.
-	 *
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
 	 */
 	explicit ccOrthoSectionGenerationDlg(QWidget* parent = nullptr);
 
-	/**
-	 * @brief Set the path length.
-	 *
-	 * @param[in] l Path length for normalization.
-	 */
+	/// Set path length
 	void setPathLength(double l);
 
-	/**
-	 * @brief Set auto-save and remove mode.
-	 *
-	 * @param[in] state Auto-save state.
-	 */
+	/// Set auto save and remove
 	void setAutoSaveAndRemove(bool state);
-
-	/**
-	 * @brief Check if auto-save is enabled.
-	 *
-	 * @return true if auto-save is on.
-	 */
+	/// Get auto save and remove
 	bool autoSaveAndRemove() const;
 
-	/**
-	 * @brief Set the generation step.
-	 *
-	 * @param[in] s Spacing between sections.
-	 */
+	/// Set generation step
 	void setGenerationStep(double s);
-
-	/**
-	 * @brief Set the section width.
-	 *
-	 * @param[in] w Width of each section.
-	 */
+	/// Set sections width
 	void setSectionsWidth(double w);
 
-	/**
-	 * @brief Get the generation step.
-	 *
-	 * @return Spacing between sections.
-	 */
+	/// Get generation step
 	double getGenerationStep() const;
-
-	/**
-	 * @brief Get the section width.
-	 *
-	 * @return Width of each section.
-	 */
+	/// Get sections width
 	double getSectionsWidth() const;
 
-  protected slots:
-	/**
-	 * @brief Handle step value change.
-	 *
-	 * @param[in] value New step value.
-	 */
-	void onStepChanged(double value);
+  protected:
+	/// Handle step changed
+	void onStepChanged(double);
 
   protected:
-	//! Path length
+	/// Path length
 	double m_pathLength;
 };
 

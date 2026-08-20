@@ -3,41 +3,31 @@
 // ##########################################################################
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
-// #                                                                        //
+// #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
 // #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
-// #                                                                        //
+// #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        //
+// #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
 
 /**
  * @file ccSectionExtractionSubDlg.h
  *
- * @brief Sub-dialog for section extraction parameters.
+ * @brief Section extraction sub-dialog
  *
- * @details Dialog for configuring section extraction parameters
- * when generating cross-sections from point clouds.
- *
- * Parameters:
- * - **Section thickness**: Width of the section slice
- * - **Max edge length**: Maximum edge for mesh generation
- * - **Envelope type**: Alpha shape, convex hull, or concave hull
- * - **Multi-pass**: Iterative refinement
- * - **Split envelopes**: Split at gaps
+ * Dialog for section generation parameters.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccSectionExtractionTool
- * @see ccEnvelopeExtractor
  */
 
+// Local
 #include "ccEnvelopeExtractor.h"
 
 // Qt
@@ -45,12 +35,9 @@
 #include <ui_sectionExtractionSubDlg.h>
 
 /**
- * @brief Sub-dialog for section extraction configuration.
+ * @brief Section extraction sub-dialog
  *
- * @details Provides additional options for section extraction
- * beyond the main ccSectionExtractionTool.
- *
- * @extends QDialog
+ * Configure section generation parameters.
  */
 class ccSectionExtractionSubDlg : public QDialog
     , public Ui::SectionExtractionSubDlg
@@ -59,115 +46,46 @@ class ccSectionExtractionSubDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the sub-dialog.
-	 *
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
 	 */
 	explicit ccSectionExtractionSubDlg(QWidget* parent = nullptr);
 
-	/**
-	 * @brief Set the number of active sections.
-	 *
-	 * @param[in] count Section count.
-	 */
+	/// Set active section count
 	void setActiveSectionCount(int count);
 
-	/**
-	 * @brief Set section thickness.
-	 *
-	 * @param[in] t Thickness value.
-	 */
+	/// Set section thickness
 	void setSectionThickness(double t);
-
-	/**
-	 * @brief Get section thickness.
-	 *
-	 * @return Thickness value.
-	 */
+	/// Get section thickness
 	double getSectionThickness() const;
 
-	/**
-	 * @brief Get maximum edge length.
-	 *
-	 * @return Max edge length.
-	 */
+	/// Get max edge length
 	double getMaxEdgeLength() const;
-
-	/**
-	 * @brief Set maximum edge length.
-	 *
-	 * @param[in] l Max edge length.
-	 */
+	/// Set max edge length
 	void setMaxEdgeLength(double l);
 
-	/**
-	 * @brief Get envelope type.
-	 *
-	 * @return Envelope type.
-	 */
+	/// Get envelope type
 	ccEnvelopeExtractor::EnvelopeType getEnvelopeType() const;
 
-	/**
-	 * @brief Check if extracting clouds.
-	 *
-	 * @return true if extracting.
-	 */
+	/// Get extract clouds flag
 	bool extractClouds() const;
-
-	/**
-	 * @brief Set cloud extraction state.
-	 *
-	 * @param[in] state Enable/disable.
-	 */
+	/// Set extract clouds
 	void doExtractClouds(bool state);
-
-	/**
-	 * @brief Check if extracting envelopes.
-	 *
-	 * @return true if extracting.
-	 */
+	/// Get extract envelopes flag
 	bool extractEnvelopes() const;
-
-	/**
-	 * @brief Set envelope extraction state.
-	 *
-	 * @param[in] state Enable/disable.
-	 * @param[in] type Envelope type.
-	 */
+	/// Set extract envelopes
 	void doExtractEnvelopes(bool state, ccEnvelopeExtractor::EnvelopeType type);
 
-	/**
-	 * @brief Check if splitting envelopes.
-	 *
-	 * @return true if splitting.
-	 */
+	/// Get split envelopes flag
 	bool splitEnvelopes() const;
-
-	/**
-	 * @brief Set split envelopes state.
-	 *
-	 * @param[in] state Enable/disable.
-	 */
+	/// Set split envelopes
 	void doSplitEnvelopes(bool state);
 
-	/**
-	 * @brief Check if using multi-pass.
-	 *
-	 * @return true if multi-pass.
-	 */
+	/// Get multipass flag
 	bool useMultiPass() const;
-
-	/**
-	 * @brief Set multi-pass state.
-	 *
-	 * @param[in] state Enable/disable.
-	 */
+	/// Set multipass
 	void doUseMultiPass(bool state);
 
-	/**
-	 * @brief Check if visual debug mode.
-	 *
-	 * @return true if debug mode.
-	 */
+	/// Get visual debug mode
 	bool visualDebugMode() const;
 };

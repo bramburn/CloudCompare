@@ -63,62 +63,37 @@ namespace Ui
 	class MainWindow;
 }
 
+//! Main window
 /**
  * @file mainwindow.h
  *
- * @brief CloudCompare Main Window - central application window.
+ * @brief CloudCompare Main Window class
  *
- * @details MainWindow is the central UI component of CloudCompare,
- * implementing the MDI (Multiple Document Interface) paradigm for
- * managing multiple 3D views.
+ * MainWindow is the central UI component of CloudCompare, implementing the
+ * MDI (Multiple Document Interface) paradigm for managing multiple 3D views.
  *
- * ## Architecture
+ * This class serves three main roles:
+ * - Main application window with menus, toolbars, and dock widgets
+ * - ccMainAppInterface implementation for plugin communication
+ * - ccPickingListener for 3D point picking operations
  *
- * MainWindow serves three main roles:
- * 1. **Main application window** - menus, toolbars, dock widgets
- * 2. **ccMainAppInterface implementation** - plugin communication
- * 3. **ccPickingListener** - 3D point picking operations
+ * @section Window Management
+ * MainWindow manages multiple ccGLWindow instances as MDI sub-windows,
+ * allowing users to work with multiple 3D scenes simultaneously.
  *
- * ## Key Components
+ * @section Database Tree
+ * The DB (Database) tree on the left side displays all loaded entities
+ * (point clouds, meshes, primitives, etc.) in a hierarchical structure.
  *
- * ### Window Management
- * - MDI sub-windows for multiple 3D views
- * - Synchronized views support
- * - Stereo vision mode
- *
- * ### Database Tree (DB Root)
- * - Hierarchical entity display
- * - Point clouds, meshes, primitives, sensors
- * - Drag-and-drop reordering
- * - Entity properties panel
- *
- * ### Tools & Actions
- * - Segmentation tool
- * - Transformation tool
- * - Section extraction
- * - Primitive creation
- *
- * ### Plugin System
- * - Standard plugins (processing algorithms)
- * - I/O plugins (file formats)
- * - GL plugins (OpenGL effects)
- *
- * ## Singleton Pattern
- *
- * MainWindow uses a singleton pattern. Access via TheInstance().
- *
- * ## Usage
- *
- * @code
- * MainWindow* mw = MainWindow::TheInstance();
- * mw->addToDB(entity);
- * @endcode
+ * @section Plugins
+ * Plugins integrate through ccPluginUIManager and can add:
+ * - Menu items and toolbar buttons
+ * - Custom actions and processing algorithms
+ * - Overlay dialogs for interactive operations
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccMainAppInterface for plugin interface
- * @see ccGLWindowInterface for 3D rendering
- * @see ccDBRoot for database tree
+ * @see ccMainAppInterface for the interface used by plugins
+ * @see ccGLWindowInterface for 3D rendering windows
  */
 class MainWindow : public QMainWindow
     , public ccMainAppInterface

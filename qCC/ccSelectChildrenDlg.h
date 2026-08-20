@@ -7,7 +7,7 @@
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
@@ -21,19 +21,14 @@
 /**
  * @file ccSelectChildrenDlg.h
  *
- * @brief Dialog for selecting children entities by type and name.
+ * @brief Select children dialog
  *
- * @details Provides a dialog for filtering and selecting child entities
- * from a parent object in the database tree.
- *
- * Filtering options:
- * - Filter by entity type (cloud, mesh, polyline, etc.)
- * - Filter by name (with optional regex)
- * - Strict name matching
+ * Dialog for selecting children by type and name.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
  */
 
+// Qt
 #include <QDialog>
 
 // qCC_db
@@ -45,16 +40,9 @@ namespace Ui
 }
 
 /**
- * @brief Dialog for selecting children by type and name.
+ * @brief Select children dialog
  *
- * @details Allows filtering children of a database tree entity.
- *
- * Features:
- * - Type-based filtering (point clouds, meshes, etc.)
- * - Name-based filtering with regex support
- * - Strict match mode for exact names
- *
- * @extends QDialog
+ * Select children by type and name.
  */
 class ccSelectChildrenDlg : public QDialog
 {
@@ -62,75 +50,44 @@ class ccSelectChildrenDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the dialog.
-	 *
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
 	 */
 	explicit ccSelectChildrenDlg(QWidget* parent = nullptr);
-
-	/**
-	 * @brief Destructor.
-	 */
+	
+	/// Destructor
 	~ccSelectChildrenDlg() override;
 
 	/**
-	 * @brief Add a type option to the combo box.
-	 *
-	 * @param[in] typeName Display name for the type.
-	 * @param[in] type CC_CLASS_ENUM value.
+	 * @brief Add type to combo box
+	 * @param[in] typeName Type name
+	 * @param[in] type Type enum
 	 */
 	void addType(QString typeName, CC_CLASS_ENUM type);
 
-	/**
-	 * @brief Get the selected entity type.
-	 *
-	 * @return Selected type, or CC_TYPES::UNKNOWN if none.
-	 */
+	/// Get selected type
 	CC_CLASS_ENUM getSelectedType();
-
-	/**
-	 * @brief Get the selected name filter.
-	 *
-	 * @return Name string.
-	 */
+	
+	/// Get selected name
 	QString getSelectedName();
-
-	/**
-	 * @brief Check if strict name matching is enabled.
-	 *
-	 * @return true for exact match.
-	 */
+	
+	/// Get strict match state
 	bool getStrictMatchState() const;
 
-	/**
-	 * @brief Check if type filter is used.
-	 *
-	 * @return true if type filter is active.
-	 */
+	/// Get type is used flag
 	bool getTypeIsUsed() const;
 
-	/**
-	 * @brief Check if name is treated as regex.
-	 *
-	 * @return true if regex mode.
-	 */
+	/// Get name is regex flag
 	bool getNameIsRegex() const;
 
-	/**
-	 * @brief Check if name matching is used.
-	 *
-	 * @return true if name filter is active.
-	 */
+	/// Get name match is used flag
 	bool getNameMatchIsUsed() const;
 
-  protected slots:
-	/**
-	 * @brief Handle dialog acceptance.
-	 */
+  protected:
+	/// Handle accept
 	void onAccept();
 
   private:
-	//! UI definition
 	Ui::SelectChildrenDialog* mUI;
 };
 

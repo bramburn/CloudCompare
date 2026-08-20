@@ -21,75 +21,36 @@
 /**
  * @file ccInnerRect2DFinder.h
  *
- * @brief Inner rectangle finder algorithm.
+ * @brief Inner rectangle finder
  *
- * @details Finds the largest inscribed (inner) rectangle within a
- * 2D point cloud.
- *
- * Given a set of 2D points forming a boundary, this algorithm
- * finds the maximum-area axis-aligned rectangle that is completely
- * contained within the point cloud.
- *
- * This is useful for:
- * - Finding usable area in scanned surfaces
- * - Determining valid regions for processing
- * - Creating rectangular bounds within irregular shapes
+ * Find largest enclosed rectangle in 2D point cloud.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccBox
  */
-
+// qCC_db
 #include <ccBox.h>
 #include <ccGenericPointCloud.h>
 
 /**
- * @brief Algorithm for finding the largest inscribed rectangle.
+ * @brief Inner rectangle finder
  *
- * @details Finds the maximum-area axis-aligned rectangle that
- * fits inside a 2D point cloud boundary.
- *
- * The algorithm works by:
- * 1. Computing the bounding rectangle
- * 2. Iteratively testing and shrinking edges
- * 3. Finding the largest rectangle that fits
- *
- * Returns a 3D box primitive with the rectangle as its base.
+ * Find largest enclosed rectangle in 2D point cloud.
  */
 class ccInnerRect2DFinder
 {
 
   public:
-	/**
-	 * @brief Construct the finder.
-	 */
+	//! Default constructor
 	ccInnerRect2DFinder();
 
-	/**
-	 * @brief Find the biggest inscribed rectangle.
-	 *
-	 * @param[in] cloud Point cloud (2D projected).
-	 * @param[in] zDim Dimension index for extrusion (0=X, 1=Y, 2=Z).
-	 *
-	 * @return Box primitive with the rectangle as base.
-	 *
-	 * @note The returned box must be deleted by caller.
-	 */
+	//! Finds the biggest enclosed rectangle
 	ccBox* process(ccGenericPointCloud* cloud, unsigned char zDim = 2);
 
   protected:
-	/**
-	 * @brief Initialize internal structures.
-	 *
-	 * @param[in] cloud Point cloud.
-	 * @param[in] zDim Z dimension index.
-	 * @return true on success.
-	 */
+	//! Initializes internal structures
 	bool init(ccGenericPointCloud* cloud, unsigned char zDim);
 
-	/**
-	 * @brief 2D rectangle structure.
-	 */
+	//! 2D rectangle
 	struct Rect
 	{
 		Rect()
@@ -99,7 +60,6 @@ class ccInnerRect2DFinder
 		    , y1(0)
 		{
 		}
-
 		Rect(double _x0, double _y0, double _x1, double _y1)
 		    : x0(_x0)
 		    , y0(_y0)
@@ -108,58 +68,39 @@ class ccInnerRect2DFinder
 		{
 		}
 
-		//! Coordinates
 		double x0, y0, x1, y1;
 
-		/**
-		 * @brief Get rectangle width.
-		 */
 		inline double width() const
 		{
 			return x1 - x0;
 		}
-
-		/**
-		 * @brief Get rectangle height.
-		 */
 		inline double height() const
 		{
 			return y1 - y0;
 		}
-
-		/**
-		 * @brief Get rectangle area.
-		 */
 		inline double area() const
 		{
 			return width() * height();
 		}
 	};
 
-	/**
-	 * @brief Recursive rectangle finding.
-	 *
-	 * @param[in] rect Current rectangle.
-	 * @param[in] startIndex Starting point index.
-	 */
+	//! Internal processs
 	void findBiggestRect(const Rect& rect, unsigned startIndex);
 
-	//! Bounding rectangle
+	//! Global rectangle
 	Rect m_boundingRect;
 
-	//! Maximum inscribed rectangle
+	//! Inner rectangle
 	Rect m_maxRect;
-
-	//! Maximum area
+	//! Inner rectangle max area
 	double m_maxArea;
 
-	//! Point cloud
+	//! Associated cloud
 	ccGenericPointCloud* m_cloud;
 
-	//! X dimension index
+	//! X dimension
 	unsigned char m_X;
-
-	//! Y dimension index
+	//! Y dimension
 	unsigned char m_Y;
 };
 

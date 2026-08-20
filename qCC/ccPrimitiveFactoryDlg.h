@@ -21,23 +21,11 @@
 /**
  * @file ccPrimitiveFactoryDlg.h
  *
- * @brief Primitive factory dialog for creating geometric primitives.
+ * @brief Primitive factory dialog
  *
- * @details Dialog for creating 3D geometric primitive shapes such as:
- * - Sphere
- * - Plane
- * - Box/Cube
- * - Cylinder
- * - Cone
- * - Torus
- * - etc.
- *
- * Each primitive can be positioned and oriented in 3D space
- * using coordinate system settings.
+ * Dialog for creating primitive shapes.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccPrimitiveFactory
  */
 
 #include <ui_primitiveFactoryDlg.h>
@@ -49,21 +37,9 @@ class MainWindow;
 class ccGLMatrix;
 
 /**
- * @brief Dialog for creating primitive shapes.
+ * @brief Primitive factory dialog
  *
- * @details Provides a UI for generating 3D geometric primitives
- * with configurable parameters and coordinate system.
- *
- * Features:
- * - Primitive type selection (sphere, plane, box, etc.)
- * - Size/dimension parameters
- * - Position (X, Y, Z coordinates)
- * - Orientation (via coordinate system matrix)
- * - Import position from clipboard
- * - Use selected object as coordinate system reference
- *
- * @extends QDialog
- * @extends Ui::PrimitiveFactoryDlg
+ * Create primitive shapes.
  */
 class ccPrimitiveFactoryDlg : public QDialog
     , public Ui::PrimitiveFactoryDlg
@@ -72,53 +48,35 @@ class ccPrimitiveFactoryDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the primitive factory dialog.
-	 *
-	 * @param[in] win Main window for interaction.
+	 * @brief Create dialog
+	 * @param[in] win Main window
 	 */
 	explicit ccPrimitiveFactoryDlg(MainWindow* win);
 
-  protected slots:
-	/**
-	 * @brief Create the selected primitive.
-	 */
+  protected:
+	/// Create primitive
 	void createPrimitive();
 
-	/**
-	 * @brief Set sphere position from clipboard.
-	 */
+	/// Set sphere position from clipboard
 	void setSpherePositionFromClipboard();
 
-	/**
-	 * @brief Set sphere position to origin.
-	 */
+	/// Set sphere position to origin
 	void setSpherePositionToOrigin();
 
-	/**
-	 * @brief Set coordinate system from selected object.
-	 */
+	/// Set coordinate system based on selected object
 	void setCoordinateSystemBasedOnSelectedObject();
 
-	/**
-	 * @brief Handle matrix text change.
-	 */
+	/// Handle matrix text change
 	void onMatrixTextChange();
 
-	/**
-	 * @brief Reset coordinate system to identity.
-	 */
+	/// Set CS matrix to identity
 	void setCSMatrixToIdentity();
 
-	/**
-	 * @brief Get the coordinate system matrix.
-	 *
-	 * @param[out] valid Whether the matrix is valid.
-	 * @return The coordinate system transformation matrix.
-	 */
+	/// Get CS matrix
 	ccGLMatrix getCSMatrix(bool& valid);
 
   protected:
-	//! Main window
+	/// Main window
 	MainWindow* m_win;
 };
 

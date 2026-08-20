@@ -20,21 +20,11 @@
 /**
  * @file ccInterpolationDlg.h
  *
- * @brief Interpolation dialog for configuring point cloud interpolation.
+ * @brief Interpolation dialog
  *
- * @details Dialog for setting up interpolation parameters when
- * interpolating point cloud data onto a grid.
- *
- * Interpolation methods:
- * - Natural neighbor
- * - IDW (Inverse Distance Weighting)
- * - Kriging
- *
- * Used when rasterizing point clouds or filling gaps in data.
+ * Dialog for configuring interpolation parameters.
  *
  * @author Daniel Girardeau-Montaut
- *
- * @see ccPointCloudInterpolator
  */
 
 #include <ui_interpolationDlg.h>
@@ -43,19 +33,9 @@
 #include <ccPointCloudInterpolator.h>
 
 /**
- * @brief Dialog for configuring interpolation parameters.
+ * @brief Interpolation dialog
  *
- * @details Provides a UI for setting up point cloud interpolation
- * parameters.
- *
- * Options:
- * - **Method**: The interpolation algorithm (natural neighbor, IDW, etc.)
- * - **Algorithm**: Specific algorithm parameters
- * - **Radius**: Search radius for interpolation
- * - **Normalization**: Whether to normalize results
- *
- * @extends QDialog
- * @extends Ui::InterpolationDlg
+ * Configure interpolation method and algorithm.
  */
 class ccInterpolationDlg : public QDialog
     , public Ui::InterpolationDlg
@@ -64,59 +44,26 @@ class ccInterpolationDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the interpolation dialog.
-	 *
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
 	 */
 	explicit ccInterpolationDlg(QWidget* parent = nullptr);
 
-	/**
-	 * @brief Get the interpolation method.
-	 *
-	 * @return Interpolation method.
-	 */
+	/// Get interpolation method
 	ccPointCloudInterpolator::Parameters::Method getInterpolationMethod() const;
-
-	/**
-	 * @brief Set the interpolation method.
-	 *
-	 * @param[in] method Method to use.
-	 */
+	/// Set interpolation method
 	void setInterpolationMethod(ccPointCloudInterpolator::Parameters::Method method);
 
-	/**
-	 * @brief Get the interpolation algorithm.
-	 *
-	 * @return Interpolation algorithm.
-	 */
+	/// Get interpolation algorithm
 	ccPointCloudInterpolator::Parameters::Algo getInterpolationAlgorithm() const;
-
-	/**
-	 * @brief Set the interpolation algorithm.
-	 *
-	 * @param[in] algo Algorithm to use.
-	 */
+	/// Set interpolation algorithm
 	void setInterpolationAlgorithm(ccPointCloudInterpolator::Parameters::Algo algo);
 
-	/**
-	 * @brief Set no normalization mode.
-	 *
-	 * @param[in] state Enable/disable normalization.
-	 */
+	/// Set no normalization
 	void setNoNormalization(bool state);
-
-	/**
-	 * @brief Check if normalization is disabled.
-	 *
-	 * @return true if normalization is disabled.
-	 */
+	/// Get no normalization
 	bool noNormalization() const;
 
-  protected slots:
-	/**
-	 * @brief Handle radius update.
-	 *
-	 * @param[in] value New radius value.
-	 */
-	void onRadiusUpdated(double value);
+  protected:
+	void onRadiusUpdated(double);
 };

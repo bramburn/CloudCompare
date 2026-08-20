@@ -19,17 +19,9 @@
 /**
  * @file ccExtrudePolylineDlg.h
  *
- * @brief Extrude polyline dialog for creating meshes from polylines.
+ * @brief Extrude polyline dialog
  *
- * @details Dialog for configuring parameters when extruding a 2D polyline
- * into a 3D mesh.
- *
- * Extrusion creates a mesh by extending the polyline in the perpendicular
- * direction (typically the Z axis):
- * - Height above: How far to extend upward from the polyline plane
- * - Depth below: How far to extend downward from the polyline plane
- *
- * This creates a "prism" or "wall" mesh from the polyline outline.
+ * Dialog for extruding polylines into meshes.
  *
  * @author CloudCompare project
  */
@@ -37,17 +29,9 @@
 #include <ui_extrudePolylineDlg.h>
 
 /**
- * @brief Dialog for polyline extrusion parameters.
+ * @brief Extrude polyline dialog
  *
- * @details Provides a UI for setting the extrusion height
- * and depth when converting a 2D polyline to a 3D mesh.
- *
- * The dialog allows setting:
- * - Height above the polyline plane
- * - Depth below the polyline plane
- *
- * @extends QDialog
- * @extends Ui::ExtrudePolylineDialog
+ * Configure polyline extrusion parameters.
  */
 class ccExtrudePolylineDlg : public QDialog
     , public Ui::ExtrudePolylineDialog
@@ -56,34 +40,19 @@ class ccExtrudePolylineDlg : public QDialog
 
   public:
 	/**
-	 * @brief Construct the extrusion dialog.
-	 *
-	 * @param[in] parent Parent widget.
+	 * @brief Create dialog
+	 * @param[in] parent Parent widget
 	 */
 	explicit ccExtrudePolylineDlg(QWidget* parent = nullptr);
 
-	/**
-	 * @brief Get height above the polyline.
-	 * @return Height value.
-	 */
+	/// Get height above
 	double heightAbove() const;
-
-	/**
-	 * @brief Get depth below the polyline.
-	 * @return Depth value.
-	 */
+	/// Get depth below
 	double depthBelow() const;
 
-	/**
-	 * @brief Set height above the polyline.
-	 * @param[in] value Height value.
-	 */
+	/// Set height above
 	void setHeightAbove(double value);
-
-	/**
-	 * @brief Set depth below the polyline.
-	 * @param[in] value Depth value.
-	 */
+	/// Set depth below
 	void setDepthBelow(double value);
 };
 
