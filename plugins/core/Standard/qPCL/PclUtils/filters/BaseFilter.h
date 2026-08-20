@@ -1,4 +1,13 @@
-#pragma once
+/**
+ * @file BaseFilter.h
+ *
+ * @brief PCL base filter class.
+ *
+ * @details Base abstract class for PCL filters with common
+ * functionality and error handling.
+ *
+ * @extends QObject
+ */
 
 //##########################################################################
 //#                                                                        #
