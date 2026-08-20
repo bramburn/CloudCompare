@@ -47,6 +47,17 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: 'Why this fork?',
+      collapsed: false,
+      link: {type: 'doc', id: 'fork/index'},
+      items: [
+        'fork/rust-migration',
+        'fork/experimental-workspace',
+        'fork/upstream-vs-fork',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Architecture',
       collapsed: true,
       link: {type: 'doc', id: 'architecture/overview'},

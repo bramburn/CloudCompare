@@ -19,13 +19,39 @@ tracks the upstream project at
 [`CloudCompare/CloudCompare`](https://github.com/CloudCompare/CloudCompare)
 and adds:
 
-- A pinned, opinionated build toolchain (CMake 4.3, Ninja, Qt 6.8, MSVC 14.44,
-  vcpkg for plugin dependencies).
-- A self-contained Windows build artifact (`build/qCC/deployqt/CloudCompare.exe`
-  with all Qt 6 runtime DLLs bundled) — no PATH manipulation needed.
-- A slim GitHub Actions matrix that mirrors the local plugin set so the
-  downloadable artifact always matches the docs.
-- This docs site, published to GitHub Pages.
+- **A Rust migration path** — `cc-rust/` is a Cargo workspace
+  with ported ScalarField, ICP, DgmOctree, coarse pre-alignment,
+  multi-resolution ICP, and a pure-Rust LAS reader. 43 unit tests
+  pass, validated end-to-end on the brook-avenue 7.5M-point `.las`.
+  The CXX FFI bridge to call the Rust from the C++ side is
+  opt-in via `cargo build --features cxx-ffi`. See the
+  [Rust migration](fork/rust-migration) page.
+- **An experimental workspace** — `experimental/` is a sandboxed
+  area for new features (templates, sessions, scenarios, an
+  8-state lifecycle, a promotion gate). Every non-trivial idea
+  is prototyped here before touching `qCC/`, `ccViewer/`, or
+  `libs/`. See the [Experimental workspace](fork/experimental-workspace)
+  page.
+- **Sentry crash reporting** — opt-in via `qCC/CC_USE_SENTRY=ON`
+  and the `SENTRY_DSN` env var. `sentry.dll` is copied to the
+  deploy bundle by CMake POST_BUILD.
+- **A pinned, opinionated build toolchain** (CMake 4.3, Ninja,
+  Qt 6.8.3, MSVC 14.44, vcpkg for plugin dependencies). The
+  wrapper scripts `cc-configure.cmd` and `cc-build.cmd` pin the
+  exact invocation. The build is reproducible.
+- **A self-contained Windows build artifact**
+  (`build/qCC/deployqt/CloudCompare.exe` with all Qt 6 runtime
+  DLLs and the Sentry DLL bundled) — copy to any Windows x64
+  box, runs.
+- **A slim GitHub Actions matrix** that mirrors the local
+  16-plugin set so the downloadable artifact always matches
+  the docs.
+- **An extensive Doxygen pass** — approaching 400 Doxygen-clean
+  commits for an AI-readable API surface.
+- **This docs site**, published to GitHub Pages.
+
+See the full [fork vs upstream comparison](fork/upstream-vs-fork)
+and the central [Why this fork?](fork/index) page.
 
 ## What this site is and isn't
 

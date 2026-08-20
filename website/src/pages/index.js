@@ -60,12 +60,18 @@ function HomepageHeader() {
             </div>
             <div className={styles.heroStats}>
               <div className={styles.heroStat}>
-                <span className={styles.heroStatValue}>18</span>
+                <span className={styles.heroStatValue}>16</span>
                 <span className={styles.heroStatLabel}>self-contained plugins</span>
               </div>
               <div className={styles.heroStat}>
-                <span className={styles.heroStatValue}>120M+</span>
-                <span className={styles.heroStatLabel}>points in 2 GB RAM</span>
+                <span className={styles.heroStatValue}>43</span>
+                <span className={styles.heroStatLabel}>Rust unit tests in cc-rust</span>
+              </div>
+              <div className={styles.heroStat}>
+                <span className={styles.heroStatValue}>230×</span>
+                <span className={styles.heroStatLabel}>
+                  kiddo KD-tree vs brute-force ICP (real .las)
+                </span>
               </div>
               <div className={styles.heroStat}>
                 <span className={styles.heroStatValue}>3</span>

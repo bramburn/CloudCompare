@@ -16,6 +16,37 @@ Homepage: https://cloudcompare.org
 > and adds a pinned toolchain, a self-contained Windows bundle, a
 > slim CI matrix, and a Docusaurus docs site.
 
+## Why this fork?
+
+The fork exists for one specific reason: **to add Rust to CloudCompare,
+incrementally, without breaking the upstream sync**. Everything else flows
+from that.
+
+| Fork adds | Upstream has | Why the fork does it |
+|---|---|---|
+| **`cc-rust/`** Cargo workspace — Rust ports of ScalarField, ICP, DgmOctree, coarse pre-alignment, multi-resolution ICP, LAS reader, with 40+ Rust unit tests | — (no Rust in upstream) | The Rust migration is the headline. Phase-by-phase ports in pure Rust, validated against CCCoreLib on real `.las` data, with a CXX FFI bridge planned to call the Rust from the C++ side. |
+| **`experimental/`** workspace with templates, sessions, scenarios, an 8-state lifecycle, and a `promotion.md` gate | — (no sandbox) | New features (including all Rust work) are prototyped in isolation before touching `qCC/`, `ccViewer/`, or the vendored libs. The status state machine forces measurement over optimism. |
+| **Sentry crash reporting** (`qCC/CC_USE_SENTRY=ON`, opt-in via `SENTRY_DSN`) | — | Field-deployable crash diagnostics for the surveying workflow. |
+| **Pinned toolchain**: CMake 4.3, Ninja, Qt 6.8.3, MSVC 14.44, vcpkg for plugin deps, all under `C:\dev\tools\` | Generic "any modern toolchain" | The Windows build is reproducible. No "works on my machine". The wrapper scripts at `tools/cc-configure.cmd` and `tools/cc-build.cmd` pin the exact CMake invocation. |
+| **Self-contained Windows bundle** at `build/qCC/deployqt/CloudCompare.exe` (Qt 6 + plugin DLLs + sentry.dll all alongside) | Generic CMake build | Copy the folder to any Windows x64 box; it runs. No PATH, no registry, no install. |
+| **16-plugin local set** (deliberately slim) | Full 30+ plugin catalogue | The fork opts out of plugins that need heavy external deps (PCL, FBX, OpenCASCADE, OpenCV) and three Qt 6.8.3-incompatible plugins (qCompass, qRANSAC_SD, qSRA). Each disabled plugin has a documented recipe in [`docs/fork/disabled-priority.md`](docs/fork/disabled-priority.md). |
+| **Docusaurus docs site** (this site, deployed to GitHub Pages) | Wiki only | The fork has a typed architecture map, a per-OS build guide, a cookbook of task recipes, and the four canonical surveying-company workflows (topo, monitoring, stockpile, as-built). |
+| **Extensive Doxygen pass** (the upstream-default `///` comments are sparse) | Sparse Doxygen | The fork is approaching 400 Doxygen-clean commits for an AI-readable API surface. |
+| **Slim GitHub Actions matrix** that mirrors the local plugin set | Full matrix | CI builds the same 16 plugins that ship locally, so the downloadable artifact matches the docs. |
+
+**The fork syncs with upstream regularly** (`git pull --ff-only origin master`),
+keeps the C++/Qt code unmodified in spirit, and pushes any general C++/Qt
+fixes back via PR. The Rust migration, the experimental workspace, and
+the docs site stay on `bramburn/master` only.
+
+## Fork-only deep-dives
+
+- [Why this fork](docs/fork/index.md) — the central page on fork vs upstream
+- [Rust migration](docs/fork/rust-migration.md) — what's ported, what's tested, what's next
+- [Experimental workspace](docs/fork/experimental-workspace.md) — the sandbox for new features
+- [Disabled-plugin priority](docs/fork/disabled-priority.md) — which plugins are off by default and how to re-enable
+- [Upstream vs fork](docs/fork/upstream-vs-fork.md) — feature-by-feature comparison table
+
 ## Documentation
 
 The full docs site is at
