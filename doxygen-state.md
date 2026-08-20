@@ -860,6 +860,16 @@ libs/
   - Added @struct documentation
   - Documented thread safety considerations
 
+- `docs: enhance MeshIO plugin headers Doxygen documentation` - 2026-08-27
+  - Enhanced mioAbstractLoader.h, mioUtils.h, IFC.h, glTF.h, PLY.h
+  - Added @file, @class, @namespace documentation
+  - Documented Assimp-to-CC conversion utilities
+
+- `docs: enhance cc3DFin plugin headers Doxygen documentation` - 2026-08-27
+  - Enhanced cc3DFin.h, cc3DFinDlg.h, cc3DFinDrawer.h, cc3DFinExpertDlg.h
+  - Added @file, @class, @brief documentation
+  - Documented facade detection and visualization
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
