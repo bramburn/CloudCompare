@@ -9,24 +9,42 @@
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        #
+// #                                                                        //
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
 
 /**
  * @file ccGraphicalSegmentationTool.h
  *
- * @brief Graphical segmentation tool
+ * @brief Interactive segmentation tool for point cloud extraction.
  *
- * Tool for segmenting entities by drawing polylines.
+ * @details Tool for segmenting point clouds by drawing selection regions
+ * directly on the 3D view.
+ *
+ * Segmentation modes:
+ * - **Polyline**: Draw freeform polygon to select points
+ * - **Rectangle**: Draw rectangular selection
+ *
+ * Actions:
+ * - **Segment in**: Keep points inside selection
+ * - **Segment out**: Remove points inside selection
+ *
+ * Features:
+ * - Multiple entity support
+ * - Undo/redo via polyline editing
+ * - Export segmentation polyline
+ * - Classification value assignment
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccOverlayDialog
+ * @see ccGraphicalSegmentationOptionsDlg
  */
-// Local
+
 #include <ccOverlayDialog.h>
 
 // qCC_db
@@ -45,9 +63,18 @@ class ccGLWindowInterface;
 class ccMainAppInterface;
 
 /**
- * @brief Graphical segmentation tool
+ * @brief Interactive segmentation tool for point clouds.
  *
- * Segment entities by drawing polylines.
+ * @details Provides an overlay dialog for graphical segmentation.
+ *
+ * Usage:
+ * 1. Add entities to segment
+ * 2. Choose polyline or rectangle mode
+ * 3. Draw selection region in 3D view
+ * 4. Segment in or segment out
+ * 5. Apply or cancel
+ *
+ * @extends ccOverlayDialog
  */
 class ccGraphicalSegmentationTool : public ccOverlayDialog
     , public Ui::GraphicalSegmentationDlg
@@ -55,135 +82,317 @@ class ccGraphicalSegmentationTool : public ccOverlayDialog
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Process states.
+	 */
+	enum ProcessStates
+	{
+		POLYLINE  = 1, //!< Polyline selection mode
+		RECTANGLE = 2, //!< Rectangle selection mode
+		PAUSED    = 32, //!< Tool paused
+		STARTED   = 64, //!< Tool started
+		RUNNING   = 128 //!< Processing
+	};
+
+	/**
+	 * @brief Construct the segmentation tool.
+	 *
+	 * @param[in] parent Parent widget.
+	 */
 	explicit ccGraphicalSegmentationTool(QWidget* parent);
-	//! Destructor
+
+	/**
+	 * @brief Destructor.
+	 */
 	virtual ~ccGraphicalSegmentationTool();
 
-	//! Adds an entity (and/or its children) to the 'to be segmented' pool
-	/** Warning: some entities may be rejected if they are
-	    locked, or can't be segmented this way.
-	    \return whether entity has been added to the pool or not
-	**/
+	/**
+	 * @brief Add an entity to the segmentation pool.
+	 *
+	 * @param[in] anObject Entity to add.
+	 * @param[in] silent Suppress error messages.
+	 *
+	 * @return true if entity was added.
+	 *
+	 * @note Locked entities may be rejected.
+	 */
 	bool addEntity(ccHObject* anObject, bool silent = false);
 
-	//! Returns the number of entites currently in the the 'to be segmented' pool
+	/**
+	 * @brief Get number of valid entities.
+	 *
+	 * @return Count of entities in pool.
+	 */
 	unsigned getNumberOfValidEntities() const;
 
-	//! Get a pointer to the polyline that has been segmented
+	/**
+	 * @brief Get the segmentation polyline.
+	 *
+	 * @return Polyline defining the selection.
+	 */
 	const ccPolyline* getPolyLine() const
 	{
 		return m_segmentationPoly;
 	}
 
-	//! Returns the active 'to be segmented' set
+	/**
+	 * @brief Get entities to segment.
+	 *
+	 * @return Set of entities.
+	 */
 	QSet<ccHObject*>& entities()
 	{
 		return m_toSegment;
 	}
-	//! Returns the active 'to be segmented' set (const version)
+
+	/**
+	 * @brief Get entities to segment (const).
+	 *
+	 * @return Set of entities.
+	 */
 	const QSet<ccHObject*>& entities() const
 	{
 		return m_toSegment;
 	}
 
 	// inherited from ccOverlayDialog
+	/**
+	 * @brief Link with a 3D window.
+	 */
 	virtual bool linkWith(ccGLWindowInterface* win) override;
+
+	/**
+	 * @brief Start the tool.
+	 */
 	virtual bool start() override;
+
+	/**
+	 * @brief Stop the tool.
+	 *
+	 * @param[in] accepted Whether to apply changes.
+	 */
 	virtual void stop(bool accepted) override;
 
-	//! Returns whether hidden parts should be delete after segmentation
+	/**
+	 * @brief Check if hidden parts should be deleted.
+	 *
+	 * @return true if deleting hidden parts.
+	 */
 	bool deleteHiddenParts() const
 	{
 		return m_deleteHiddenParts;
 	}
 
-	//! Remove entities from the 'to be segmented' pool
-	/** \warning 'unallocateVisibilityArray' will be called on all point clouds
-	    prior to be removed from the pool.
-	**/
+	/**
+	 * @brief Remove all entities from pool.
+	 *
+	 * @note Calls unallocateVisibilityArray on all clouds.
+	 */
 	void removeAllEntities();
 
-	//! Apply segmentation and update the database (helper)
+	/**
+	 * @brief Apply segmentation and update DB.
+	 *
+	 * @param[in] app Main application interface.
+	 * @param[out] newEntities Created entities.
+	 *
+	 * @return true on success.
+	 */
 	bool applySegmentation(ccMainAppInterface* app, ccHObject::Container& newEntities);
 
   signals:
+	/**
+	 * @brief Emitted when current SF changes.
+	 */
 	void currentScalarFieldUpdated();
 
-  protected:
-	void        segmentIn();
-	void        segmentOut();
-	void        exportSelection();
-	void        segment(bool keepPointsInside, ScalarType classificationValue = CCCoreLib::NAN_VALUE, bool exportSelection = false);
-	void        reset();
-	void        options();
-	void        apply();
-	void        applyAndDelete();
-	void        cancel();
-	inline void addPointToPolyline(int x, int y)
+  protected slots:
+	/**
+	 * @brief Segment points inside selection.
+	 */
+	void segmentIn();
+
+	/**
+	 * @brief Segment points outside selection.
+	 */
+	void segmentOut();
+
+	/**
+	 * @brief Export current selection.
+	 */
+	void exportSelection();
+
+	/**
+	 * @brief Perform segmentation.
+	 *
+	 * @param[in] keepPointsInside Keep or remove inside.
+	 * @param[in] classificationValue SF value for classification.
+	 * @param[in] exportSelection Export instead of segment.
+	 */
+	void segment(bool keepPointsInside, ScalarType classificationValue = CCCoreLib::NAN_VALUE, bool exportSelection = false);
+
+	/**
+	 * @brief Reset segmentation.
+	 */
+	void reset();
+
+	/**
+	 * @brief Show options dialog.
+	 */
+	void options();
+
+	/**
+	 * @brief Apply and keep result.
+	 */
+	void apply();
+
+	/**
+	 * @brief Apply and delete hidden parts.
+	 */
+	void applyAndDelete();
+
+	/**
+	 * @brief Cancel segmentation.
+	 */
+	void cancel();
+
+	/**
+	 * @brief Add point to polyline.
+	 *
+	 * @param[in] x Screen X.
+	 * @param[in] y Screen Y.
+	 */
+	void addPointToPolyline(int x, int y)
 	{
 		return addPointToPolylineExt(x, y, false);
 	}
+
+	/**
+	 * @brief Add point to polyline (extended).
+	 *
+	 * @param[in] x Screen X.
+	 * @param[in] y Screen Y.
+	 * @param[in] allowClicksOutside Allow outside viewport.
+	 */
 	void addPointToPolylineExt(int x, int y, bool allowClicksOutside);
-	void closePolyLine(int x = 0, int y = 0); // arguments for compatibility with ccGlWindow::rightButtonClicked signal
+
+	/**
+	 * @brief Close the polyline.
+	 *
+	 * @param[in] x Screen X.
+	 * @param[in] y Screen Y.
+	 */
+	void closePolyLine(int x = 0, int y = 0);
+
+	/**
+	 * @brief Close rectangle selection.
+	 */
 	void closeRectangle();
+
+	/**
+	 * @brief Update polyline preview.
+	 *
+	 * @param[in] x Screen X.
+	 * @param[in] y Screen Y.
+	 * @param[in] buttons Mouse buttons.
+	 */
 	void updatePolyLine(int x, int y, Qt::MouseButtons buttons);
+
+	/**
+	 * @brief Run segmentation.
+	 */
 	void run();
+
+	/**
+	 * @brief Stop running.
+	 */
 	void stopRunning();
-	void pauseSegmentationMode(bool);
+
+	/**
+	 * @brief Pause/resume segmentation.
+	 *
+	 * @param[in] state Pause state.
+	 */
+	void pauseSegmentationMode(bool state);
+
+	/**
+	 * @brief Set classification value.
+	 */
 	void setClassificationValue();
+
+	/**
+	 * @brief Set polyline selection mode.
+	 */
 	void doSetPolylineSelection();
+
+	/**
+	 * @brief Set rectangular selection mode.
+	 */
 	void doSetRectangularSelection();
+
+	/**
+	 * @brief Use existing polyline for selection.
+	 */
 	void doActionUseExistingPolyline();
+
+	/**
+	 * @brief Export segmentation polyline.
+	 */
 	void doExportSegmentationPolyline();
+
+	/**
+	 * @brief Toggle RGB and SF colors.
+	 */
 	void onToggleRGBAndSFColors();
 
-	//! To capture overridden shortcuts (pause button, etc.)
-	void onShortcutTriggered(int);
-
-	//! Prepare entity before removal
-	void prepareEntityForRemoval(ccHObject* entity, bool unallocateVisibilityArrays);
-
-	//! Whether to allow or not to exort the current segmentation polyline
-	void allowPolylineExport(bool state);
+	/**
+	 * @brief Handle shortcut trigger.
+	 *
+	 * @param[in] id Shortcut ID.
+	 */
+	void onShortcutTriggered(int id);
 
   protected:
-	//! Set of entities to be segmented
+	/**
+	 * @brief Prepare entity for removal.
+	 *
+	 * @param[in] entity Entity to remove.
+	 * @param[in] unallocateVisibilityArrays Unallocate visibility arrays.
+	 */
+	void prepareEntityForRemoval(ccHObject* entity, bool unallocateVisibilityArrays);
+
+	/**
+	 * @brief Allow polyline export.
+	 *
+	 * @param[in] state Enable/disable export.
+	 */
+	void allowPolylineExport(bool state);
+
+  private:
+	//! Entities to segment
 	QSet<ccHObject*> m_toSegment;
 
-	//! Whether something has changed or not (for proper 'cancel')
+	//! Something changed flag
 	bool m_somethingHasChanged;
 
-	//! Process states
-	enum ProcessStates
-	{
-		POLYLINE  = 1,
-		RECTANGLE = 2,
-		//...			= 4,
-		//...			= 8,
-		//...			= 16,
-		PAUSED  = 32,
-		STARTED = 64,
-		RUNNING = 128,
-	};
-
-	//! Current process state
+	//! Process state
 	unsigned m_state;
 
 	//! Segmentation polyline
 	ccPolyline* m_segmentationPoly;
-	//! Segmentation polyline vertices
+
+	//! Polyline vertices
 	ccPointCloud* m_polyVertices;
 
-	//! Selection mode
+	//! Rectangular selection mode
 	bool m_rectangularSelection;
 
-	//! Whether to delete hidden parts after segmentation
+	//! Delete hidden parts
 	bool m_deleteHiddenParts;
 
-	//! In export mode, entities in this set will be enabled/visible
+	//! Entities to enable on close
 	std::set<ccHObject*> m_enableOnClose;
 
-	//! In export mode, entities in this set will be disabled/invisible
+	//! Entities to disable on close
 	std::set<ccHObject*> m_disableOnClose;
 };

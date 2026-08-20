@@ -99,6 +99,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccTracePolylineTool.h ✅
 - qCC/ccWaveformDialog.h ✅
 - qCC/ccGraphicalSegmentationOptionsDlg.h ✅
+- qCC/ccGraphicalSegmentationTool.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -578,3 +579,8 @@ libs/
   - Enhanced @file with segmentation options overview
   - Added @class documentation
   - Documented static key methods for settings
+
+- `docs: enhance ccGraphicalSegmentationTool.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with graphical segmentation overview
+  - Added @class documentation
+  - Documented ProcessStates enum and all slots
