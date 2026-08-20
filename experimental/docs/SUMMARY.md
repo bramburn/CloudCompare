@@ -135,7 +135,13 @@ Sessions:
 - [`../docs/lifecycle.md`](lifecycle.md) — explicit status state machine.
 - [`../docs/promotion.md`](promotion.md) — promotion request template.
 
+## D8 end-to-end on real data (2026-08-20)
+
+See sessions/2026-08-20-d8-realdata-all-nns/. All 3 NNs (naive, kiddo, octree) recover the 0.5m translation exactly on the brook-avenue 49,729-point subsample. kiddo is **230x faster than naive** end-to-end (0.22s vs 46s). Combined with the synthetic-Gaussian bench at 50k (kiddo 1.1s vs octree 768s, **~700x**), the D8 trait is fully validated on both synthetic and real data.
+
 ## Next concrete steps (in priority order)
+
+1. **D8 (in priority order)
 
 1. **D8 — refactor cc-rust ICP to accept a custom NN** (unlocks
    end-to-end NN benchmark of kiddo vs octree vs naive on
