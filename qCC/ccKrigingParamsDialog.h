@@ -20,11 +20,24 @@
 /**
  * @file ccKrigingParamsDialog.h
  *
- * @brief Kriging parameters dialog
+ * @brief Kriging parameters dialog for configuring Kriging interpolation.
  *
- * Dialog for configuring Kriging interpolation parameters.
+ * @details Dialog for setting up parameters used by Kriging interpolation.
+ *
+ * Kriging is a geostatistical interpolation method that uses
+ * spatial autocorrelation to estimate values at unmeasured locations.
+ * It provides optimal (unbiased) estimates with minimum variance.
+ *
+ * Parameters typically include:
+ * - Variogram model (spherical, exponential, Gaussian)
+ * - Nugget (discontinuity at zero distance)
+ * - Sill (total variance)
+ * - Range (distance of spatial correlation)
  *
  * @author CloudCompare project
+ *
+ * @see ccRasterGrid::KrigingParams
+ * @see ccInterpolationDlg
  */
 
 // Qt
@@ -36,9 +49,18 @@
 class Ui_KrigingParamsDialog;
 
 /**
- * @brief Kriging parameters dialog
+ * @brief Dialog for configuring Kriging interpolation parameters.
  *
- * Configure Kriging interpolation parameters.
+ * @details Provides a UI for setting up Kriging parameters
+ * when using Kriging-based interpolation.
+ *
+ * Kriging parameters:
+ * - **Model type**: Variogram model (linear, spherical, exponential, Gaussian)
+ * - **Nugget**: Variance at zero distance (measurement error)
+ * - **Sill**: Total variance (nugget + structured variance)
+ * - **Range**: Distance beyond which correlation is zero
+ *
+ * @extends QDialog
  */
 class ccKrigingParamsDialog : public QDialog
 {
@@ -46,27 +68,32 @@ class ccKrigingParamsDialog : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] parent Parent widget
+	 * @brief Construct the Kriging parameters dialog.
+	 *
+	 * @param[in] parent Parent widget.
 	 */
 	ccKrigingParamsDialog(QWidget* parent = nullptr);
 
-	/// Destructor
+	/**
+	 * @brief Destructor.
+	 */
 	virtual ~ccKrigingParamsDialog();
 
 	/**
-	 * @brief Set parameters
-	 * @param[in] krigingParams Parameters
+	 * @brief Set the Kriging parameters.
+	 *
+	 * @param[in] krigingParams Parameters to set.
 	 */
 	void setParameters(const ccRasterGrid::KrigingParams& krigingParams);
 
 	/**
-	 * @brief Get parameters
-	 * @param[out] krigingParams Parameters
+	 * @brief Get the current Kriging parameters.
+	 *
+	 * @param[out] krigingParams Current parameters.
 	 */
 	void getParameters(ccRasterGrid::KrigingParams& krigingParams);
 
   protected:
-	/// UI
+	//! UI definition
 	Ui_KrigingParamsDialog* m_ui;
 };
