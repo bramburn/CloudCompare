@@ -1,0 +1,25 @@
+[package]
+name = "realdata_icp_stack"
+version = "0.1.0"
+edition = "2021"
+description = "End-to-end real-data ICP test using the recommended stack: coarse_align + icp_multi_resolution + trimmed ICP, on the brook-avenue .las scan."
+
+[[bin]]
+name = "realdata_icp_stack"
+path = "src/main.rs"
+
+[dependencies]
+# Use cc-rust directly (rather than the previous realdata-icp
+# session's `las_v1_pure_rust` re-export). The new session depends
+# on the post-fix cc-rust (D4 corrections + trimmed ICP +
+# multi-resolution + coarse_align).
+cc_rust = { path = "../../../cc-rust" }
+# The pure-Rust `las` crate lives in scenarios/.../01-pure-rust-las.
+las_v1_pure_rust = { path = "../../scenarios/2026-08-19-las-parsers/01-pure-rust-las" }
+clap = { version = "4", features = ["derive"] }
+env_logger = "0.11"
+log = "0.4"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
