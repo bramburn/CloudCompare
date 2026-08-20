@@ -33,6 +33,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccGraphicalTransformationTool.h ✅
 - qCC/ccIsolines.h ✅
 - qCC/ccPointPickingGenericInterface.h ✅
+- qCC/ccAlignDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -181,3 +182,9 @@ libs/
   - Enhanced @file and @class documentation
   - Documented picking flow and PickedItem structure
   - Added usage pattern example
+
+- `docs: enhance ccAlignDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with alignment algorithm overview
+  - Added @class documentation with parameters explanation
+  - Documented CC_SAMPLING_METHOD enum values
+  - Added @brief for all getters and slots
