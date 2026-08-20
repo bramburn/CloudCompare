@@ -15,6 +15,14 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file FooFilter.h
+ *
+ * @brief Example file filter.
+ *
+ * @details Template filter for file I/O operations.
+ */
+
 #pragma once
 
 #include "FileIOFilter.h"
