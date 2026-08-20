@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file PdmsParser.h
+ *
+ * @brief PDMS file parser and lexer.
+ *
+ * @details Lexer and parser for PDMS (Plant Design Management System) files.
+ *
+ * ## Usage
+ *
+ * @code
+ * // 1. Create session
+ * PdmsFileSession session(filename);
+ * // 2. Link parser
+ * PdmsParser parser;
+ * parser.linkWithSession(&session);
+ * // 3. Parse
+ * parser.parseSessionContent();
+ * // 4. Get result
+ * auto* object = parser.getLoadedObject();
+ * @endcode
+ */
+
 #ifndef PDMS_PARSER_HEADER
 #define PDMS_PARSER_HEADER
 
