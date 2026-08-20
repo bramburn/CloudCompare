@@ -15,6 +15,17 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file SIFTExtractDlg.h
+ *
+ * @brief SIFT keypoint extraction dialog.
+ *
+ * @details Dialog for configuring SIFT (Scale-Invariant
+ * Feature Transform) keypoint extraction parameters.
+ *
+ * @extends QDialog
+ */
+
 #ifndef Q_PCL_PLUGIN_SIFT_DLG_HEADER
 #define Q_PCL_PLUGIN_SIFT_DLG_HEADER
 
