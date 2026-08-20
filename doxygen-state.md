@@ -127,6 +127,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccBBox.h ✅
 - libs/qCC_db/ccColorScale.h ✅
 - libs/qCC_db/ccArray.h ✅
+- libs/qCC_db/ccBox.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -746,3 +747,8 @@ libs/
   - Enhanced @file with shareable array template overview
   - Added @class documentation
   - Documented safe memory operations
+
+- `docs: enhance ccBox.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with box primitive overview
+  - Added @class documentation
+  - Documented mesh structure and transformation
