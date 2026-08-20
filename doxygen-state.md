@@ -859,3 +859,8 @@ libs/
   - Enhanced @file with singleton template overview
   - Added @struct documentation
   - Documented thread safety considerations
+
+- `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with plugin UI manager overview
+  - Added @class documentation
+  - Documented menu and toolbar management
