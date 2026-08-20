@@ -100,6 +100,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccWaveformDialog.h ✅
 - qCC/ccGraphicalSegmentationOptionsDlg.h ✅
 - qCC/ccGraphicalSegmentationTool.h ✅
+- qCC/ccShortcutDialog.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -584,3 +585,8 @@ libs/
   - Enhanced @file with graphical segmentation overview
   - Added @class documentation
   - Documented ProcessStates enum and all slots
+
+- `docs: enhance ccShortcutDialog.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with keyboard shortcut dialogs overview
+  - Added @class documentation for ccShortcutEditDialog and ccShortcutDialog
+  - Documented conflict detection and settings persistence
