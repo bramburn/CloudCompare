@@ -59,6 +59,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccPointPropertiesDlg.h ✅
 - qCC/ccPrimitiveDistanceDlg.h ✅
 - qCC/ccPrimitiveFactoryDlg.h ✅
+- qCC/ccPtsSamplingDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -338,3 +339,8 @@ libs/
   - Enhanced @file with primitive creation overview
   - Added @class documentation
   - Documented coordinate system and matrix methods
+
+- `docs: enhance ccPtsSamplingDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with mesh sampling overview
+  - Added @class documentation
+  - Documented density vs total points modes
