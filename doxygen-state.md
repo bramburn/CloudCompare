@@ -1212,6 +1212,24 @@ libs/
 - `docs: enhance ReCapFilter.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with ReCap filter overview
 
+- `docs: enhance ExampleGLPlugin.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with Example GL plugin overview
+
+- `docs: enhance Bilateral.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with bilateral filter overview
+
+- `docs: enhance ExampleIOPlugin.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with Example I/O plugin overview
+
+- `docs: enhance FooFilter.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with Foo filter overview
+
+- `docs: enhance ExamplePlugin.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with Example standard plugin overview
+
+- `docs: enhance ActionA.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with Action A overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
