@@ -26,6 +26,8 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/pluginManager/ccPluginUIManager.cpp ✅
 - qCC/ccAdjustZoomDlg.h ✅
 - qCC/ccAdjustZoomDlg.cpp ✅
+- qCC/ccCropTool.h ✅
+- qCC/ccCropTool.cpp ✅
 
 ### In Progress
 - (next file to be selected)
@@ -145,3 +147,9 @@ libs/
   - Added @details about synchronized parameter controls
   - Documented slot handlers and conversion formulas
   - Added @par usage example
+
+- `docs: enhance ccCropTool.h and ccCropTool.cpp` - 2026-08-26
+  - Enhanced @file, @class documentation with architecture context
+  - Documented point cloud and mesh cropping algorithms
+  - Added @details about feature preservation (colors, SFs, materials)
+  - Added @note about rotation parameter usage
