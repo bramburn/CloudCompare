@@ -70,6 +70,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccRegistrationTools.h ✅
 - qCC/ccFitSphereDlg.h ✅
 - qCC/ccSORFilterDlg.h ✅
+- qCC/ccHistogramWindow.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -404,3 +405,8 @@ libs/
   - Enhanced @file with SOR algorithm overview
   - Added @class documentation
   - Documented KNN and nSigma parameters
+
+- `docs: enhance ccHistogramWindow.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with histogram visualization overview
+  - Added @class documentation
+  - Documented HISTOGRAM_COLOR_SCHEME and SFInteractionMode enums
