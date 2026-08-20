@@ -880,6 +880,31 @@ libs/
   - Added @brief to enums and structs
   - Documented plugin lifecycle
 
+- `docs: enhance LasExtraScalarField.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with extra scalar field overview
+  - Added @class and method documentation
+  - Documented data types and dimension sizes
+
+- `docs: enhance LASFields.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with LAS field definitions overview
+  - Added @brief to enums and constants
+  - Documented point format handling
+
+- `docs: enhance LASOpenDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with LAS open dialog overview
+  - Added @class documentation
+  - Documented field selection and auto-skip mode
+
+- `docs: enhance CopcLoader.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with COPC loader overview
+  - Added @class documentation
+  - Documented octree and chunk loading
+
+- `docs: enhance CopcVlrs.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with COPC VLR structures overview
+  - Added @struct documentation
+  - Documented VoxelKey and Entry
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
