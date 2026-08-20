@@ -960,6 +960,15 @@ libs/
 - `docs: enhance CorePoints.h Doxygen documentation` - 2026-08-27 (submodule)
   - Enhanced @file with core points descriptor overview
 
+- `docs: enhance DualCloudFeature.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with dual-cloud feature overview
+
+- `docs: enhance FeaturesInterface.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with feature interface overview
+
+- `docs: enhance NeighborhoodFeature.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with neighborhood feature overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
