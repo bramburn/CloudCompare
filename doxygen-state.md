@@ -94,6 +94,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccSelectChildrenDlg.h ✅
 - qCC/ccScalarFieldsManagerDlg.h ✅
 - qCC/ccStatisticalTestDlg.h ✅
+- qCC/ccSensorComputeDistancesDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -548,3 +549,8 @@ libs/
   - Enhanced @file with statistical test overview
   - Added @class documentation
   - Documented neighbor count and probability parameters
+
+- `docs: enhance ccSensorComputeDistancesDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with sensor distance computation overview
+  - Added @class documentation
+  - Documented squared distance option
