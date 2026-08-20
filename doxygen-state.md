@@ -123,6 +123,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/CCPluginAPI/ccPersistentSettings.h ✅
 - libs/CCPluginAPI/ccPickingListener.h ✅
 - libs/CCPluginAPI/ccQtHelpers.h ✅
+- libs/CCPluginAPI/ccRenderToFileDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -722,3 +723,8 @@ libs/
   - Enhanced @file with Qt helper utilities overview
   - Added @class documentation
   - Documented thread count optimization
+
+- `docs: enhance ccRenderToFileDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with render to file dialog overview
+  - Added @class documentation
+  - Documented export format options
