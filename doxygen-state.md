@@ -141,6 +141,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccFacet.h ✅
 - libs/qCC_db/ccGBLSensor.h ✅
 - libs/qCC_db/ccRasterGrid.h ✅
+- libs/qCC_db/ccIndexedTransformation.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -829,3 +830,8 @@ libs/
   - Enhanced @file with raster grid overview
   - Added @struct documentation for ccRasterCell and ccRasterGrid
   - Documented grid cell properties and interpolation
+
+- `docs: enhance ccIndexedTransformation.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with indexed transformation overview
+  - Added @class documentation
+  - Documented interpolation and matrix operations
