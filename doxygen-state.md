@@ -78,6 +78,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccExportCoordToSFDlg.h ✅
 - qCC/ccExtrudePolylineDlg.h ✅
 - qCC/ccInnerRect2DFinder.h ✅
+- qCC/ccQCustomPlot.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -452,3 +453,8 @@ libs/
   - Enhanced @file with inscribed rectangle algorithm overview
   - Added @class documentation
   - Documented Rect struct and process method
+
+- `docs: enhance ccQCustomPlot.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with QCustomPlot extensions overview
+  - Added @class documentation for QCPBarsWithText, QCPColoredBars
+  - Documented QCPSelectableCursor, QCPHiddenArea, QCPArrow

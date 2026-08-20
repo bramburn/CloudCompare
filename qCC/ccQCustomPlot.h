@@ -18,9 +18,21 @@
 /**
  * @file ccQCustomPlot.h
  *
- * @brief Custom QCustomPlot widgets
+ * @brief Custom QCustomPlot widgets for CloudCompare.
  *
- * Custom QCustomPlot extensions.
+ * @details Extension classes for QCustomPlot charting library.
+ *
+ * Classes:
+ * - **QCPBarsWithText**: Bar chart with text labels
+ * - **QCPColoredBars**: Bar chart with per-bar colors
+ * - **QCPSelectableCursor**: Selectable cursor/indicator
+ * - **QCPHiddenArea**: Greyed-out selectable region
+ * - **QCPArrow**: Selectable arrow handle
+ *
+ * These are used primarily by ccHistogramWindow for interactive
+ * histogram visualization with draggable range selectors.
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
  */
 
 #ifndef CC_QCUSTOMPLOT_HEADER
@@ -40,47 +52,66 @@
 // System
 #include <assert.h>
 
-/*********************************/
-/*** Custom QCustomPlot wigets ***/
-/*********************************/
-
 /**
  * @class QCPBarsWithText
  *
- * @brief QCustomPlot bars with text
+ * @brief Bar chart with optional text labels.
  *
- * Vertical bar with text.
+ * @extends QCPBars
  */
 class QCPBarsWithText : public QCPBars
 {
 	Q_OBJECT
 
   public:
+	/**
+	 * @brief Construct the bar with text.
+	 *
+	 * @param[in] keyAxis Key axis.
+	 * @param[in] valueAxis Value axis.
+	 */
 	QCPBarsWithText(QCPAxis* keyAxis, QCPAxis* valueAxis)
 	    : QCPBars(keyAxis, valueAxis)
 	    , m_textOnTheLeft(false)
 	{
 	}
 
+	/**
+	 * @brief Set the bar text.
+	 * @param[in] text Text to display.
+	 */
 	void setText(QString text)
 	{
 		m_text = QStringList(text);
 	}
+
+	/**
+	 * @brief Append text line.
+	 * @param[in] text Text to append.
+	 */
 	void appendText(QString text)
 	{
 		m_text.append(text);
 	}
+
+	/**
+	 * @brief Set text alignment.
+	 * @param[in] left Align text to the left.
+	 */
 	void setTextAlignment(bool left)
 	{
 		m_textOnTheLeft = left;
 	}
 
   protected:
+	//! Text lines
 	QStringList m_text;
-	bool        m_textOnTheLeft;
+
+	//! Text on the left side
+	bool m_textOnTheLeft;
 
 	// reimplemented virtual draw method
-	virtual void draw(QCPPainter* painter)
+	virtual void draw(QCPPainter* painter) override
 	{
 		if (!mKeyAxis || !mValueAxis)
 		{
@@ -118,12 +149,21 @@ class QCPBarsWithText : public QCPBars
 	}
 };
 
-//! QCustomPlot: colored histogram
+/**
+ * @class QCPColoredBars
+ *
+ * @brief Bar chart with per-bar custom colors.
+ *
+ * @extends QCPBars
+ */
 class QCPColoredBars : public QCPBars
 {
 	Q_OBJECT
 
   public:
+	/**
+	 * @brief Colored bar data.
+	 */
 	class QCPColoredBarData : public QCPBarsData
 	{
 	  public:
@@ -132,15 +172,29 @@ class QCPColoredBars : public QCPBars
 		{
 		}
 
-		QColor color;
+		QColor color; //!< Bar color
 	};
+
+	//! Colored bar data map
 	typedef QMultiMap<double, QCPColoredBarData> QCPColoredBarDataMap;
 
+	/**
+	 * @brief Construct colored bars.
+	 *
+	 * @param[in] keyAxis Key axis.
+	 * @param[in] valueAxis Value axis.
+	 */
 	QCPColoredBars(QCPAxis* keyAxis, QCPAxis* valueAxis)
 	    : QCPBars(keyAxis, valueAxis)
 	{
 	}
 
+	/**
+	 * @brief Set data without colors.
+	 *
+	 * @param[in] key Key values.
+	 * @param[in] value Value values.
+	 */
 	void setData(const QVector<double>& key, const QVector<double>& value)
 	{
 		// no colors? we switch to the standard QCPBars object
@@ -148,6 +202,13 @@ class QCPColoredBars : public QCPBars
 		QCPBars::setData(key, value);
 	}
 
+	/**
+	 * @brief Set data with colors.
+	 *
+	 * @param[in] key Key values.
+	 * @param[in] value Value values.
+	 * @param[in] colors Per-bar colors.
+	 */
 	void setData(const QVector<double>& key, const QVector<double>& value, const QVector<QColor>& colors)
 	{
 		Q_ASSERT(colors.size() == key.size());
@@ -168,13 +229,19 @@ class QCPColoredBars : public QCPBars
 		}
 	}
 
+	/**
+	 * @brief Get clip rectangle.
+	 */
 	inline QRect rect() const
 	{
 		return clipRect();
 	}
 
 	// reimplemented virtual methods:
-	virtual void clearData()
+	/**
+	 * @brief Clear all data.
+	 */
+	virtual void clearData() override
 	{
 		QCPBars::data().clear();
 		m_coloredData.clear();
@@ -182,7 +249,7 @@ class QCPColoredBars : public QCPBars
 
   protected:
 	// reimplemented virtual draw method
-	virtual void draw(QCPPainter* painter)
+	virtual void draw(QCPPainter* painter) override
 	{
 		// no colors?
 		if (m_coloredData.empty())
@@ -230,16 +297,28 @@ class QCPColoredBars : public QCPBars
 		}
 	}
 
+	//! Colored data map
 	QCPColoredBarDataMap m_coloredData;
 };
 
-//! QCustomPlot: selectable cursor interface
+/**
+ * @class QCPSelectableCursor
+ *
+ * @brief Selectable cursor interface for interactive charts.
+ *
+ * @extends QCPAbstractPlottable
+ */
 class QCPSelectableCursor : public QCPAbstractPlottable
 {
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Construct the selectable cursor.
+	 *
+	 * @param[in] keyAxis Key axis.
+	 * @param[in] valueAxis Value axis.
+	 */
 	explicit QCPSelectableCursor(QCPAxis* keyAxis, QCPAxis* valueAxis)
 	    : QCPAbstractPlottable(keyAxis, valueAxis)
 	    , mCurrentVal(0)
@@ -250,7 +329,12 @@ class QCPSelectableCursor : public QCPAbstractPlottable
 	{
 	}
 
-	//! Returns whether the item is "selectable" when the mouse is clicked at a given position
+	/**
+	 * @brief Check if selectable at position.
+	 *
+	 * @param[in] click Click position.
+	 * @return true if selectable.
+	 */
 	inline virtual bool isSelectable(QPoint click) const
 	{
 		if (mLastPos.x() < 0 || mLastPos.y() < 0)
@@ -260,18 +344,27 @@ class QCPSelectableCursor : public QCPAbstractPlottable
 	}
 
 	// getters
-	inline double currentVal() const
-	{
-		return mCurrentVal;
-	}
-	inline double minVal() const
-	{
-		return mMinVal;
-	}
-	inline double maxVal() const
-	{
-		return mMaxVal;
-	}
+	/**
+	 * @brief Get current value.
+	 */
+	inline double currentVal() const { return mCurrentVal; }
+
+	/**
+	 * @brief Get minimum value.
+	 */
+	inline double minVal() const { return mMinVal; }
+
+	/**
+	 * @brief Get maximum value.
+	 */
+	inline double maxVal() const { return mMaxVal; }
+
+	/**
+	 * @brief Get range.
+	 *
+	 * @param[out] minVal Minimum.
+	 * @param[out] maxVal Maximum.
+	 */
 	inline void range(double& minVal, double& maxVal) const
 	{
 		minVal = mMinVal;
@@ -279,46 +372,83 @@ class QCPSelectableCursor : public QCPAbstractPlottable
 	}
 
 	// setters
+	/**
+	 * @brief Set current value.
+	 *
+	 * @param[in] val Current value.
+	 */
 	inline void setCurrentVal(double val)
 	{
 		mCurrentVal = std::max(std::min(val, mMaxVal), mMinVal);
 	}
+
+	/**
+	 * @brief Set range.
+	 *
+	 * @param[in] minVal Minimum.
+	 * @param[in] maxVal Maximum.
+	 */
 	inline void setRange(double minVal, double maxVal)
 	{
 		mMinVal = minVal;
 		mMaxVal = maxVal;
 	}
 
-	//! Converts a pixel value (X) to the equivalent key
+	/**
+	 * @brief Convert pixel X to key.
+	 *
+	 * @param[in] pixX Pixel X coordinate.
+	 * @return Key value.
+	 */
 	inline double pixelToKey(int pixX) const
 	{
 		return keyAxis() ? keyAxis()->pixelToCoord(pixX) : 0;
 	}
-	//! Converts a pixel value (Y) to the equivalent value
+
+	/**
+	 * @brief Convert pixel Y to value.
+	 *
+	 * @param[in] pixY Pixel Y coordinate.
+	 * @return Value.
+	 */
 	inline double pixelToValue(int pixY) const
 	{
 		return valueAxis() ? valueAxis()->pixelToCoord(pixY) : 0;
 	}
 
 	// reimplemented virtual methods:
-	virtual void clearData()
-	{
-	}
-	double selectTest(const QPointF& pos, bool onlySelectable, QVariant* details = 0) const override
+	/**
+	 * @brief Clear data.
+	 */
+	virtual void clearData() override {}
+
+	/**
+	 * @brief Selection test.
+	 */
+	double selectTest(const QPointF& pos, bool onlySelectable, QVariant* details = nullptr) const override
 	{
 		return -1;
 	} // we don't use the QCP internal selection mechanism!
 
   protected:
 	// reimplemented virtual methods:
-	void drawLegendIcon(QCPPainter* painter, const QRectF& rect) const override
-	{
-	}
+	/**
+	 * @brief Draw legend icon.
+	 */
+	void drawLegendIcon(QCPPainter* painter, const QRectF& rect) const override {}
+
+	/**
+	 * @brief Get key range.
+	 */
 	QCPRange getKeyRange(bool& foundRange, QCP::SignDomain inSignDomain = QCP::sdBoth) const override
 	{
 		foundRange = false;
 		return QCPRange();
 	}
+
+	/**
+	 * @brief Get value range.
+	 */
 	QCPRange getValueRange(bool& foundRange, QCP::SignDomain inSignDomain = QCP::sdBoth, const QCPRange& inKeyRange = QCPRange()) const override
 	{
 		foundRange = false;
@@ -326,18 +456,38 @@ class QCPSelectableCursor : public QCPAbstractPlottable
 	}
 
 	// property members:
+	//! Current value
 	double mCurrentVal;
+
+	//! Range
 	double mMinVal, mMaxVal;
+
+	//! Last position
 	QPoint mLastPos;
-	int    mLastRadius;
+
+	//! Last radius
+	int mLastRadius;
 };
 
-//! QCustomPlot: greyed areas
+/**
+ * @class QCPHiddenArea
+ *
+ * @brief Greyed-out selectable region for range hiding.
+ *
+ * @extends QCPSelectableCursor
+ */
 class QCPHiddenArea : public QCPSelectableCursor
 {
 	Q_OBJECT
 
   public:
+	/**
+	 * @brief Construct hidden area.
+	 *
+	 * @param[in] leftSide Whether on the left side.
+	 * @param[in] keyAxis Key axis.
+	 * @param[in] valueAxis Value axis.
+	 */
 	explicit QCPHiddenArea(bool leftSide, QCPAxis* keyAxis, QCPAxis* valueAxis)
 	    : QCPSelectableCursor(keyAxis, valueAxis)
 	    , mLeftSide(leftSide)
@@ -352,7 +502,10 @@ class QCPHiddenArea : public QCPSelectableCursor
 
   protected:
 	// reimplemented virtual methods:
-	virtual void draw(QCPPainter* painter)
+	/**
+	 * @brief Draw the hidden area.
+	 */
+	virtual void draw(QCPPainter* painter) override
 	{
 		if (!keyAxis())
 			return;
@@ -363,7 +516,6 @@ class QCPHiddenArea : public QCPSelectableCursor
 		if (mLeftSide)
 		{
 			int x2 = static_cast<int>(ceil(currentPosd));
-			// assert(x2 >= rect.x());
 			if (x2 < rect.x())
 				return;
 			rect.setWidth(x2 - rect.x());
@@ -371,7 +523,6 @@ class QCPHiddenArea : public QCPSelectableCursor
 		else
 		{
 			int x1 = static_cast<int>(floor(currentPosd));
-			// assert(x1 >= rect.x());
 			if (x1 < rect.x())
 				return;
 			int newWidth = rect.width() - (x1 - rect.x());
@@ -415,16 +566,28 @@ class QCPHiddenArea : public QCPSelectableCursor
 		}
 	}
 
-	//! Whether the cursor is displayed on the left side or not
+	//! Whether on left side
 	bool mLeftSide;
 };
 
-//! QCustomPlot: small arrows at the bottom
+/**
+ * @class QCPArrow
+ *
+ * @brief Selectable arrow handle for range manipulation.
+ *
+ * @extends QCPSelectableCursor
+ */
 class QCPArrow : public QCPSelectableCursor
 {
 	Q_OBJECT
 
   public:
+	/**
+	 * @brief Construct arrow.
+	 *
+	 * @param[in] keyAxis Key axis.
+	 * @param[in] valueAxis Value axis.
+	 */
 	explicit QCPArrow(QCPAxis* keyAxis, QCPAxis* valueAxis)
 	    : QCPSelectableCursor(keyAxis, valueAxis)
 	{
@@ -438,7 +601,13 @@ class QCPArrow : public QCPSelectableCursor
 		setBrush(mBrush);
 	}
 
-	//! Sets triangle 'inside' color
+	/**
+	 * @brief Set arrow color.
+	 *
+	 * @param[in] r Red.
+	 * @param[in] g Green.
+	 * @param[in] b Blue.
+	 */
 	void setColor(int r, int g, int b)
 	{
 		mBrush.setColor(QColor(r, g, b, 196)); // semi-transparent color
@@ -447,7 +616,10 @@ class QCPArrow : public QCPSelectableCursor
 
   protected:
 	// reimplemented virtual methods:
-	virtual void draw(QCPPainter* painter)
+	/**
+	 * @brief Draw the arrow.
+	 */
+	virtual void draw(QCPPainter* painter) override
 	{
 		if (!keyAxis())
 			return;
@@ -469,9 +641,6 @@ class QCPArrow : public QCPSelectableCursor
 		// draw triangle(handle)
 		if (pen().style() != Qt::NoPen && pen().color().alpha() != 0)
 		{
-			// QPoint O(currentPos,rect.y() + rect.height() - r);
-			// QPoint T[3] = { O - QPoint(0,r), O + QPoint(r,r), O + QPoint(-r,r) };
-
 			QPoint O(currentPos, rect.y() + r);
 			QPoint T[3] = {O + QPoint(0, r), O - QPoint(r, r), O - QPoint(-r, r)};
 
