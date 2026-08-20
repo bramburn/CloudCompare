@@ -21,11 +21,27 @@
 /**
  * @file ccSORFilterDlg.h
  *
- * @brief SOR filter dialog
+ * @brief Statistical Outlier Removal filter dialog.
  *
- * Dialog for Statistical Outlier Removal filter.
+ * @details Dialog for configuring the Statistical Outlier Removal (SOR)
+ * filter parameters.
+ *
+ * SOR is a point cloud filtering method that removes outlier points
+ * based on statistical analysis of neighbor distances:
+ *
+ * 1. For each point, compute distances to its K nearest neighbors
+ * 2. Calculate the mean and standard deviation of these distances
+ * 3. Points with mean distance > (mean + n*stddev) are outliers
+ * 4. Remove or mark outliers
+ *
+ * Parameters:
+ * - **K nearest neighbors**: Number of neighbors to analyze
+ * - **n sigma**: Number of standard deviations for threshold
+ * - **Max thread count**: Parallelization limit
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccEntityAction::filterBySF()
  */
 
 #include <QDialog>
@@ -36,9 +52,16 @@ namespace Ui
 }
 
 /**
- * @brief SOR filter dialog
+ * @brief Dialog for Statistical Outlier Removal filter.
  *
- * Configure Statistical Outlier Removal filter.
+ * @details Provides a UI for setting up SOR filter parameters.
+ *
+ * The Statistical Outlier Removal filter:
+ * - Computes statistics on local point density
+ * - Removes points that are isolated from their neighbors
+ * - Preserves the overall structure while removing noise
+ *
+ * @extends QDialog
  */
 class ccSORFilterDlg : public QDialog
 {
@@ -46,30 +69,55 @@ class ccSORFilterDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] parent Parent widget
+	 * @brief Construct the SOR filter dialog.
+	 *
+	 * @param[in] parent Parent widget.
 	 */
 	explicit ccSORFilterDlg(QWidget* parent = nullptr);
 
-	/// Destructor
+	/**
+	 * @brief Destructor.
+	 */
 	~ccSORFilterDlg();
 
-	/// Get K nearest neighbors
+	/**
+	 * @brief Get K nearest neighbors count.
+	 * @return Number of neighbors to analyze.
+	 */
 	int KNN() const;
-	/// Set K nearest neighbors
+
+	/**
+	 * @brief Set K nearest neighbors count.
+	 * @param[in] knn Number of neighbors.
+	 */
 	void setKNN(int knn);
 
-	/// Get n sigma
+	/**
+	 * @brief Get n sigma threshold.
+	 * @return Number of standard deviations.
+	 */
 	double nSigma() const;
-	/// Set n sigma
+
+	/**
+	 * @brief Set n sigma threshold.
+	 * @param[in] nSigma Number of standard deviations.
+	 */
 	void setNSigma(double nSigma);
 
-	/// Set max thread count
+	/**
+	 * @brief Set maximum thread count.
+	 * @param[in] count Maximum threads.
+	 */
 	void setMaxThreadCount(int count);
-	/// Get max thread count
+
+	/**
+	 * @brief Get maximum thread count.
+	 * @return Maximum thread count.
+	 */
 	int maxThreadCount() const;
 
   private:
+	//! UI definition
 	Ui::SorFilterDialog* m_ui;
 };
 

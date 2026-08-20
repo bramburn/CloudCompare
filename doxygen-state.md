@@ -69,6 +69,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccRasterizeTool.h ✅
 - qCC/ccRegistrationTools.h ✅
 - qCC/ccFitSphereDlg.h ✅
+- qCC/ccSORFilterDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -398,3 +399,8 @@ libs/
   - Enhanced @file with sphere fitting overview
   - Added @class documentation
   - Documented fitting parameters
+
+- `docs: enhance ccSORFilterDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with SOR algorithm overview
+  - Added @class documentation
+  - Documented KNN and nSigma parameters
