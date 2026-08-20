@@ -40,6 +40,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccContourLinesGenerator.h ✅
 - qCC/ccColorGradientDlg.h ✅
 - qCC/ccBoundingBoxEditorDlg.h ✅
+- qCC/ccColorLevelsDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -225,3 +226,8 @@ libs/
   - Enhanced @file with bounding box editing features overview
   - Added @class documentation
   - Documented square mode, 2D mode, and base box constraints
+
+- `docs: enhance ccColorLevelsDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with color levels adjustment overview
+  - Added @class documentation
+  - Documented CHANNELS enum and ScaleColorFields method
