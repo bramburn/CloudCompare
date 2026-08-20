@@ -109,6 +109,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - ccViewer/ccviewerlog.h ✅
 - qCC/db_tree/ccPropertiesTreeDelegate.h ✅
 - qCC/db_tree/matrixDisplayDlg.h ✅
+- qCC/db_tree/sfEditDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -638,3 +639,8 @@ libs/
   - Enhanced @file with transformation matrix display overview
   - Added @class documentation
   - Documented export options
+
+- `docs: enhance sfEditDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with scalar field display editor overview
+  - Added @class documentation
+  - Documented display/saturation range controls
