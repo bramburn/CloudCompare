@@ -91,6 +91,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccVolumeCalcTool.h ✅
 - qCC/ccUnrollDlg.h ✅
 - qCC/ccSectionExtractionTool.h ✅
+- qCC/ccSelectChildrenDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -530,3 +531,8 @@ libs/
   - Enhanced @file with section extraction overview
   - Added @class documentation
   - Documented ImportedEntity template and pool management
+
+- `docs: enhance ccSelectChildrenDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with children selection overview
+  - Added @class documentation
+  - Documented type/name filtering methods
