@@ -131,6 +131,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccCircle.h ✅
 - libs/qCC_db/ccBasicTypes.h ✅
 - libs/qCC_db/ccAdvancedTypes.h ✅
+- libs/qCC_db/ccCameraSensor.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -769,3 +770,8 @@ libs/
   - Enhanced @file with advanced container types overview
   - Added @class documentation for all container types
   - Documented storage formats
+
+- `docs: enhance ccCameraSensor.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with camera sensor overview
+  - Added @class documentation
+  - Documented intrinsic parameters and distortion models
