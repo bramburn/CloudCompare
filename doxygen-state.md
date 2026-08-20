@@ -58,6 +58,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccPlaneEditDlg.h ✅
 - qCC/ccPointPropertiesDlg.h ✅
 - qCC/ccPrimitiveDistanceDlg.h ✅
+- qCC/ccPrimitiveFactoryDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -332,3 +333,8 @@ libs/
   - Enhanced @file with primitive distance options overview
   - Added @class documentation
   - Documented signed distance and bounded plane options
+
+- `docs: enhance ccPrimitiveFactoryDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with primitive creation overview
+  - Added @class documentation
+  - Documented coordinate system and matrix methods
