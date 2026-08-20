@@ -135,6 +135,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccChunk.h ✅
 - libs/qCC_db/ccClipBox.h ✅
 - libs/qCC_db/ccColorBasedEntityPicking.h ✅
+- libs/qCC_db/ccColorTypes.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -793,3 +794,8 @@ libs/
   - Enhanced @file with RGB-based picking mechanism overview
   - Added @class documentation
   - Documented color encoding and usage example
+
+- `docs: enhance ccColorTypes.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with color types overview
+  - Added @class documentation for RgbTpl and RgbaTpl templates
+  - Documented predefined colors and conversion functions

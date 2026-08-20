@@ -1,74 +1,21 @@
+#pragma once
+
 // ##########################################################################
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
+// #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
 // #                      COPYRIGHT: CloudCompare project                   #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
-
-/**
- * @file ccColorBasedEntityPicking.h
- *
- * @brief RGB color-based entity picking mechanism.
- *
- * @details Maps entities to unique RGB colors for picking in OpenGL.
- *
- * ## Overview
- *
- * Color-based picking uses unique colors as identifiers:
- * - Each entity gets a unique RGB color
- * - Render entities with their pick colors
- * - Read pixel color under cursor
- * - Look up entity from color
- *
- * ## Color Encoding
- *
- * 24-bit RGB color encodes entity ID:
- * - R: bits 0-7
- * - G: bits 8-15
- * - B: bits 16-23
- *
- * Maximum ~16 million unique IDs.
- *
- * ## Usage
- *
- * @code
- * // Create picker
- * ccColorBasedEntityPicking picker;
- *
- * // Register entities
- * for (auto* entity : entities) {
- *     ccColor::Rgb color = picker.registerEntity(entity);
- *     entity->setColor(color);
- * }
- *
- * // Render for picking
- * glClear(GL_COLOR_BUFFER_BIT);
- * for (auto* entity : entities) {
- *     ccColor::Rgb color = picker.ColorToID(entity->getColor());
- *     glColor3ub(color.r, color.g, color.b);
- *     entity->draw();
- * }
- *
- * // Get picked entity
- * GLint pixel[4];
- * glReadPixels(mouseX, mouseY, 1, 1, GL_RGBA, GL_INT, pixel);
- * ccColor::Rgb color(pixel[0], pixel[1], pixel[2]);
- * ccHObject* picked = picker.objectFromColor(color);
- * @endcode
- *
- * @author CloudCompare project
- */
-
-#pragma once
 
 #include "ccColorTypes.h"
 
@@ -78,37 +25,35 @@
 class ccHObject;
 
 /**
- * @brief Color-based entity picker.
+ * @file ccColorBasedEntityPicking.h
  *
- * @details Maps entities to RGB colors for OpenGL picking.
+ * @brief Color-based entity picking
  *
- * This technique works by:
- * 1. Assigning unique RGB colors to entities
- * 2. Rendering entities with their pick colors
- * 3. Reading pixel color under cursor
- * 4. Looking up entity from color
+ * RGB color-based entity picking mechanism.
+ *
+ * @author CloudCompare project
+ */
+
+/**
+ * @brief Color-based entity picker
+ *
+ * Maps entities to RGB colors for picking.
  */
 class ccColorBasedEntityPicking
 {
   public:
-	/**
-	 * @brief Unique ID type (24-bit RGB).
-	 */
+	/// Unique ID type (24-bit RGB colors)
 	typedef uint32_t ID_TYPE;
 
 	/**
-	 * @brief Default constructor.
+	 * @brief Default constructor
 	 */
 	ccColorBasedEntityPicking()
 	    : lastID(0)
 	{
 	}
 
-	/**
-	 * @brief Reset the picker.
-	 *
-	 * Clears all registered entities.
-	 */
+	/// Reset picker
 	void reset()
 	{
 		entities.clear();
@@ -117,13 +62,9 @@ class ccColorBasedEntityPicking
 	}
 
 	/**
-	 * @brief Convert ID to RGB color.
-	 *
-	 * @param[in] id Entity ID.
-	 *
-	 * @return RGB color encoding the ID.
-	 *
-	 * @note ID must be < 2^24.
+	 * @brief Convert ID to color
+	 * @param[in] id Entity ID
+	 * @return RGB color
 	 */
 	static inline ccColor::Rgb IDToColor(ID_TYPE id)
 	{
@@ -134,11 +75,9 @@ class ccColorBasedEntityPicking
 	}
 
 	/**
-	 * @brief Convert RGB color to ID.
-	 *
-	 * @param[in] col RGB color.
-	 *
-	 * @return Entity ID.
+	 * @brief Convert color to ID
+	 * @param[in] col RGB color
+	 * @return Entity ID
 	 */
 	static inline ID_TYPE ColorToID(const ccColor::Rgb& col)
 	{
@@ -148,13 +87,9 @@ class ccColorBasedEntityPicking
 	}
 
 	/**
-	 * @brief Register an entity.
-	 *
-	 * @param[in] obj Entity to register.
-	 *
-	 * @return Assigned RGB color.
-	 *
-	 * @note Returns existing color if already registered.
+	 * @brief Register entity
+	 * @param[in] obj Entity to register
+	 * @return Assigned color
 	 */
 	ccColor::Rgb registerEntity(ccHObject* obj)
 	{
@@ -167,33 +102,25 @@ class ccColorBasedEntityPicking
 		return IDToColor(lastID);
 	}
 
-	/**
-	 * @brief Get entity from color.
-	 *
-	 * @param[in] color RGB color.
-	 *
-	 * @return Entity, or nullptr if not found.
-	 */
+	//! Returns the entity corresponding to a given color
 	inline ccHObject* objectFromColor(ccColor::Rgb color) const
 	{
 		return entities[ColorToID(color)];
 	}
 
-	/**
-	 * @brief Get last assigned ID.
-	 */
+	//! Returns the last generated ID
 	inline ID_TYPE getLastID() const
 	{
 		return lastID;
 	}
 
-  private:
-	//! ID to entity map.
+  protected:
+	//! ID/object association map
 	QMap<ID_TYPE, ccHObject*> entities;
 
-	//! Entity to ID map.
+	//! object/ID association map
 	QMap<ccHObject*, ID_TYPE> ids;
 
-	//! Last assigned ID.
+	//! Biggest ID value used during the last picking/rendering process
 	ID_TYPE lastID;
 };
