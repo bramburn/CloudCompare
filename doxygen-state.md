@@ -128,6 +128,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccColorScale.h ✅
 - libs/qCC_db/ccArray.h ✅
 - libs/qCC_db/ccBox.h ✅
+- libs/qCC_db/ccCircle.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -752,3 +753,8 @@ libs/
   - Enhanced @file with box primitive overview
   - Added @class documentation
   - Documented mesh structure and transformation
+
+- `docs: enhance ccCircle.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with circle primitive overview
+  - Added @class documentation
+  - Documented radius and resolution
