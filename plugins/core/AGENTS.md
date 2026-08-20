@@ -2,6 +2,25 @@
 
 Shipped plugins (the ones enabled by CI and by `cc-configure.cmd`).
 
+> Read this **in addition to** the root [`AGENTS.md`](../AGENTS.md). The
+> root file has the build commands, plugin-development workflow, and
+> repo conventions. This file adds the **shipped-plugin**-specific
+> rules.
+
+## Hard rule: do not add new plugins here directly
+
+New plugin work goes to
+[`../experimental/AGENTS.md`](../experimental/AGENTS.md) first. A
+plugin only gets moved (copied) into `plugins/core/` once the user
+has explicitly graduated it. If you (the agent) are creating a
+brand-new `q<Name>/` folder under `Standard/`, `IO/`, or `GL/`,
+**stop** — that belongs in `plugins/experimental/q<Name>/`.
+
+Bug fixes, new menu actions on existing plugins, and small
+refactors stay here. Everything else graduates via the experimental
+gate. See [`../experimental/AGENTS.md`](../experimental/AGENTS.md) for
+the full workflow.
+
 ## Layout
 
 ```
