@@ -31,12 +31,30 @@
 /**
  * @file ccPointPairRegistrationDlg.h
  *
- * @brief Point pair registration dialog
+ * @brief Point pair registration dialog using Horn's algorithm.
  *
- * Dialog for Horn's point-pair registration algorithm.
+ * @details Dialog for interactive point-pair based registration
+ * (coarse alignment) of point clouds.
+ *
+ * Uses Horn's absolute orientation algorithm (1987) to compute
+ * the optimal rotation and translation between two point sets
+ * using corresponding point pairs.
+ *
+ * Features:
+ * - Interactive point picking on both clouds
+ * - Automatic sphere center detection for precise picking
+ * - RMS error reporting
+ * - Manual point entry
+ * - Point management (add, remove, clear)
+ *
+ * The user picks corresponding points on both the "aligned"
+ * (to-be-registered) and "reference" clouds.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see CCCoreLib::HornRegistrationTools
  */
+
 // Qt generated dialog
 #include <ui_pointPairRegistrationDlg.h>
 
@@ -47,9 +65,24 @@ class cc2DLabel;
 class ccPickingHub;
 
 /**
- * @brief Point pair registration dialog
+ * @brief Dialog for point-pair based registration.
  *
- * Horn's point-pair registration algorithm.
+ * @details Provides an interactive interface for coarse point cloud
+ * registration using corresponding point pairs.
+ *
+ * The registration uses Horn's absolute orientation algorithm
+ * to compute the rigid transformation (rotation + translation)
+ * that best aligns the two point sets.
+ *
+ * Usage:
+ * 1. Pick points on the aligned cloud
+ * 2. Pick corresponding points on the reference cloud
+ * 3. Click "Align" to compute the transformation
+ * 4. Apply to register the clouds
+ *
+ * @extends ccOverlayDialog
+ * @extends ccPickingListener
+ * @extends Ui::pointPairRegistrationDlg
  */
 class ccPointPairRegistrationDlg : public ccOverlayDialog
     , public ccPickingListener
@@ -58,103 +91,234 @@ class ccPointPairRegistrationDlg : public ccOverlayDialog
 	Q_OBJECT
 
   public:
-	//! Default constructor
+	/**
+	 * @brief Construct the registration dialog.
+	 *
+	 * @param[in] pickingHub Picking hub for point selection.
+	 * @param[in] app Main application interface.
+	 * @param[in] parent Parent widget.
+	 */
 	explicit ccPointPairRegistrationDlg(ccPickingHub* pickingHub, ccMainAppInterface* app, QWidget* parent = nullptr);
 
 	// inherited from ccOverlayDialog
+	/**
+	 * @brief Link with a 3D window.
+	 * @param[in] win Window to link with.
+	 * @return true on success.
+	 */
 	bool linkWith(ccGLWindowInterface* win) override;
+
+	/**
+	 * @brief Start the dialog.
+	 * @return true on success.
+	 */
 	bool start() override;
+
+	/**
+	 * @brief Stop the dialog.
+	 * @param[in] state Final state.
+	 */
 	void stop(bool state) override;
 
-	//! Inits dialog
+	/**
+	 * @brief Initialize with entities.
+	 *
+	 * @param[in] win 3D window.
+	 * @param[in] alignedEntities Entities to be aligned.
+	 * @param[in] referenceEntities Reference entities (optional).
+	 * @return true on success.
+	 */
 	bool init(ccGLWindowInterface*        win,
 	          const ccHObject::Container& alignedEntities,
 	          const ccHObject::Container* referenceEntities = nullptr);
 
-	//! Clears dialog
+	/**
+	 * @brief Clear all picked points.
+	 */
 	void clear();
 
-	//! Pauses the dialog
+	/**
+	 * @brief Pause/resume the dialog.
+	 * @param[in] state Pause state.
+	 */
 	void pause(bool state);
 
-	//! Adds a point to the 'align' set
+	/**
+	 * @brief Add a point to the aligned set.
+	 *
+	 * @param[in,out] P Point coordinates.
+	 * @param[in] entity Associated entity.
+	 * @param[in] shifted Whether point is shifted.
+	 * @return true on success.
+	 */
 	bool addAlignedPoint(CCVector3d& P, ccHObject* entity = nullptr, bool shifted = true);
-	//! Adds a point to the 'reference' set
+
+	/**
+	 * @brief Add a point to the reference set.
+	 *
+	 * @param[in,out] P Point coordinates.
+	 * @param[in] entity Associated entity.
+	 * @param[in] shifted Whether point is shifted.
+	 * @return true on success.
+	 */
 	bool addReferencePoint(CCVector3d& P, ccHObject* entity = nullptr, bool shifted = true);
 
-	//! Removes a point from the 'align' set
+	/**
+	 * @brief Remove a point from the aligned set.
+	 *
+	 * @param[in] index Point index.
+	 * @param[in] autoRemoveDualPoint Remove corresponding ref point.
+	 */
 	void removeAlignedPoint(int index, bool autoRemoveDualPoint = true);
-	//! Removes a point from the 'reference' set
+
+	/**
+	 * @brief Remove a point from the reference set.
+	 *
+	 * @param[in] index Point index.
+	 * @param[in] autoRemoveDualPoint Remove corresponding aligned point.
+	 */
 	void removeRefPoint(int index, bool autoRemoveDualPoint = true);
 
-	//! Inherited from ccPickingListener
+	// inherited from ccPickingListener
+	/**
+	 * @brief Handle picked item.
+	 *
+	 * @param[in] pi Picked item information.
+	 */
 	void onItemPicked(const PickedItem& pi) override;
 
-  protected:
-	//! Slot called to change to-be-aligned entities visibility
-	void showAlignedEntities(bool);
-	//! Slot called to change reference entities visibility
-	void showReferenceEntities(bool);
+  protected slots:
+	/**
+	 * @brief Toggle aligned entities visibility.
+	 * @param[in] state Visibility state.
+	 */
+	void showAlignedEntities(bool state);
 
-	//! Slot called to add a manual point to the 'align' set
+	/**
+	 * @brief Toggle reference entities visibility.
+	 * @param[in] state Visibility state.
+	 */
+	void showReferenceEntities(bool state);
+
+	/**
+	 * @brief Add manual point to aligned set.
+	 */
 	void addManualAlignedPoint();
-	//! Slot called to add a manual point to the 'reference' set
+
+	/**
+	 * @brief Add manual point to reference set.
+	 */
 	void addManualRefPoint();
 
-	//! Slot called to remove the last point on the 'align' stack
+	/**
+	 * @brief Remove last aligned point.
+	 */
 	void unstackAligned();
-	//! Slot called to remove the last point on the 'reference' stack
+
+	/**
+	 * @brief Remove last reference point.
+	 */
 	void unstackRef();
 
-	//! Slot called when a "delete" button is pushed
+	/**
+	 * @brief Handle delete button.
+	 */
 	void onDelButtonPushed();
 
-	//! Updates the registration info and buttons states
+	/**
+	 * @brief Update registration info.
+	 */
 	void updateAlignInfo();
 
+	/**
+	 * @brief Apply the transformation.
+	 */
 	void apply();
+
+	/**
+	 * @brief Perform alignment.
+	 */
 	void align();
+
+	/**
+	 * @brief Reset the dialog.
+	 */
 	void reset();
+
+	/**
+	 * @brief Cancel and close.
+	 */
 	void cancel();
 
   protected:
-	//! Enables (or not) buttons depending on the number of points in both lists
+	/**
+	 * @brief Handle point count change.
+	 */
 	void onPointCountChanged();
 
-	//! Calls the registration routine
+	/**
+	 * @brief Call the registration algorithm.
+	 *
+	 * @param[out] trans Transformation result.
+	 * @param[out] rms RMS error.
+	 * @param[in] autoUpdateTab Auto-update table.
+	 * @param[out] withUmeyama Whether Umeyama was used.
+	 * @param[out] report Optional report strings.
+	 * @return true on success.
+	 */
 	bool callRegistration(CCCoreLib::PointProjectionTools::Transformation& trans,
 	                      double&                                          rms,
 	                      bool                                             autoUpdateTab,
 	                      bool&                                            withUmeyama,
 	                      QStringList*                                     report = nullptr);
 
-	//! Clears the RMS rows
+	/**
+	 * @brief Clear RMS columns.
+	 */
 	void clearRMSColumns();
 
-	//! Adds a point to one of the table (ref./to-be-aligned)
+	/**
+	 * @brief Add point to table widget.
+	 *
+	 * @param[in] tableWidget Table to add to.
+	 * @param[in] rowIndex Row index.
+	 * @param[in] P Point coordinates.
+	 * @param[in] pointLabel Label text.
+	 */
 	void addPointToTable(QTableWidget*     tableWidget,
 	                     int               rowIndex,
 	                     const CCVector3d& P,
 	                     QString           pointLabel);
 
-	//! Converts a picked point to a sphere center (if necessary)
-	/** \param P input point (may be converted to a sphere center)
-	    \param entity associated entity
-	    \param sphereRadius the detected spherer radius (or -1 if no sphere)
-	    \return whether the point can be used or not
-	**/
+	/**
+	 * @brief Convert picked point to sphere center.
+	 *
+	 * @param[in,out] P Point coordinates.
+	 * @param[in] entity Associated entity.
+	 * @param[out] sphereRadius Detected sphere radius.
+	 * @return true if point can be used.
+	 */
 	bool convertToSphereCenter(CCVector3d& P, ccHObject* entity, PointCoordinateType& sphereRadius);
 
-	//! Resets the displayed title (3D view)
+	/**
+	 * @brief Reset the displayed title.
+	 */
 	void resetTitle();
 
-	//! Entity original context
+	/**
+	 * @brief Entity original context for restoration.
+	 */
 	struct EntityContext
 	{
-		//! Default constructor
+		/**
+		 * @brief Construct entity context.
+		 * @param[in] ent Entity.
+		 */
 		explicit EntityContext(ccHObject* ent);
 
-		//! Restores cloud original state
+		/**
+		 * @brief Restore original state.
+		 */
 		void restore();
 
 		ccHObject*          entity;
@@ -164,11 +328,20 @@ class ccPointPairRegistrationDlg : public ccOverlayDialog
 		bool                wasSelected;
 	};
 
-	//! Set of contexts
+	/**
+	 * @brief Set of entity contexts.
+	 */
 	struct EntityContexts : public QMap<ccHObject*, EntityContext>
 	{
+		/**
+		 * @brief Fill from entities.
+		 * @param[in] entities Entities to store.
+		 */
 		void fill(const ccHObject::Container& entities);
 
+		/**
+		 * @brief Restore all entities.
+		 */
 		void restoreAll()
 		{
 			for (EntityContext& ctx : *this)
@@ -180,7 +353,13 @@ class ccPointPairRegistrationDlg : public ccOverlayDialog
 		double     scale = 1.0;
 	};
 
-	//! Removes a label (and restore its associated label if any)
+	/**
+	 * @brief Remove a label.
+	 *
+	 * @param[in,out] points Point cloud.
+	 * @param[in] childIndex Child index.
+	 * @param[in] entities Entity contexts.
+	 */
 	void removeLabel(ccPointCloud&         points,
 	                 unsigned              childIndex,
 	                 const EntityContexts& entities);
@@ -189,16 +368,16 @@ class ccPointPairRegistrationDlg : public ccOverlayDialog
 	//! To-be-aligned entities
 	EntityContexts m_alignedEntities;
 
-	//! to-be-aligned points set
+	//! To-be-aligned points set
 	ccPointCloud m_alignedPoints;
 
-	//! Reference entities (if any)
+	//! Reference entities
 	EntityContexts m_referenceEntities;
 
 	//! Reference points set
 	ccPointCloud m_refPoints;
 
-	//! Whether the dialog is paused or not
+	//! Whether paused
 	bool m_paused;
 
 	//! Picking hub

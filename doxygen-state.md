@@ -64,6 +64,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccKrigingParamsDialog.h ✅
 - qCC/ccLabelingDlg.h ✅
 - qCC/ccLibAlgorithms.h ✅
+- qCC/ccPointPairRegistrationDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -368,3 +369,8 @@ libs/
   - Enhanced @file with algorithm functions overview
   - Added namespace documentation
   - Documented geometric characteristics and scale matching
+
+- `docs: enhance ccPointPairRegistrationDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with Horn's algorithm overview
+  - Added @class documentation
+  - Documented EntityContext struct and registration flow
