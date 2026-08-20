@@ -19,6 +19,15 @@
 
 #include "ccStdPluginInterface.h"
 
+/**
+ * @file ExamplePlugin.h
+ *
+ * @brief Example standard plugin template.
+ *
+ * @details Template plugin demonstrating CloudCompare
+ * standard plugin integration.
+ */
+
 //! Example qCC plugin
 /** Replace 'ExamplePlugin' by your own plugin class name throughout and then
 	check 'ExamplePlugin.cpp' for more directions.
