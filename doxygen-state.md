@@ -82,6 +82,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccScalarFieldFromColorDlg.h ✅
 - qCC/ccRegistrationDlg.h ✅
 - qCC/ccEnvelopeExtractorDlg.h ✅
+- qCC/ccEntitySelectionDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -476,3 +477,8 @@ libs/
   - Enhanced @file with debug visualization overview
   - Added @class documentation
   - Documented step-by-step algorithm visualization
+
+- `docs: enhance ccEntitySelectionDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with entity selection overview
+  - Added @class documentation with usage example
+  - Documented static convenience methods
