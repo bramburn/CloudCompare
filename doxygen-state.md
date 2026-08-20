@@ -130,6 +130,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccBox.h ✅
 - libs/qCC_db/ccCircle.h ✅
 - libs/qCC_db/ccBasicTypes.h ✅
+- libs/qCC_db/ccAdvancedTypes.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -763,3 +764,8 @@ libs/
 - `docs: enhance ccBasicTypes.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with basic type definitions overview
   - Documented CompressedNormType
+
+- `docs: enhance ccAdvancedTypes.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with advanced container types overview
+  - Added @class documentation for all container types
+  - Documented storage formats
