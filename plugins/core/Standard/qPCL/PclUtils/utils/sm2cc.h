@@ -1,5 +1,11 @@
-#pragma once
-
+/**
+ * @file sm2cc.h
+ *
+ * @brief PCL to CloudCompare cloud converter.
+ *
+ * @details Utility for converting PCL PointCloud to
+ * CloudCompare point cloud format.
+ */
 //##########################################################################
 //#                                                                        #
 //#                       CLOUDCOMPARE PLUGIN: qPCL                        #
