@@ -134,6 +134,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccCameraSensor.h ✅
 - libs/qCC_db/ccChunk.h ✅
 - libs/qCC_db/ccClipBox.h ✅
+- libs/qCC_db/ccColorBasedEntityPicking.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -787,3 +788,8 @@ libs/
   - Enhanced @file with clipping box overview
   - Added @class documentation for ccClipBox and ccClipBoxPart
   - Documented interactive components and flagPointsInside
+
+- `docs: enhance ccColorBasedEntityPicking.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with RGB-based picking mechanism overview
+  - Added @class documentation
+  - Documented color encoding and usage example
