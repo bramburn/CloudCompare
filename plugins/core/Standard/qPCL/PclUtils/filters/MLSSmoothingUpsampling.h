@@ -1,5 +1,11 @@
-#pragma once
-
+/**
+ * @file MLSSmoothingUpsampling.h
+ *
+ * @brief MLS smoothing and upsampling filter.
+ *
+ * @details Filter for Moving Least Squares smoothing
+ * and point cloud upsampling using PCL.
+ */
 //##########################################################################
 //#                                                                        #
 //#                       CLOUDCOMPARE PLUGIN: qPCL                        #
