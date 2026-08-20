@@ -15,6 +15,17 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file StatisticalOutliersRemoverDlg.h
+ *
+ * @brief Statistical outliers remover dialog.
+ *
+ * @details Dialog for configuring statistical outlier
+ * removal parameters.
+ *
+ * @extends QDialog
+ */
+
 #ifndef Q_PCL_PLUGIN_STATISTICAL_OUTLIERS_REMOVER_DIALOG_HEADER
 #define Q_PCL_PLUGIN_STATISTICAL_OUTLIERS_REMOVER_DIALOG_HEADER
 
