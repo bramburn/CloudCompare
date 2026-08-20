@@ -37,6 +37,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccApplyTransformationDlg.h ✅
 - qCC/ccClippingBoxTool.h ✅
 - qCC/ccComputeOctreeDlg.h ✅
+- qCC/ccContourLinesGenerator.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -207,3 +208,8 @@ libs/
   - Enhanced @file with octree overview
   - Added @class documentation
   - Documented ComputationMode enum
+
+- `docs: enhance ccContourLinesGenerator.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with contour generation overview
+  - Added @class documentation with usage example
+  - Documented Parameters struct fields
