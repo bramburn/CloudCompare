@@ -1,3 +1,24 @@
+/**
+ * @file LasSaveDialog.h
+ *
+ * @brief LAS file save dialog.
+ *
+ * @details Dialog for configuring LAS/LAZ file export options.
+ *
+ * ## Features
+ *
+ * - LAS version selection (1.2 - 1.4)
+ * - Point format selection
+ * - Scale and offset configuration
+ * - RGB export
+ * - Extra scalar fields
+ * - Waveform data
+ *
+ * @extends QDialog
+ *
+ * @author Thomas Montaigu
+ */
+
 #pragma once
 
 // ##########################################################################
@@ -5,8 +26,7 @@
 // #                CLOUDCOMPARE PLUGIN: LAS-IO Plugin                      #
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
-// #  it under the terms of the GNU General Public License as published by  #
-// #  the Free Software Foundation; version 2 of the License.               #
+// #  the Free Software Foundation; version 2 or the License.               #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
 // #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
@@ -14,7 +34,7 @@
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
 // #                   COPYRIGHT: Thomas Montaigu                           #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
 
 #include "LasDetails.h"
@@ -36,11 +56,11 @@ class MappingLabel;
 class LasExtraScalarFieldCard;
 
 /**
- * @class LasSaveDialog
+ * @brief LAS save dialog.
  *
- * @brief LAS save dialog
+ * @details Dialog for configuring LAS file export options.
  *
- * Configure LAS/LAZ file export options.
+ * @extends QDialog
  */
 class LasSaveDialog : public QDialog
     , public Ui::LASSaveDialog
@@ -48,81 +68,205 @@ class LasSaveDialog : public QDialog
 	Q_OBJECT
 
   public:
-	/// Constructor
+	/**
+	 * @brief Create dialog.
+	 *
+	 * @param[in] cloud Point cloud to save.
+	 * @param[in] parent Parent widget.
+	 */
 	explicit LasSaveDialog(ccPointCloud* cloud, QWidget* parent = nullptr);
 
-	/// Set the file version and the point format
+	/**
+	 * @brief Set version and point format.
+	 *
+	 * @param[in] versionAndFmt LAS version.
+	 */
 	void setVersionAndPointFormat(const LasDetails::LasVersion versionAndFmt);
-	/// Set scale that would offer the user the best precision
+
+	/**
+	 * @brief Set optimal scale.
+	 *
+	 * @param[in] scale Optimal scale factor.
+	 * @param[in] autoCheck Auto-check checkbox.
+	 */
 	void setOptimalScale(const CCVector3d& scale, bool autoCheck = false);
-	/// Set the scale that was used in the original file
-	/// to save comes from.
+
+	/**
+	 * @brief Set original scale from file.
+	 *
+	 * @param[in] scale Original scale factor.
+	 * @param[in] canUseScale Can use original scale.
+	 * @param[in] autoCheck Auto-check checkbox.
+	 */
 	void setOriginalScale(const CCVector3d& scale, bool canUseScale, bool autoCheck = true);
-	/// Set the extra LAS scalar fields saved from the original file.
+
+	/**
+	 * @brief Set extra scalar fields.
+	 *
+	 * @param[in] extraScalarFields Extra fields from original file.
+	 */
 	void setExtraScalarFields(const std::vector<LasExtraScalarField>& extraScalarFields);
 
-	/// Offsets
+	/**
+	 * @brief Offset type enumeration.
+	 */
 	enum Offset
 	{
-		GLOBAL_SHIFT,
-		ORIGN_LAS_OFFSET,
-		MIN_BB_CORNER,
-		BB_CENTER,
-		CUSTOM_LAS_OFFSET
+		GLOBAL_SHIFT,    //!< Global shift.
+		ORIGN_LAS_OFFSET, //!< Original LAS offset.
+		MIN_BB_CORNER,    //!< Min bounding box corner.
+		BB_CENTER,       //!< Bounding box center.
+		CUSTOM_LAS_OFFSET //!< Custom offset.
 	};
 
-	/// Sets the available offsets
+	/**
+	 * @brief Set available offsets.
+	 *
+	 * @param[in] availableOffsets Available offset options.
+	 * @param[in] selectedOffsetType Selected offset type.
+	 */
 	void setOffsets(const QMap<Offset, CCVector3d>& availableOffsets, Offset selectedOffsetType);
 
-	/// Returns the point format currently selected
+	/**
+	 * @brief Get selected point format.
+	 *
+	 * @return Point format version.
+	 */
 	uint8_t selectedPointFormat() const;
-	/// Returns the version currently selected
+
+	/**
+	 * @brief Get selected version.
+	 *
+	 * @param[out] versionMajor Version major.
+	 * @param[out] versionMinor Version minor.
+	 */
 	void selectedVersion(uint8_t& versionMajor, uint8_t& versionMinor) const;
-	/// Returns the currently selected scale
+
+	/**
+	 * @brief Get chosen scale.
+	 *
+	 * @return Scale vector.
+	 */
 	CCVector3d chosenScale() const;
-	/// Returns whether the user wants to save RGB
+
+	/**
+	 * @brief Check if should save RGB.
+	 *
+	 * @return true if RGB should be saved.
+	 */
 	bool shouldSaveRGB() const;
-	/// Returns whether the user wants to save the Waveforms
+
+	/**
+	 * @brief Check if should save waveforms.
+	 *
+	 * @return true if waveforms should be saved.
+	 */
 	bool shouldSaveWaveform() const;
-	/// Returns whether the user wants to save normals as extra las scalar field
+
+	/**
+	 * @brief Check if should save normals.
+	 *
+	 * @return true if normals should be saved as extra field.
+	 */
 	bool shouldSaveNormalsAsExtraScalarField() const;
-	/// Returns the chosen offset
+
+	/**
+	 * @brief Get chosen offset.
+	 *
+	 * @param[out] offsetType Offset type.
+	 *
+	 * @return Offset vector.
+	 */
 	CCVector3d chosenOffset(Offset& offsetType) const;
-	/// Returns the vector of LAS scalar fields the user wants to save.
-	///
-	/// Each LAS scalar fields is mapped to an existing point cloud's ccScalarField.
-	/// The mapping is done by us and the user.
-	std::vector<LasScalarField>      fieldsToSave() const;
+
+	/**
+	 * @brief Get scalar fields to save.
+	 *
+	 * @return Scalar fields to save.
+	 */
+	std::vector<LasScalarField> fieldsToSave() const;
+
+	/**
+	 * @brief Get extra fields to save.
+	 *
+	 * @return Extra fields to save.
+	 */
 	std::vector<LasExtraScalarField> extraFieldsToSave() const;
 
   public Q_SLOTS:
-	void                     handleSelectedVersionChange(const QString&);
-	void                     handleSelectedPointFormatChange(int index);
-	void                     handleComboBoxChange(int index);
-	void                     handleCustomScaleButtontoggled(bool checked);
+	/**
+	 * @brief Handle version change.
+	 */
+	void handleSelectedVersionChange(const QString&);
+
+	/**
+	 * @brief Handle point format change.
+	 */
+	void handleSelectedPointFormatChange(int index);
+
+	/**
+	 * @brief Handle combo box change.
+	 */
+	void handleComboBoxChange(int index);
+
+	/**
+	 * @brief Handle custom scale toggle.
+	 */
+	void handleCustomScaleButtontoggled(bool checked);
+
+	/**
+	 * @brief Add extra scalar field card.
+	 *
+	 * @return New card widget.
+	 */
 	LasExtraScalarFieldCard* addExtraScalarFieldCard();
 
   private:
+	/**
+	 * @brief Create extra field card.
+	 *
+	 * @return New card widget.
+	 */
 	LasExtraScalarFieldCard* createCard() const;
-	/// This will scan the the point cloud scalar fields
-	/// and create a default scalar field extra card if the field is
-	/// neither selected as a standard field nor as an extra field.
+
+	/**
+	 * @brief Assign leftover scalar fields.
+	 *
+	 * Assigns unassigned SFs as extra fields.
+	 */
 	void assignLeftoverScalarFieldsAsExtra();
+
+	/**
+	 * @brief Unassign default fields.
+	 */
 	void unassignDefaultFields();
+
+	/**
+	 * @brief Check auto-assignment preference.
+	 *
+	 * @return true if should auto-assign.
+	 */
 	bool shouldAutomaticallyAssignLeftoverSFsAsExtra() const;
 
   private:
+	//! Point cloud.
 	ccPointCloud* m_cloud{nullptr};
-	/// Model that contains the list of scalar fields names
+
+	//! Scalar field names model.
 	QStringListModel* m_scalarFieldsNamesModel{nullptr};
-	/// Model that contains the list of data type names the user can choose
-	/// for its extra scalar fields
+
+	//! Extra fields data types model.
 	QStringListModel* m_extraFieldsDataTypesModel{nullptr};
-	CCVector3d        m_optimalScale;
-	CCVector3d        m_originalScale;
-	/// Contains the mapping from a LAS field name to a combo box
-	/// where the user (or us) selected the scalar field to use
+
+	//! Optimal scale.
+	CCVector3d m_optimalScale;
+
+	//! Original scale.
+	CCVector3d m_originalScale;
+
+	//! Scalar field mapping.
 	std::vector<std::pair<MappingLabel*, QComboBox*>> m_scalarFieldMapping;
-	/// Output offsets that the user can choose
+
+	//! Output offsets.
 	QMap<Offset, CCVector3d> outputOffsets;
 };
