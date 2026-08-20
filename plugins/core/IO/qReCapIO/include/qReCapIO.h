@@ -19,6 +19,16 @@
 #include <QObject>
 
 /**
+ * @file qReCapIO.h
+ *
+ * @brief ReCap I/O plugin.
+ *
+ * @details Autodesk ReCap RCS/RCP file format support.
+ *
+ * @author Autodesk / ReCap SDK
+ */
+
+/**
  * @brief qReCapIO plugin
  *
  * Provides I/O support for Autodesk ReCap RCS (Station) and RCP (Photo) files
