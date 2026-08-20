@@ -15,6 +15,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPointListPickingDlg.cpp
+ *
+ * @brief Implementation of the point list picking dialog.
+ *
+ * @details Implements the ccPointListPickingDlg class for interactive point
+ * selection on point clouds and meshes.
+ *
+ * Key implementation details:
+ * - Uses ccPickingHub for 3D picking interaction
+ * - Stores picked points as cc2DLabel objects
+ * - Supports export to clouds, polylines, and ASCII files
+ * - Maintains undo/redo via m_toBeAdded/m_toBeDeleted containers
+ *
+ * @see ccPointListPickingDlg
+ */
+
 #include "ccPointListPickingDlg.h"
 
 // Qt

@@ -28,6 +28,8 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccAdjustZoomDlg.cpp ✅
 - qCC/ccCropTool.h ✅
 - qCC/ccCropTool.cpp ✅
+- qCC/ccPointListPickingDlg.h ✅
+- qCC/ccPointListPickingDlg.cpp ✅
 
 ### In Progress
 - (next file to be selected)
@@ -153,3 +155,9 @@ libs/
   - Documented point cloud and mesh cropping algorithms
   - Added @details about feature preservation (colors, SFs, materials)
   - Added @note about rotation parameter usage
+
+- `docs: enhance ccPointListPickingDlg.h and ccPointListPickingDlg.cpp` - 2026-08-26
+  - Enhanced @file, @class documentation with architecture context
+  - Documented export formats (XYZ, IXYZ, GXYZ, LXYZ)
+  - Added @details about point picking and label management
+  - Added @brief for all slots and protected members
