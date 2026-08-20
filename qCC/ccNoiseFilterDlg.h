@@ -20,19 +20,43 @@
 /**
  * @file ccNoiseFilterDlg.h
  *
- * @brief Noise filter dialog
+ * @brief Noise filter dialog for configuring noise filtering parameters.
  *
- * Dialog for configuring noise filtering parameters.
+ * @details Dialog for setting up parameters used by noise filtering
+ * algorithms. Noise filtering removes outliers or noisy points
+ * from point clouds based on statistical analysis.
+ *
+ * Typical noise filtering methods:
+ * - Statistical outlier removal (SOR)
+ * - Radius outlier removal
+ * - Density-based filtering
+ *
+ * Parameters typically include:
+ * - Number of neighbors to analyze
+ * - Standard deviation multiplier (for statistical methods)
+ * - Radius threshold (for density methods)
+ * - Whether to filter isolated points
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccEntityAction::filterNoise()
  */
 
 #include <ui_noiseFilterDlg.h>
 
 /**
- * @brief Noise filter dialog
+ * @brief Dialog for configuring noise filtering parameters.
  *
- * Configure noise filtering parameters.
+ * @details Provides a UI for setting up noise filtering parameters
+ * when removing outliers from point clouds.
+ *
+ * The dialog allows configuration of:
+ * - Filter type (statistical, radius, etc.)
+ * - Threshold parameters
+ * - Processing options
+ *
+ * @extends QDialog
+ * @extends Ui::NoiseFilterDialog
  */
 class ccNoiseFilterDlg : public QDialog
     , public Ui::NoiseFilterDialog
@@ -41,8 +65,9 @@ class ccNoiseFilterDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] parent Parent widget
+	 * @brief Construct the noise filter dialog.
+	 *
+	 * @param[in] parent Parent widget.
 	 */
 	explicit ccNoiseFilterDlg(QWidget* parent = nullptr);
 };

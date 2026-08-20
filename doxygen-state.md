@@ -51,6 +51,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccCustomDoubleValidator.h ✅
 - qCC/ccInterpolationDlg.h ✅
 - qCC/ccItemSelectionDlg.h ✅
+- qCC/ccNoiseFilterDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -291,3 +292,7 @@ libs/
   - Enhanced @file with item selection overview
   - Added @class documentation with usage example
   - Documented static convenience methods
+
+- `docs: enhance ccNoiseFilterDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with noise filtering overview
+  - Added @class documentation
