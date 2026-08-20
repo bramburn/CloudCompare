@@ -105,6 +105,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccSectionExtractionSubDlg.h ✅
 - qCC/mainwindow.h ✅
 - ccViewer/ccviewer.h ✅
+- ccViewer/ccViewerApplication.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -614,3 +615,8 @@ libs/
   - Enhanced @file with ccViewer overview
   - Added @class documentation
   - Documented view presets and entity display controls
+
+- `docs: enhance ccViewer/ccViewerApplication.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with application class overview
+  - Added @class documentation
+  - Documented event handling and viewer lifecycle
