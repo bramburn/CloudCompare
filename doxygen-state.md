@@ -15,6 +15,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccRecentFiles.cpp ✅
 - qCC/ccApplication.h ✅
 - qCC/ccApplication.cpp ✅
+- qCC/ccReservedIDs.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -96,3 +97,8 @@ libs/
   - Moved @file to correct position after GPL header
   - Added @brief to all method implementations
   - Enhanced FileVersionToCCVersion struct documentation
+
+- `docs: enhance ccReservedIDs.h Doxygen documentation` - 2026-08-25
+  - Added detailed @file, @enum documentation
+  - Added @var documentation for each enum value
+  - Added @note about plugin usage restrictions
