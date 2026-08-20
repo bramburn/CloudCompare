@@ -21,6 +21,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/db_tree/ccDBRoot.h ✅
 - qCC/ccAboutDialog.h ✅
 - qCC/ccAboutDialog.cpp ✅
+- qCC/ccEntityAction.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -123,3 +124,9 @@ libs/
   - Enhanced @file and @class documentation
   - Added @details, @par usage examples
   - Added @extends for QDialog inheritance
+
+- `docs: enhance ccEntityAction.h Doxygen documentation` - 2026-08-25
+  - Added comprehensive @brief for all functions
+  - Organized functions by category
+  - Added @param for all parameters
+  - Documented enum classes
