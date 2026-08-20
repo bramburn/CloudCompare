@@ -113,6 +113,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/pluginManager/ccPluginInfoDlg.h ✅
 - libs/CCPluginAPI/ccMainAppInterface.h ✅
 - libs/CCPluginAPI/ccOverlayDialog.h ✅
+- libs/CCPluginAPI/ccPickingHub.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -662,3 +663,8 @@ libs/
   - Enhanced @file with overlay dialog overview
   - Added @class documentation with lifecycle example
   - Documented shortcut override mechanism
+
+- `docs: enhance ccPickingHub.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with picking hub overview
+  - Added @class documentation with usage example
+  - Documented listener management and picking modes
