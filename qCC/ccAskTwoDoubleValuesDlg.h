@@ -21,19 +21,41 @@
 /**
  * @file ccAskTwoDoubleValuesDlg.h
  *
- * @brief Ask two values dialog
+ * @brief Generic dialog for entering two double values.
  *
- * Generic dialog for entering two double values.
+ * @details A reusable dialog for prompting the user to enter two
+ * double values with configurable bounds and precision.
+ *
+ * Features:
+ * - Two input fields with labels
+ * - Configurable min/max range for both fields
+ * - Configurable decimal precision
+ * - Optional window title override
+ *
+ * Use cases:
+ * - Entering min/max ranges
+ * - Setting X, Y coordinates
+ * - Configuring radius or diameter
+ * - Any scenario requiring two numeric values
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ *
+ * @see ccAskThreeDoubleValuesDlg
  */
 
 #include <ui_askTwoDoubleValuesDlg.h>
 
 /**
- * @brief Ask two double values dialog
+ * @brief Generic dialog for entering two double values.
  *
- * Generic dialog for entering two double values with bounds.
+ * @details A reusable dialog component that prompts for two
+ * double values with consistent UI and validation.
+ *
+ * The dialog validates input to ensure values are within
+ * the specified range.
+ *
+ * @extends QDialog
+ * @extends Ui::AskTwoDoubleValuesDialog
  */
 class ccAskTwoDoubleValuesDlg : public QDialog
     , public Ui::AskTwoDoubleValuesDialog
@@ -42,16 +64,20 @@ class ccAskTwoDoubleValuesDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] vName1 Name of first value
-	 * @param[in] vName2 Name of second value
-	 * @param[in] minVal Minimum value
-	 * @param[in] maxVal Maximum value
-	 * @param[in] defaultVal1 Default value 1
-	 * @param[in] defaultVal2 Default value 2
-	 * @param[in] precision Decimal precision
-	 * @param[in] windowTitle Window title
-	 * @param[in] parent Parent widget
+	 * @brief Construct the two-value dialog.
+	 *
+	 * @param[in] vName1 Label for the first value.
+	 * @param[in] vName2 Label for the second value.
+	 * @param[in] minVal Minimum allowed value for both fields.
+	 * @param[in] maxVal Maximum allowed value for both fields.
+	 * @param[in] defaultVal1 Default value for field 1.
+	 * @param[in] defaultVal2 Default value for field 2.
+	 * @param[in] precision Number of decimal places (default 6).
+	 * @param[in] windowTitle Custom window title (uses default if empty).
+	 * @param[in] parent Parent widget.
+	 *
+	 * @note Both fields share the same min/max range.
+	 * For different ranges, a custom dialog should be used.
 	 */
 	ccAskTwoDoubleValuesDlg(const QString& vName1,
 	                        const QString& vName2,
