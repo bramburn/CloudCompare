@@ -1,3 +1,12 @@
+/**
+ * @file Mouse3DInput.h
+ *
+ * @brief 3D mouse input handler.
+ *
+ * @details 3DxWare driver wrapper for 3DConnexion
+ * space mouse handling.
+ */
+
 #pragma once
 // ##########################################################################
 // #                                                                        #
