@@ -15,6 +15,14 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file my_point_types.h
+ *
+ * @brief Custom PCL point types.
+ *
+ * @details Custom point types for PCL integration
+ * including RGB, intensity, and scalar field types.
+ */
 #ifndef Q_PCL_PLUGIN_MY_POINT_TYPES_H
 #define Q_PCL_PLUGIN_MY_POINT_TYPES_H
 
