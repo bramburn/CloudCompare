@@ -84,6 +84,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccEnvelopeExtractorDlg.h ✅
 - qCC/ccEntitySelectionDlg.h ✅
 - qCC/ccCommandCrossSection.h ✅
+- qCC/ccCommandRaster.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -488,3 +489,8 @@ libs/
   - Enhanced @file with cross section CLI overview
   - Added @class documentation with usage example
   - Documented readVector helper
+
+- `docs: enhance ccCommandRaster.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with raster CLI commands overview
+  - Added @class documentation for CommandRasterize and CommandVolume25D
+  - Documented usage examples
