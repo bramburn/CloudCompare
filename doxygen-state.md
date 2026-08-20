@@ -45,6 +45,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccAskThreeDoubleValuesDlg.h ✅
 - qCC/ccAskTwoDoubleValuesDlg.h ✅
 - qCC/ccCamSensorProjectionDlg.h ✅
+- qCC/cc2.5DimEditor.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -255,3 +256,8 @@ libs/
   - Enhanced @file with camera projection overview
   - Added @class documentation
   - Documented initWithCamSensor and updateCamSensor methods
+
+- `docs: enhance cc2.5DimEditor.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with 2.5D raster data overview
+  - Added @class documentation
+  - Documented grid management and conversion methods
