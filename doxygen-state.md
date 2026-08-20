@@ -11,6 +11,8 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccUtils.h ✅
 - qCC/ccUtils.cpp ✅
 - qCC/ccCommon.h ✅
+- qCC/ccRecentFiles.h ✅
+- qCC/ccRecentFiles.cpp ✅
 
 ### In Progress
 - (next file to be selected)
@@ -81,3 +83,9 @@ libs/
   - Added detailed @brief for each scalar field constant
   - Added @file, @see documentation
   - Enhanced @defgroup documentation
+
+- `docs: add Doxygen comments to ccRecentFiles.h and ccRecentFiles.cpp` - 2026-08-25
+  - Enhanced @file, @class documentation
+  - Added @param, @return, @details for all methods
+  - Added @par usage examples
+  - Added @brief for private members
