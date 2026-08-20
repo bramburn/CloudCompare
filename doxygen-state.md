@@ -969,6 +969,18 @@ libs/
 - `docs: enhance NeighborhoodFeature.h Doxygen documentation` - 2026-08-27 (submodule)
   - Enhanced @file with neighborhood feature overview
 
+- `docs: enhance Parameters.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with 3DMASC parameters overview
+
+- `docs: enhance PointFeature.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with point feature overview
+
+- `docs: enhance q3DMASC.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with plugin overview
+
+- `docs: enhance q3DMASCClassifier.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with classifier overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
