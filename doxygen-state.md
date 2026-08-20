@@ -108,6 +108,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - ccViewer/ccViewerApplication.h ✅
 - ccViewer/ccviewerlog.h ✅
 - qCC/db_tree/ccPropertiesTreeDelegate.h ✅
+- qCC/db_tree/matrixDisplayDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -632,3 +633,8 @@ libs/
   - Enhanced @file with properties tree delegate overview
   - Added @class documentation
   - Documented CC_PROPERTY_ROLE enum with all property types
+
+- `docs: enhance matrixDisplayDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with transformation matrix display overview
+  - Added @class documentation
+  - Documented export options
