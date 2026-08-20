@@ -1,5 +1,13 @@
 #pragma once
 
+/**
+ * @file ExtendedViewport.h
+ *
+ * @brief Extended viewport with custom light information.
+ *
+ * @details Viewport parameters for animation with custom light support.
+ */
+
 //##########################################################################
 //#                                                                        #
 //#                   CLOUDCOMPARE PLUGIN: qAnimation                      #
@@ -104,7 +112,12 @@ struct ExtendedViewport
 		return evp;
 	}
 
+	//! Viewport object.
 	cc2DViewportObject* viewport;
+
+	//! Custom light enabled flag.
 	bool customLightEnabled;
+
+	//! Custom light position.
 	CCVector3f customLightPos;
 };
