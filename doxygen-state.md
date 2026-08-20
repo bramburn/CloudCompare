@@ -1002,6 +1002,15 @@ libs/
 - `docs: enhance qTrain3DMASCDialog.h Doxygen documentation` - 2026-08-27 (submodule)
   - Enhanced @file with training dialog overview
 
+- `docs: enhance cc3DFinUiConfig.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with UI config overview
+
+- `docs: enhance qAnimationDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with animation dialog overview
+
+- `docs: enhance qBroomDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with broom dialog overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
