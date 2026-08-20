@@ -1,5 +1,16 @@
 #pragma once
 
+/**
+ * @file qAnimationDlg.h
+ *
+ * @brief Animation dialog for video capture.
+ *
+ * @details Configure animation capture settings including FPS,
+ * duration, trajectory, and video codec options.
+ *
+ * @extends QDialog
+ */
+
 //##########################################################################
 //#                                                                        #
 //#                   CLOUDCOMPARE PLUGIN: qAnimation                      #
