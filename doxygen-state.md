@@ -133,6 +133,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/qCC_db/ccAdvancedTypes.h ✅
 - libs/qCC_db/ccCameraSensor.h ✅
 - libs/qCC_db/ccChunk.h ✅
+- libs/qCC_db/ccClipBox.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -781,3 +782,8 @@ libs/
   - Enhanced @file with chunk management utilities overview
   - Added @class documentation
   - Documented 64KB chunk operations
+
+- `docs: enhance ccClipBox.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with clipping box overview
+  - Added @class documentation for ccClipBox and ccClipBoxPart
+  - Documented interactive components and flagPointsInside
