@@ -1,3 +1,12 @@
+/**
+ * @file qCanupoDisclaimerDialog.h
+ *
+ * @brief CANUPO disclaimer dialogs.
+ *
+ * @details Disclaimer dialogs for CANUPO classifier training
+ * and classification features.
+ */
+
 //##########################################################################
 //#                                                                        #
 //#                     CLOUDCOMPARE PLUGIN: qCANUPO                       #
