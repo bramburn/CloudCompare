@@ -50,6 +50,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccComparisonDlg.h ✅
 - qCC/ccCustomDoubleValidator.h ✅
 - qCC/ccInterpolationDlg.h ✅
+- qCC/ccItemSelectionDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -285,3 +286,8 @@ libs/
   - Enhanced @file with interpolation methods overview
   - Added @class documentation
   - Documented getter/setter methods
+
+- `docs: enhance ccItemSelectionDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with item selection overview
+  - Added @class documentation with usage example
+  - Documented static convenience methods

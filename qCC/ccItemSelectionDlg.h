@@ -21,11 +21,20 @@
 /**
  * @file ccItemSelectionDlg.h
  *
- * @brief Item selection dialog
+ * @brief Generic dialog for selecting items from a list.
  *
- * Generic dialog for selecting items from a list.
+ * @details A reusable dialog for selecting one or more items
+ * from a listbox. Can be used in two modes:
+ *
+ * - **Single selection**: Returns one selected index
+ * - **Multi selection**: Returns multiple selected indexes
+ *
+ * Static convenience methods are provided for common use cases
+ * like selecting entities from a container.
  *
  * @author Daniel Girardeau-Montaut
+ *
+ * @see ccEntitySelectionDlg
  */
 
 #include <ui_itemSelectionDlg.h>
@@ -34,9 +43,30 @@
 #include <ccHObject.h>
 
 /**
- * @brief Item selection dialog
+ * @brief Generic dialog for selecting items from a list.
  *
- * Select one or multiple items from a list.
+ * @details Provides a reusable UI for selecting items from a list.
+ *
+ * Features:
+ * - Single or multi-selection mode
+ * - Configurable item name and dialog label
+ * - Static convenience methods for entity selection
+ *
+ * Usage:
+ * @code
+ * // Single selection
+ * int index = ccItemSelectionDlg::SelectEntity(entities, 0, this);
+ *
+ * // Multi selection
+ * std::vector<int> indexes;
+ * if (ccItemSelectionDlg::SelectEntities(entities, indexes, this))
+ * {
+ *     // Process selected indexes
+ * }
+ * @endcode
+ *
+ * @extends QDialog
+ * @extends Ui::ItemSelectionDlg
  */
 class ccItemSelectionDlg : public QDialog
     , public Ui::ItemSelectionDlg
@@ -45,12 +75,14 @@ class ccItemSelectionDlg : public QDialog
 
   public: // static shortcuts
 	/**
-	 * @brief Select single entity
-	 * @param[in] entities Available entities
-	 * @param[in] defaultSelectedIndex Default selected index
-	 * @param[in] parent Parent widget
-	 * @param[in] label Dialog label
-	 * @return Selected index
+	 * @brief Select a single entity from a container.
+	 *
+	 * @param[in] entities Available entities.
+	 * @param[in] defaultSelectedIndex Index to select by default.
+	 * @param[in] parent Parent widget.
+	 * @param[in] label Dialog label text.
+	 *
+	 * @return Selected index, or -1 if cancelled.
 	 */
 	static int SelectEntity(const ccHObject::Container& entities,
 	                        int                         defaultSelectedIndex = 0,
@@ -58,12 +90,14 @@ class ccItemSelectionDlg : public QDialog
 	                        QString                     label                = QString());
 
 	/**
-	 * @brief Select multiple entities
-	 * @param[in] entities Available entities
-	 * @param[out] indexes Selected indexes
-	 * @param[in] parent Parent widget
-	 * @param[in] label Dialog label
-	 * @return true if selection was made
+	 * @brief Select multiple entities from a container.
+	 *
+	 * @param[in] entities Available entities.
+	 * @param[out] indexes Selected indexes.
+	 * @param[in] parent Parent widget.
+	 * @param[in] label Dialog label text.
+	 *
+	 * @return true if selection was made, false if cancelled.
 	 */
 	static bool SelectEntities(const ccHObject::Container& entities,
 	                           std::vector<int>&           indexes,
@@ -72,11 +106,12 @@ class ccItemSelectionDlg : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] multiSelectionEnabled Allow multiple selection
-	 * @param[in] parent Parent widget
-	 * @param[in] itemName Item name
-	 * @param[in] label Dialog label
+	 * @brief Construct the item selection dialog.
+	 *
+	 * @param[in] multiSelectionEnabled If true, allow multiple selections.
+	 * @param[in] parent Parent widget.
+	 * @param[in] itemName Name for items (e.g., "entities", "files").
+	 * @param[in] label Dialog label text.
 	 */
 	ccItemSelectionDlg(bool     multiSelectionEnabled,
 	                   QWidget* parent   = nullptr,
@@ -84,21 +119,24 @@ class ccItemSelectionDlg : public QDialog
 	                   QString  label    = QString());
 
 	/**
-	 * @brief Set items
-	 * @param[in] items List of items
-	 * @param[in] defaultSelectedIndex Default selected index
+	 * @brief Set the list of items.
+	 *
+	 * @param[in] items List of item strings.
+	 * @param[in] defaultSelectedIndex Index to select by default.
 	 */
 	void setItems(const QStringList& items, int defaultSelectedIndex = 0);
 
 	/**
-	 * @brief Get selected index (single selection)
-	 * @return Selected index
+	 * @brief Get the selected index (single selection mode).
+	 *
+	 * @return Selected index, or -1 if none selected.
 	 */
 	int getSelectedIndex() const;
 
 	/**
-	 * @brief Get selected indexes (multi selection)
-	 * @param[out] indexes Selected indexes
+	 * @brief Get selected indexes (multi selection mode).
+	 *
+	 * @param[out] indexes Vector to fill with selected indexes.
 	 */
 	void getSelectedIndexes(std::vector<int>& indexes) const;
 };
