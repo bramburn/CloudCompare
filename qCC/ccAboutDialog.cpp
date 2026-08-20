@@ -17,8 +17,12 @@
 
 /**
  * @file ccAboutDialog.cpp
- * @brief Implementation of the about dialog
- * @details Displays application version, compilation info, and credits.
+ *
+ * @brief Implementation of the about dialog.
+ *
+ * @details Implements the ccAboutDialog class for displaying
+ * CloudCompare application information.
+ *
  * @see ccAboutDialog
  */
 
@@ -28,10 +32,18 @@
 #include "ui_aboutDlg.h"
 
 /**
- * @brief Constructor
- * @param parent Parent widget
- * @details Sets up the UI, retrieves version info, and enriches the
- * about text with compilation details (compiler, Qt version).
+ * @brief Construct the about dialog.
+ *
+ * @param[in] parent Parent widget.
+ *
+ * @details Sets up the UI from the .ui file and enriches the displayed
+ * text with compilation information including:
+ * - Full version string (from ccApplication)
+ * - Compiler version (e.g., MSVC 1939)
+ * - Qt version
+ *
+ * The dialog text is enriched by replacing placeholders in the HTML
+ * template with actual compilation details.
  */
 ccAboutDialog::ccAboutDialog(QWidget* parent)
     : QDialog(parent)
@@ -60,8 +72,9 @@ ccAboutDialog::ccAboutDialog(QWidget* parent)
 }
 
 /**
- * @brief Destructor
- * @details Deletes the UI structure.
+ * @brief Destructor.
+ *
+ * @details Cleans up the UI structure created by setupUi().
  */
 ccAboutDialog::~ccAboutDialog()
 {

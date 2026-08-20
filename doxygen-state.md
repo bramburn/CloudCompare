@@ -19,6 +19,8 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccCommandLineParser.h ✅
 - qCC/ccCommandLineParser.cpp ✅
 - qCC/db_tree/ccDBRoot.h ✅
+- qCC/ccAboutDialog.h ✅
+- qCC/ccAboutDialog.cpp ✅
 
 ### In Progress
 - (next file to be selected)
@@ -116,3 +118,8 @@ libs/
   - Added @brief for dbTreeSelectionInfo struct members
   - Added @param, @note for all public methods
   - Organized documentation with @section and @par blocks
+
+- `docs: enhance ccAboutDialog.h and ccAboutDialog.cpp Doxygen documentation` - 2026-08-25
+  - Enhanced @file and @class documentation
+  - Added @details, @par usage examples
+  - Added @extends for QDialog inheritance

@@ -14,18 +14,25 @@
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
-// #          COPYRIGHT: CloudCompare project                               #
+// #          COPYRIGHT: CloudCompare project                               //
 // #                                                                        #
 // ##########################################################################
 
 /**
  * @file ccAboutDialog.h
  *
- * @brief About dialog
+ * @brief About dialog for CloudCompare.
  *
- * Dialog showing application information.
+ * @details Displays the application "About" dialog showing:
+ * - Application name and version
+ * - Copyright information
+ * - Compilation details (compiler, Qt version)
+ * - Credits and acknowledgments
  *
  * @author CloudCompare project
+ *
+ * @see ccAboutDialog
+ * @see HelpMenu
  */
 
 #include <QDialog>
@@ -36,9 +43,23 @@ namespace Ui
 }
 
 /**
- * @brief About dialog
+ * @brief About dialog for CloudCompare.
  *
- * Shows application version and credits.
+ * @details Shows the application information dialog. The dialog is
+ * automatically deleted when closed (Qt::WA_DeleteOnClose attribute).
+ *
+ * The dialog displays information from the application's .ui file
+ * and enriches it with compilation details retrieved from the
+ * application object.
+ *
+ * @extends QDialog
+ *
+ * @par Usage
+ * @code
+ * ccAboutDialog* about = new ccAboutDialog(this);
+ * about->setAttribute(Qt::WA_DeleteOnClose);
+ * about->show();
+ * @endcode
  */
 class ccAboutDialog : public QDialog
 {
@@ -46,18 +67,31 @@ class ccAboutDialog : public QDialog
 
   public:
 	/**
-	 * @brief Create dialog
-	 * @param[in] parent Parent widget
+	 * @brief Construct the about dialog.
+	 *
+	 * @param[in] parent Parent widget (typically the main window).
+	 *
+	 * @details Sets up the UI and enriches the displayed text with
+	 * compilation information including:
+	 * - Full version string
+	 * - Compiler (MSVC, GCC, Clang)
+	 * - Qt version
 	 */
 	ccAboutDialog(QWidget* parent = nullptr);
-	
+
 	/**
-	 * @brief Destructor
+	 * @brief Destructor.
+	 *
+	 * @details Cleans up the UI structure.
 	 */
 	~ccAboutDialog();
 
   private:
-	/// UI
+	/**
+	 * @brief UI definition.
+	 *
+	 * Auto-generated from the .ui file.
+	 */
 	Ui::AboutDialog* mUI;
 };
 
