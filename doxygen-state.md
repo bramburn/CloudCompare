@@ -125,6 +125,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/CCPluginAPI/ccQtHelpers.h ✅
 - libs/CCPluginAPI/ccRenderToFileDlg.h ✅
 - libs/qCC_db/ccBBox.h ✅
+- libs/qCC_db/ccColorScale.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -734,3 +735,8 @@ libs/
   - Enhanced @file with bounding box overview
   - Added @class documentation
   - Documented spatial query and rendering
+
+- `docs: enhance ccColorScale.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with color scale overview
+  - Added @class documentation for ccColorScale and ccColorScaleElement
+  - Documented relative/absolute modes and lookup table
