@@ -74,6 +74,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccGBLSensorProjectionDlg.h ✅
 - qCC/ccGeomFeaturesDlg.h ✅
 - qCC/ccScalarFieldArithmeticsDlg.h ✅
+- qCC/ccFilterByValueDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -428,3 +429,8 @@ libs/
   - Enhanced @file with arithmetic operations overview
   - Added @class documentation
   - Documented Operation enum and SF2 struct
+
+- `docs: enhance ccFilterByValueDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with scalar field filtering overview
+  - Added @class documentation
+  - Documented Mode enum
