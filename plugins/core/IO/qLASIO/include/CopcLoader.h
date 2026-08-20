@@ -1,3 +1,38 @@
+/**
+ * @file CopcLoader.h
+ *
+ * @brief COPC (Cloud Optimized Point Cloud) loader.
+ *
+ * @details Loads COPC files, a variant of LAZ optimized for
+ * cloud-based access with hierarchical octree structure.
+ *
+ * ## COPC Format
+ *
+ * COPC extends LAS/LAZ with:
+ * - Hierarchical octree organization
+ * - Chunk-based point storage
+ * - Efficient spatial queries
+ *
+ * ## Usage
+ *
+ * @code
+ * CopcLoader loader(header, filename);
+ * if (!loader.isValid()) {
+ *     return;
+ * }
+ *
+ * // Set spatial constraint
+ * loader.setClippingBoxConstraint(extent);
+ *
+ * // Get chunks to load
+ * std::vector<std::reference_wrapper<ChunkInterval>> chunks;
+ * uint64_t estimatedCount;
+ * loader.getChunkIntervalsSet(chunks, estimatedCount);
+ * @endcode
+ *
+ * @author Hobu, Inc.
+ */
+
 #pragma once
 
 // ##########################################################################
@@ -6,16 +41,15 @@
 // #                            COPCLoader                                  #
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
-// #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 of the License.               #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
 // #                   COPYRIGHT: Hobu, Inc.                           	    #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
 
 #include "CopcVlrs.h"
@@ -41,175 +75,262 @@
 using namespace LasDetails;
 
 /**
- * @namespace copc
- *
- * @brief COPC (Cloud Optimized Point Cloud) support
+ * @brief COPC support namespace.
  */
 namespace copc
 {
 	/**
-	 * @class CopcLoader
+	 * @brief COPC file loader.
 	 *
-	 * @brief COPC file loader
-	 *
-	 * Load COPC (Cloud Optimized Point Cloud) files.
+	 * Loads Cloud Optimized Point Cloud (COPC) files.
 	 */
 	class CopcLoader
 	{
 	  public: // methods
-		/// Constructor
-		///
-		/// because the constructor could fail, the user should use isValid() check before
-		/// using the instance.
+		/**
+		 * @brief Constructor.
+		 *
+		 * @param[in] laszipHeader LAS header.
+		 * @param[in] fileName File path.
+		 *
+		 * @note Check isValid() before use.
+		 */
 		explicit CopcLoader(const laszip_header* laszipHeader, const QString& fileName);
 
+		/**
+		 * @brief Destructor.
+		 */
 		~CopcLoader() = default;
 
-		/// We do not want copy constructor and assigment for now.
+		//! No copy.
 		CopcLoader(CopcLoader const&)            = delete;
 		CopcLoader& operator=(CopcLoader const&) = delete;
 
-		/// Enable and set the max level constraint
+		/**
+		 * @brief Set max level constraint.
+		 *
+		 * @param[in] maxLevelConstraint Maximum octree level.
+		 */
 		void setMaxLevelConstraint(uint32_t maxLevelConstraint)
 		{
 			m_hasMaxLevelConstraint = true;
 			m_maxLevelConstraint    = maxLevelConstraint;
 		}
 
-		/// Release the max level constraint and set the max level to the max level of the octree
+		/**
+		 * @brief Release max level constraint.
+		 */
 		void releaseMaxLevelConstraint()
 		{
 			m_hasMaxLevelConstraint = false;
 			m_maxLevelConstraint    = m_maxLevel;
 		}
 
-		/// Enable and set the clipping box constraint
+		/**
+		 * @brief Set clipping box constraint.
+		 *
+		 * @param[in] extent Clipping extent.
+		 */
 		void setClippingBoxConstraint(const LasDetails::UnscaledExtent& extent)
 		{
 			m_hasClippingConstraint = true;
 			m_ClippingConstraint    = extent;
 		}
 
-		/// Release the clipping Constraint and reset the clipping box to the root extent
+		/**
+		 * @brief Release clipping constraint.
+		 */
 		void releaseClippingBoxConstraint()
 		{
 			m_hasClippingConstraint = false;
 			m_ClippingConstraint    = m_extent;
 		}
 
-		/// Returns an array containing the number of point at each level
-		/// (sequantially and from the root to the deepest depth)
+		/**
+		 * @brief Get point counts per level.
+		 *
+		 * @return Vector of point counts.
+		 */
 		const std::vector<uint64_t>& levelPointCounts() const
 		{
 			return m_levelPointCounts;
 		}
 
-		/// Returns the current full (non clipped) extent
+		/**
+		 * @brief Get full extent.
+		 *
+		 * @return Full (non-clipped) extent.
+		 */
 		const LasDetails::UnscaledExtent& extent() const
 		{
 			return m_extent;
 		}
 
-		/// Returns the current clippingExtent
+		/**
+		 * @brief Get clipping extent.
+		 *
+		 * @return Current clipping extent.
+		 */
 		const LasDetails::UnscaledExtent& clippingExtent() const
 		{
 			return m_ClippingConstraint;
 		}
 
-		/// Returns the Maximal number of Level (i.e; depth)
-		/// of the current COPC octree.
+		/**
+		 * @brief Get max octree level.
+		 *
+		 * @return Maximum depth.
+		 */
 		const int32_t maxLevel() const
 		{
 			return m_maxLevel;
 		}
 
-		/// Returns the validity of the viewer.
-		///
-		/// this is set by the constructor.
-		/// User of this loader instance has the responsibility to check its validity
-		/// before any usage of its methods.
+		/**
+		 * @brief Check if loader is valid.
+		 *
+		 * @return true if valid.
+		 */
 		bool isValid() const
 		{
 			return m_isValid;
 		}
 
-		/// Set global shift. This is used during the LOD creation.
+		/**
+		 * @brief Set global shift.
+		 *
+		 * @param[in] globalShift Global shift vector.
+		 */
 		void setGlobalShift(const CCVector3d& globalShift)
 		{
 			m_globalShift = globalShift;
 		}
 
-		/// Get the ChunkIntervals of this COPCfile
-		///
-		/// The entire ChunkInterval vector/set is sorted by pointOffset to minimize seeking.
-		/// It is a vector of references because file reading could have side effect on ChunkIntervals.
-		/// Moreover an estimatedPointCount is returned in order to resize the CC point cloud.
-		/// estimatedPointCount is only an estimation if a Clipping constraint is set, because points in intersected node
-		/// can only be filtered during file reading. if no clipping constraint is set, the estimatedPointCount variable represent the true number of points.
+		/**
+		 * @brief Get chunk intervals.
+		 *
+		 * @param[out] sortedChunkIntervalSet Sorted chunks.
+		 * @param[out] estimatedPointCount Estimated point count.
+		 */
 		void getChunkIntervalsSet(std::vector<std::reference_wrapper<ChunkInterval>>& sortedChunkIntervalSet, uint64_t& estimatedPointCount);
 
 	  public: // static methods
-		/// Check if the file has the potential to contain a COPC structure
+		/**
+		 * @brief Check if file is COPC.
+		 *
+		 * @param[in] laszipHeader LAS header.
+		 *
+		 * @return true if potentially COPC.
+		 */
 		static bool IsPutativeCOPCFile(const laszip_header* laszipHeader);
 
-		/// Check if a given VLR is a COPC one
-		///
-		/// Notes: COPC VLR has to be at id 0 of the vlr array.
+		/**
+		 * @brief Check if VLR is COPC.
+		 *
+		 * @param[in] vlr VLR to check.
+		 *
+		 * @return true if COPC VLR.
+		 */
 		static bool IsCOPCVlr(const laszip_vlr_struct& vlr);
 
 	  private: // methods
-		/// Generate the chunk table hierarchy from COPC entries
-		///
-		/// Entries are supposed to be contiguous.
-		/// They are sorted and then parsed sequentially to retrieve the first point
-		/// for each entry.
-		///	This is because LAZLib (in its public API) can only seek within a file by point but NOT by byte.
-		/// we rely on the same trick than LASLib and use a kind of proxy class (here ChunkInterval)
-		/// to transform COPC entries into a datastructure than can match the "limitations" of the LASZip API.
-		/// After creation ChunkIntervals are inserted into an octree, i.e a std::unordered_map using voxelKey
-		/// as key.
+		/**
+		 * @brief Generate chunk table hierarchy.
+		 *
+		 * @param[in] entries COPC entries.
+		 */
 		void generateChunktableIntervalsHierarchy(std::vector<Entry>& entries);
 
-		/// Check if a given VoxelKey passes constraints/filter tests and return its status
+		/**
+		 * @brief Check constraints on voxel.
+		 *
+		 * @param[in] voxelkey Voxel key.
+		 *
+		 * @return Filter status.
+		 */
 		ChunkInterval::eFilterStatus checkConstraints(const VoxelKey& voxelkey);
 
-		/// Reset the satus of the chunkIntervals
+		/**
+		 * @brief Reset interval status.
+		 */
 		void resetIntervalsStatus();
 
-		/// Recursively propagate failure fag to COPC nodes
+		/**
+		 * @brief Propagate failure flag.
+		 *
+		 * @param[in] voxelkey Voxel key.
+		 */
 		void propagateFailureFlag(const VoxelKey& voxelkey);
 
-		/// Recursively Flag ChunkIntervals (i.e check constraints of each VoxelKey)
+		/**
+		 * @brief Flag interval nodes.
+		 *
+		 * @param[in] voxelkey Voxel key.
+		 *
+		 * @return Point count.
+		 */
 		uint64_t flagIntervalNodes(const VoxelKey& voxelkey);
 
-		/// Recurse the COPC octree and emplace visited VoxelKeys into a set
+		/**
+		 * @brief Recurse octree.
+		 *
+		 * @param[in] voxelkey Current voxel.
+		 * @param[out] visitedNodes Visited nodes set.
+		 */
 		void recurse(const VoxelKey& voxelkey, std::unordered_set<VoxelKey>& visitedNodes) const;
 
-		/// Traverse the COPC octree and check if all nodes are reachables
+		/**
+		 * @brief Check if traversable.
+		 *
+		 * @return true if all nodes reachable.
+		 */
 		bool isTraversable() const;
 
-		/// Consistency check: check if the root node exists
+		/**
+		 * @brief Check for root.
+		 *
+		 * @return true if root exists.
+		 */
 		bool hasRoot() const
 		{
 			return m_chunkIntervalsHierarchy.count(VoxelKey::Root());
 		}
 
-	  private: // static members
 	  private: // members
-		bool           m_isValid{false};
-		int32_t        m_maxLevel{0};
-		uint64_t       m_numPoints{0};
-		CCVector3d     m_globalShift;
+		//! Validity flag.
+		bool m_isValid{false};
+
+		//! Max level.
+		int32_t m_maxLevel{0};
+
+		//! Number of points.
+		uint64_t m_numPoints{0};
+
+		//! Global shift.
+		CCVector3d m_globalShift;
+
+		//! Full extent.
 		UnscaledExtent m_extent;
 
+		//! Has clipping constraint.
 		bool m_hasClippingConstraint{false};
+
+		//! Has max level constraint.
 		bool m_hasMaxLevelConstraint{false};
 
-		int32_t        m_maxLevelConstraint{0};
+		//! Max level constraint.
+		int32_t m_maxLevelConstraint{0};
+
+		//! Clipping extent.
 		UnscaledExtent m_ClippingConstraint;
 
-		std::vector<uint64_t>                       m_levelPointCounts;
+		//! Point counts per level.
+		std::vector<uint64_t> m_levelPointCounts;
+
+		//! Chunk intervals hierarchy.
 		std::unordered_map<VoxelKey, ChunkInterval> m_chunkIntervalsHierarchy;
-		Info                                        m_copcInfo;
+
+		//! COPC info.
+		Info m_copcInfo;
 	};
 } // namespace copc
