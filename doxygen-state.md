@@ -119,6 +119,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/CCPluginAPI/ccColorScaleEditorDlg.h ✅
 - libs/CCPluginAPI/ccCommandLineInterface.h ✅
 - libs/CCPluginAPI/ccArgumentParser.h ✅
+- libs/CCPluginAPI/ccInfoDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -698,3 +699,8 @@ libs/
   - Enhanced @file with argument parser overview
   - Added @class documentation
   - Documented type-safe parsing methods
+
+- `docs: enhance ccInfoDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with information dialog overview
+  - Added @class documentation
+  - Documented usage comparison with other dialogs
