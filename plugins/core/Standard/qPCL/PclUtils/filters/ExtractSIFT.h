@@ -1,4 +1,11 @@
-#pragma once
+/**
+ * @file ExtractSIFT.h
+ *
+ * @brief SIFT keypoint extraction filter.
+ *
+ * @details Filter for extracting SIFT (Scale-Invariant
+ * Feature Transform) keypoints from point clouds.
+ */
 
 //##########################################################################
 //#                                                                        #
