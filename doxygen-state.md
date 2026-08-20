@@ -36,6 +36,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccAlignDlg.h ✅
 - qCC/ccApplyTransformationDlg.h ✅
 - qCC/ccClippingBoxTool.h ✅
+- qCC/ccComputeOctreeDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -201,3 +202,8 @@ libs/
   - Added @class documentation
   - Documented ExtractSlicesAndContours() static method
   - Documented all slot handlers
+
+- `docs: enhance ccComputeOctreeDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with octree overview
+  - Added @class documentation
+  - Documented ComputationMode enum
