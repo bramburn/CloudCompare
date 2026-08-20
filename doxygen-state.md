@@ -1011,6 +1011,30 @@ libs/
 - `docs: enhance qBroomDlg.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with broom dialog overview
 
+- `docs: enhance ExtendedViewport.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with extended viewport overview
+
+- `docs: enhance HSV.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with HSV color overview
+
+- `docs: enhance HSVDialog.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with HSV dialog overview
+
+- `docs: enhance KmeansDlg.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with K-means dialog overview
+
+- `docs: enhance qColorimetricSegmenter.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with plugin overview
+
+- `docs: enhance QuantiDialog.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with quantization dialog overview
+
+- `docs: enhance RgbDialog.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with RGB dialog overview
+
+- `docs: enhance ScalarDialog.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with scalar dialog overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
