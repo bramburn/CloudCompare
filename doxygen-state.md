@@ -116,6 +116,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/CCPluginAPI/ccPickingHub.h ✅
 - libs/CCPluginAPI/ccColorScaleSelector.h ✅
 - libs/CCPluginAPI/ccColorScaleEditorWidget.h ✅
+- libs/CCPluginAPI/ccColorScaleEditorDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -680,3 +681,8 @@ libs/
   - Enhanced @file with color scale editor widgets overview
   - Added @class documentation for all widget classes
   - Documented slider management and color bar rendering
+
+- `docs: enhance ccColorScaleEditorDlg.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with color scale editor dialog overview
+  - Added @class documentation
+  - Documented relative/absolute modes
