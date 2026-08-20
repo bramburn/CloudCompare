@@ -1071,6 +1071,21 @@ libs/
 - `docs: enhance qMPlane.h Doxygen documentation` - 2026-08-27 (submodule)
   - Enhanced @file with MPlane plugin overview
 
+- `docs: enhance ccItemTree.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with item tree utilities overview
+
+- `docs: enhance ccMeasurementDevice.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with measurement device overview
+
+- `docs: enhance ccMeasurementRecorder.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with measurement recorder overview
+
+- `docs: enhance ccMPlaneDlg.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with MPlane dialog overview
+
+- `docs: enhance ccMPlaneDlgController.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with dialog controller overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
