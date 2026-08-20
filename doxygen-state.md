@@ -95,6 +95,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccScalarFieldsManagerDlg.h ✅
 - qCC/ccStatisticalTestDlg.h ✅
 - qCC/ccSensorComputeDistancesDlg.h ✅
+- qCC/ccSetSFAsVec3Dlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -554,3 +555,8 @@ libs/
   - Enhanced @file with sensor distance computation overview
   - Added @class documentation
   - Documented squared distance option
+
+- `docs: enhance ccSetSFAsVec3Dlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with SF to Vec3 mapping overview
+  - Added @class documentation
+  - Documented SF_INDEX constants and index conversion methods
