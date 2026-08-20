@@ -905,6 +905,16 @@ libs/
   - Added @struct documentation
   - Documented VoxelKey and Entry
 
+- `docs: enhance LasMetadata.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with LAS metadata handling overview
+  - Added @brief to constants
+  - Documented metadata save/load functions
+
+- `docs: enhance LasSaveDialog.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with LAS save dialog overview
+  - Added @class documentation
+  - Documented save options
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
