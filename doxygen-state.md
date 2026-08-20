@@ -1122,6 +1122,12 @@ libs/
 - `docs: enhance TestShpFilter.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with shapefile test overview
 
+- `docs: enhance qPclIO.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with PCL I/O plugin overview
+
+- `docs: enhance PcdFilter.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with PCD filter overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
