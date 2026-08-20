@@ -1,3 +1,14 @@
+/**
+ * @file qBroomDlg.h
+ *
+ * @brief Broom dialog for virtual broom tool.
+ *
+ * @details Configure and control the virtual broom tool for
+ * moving/sweeping point clouds.
+ *
+ * @extends QDialog
+ */
+
 //##########################################################################
 //#                                                                        #
 //#                       CLOUDCOMPARE PLUGIN: qBroom                      #
