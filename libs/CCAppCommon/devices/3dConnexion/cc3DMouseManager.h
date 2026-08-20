@@ -1,4 +1,13 @@
-#pragma once
+/**
+ * @file cc3DMouseManager.h
+ *
+ * @brief 3D mouse input manager.
+ *
+ * @details Manages 3DConnexion space mouse input devices
+ * for CloudCompare navigation.
+ *
+ * @extends QObject
+ */
 
 // ##########################################################################
 // #                                                                        #
