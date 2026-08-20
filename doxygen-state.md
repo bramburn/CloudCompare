@@ -126,6 +126,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - libs/CCPluginAPI/ccRenderToFileDlg.h ✅
 - libs/qCC_db/ccBBox.h ✅
 - libs/qCC_db/ccColorScale.h ✅
+- libs/qCC_db/ccArray.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -740,3 +741,8 @@ libs/
   - Enhanced @file with color scale overview
   - Added @class documentation for ccColorScale and ccColorScaleElement
   - Documented relative/absolute modes and lookup table
+
+- `docs: enhance ccArray.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with shareable array template overview
+  - Added @class documentation
+  - Documented safe memory operations
