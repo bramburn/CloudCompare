@@ -86,6 +86,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccCommandCrossSection.h ✅
 - qCC/ccCommandRaster.h ✅
 - qCC/ccScaleDlg.h ✅
+- qCC/ccSubsamplingDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -500,3 +501,8 @@ libs/
   - Enhanced @file with entity scaling overview
   - Added @class documentation
   - Documented uniform and non-uniform scaling
+
+- `docs: enhance ccSubsamplingDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with subsampling methods overview
+  - Added @class documentation
+  - Documented CC_SUBSAMPLING_METHOD enum
