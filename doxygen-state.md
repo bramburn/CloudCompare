@@ -75,6 +75,7 @@ Systematically adding Doxygen comments throughout the CloudCompare application c
 - qCC/ccGeomFeaturesDlg.h ✅
 - qCC/ccScalarFieldArithmeticsDlg.h ✅
 - qCC/ccFilterByValueDlg.h ✅
+- qCC/ccExportCoordToSFDlg.h ✅
 
 ### In Progress
 - (next file to be selected)
@@ -434,3 +435,8 @@ libs/
   - Enhanced @file with scalar field filtering overview
   - Added @class documentation
   - Documented Mode enum
+
+- `docs: enhance ccExportCoordToSFDlg.h Doxygen documentation` - 2026-08-26
+  - Enhanced @file with coordinate export overview
+  - Added @class documentation
+  - Documented exportX/Y/Z methods
