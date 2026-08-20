@@ -981,6 +981,27 @@ libs/
 - `docs: enhance q3DMASCClassifier.h Doxygen documentation` - 2026-08-27 (submodule)
   - Enhanced @file with classifier overview
 
+- `docs: enhance q3DMASCCommands.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with CLI commands overview
+
+- `docs: enhance q3DMASCTools.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with tools overview
+
+- `docs: enhance q3DMASCDisclaimerDialog.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with disclaimer dialog overview
+
+- `docs: enhance ScalarFieldCollector.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with SF collector overview
+
+- `docs: enhance ScalarFieldWrappers.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with SF wrapper overview
+
+- `docs: enhance qClassify3DMASCDialog.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with classification dialog overview
+
+- `docs: enhance qTrain3DMASCDialog.h Doxygen documentation` - 2026-08-27 (submodule)
+  - Enhanced @file with training dialog overview
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
