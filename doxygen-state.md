@@ -875,6 +875,11 @@ libs/
   - Added @struct documentation for plyProperty and plyElement
   - Added @class documentation for PlyFilter
 
+- `docs: enhance ccPluginInterface.h Doxygen documentation` - 2026-08-27
+  - Enhanced @file with plugin interface overview
+  - Added @brief to enums and structs
+  - Documented plugin lifecycle
+
 - `docs: enhance ccPluginUIManager.h Doxygen documentation` - 2026-08-27
   - Enhanced @file with plugin UI manager overview
   - Added @class documentation
