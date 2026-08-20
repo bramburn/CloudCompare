@@ -1,3 +1,19 @@
+/**
+ * @file LasScalarFieldSaver.h
+ *
+ * @brief LAS scalar field saver.
+ *
+ * @details Saves CloudCompare scalar fields to LAS files.
+ *
+ * ## Saving Process
+ *
+ * 1. Create saver with field mappings
+ * 2. For each point, call handleScalarFields()
+ * 3. Scalar values are written to LAS format
+ *
+ * @author Thomas Montaigu
+ */
+
 #pragma once
 
 // ##########################################################################
@@ -5,7 +21,6 @@
 // #                CLOUDCOMPARE PLUGIN: LAS-IO Plugin                      #
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
-// #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 of the License.               #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
@@ -14,7 +29,7 @@
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
 // #                   COPYRIGHT: Thomas Montaigu                           #
-// #                                                                        #
+// #                                                                        //
 // ##########################################################################
 
 #include "LasDetails.h"
@@ -24,29 +39,35 @@
 struct laszip_point;
 
 /**
- * @class LasScalarFieldSaver
+ * @brief LAS scalar field saver.
  *
- * @brief LAS scalar field saver
- *
- * Save point cloud scalar fields to LAS files.
+ * Saves CloudCompare scalar fields to LAS files.
  */
 class LasScalarFieldSaver
 {
   public:
+	/**
+	 * @brief Default constructor.
+	 */
 	LasScalarFieldSaver() = default;
 
-	/// Creates a new LasScalarFieldSaver that will save the given
-	/// standard LAS fields and the LAS extra scalar fields
+	/**
+	 * @brief Create saver with fields.
+	 *
+	 * @param[in] standardFields Standard field mappings.
+	 * @param[in] extraFields Extra field mappings.
+	 */
 	LasScalarFieldSaver(std::vector<LasScalarField>&&      standardFields,
 	                    std::vector<LasExtraScalarField>&& extraFields);
 
+	/**
+	 * @brief Set standard fields.
+	 *
+	 * @param[in] standardFields Standard field mappings.
+	 */
 	inline void setStandarFields(std::vector<LasScalarField>&& standardFields)
 	{
 		m_standardFields = standardFields;
-		// Another way to check this could have been to check for the existence of
-		// a field with name that is one of the decomposed flags.
-		// However check by looking at the max value may be better to handle
-		// clouds not coming from LAS at all.
 		for (const LasScalarField& field : m_standardFields)
 		{
 			if (strcmp(field.name(), LasNames::Classification) == 0
@@ -58,23 +79,50 @@ class LasScalarFieldSaver
 		}
 	}
 
+	/**
+	 * @brief Set extra fields.
+	 *
+	 * @param[in] extraFields Extra field mappings.
+	 */
 	inline void setExtraFields(std::vector<LasExtraScalarField>&& extraFields)
 	{
 		m_extraFields = extraFields;
 	}
 
+	/**
+	 * @brief Get extra fields.
+	 *
+	 * @return Extra fields.
+	 */
 	inline const std::vector<LasExtraScalarField>& extraFields() const
 	{
 		return m_extraFields;
 	}
 
-	/// Saves the scalar fields values for pointIndex into the given laszip_point
+	/**
+	 * @brief Handle scalar fields for point.
+	 *
+	 * @param[in] pointIndex Point index.
+	 * @param[out] point LAS point structure.
+	 */
 	void handleScalarFields(size_t pointIndex, laszip_point& point);
 
-	/// Saves the extra scalar fields values for pointIndex into the given laszip_point
+	/**
+	 * @brief Handle extra fields for point.
+	 *
+	 * @param[in] pointIndex Point index.
+	 * @param[out] point LAS point structure.
+	 */
 	void handleExtraFields(size_t pointIndex, laszip_point& point);
 
   private:
+	/**
+	 * @brief Write scalar value with type conversion.
+	 *
+	 * @tparam T Target type.
+	 * @param[in] value Scalar value.
+	 * @param[out] dest Destination buffer.
+	 */
 	template <typename T>
 	static void WriteScalarValueAs(ScalarType value, uint8_t* dest)
 	{
@@ -93,10 +141,12 @@ class LasScalarFieldSaver
 	}
 
   private:
-	std::vector<LasScalarField>      m_standardFields;
+	//! Standard fields.
+	std::vector<LasScalarField> m_standardFields;
+
+	//! Extra fields.
 	std::vector<LasExtraScalarField> m_extraFields;
-	/// Whether the classification flags from point format <= 5 were
-	/// decomposed into individual scalar fields (synthetic, keypoint, withheld)
-	/// or if their values were kept packed into the classification field.
+
+	//! Classification was decomposed.
 	bool m_classificationWasDecomposed{false};
 };
