@@ -19,11 +19,26 @@
 /**
  * @file ccApplicationBase.h
  *
- * @brief Application base class
+ * @brief CloudCompare application base class
  *
- * Base application class for CloudCompare.
+ * Base class for both qCC (full GUI) and ccViewer (read-only viewer).
+ * Provides:
+ * - Qt application lifecycle (inherits QApplication)
+ * - OpenGL initialization (InitOpenGL must be called before constructing)
+ * - Translation and shader resource paths
+ * - Plugin search path setup
+ * - Command-line vs GUI mode detection
  *
- * @author CloudCompare project
+ * The global macro ccApp casts QCoreApplication::instance() to
+ * ccApplicationBase* for easy access from anywhere in the app.
+ *
+ * Init sequence:
+ * 1. QApplication(argc, argv)
+ * 2. ccApplicationBase::InitOpenGL() — must precede step 3
+ * 3. new ccApplicationBase(argc, argv, isCmd, version)
+ *
+ * @see ccApplication for the qCC-specific subclass
+ * @see ccApp macro for global singleton access
  */
 
 #include "CCAppCommon.h"
@@ -86,9 +101,10 @@ class CCAPPCOMMON_LIB_API ccApplicationBase : public QApplication
 	}
 	
 	/**
-	 * @brief Get full version string
-	 * @param[in] includeOS Include OS info
-	 * @return Full version string
+	 * @brief Get full version string for display
+	 *
+	 * @param[in] includeOS If true, appends " (Windows/macOS/Linux)"
+	 * @return Formatted version string (e.g. "CloudCompare 2.14.0")
 	 */
 	QString versionLongStr(bool includeOS) const;
 
