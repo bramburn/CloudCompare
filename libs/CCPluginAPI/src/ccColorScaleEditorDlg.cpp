@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccColorScaleEditorDlg.cpp
+ *
+ * @brief Color scale editor dialog implementation
+ *
+ * Dialog for creating and editing color scales.
+ *
+ * ## Color Scale Editor
+ *
+ * Allows creating custom color gradients by placing color stops:
+ * - **Stop position**: value in [0,1] range
+ * - **Stop color**: RGB color at that position
+ * - **Interpolation**: linear RGB between stops
+ *
+ * ## Presets
+ *
+ * Built-in presets (gray, rgb, green-red, viridis, etc.)
+ * can be loaded as starting points.
+ *
+ * @see ccColorScaleEditorDlg.h, ccColorScale
+ */
+
 #include "ccColorScaleEditorDlg.h"
 
 #include "ui_colorScaleEditorDlg.h"

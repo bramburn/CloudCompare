@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPickingHub.cpp
+ *
+ * @brief Picking hub implementation
+ *
+ * Implements ccPickingHub: central manager for point picking
+ * requests from multiple dialogs/tools.
+ *
+ * ## Picking
+ *
+ * Multiple overlays and dialogs can request point picking.
+ * The hub manages a queue of picking requests and forwards
+ * picked-point events to the appropriate listener.
+ *
+ * ## Listener Pattern
+ *
+ * Tools implementing ccPickingListener register with the hub.
+ * When a point is picked, the hub calls onItemPicked() on
+ * the active listener.
+ *
+ * @see ccPickingHub.h, ccPickingListener
+ */
+
 #include "ccPickingHub.h"
 
 // Qt

@@ -15,6 +15,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccRenderToFileDlg.cpp
+ *
+ * @brief Render to file dialog implementation
+ *
+ * Dialog for exporting the 3D view to an image file.
+ *
+ * ## Export Options
+ *
+ * - **Format**: PNG, JPEG, BMP, TIFF
+ * - **Resolution**: viewport size or custom dimensions
+ * - **Transparent background**: alpha channel support
+ * - **With 2D overlay**: include labels, scale bar, etc.
+ *
+ * @see ccRenderToFileDlg.h
+ */
+
 #include "ccRenderToFileDlg.h"
 
 #include "ui_renderToFileDialog.h"

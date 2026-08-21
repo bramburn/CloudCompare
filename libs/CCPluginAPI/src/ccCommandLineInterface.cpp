@@ -15,6 +15,30 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccCommandLineInterface.cpp
+ *
+ * @brief Command-line interface implementation
+ *
+ * Implements ccCommandLineInterface: the command-line processing
+ * state for CloudCompare.
+ *
+ * ## State
+ *
+ * - **Entities**: loaded entities (clouds, meshes)
+ * - **Current entity**: the entity being operated on
+ * - **Output format**: default file format for saves
+ * - **Global shift**: default global shift for large coordinates
+ * - **Progress callback**: for long operations
+ *
+ * ## Entity Management
+ *
+ * Entities are stored in a container and indexed by position.
+ * The "current" entity is the target for operations.
+ *
+ * @see ccCommandLineInterface.h, ccCommandLineParser
+ */
+
 #include "ccCommandLineInterface.h"
 
 #include "ccArgumentParser.h"

@@ -14,6 +14,28 @@
 // #                   COPYRIGHT: CloudCompare project                      #
 // #                                                                        #
 // ##########################################################################
+/**
+ * @file ccArgumentParser.cpp
+ *
+ * @brief Command-line argument parser implementation
+ *
+ * Implements ccArgumentParser: a Qt-based command-line argument
+ * parser for CloudCompare.
+ *
+ * ## Parsing
+ *
+ * Supports both short (-o) and long (--open) argument forms.
+ * Positional arguments are associated with named options.
+ * Unknown arguments generate warnings but are tolerated.
+ *
+ * ## Arguments
+ *
+ * Arguments are stored as key-value pairs (QString → QVariant).
+ * Boolean flags are stored with value "true".
+ *
+ * @see ccArgumentParser.h
+ */
+
 #include "ccArgumentParser.h"
 
 #include <cassert>

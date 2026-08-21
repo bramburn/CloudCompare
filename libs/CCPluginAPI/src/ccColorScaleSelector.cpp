@@ -15,6 +15,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccColorScaleSelector.cpp
+ *
+ * @brief Color scale selector implementation
+ *
+ * Implements ccColorScaleSelector: a widget for selecting a
+ * color scale from the available set.
+ *
+ * ## Selector
+ *
+ * Shows a dropdown list of all registered color scales
+ * (from ccColorScalesManager). Optionally allows creating
+ * a new scale via the editor dialog.
+ *
+ * @see ccColorScaleSelector.h, ccColorScale
+ */
+
 #include "ccColorScaleSelector.h"
 
 // Qt
