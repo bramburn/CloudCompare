@@ -15,6 +15,31 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPointListPickingDlg.cpp
+ *
+ * @brief Point list picking dialog implementation
+ *
+ * Dialog for picking multiple points from a point cloud in the 3D view.
+ * Points are collected in a list with their 3D coordinates.
+ *
+ * ## Features
+ *
+ * - **Pick points**: click in the 3D view to add points to a list
+ * - **Display list**: show coordinates of picked points
+ * - **Edit**: manually edit point coordinates
+ * - **Delete**: remove individual points from the list
+ * - **Export**: save picked points to a file
+ * - **Create labels**: add cc2DLabel entities to the db-tree
+ *
+ * ## Output
+ *
+ * Picked points can be exported as a ccPolyline, a point cloud,
+ * or individual cc2DLabel entities.
+ *
+ * @see ccPointListPickingDlg.h, ccPointPickingGenericInterface
+ */
+
 #include "ccPointListPickingDlg.h"
 
 // Qt
