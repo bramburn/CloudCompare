@@ -15,6 +15,18 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccViewportParameters.cpp
+ *
+ * @brief Viewport parameters implementation
+ *
+ * Implements camera math for CloudCompare's 3D viewport:
+ * view matrix construction, focal distance management, pixel size
+ * computation, and serialization with backward compatibility.
+ *
+ * @see ccViewportParameters
+ */
+
 #include "ccViewportParameters.h"
 
 // CCCoreLib
@@ -23,6 +35,18 @@
 // Qt
 #include <QRect>
 
+// ccViewportParameters::ccViewportParameters
+/**
+ * @brief Default constructor
+ *
+ * Initializes to a safe default state:
+ * - Identity view rotation
+ * - Orthographic projection (perspectiveView = false)
+ * - Object-centered rotation (objectCenteredView = true)
+ * - Focal distance = 1.0 (camera at z=1.0, pivot at origin)
+ * - 50° FOV, 1:1 aspect ratio
+ * - No manual clipping (NaN depths)
+ */
 ccViewportParameters::ccViewportParameters()
     : defaultPointSize(1)
     , defaultLineWidth(1)
@@ -42,6 +66,7 @@ ccViewportParameters::ccViewportParameters()
 	viewMat.toIdentity();
 }
 
+// ccViewportParameters::ccViewportParameters (copy)
 ccViewportParameters::ccViewportParameters(const ccViewportParameters& params)
     : viewMat(params.viewMat)
     , defaultPointSize(params.defaultPointSize)
@@ -61,6 +86,22 @@ ccViewportParameters::ccViewportParameters(const ccViewportParameters& params)
 {
 }
 
+// ccViewportParameters::toFile
+/**
+ * @brief Serialize parameters to binary file
+ *
+ * Format (version >= 53):
+ * - viewMat (16 doubles)
+ * - focalDistance, defaultPointSize, defaultLineWidth
+ * - perspectiveView, objectCenteredView (bools)
+ * - pivotPoint (3 doubles), cameraCenter (3 doubles)
+ * - fov_deg, cameraAspectRatio
+ * - nearClippingDepth, farClippingDepth
+ *
+ * @param[in] out        Output file (must be open for writing)
+ * @param[in] dataVersion File format version
+ * @return true on success
+ */
 bool ccViewportParameters::toFile(QFile& out, short dataVersion) const
 {
 	assert(out.isOpen() && (out.openMode() & QIODevice::WriteOnly));
@@ -70,11 +111,11 @@ bool ccViewportParameters::toFile(QFile& out, short dataVersion) const
 		return false;
 	}
 
-	// base modelview matrix (dataVersion>=20)
+	// Base modelview matrix (dataVersion >= 20)
 	if (!viewMat.toFile(out, dataVersion))
 		return false;
 
-	// other parameters (dataVersion>=20)
+	// Other scalar parameters
 	QDataStream outStream(&out);
 	outStream << focalDistance;
 	outStream << defaultPointSize;
@@ -90,6 +131,7 @@ bool ccViewportParameters::toFile(QFile& out, short dataVersion) const
 	outStream << fov_deg;
 	outStream << cameraAspectRatio;
 
+	// Clipping depths (dataVersion >= 53)
 	if (dataVersion >= 53)
 	{
 		outStream << nearClippingDepth;
@@ -99,30 +141,46 @@ bool ccViewportParameters::toFile(QFile& out, short dataVersion) const
 	return true;
 }
 
+// ccViewportParameters::fromFile
+/**
+ * @brief Deserialize parameters from binary file
+ *
+ * Handles backward compatibility with older file versions:
+ * - dataVersion < 36: viewMat stored as float (converted to double)
+ * - dataVersion < 51: pixelSize + zoom used instead of focalDistance
+ * - dataVersion < 53: no clipping depth storage
+ *
+ * @param[in]  in              Input file
+ * @param[in]  dataVersion     File format version
+ * @param[in]  flags           Deserialization flags
+ * @param[out] oldToNewIDMap  ID remapping table
+ * @return true on success
+ */
 bool ccViewportParameters::fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap)
 {
-	// base modelview matrix (dataVersion>=20)
-	if (dataVersion >= 36) // we now save the camera matrix in double precision
+	// Load view rotation matrix
+	if (dataVersion >= 36)
 	{
+		// Stored in double precision since version 36
 		if (!viewMat.fromFile(in, dataVersion, flags, oldToNewIDMap))
 			return false;
 	}
 	else
 	{
-		// camera matrix was saved in standard (float) precision
+		// Stored as float before version 36 — convert to double
 		ccGLMatrix _viewMat;
 		if (!_viewMat.fromFile(in, dataVersion, flags, oldToNewIDMap))
 			return false;
 		viewMat = ccGLMatrixd(_viewMat.data());
 	}
 
-	// other parameters (dataVersion>=20)
 	QDataStream inStream(&in);
 	float       zoom      = 1.0f;
 	float       pixelSize = 0.0f;
+
+	// focalDistance replaced pixelSize+zoom in version 51
 	if (dataVersion < 51)
 	{
-		// we read these values for backward compatibility only: we don't handle them this way anymore
 		inStream >> pixelSize;
 		inStream >> zoom;
 	}
@@ -135,7 +193,9 @@ bool ccViewportParameters::fromFile(QFile& in, short dataVersion, int flags, Loa
 	inStream >> defaultLineWidth;
 	inStream >> perspectiveView;
 	inStream >> objectCenteredView;
-	if (dataVersion >= 36) // we now save the camera center and pivot point in double precision
+
+	// pivotPoint and cameraCenter: double precision since version 36
+	if (dataVersion >= 36)
 	{
 		inStream >> pivotPoint.x;
 		inStream >> pivotPoint.y;
@@ -149,22 +209,26 @@ bool ccViewportParameters::fromFile(QFile& in, short dataVersion, int flags, Loa
 		CCVector3 _pivotPoint;
 		ccSerializationHelper::CoordsFromDataStream(inStream, flags, _pivotPoint.u, 3);
 		pivotPoint = _pivotPoint;
-		if (dataVersion >= 25) // after version 25 the camera center is saved as a separate point!
+
+		if (dataVersion >= 25)
 		{
+			// cameraCenter stored separately since version 25
 			CCVector3 _cameraCenter;
 			ccSerializationHelper::CoordsFromDataStream(inStream, flags, _cameraCenter.u, 3);
 			cameraCenter = _cameraCenter;
 		}
 		else
 		{
-			// FIXME: doesn't work in object-centered perspective!
+			// Before version 25: cameraCenter = pivotPoint (incorrect for perspective)
 			cameraCenter = pivotPoint;
 		}
 	}
 
 	inStream >> fov_deg;
 	inStream >> cameraAspectRatio;
-	if (dataVersion < 25) // screenPan has been replaced by cameraCenter(x,y) in object centered mode!
+
+	// screenPan was replaced by cameraCenter in version 25
+	if (dataVersion < 25)
 	{
 		float screenPan[2];
 		inStream >> screenPan[0];
@@ -177,14 +241,14 @@ bool ccViewportParameters::fromFile(QFile& in, short dataVersion, int flags, Loa
 		}
 	}
 
+	// Ortho aspect ratio was stored separately before version 51
 	if (dataVersion >= 30 && dataVersion < 51)
 	{
-		// ortho mode aspect ratio (30 >= dataVersion < 51)
 		float orthoAspectRatio = 0.0f;
 		inStream >> orthoAspectRatio;
 	}
 
-	// for older version, deduce the focal distance from the old parameters (pixelSize and zoom)
+	// Reconstruct focalDistance from pixelSize+zoom for pre-51 files
 	if (dataVersion < 51 && zoom != 1.0f)
 	{
 		if (perspectiveView)
@@ -193,14 +257,15 @@ bool ccViewportParameters::fromFile(QFile& in, short dataVersion, int flags, Loa
 		}
 		else
 		{
-			static int DefaultScreenSize_pix = 2048; // average screen size - sadly we don't have this information
-			focalDistance                    = pixelSize * static_cast<double>(DefaultScreenSize_pix) / computeDistanceToWidthRatio(DefaultScreenSize_pix, DefaultScreenSize_pix);
+			static int DefaultScreenSize_pix = 2048; // Average screen size
+			focalDistance = pixelSize * static_cast<double>(DefaultScreenSize_pix)
+			               / computeDistanceToWidthRatio(DefaultScreenSize_pix, DefaultScreenSize_pix);
 		}
 		setFocalDistance(focalDistance / zoom);
 		ccLog::Warning("[ccViewportParameters] Approximate focal distance (sorry, the parameters of viewport objects have changed!)");
 	}
 
-	// clipping depths
+	// Clipping depths: NaN before version 53
 	if (dataVersion < 53)
 	{
 		nearClippingDepth = farClippingDepth = std::numeric_limits<double>::quiet_NaN();
@@ -214,19 +279,32 @@ bool ccViewportParameters::fromFile(QFile& in, short dataVersion, int flags, Loa
 	return true;
 }
 
+// ccViewportParameters::minimumFileVersion
 short ccViewportParameters::minimumFileVersion() const
 {
-	// we need verison 53 to save a non-NaN near and far clipping depths
+	// Version 53 needed for non-NaN clipping depths
 	short minVersion = (std::isnan(nearClippingDepth) && std::isnan(farClippingDepth) ? 51 : 53);
-
 	return std::max(minVersion, viewMat.minimumFileVersion());
 }
 
+// ccViewportParameters::getRotationCenter
 const CCVector3d& ccViewportParameters::getRotationCenter() const
 {
 	return (objectCenteredView ? pivotPoint : cameraCenter);
 }
 
+// ccViewportParameters::computeViewMatrix
+/**
+ * @brief Compute the OpenGL view matrix
+ *
+ * Constructs a gluLookAt-style view matrix by:
+ * 1. Translating world origin to the rotation center (T(-C))
+ * 2. Applying the rotation from viewMat (R)
+ * 3. Translating back to camera position (T(C) but offset by cameraCenter - rotationCenter)
+ *
+ * Result: the scene appears rotated around the pivot (object-centered)
+ *         or around the camera eye (viewer-centered).
+ */
 ccGLMatrixd ccViewportParameters::computeViewMatrix() const
 {
 	ccGLMatrixd viewMatd;
@@ -234,30 +312,37 @@ ccGLMatrixd ccViewportParameters::computeViewMatrix() const
 
 	const CCVector3d& rotationCenter = getRotationCenter();
 
-	// place origin on rotation center
-	viewMatd.setTranslation(/*viewMatd.getTranslationAsVec3D()*/ -rotationCenter); // viewMatd.getTranslationAsVec3D() = (0, 0, 0)
+	// Step 1: translate to rotation center
+	viewMatd.setTranslation(-rotationCenter);
 
-	// rotation (viewMat is simply a rotation matrix)
+	// Step 2: apply rotation
 	viewMatd = viewMat * viewMatd;
 
-	// go back to initial origin, then place origin on camera center
+	// Step 3: translate to camera position
 	viewMatd.setTranslation(viewMatd.getTranslationAsVec3D() + rotationCenter - cameraCenter);
 
 	return viewMatd;
 }
 
+// ccViewportParameters::computeScaleMatrix
+/**
+ * @brief Compute the aspect-ratio correction scale matrix
+ *
+ * When the viewport is taller than wide (adjusted ar < 1.0), applies
+ * a uniform scale of (ar, ar, 1.0) to prevent distortion. This
+ * compensates for the non-square GL viewport by scaling down in X/Y.
+ */
 ccGLMatrixd ccViewportParameters::computeScaleMatrix(const QRect& glViewport) const
 {
 	ccGLMatrixd scaleMatd;
 	scaleMatd.toIdentity();
 
-	// for proper aspect ratio handling
 	if (glViewport.height() != 0)
 	{
 		double ar = static_cast<double>(glViewport.width() / (glViewport.height() * cameraAspectRatio));
 		if (ar < 1.0)
 		{
-			// glScalef(ar, ar, 1.0);
+			// Apply (ar, ar, 1.0) scale to correct for tall viewport
 			scaleMatd.data()[0] = ar;
 			scaleMatd.data()[5] = ar;
 		}
@@ -266,61 +351,92 @@ ccGLMatrixd ccViewportParameters::computeScaleMatrix(const QRect& glViewport) co
 	return scaleMatd;
 }
 
+// ccViewportParameters::getViewDir
+/**
+ * @brief Get the view direction (camera forward vector)
+ *
+ * Extracts the 3rd row of viewMat (the column of the matrix that
+ * represents the -Z axis in view space, transformed to world space)
+ * and normalizes it. Points from the camera into the scene.
+ */
 CCVector3d ccViewportParameters::getViewDir() const
 {
-	// view direction is (the opposite of) the 3rd line of the current view matrix
 	const double* M = viewMat.data();
 	CCVector3d    axis(-M[2], -M[6], -M[10]);
 	axis.normalize();
-
 	return axis;
 }
 
+// ccViewportParameters::getUpDir
+/**
+ * @brief Get the screen-up direction
+ *
+ * Extracts the 2nd row of viewMat and normalizes it. Represents
+ * the direction that corresponds to "up" on the screen.
+ */
 CCVector3d ccViewportParameters::getUpDir() const
 {
-	// up direction is the 2nd line of the current view matrix
 	const double* M = viewMat.data();
 	CCVector3d    axis(M[1], M[5], M[9]);
 	axis.normalize();
-
 	return axis;
 }
 
+// ccViewportParameters::setPivotPoint
 void ccViewportParameters::setPivotPoint(const CCVector3d& P, bool autoUpdateFocal)
 {
 	pivotPoint = P;
 	if (autoUpdateFocal && objectCenteredView)
 	{
-		// update focal distance accordingly
+		// Maintain visual zoom by keeping camera at the same distance
 		focalDistance = cameraCenter.z - pivotPoint.z;
 	}
 }
 
+// ccViewportParameters::setCameraCenter
 void ccViewportParameters::setCameraCenter(const CCVector3d& C, bool autoUpdateFocal)
 {
 	cameraCenter = C;
 	if (autoUpdateFocal && objectCenteredView)
 	{
-		// update focal distance accordingly
+		// Maintain visual zoom by keeping pivot at the same distance
 		focalDistance = cameraCenter.z - pivotPoint.z;
 	}
 }
 
+// ccViewportParameters::setFocalDistance
 void ccViewportParameters::setFocalDistance(double distance)
 {
 	focalDistance = distance;
-
 	if (objectCenteredView)
 	{
+		// Keep pivot fixed; move camera to maintain focal distance
 		cameraCenter.z = pivotPoint.z + focalDistance;
 	}
 }
 
+// ccViewportParameters::computeDistanceToHalfWidthRatio
+/**
+ * @brief Compute tan(fov/2)
+ *
+ * Half of the tangent of the half-field-of-view. This ratio converts
+ * a depth value into a half-width, and vice versa:
+ * halfWidth = ratio * depth
+ */
 double ccViewportParameters::computeDistanceToHalfWidthRatio() const
 {
 	return std::tan(CCCoreLib::DegreesToRadians(fov_deg / 2.0));
 }
 
+// ccViewportParameters::computeDistanceToWidthRatio
+/**
+ * @brief Compute the full width-to-distance ratio
+ *
+ * Returns 2 * tan(fov/2) / min(ar, 1.0), where ar is the adjusted
+ * aspect ratio accounting for cameraAspectRatio and screen shape.
+ * When the screen is wider than tall, the ratio is unchanged.
+ * When the screen is taller than wide, the ratio increases.
+ */
 double ccViewportParameters::computeDistanceToWidthRatio(int screenWidth, int screenHeight) const
 {
 	if (screenHeight <= 0 || screenWidth <= 0)
@@ -329,21 +445,24 @@ double ccViewportParameters::computeDistanceToWidthRatio(int screenWidth, int sc
 		return 1.0;
 	}
 
-	double ar = std::min(1.0, static_cast<double>(screenWidth / (screenHeight * cameraAspectRatio))); // <= 1
-
+	// Adjust for camera aspect ratio, then clamp to ≤ 1.0
+	double ar = std::min(1.0, static_cast<double>(screenWidth / (screenHeight * cameraAspectRatio)));
 	return (2.0 * computeDistanceToHalfWidthRatio()) / ar;
 }
 
+// ccViewportParameters::computeWidthAtFocalDist
 double ccViewportParameters::computeWidthAtFocalDist(int screenWidth, int screenHeight) const
 {
 	return getFocalDistance() * computeDistanceToWidthRatio(screenWidth, screenHeight);
 }
 
+// ccViewportParameters::computePixelSize
 double ccViewportParameters::computePixelSize(int screenWidth, int screenHeight) const
 {
 	return (screenWidth > 0 ? computeWidthAtFocalDist(screenWidth, screenHeight) / screenWidth : 1.0);
 }
 
+// ccViewportParameters::log
 void ccViewportParameters::log() const
 {
 	ccLog::Print("View Matrix");
