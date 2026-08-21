@@ -20,9 +20,33 @@
 /**
  * @file ccGLMatrixTpl.h
  *
- * @brief 4x4 transformation matrix
+ * @brief 4x4 transformation matrix template
  *
- * Template for 4x4 transformation matrices.
+ * Template for 4x4 column-major OpenGL transformation matrices.
+ * Specializations: ccGLMatrix (float), ccGLMatrixd (double).
+ *
+ * Matrix layout: column-major (OpenGL convention)
+ *   | R11 R12 R13 R14 |   m_mat[0]  m_mat[4]  m_mat[8]  m_mat[12]
+ *   | R21 R22 R23 R24 | = m_mat[1]  m_mat[5]  m_mat[9]  m_mat[13]
+ *   | R31 R32 R33 R34 |   m_mat[2]  m_mat[6]  m_mat[10] m_mat[14]
+ *   | R41 R42 R43 R44 |   m_mat[3]  m_mat[7]  m_mat[11] m_mat[15]
+ *
+ * Rows 0-2 (R11..R34) form the 3x3 rotation/scale submatrix.
+ * Row 3 (R41..R44) is the homogeneous coordinate row — always (0,0,0,1)
+ *   for affine transformations.
+ * Columns 0-2 are the X/Y/Z basis vectors (rotation).
+ * Column 3 (R14..R44) is the translation vector.
+ *
+ * Key methods:
+ * - initFromParameters: axis-angle, Euler ZYX, or full 3-angle (Tait-Bryan Z1Y2X3)
+ * - Interpolate: SLERP-style interpolation between two matrices
+ * - FromToRotation: rotation mapping one unit vector to another
+ * - FromQuaternion: quaternion to rotation matrix conversion
+ * - getParameters: decompose into Euler angles + translation
+ * - inverse: compute the inverse transformation
+ * - operator*: compose transformations (multiply matrices)
+ *
+ * @see ccGLMatrix (float), ccGLMatrixd (double)
  */
 
 // Local
@@ -62,9 +86,15 @@ static const unsigned OPENGL_MATRIX_SIZE = 16;
 /**
  * @class ccGLMatrixTpl
  *
- * @brief 4x4 transformation matrix
+ * @brief 4x4 OpenGL transformation matrix template
  *
- * A 4x4 transformation matrix (column major order).
+ * Column-major 4x4 affine transformation matrix for 3D graphics.
+ * Stores rotation/scale in the upper-left 3x3, translation in column 3.
+ * Serializable to/from binary and ASCII files.
+ *
+ * @tparam T Scalar type (float or double)
+ *
+ * @see ccGLMatrix (float), ccGLMatrixd (double)
  */
 template <typename T>
 class ccGLMatrixTpl : public ccSerializableObject
