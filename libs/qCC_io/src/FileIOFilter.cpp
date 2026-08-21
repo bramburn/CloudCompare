@@ -15,6 +15,37 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file FileIOFilter.cpp
+ *
+ * @brief File I/O filter registry and load/save dispatch
+ *
+ * Central hub for all file format operations. Manages registration of
+ * FileIOFilter subclasses (built-in and plugin-loaded) and routes
+ * load/save requests to the appropriate filter.
+ *
+ * Key concepts:
+ * - Filter registry: static s_ioFilters vector (ordered by priority)
+ * - Session counter: increments per load/save action (s_sessionCounter)
+ * - Symlink resolution: GetRealFilename() follows .lnk/.alias shortcuts
+ * - Global shift: HandleGlobalShift() for coordinate overflow on 32-bit builds
+ * - Error codes: CC_FILE_ERROR enum mapped to human-readable messages
+ *
+ * Filter priority order (InitInternalFilters):
+ * 1. BinFilter (.bin binary) — highest priority
+ * 2. AsciiFilter (.txt CSV)
+ * 3. PlyFilter (.ply)
+ * 4. DxfFilter (.dxf) — if CC_DXF_SUPPORT
+ * 5. ShpFilter (.shp) — if CC_SHP_SUPPORT
+ * 6. RasterGridFilter — if CC_GDAL_SUPPORT
+ * 7. ImageFileFilter
+ * 8. DepthMapFileFilter
+ *
+ * Plugin filters are inserted by ccPluginManager during app startup.
+ *
+ * @see FileIOFilter.h for the class definition and filter interface
+ */
+
 #include "FileIOFilter.h"
 
 // CLOUDS
@@ -55,14 +86,21 @@ static unsigned s_sessionCounter = 0; //!< Session counter
 // In C++17, class-level "static constexpr" is implicitly inline, so these are not required.
 constexpr float FileIOFilter::DEFAULT_PRIORITY;
 
+// FileIOFilter::GetRealFilename
+/**
+ * @brief Resolve symbolic link or shortcut
+ *
+ * Follows .lnk (Windows) or alias (macOS) shortcuts to return the real
+ * file path. Used by LoadFromFile/SaveToFile before processing.
+ *
+ * @param[in] filename Path that may be a symlink
+ * @return Resolved absolute path, or original filename if not a symlink
+ */
 QString FileIOFilter::GetRealFilename(QString filename)
 {
 	QFileInfo fi(filename);
 	if (fi.isSymLink())
-	{
 		return fi.symLinkTarget();
-	}
-
 	return filename;
 }
 
@@ -173,6 +211,17 @@ unsigned FileIOFilter::IncreaseSesionCounter()
 	return ++s_sessionCounter;
 }
 
+// FileIOFilter::InitInternalFilters
+/**
+ * @brief Register all built-in filters
+ *
+ * Called once during app startup (before plugin loading) to register
+ * the standard CloudCompare formats. Plugin filters are added later
+ * by ccPluginManager::init().
+ *
+ * Registration order defines tie-breaking when multiple filters
+ * support the same extension.
+ */
 void FileIOFilter::InitInternalFilters()
 {
 	// from the most useful to the less one!
@@ -194,6 +243,16 @@ void FileIOFilter::InitInternalFilters()
 	Register(Shared(new DepthMapFileFilter()));
 }
 
+// FileIOFilter::Register
+/**
+ * @brief Register a filter with the global registry
+ *
+ * Adds filter to s_ioFilters, ordered by priority (ascending).
+ * Filters with the same priority are sorted by ID.
+ * Duplicate IDs are rejected with a warning.
+ *
+ * @param[in] filter Filter to register (must not be null)
+ */
 void FileIOFilter::Register(Shared filter)
 {
 	if (!filter)
@@ -233,6 +292,13 @@ void FileIOFilter::Register(Shared filter)
 	s_ioFilters.insert(pos, filter);
 }
 
+// FileIOFilter::UnregisterAll
+/**
+ * @brief Unregister and clear all filters
+ *
+ * Calls unregister() on each filter then clears s_ioFilters.
+ * Called during application shutdown.
+ */
 void FileIOFilter::UnregisterAll()
 {
 	for (auto& filter : s_ioFilters)
@@ -243,6 +309,17 @@ void FileIOFilter::UnregisterAll()
 	s_ioFilters.clear();
 }
 
+// FileIOFilter::GetFilter
+/**
+ * @brief Find filter by Qt file-filter string
+ *
+ * Looks up a filter by its Qt file-filter string (e.g. "BIN Files (*.bin)").
+ * Searches the registered filters for a matching import or export string.
+ *
+ * @param[in] fileFilter Qt filter string (empty = return nullptr)
+ * @param[in] onImport true = check import strings, false = check export strings
+ * @return Matching filter, or nullptr if not found
+ */
 FileIOFilter::Shared FileIOFilter::GetFilter(const QString& fileFilter, bool onImport)
 {
 	if (!fileFilter.isEmpty())
@@ -263,6 +340,17 @@ const FileIOFilter::FilterContainer& FileIOFilter::GetFilters()
 	return s_ioFilters;
 }
 
+// FileIOFilter::FindBestFilterForExtension
+/**
+ * @brief Find best filter for a file extension
+ *
+ * Iterates registered filters and returns the first one whose
+ * importExtensions list contains the given extension (case-insensitive).
+ * Used by LoadFromFile when no explicit filter is specified.
+ *
+ * @param[in] ext File extension (with or without leading dot)
+ * @return First matching filter, or nullptr if no filter handles this extension
+ */
 FileIOFilter::Shared FileIOFilter::FindBestFilterForExtension(const QString& ext)
 {
 	const QString lowerExt = ext.toLower();
@@ -293,6 +381,24 @@ QStringList FileIOFilter::ImportFilterList()
 	return list;
 }
 
+// FileIOFilter::LoadFromFile (with explicit filter)
+/**
+ * @brief Load a file using an explicit filter
+ *
+ * Calls filter->loadFile() on the provided filter, wraps exceptions,
+ * manages session counter, and post-processes the loaded container.
+ *
+ * Post-processing:
+ * - Container name set to "filename (path)"
+ * - Children named "unnamed" renamed to base filename
+ * - Empty containers (no children) are deleted and nullptr returned
+ *
+ * @param[in] filename Resolved file path
+ * @param[in] loadParameters Load parameters (progress, coordinates shift, etc.)
+ * @param[in] filter Explicit filter to use (must not be null)
+ * @param[out] result Error code
+ * @return Loaded entity container, or nullptr on failure
+ */
 ccHObject* FileIOFilter::LoadFromFile(const QString&  filename,
                                       LoadParameters& loadParameters,
                                       Shared          filter,
@@ -436,6 +542,19 @@ ccHObject* FileIOFilter::LoadFromFile(const QString&  inputFilename,
 	return LoadFromFile(filename, loadParameters, filter, result);
 }
 
+// FileIOFilter::SaveToFile (with explicit filter)
+/**
+ * @brief Save entities to file using an explicit filter
+ *
+ * Calls filter->saveToFile(), wraps exceptions, and appends the filter's
+ * default extension if the filename has no suffix.
+ *
+ * @param[in] entities Entity (or container) to save
+ * @param[in] inputFilename Target path (extension may be added automatically)
+ * @param[in] parameters Save parameters (progress callback, etc.)
+ * @param[in] filter Explicit filter to use
+ * @return CC_FILE_ERROR error code
+ */
 CC_FILE_ERROR FileIOFilter::SaveToFile(ccHObject*            entities,
                                        const QString&        inputFilename,
                                        const SaveParameters& parameters,
@@ -499,6 +618,17 @@ CC_FILE_ERROR FileIOFilter::SaveToFile(ccHObject*            entities,
 	return SaveToFile(entities, filename, parameters, filter);
 }
 
+// FileIOFilter::DisplayErrorMessage
+/**
+ * @brief Display an error or warning for a file operation failure
+ *
+ * Maps CC_FILE_ERROR enum to a human-readable localized string and
+ * logs it via ccLog::Error or ccLog::Warning.
+ *
+ * @param[in] err Error code
+ * @param[in] action "loading" or "saving" (for message phrasing)
+ * @param[in] filename Filename (for message context)
+ */
 void FileIOFilter::DisplayErrorMessage(CC_FILE_ERROR err, const QString& action, const QString& filename)
 {
 	QString errorStr;
@@ -583,6 +713,26 @@ bool FileIOFilter::CheckForSpecialChars(const QString& filename)
 	return (filename.normalized(QString::NormalizationForm_D) != filename);
 }
 
+// FileIOFilter::HandleGlobalShift
+/**
+ * @brief Manage global coordinate shift for large point clouds
+ *
+ * When PointCoordinateType is 32-bit float, coordinates that exceed ~1e6
+ * lose precision. This method detects such cases and applies a translation
+ * (stored in loadParameters._coordinatesShift) to keep values precise.
+ *
+ * Logic:
+ * 1. If shift already enabled in loadParameters, use it
+ * 2. Otherwise, ask ccGlobalShiftManager to compute one from the first point
+ * 3. If user clicks "Apply to all" in the dialog, set _coordinatesShiftForced
+ *
+ * @param[in] P First (or representative) point to evaluate
+ * @param[out] Pshift Computed shift vector
+ * @param[out] preserveCoordinateShift Whether to preserve shift on save
+ * @param[in,out] loadParameters Parameters with shift handling mode and outputs
+ * @param[in] useInputCoordinatesShiftIfPossible Prefer existing shift over computing new
+ * @return true if a shift should/must be applied
+ */
 bool FileIOFilter::HandleGlobalShift(const CCVector3d& P,
                                      CCVector3d&       Pshift,
                                      bool&             preserveCoordinateShift,
