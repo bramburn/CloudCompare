@@ -31,6 +31,16 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccLabelingDlg.cpp | ✅ Done | Committed: 178522cf |
 | ccKrigingParamsDialog.cpp | ✅ Done | Committed: c9f41a62 |
 | ccSORFilterDlg.cpp | ✅ Done | Committed: c9f41a62 |
+| ccFitSphereDlg.cpp | ✅ Done | Committed: 73ae2ccd |
+| ccGraphicalSegmentationOptionsDlg.cpp | ✅ Done | Committed: 73ae2ccd |
+| ccInterpolationDlg.cpp | ✅ Done | Committed: 73ae2ccd |
+| ccMatchScalesDlg.cpp | ✅ Done | Committed: 73ae2ccd |
+| ccInnerRect2DFinder.cpp | ✅ Done | Committed: 63e55ec1 |
+| ccItemSelectionDlg.cpp | ✅ Done | Committed: 63e55ec1 |
+| ccOrderChoiceDlg.cpp | ✅ Done | Committed: 63e55ec1 |
+| ccOrthoSectionGenerationDlg.cpp | ✅ Done | Committed: 63e55ec1 |
+| ccScaleDlg.cpp | ✅ Done | Committed: 63e55ec1 |
+| ccStatisticalTestDlg.cpp | ✅ Done | Committed: 63e55ec1 |
 | ccConsole.cpp | ✅ Done | Committed: 83a4dacb |
 | ccConsole.h | ✅ Done | Committed: 83a4dacb |
 | ccUtils.cpp | ✅ Done | Committed: bf35923f |
@@ -200,8 +210,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~120
-- **Completed**: 120
+- **Total files tracked**: ~132
+- **Completed**: 132
 - **In progress**: 0
 - **Percentage**: ~100%
 
