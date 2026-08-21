@@ -4,9 +4,52 @@
 /**
  * @file ccCommandLineCommands.h
  *
- * @brief Command line commands
+ * @brief Command-line interface commands
  *
- * Command line interface commands.
+ * Individual command structs for CloudCompare's command-line interface.
+ * Each struct inherits from ccCommandLineInterface::Command and
+ * implements process() to handle one CLI command keyword.
+ *
+ * ## Command Categories
+ *
+ * ### I/O
+ * - **C_EXPORT_FMT / M_EXPORT_FMT / H_EXPORT_FMT**: set output format for clouds/meshes/hierarchy
+ * - **O**: open file
+ * - **EXT**: set output extension
+ * - **PREC / SEP / ADD_HEADER / ADD_PTS_COUNT**: ASCII export options
+ * - **COMMAND_FILE**: execute commands from a file
+ *
+ * ### Entity Operations
+ * - **SS (SUBSAMPLE)**: random/spatial/octree subsampling
+ * - **EXTRACT_CC**: connected component extraction
+ * - **MERGE**: merge clouds
+ * - **CROP**: crop cloud to a polyline/box
+ * - **REMOVE_OUTLIERS**: statistical outlier removal
+ * - **CLEAR_NORMALS**: remove normals
+ *
+ * ### Scalar Field Operations
+ * - **CURV**: compute mean/Gaussian curvature
+ * - **DENSITY / APPROX_DENSITY**: point density estimation
+ * - **ROUGH**: roughness computation
+ * - **SF_GRAD**: scalar field gradient
+ * - **SF_CONVERT_TO_RGB**: map SF to RGB colors
+ * - **FILTER_SF**: select by SF value range
+ *
+ * ### Geometric Analysis
+ * - **DISTANCE / CLOUDMISMATCH / COMPARE**: cloud-to-cloud distance
+ * - **VOLUME_BETWEEN_CLOUDS**: volume computation
+ * - **STAT_TEST**: statistical test
+ *
+ * ### Transformations
+ * - **APPLY_TRANS**: apply GL transformation matrix
+ * - **INVERSE**: apply inverse transformation
+ * - **DROP_GLOBAL_SHIFT**: remove global shift
+ *
+ * ### Mesh Operations
+ * - **DELAUNAY_2D**: Delaunay triangulation
+ * - **SMOOTH**: Laplacian smoothing
+ * - **MERGE_MESHES**: merge meshes
+ * - **FILTER_THROUGH**: pass-through filter
  *
  * @author CloudCompare project
  */

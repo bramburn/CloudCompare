@@ -23,6 +23,10 @@
  * @brief Plugin API library export definitions
  *
  * Defines the CCPLUGIN_LIB_API macro for library export/import.
+ *
+ * CCPluginAPI defines the plugin interface contracts
+ * (ccStdPluginInterface, ccIOPluginInterface, ccGLPluginInterface)
+ * and shared UI components used by both apps and plugins.
  */
 
 #include <QtCore/QtGlobal>

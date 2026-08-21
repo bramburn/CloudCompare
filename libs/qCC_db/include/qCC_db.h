@@ -24,7 +24,13 @@
  *
  * @brief qCC_db library export definitions
  *
- * Defines the QCC_DB_LIB_API macro for library export/import.
+ * Defines the QCC_DB_LIB_API macro for library export/import:
+ * - QCC_DB_LIB_API Q_DECL_EXPORT when building the library
+ * - QCC_DB_LIB_API Q_DECL_IMPORT when using the library
+ *
+ * qCC_db contains all core data model classes (entities, primitives,
+ * point clouds, meshes, sensors) and is used by qCC, ccViewer,
+ * and all plugins.
  */
 
 #include <QtCore/QtGlobal>

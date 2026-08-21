@@ -22,6 +22,10 @@
  * @brief GL Window library export definitions
  *
  * Defines the CCGLWINDOW_LIB_API macro for library export/import.
+ *
+ * qCC_glWindow contains the 3D rendering window implementation
+ * (ccGLWindow, ccGLUtils, ccGuiParameters) and is a dependency
+ * of qCC and ccViewer.
  */
 
 #include <QtCore/QtGlobal>

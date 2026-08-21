@@ -25,6 +25,9 @@
  * @brief qCC_io library export definitions
  *
  * Defines the QCC_IO_LIB_API macro for library export/import.
+ *
+ * qCC_io contains all file I/O filters (AsciiFilter, BinFilter,
+ * DxfFilter, etc.) and is a dependency of qCC and ccViewer.
  */
 
 #include <QtCore/QtGlobal>

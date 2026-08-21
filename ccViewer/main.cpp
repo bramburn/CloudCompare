@@ -17,6 +17,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file main.cpp
+ *
+ * @brief ccViewer main entry point
+ *
+ * ccViewer is the lightweight read-only viewer application.
+ * It shares qCC's rendering pipeline but lacks editing tools.
+ *
+ * ## Initialization Sequence
+ *
+ * 1. Qt application: QSurfaceFormat + QApplication construction
+ * 2. Normal vectors table: ccNormalVectors::GetUnique()
+ * 3. Color scales manager: ccColorScalesManager::Initialize()
+ * 4. Main window: ccViewerMainWindow construction
+ * 5. ccConsole::Init(): message sink registration
+ * 6. exec(): Qt event loop
+ *
+ * ## Differences from qCC
+ *
+ * - No editing tools or entity manipulation
+ * - Separate plugin path: plugins/ (not shared with qCC)
+ * - No command-line processing
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ */
+
 // Qt
 #include <QDir>
 #include <QOpenGLContext>

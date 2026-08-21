@@ -23,6 +23,10 @@
  * @brief App Common library export definitions
  *
  * Defines the CCAPPCOMMON_LIB_API macro for library export/import.
+ *
+ * CCAppCommon contains shared UI components (ccOptions, ccPluginManager,
+ * ccDisplaySettingsDlg, cc3DMouseManager) and is a dependency of
+ * qCC and ccViewer.
  */
 
 #include <QtCore/QtGlobal>
