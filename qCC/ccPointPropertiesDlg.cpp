@@ -15,6 +15,30 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPointPropertiesDlg.cpp
+ *
+ * @brief Point properties dialog implementation
+ *
+ * Dialog for interactive point picking and measurement in the 3D view.
+ *
+ * ## Measurements
+ *
+ * - **Point info**: display coordinates, scalar field value, color
+ * - **Distance**: pick two points to measure 3D distance
+ * - **Angle**: pick three points to measure the angle
+ * - **Polyline**: pick multiple points, get total path length
+ * - **Point cloud info**: statistics for the picked point's cloud
+ *
+ * ## Interaction
+ *
+ * Click in the 3D view to pick points. The dialog updates
+ * in real time with measurements. Results can be exported
+ * as labels or logged.
+ *
+ * @see ccPointPropertiesDlg.h, ccPointPickingGenericInterface
+ */
+
 #include "ccPointPropertiesDlg.h"
 
 // Local

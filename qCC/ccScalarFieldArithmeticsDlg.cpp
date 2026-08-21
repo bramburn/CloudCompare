@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccScalarFieldArithmeticsDlg.cpp
+ *
+ * @brief Scalar field arithmetics dialog implementation
+ *
+ * Dialog for performing per-point arithmetic operations on
+ * scalar fields. Supports combining scalar fields with
+ * arithmetic operators and functions.
+ *
+ * ## Supported Operations
+ *
+ * - **Binary ops**: +, -, *, / (SF × SF, SF × scalar)
+ * - **Unary ops**: negation, absolute value, square root, log, exp
+ * - **Functions**: min, max, clamp, if/then/else
+ * - **Per-point stats**: mean, std dev, sum across multiple SFs
+ *
+ * ## Workflow
+ *
+ * 1. Select two scalar fields and an operator
+ * 2. Preview the result statistics
+ * 3. Apply to create a new scalar field
+ *
+ * Uses ccScalarField::arithmetic() internally.
+ *
+ * @see ccScalarFieldArithmeticsDlg.h, ccScalarField
+ */
+
 #include "ccScalarFieldArithmeticsDlg.h"
 
 #include "ui_sfArithmeticsDlg.h"

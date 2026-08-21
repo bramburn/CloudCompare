@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccNormalComputationDlg.cpp
+ *
+ * @brief Normal computation dialog implementation
+ *
+ * Dialog for configuring surface normal estimation parameters.
+ *
+ * ## Normal Computation Methods
+ *
+ * - **Quadric fitting**: fit a local quadric surface via least squares
+ * - **Triangulation**: use Delaunay triangulation of neighbors
+ * - **Plane fitting**: fit a plane to k nearest neighbors
+ *
+ * ## Parameters
+ *
+ * - **K neighbors**: number of nearest neighbors for local computation
+ * - **Normals orientation**: use scan grid for orientation, or XYZ priority
+ * - **Preferred orientation**: forced normal direction (e.g., along +Z)
+ * - **Use scan grid**: orient normals based on grid structure
+ *
+ * Normals are stored in the point cloud as compressed vectors
+ * using ccNormalVectors.
+ *
+ * @see ccNormalComputationDlg.h
+ */
+
 #include "ccNormalComputationDlg.h"
 
 // qCC_db

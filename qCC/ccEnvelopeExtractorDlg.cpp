@@ -15,6 +15,34 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccEnvelopeExtractorDlg.cpp
+ *
+ * @brief Envelope extractor debug dialog implementation
+ *
+ * Debug visualization dialog for the envelope extraction algorithm.
+ * Shows intermediate steps of the envelope (upper/lower hull)
+ * extraction process on a point cloud.
+ *
+ * ## Envelope Extraction
+ *
+ * The envelope (a.k.a. convex/concave hull boundary) is computed
+ * by sliding a sphere of given radius along the point cloud surface.
+ * The envelope represents the outer boundary accessible to the sphere.
+ *
+ * ## Debug Visualization
+ *
+ * This dialog shows:
+ * - Input point cloud
+ * - Intermediate envelope layers at different radii
+ * - Final extracted envelope boundary
+ *
+ * Useful for tuning the envelope radius and understanding
+ * the algorithm's behavior on complex geometry.
+ *
+ * @see ccEnvelopeExtractorDlg.h
+ */
+
 #include "ccEnvelopeExtractorDlg.h"
 
 // CCCoreLib

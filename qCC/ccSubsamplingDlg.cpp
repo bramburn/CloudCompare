@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSubsamplingDlg.cpp
+ *
+ * @brief Subsampling dialog implementation
+ *
+ * Dialog for selecting and configuring a point cloud subsampling method.
+ *
+ * ## Subsampling Methods
+ *
+ * - **Random**: uniformly random point selection
+ * - **Spatial**: grid-based spatial sampling
+ * - **Octree**: octree-based sampling at a given resolution
+ * - **Neighborhood**: keeps one point per neighborhood cell
+ * - **Sensor-based**: uses sensor information for structured sampling
+ *
+ * ## Parameters
+ *
+ * - **Sample size**: target number of points or ratio
+ * - **Cell size**: grid/octree cell dimension
+ * - **Min points per cell**: minimum points to keep a cell
+ * - **Use original index**: preserve original point indices
+ *
+ * The output is a ccReferenceCloud referencing the selected points.
+ *
+ * @see ccSubsamplingDlg.h, CCCoreLib::ReferenceCloud
+ */
+
 #include "ccSubsamplingDlg.h"
 
 #include "ui_subsamplingDlg.h"
