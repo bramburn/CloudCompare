@@ -15,11 +15,43 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file LasScalarFieldSaver.cpp
+ *
+ * @brief LAS scalar field writer
+ *
+ * Writes scalar field values from a ccPointCloud into a laszip_point
+ * during LAS file export.
+ *
+ * ## Per-Point Saving
+ *
+ * handleScalarFields() reads the current point's scalar field values
+ * and writes them into the laszip_point structure:
+ *
+ * - Standard fields: mapped directly to laszip_point members
+ *   (Intensity, Return/NumberOfReturns, Classification, ScanAngle, GPS Time)
+ * - Extra fields: encoded using the field's scale/offset and written
+ *   as raw bytes
+ *
+ * ## Value Clamping
+ *
+ * Scalar field values are clamped to the LAS field's valid range
+ * before writing (e.g., Classification is 0-31).
+ *
+ * @see LasScalarFieldLoader.cpp for the read-side counterpart
+ */
+
 #include "LasScalarFieldSaver.h"
 
 #include <ccScalarField.h>
 #include <laszip/laszip_api.h>
 
+/**
+ * @brief Construct the scalar field saver
+ *
+ * @param[in] standardFields Standard field definitions
+ * @param[in] extraFields Extra attribute field definitions
+ */
 LasScalarFieldSaver::LasScalarFieldSaver(std::vector<LasScalarField>&&      standardFields,
                                          std::vector<LasExtraScalarField>&& extraFields)
     : m_standardFields(standardFields)
@@ -27,6 +59,15 @@ LasScalarFieldSaver::LasScalarFieldSaver(std::vector<LasScalarField>&&      stan
 {
 }
 
+/**
+ * @brief Write one point's scalar field values
+ *
+ * Reads from the scalar field buffers and writes into the laszip_point.
+ * Values are clamped to valid ranges before writing.
+ *
+ * @param[in] pointIndex Index of the current point
+ * @param[out] point Target laszip point structure
+ */
 void LasScalarFieldSaver::handleScalarFields(size_t pointIndex, laszip_point& point)
 {
 	for (const LasScalarField& field : m_standardFields)
@@ -181,6 +222,15 @@ void LasScalarFieldSaver::handleScalarFields(size_t pointIndex, laszip_point& po
 	}
 }
 
+/**
+ * @brief Write one point's extra field values
+ *
+ * Encodes each extra field value and writes it to the laszip_point
+ * extra-bytes region. Uses the field's scale and offset for encoding.
+ *
+ * @param[in] pointIndex Index of the current point
+ * @param[out] point Target laszip point structure
+ */
 void LasScalarFieldSaver::handleExtraFields(size_t pointIndex, laszip_point& point)
 {
 	if (point.num_extra_bytes == 0 || point.extra_bytes == nullptr)
