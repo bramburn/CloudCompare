@@ -16,6 +16,25 @@
 // ##########################################################################
 
 // Local
+/**
+ * @file ccGraphicalSegmentationOptionsDlg.cpp
+ *
+ * @brief Segmentation options dialog implementation
+ *
+ * Dialog for configuring graphical segmentation tool options.
+ *
+ * ## Segmentation Options
+ *
+ * - **Polyline mode**: segment by drawing closed polygons in the 3D view
+ * - **Rectangle mode**: segment by drawing bounding rectangles
+ * - **Slice mode**: segment by drawing planar slices
+ * - **Height filter**: segment by Z-coordinate threshold
+ *
+ * Settings are persisted to QSettings for session continuity.
+ *
+ * @see ccGraphicalSegmentationOptionsDlg.h
+ */
+
 #include "ccGraphicalSegmentationOptionsDlg.h"
 
 // Qt

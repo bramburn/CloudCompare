@@ -15,6 +15,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccInterpolationDlg.cpp
+ *
+ * @brief Interpolation dialog implementation
+ *
+ * Dialog for configuring point cloud interpolation parameters.
+ *
+ * ## Interpolation Parameters
+ *
+ * - **Method**: interpolation strategy (e.g., natural neighbor, IDW, kriging)
+ * - **Algorithm**: specific algorithm implementation
+ * - **Resolution**: output grid cell size
+ * - **Max distance**: max search radius for neighborhood
+ * - **Min neighbors**: minimum neighbors required for interpolation
+ *
+ * Used with ccPointCloudInterpolator to resample a sparse point cloud
+ * onto a regular grid.
+ *
+ * @see ccInterpolationDlg.h, ccPointCloudInterpolator
+ */
+
 #include "ccInterpolationDlg.h"
 
 // System

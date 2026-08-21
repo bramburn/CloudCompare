@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccMatchScalesDlg.cpp
+ *
+ * @brief Match scales dialog implementation
+ *
+ * Dialog for selecting a scale-matching algorithm to align
+ * two point clouds or meshes of different resolutions.
+ *
+ * ## Scale Matching
+ *
+ * Scale matching algorithms find a transformation that aligns
+ * entities with different point densities or sampling scales.
+ *
+ * ## Usage
+ *
+ * 1. Select two or more entities from the db-tree
+ * 2. Choose a matching algorithm
+ * 3. Configure algorithm parameters
+ * 4. Apply to generate an aligned output
+ *
+ * @see ccMatchScalesDlg.h, ccLibAlgorithms
+ */
+
 #include "ccMatchScalesDlg.h"
 
 // Qt

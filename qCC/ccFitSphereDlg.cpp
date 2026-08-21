@@ -15,6 +15,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccFitSphereDlg.cpp
+ *
+ * @brief Fit sphere dialog implementation
+ *
+ * Dialog for configuring sphere fitting parameters used in
+ * cloud-to-sphere distance computation.
+ *
+ * ## Parameters
+ *
+ * - **Max outliers ratio**: fraction of points allowed outside the sphere
+ * - **Confidence level**: statistical confidence for robust fitting
+ * - **Auto-detect radius**: use automatic radius detection vs. manual input
+ * - **Sphere radius**: explicit radius when auto-detect is off
+ *
+ * The robust fitting algorithm tolerates outliers (points outside the
+ * sphere) up to the maxOutliersRatio threshold.
+ *
+ * @see ccFitSphereDlg.h
+ */
+
 #include "ccFitSphereDlg.h"
 
 ccFitSphereDlg::ccFitSphereDlg(double   maxOutliersRatio,
