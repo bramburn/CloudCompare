@@ -53,6 +53,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccSectionExtractionSubDlg.cpp | ✅ Done | Committed: 2efc2563 |
 | ccSetSFAsVec3Dlg.cpp | ✅ Done | Committed: 2efc2563 |
 | ccShortcutDialog.cpp | ✅ Done | Committed: 2efc2563 |
+| ccPtsSamplingDlg.cpp | ✅ Done | Committed: f4d447f9 |
+| ccRegistrationDlg.cpp | ✅ Done | Committed: f4d447f9 |
+| ccScalarFieldsManagerDlg.cpp | ✅ Done | Committed: f4d447f9 |
 | ccConsole.cpp | ✅ Done | Committed: 83a4dacb |
 | ccConsole.h | ✅ Done | Committed: 83a4dacb |
 | ccUtils.cpp | ✅ Done | Committed: bf35923f |
@@ -222,8 +225,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~144
-- **Completed**: 144
+- **Total files tracked**: ~147
+- **Completed**: 147
 - **In progress**: 0
 - **Percentage**: ~100%
 
