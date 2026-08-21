@@ -1,3 +1,47 @@
+/**
+ * @file LasExtraScalarField.cpp
+ *
+ * @brief Extra scalar field implementation
+ *
+ * Extra scalar fields are LAS 1.4 Extended Variable Length Records (EVLRs)
+ * that store arbitrary per-point data. This implements:
+ *
+ * - Binary serialization to/from QDataStream (for .cc file persistence)
+ * - Type encoding: maps between LasExtraScalarField::DataType and uint8_t codes
+ * - Data type validation: ensures byte counts match for the type
+ * - Name comparison: safe strncmp-based comparison
+ *
+ * ## LAS Extra Attribute Format (per LAS specification)
+ *
+ * Each extra attribute in the EVLR data contains:
+ * - name[32]: null-terminated name string
+ * - type[1-2]: data type code
+ * - options[1]: options flags
+ * - no_data[0-24]: NaN/replacement value for missing data
+ * - min[0-24]: minimum value
+ * - max[0-24]: maximum value
+ * - scale[0-24]: scale factor (for encoding)
+ * - offset[0-24]: offset (for encoding)
+ * - description[32]: human-readable description
+ *
+ * ## Data Type Codes
+ *
+ * | Code | Type         | Size |
+ * |------|--------------|------|
+ * | 0    | Undocumented | -    |
+ * | 1    | Uint8        | 1    |
+ * | 2    | Int8         | 1    |
+ * | 3    | Uint16       | 2    |
+ * | 4    | Int16        | 2    |
+ * | 5    | Uint32       | 4    |
+ * | 6    | Int32        | 4    |
+ * | 7    | Uint64       | 8    |
+ * | 8    | Int64        | 8    |
+ * | 9    | Float64      | 8    |
+ *
+ * @see LasExtraScalarField.h
+ */
+
 #include "LasExtraScalarField.h"
 
 #include "LasDetails.h"
@@ -14,6 +58,18 @@
 #include <cstring>
 #include <stdexcept>
 
+/**
+ * @brief Deserialize an extra field from a .cc file
+ *
+ * Reads binary data in LAS extra attribute EVLR format:
+ * skipRawData(2) → type → options → name[32] → skipRawData(4)
+ * → noData[3×8] → mins[3×8] → maxs[3×8]
+ * → scales[3×8] → offsets[3×8] → description[32]
+ *
+ * @param[in] dataStream Input stream
+ * @param[out] extraScalarField Target extra field
+ * @return The stream for chaining
+ */
 QDataStream& operator>>(QDataStream& dataStream, LasExtraScalarField& extraScalarField)
 {
 	dataStream.setByteOrder(QDataStream::ByteOrder::LittleEndian);
@@ -37,6 +93,15 @@ QDataStream& operator>>(QDataStream& dataStream, LasExtraScalarField& extraScala
 	return dataStream;
 }
 
+/**
+ * @brief Serialize an extra field to a .cc file
+ *
+ * Writes binary data in LAS extra attribute EVLR format.
+ *
+ * @param[in] dataStream Output stream
+ * @param[in] extraScalarField Source extra field
+ * @return The stream for chaining
+ */
 QDataStream& operator<<(QDataStream& dataStream, const LasExtraScalarField& extraScalarField)
 {
 	dataStream.setByteOrder(QDataStream::ByteOrder::LittleEndian);
@@ -56,6 +121,12 @@ QDataStream& operator<<(QDataStream& dataStream, const LasExtraScalarField& extr
 	return dataStream;
 }
 
+/**
+ * @brief Decode a data type code to DataType and DimensionSize
+ *
+ * @param[in] value uint8_t type code (from LAS extra attribute)
+ * @return Tuple of (DataType, DimensionSize)
+ */
 std::tuple<LasExtraScalarField::DataType, LasExtraScalarField::DimensionSize>
 LasExtraScalarField::DataTypeFromValue(uint8_t value)
 {
@@ -162,12 +233,26 @@ unsigned LasExtraScalarField::byteSize() const
 	return elementSize() * numElements();
 }
 
+/**
+ * @brief Get the number of elements for this field
+ *
+ * @return Number of dimensions (1, 2, or 3)
+ */
 unsigned LasExtraScalarField::numElements() const
 {
 	return static_cast<unsigned>(dimensions);
 }
 
 std::vector<LasExtraScalarField>
+/**
+ * @brief Parse all extra fields from a LAS header
+ *
+ * Searches the VLRs for an extra-bytes VLR and parses all
+ * extra attribute definitions from it.
+ *
+ * @param[in] laszipHeader Source LAS header
+ * @return Vector of extra scalar field definitions
+ */
 LasExtraScalarField::ParseExtraScalarFields(const laszip_header& laszipHeader)
 {
 	auto* extraBytesVlr = std::find_if(laszipHeader.vlrs,
@@ -181,6 +266,15 @@ LasExtraScalarField::ParseExtraScalarFields(const laszip_header& laszipHeader)
 }
 
 std::vector<LasExtraScalarField>
+/**
+ * @brief Parse extra fields from a VLR's binary data
+ *
+ * Reads the VLR data as a sequence of extra attribute records.
+ * Each record contains: name[32], type, options, no_data, mins, maxs, scale, offset, description[32].
+ *
+ * @param[in] extraBytesVlr VLR with extra bytes data
+ * @return Vector of parsed extra scalar field definitions
+ */
 LasExtraScalarField::ParseExtraScalarFields(const laszip_vlr_struct& extraBytesVlr)
 {
 	if (!LasDetails::IsExtraBytesVlr(extraBytesVlr))
@@ -311,6 +405,11 @@ void LasExtraScalarField::InitExtraBytesVlr(laszip_vlr_struct& vlr, const std::v
 	std::copy(byteArray.begin(), byteArray.end(), vlr.data);
 }
 
+/**
+ * @brief Encode the data type and dimension to a uint8_t code
+ *
+ * @return Type code: type + 10 * (dimensions - 1)
+ */
 uint8_t LasExtraScalarField::typeCode() const
 {
 	Q_ASSERT(type != DataType::Invalid);
