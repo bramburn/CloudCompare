@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccDisplaySettingsDlg.cpp
+ *
+ * @brief Display settings dialog implementation
+ *
+ * Modal dialog for configuring global display settings:
+ * - **Lighting**: ambient/diffuse/specular colors, double-sided
+ * - **Mesh defaults**: front/back diffuse, specular, stippling
+ * - **Entity colors**: text, points, background, labels, bounding boxes
+ * - **Rendering options**: background gradient, LoD (mesh/cloud decimation), VBO
+ * - **Scalar field display**: color scale bar, histogram, shader
+ * - **Font**: default font size, label font size, coordinate precision
+ * - **Interaction**: zoom speed, auto-octree, picking cursor, rounded points
+ *
+ * Settings are saved to QSettings and applied to all ccGLWindow instances.
+ *
+ * ## LoD (Level of Detail)
+ *
+ * During interactive manipulation, large meshes and clouds are
+ * temporarily decimated to maintain frame rate:
+ * - decimateMeshOnMove: reduces mesh triangle count
+ * - decimateCloudOnMove: reduces visible point count
+ * - minLoDMeshSize / minLoDCloudSize: below these thresholds, no decimation
+ *
+ * @see ccDisplaySettingsDlg.h, ccGuiParameters
+ */
+
 #include "ccDisplaySettingsDlg.h"
 
 #include "ccApplicationBase.h"
@@ -35,6 +62,13 @@
 // Default 'min cloud size' for LoD  when VBOs are activated
 constexpr double s_defaultMaxVBOCloudSizeM = 50.0;
 
+/**
+ * @brief Construct the display settings dialog
+ *
+ * Loads current settings from QSettings and populates UI fields.
+ *
+ * @param[in] parent Parent widget
+ */
 ccDisplaySettingsDlg::ccDisplaySettingsDlg(QWidget* parent)
     : QDialog(parent, Qt::Tool)
     , m_ui(new Ui::DisplaySettingsDlg)
