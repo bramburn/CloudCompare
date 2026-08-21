@@ -21,29 +21,48 @@
 /**
  * @file ccFlags.h
  *
- * @brief Bit flags container
+ * @brief 8-bit bitfield container
  *
- * Simple 8-bit flags container.
+ * Represents up to 8 boolean flags as a bitfield, with conversion
+ * to/from an unsigned char byte for serialization.
  *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * Usage: subclasses or users define which bit position means what.
+ * The class provides no semantics — just the storage and conversion.
+ *
+ * @see Used by ccPointCloud::reserveTheNormsTable / reserveTheColorsTable
+ *      to track which of 8 possible normals/color channels are present.
  */
 
-// System
 #include <cstring>
 
 /**
- * @brief 8-bit flags container
+ * @class ccFlags
+ *
+ * @brief 8-bit flags container with byte serialization
+ *
+ * Stores 8 boolean flags in a bit-like array. Provides fromByte() and
+ * toByte() for converting to/from a single unsigned char for compact
+ * file storage.
+ *
+ * Bits are uninterpreted — the caller defines the meaning of each
+ * bit position.
  */
 class ccFlags
 {
   public:
-	/// Reset all flags to 0
+	/**
+	 * @brief Reset all 8 flags to false
+	 */
 	void reset()
 	{
 		memset(table, 0, sizeof(bool) * 8);
 	}
 
-	/// Set from byte
+	/**
+	 * @brief Set flags from a byte value
+	 *
+	 * @param[in] byte Bitfield where bit i sets table[i]
+	 */
 	void fromByte(unsigned char byte)
 	{
 		unsigned char i, mask = 1;
@@ -54,7 +73,11 @@ class ccFlags
 		}
 	}
 
-	/// Convert to byte
+	/**
+	 * @brief Convert flags to a byte
+	 *
+	 * @return Byte where bit i is set if table[i] is true
+	 */
 	unsigned char toByte() const
 	{
 		unsigned char i, byte = 0, mask = 1;
@@ -64,11 +87,10 @@ class ccFlags
 				byte |= mask;
 			mask <<= 1;
 		}
-
 		return byte;
 	}
 
-	/// Flag bits
+	//! Flag bits (index = bit position 0-7)
 	bool table[8];
 };
 
