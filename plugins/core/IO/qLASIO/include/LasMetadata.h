@@ -1,19 +1,32 @@
 /**
  * @file LasMetadata.h
  *
- * @brief LAS metadata handling utilities.
+ * @brief LAS metadata persistence — round-trip between LAS header and ccPointCloud metadata
  *
- * @details Functions for saving and loading LAS metadata
- * to/from CloudCompare point clouds.
+ * Stores and retrieves LAS file metadata to/from ccPointCloud::metaData().
+ * This enables round-trip LAS read/write without losing header information.
  *
- * ## Metadata Keys
+ * ## Metadata Schema
  *
- * - Scale factors (X, Y, Z)
- * - Offset values (X, Y, Z)
- * - Version (major, minor)
- * - Point format
- * - Global encoding
- * - VLRs (Variable Length Records)
+ * | Key                    | Type     | Description                        |
+ * |------------------------|----------|------------------------------------|
+ * | LAS.scale.x/y/z        | double   | Coordinate scale factors           |
+ * | LAS.offset.x/y/z        | double   | Coordinate offsets                 |
+ * | LAS.version.major      | int      | LAS major version (always 1)        |
+ * | LAS.version.minor      | int      | LAS minor version (2, 3, or 4)     |
+ * | LAS.point_format       | int      | Point format ID (0-10)             |
+ * | LAS.global_encoding    | uint16_t | GPS time type, WKT, etc.           |
+ * | LAS.project_uuid       | QString  | Unique file identifier             |
+ * | LAS.system_identifier  | QString  | Software that created the file      |
+ * | LAS.variableLengthRecords | QByteArray | Serialized VLR data           |
+ * | LAS.extra_fields       | QString  | Extra attribute definitions       |
+ *
+ * ## Coordinate Conversion
+ *
+ * LAS stores coordinates as 32-bit integers. Real-world coordinates are:
+ * `real = stored * scale + offset`
+ *
+ * When loading: `stored = (real - offset) / scale`
  *
  * @author Thomas Montaigu
  */
@@ -83,11 +96,14 @@ namespace LasMetadata
 	constexpr const char EXTRA_FIELDS[]      = "LAS.extra_fields";
 
 	/**
-	 * @brief Save metadata into point cloud.
+	 * @brief Save LAS header metadata into a point cloud
 	 *
-	 * @param[in] header LAS header.
-	 * @param[out] pointCloud Point cloud.
-	 * @param[in] extraScalarFields Extra scalar fields.
+	 * Copies scale, offset, version, point format, global encoding,
+	 * VLRs, and extra field definitions into the cloud's metadata.
+	 *
+	 * @param[in] header Source LAS header
+	 * @param[out] pointCloud Target CloudCompare point cloud
+	 * @param[in] extraScalarFields Extra attribute definitions to store
 	 */
 	void SaveMetadataInto(const laszip_header& header, ccPointCloud& pointCloud, const std::vector<LasExtraScalarField>& extraScalarFields);
 
