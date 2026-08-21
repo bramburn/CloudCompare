@@ -85,6 +85,22 @@ harness = false
 winapi = { version = "0.3", features = ["errhandlingapi", "handleapi", "debugapi"] }
 
 [profile.release]
+# opt-level=3 (max), thin LTO, single codegen unit, panic=abort.
+#
+# PGO (profile-guided optimisation) would give an extra 5-15%
+# but is unavailable on the MSVC rustc shipped with this repo
+# (`profiler_builtins` is not in the standard distribution —
+# see pgo-build.sh). We tried `lto = "fat"` + `opt-level = 3`
+# in place of thin LTO; on the 7.5M brook-avenue benchmark
+# the wall time went from 244.15s (thin LTO) to 254.11s (fat
+# LTO), so fat LTO is actually slightly slower than thin on
+# this workload — likely because kiddo's hot path is a tight
+# numeric kernel where the codegen unit boundary doesn't
+# matter much. We keep thin LTO.
+#
+# If/when a custom rustc with profiler_builtins becomes
+# available, the PGO workflow is `bash pgo-build.sh test` —
+# see pgo-build.sh.
 lto = true
 codegen-units = 1
 panic = "abort"
