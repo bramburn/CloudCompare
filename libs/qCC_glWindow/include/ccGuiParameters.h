@@ -19,157 +19,203 @@
 /**
  * @file ccGuiParameters.h
  *
- * @brief GUI parameters
+ * @brief Per-3D-view GL rendering and display parameters
  *
- * Persistent display parameters.
+ * Holds the rendering parameters that apply to each ccGLWindow individually.
+ * Unlike ccOptions (cross-cutting application settings), these are stored
+ * per view and control the visual appearance of entities in the 3D view.
+ *
+ * Groups:
+ * - **Lighting**: ambient/diffuse/specular colors, double-sided lighting
+ * - **Mesh defaults**: front/back diffuse colors, specular
+ * - **Color defaults**: text, points, background, labels, bounding boxes
+ * - **Level of Detail (LoD)**: mesh/cloud decimation during interaction
+ * - **Scalar field display**: color scale bar, histogram, shader usage
+ * - **Font and labels**: sizes, precision, opacity, marker size
+ * - **Interaction**: zoom speed, octree auto-compute, picking cursor
+ * - **Logging**: verbosity level
+ *
+ * Persistence: stored in QSettings. Loaded/saved via
+ * ParamStruct::fromPersistentSettings() / toPersistentSettings().
+ *
+ * Global access: ccGui::Parameters() returns the current singleton.
+ * Each ccGLWindow stores its own copy (ccViewportParameters::guiParams).
+ *
+ * @see ccDisplaySettingsDlg for the UI that modifies these parameters
+ * @see ccOptions for application-level (not per-view) settings
  */
 
 #include "qCC_glWindow.h"
-
-// Qt
 #include <QString>
-
-// qCC_db
 #include <ccColorTypes.h>
 #include <ccLog.h>
-
-/***************************************************
-                GUI parameters
-***************************************************/
 
 /**
  * @class ccGui
  *
- * @brief GUI parameters
+ * @brief Per-view GL rendering and display parameters
  *
- * This class manages some persistent parameters (mostly for display).
+ * Manages the ParamStruct singleton for per-3D-view rendering settings.
+ * Access via Parameters() for read, Set() for write.
  */
 class CCGLWINDOW_LIB_API ccGui
 {
   public:
-	//! GUI parameters
+	/**
+	 * @struct ParamStruct
+	 *
+	 * @brief GL rendering and display parameters
+	 *
+	 * These parameters control the visual appearance of entities in the
+	 * 3D view. Each ccGLWindow has its own copy (linked at construction).
+	 */
 	struct CCGLWINDOW_LIB_API ParamStruct
 	{
-		//! Light diffuse color (RGBA)
+		// --- Lighting ---
+		//! GL light diffuse color (RGBA float)
 		ccColor::Rgbaf lightDiffuseColor;
-		//! Light ambient color (RGBA)
+		//! GL light ambient color (RGBA float)
 		ccColor::Rgbaf lightAmbientColor;
-		//! Light specular color (RGBA)
+		//! GL light specular color (RGBA float)
 		ccColor::Rgbaf lightSpecularColor;
-		//! Double sided light
+		//! Enable double-sided lighting (both face normals)
 		bool lightDoubleSided;
 
-		//! Default mesh diffuse color (front)
+		// --- Mesh defaults ---
+		//! Default mesh front-face diffuse color
 		ccColor::Rgbaf meshFrontDiff;
-		//! Default mesh diffuse color (back)
+		//! Default mesh back-face diffuse color
 		ccColor::Rgbaf meshBackDiff;
 		//! Default mesh specular color
 		ccColor::Rgbaf meshSpecular;
 
-		//! Default text color
+		// --- Entity colors ---
+		//! Default 3D text color
 		ccColor::Rgba textDefaultCol;
-		//! Default 3D points color
+		//! Default uncolored point color
 		ccColor::Rgba pointsDefaultCol;
-		//! Background color
+		//! 3D view background color (RGB unsigned byte)
 		ccColor::Rgbub backgroundCol;
-		//! Labels background color
+		//! 3D label background rectangle color
 		ccColor::Rgba labelBackgroundCol;
-		//! Labels marker color
+		//! 3D label leader line/marker color
 		ccColor::Rgba labelMarkerCol;
-		//! Bounding-boxes color
+		//! Default bounding box wireframe color
 		ccColor::Rgba bbDefaultCol;
 
-		//! Use background gradient
+		// --- Rendering options ---
+		//! Draw vertical gradient background
 		bool drawBackgroundGradient;
-		//! Decimate meshes when moved
+		//! Auto-decimate meshes during drag (LoD)
 		bool decimateMeshOnMove;
-		//! Min mesh size for decimation
+		//! Min triangle count below which mesh LoD is disabled
 		unsigned minLoDMeshSize;
-		//! Decimate clouds when moved
+		//! Auto-decimate clouds during drag (LoD)
 		bool decimateCloudOnMove;
-		//! Min cloud size for decimation
+		//! Min point count below which cloud LoD is disabled
 		unsigned minLoDCloudSize;
-		//! Display cross in the middle of the screen
+		//! Draw crosshair at screen center
 		bool displayCross;
-		//! Whether to use VBOs for faster display
+		//! Use vertex buffer objects (faster for large meshes)
 		bool useVBOs;
 
-		//! Label marker size
+		// --- Label styling ---
+		//! 3D label marker (cross/dot) size in pixels
 		unsigned labelMarkerSize;
 
-		//! Color scale option: show histogram next to color ramp
+		// --- Scalar field display ---
+		//! Show histogram alongside the color scale bar
 		bool colorScaleShowHistogram;
-		//! Whether to use shader for color scale display (if available) or not
+		//! Use GLSL shader for color scale (faster), falls back to software
 		bool colorScaleUseShader;
-		//! Whether shader for color scale display is available or not
+		//! Whether the GPU supports the color scale shader
 		bool colorScaleShaderSupported;
-		//! Color scale ramp width (for display)
+		//! Color scale bar width in pixels
 		unsigned colorScaleRampWidth;
 
-		//! Default displayed font size
+		// --- Font and text ---
+		//! Default application font size (UI font)
 		unsigned defaultFontSize;
-		//! Label font size
+		//! 3D label font point size
 		unsigned labelFontSize;
-		//! Displayed numbers precision
+		//! Number of decimal places for displayed coordinates
 		unsigned displayedNumPrecision;
-		//! Labels background opcaity
+		//! Label background opacity (0=transparent, 255=opaque)
 		unsigned labelOpacity;
 
-		//! Zoom speed (1.0 by default)
+		// --- Interaction ---
+		//! Mouse wheel zoom sensitivity multiplier
 		double zoomSpeed;
 
-		//! Octree computation (for picking) behaviors
+		//! Octree auto-compute for picking behavior
 		enum ComputeOctreeForPicking
 		{
-			ALWAYS   = 0,
-			ASK_USER = 1,
-			NEVER    = 2
+			ALWAYS    = 0,  //!< Always compute octree before picking
+			ASK_USER = 1, //!< Prompt user if octree is missing
+			NEVER     = 2  //!< Never compute (use brute force)
 		};
-
-		//! Octree computation (for picking) behavior
+		//! Auto-compute octree when picking (for large clouds)
 		ComputeOctreeForPicking autoComputeOctree;
 
-		//! Whether to draw rounded points (slower) or not
+		//! Draw points as circles (slower) vs squares
 		bool drawRoundedPoints;
 
-		//! Whether to pick objects by single clicking in the GUI
-		//! can be slow with large point clouds/large number of objects
+		//! Enable single-click object picking (may be slow for large clouds)
 		bool singleClickPicking;
 
-		//! Picking cursor
+		//! Picking cursor shape (Qt::CursorShape)
 		Qt::CursorShape pickingCursorShape;
 
-		//! Log verbosity level
+		//! Console log verbosity level
 		ccLog::MessageLevelFlags logVerbosityLevel;
 
-		//! Default constructor
+		/**
+		 * @brief Construct with default values
+		 */
 		ParamStruct();
 
-		//! Resets parameters to default values
+		/**
+		 * @brief Reset all members to factory defaults
+		 */
 		void reset();
 
-		//! Loads from persistent DB
+		/**
+		 * @brief Load from QSettings
+		 */
 		void fromPersistentSettings();
 
-		//! Saves to persistent DB
+		/**
+		 * @brief Save to QSettings
+		 */
 		void toPersistentSettings() const;
 
-		//! Returns whether a given parameter is already defined in persistent settings or not
-		/** \param paramName the corresponding attribute name
-		 **/
+		/**
+		 * @brief Check if a specific parameter is stored in QSettings
+		 *
+		 * @param[in] paramName Parameter name (QString)
+		 * @return true if the key exists in settings
+		 */
 		bool isInPersistentSettings(QString paramName) const;
 	};
 
-	//! Returns the stored values of each parameter.
+	/**
+	 * @brief Get the current parameter values
+	 */
 	static const ParamStruct& Parameters();
 
-	//! Sets GUI parameters
+	/**
+	 * @brief Replace the current parameters
+	 *
+	 * @param[in] params New parameter values
+	 */
 	static void Set(const ParamStruct& params);
 
-	//! Release unique instance (if any)
+	/**
+	 * @brief Release the singleton
+	 */
 	static void ReleaseInstance();
 
   protected:
-	//! Parameters set
+	//! Current parameter values
 	ParamStruct params;
 };
