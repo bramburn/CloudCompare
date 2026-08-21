@@ -16,6 +16,32 @@
 // ##########################################################################
 
 // Always first
+/**
+ * @file ccKdTree.cpp
+ *
+ * @brief KD-tree implementation
+ *
+ * Implements ccKdTree: a K-d tree data structure for
+ * fast nearest-neighbor queries on point clouds.
+ *
+ * ## KD-Tree
+ *
+ * A KD-tree is a space-partitioning data structure for
+ * organizing points in a K-dimensional space. For 3D clouds,
+ * it splits points along X, Y, or Z at each level.
+ *
+ * ## Operations
+ *
+ * - **Nearest neighbor**: find the closest point to a query
+ * - **K nearest neighbors**: find K closest points
+ * - **Points in sphere**: find all points within radius
+ * - **Build**: construct tree from point cloud
+ *
+ * Used by ICP, normal computation, and distance field algorithms.
+ *
+ * @see ccKdTree.h
+ */
+
 #include "ccKdTree.h"
 
 #include "ccIncludeGL.h"

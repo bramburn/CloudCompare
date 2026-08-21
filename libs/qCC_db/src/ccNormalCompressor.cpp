@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccNormalCompressor.cpp
+ *
+ * @brief Normal compressor implementation
+ *
+ * Implements normal compression for storage and rendering.
+ *
+ * ## Normal Encoding
+ *
+ * Surface normals are 3D unit vectors (3 floats = 12 bytes).
+ * CompressedNormType stores them as 3 unsigned bytes (3 bytes),
+ * mapping [-1,1] → [0,255] per component.
+ *
+ * ## Compression Ratio
+ *
+ * 4× compression (12 bytes → 3 bytes) with ~0.4% angular error.
+ * Sufficient for display and most computations.
+ *
+ * ## Lookup Table
+ *
+ * Uses ccNormalVectors::GetUnique() to store the canonical
+ * set of unique normals in a lookup table.
+ *
+ * @see ccNormalCompressor.h, ccNormalVectors
+ */
+
 #include "ccNormalCompressor.h"
 
 // CCCoreLib

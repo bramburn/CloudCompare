@@ -1,3 +1,30 @@
+/**
+ * @file ccWaveform.cpp
+ *
+ * @brief Waveform data implementation
+ *
+ * Implements ccWaveform: a full-waveform LiDAR return signal.
+ *
+ * ## Waveform Data
+ *
+ * Full-waveform scanners store the entire return pulse as a
+ * sequence of amplitude values (not just discrete returns).
+ *
+ * ## Waveform Properties
+ *
+ * - **Amplitude array**: time-series of return intensity
+ * - **Timestamp**: acquisition time
+ * - **Origin**: 3D origin of the pulse
+ * - **Direction**: direction vector of the pulse
+ *
+ * ## Processing
+ *
+ * - **Decompose**: extract discrete returns from waveform peaks
+ * - **Gaussian decomposition**: fit Gaussians to identify returns
+ *
+ * @see ccWaveform.h
+ */
+
 #include "ccWaveform.h"
 
 // Qt

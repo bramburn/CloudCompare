@@ -15,6 +15,34 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccNormalVectors.cpp
+ *
+ * @brief Normal vectors lookup table implementation
+ *
+ * Implements the canonical set of 162 normals used throughout
+ * CloudCompare for compressed normal storage and display.
+ *
+ * ## Normal Table
+ *
+ * A pre-computed set of 162 unit vectors arranged on a sphere
+ * using a Fibonacci lattice. Each normal maps to one table index
+ * (0-161), which is stored as CompressedNormType (uint8_t[3]).
+ *
+ * ## Lookup
+ *
+ * GetUnique() returns the singleton table. encode/encodeAsVec3
+ * convert float normals to table indexes, and decode
+ * converts back to float CCVector3.
+ *
+ * ## Use
+ *
+ * Every point cloud normal is stored as a table index,
+ * saving 4× storage vs. 3 raw floats.
+ *
+ * @see ccNormalVectors.h, CompressedNormType
+ */
+
 #include "ccNormalVectors.h"
 
 // Local

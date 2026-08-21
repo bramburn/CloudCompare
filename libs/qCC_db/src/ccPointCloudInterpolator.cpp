@@ -15,6 +15,30 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPointCloudInterpolator.cpp
+ *
+ * @brief Point cloud interpolator implementation
+ *
+ * Implements ccPointCloudInterpolator: resampling a sparse
+ * point cloud onto a regular grid.
+ *
+ * ## Interpolation Methods
+ *
+ * - **Natural neighbor**: Voronoi-based weighted average
+ * - **IDW (Inverse Distance Weighting)**: distance-weighted average
+ * - **Kriging**: geostatistical (variogram-based) interpolation
+ *
+ * ## Parameters
+ *
+ * - **Grid resolution**: cell size in world units
+ * - **Search radius**: max distance for neighborhood search
+ * - **Min neighbors**: minimum points needed to interpolate
+ * - **Empty cells**: fill or leave empty
+ *
+ * @see ccPointCloudInterpolator.h, ccRasterGrid
+ */
+
 #include "ccPointCloudInterpolator.h"
 
 // qCC_db

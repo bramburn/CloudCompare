@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccIndexedTransformationBuffer.cpp
+ *
+ * @brief Indexed transformation buffer implementation
+ *
+ * Implements ccIndexedTransformationBuffer: a buffer of
+ * indexed transformations for sensor trajectory data.
+ *
+ * ## Buffer
+ *
+ * - **Transformations**: ordered list of indexed rigid transformations
+ * - **Sorted**: transformations are sorted by index (e.g., timestamp)
+ * - **Indexed access**: binary search for efficient lookup
+ *
+ * ## Use Cases
+ *
+ * - **GBL sensor poses**: stores scanner positions/orientations
+ * - **Camera path**: animation keyframes
+ * - **Trajectory**: GPS/IMU path data
+ *
+ * @see ccIndexedTransformationBuffer.h, ccIndexedTransformation
+ */
+
 #include "ccIndexedTransformationBuffer.h"
 
 // CCCoreLib

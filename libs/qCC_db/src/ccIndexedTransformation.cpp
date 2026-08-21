@@ -15,6 +15,31 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccIndexedTransformation.cpp
+ *
+ * @brief Indexed transformation implementation
+ *
+ * Implements ccIndexedTransformation: a rigid body transformation
+ * (rotation + translation) with an associated index (e.g., timestamp).
+ *
+ * ## Transformation
+ *
+ * - **Position**: 3D translation vector
+ * - **Orientation**: 3×3 rotation matrix (or quaternion)
+ * - **Index**: associated index (e.g., time, frame number)
+ *
+ * ## Operations
+ *
+ * - **Composition**: multiply transformations
+ * - **Inverse**: compute inverse transformation
+ * - **Interpolation**: slerp/lerp between two transformations
+ *
+ * Used by ccGBLSensor to store scanner poses.
+ *
+ * @see ccIndexedTransformation.h
+ */
+
 #include "ccIndexedTransformation.h"
 
 // Qt
