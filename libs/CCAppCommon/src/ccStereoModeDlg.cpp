@@ -15,6 +15,30 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccStereoModeDlg.cpp
+ *
+ * @brief Stereo mode dialog implementation
+ *
+ * Dialog for configuring 3D stereo display output for stereoscopic
+ * monitors and 3D glasses.
+ *
+ * ## Stereo Modes
+ *
+ * - **Anaglyph**: red/cyan glasses mode (cross-polarized)
+ * - **Page flip**: dual-buffer stereo (NVIDIA 3D Vision)
+ * - **HDMI 3D**: frame-packing for HDMI 3D displays
+ * - **Interleaved**: line/column interleaved stereo
+ *
+ * ## Parameters
+ *
+ * - **Mode**: stereo output format
+ * - **Eye separation**: distance between virtual cameras
+ * - **Focal length**: perspective focal length in stereo
+ *
+ * @see ccStereoModeDlg.h, ccGLWindowInterface::setStereoMode
+ */
+
 #include "ccStereoModeDlg.h"
 
 #include "ui_stereoModeDlg.h"

@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccTranslationManager.cpp
+ *
+ * @brief Translation manager implementation
+ *
+ * Implements the language translation system:
+ * - Loads .qm (compiled .ts) translation files
+ * - Builds a language menu from available translations
+ * - Switches language at runtime without restart
+ * - Persists language preference to QSettings
+ *
+ * ## Translation Files
+ *
+ * Translation .qm files are loaded from the /translations/
+ * directory in the app bundle. Each file is named
+ * cloudcompare_<locale>.qm (e.g., cloudcompare_fr.qm).
+ *
+ * ## Language Switching
+ *
+ * The translator is installed on qApp, and all widgets
+ * retranslate via changeEvent(QEvent::LanguageChange).
+ * No app restart is required.
+ *
+ * @see ccTranslationManager.h
+ */
+
 // Qt
 #include <QActionGroup>
 #include <QDebug>

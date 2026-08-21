@@ -15,6 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPickOneElementDlg.cpp
+ *
+ * @brief Pick one element dialog implementation
+ *
+ * Simple dialog that presents a list of choices (items) as a
+ * QComboBox and returns the user's selection.
+ *
+ * ## Usage
+ *
+ * @code
+ * ccPickOneElementDlg dialog({"Option A", "Option B", "Option C"}, "Select:", this);
+ * if (dialog.exec()) {
+ *     QString selected = dialog.getSelected();
+ * }
+ * @endcode
+ *
+ * @see ccPickOneElementDlg.h
+ */
+
 #include "ccPickOneElementDlg.h"
 
 // UI file
