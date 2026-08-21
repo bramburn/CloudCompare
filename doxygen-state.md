@@ -156,17 +156,20 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | LasIOFilter.h | ✅ Done | Committed: ca5febf3 |
 | LasIOFilter.cpp | ✅ Done | Committed: e9db3507 |
 | LasTiler.h | ✅ Done | Committed: f36e8c58 |
+| LasTiler.cpp | ✅ Done | Committed: 327f99e9 |
 | LasOpenDialog.h | ✅ Done | Committed: fe9f38a0 |
 | LasSaver.h | ✅ Done | Committed: 1627ece3 |
+| LasSaver.cpp | ✅ Done | Committed: 71ba5caf |
 | LasMetadata.h | ✅ Done | Committed: 2fc9dfbb |
+| LasMetadata.cpp | ✅ Done | Committed: 944e41a6 |
 | qLASIO | ⬜ Not started | Other files in plugin not started |
 | qCoreIO | ⬜ Not started | |
 
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~70
-- **Completed**: 70
+- **Total files tracked**: ~74
+- **Completed**: 74
 - **In progress**: 0
 - **Percentage**: ~100%
 
