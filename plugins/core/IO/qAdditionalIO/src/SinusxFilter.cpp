@@ -15,6 +15,22 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file SinusxFilter.cpp
+ *
+ * @brief SINUS-X filter implementation
+ *
+ * Implements SINUS-X 3D scanner file I/O.
+ *
+ * ## SINUS-X Format
+ *
+ * SINUS-X is a terrestrial laser scanner format from
+ * SINUS Messtechnik. Files store structured scan data
+ * with intensity values.
+ *
+ * @see SinusxFilter.h
+ */
+
 #include "SinusxFilter.h"
 
 // qCC_db

@@ -15,6 +15,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file BundlerImportDlg.cpp
+ *
+ * @brief Bundler import dialog implementation
+ *
+ * Dialog for configuring Bundler SfM data import.
+ *
+ * ## Options
+ *
+ * - **Bundle.out path**: path to the sparse reconstruction file
+ * - **Image list path**: path to list.txt mapping images to cameras
+ * - **Image directory**: base directory for image filenames
+ * - **Max image dimension**: scale images to this size
+ *
+ * @see BundlerImportDlg.h
+ */
+
 #include "BundlerImportDlg.h"
 
 // Qt

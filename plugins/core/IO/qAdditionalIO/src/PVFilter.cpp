@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file PVFilter.cpp
+ *
+ * @brief PV (Paraview) VTK file filter implementation
+ *
+ * Implements VTK legacy format I/O for Paraview compatibility.
+ *
+ * ## VTK Legacy Format
+ *
+ * ```
+ * # vtk DataFile Version 3.0
+ * ...header...
+ * DATASET POLYDATA
+ * POINTS N float
+ * x y z ...
+ * ```
+ *
+ * Supports POINT_DATA (clouds), POLYGONS (meshes), and CELLS.
+ *
+ * @see PVFilter.h
+ */
+
 #include "PVFilter.h"
 
 // qCC_db

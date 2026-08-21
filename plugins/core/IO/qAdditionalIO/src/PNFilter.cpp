@@ -15,6 +15,25 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file PNFilter.cpp
+ *
+ * @brief PN (Points normals) filter implementation
+ *
+ * Exports point clouds with normals to a simple binary format.
+ *
+ * ## PN Format
+ *
+ * ```
+ * [4 bytes] magic = 0x5050434E ('PCN')
+ * [4 bytes] version (uint32)
+ * [4 bytes] point count (uint32)
+ * [N * 24 bytes] x y z nx ny nz (float triplets)
+ * ```
+ *
+ * @see PNFilter.h
+ */
+
 #include "PNFilter.h"
 
 // qCC_db

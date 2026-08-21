@@ -15,6 +15,22 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file IcmFilter.cpp
+ *
+ * @brief ICM (Intergraph) file filter implementation
+ *
+ * Implements Intergraph/MicroStation CCM (Coordinate Measurement)
+ * file import.
+ *
+ * ## ICM Format
+ *
+ * Binary format storing survey point coordinates
+ * with optional codes (feature codes) and attributes.
+ *
+ * @see IcmFilter.h
+ */
+
 #include "IcmFilter.h"
 
 // qCC_db

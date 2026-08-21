@@ -15,6 +15,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file PovFilter.cpp
+ *
+ * @brief POV-Ray scene export implementation
+ *
+ * Exports point clouds and meshes to POV-Ray scene format.
+ *
+ * ## POV-Ray Format
+ *
+ * POV-Ray is a ray-tracing format. Export creates:
+ * - **Point clouds**: blob{} or scatter{} macros
+ * - **Meshes**: mesh2{} with vertex data
+ * - **Colors**: pigment{} blocks from CC colors
+ *
+ * @see PovFilter.h
+ */
+
 #include "PovFilter.h"
 
 // Local

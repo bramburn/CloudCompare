@@ -15,6 +15,21 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file SoiFilter.cpp
+ *
+ * @brief SOI file filter implementation
+ *
+ * Implements SOI (Sensor Oriented Intensity) file import.
+ *
+ * ## SOI Format
+ *
+ * Stores Terrestrial Laser Scanner (TLS) point data with
+ * intensity values and per-point metadata columns.
+ *
+ * @see SoiFilter.h
+ */
+
 #include "SoiFilter.h"
 
 // qCC_db

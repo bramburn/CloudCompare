@@ -15,6 +15,34 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccEDLFilter.cpp
+ *
+ * @brief Eye-Dome Lighting filter implementation
+ *
+ * Implements EDL (Eye-Dome Lighting): a post-processing
+ * shader that shades point clouds based on depth discontinuities.
+ *
+ * ## EDL Algorithm
+ *
+ * For each pixel, sample neighboring pixel depths and compute
+ * a shading coefficient from depth differences. This creates
+ * the illusion of surface structure on untextured point clouds.
+ *
+ * ## Use Case
+ *
+ * EDL is essential for visualizing point clouds without mesh
+ * connectivity — it makes raw point data much easier to
+ * perceive as 3D surfaces.
+ *
+ * ## Implementation
+ *
+ * Uses ccFBO (Framebuffer Object) for render-to-texture.
+ * The EDL shader is applied as a full-screen post-processing pass.
+ *
+ * @see ccEDLFilter.h
+ */
+
 #include "ccEDLFilter.h"
 
 // ccFBO

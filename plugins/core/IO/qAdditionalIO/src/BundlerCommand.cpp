@@ -15,6 +15,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file BundlerCommand.cpp
+ *
+ * @brief Bundler command-line interface implementation
+ *
+ * Command-line wrapper for Bundler SfM (Structure from Motion) output.
+ * Bundler outputs cameras and sparse point clouds.
+ *
+ * ## Bundler Output
+ *
+ * - **cameras.txt**: camera intrinsic/extrinsic parameters
+ * - **list.txt**: image filename to camera index mapping
+ * - **bundle.out**: sparse point positions + visibility
+ *
+ * @see BundlerImportDlg
+ */
+
 #include "BundlerCommand.h"
 
 #include "BundlerFilter.h"
