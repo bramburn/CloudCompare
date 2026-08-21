@@ -3,6 +3,7 @@
 // #                              CLOUDCOMPARE                              #
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
+// #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
@@ -17,73 +18,62 @@
 /**
  * @file ccCylinder.h
  *
- * @brief Cylinder primitive class.
+ * @brief Cylinder primitive for visualization and fitting
  *
- * @details Represents a 3D cylinder primitive. Internally implemented as a
- * cone with equal top and bottom radii.
+ * Represents a finite 3D cylinder (right circular cylinder) positioned
+ * in 3D space by the transformation matrix.
  *
- * ## Overview
+ * The cylinder is implemented as a special case of ccCone where the
+ * top and bottom radii are equal. The mesh consists of:
+ * - Lateral surface: quadrilateral facets around the circumference
+ * - Top and bottom caps: triangular fans or disks
+ * - Normals: per-vertex for smooth shading
  *
- * A cylinder is defined by:
- * - **Radius**: Circular cross-section radius
- * - **Height**: Length along the axis
- * - **Axis**: Along the Z dimension by default
+ * Axis: along the local Z dimension by default. Use the transformation
+ * matrix to reorient the axis.
  *
- * ## Implementation
+ * Drawing precision: 48 angular steps by default (configurable).
+ * More steps = smoother appearance, more triangles.
  *
- * Cylinder is implemented as a special case of ccCone where
- * top radius equals bottom radius.
- *
- * ## Usage
- *
- * @code
- * // Create a cylinder
- * ccCylinder* cylinder = new ccCylinder(radius, height);
- *
- * // Set position and orientation
- * ccGLMatrix trans;
- * trans.initFromParameters(rotation, translation);
- * cylinder->setApplyTransformation(trans);
- *
- * // Clone the primitive
- * ccGenericPrimitive* clone = cylinder->clone();
- * @endcode
+ * Use cases:
+ * - Creating reference geometry (columns, poles)
+ * - Fitting cylinders to point clouds
+ * - Modeling cylindrical objects
  *
  * @extends ccCone
- *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccCone for base implementation
  */
 
 #pragma once
 
-// Local
 #include "ccCone.h"
 
 /**
- * @brief Cylinder primitive.
+ * @class ccCylinder
  *
- * @details A 3D cylinder with circular cross-section.
- * Axis is along the Z dimension by default.
+ * @brief Right circular cylinder primitive
+ *
+ * A cylinder is a special case of a cone with equal top and bottom radii.
+ * Axis is along local Z; rotation in the transformation matrix orients it.
+ *
+ * Mesh: quadrilateral lateral facets + top and bottom disks.
  *
  * @extends ccCone
  */
 class QCC_DB_LIB_API ccCylinder : public ccCone
 {
   public:
-	//! Default drawing precision (angular steps).
+	//! Default angular tessellation steps (for smooth rendering)
 	static const unsigned DEFAULT_DRAWING_PRECISION = 48;
 
 	/**
-	 * @brief Create a cylinder.
+	 * @brief Create a cylinder with specified dimensions
 	 *
-	 * @param[in] radius Cylinder radius.
-	 * @param[in] height Cylinder height.
-	 * @param[in] transMat Optional transformation matrix.
-	 * @param[in] name Cylinder name.
-	 * @param[in] precision Drawing precision (angular steps).
-	 * @param[in] uniqueID Unique ID.
+	 * @param[in] radius Circular cross-section radius
+	 * @param[in] height Length along the Z axis
+	 * @param[in] transMat Optional transformation matrix
+	 * @param[in] name Display name
+	 * @param[in] precision Angular tessellation steps (default 48)
+	 * @param[in] uniqueID Optional unique ID
 	 */
 	ccCylinder(PointCoordinateType radius,
 	           PointCoordinateType height,
@@ -93,49 +83,50 @@ class QCC_DB_LIB_API ccCylinder : public ccCone
 	           unsigned            uniqueID  = ccUniqueIDGenerator::InvalidUniqueID);
 
 	/**
-	 * @brief Simplified constructor.
+	 * @brief Simplified constructor for ccHObject factory
 	 *
-	 * @note For ccHObject factory only!
-	 *
-	 * @param[in] name Cylinder name.
+	 * @param[in] name Display name
 	 */
-	ccCylinder(QString name = QString("Cylinder"));
+	explicit ccCylinder(QString name = QString("Cylinder"));
 
-	/**
-	 * @brief Get class ID.
-	 */
+	// ccHObject
 	virtual CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::CYLINDER;
 	}
 
-	// inherited from ccGenericPrimitive
-	/**
-	 * @brief Get type name.
-	 */
+	// ccGenericPrimitive
 	virtual QString getTypeName() const override
 	{
 		return "Cylinder";
 	}
 
 	/**
-	 * @brief Clone the primitive.
+	 * @brief Clone this cylinder
 	 */
 	virtual ccGenericPrimitive* clone() const override;
 
-	// inherited from ccCone
+	// ccCone
+
 	/**
-	 * @brief Set bottom radius.
+	 * @brief Set the cylinder radius
+	 *
+	 * Sets both bottom and top radii to the same value.
+	 *
+	 * @param[in] radius New radius
 	 */
 	virtual void setBottomRadius(PointCoordinateType radius) override;
 
 	/**
-	 * @brief Set top radius.
+	 * @brief Set the top radius
 	 *
-	 * @note For cylinder, top radius equals bottom radius.
+	 * For a cylinder, top and bottom radii are always equal.
+	 * This is a no-op that redirects to setBottomRadius.
+	 *
+	 * @param[in] radius New radius (must equal bottom radius)
 	 */
 	inline virtual void setTopRadius(PointCoordinateType radius) override
 	{
-		return setBottomRadius(radius);
+		setBottomRadius(radius);
 	}
 };
