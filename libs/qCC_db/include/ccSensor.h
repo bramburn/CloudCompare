@@ -23,12 +23,30 @@
  *
  * @brief Generic sensor base class
  *
- * Base class for sensor types including cameras, LiDAR, and other
- * 3D acquisition devices. The new framework stores positions in
- * a separate buffer (from GPS/IMU), with sensors only containing
- * intrinsic parameters.
+ * Base class for 3D acquisition sensors (LiDAR, camera, etc.).
+ * Sensors can be:
+ * - **Associated with point clouds**: the cloud's points were captured by the sensor
+ * - **Associated with images**: the image was taken by the sensor
+ * - **Viewport sources**: applied as a texture/viewport background
  *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * ## Sensor Architecture
+ *
+ * The sensor stores only intrinsic parameters and a transformation
+ * to a position reference frame. External positions (from GPS/IMU)
+ * are stored in a ccIndexedTransformationBuffer linked to the sensor.
+ *
+ * ## Sensor Types
+ *
+ * | Type | Description |
+ * |------|-------------|
+ * | UNKNOWN_SENSOR | Generic/unknown sensor |
+ * | GROUND_BASED_LIDAR | Terrestrial LiDAR scanner |
+ *
+ * ## Viewing Frustum
+ *
+ * Sensors can draw their acquisition frustum in the 3D view.
+ *
+ * @extends ccHObject
  */
 
 // Local
