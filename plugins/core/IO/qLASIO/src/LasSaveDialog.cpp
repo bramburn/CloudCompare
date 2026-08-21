@@ -15,6 +15,34 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file LasSaveDialog.cpp
+ *
+ * @brief LAS save dialog implementation
+ *
+ * Modal dialog for configuring LAS/LAZ export. Main tasks:
+ *
+ * - LAS version and point format selection
+ * - Coordinate scale/offset configuration
+ * - Standard field mapping (e.g., "Classify as Intensity")
+ * - Extra field management: add/edit/remove extra attributes
+ * - RGB, waveform, and classification export toggles
+ * - QSettings persistence of last-used options
+ *
+ * ## Version/Format Constraints
+ *
+ * Point format 6+ requires LAS 1.4. The dialog enforces this
+ * by dynamically updating the format combobox when version changes.
+ *
+ * ## Extra Field Management
+ *
+ * Users can add extra attributes (extra bytes) by selecting cloud
+ * scalar fields and assigning them as extra dimensions.
+ * LasExtraScalarFieldCard is used for per-field configuration.
+ *
+ * @see LasSaveDialog.h
+ */
+
 #include "LasSaveDialog.h"
 
 #include "LasDetails.h"
@@ -31,7 +59,13 @@
 //! Default LAS scale
 static const double DefaultLASScale = 1.0e-3;
 
-//! Widget to map a predefined scalar field 'role' to a specific scalar field (combo-box)
+/**
+ * @brief A label-combo pair for mapping LAS field roles to cloud SFs
+ *
+ * Shown next to each standard field in the dialog.
+ * Displays the field name and a status indicator (mapped/not mapped).
+ */
+class MappingLabel : public QWidget
 class MappingLabel : public QWidget
 {
   public:
@@ -78,6 +112,15 @@ class MappingLabel : public QWidget
 	QLabel* m_statusLabel;
 };
 
+/**
+ * @brief Construct the save dialog
+ *
+ * Initializes UI from the cloud's metadata (if previously saved as LAS)
+ * and from QSettings (last-used options).
+ *
+ * @param[in] cloud Point cloud to export
+ * @param[in] parent Parent widget
+ */
 LasSaveDialog::LasSaveDialog(ccPointCloud* cloud, QWidget* parent)
     : QDialog(parent)
     , m_cloud(cloud)
@@ -555,21 +598,33 @@ void LasSaveDialog::selectedVersion(uint8_t& versionMajor, uint8_t& versionMinor
 	}
 }
 
+/**
+ * @brief Check if RGB colors should be saved
+ */
 bool LasSaveDialog::shouldSaveRGB() const
 {
 	return rgbCheckBox->isChecked();
 }
 
+/**
+ * @brief Check if waveform data should be saved
+ */
 bool LasSaveDialog::shouldSaveWaveform() const
 {
 	return waveformCheckBox->isChecked();
 }
 
+/**
+ * @brief Check if normals should be saved as extra fields
+ */
 bool LasSaveDialog::shouldSaveNormalsAsExtraScalarField() const
 {
 	return normalsCheckBox->isEnabled() && normalsCheckBox->isChecked();
 }
 
+/**
+ * @brief Check if unassigned SFs should auto-become extra fields
+ */
 bool LasSaveDialog::shouldAutomaticallyAssignLeftoverSFsAsExtra() const
 {
 	return saveLeftoverSFsAsExtraVLRCheckBox->isEnabled() && saveLeftoverSFsAsExtraVLRCheckBox->isChecked();
