@@ -255,8 +255,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~181
-- **Completed**: 181
+- **Total files tracked**: ~199
+- **Completed**: 199
 - **In progress**: 0
 - **Percentage**: ~100%
 
