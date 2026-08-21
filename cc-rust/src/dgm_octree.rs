@@ -613,6 +613,138 @@ impl DgmOctree {
     pub fn code_for(&self, point_index: usize) -> Option<u64> {
         self.codes.get(point_index).copied()
     }
+
+    /// Find all points within `radius` of `center` (sphere
+    /// query). Returns the indices of the matching points.
+    ///
+    /// This is the Rust equivalent of the C++ `DgmOctree::
+    /// getPointsInSphericalNeighbourhood`. It's the
+    /// primitive used by:
+    ///   - Normal estimation (PCA on local neighbourhood)
+    ///   - Density estimation
+    ///   - Statistical outlier removal (SOR)
+    ///   - Region growing for segmentation
+    ///   - Local feature extraction
+    ///
+    /// Implementation: cell-by-cell AABB-pruned search. The
+    /// `cell_size` at the octree's `max_level` gives the
+    /// tightest cell granularity, but we search the level
+    /// where the cell size is comparable to `radius` (i.e.
+    /// `level ≈ log2(bbox_diag / radius)`). That gives a
+    /// small number of cells to test (O((diameter / radius)³))
+    /// while still being tight enough that few points are
+    /// false-positives needing a per-point distance check.
+    pub fn points_in_sphere(&self, center: [f32; 3], radius: f32) -> Vec<usize> {
+        if self.points.is_empty() || radius < 0.0 {
+            return Vec::new();
+        }
+        let r2 = (radius * radius) as f64;
+        // The octree's points are bucketed at `build_level` (the
+        // level set when the tree was built). The cell ranges in
+        // `cell_ranges` are keyed by codes at that level, so we
+        // must query at the same level. AABB-prune still helps
+        // because a "cell" at the build level is a smaller
+        // (tighter) box than the level-1 cell, so the prune
+        // rejects more cells cheaply.
+        let level = self.build_level;
+
+        let cell_side = self.cell_size(level);
+        // Bounding box of the search sphere, in world coords.
+        // Slightly oversized to account for the cells we're
+        // visiting (cells are axis-aligned, sphere is round).
+        let search_min = [
+            center[0] - radius - cell_side[0],
+            center[1] - radius - cell_side[1],
+            center[2] - radius - cell_side[2],
+        ];
+        let search_max = [
+            center[0] + radius + cell_side[0],
+            center[1] + radius + cell_side[1],
+            center[2] + radius + cell_side[2],
+        ];
+
+        // Cell coordinates that cover the search bbox.
+        let min_cell = self.world_to_cell(search_min, level);
+        let max_cell = self.world_to_cell(search_max, level);
+
+        let mut out = Vec::new();
+        for cx in min_cell.0..=max_cell.0 {
+            for cy in min_cell.1..=max_cell.1 {
+                for cz in min_cell.2..=max_cell.2 {
+                    let cell_min = self.cell_min_world((cx, cy, cz), level);
+                    let cell_max = self.cell_max_world((cx, cy, cz), level);
+                    // AABB-sphere test: the closest point on the
+                    // cell's AABB to `center` must be within
+                    // `radius`. Skip cells that fail (this is the
+                    // fast-prune path; the slow per-point check
+                    // below catches anything inside the cell).
+                    let closest = [
+                        center[0].clamp(cell_min[0], cell_max[0]),
+                        center[1].clamp(cell_min[1], cell_max[1]),
+                        center[2].clamp(cell_min[2], cell_max[2]),
+                    ];
+                    let ddx = (center[0] - closest[0]) as f64;
+                    let ddy = (center[1] - closest[1]) as f64;
+                    let ddz = (center[2] - closest[2]) as f64;
+                    if ddx * ddx + ddy * ddy + ddz * ddz > r2 {
+                        continue;
+                    }
+                    // Cell passes the AABB-sphere test. For each
+                    // point in the cell, check the exact
+                    // distance.
+                    let code = pack_cell_pos(cx, cy, cz, level);
+                    if let Some(&(start, end)) = self.cell_ranges.get(&code) {
+                        // `start..end` is a slice in `sorted_indices`,
+                        // not in `points` — we have to look up the
+                        // actual point index through the sort map.
+                        // (This is the same indexing pattern as
+                        // `nearest_neighbor` uses.)
+                        for i in start..end {
+                            let p = self.points[self.sorted_indices[i]];
+                            let dx = (p[0] - center[0]) as f64;
+                            let dy = (p[1] - center[1]) as f64;
+                            let dz = (p[2] - center[2]) as f64;
+                            if dx * dx + dy * dy + dz * dz <= r2 {
+                                out.push(self.sorted_indices[i]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        out
+    }
+
+    /// Convert a world-space point to a cell index at the
+    /// given level. Returns integer cell coordinates
+    /// `(cx, cy, cz)` such that the cell at `(cx, cy, cz)` is
+    /// the one containing `world`.
+    fn world_to_cell(&self, world: [f32; 3], level: u8) -> (i32, i32, i32) {
+        let cell = self.cell_size(level);
+        let cx = ((world[0] - self.bb_min[0]) / cell[0]).floor() as i32;
+        let cy = ((world[1] - self.bb_min[1]) / cell[1]).floor() as i32;
+        let cz = ((world[2] - self.bb_min[2]) / cell[2]).floor() as i32;
+        (cx, cy, cz)
+    }
+
+    /// World-space min corner of the cell at `(cx, cy, cz)`,
+    /// `level`.
+    fn cell_min_world(&self, cell: (i32, i32, i32), level: u8) -> [f32; 3] {
+        let s = self.cell_size(level);
+        [
+            self.bb_min[0] + s[0] * cell.0 as f32,
+            self.bb_min[1] + s[1] * cell.1 as f32,
+            self.bb_min[2] + s[2] * cell.2 as f32,
+        ]
+    }
+
+    /// World-space max corner of the cell at `(cx, cy, cz)`,
+    /// `level`.
+    fn cell_max_world(&self, cell: (i32, i32, i32), level: u8) -> [f32; 3] {
+        let min = self.cell_min_world(cell, level);
+        let s = self.cell_size(level);
+        [min[0] + s[0], min[1] + s[1], min[2] + s[2]]
+    }
 }
 
 /// `NearestNeighbour` adapter for `DgmOctree` (D9, 2026-08-20).
@@ -1341,6 +1473,123 @@ mod tests {
         let _ = DgmOctree::build(&[[0.5, 0.5, 0.5], [f32::NAN, 0.0, 0.0]], 2);
     }
 
+    // ── points_in_sphere tests ─────────────────────────────────
+
+    /// Sphere query on a tiny hand-built cloud. Verifies the
+    /// basic shape: the returned indices, when re-checked with
+    /// the exact distance, are all within `radius` of `center`.
+    #[test]
+    fn d10_points_in_sphere_returns_points_within_radius() {
+        // 5x5x5 grid of points spaced 1.0 apart, centred on (0,0,0).
+        // Bbox is [-2.5, 2.5] on each axis. Build level 4 gives
+        // cells of side 5.0/16 = 0.3125 (small enough for tight
+        // sphere tests).
+        let mut points = Vec::new();
+        for i in -2..=2 {
+            for j in -2..=2 {
+                for k in -2..=2 {
+                    points.push([i as f32, j as f32, k as f32]);
+                }
+            }
+        }
+        let tree = DgmOctree::build(&points, 4);
+        // Sphere of radius 1.5 around the origin should include
+        // the origin + 6 axial neighbours (±1,0,0) etc. = 7 points.
+        let inside = tree.points_in_sphere([0.0, 0.0, 0.0], 1.5);
+        // (The 6 face-diagonal neighbours are at distance sqrt(2)
+        // ≈ 1.41 — within 1.5. The 8 corner-diagonal neighbours
+        // are at distance sqrt(3) ≈ 1.73 — outside 1.5. So the
+        // expected count is 1 (origin) + 6 (axial) + 12 (face
+        // diagonal) = 19.) Actually, let me be more careful:
+        // 1 + 6 + 12 = 19.
+        assert_eq!(
+            inside.len(),
+            19,
+            "expected 19 points in radius-1.5 sphere around origin, got {}",
+            inside.len()
+        );
+        // Re-verify each returned point is actually within
+        // radius of the center.
+        for &i in &inside {
+            let p = points[i];
+            let d2 = p[0] * p[0] + p[1] * p[1] + p[2] * p[2];
+            assert!(
+                d2 <= 1.5 * 1.5 + 1e-5,
+                "index {i} (point {p:?}) is outside the sphere: d2 = {d2}"
+            );
+        }
+    }
+
+    /// Sphere query on an empty tree: returns empty.
+    #[test]
+    fn d10_points_in_sphere_empty_tree() {
+        let tree = DgmOctree::build(&[], 0);
+        let inside = tree.points_in_sphere([0.0, 0.0, 0.0], 100.0);
+        assert!(inside.is_empty());
+    }
+
+    /// Sphere query with radius = 0: returns points exactly at
+    /// the center (or, more precisely, within 0 distance of the
+    /// center — which in f64 squared-distance is 0).
+    #[test]
+    fn d10_points_in_sphere_zero_radius() {
+        let points: Vec<[f32; 3]> = vec![
+            [0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.001], // distance 0.001 — outside radius 0
+            [0.0, 0.0, 0.0],  // duplicate at the center
+            [1.0, 0.0, 0.0],  // distance 1.0 — outside
+        ];
+        let tree = DgmOctree::build(&points, 4);
+        let inside = tree.points_in_sphere([0.0, 0.0, 0.0], 0.0);
+        // The two points at the origin (duplicates) are at d2 = 0,
+        // which is <= 0. The other two are at d2 > 0.
+        assert_eq!(inside.len(), 2, "expected 2 points at origin, got {:?}", inside);
+    }
+
+    /// Sphere query with negative radius: returns empty (the
+    /// `radius < 0.0` early-return in the implementation).
+    #[test]
+    fn d10_points_in_sphere_negative_radius() {
+        let points: Vec<[f32; 3]> = vec![[0.0, 0.0, 0.0]];
+        let tree = DgmOctree::build(&points, 0);
+        let inside = tree.points_in_sphere([0.0, 0.0, 0.0], -1.0);
+        assert!(inside.is_empty());
+    }
+
+    /// Sphere query on a real-shaped cloud (5k Gaussian). The
+    /// brute-force reference is O(n) per query; ours is
+    /// O(cells-visited) which is much faster for large clouds
+    /// with small radius. We verify the count matches
+    /// brute force on a fixed radius.
+    #[test]
+    fn d10_points_in_sphere_matches_brute_force_on_gaussian() {
+        let n = 5_000;
+        let points = gaussian_cloud(n, 1.0, 42);
+        let tree = DgmOctree::build(&points, 4);
+
+        let center = [0.0, 0.0, 0.0];
+        let radius = 1.5;
+        let r2 = (radius * radius) as f64;
+
+        // Brute force: O(n) point distance checks.
+        let mut brute: Vec<usize> = (0..n)
+            .filter(|&i| {
+                let p = points[i];
+                let dx = p[0] as f64;
+                let dy = p[1] as f64;
+                let dz = p[2] as f64;
+                dx * dx + dy * dy + dz * dz <= r2
+            })
+            .collect();
+        brute.sort();
+
+        // Octree sphere query.
+        let mut ours = tree.points_in_sphere(center, radius);
+        ours.sort();
+
+        assert_eq!(ours, brute, "sphere query result does not match brute force");
+    }
+
     // ── test helpers ──────────────────────────────────────────────
 
     /// Generate `n` Gaussian-distributed 3D points with
@@ -1369,3 +1618,4 @@ mod tests {
         out
     }
 }
+
