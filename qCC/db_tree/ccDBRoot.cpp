@@ -15,6 +15,41 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccDBRoot.cpp
+ *
+ * @brief DB tree model/manager implementation
+ *
+ * Implements the Qt Model/View bridge for the CloudCompare database
+ * tree. ccDBRoot is the root of the entity hierarchy displayed
+ * in the left panel of the main window.
+ *
+ * ## Key Responsibilities
+ *
+ * - **Entity hierarchy management**: parent/child relationships
+ * - **Context menus**: right-click menus for entity operations
+ * - **Drag and drop**: entity reordering and parent changing
+ * - **Selection**: maps Qt selection to entity selection
+ * - **View association**: links entities to 3D views
+ * - **Entity creation/removal**: addEntity, removeEntity
+ *
+ * ## Context Menu Actions
+ *
+ * Right-clicking an entity shows a menu with entity-specific actions:
+ * - Rename, delete, duplicate
+ * - Color, material, visibility
+ * - Enable/disable, lock/unlock
+ * - Entity-specific operations (mesh, cloud, sensor, etc.)
+ *
+ * ## Drag and Drop
+ *
+ * Entities can be dragged within the tree to change their parent.
+ * Some entities reject certain children (e.g., a point cloud
+ * won't accept a mesh as a child).
+ *
+ * @see ccDBRoot.h
+ */
+
 #include "ccDBRoot.h"
 
 // Local
@@ -248,6 +283,16 @@ class DBRootIcons
 
 Q_GLOBAL_STATIC(DBRootIcons, gDBRootIcons)
 
+/**
+ * @brief Construct the DB root
+ *
+ * Initializes the Qt model with the dbTreeWidget and propertiesTreeWidget.
+ * Sets up drag/drop flags and column headers.
+ *
+ * @param[in] dbTreeWidget The entity tree view
+ * @param[in] propertiesTreeWidget The properties panel tree
+ * @param[in] parent Parent QObject
+ */
 ccDBRoot::ccDBRoot(ccCustomQTreeView* dbTreeWidget, QTreeView* propertiesTreeWidget, QObject* parent)
     : QAbstractItemModel(parent)
 {
@@ -372,6 +417,15 @@ ccHObject* ccDBRoot::getRootEntity()
 	return m_treeRoot;
 }
 
+/**
+ * @brief Add an entity to the tree
+ *
+ * Inserts the entity into the hierarchy and optionally
+ * expands the parent to reveal it.
+ *
+ * @param[in] object Entity to add
+ * @param[in] autoExpand Expand parent item if true
+ */
 void ccDBRoot::addElement(ccHObject* object, bool autoExpand /*=true*/)
 {
 	if (!m_treeRoot)
@@ -491,6 +545,11 @@ void ccDBRoot::removeElements(ccHObject::Container& objects)
 	}
 }
 
+/**
+ * @brief Remove an entity from the tree
+ *
+ * @param[in] object Entity to remove
+ */
 void ccDBRoot::removeElement(ccHObject* object)
 {
 	if (!object)
@@ -534,6 +593,12 @@ void ccDBRoot::removeElement(ccHObject* object)
 	}
 }
 
+/**
+ * @brief Delete all selected entities
+ *
+ * Prompts the user for confirmation, then removes all
+ * selected entities from the hierarchy and deletes them.
+ */
 void ccDBRoot::deleteSelectedEntities()
 {
 	QItemSelectionModel* qism            = m_dbTreeWidget->selectionModel();
@@ -955,6 +1020,12 @@ void ccDBRoot::unselectAllEntities()
 	QCoreApplication::processEvents();
 }
 
+/**
+ * @brief Select an entity in the tree
+ *
+ * @param[in] obj Entity to select
+ * @param[in] forceAdditiveSelection Add to current selection if true
+ */
 void ccDBRoot::selectEntity(ccHObject* obj, bool forceAdditiveSelection /*=false*/)
 {
 	bool additiveSelection = forceAdditiveSelection || (QApplication::keyboardModifiers() & Qt::ControlModifier);
@@ -1099,6 +1170,12 @@ void ccDBRoot::selectEntities(const ccHObject::Container& entities, bool increme
 	selectionModel->select(newSelection, incremental ? QItemSelectionModel::Select : QItemSelectionModel::ClearAndSelect);
 }
 
+/**
+ * @brief Find an entity by unique ID
+ *
+ * @param[in] uniqueID Entity's unique ID
+ * @return The entity, or nullptr if not found
+ */
 ccHObject* ccDBRoot::find(int uniqueID) const
 {
 	return m_treeRoot->find(uniqueID);
