@@ -15,6 +15,38 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccCameraParamEditDlg.cpp
+ *
+ * @brief Camera parameter editor dialog implementation
+ *
+ * Modal dialog for editing 3D viewport camera parameters.
+ * Allows setting position, orientation, focal length, and
+ * clipping planes by direct numeric input or preset views.
+ *
+ * ## Camera Parameters
+ *
+ * - **Position**: camera center (x, y, z) in world coordinates
+ * - **Orientation**: spherical coordinates (theta, psi, phi)
+ *   or standard views (Front, Back, ISO1, ISO2, etc.)
+ * - **Focal length**: perspective FOV (degrees) or ortho scale
+ * - **Pivot point**: center of rotation in world space
+ * - **Clipping**: near/far plane distances
+ *
+ * ## Preset Views
+ *
+ * One-click camera presets via ccGLUtils::GenerateViewMat():
+ * TOP, BOTTOM, FRONT, BACK, LEFT, RIGHT, ISO1, ISO2
+ *
+ * ## Interaction Flow
+ *
+ * 1. User edits parameters
+ * 2. Push updates the GL window immediately (live preview)
+ * 3. Revert restores original parameters
+ *
+ * @see ccCameraParamEditDlg.h
+ */
+
 #include "ccCameraParamEditDlg.h"
 
 #include "ui_cameraParamDlg.h"
@@ -39,6 +71,12 @@
 #include <QMdiSubWindow>
 #include <QtMath>
 
+/**
+ * @brief Construct the camera parameter editor
+ *
+ * @param[in] parent Parent widget
+ * @param[in] pickingHub Picking hub for click-to-set pivot
+ */
 ccCameraParamEditDlg::ccCameraParamEditDlg(QWidget* parent, ccPickingHub* pickingHub)
     : ccOverlayDialog(parent, pickingHub ? Qt::FramelessWindowHint | Qt::Tool : Qt::Tool) // pickingHub = CloudCompare / otherwise = ccViewer
     , m_pickingHub(pickingHub)
