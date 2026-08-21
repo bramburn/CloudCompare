@@ -15,12 +15,53 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file LasWaveformLoader.cpp
+ *
+ * @brief LAS waveform data reader
+ *
+ * Loads waveform data from a LAS 1.4 file into ccWaveform objects.
+ * Waveforms are stored as EVLR data referenced by laszip_point::wave_packet.
+ *
+ * ## Waveform Descriptor (VLR)
+ *
+ * Each waveform type is described by a VLR with record ID 65535 and
+ * user ID "LASF_Spec":
+ * - bitsPerSample: bits per sample
+ * - compressionType: 0 = uncompressed
+ * - numberOfSamples: samples per pulse return
+ * - samplingRate_ps: sampling interval in picoseconds
+ * - digitizerGain: gain coefficient
+ * - digitizerOffset: offset coefficient
+ *
+ * ## Waveform Packet (per point)
+ *
+ * Each point's wave_packet field contains:
+ * - Descriptor index (1 byte, 0-based)
+ * - Data offset in EVLR (uint64)
+ * - Byte count (uint32)
+ * - Echo time (float32)
+ * - Beam direction (3 × float32)
+ *
+ * @see LasWaveformSaver.cpp for the write-side counterpart
+ */
+
 #include "LasWaveformLoader.h"
 
 #include "LasDetails.h"
 
 #include <QDataStream>
 
+/**
+ * @brief Parse a waveform descriptor VLR
+ *
+ * Reads the VLR data as a waveform packet descriptor.
+ * Sets digitizerGain to 1.0 if it is 0 (avoid division by zero).
+ *
+ * @param[in] vlr Source VLR
+ * @param[out] descriptor Target descriptor
+ * @return true on success
+ */
 static bool ParseWavepacketDescriptorVlr(const laszip_vlr_struct& vlr, WaveformDescriptor& descriptor)
 {
 	if (vlr.record_length_after_header < 26)
@@ -68,6 +109,14 @@ static ccPointCloud::FWFDescriptorSet ParseWaveformDescriptorVlrs(const laszip_v
 	return descriptors;
 }
 
+/**
+ * @brief Construct the waveform loader
+ *
+ * Parses waveform descriptors from the LAS header's VLRs.
+ *
+ * @param[in] laszipHeader Source LAS header
+ * @param[in] shouldLoad Should waveforms be loaded at all
+ */
 LasWaveformLoader::LasWaveformLoader(const laszip_header_struct& laszipHeader,
                                      const QString&              lasFilename,
                                      ccPointCloud&               pointCloud)
@@ -176,6 +225,15 @@ LasWaveformLoader::LasWaveformLoader(const laszip_header_struct& laszipHeader,
 	}
 }
 
+/**
+ * @brief Load one point's waveform data
+ *
+ * Extracts the wave_packet field from the laszip_point and
+ * creates a ccWaveform object for it.
+ *
+ * @param[in] pointCloud Target cloud
+ * @param[in] currentPoint Source LAS point
+ */
 void LasWaveformLoader::loadWaveform(ccPointCloud& pointCloud, const laszip_point& currentPoint) const
 {
 	assert(pointCloud.size() > 0);
