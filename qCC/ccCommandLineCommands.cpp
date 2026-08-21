@@ -1,3 +1,56 @@
+/**
+ * @file ccCommandLineCommands.cpp
+ *
+ * @brief Command-line processing commands implementation
+ *
+ * Implements the command-line parser commands for batch processing
+ * in CloudCompare. Each command is handled by a dedicated method
+ * that processes entities in the command-line context.
+ *
+ * ## Command Categories
+ *
+ * ### File I/O
+ * - O: open file (with optional skip lines, no label)
+ * - C_EXPORT_FMT / M_EXPORT_FMT / H_EXPORT_FMT: set output formats
+ * - EXT: set output extension
+ * - PREC / SEP / ADD_HEADER / ADD_PTS_COUNT: ASCII export options
+ * - COMMAND_FILE: execute commands from a file
+ *
+ * ### Entity Operations
+ * - SUBSAMPLE (SS): random/spatial/octree subsampling
+ * - EXTRACT_CC: connected component extraction
+ * - MERGE_CLOUDS: merge multiple clouds
+ * - CROP/CUT/SECTION: geometric operations
+ * - REMOVE_OUTLIERS: statistical outlier removal
+ *
+ * ### Scalar Field Operations
+ * - CURV: compute mean/Gaussian curvature
+ * - DENSITY / APPROX_DENSITY: point density estimation
+ * - ROUGH: roughness computation
+ * - SF_GRAD: scalar field gradient
+ * - SF_COLOR_SCALE / SF_CONVERT_TO_RGB: SF display
+ * - FILTER_SF: select points by SF value range
+ *
+ * ### Geometric Analysis
+ * - CURVATURE / DENSITY / ROUGHNESS: geometric features
+ * - DISTANCE / CLOUDMISMATCH / COMPARE: distance computation
+ * - VOLUME: volume calculation
+ * - FILTER_BY_VALUE / STAT_TEST: statistical filtering
+ *
+ * ### Transformations
+ * - APPLY_TRANS: apply GL transformation matrix
+ * - APPLY_TO_GLOBAL: convert local to global shift
+ * - INVERSE: apply inverse transformation
+ * - DROP_GLOBAL_SHIFT: remove global shift
+ *
+ * ### Mesh Operations
+ * - DELAUNAY_2D: Delaunay triangulation
+ * - TRIANGULATE / INTERPOLATE: mesh operations
+ * - SMOOTH / SUBdivide / MERGE_MESHES: mesh editing
+ *
+ * @see ccCommandLineParser.cpp, ccArgumentParser.h
+ */
+
 // CCCoreLib
 #include <AutoSegmentationTools.h>
 #include <CCConst.h>
