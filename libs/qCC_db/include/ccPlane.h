@@ -7,7 +7,7 @@
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
@@ -19,81 +19,124 @@
 #define CC_PLANE_PRIMITIVE_HEADER
 
 /**
+
  * @file ccPlane.h
  *
- * @brief Plane primitive class
+ * @brief Plane primitive for ground fitting, clipping, and texturing
  *
- * Represents a finite 3D plane primitive. Used for ground fitting,
- * clipping planes, and geometric primitives.
+ * Represents a finite rectangular 3D plane with a normal direction
+ * defined by its transformation matrix. Implements ccPlanarEntityInterface
+ * so it can be used as a reference plane for measurements and projections.
  *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * The plane extends ccGenericPrimitive: it has a quadrilateral mesh
+ * (2 triangles), positioned in 3D space by the transformation matrix.
+ *
+ * Key capabilities:
+ * - Arbitrary orientation via transformation matrix
+ * - Texture mapping with QImage
+ * - Plane fitting to point clouds
+ * - Equation query (normal + constant)
+ * - Width/height modification
+ *
+ * Texture mapping: the plane UV coordinates map the texture onto the
+ * mesh from corner (0,0) to (width, height). The plane's local Z
+ * axis (column 2 of the transformation matrix) is the plane normal.
+ *
+ * @extends ccGenericPrimitive
+ * @extends ccPlanarEntityInterface
  */
 
-// Local
 #include "ccGenericPrimitive.h"
 #include "ccPlanarEntityInterface.h"
 
 /**
- * @brief Plane primitive
+ * @class ccPlane
  *
- * A finite 3D plane with width and height dimensions.
+ * @brief Rectangular 3D plane primitive
+ *
+ * A plane is defined by:
+ * - Width (X dimension) and height (Y dimension)
+ * - Transformation matrix: position and orientation
+ *   (local Z axis = plane normal, local XY = plane tangent)
+ * - Optionally: texture/image mapped onto the surface
+ *
+ * Mesh: 2 triangles, 4 vertices, with texture coordinates.
+ *
+ * @extends ccGenericPrimitive
+ * @extends ccPlanarEntityInterface
  */
 class QCC_DB_LIB_API ccPlane : public ccGenericPrimitive
     , public ccPlanarEntityInterface
 {
   public:
 	/**
-	 * @brief Create a plane
-	 * @param[in] xWidth Width along X dimension
-	 * @param[in] yWidth Width along Y dimension
-	 * @param[in] transMat Optional transformation matrix
-	 * @param[in] name Plane name
+	 * @brief Create a plane with specified dimensions
+	 *
+	 * @param[in] xWidth Width along the plane's X axis
+	 * @param[in] yWidth Height along the plane's Y axis
+	 * @param[in] transMat Optional transformation (position + orientation)
+	 * @param[in] name Display name
 	 */
 	ccPlane(PointCoordinateType xWidth,
 	        PointCoordinateType yWidth,
 	        const ccGLMatrix*   transMat = nullptr,
 	        QString             name     = QString("Plane"));
 
-	//! Simplified constructor
-	/** For ccHObject factory only!
-	 **/
-	ccPlane(QString name = QString("Plane"));
+	/**
+	 * @brief Simplified constructor for ccHObject factory
+	 *
+	 * @param[in] name Display name
+	 */
+	explicit ccPlane(QString name = QString("Plane"));
 
-	//! Returns class ID
+	// ccHObject
 	virtual CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::PLANE;
 	}
 
-	// inherited from ccGenericPrimitive
+	// ccGenericPrimitive
 	virtual QString getTypeName() const override
 	{
 		return "Plane";
 	}
 	virtual ccGenericPrimitive* clone() const override;
 
-	// inherited from ccHObject
+	// ccHObject
 	virtual ccBBox getOwnFitBB(ccGLMatrix& trans) override;
 
-	//! Returns 'X' width
+	/**
+	 * @brief Get the plane width (X dimension)
+	 */
 	PointCoordinateType getXWidth() const
 	{
 		return m_xWidth;
 	}
 
-	//! Returns 'Y' width
+	/**
+	 * @brief Get the plane height (Y dimension)
+	 */
 	PointCoordinateType getYWidth() const
 	{
 		return m_yWidth;
 	}
 
-	//! Returns the center
+	/**
+	 * @brief Get the plane center position
+	 *
+	 * Equal to the translation component of the transformation matrix.
+	 */
 	CCVector3 getCenter() const
 	{
 		return m_transformation.getTranslationAsVec3D();
 	}
 
-	//! Sets 'X' width
+	/**
+	 * @brief Set the plane width (X dimension)
+	 *
+	 * @param[in] w New width
+	 * @param[in] autoUpdate Rebuild the mesh if true
+	 */
 	void setXWidth(PointCoordinateType w, bool autoUpdate = true)
 	{
 		m_xWidth = w;
@@ -101,7 +144,12 @@ class QCC_DB_LIB_API ccPlane : public ccGenericPrimitive
 			updateRepresentation();
 	}
 
-	//! Sets 'Y' width
+	/**
+	 * @brief Set the plane height (Y dimension)
+	 *
+	 * @param[in] h New height
+	 * @param[in] autoUpdate Rebuild the mesh if true
+	 */
 	void setYWidth(PointCoordinateType h, bool autoUpdate = true)
 	{
 		m_yWidth = h;
@@ -109,65 +157,93 @@ class QCC_DB_LIB_API ccPlane : public ccGenericPrimitive
 			updateRepresentation();
 	}
 
-	// inherited from ccPlanarEntityInterface
+	// ccPlanarEntityInterface
+
+	/**
+	 * @brief Get the plane normal vector
+	 *
+	 * Returns the local Z axis of the transformation matrix.
+	 *
+	 * @return Normal direction (unit vector)
+	 */
 	CCVector3 getNormal() const override
 	{
 		return m_transformation.getColumnAsVec3D(2);
 	}
 
-	//! Sets an image as texture
-	/** \return The created material (if successful)
-	 **/
+	/**
+	 * @brief Apply a texture image to the plane
+	 *
+	 * @param[in] image QImage to map onto the plane
+	 * @param[in] imageFilename Optional filename (for metadata)
+	 * @return The created material, or nullptr on failure
+	 */
 	ccMaterial::Shared setAsTexture(QImage image, QString imageFilename = QString());
 
-	//! Sets an image as texture for a quad mesh
-	/** \return The created material (if successful)
-	 **/
+	/**
+	 * @brief Apply a texture to a quad mesh
+	 *
+	 * @param[in] quadMesh Target mesh (must be a quad or have 4 vertices)
+	 * @param[in] image QImage to map
+	 * @param[in] imageFilename Optional filename
+	 * @return The created material, or nullptr on failure
+	 */
 	static ccMaterial::Shared SetQuadTexture(ccMesh* quadMesh, QImage image, QString imageFilename = QString());
 
-	//! Fits a plane primitive on a cloud
-	/** The cloud can be any CCCoreLib::GenericIndexedCloudPersist-derived object,
-	    i.e. even a ccPolyline object for instance.
-	    \param[in] cloud input cloud
-	    \param[out] rms plane fitting rms (optional)
-	    \return plane primitive (if successful)
-	**/
+	/**
+	 * @brief Fit a plane to a point cloud using least squares
+	 *
+	 * Uses principal component analysis (PCA) to find the best-fit
+	 * plane. The plane is oriented so its normal points toward the
+	 * viewer (z-component > 0) and is centered on the cloud centroid.
+	 *
+	 * @param[in] cloud Point cloud (any GenericIndexedCloudPersist)
+	 * @param[out] rms Optional RMS fitting error
+	 * @return New ccPlane, or nullptr on failure
+	 */
 	static ccPlane* Fit(CCCoreLib::GenericIndexedCloudPersist* cloud, double* rms = nullptr);
 
-	//! Returns the equation of the plane
-	/** Equation:
-	    N.P + constVal = 0
-	    i.e. Nx.x + Ny.y + Nz.z + constVal = 0
-	**/
+	/**
+	 * @brief Get the plane equation as normal + constant
+	 *
+	 * Returns N and constVal such that: dot(N, P) + constVal = 0
+	 * for any point P on the plane.
+	 *
+	 * @param[out] N Normal vector (set to column 2 of transform)
+	 * @param[out] constVal Constant term
+	 */
 	void getEquation(CCVector3& N, PointCoordinateType& constVal) const;
 
-	//! Returns the equation of the plane
-	/** Equation:
-	    planeEquation plane equation : [a, b, c, d] as 'ax+by+cz=d'
-	    Same equation used in Neighbourhood and DistanceComputationTools
-	**/
+	/**
+	 * @brief Get the plane equation as [a, b, c, d]
+	 *
+	 * Returns ax + by + cz = d, equivalent to dot(N, P) = d
+	 * where N is the normalized normal and d = dot(N, center).
+	 *
+	 * @return Pointer to [a, b, c, d] array (m_PlaneEquation)
+	 */
 	const PointCoordinateType* getEquation();
 
-	//! Flips the plane
+	/**
+	 * @brief Flip the plane normal (rotate 180° around X axis)
+	 */
 	void flip();
 
   protected:
-	// inherited from ccDrawable
+	// ccDrawableObject
 	void drawMeOnly(CC_DRAW_CONTEXT& context) override;
 
-	// inherited from ccGenericPrimitive
+	// ccGenericPrimitive
 	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
 	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
 	bool  buildUp() override;
 
-	//! Width along 'X' dimension
+	//! Width along local X axis
 	PointCoordinateType m_xWidth;
-
-	//! Width along 'Y' dimension
+	//! Height along local Y axis
 	PointCoordinateType m_yWidth;
-
-	// Array [a,b,c,d] such that ax+by+cz = d
+	//! Plane equation [a, b, c, d] such that ax + by + cz = d
 	PointCoordinateType m_PlaneEquation[4];
 };
 
