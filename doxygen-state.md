@@ -117,6 +117,11 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | File | Status | Notes |
 |------|--------|-------|
 | ccDisplaySettingsDlg.h | ✅ Done | Committed: 5d8bf38d |
+| ccDisplaySettingsDlg.cpp | ✅ Done | Committed: 3a3c2337 |
+| ccOptions.h | ✅ Done | Committed: 79bcc028 |
+| ccOptions.cpp | ✅ Done | Committed: 90aa7bfa |
+| ccPluginManager.h | ✅ Done | Committed: 4af63721 |
+| ccPluginManager.cpp | ✅ Done | Committed: 799973b9 |
 | ccOptions.h | ✅ Done | Committed: 79bcc028 |
 | ccPluginManager.h | ✅ Done | Committed: 4af63721 |
 | ccApplicationBase.h | ✅ Done | Committed: 6ad25cbe |
@@ -189,8 +194,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~106
-- **Completed**: 106
+- **Total files tracked**: ~111
+- **Completed**: 111
 - **In progress**: 0
 - **Percentage**: ~100%
 
