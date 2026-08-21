@@ -29,6 +29,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccConsole.h | ✅ Done | Committed: 83a4dacb |
 | ccUtils.cpp | ✅ Done | Committed: bf35923f |
 | ccUtils.h | ✅ Done | Committed: bf35923f |
+| ccCommandLineParser.cpp | ✅ Done | Committed: 23f55d26 |
+| ccCommandLineParser.h | ✅ Done | Already documented |
 | ccMainAppInterface.cpp | ⬜ Not started | |
 | ccMainAppInterface.h | ⬜ Not started | |
 | ccDBRoot.cpp | ⬜ Not started | |
@@ -91,13 +93,13 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 
 ## Progress Summary
 - **Total files**: ~30+
-- **Completed**: 6
+- **Completed**: 8
 - **In progress**: 0
-- **Percentage**: 20%
+- **Percentage**: 27%
 
 ## Current File
-**Last committed**: ccUtils.h / ccUtils.cpp (bf35923f)
-**Next**: ccCommandLineParser.h + ccCommandLineParser.cpp
+**Last committed**: ccCommandLineParser.cpp (23f55d26)
+**Next**: ccMainAppInterface.h + ccMainAppInterface.cpp
 
 ## Last Updated
 2026-08-21
@@ -105,5 +107,6 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ## Commit Log
 | Commit | Files | Notes |
 |--------|-------|-------|
+| 23f55d26 | ccCommandLineParser.cpp | Enhanced Doxygen with @param/@return/@tparam |
 | bf35923f | ccUtils.h, ccUtils.cpp | Enhanced Doxygen for ccUtils namespace |
 | 83a4dacb | ccConsole.h, ccConsole.cpp, doxygen-state.md | Full Doxygen for ccConsole classes |
