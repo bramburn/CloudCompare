@@ -15,6 +15,31 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file RasterGridFilter.cpp
+ *
+ * @brief Raster grid filter implementation
+ *
+ * Implements raster grid I/O via GDAL.
+ *
+ * ## GDAL Formats
+ *
+ * GDAL handles many raster formats:
+ * GeoTIFF, JPEG2000, BAG, bathymetric grids, DEMs, etc.
+ *
+ * ## Import
+ *
+ * Loads raster as ccRasterGrid (2.5D grid).
+ * Supports multi-band rasters as multiple scalar fields.
+ *
+ * ## Export
+ *
+ * Exports ccRasterGrid to GeoTIFF or other GDAL formats.
+ * Preserves georeference information.
+ *
+ * @see RasterGridFilter.h
+ */
+
 #ifdef CC_GDAL_SUPPORT
 
 #include "RasterGridFilter.h"

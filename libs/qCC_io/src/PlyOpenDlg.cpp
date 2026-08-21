@@ -15,6 +15,24 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file PlyOpenDlg.cpp
+ *
+ * @brief PLY file open dialog implementation
+ *
+ * Dialog for configuring PLY (Stanford Polygon Library) import.
+ *
+ * ## PLY Options
+ *
+ * - **Format**: ASCII or binary (little-endian / big-endian)
+ * - **Vertex properties**: select which properties to load (x, y, z,
+ *   nx, ny, nz, red, green, blue, alpha, diffuse_red, etc.)
+ * - **Face properties**: select how to interpret face data
+ * - **Material**: load material properties from PLY
+ *
+ * @see PlyOpenDlg.h
+ */
+
 #include "PlyOpenDlg.h"
 
 // Qt

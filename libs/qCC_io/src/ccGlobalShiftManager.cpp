@@ -16,6 +16,29 @@
 // ##########################################################################
 
 // Local
+/**
+ * @file ccGlobalShiftManager.cpp
+ *
+ * @brief Global shift manager implementation
+ *
+ * Manages global coordinate shifts for large point clouds
+ * to prevent floating-point precision loss.
+ *
+ * ## Global Shift
+ *
+ * When coordinates are very large (e.g., GPS coordinates in meters),
+ * single-precision floats lose precision. The global shift stores
+ * the origin offset so coordinates are stored relative to it.
+ *
+ * ## Strategies
+ *
+ * - **Automatic**: detect center of bounding box as shift
+ * - **Reference**: use a known reference point
+ * - **Load from file**: respect the shift stored in the original file
+ *
+ * @see ccGlobalShiftManager.h
+ */
+
 #include "ccGlobalShiftManager.h"
 
 #include "ccShiftAndScaleCloudDlg.h"
