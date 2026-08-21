@@ -123,9 +123,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | qBroom.h | ✅ Done | Committed: 477bd26d |
 | qPCV.h | ✅ Done | Committed: d8eb0d99 |
 | qAnimation.h | ✅ Done | Committed: 20c8124d |
-| qVoxFall.h | ⬜ Not started | |
-| qCanupo.h | ⬜ Not started | |
-| 3DFin.h | ⬜ Not started | |
+| qVoxFall.h | ⬜ Not started | Submodule - cannot commit |
+| qCanupo.h | ✅ Done | Committed: 841d8dc8 |
+| 3DFin.h | ⬜ Not started | Submodule - cannot commit |
 
 ### plugins/core/IO/
 | File | Status | Notes |
@@ -137,9 +137,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 
 ## Progress Summary
 - **Total files tracked**: ~55
-- **Completed**: 44
+- **Completed**: 45
 - **In progress**: 0
-- **Percentage**: ~80%
+- **Percentage**: ~82%
 
 ## Submodule Note
 `libs/qCC_db/extern/CCCoreLib/` is a git submodule. Files inside it cannot be committed from the parent repo.
