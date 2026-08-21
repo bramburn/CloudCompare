@@ -19,9 +19,25 @@
 /**
  * @file ccPickOneElementDlg.h
  *
- * @brief Pick one element dialog
+ * @brief Single-item selection dialog
  *
- * Simple dialog with a combobox for selecting one item.
+ * A simple modal dialog presenting a QComboBox (drop-down list)
+ * for selecting exactly one item from a list. Used throughout
+ * CloudCompare for choosing from a finite set of options when
+ * a more complex dialog is not warranted.
+ *
+ * Usage:
+ * @code
+ * ccPickOneElementDlg dlg("Choose method:", "Method", this);
+ * dlg.addElement("Method A");
+ * dlg.addElement("Method B");
+ * dlg.addElement("Method C");
+ * dlg.setDefaultIndex(1);
+ * if (dlg.exec() == QDialog::Accepted) {
+ *     int idx = dlg.getSelectedIndex();
+ *     // ...
+ * }
+ * @endcode
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
  */
@@ -45,8 +61,9 @@ class CCAPPCOMMON_LIB_API ccPickOneElementDlg : public QDialog
   public:
 	/**
 	 * @brief Create dialog
-	 * @param[in] label Label text
-	 * @param[in] windowTitle Window title
+	 *
+	 * @param[in] label Label text displayed above the combobox
+	 * @param[in] windowTitle Window title (default = empty)
 	 * @param[in] parent Parent widget
 	 */
 	ccPickOneElementDlg(const QString& label,
