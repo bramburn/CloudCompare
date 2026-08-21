@@ -41,6 +41,11 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccOrthoSectionGenerationDlg.cpp | ✅ Done | Committed: 63e55ec1 |
 | ccScaleDlg.cpp | ✅ Done | Committed: 63e55ec1 |
 | ccStatisticalTestDlg.cpp | ✅ Done | Committed: 63e55ec1 |
+| ccEnvelopeExtractorDlg.cpp | ✅ Done | Committed: f9f82bf4 |
+| ccNormalComputationDlg.cpp | ✅ Done | Committed: f9f82bf4 |
+| ccSubsamplingDlg.cpp | ✅ Done | Committed: f9f82bf4 |
+| ccScalarFieldArithmeticsDlg.cpp | ✅ Done | Committed: f9f82bf4 |
+| ccPointPropertiesDlg.cpp | ✅ Done | Committed: f9f82bf4 |
 | ccConsole.cpp | ✅ Done | Committed: 83a4dacb |
 | ccConsole.h | ✅ Done | Committed: 83a4dacb |
 | ccUtils.cpp | ✅ Done | Committed: bf35923f |
@@ -210,8 +215,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~132
-- **Completed**: 132
+- **Total files tracked**: ~137
+- **Completed**: 137
 - **In progress**: 0
 - **Percentage**: ~100%
 
