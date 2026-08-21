@@ -11,13 +11,16 @@ path = "src/main.rs"
 [dependencies]
 # The cc-rust crate (post-D4 + D8 trait + icp_with_nn + icp_multi_resolution_with_nn).
 cc_rust = { path = "../../../cc-rust" }
-# The 3 ICP variants. Each one re-exports `build_nn(model) -> <variant NN>`
+# The ICP variants. Each one re-exports `build_nn(model) -> <variant NN>`
 # and `icp_iterate(data, model, params)`. The latter calls
 # `icp_with_nn` under the hood with the variant's NN, so this is a
 # genuine end-to-end test of the D8 trait dispatch.
 icp_v1_naive = { path = "../../scenarios/2026-08-19-icp-variants/01-naive-on2" }
 icp_v2_kiddo = { path = "../../scenarios/2026-08-19-icp-variants/02-kiddo-kdtree" }
 icp_v3_octree = { path = "../../scenarios/2026-08-19-icp-variants/03-handrolled-octree" }
+# D9 cell-code-ordered NN (post-D8). See D9 in
+# experimental/docs/decisions.md and pattern P18.
+icp_v4_dgm_octree = { path = "../../scenarios/2026-08-19-icp-variants/04-dgm-octree" }
 # Pure-Rust .las reader (Phase 4 strategy).
 las_v1_pure_rust = { path = "../../scenarios/2026-08-19-las-parsers/01-pure-rust-las" }
 clap = { version = "4", features = ["derive"] }

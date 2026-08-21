@@ -24,6 +24,25 @@ use las_v1_pure_rust::read_all_xyz;
 use icp_v1_naive::icp_iterate as icp_naive;
 use icp_v2_kiddo::icp_iterate as icp_kiddo;
 use icp_v3_octree::icp_iterate as icp_octree;
+use icp_v4_dgm_octree::icp_iterate as icp_dgm;
+
+#[derive(clap::ValueEnum, Clone, Copy, Debug, PartialEq, Eq)]
+enum NnChoice {
+    /// All 4 NNs (naive, kiddo, handrolled-octree, dgm-octree).
+    /// Naive is O(n²) — infeasible above ~50k points.
+    All,
+    /// Brute force NN (O(n²), for reference only).
+    Naive,
+    /// kiddo 6.0 KD-tree.
+    Kiddo,
+    /// Hand-rolled octree (no AABB pruning, 100-300x slower
+    /// than D9 — for comparison only).
+    Handrolled,
+    /// D9 cell-code-ordered NN (cc-rust/src/dgm_octree.rs). The
+    /// C++-compat NN — slower than kiddo by 1.5-3x but matches
+    /// the C++ DgmOctree nearest-neighbour exactly.
+    Dgm,
+}
 
 #[derive(Parser, Debug)]
 #[command(name = "d8_realdata_all_nns")]
@@ -31,8 +50,13 @@ struct Cli {
     /// Path to the .las file.
     file: PathBuf,
     /// Subsample stride. Default 150 → ~50k pts from the 7.5M-point brook-avenue scan.
+    /// Use `--stride 1` to use the full 7.5M-point scan (only practical with kiddo).
     #[arg(short, long, default_value_t = 150)]
     stride: usize,
+    /// Which NN variants to run. Default: all (the 3 from D8).
+    /// Use `kiddo` for the full 7.5M run (naive is O(n²), infeasible).
+    #[arg(long, value_enum, default_value_t = NnChoice::All)]
+    nn: NnChoice,
     /// Known translation to apply (X axis, in metres).
     #[arg(short = 'x', long, default_value_t = 0.5)]
     translation: f32,
@@ -100,24 +124,47 @@ fn main() {
     let data_template = data.clone();
 
     eprintln!("=== 01-naive-on2 (brute force NN, via icp_with_nn) ===");
-    let mut data = data_template.clone();
-    let r = run_one("01-naive-on2", &mut data, &model, &params, icp_naive);
-    print_row(&r, cli.translation as f64);
-    results.push(r);
+    if matches!(cli.nn, NnChoice::All | NnChoice::Naive) {
+        let mut data = data_template.clone();
+        let r = run_one("01-naive-on2", &mut data, &model, &params, icp_naive);
+        print_row(&r, cli.translation as f64);
+        results.push(r);
+    } else {
+        eprintln!("  (skipped — use --nn naive to enable; O(n^2), infeasible above ~50k pts)");
+    }
 
     eprintln!();
     eprintln!("=== 02-kiddo-kdtree (kiddo 6.0 KD-tree, via icp_with_nn) ===");
-    let mut data = data_template.clone();
-    let r = run_one("02-kiddo-kdtree", &mut data, &model, &params, icp_kiddo);
-    print_row(&r, cli.translation as f64);
-    results.push(r);
+    if matches!(cli.nn, NnChoice::All | NnChoice::Kiddo) {
+        let mut data = data_template.clone();
+        let r = run_one("02-kiddo-kdtree", &mut data, &model, &params, icp_kiddo);
+        print_row(&r, cli.translation as f64);
+        results.push(r);
+    } else {
+        eprintln!("  (skipped — use --nn kiddo to enable)");
+    }
 
     eprintln!();
     eprintln!("=== 03-handrolled-octree (hand-rolled octree, via icp_with_nn) ===");
-    let mut data = data_template.clone();
-    let r = run_one("03-handrolled-octree", &mut data, &model, &params, icp_octree);
-    print_row(&r, cli.translation as f64);
-    results.push(r);
+    if matches!(cli.nn, NnChoice::All | NnChoice::Handrolled) {
+        let mut data = data_template.clone();
+        let r = run_one("03-handrolled-octree", &mut data, &model, &params, icp_octree);
+        print_row(&r, cli.translation as f64);
+        results.push(r);
+    } else {
+        eprintln!("  (skipped — use --nn handrolled to enable)");
+    }
+
+    eprintln!();
+    eprintln!("=== 04-dgm-octree (D9 cell-code-ordered NN, via icp_with_nn) ===");
+    if matches!(cli.nn, NnChoice::All | NnChoice::Dgm) {
+        let mut data = data_template.clone();
+        let r = run_one("04-dgm-octree", &mut data, &model, &params, icp_dgm);
+        print_row(&r, cli.translation as f64);
+        results.push(r);
+    } else {
+        eprintln!("  (skipped — use --nn dgm to enable)");
+    }
 
     // ── Summary ─────────────────────────────────────────────────────────
     eprintln!();
@@ -139,21 +186,29 @@ fn main() {
         );
     }
 
-    // Verify the trait dispatch is correct: all 3 variants should
-    // produce the same RMS to within fp tolerance.
-    let rms0 = results[0].rms;
-    let max_diff = results
-        .iter()
-        .map(|r| (r.rms - rms0).abs())
-        .fold(0.0_f64, f64::max);
-    eprintln!();
-    eprintln!("[Correctness] max |RMS_variant - RMS_naive| = {:.2e}", max_diff);
-    if max_diff < 1e-3 {
-        eprintln!("[OK] All three NNs produce the same RMS (D8 trait dispatch is correct)");
+    // Verify the trait dispatch is correct: all variants should
+    // produce the same RMS to within fp tolerance (using the
+    // first variant as the baseline).
+    let max_diff = if !results.is_empty() {
+        let rms0 = results[0].rms;
+        let max = results
+            .iter()
+            .map(|r| (r.rms - rms0).abs())
+            .fold(0.0_f64, f64::max);
+        eprintln!();
+        eprintln!("[Correctness] max |RMS_variant - RMS_first| = {:.2e}", max);
+        if max < 1e-3 {
+            eprintln!("[OK] All variants produce the same RMS (D8 trait dispatch is correct)");
+        } else {
+            eprintln!("[WARN] RMS differs across variants — investigate");
+            std::process::exit(1);
+        }
+        max
     } else {
-        eprintln!("[WARN] RMS differs across variants — investigate");
-        std::process::exit(1);
-    }
+        eprintln!();
+        eprintln!("[Correctness] (skipped — no variants ran)");
+        0.0
+    };
 
     // The translation recovery: all three should be close to the
     // expected -cli.translation on the X axis.
