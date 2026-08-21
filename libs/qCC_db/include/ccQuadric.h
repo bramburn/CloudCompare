@@ -21,19 +21,39 @@
 /**
  * @file ccQuadric.h
  *
- * @brief Quadric primitive
+ * @brief 2.5D quadric surface primitive
  *
- * 2.5D quadric surface primitive for fitting curved surfaces.
+ * Represents a 2.5D quadric surface defined by:
+ * `Z = a + bX + cY + dX² + eXY + fY²`
  *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * The quadric is bounded by a rectangular base (minCorner → maxCorner)
+ * and has a local coordinate system (m_toLocalOrientation) for
+ * orienting the surface in 3D space.
+ *
+ * ## Use Cases
+ *
+ * - Fitting curved surfaces (paraboloids, hyperbolic paraboloids, etc.)
+ * - Surface approximation where a plane is insufficient
+ *
+ * ## Mesh Construction
+ *
+ * The tessellated mesh covers the base rectangle [minCorner, maxCorner]
+ * in the local XY plane, with Z computed from the quadric equation.
+ *
+ * @extends ccGenericPrimitive
  */
 // Local
 #include "ccGenericPrimitive.h"
 
 /**
- * @brief Quadric primitive
+ * @class ccQuadric
  *
- * 2.5D quadric surface (Z = a + bX + cY + dX^2 + eXY + fY^2).
+ * @brief 2.5D quadric surface primitive
+ *
+ * A quadric surface bounded by a rectangular base, with coefficients
+ * defining the surface shape in a local coordinate system.
+ *
+ * @extends ccGenericPrimitive
  */
 class QCC_DB_LIB_API ccQuadric : public ccGenericPrimitive
 {
