@@ -15,6 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccScalarFieldsManagerDlg.cpp
+ *
+ * @brief Scalar fields manager dialog implementation
+ *
+ * Dialog for managing scalar fields on a point cloud:
+ * viewing, renaming, deleting, and comparing scalar fields.
+ *
+ * ## Features
+ *
+ * - **List scalar fields**: shows all SFs with statistics (min, max, mean)
+ * - **Rename**: double-click to rename a scalar field
+ * - **Delete**: remove unwanted scalar fields
+ * - **Compare**: compare two scalar fields point-by-point
+ * - **Export**: export scalar field data to ASCII
+ * - **Set active**: pick which SF is displayed
+ *
+ * @see ccScalarFieldsManagerDlg.h, ccScalarField
+ */
+
 #include "ccScalarFieldsManagerDlg.h"
 
 #include "ui_scalarFieldsManagerDlg.h"

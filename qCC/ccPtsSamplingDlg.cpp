@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPtsSamplingDlg.cpp
+ *
+ * @brief Points sampling dialog implementation
+ *
+ * Dialog for sampling random points on mesh triangles.
+ *
+ * ## Mesh Point Sampling
+ *
+ * Generates a point cloud by sampling random points
+ * uniformly on the surface of a mesh:
+ * - Sample on triangle faces (weighted by triangle area)
+ * - Optionally include triangle vertices
+ * - Optionally include edge midpoints
+ *
+ * ## Parameters
+ *
+ * - **Number of points**: target point count
+ * - **Sampling density**: points per surface unit area
+ * - **Include vertices**: include existing mesh vertices
+ * - **Include edges**: include triangle edge midpoints
+ * - **Max edge length**: maximum edge length to sample on
+ *
+ * @see ccPtsSamplingDlg.h
+ */
+
 #include "ccPtsSamplingDlg.h"
 
 ccPtsSamplingDlg::ccPtsSamplingDlg(QWidget* parent /*=nullptr*/)

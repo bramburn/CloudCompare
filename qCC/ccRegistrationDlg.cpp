@@ -15,6 +15,31 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccRegistrationDlg.cpp
+ *
+ * @brief Registration dialog implementation
+ *
+ * Dialog for configuring the ICP (Iterative Closest Point) registration
+ * algorithm between two point clouds or meshes.
+ *
+ * ## ICP Parameters
+ *
+ * - **Max iterations**: number of ICP iterations
+ * - **Error threshold**: convergence threshold for stopping
+ * - **Min. RMS decrease**: minimum RMS decrease to continue
+ * - **Neighbor search**: octree-based or brute force
+ * - **Max neighbor distance**: maximum distance for correspondence
+ * - **Random sampling ratio**: for faster convergence
+ * - **Weight by distance**: weight correspondences by distance
+ * - **Refine rotation**: fine-tune rotation after translation
+ *
+ * The dialog sets up CCCoreLib::RegistrationTools parameters
+ * and launches the registration in a worker thread.
+ *
+ * @see ccRegistrationDlg.h, CCCoreLib::RegistrationTools
+ */
+
 #include "ccRegistrationDlg.h"
 
 // Local
