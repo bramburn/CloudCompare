@@ -21,16 +21,21 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 
 ## Progress Summary
 
-### All .cpp files (>50 lines) in these directories are documented ✅
+### ✅ ALL source .cpp files (>50 lines) are documented
 
 | Directory | Files | Status |
 |-----------|-------|--------|
-| `qCC/` | ~60 | ✅ Done |
+| `qCC/` (incl. test/, db_tree/, pluginManager/) | ~70 | ✅ Done |
+| `ccViewer/` | 1 | ✅ Done |
 | `libs/qCC_db/src/` | ~45 | ✅ Done |
 | `libs/qCC_io/src/` | ~12 | ✅ Done |
+| `libs/qCC_io/test/` | 7 | ✅ Done |
 | `libs/qCC_glWindow/src/` | ~7 | ✅ Done |
 | `libs/CCAppCommon/src/` | ~7 | ✅ Done |
+| `libs/CCAppCommon/devices/3dConnexion/` | 2 | ✅ Done |
+| `libs/CCFbo/src/` | 2 | ✅ Done |
 | `libs/CCPluginAPI/src/` | ~6 | ✅ Done |
+| `libs/CCPluginStub/src/` | 1 | ✅ Done |
 | `plugins/core/IO/qCoreIO/` | 7 | ✅ Done |
 | `plugins/core/IO/qAdditionalIO/` | 8 | ✅ Done |
 | `plugins/core/IO/qCSVMatrixIO/` | 2 | ✅ Done |
@@ -60,9 +65,13 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | `plugins/core/Standard/qRANSAC_SD/` | 1 | ✅ Done |
 | `plugins/core/Standard/qRustICP/` | 2 | ✅ Done |
 | `plugins/core/Standard/qSRA/` | 6 | ✅ Done |
-| `plugins/core/IO/qLASIO/` | ~20 | ✅ Done (prior session) |
+| `plugins/example/` | 3 | ✅ Done |
+| `plugins/experimental/qHelloCloud/` | 2 | ✅ Done |
+| `plugins/experimental/templates/` | 4 | ✅ Done |
+| `qCC/test/` | 25 | ✅ Done |
+| Root-level standalone tests | 2 | ✅ Done |
 
-**Total: ~350+ .cpp files documented**
+**Total: ~400+ .cpp files documented**
 
 ## Remaining Work
 
@@ -81,6 +90,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 - `plugins/core/IO/MeshIO/` — all source files
 - `plugins/core/IO/qE57IO/extern/libE57Format/` — extern submodule
 - `plugins/core/IO/qPhotoscanIO/extern/quazip/` — extern submodule
+- `libs/CCAppCommon/QDarkStyleSheet/` — vendored stylesheet
+- `libs/CCAppCommon/devices/3dConnexion/extern/hidapi/` — HID library
 
 ### Header files (.h) — many need enhancement
 Header files have been documented in priority areas but many have minimal Doxygen.
@@ -89,16 +100,20 @@ Low priority — the core .cpp files are the primary deliverable.
 ## Recent Commits (newest first)
 | Commit | Files | Description |
 |--------|-------|-------------|
-| 24ce46f6 | 18 files | qFacets, qM3C2, qPCL, qRANSAC_SD, qSRA |
-| 485caae5 | 15 files | qAnimation, qCompass tools, qPCL utils, qSRA |
-| b1166367 | 11 files | IO plugin filters (CSVMatrix, Draco, FBX, LASFWF, STEP, ReCap, RDB, E57, PDAL, PhotoScan) |
-| 645bad75 | 13 files | qHoughNormals, qCork, qFacets export, qMeshBoolean, qPCL, qRustICP, qSRA, qCompass |
-| bea29086 | 6 files | qCoreIO filters (STL, OFF, PTX, MA, SimpleBin, HeightProfile) |
-| 00dba68a | 5 files | Mascaret, PDMS parser/tools/filter, qCoreIO entry |
-| ff86f271 | 9 files | qEDL, qAdditionalIO (Sinusx, POV, PN, Bundler, ICM, PV, SOI) |
-| 1c5bff0a | 5 files | qCSF algorithm (CSF, Cloth, Cloud2CloudDist, Particle, Rasterization) |
-| d8cceb13 | 3 files | qCanupo (tools, classifier, process) |
-| 68c914c7 | 2 files | PCVCommand, qMeshBoolean |
+| 4782ef61 | 6 | Root-level tests + experimental templates |
+| 4734de4b | 25 | All qCC/test/ files |
+| 5ac708e4 | 7 | qCC_io test files |
+| 16ddf90c | 14 | App/lib/example/experimental .cpp files |
+| 24ce46f6 | 18 | qFacets, qM3C2, qPCL, qRANSAC_SD, qSRA |
+| 485caae5 | 15 | qAnimation, qCompass, qPCL utils, qSRA |
+| b1166367 | 11 | IO plugin filters |
+| 645bad75 | 13 | qHoughNormals, qCork, qFacets, qMeshBoolean, qPCL, qRustICP, qSRA, qCompass |
+| bea29086 | 6 | qCoreIO filters |
+| 00dba68a | 5 | Mascaret, PDMS, qCoreIO entry |
+| ff86f271 | 9 | qEDL, qAdditionalIO |
+| 1c5bff0a | 5 | qCSF algorithm |
+| d8cceb13 | 3 | qCanupo |
+| 68c914c7 | 2 | PCVCommand, qMeshBoolean |
 | f613edf3 | doxygen-state.md | Extended tracking to plugins |
 | 9ff593af | doxygen-state.md | 100% milestone for core directories |
 
