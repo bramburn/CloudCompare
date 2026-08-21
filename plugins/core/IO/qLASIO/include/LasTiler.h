@@ -1,15 +1,34 @@
 /**
  * @file LasTiler.h
  *
- * @brief LAS tiling utilities.
+ * @brief LAS/LAZ file tiling utilities
  *
- * @details Functions for tiling LAS/LAZ files into grid-based tiles.
+ * Functions for splitting a LAS/LAZ file into a grid of tiles, each
+ * saved as a separate output file. Used for processing very large point
+ * cloud files that don't fit in memory.
  *
- * ## Tiling Dimensions
+ * ## Tiling Strategy
  *
- * - XY: Tile in X-Y plane
- * - XZ: Tile in X-Z plane
- * - YZ: Tile in Y-Z plane
+ * The file is split along two of the three coordinate axes (chosen via
+ * LasTilingDimensions) into numTiles0 × numTiles1 tiles. Each tile
+ * covers a contiguous region of the point cloud's bounding box.
+ *
+ * ## Output
+ *
+ * Each tile is written as a separate LAS/LAZ file in the output directory,
+ * named by appending the tile index to the original filename:
+ * `original_tile_0_0.las`, `original_tile_0_1.las`, etc.
+ *
+ * No full point cloud is loaded into memory — points are streamed from
+ * the laszip reader and written directly to the appropriate tile file.
+ *
+ * ## Dimension Mapping
+ *
+ * | Dimension | index0() | index1() |
+ * |-----------|----------|----------|
+ * | XY        | 0 (X)   | 1 (Y)   |
+ * | XZ        | 0 (X)   | 2 (Z)   |
+ * | YZ        | 1 (Y)   | 2 (Z)   |
  *
  * @author Thomas Montaigu
  */
@@ -103,14 +122,15 @@ struct LasTilingOptions final
 };
 
 /**
- * @brief Tile a LAS reader into a grid.
+ * @brief Tile a LAS/LAZ reader into a grid of output files
  *
- * Takes ownership of the reader and handles closing/deleting.
+ * Takes ownership of the laszip reader and handles closing/deleting.
+ * Points are streamed from the reader and written directly to the
+ * appropriate output tile file based on their coordinates.
  *
- * @param[in] laszipReader LASzip reader.
- * @param[in] originName Original file name.
- * @param[in] options Tiling options.
- *
- * @return Error code.
+ * @param[in] laszipReader Open laszip reader (takes ownership)
+ * @param[in] originName Original file name (used as base for output names)
+ * @param[in] options Tiling options (grid size, dimensions, output dir)
+ * @return CC_FILE_ERROR status
  */
 CC_FILE_ERROR TileLasReader(laszip_POINTER laszipReader, const QString& originName, const LasTilingOptions& options);
