@@ -15,8 +15,15 @@
 // #                                                                        #
 // ##########################################################################
 
-#include "ccUtils.h"
+/**
+ * @file ccUtils.cpp
+ *
+ * @brief Implementation of CloudCompare utility functions
+ *
+ * @see ccUtils
+ */
 
+#include "ccUtils.h"
 #include "ccConsole.h"
 
 // Qt
@@ -25,9 +32,16 @@
 
 namespace ccUtils
 {
+	// ccUtils::DisplayLockedVerticesWarning
 	void DisplayLockedVerticesWarning(const QString& meshName, bool displayAsError)
 	{
-		QString message = QString("Vertices of mesh '%1' are locked (they may be shared by multiple entities for instance).\nYou should call this method directly on the vertices cloud.\n(warning: all entities depending on this cloud will be impacted!)").arg(meshName);
+		QString message = QString(
+		                 "Vertices of mesh '%1' are locked (they may be shared by "
+		                 "multiple entities for instance).\n"
+		                 "You should call this method directly on the vertices cloud.\n"
+		                 "(warning: all entities depending on this cloud will be "
+		                 "impacted!)")
+		                .arg(meshName);
 
 		if (displayAsError)
 			ccConsole::Error(message);
@@ -35,7 +49,8 @@ namespace ccUtils
 			ccConsole::Warning(message);
 	}
 
-	bool GetVectorFromClipboard(CCVector3d& vector, bool sendErrors /*=true*/)
+	// ccUtils::GetVectorFromClipboard
+	bool GetVectorFromClipboard(CCVector3d& vector, bool sendErrors)
 	{
 		const QClipboard* clipboard = QApplication::clipboard();
 		if (!clipboard)
@@ -46,6 +61,8 @@ namespace ccUtils
 			}
 			return false;
 		}
+
+		// Strip surrounding brackets: [x y z], (x y z), {x;y;z}
 		QString text = clipboard->text().trimmed();
 		if (text.startsWith('[') || text.startsWith('{') || text.startsWith('('))
 		{
@@ -61,15 +78,19 @@ namespace ccUtils
 			return false;
 		}
 
+		// Try space-separated first
 		QStringList tokens = text.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
 		if (tokens.size() != 3)
 		{
+			// Fall back to semicolon separator
 			tokens = text.split(';', Qt::SkipEmptyParts);
 			if (tokens.size() != 3)
 			{
+				// Fall back to comma separator
 				tokens = text.split(',', Qt::SkipEmptyParts);
 				if (tokens.size() != 3)
 				{
+					// Truncate long strings for the error message
 					if (text.length() > 64)
 					{
 						text.truncate(61);
@@ -84,6 +105,7 @@ namespace ccUtils
 			}
 		}
 
+		// Parse each component as a double
 		for (unsigned char i = 0; i < 3; ++i)
 		{
 			bool ok     = false;
