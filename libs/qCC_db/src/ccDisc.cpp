@@ -1,4 +1,25 @@
 // qCC_db
+/**
+ * @file ccDisc.cpp
+ *
+ * @brief Disc primitive implementation
+ *
+ * Implements ccDisc: a filled circular disc primitive.
+ *
+ * ## Disc Properties
+ *
+ * - **Center**: disc center in world space
+ * - **Radius**: disc radius
+ * - **Normal**: orientation of the disc plane
+ * - **Tessellation**: number of segments for the circular boundary
+ *
+ * A disc is a mesh with one face (the disc surface) and an
+ * optional border ring. Tessellation uses triangles radiating
+ * from the center.
+ *
+ * @see ccDisc.h, ccCircle
+ */
+
 #include "ccDisc.h"
 
 #include <ccPointCloud.h>

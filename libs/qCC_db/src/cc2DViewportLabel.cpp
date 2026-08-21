@@ -18,6 +18,23 @@
 #include "ccIncludeGL.h"
 
 // Local
+/**
+ * @file cc2DViewportLabel.cpp
+ *
+ * @brief 2D viewport label implementation
+ *
+ * Implements cc2DViewportLabel: a label that is attached to a
+ * specific 3D point but displayed in a fixed 2D viewport position.
+ *
+ * ## Viewport Label
+ *
+ * Unlike cc2DLabel (attached to 3D geometry), a viewport label
+ * stays fixed relative to the 3D view (e.g., always at the
+ * bottom-left corner or as a screen-space overlay).
+ *
+ * @see cc2DViewportLabel.h, cc2DLabel
+ */
+
 #include "cc2DViewportLabel.h"
 
 // CCCoreLib

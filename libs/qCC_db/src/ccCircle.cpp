@@ -15,6 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccCircle.cpp
+ *
+ * @brief Circle primitive implementation
+ *
+ * Implements ccCircle: a circle primitive defined by a center,
+ * radius, and normal direction.
+ *
+ * ## Circle Properties
+ *
+ * - **Center**: CCVector3 circle center in world space
+ * - **Radius**: circle radius
+ * - **Normal**: orientation of the circle plane
+ *
+ * The circle is rendered as a set of line segments approximating
+ * the curve, and can be converted to a mesh (disc) with a radius.
+ *
+ * @see ccCircle.h
+ */
+
 #include "ccCircle.h"
 
 // qCC_db

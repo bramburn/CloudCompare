@@ -15,6 +15,35 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccDrawableObject.cpp
+ *
+ * @brief Drawable object implementation
+ *
+ * Implements ccDrawableObject: base for all entities that can be
+ * rendered in a ccGLWindow.
+ *
+ * ## Drawing
+ *
+ * Drawable objects implement drawMeOnly() which is called by
+ * the GL window during rendering. Subclasses implement specific
+ * GL drawing code for their primitive type.
+ *
+ * ## GL Transformation
+ *
+ * Each drawable has an associated GL transformation matrix
+ * (ccGLMatrix) that is applied before drawing.
+ *
+ * ## Display Parameters
+ *
+ * Drawing behavior is controlled by:
+ * - **Visible/hidden**: DP_NORMAL|DP_HIDE
+ * - **Color mode**: material, single color, SF color
+ * - **Lighting**: on/off, double-sided
+ *
+ * @see ccDrawableObject.h, ccGLWindow
+ */
+
 #include "ccDrawableObject.h"
 
 // Local

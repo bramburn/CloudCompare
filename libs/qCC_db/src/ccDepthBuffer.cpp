@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccDepthBuffer.cpp
+ *
+ * @brief Depth buffer implementation
+ *
+ * Implements ccDepthBuffer: a 2D array of depth values from
+ * OpenGL rendering or sensor acquisition.
+ *
+ * ## Depth Data
+ *
+ * - **Resolution**: width x height grid of depth values
+ * - **Values**: stored as floats (meters or normalized [0,1])
+ * - **Associated color**: optional RGB image from the same viewpoint
+ *
+ * ## Use Cases
+ *
+ * - Z-buffer from GL readPixels for picking
+ * - Depth map from range sensors
+ * - Saved as image (PPM) for debugging
+ *
+ * @see ccDepthBuffer.h
+ */
+
 #include "ccDepthBuffer.h"
 
 // algorithm
