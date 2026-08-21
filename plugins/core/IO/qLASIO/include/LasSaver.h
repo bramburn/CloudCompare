@@ -1,9 +1,9 @@
 /**
  * @file LasSaver.h
  *
- * @brief LAS file saver class.
+ * @brief LAS/LAZ file writer
  *
- * @details Saves point clouds to LAS/LAZ files.
+ * Serializes a ccPointCloud to a LAS/LAZ file via laszip.
  *
  * ## Usage
  *
@@ -11,16 +11,38 @@
  * LasSaver::Parameters params;
  * params.versionMajor = 1;
  * params.versionMinor = 4;
- * params.pointFormat = 6;
+ * params.pointFormat = 6; // requires versionMinor >= 3
  * params.shouldSaveRGB = true;
- * // ... configure fields ...
+ * params.shouldSaveNormalsAsExtraScalarField = true;
+ * params.lasScale = {0.001, 0.001, 0.001};
+ * params.lasOffset = {originX, originY, originZ};
  *
  * LasSaver saver(cloud, params);
- * saver.open("output.las");
+ * saver.open("output.laz");
  * for (size_t i = 0; i < cloud.size(); ++i) {
  *     saver.saveNextPoint();
  * }
  * @endcode
+ *
+ * ## Point Format Compatibility
+ *
+ * | Point Format | RGB   | NIR   | Return/Classification | GPS Time |
+ * |--------------|-------|-------|----------------------|----------|
+ * | 0            |       |       | ✓                    | ✓        |
+ * | 1            |       |       | ✓                    | ✓        |
+ * | 2            | ✓     |       | ✓                    |          |
+ * | 3            | ✓     |       | ✓                    | ✓        |
+ * | 5            | ✓     | ✓     | ✓                    | ✓        |
+ * | 6            | ✓     | ✓     | ✓                    | ✓        |
+ * | 7            | ✓     | ✓     | ✓                    | ✓        |
+ * | 8            | ✓     | ✓     | ✓                    | ✓        |
+ * | 10           | ✓     | ✓     | ✓                    | ✓        |
+ *
+ * ## Coordinate Encoding
+ *
+ * Coordinates are encoded as: `stored = (real - offset) / scale`
+ * Set lasScale and lasOffset to match the LAS file's header values
+ * for precise round-trip encoding.
  *
  * @author Thomas Montaigu
  */
@@ -146,9 +168,12 @@ class LasSaver
 
   private:
 	/**
-	 * @brief Initialize LASzip header.
+	 * @brief Initialize the laszip header
 	 *
-	 * @param[in] parameters Parameters.
+	 * Fills m_laszipHeader with version, scale, offset, bounding box,
+	 * point format, and other LAS header fields from the parameters.
+	 *
+	 * @param[in] parameters Save parameters
 	 */
 	void initLaszipHeader(const Parameters& parameters);
 
