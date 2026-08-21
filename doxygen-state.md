@@ -63,6 +63,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccPointCloud.h | ✅ Done | Already documented (44 blocks) |
 | ccGLMatrix.h | ✅ Done | Already documented |
 | ccMesh.h | ✅ Done | Already documented (44 blocks) |
+| ccPlane.h | ✅ Done | Committed: 0b3df67e |
+| ccSphere.h | ✅ Done | Committed: 4c2fcfd3 |
 | ccBox.h | ✅ Done | Committed: b2468119 |
 | ccBox.cpp | ✅ Done | Committed: b2468119 |
 
@@ -139,9 +141,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 
 ## Progress Summary
 - **Total files tracked**: ~55
-- **Completed**: 47
+- **Completed**: 49
 - **In progress**: 0
-- **Percentage**: ~85%
+- **Percentage**: ~89%
 
 ## Submodule Note
 `libs/qCC_db/extern/CCCoreLib/` is a git submodule. Files inside it cannot be committed from the parent repo.
