@@ -15,6 +15,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccExternalFactory.cpp
+ *
+ * @brief External factory implementation
+ *
+ * Implements ccExternalFactory: a factory for creating entities
+ * from external sources (e.g., plugins or external libraries).
+ *
+ * ## Factory Pattern
+ *
+ * Provides a registration mechanism for entity types that are
+ * defined outside of qCC_db. Plugins can register their own
+ * entity types via this factory.
+ *
+ * @see ccExternalFactory.h
+ */
+
 #include "ccExternalFactory.h"
 
 //! Container singleton

@@ -15,6 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccShiftedObject.cpp
+ *
+ * @brief Shifted object implementation
+ *
+ * Implements ccShiftedObject: entities that store coordinates
+ * with a global offset to preserve precision.
+ *
+ * ## Global Shift
+ *
+ * When point coordinates are very large, they are stored as
+ * (stored_value = real_value - global_shift). This avoids
+ * floating-point precision loss in single-precision float storage.
+ *
+ * The global shift is stored as CCVector3 and restored when
+ * exporting or displaying coordinates.
+ *
+ * @see ccShiftedObject.h
+ */
+
 #include "ccShiftedObject.h"
 
 // local

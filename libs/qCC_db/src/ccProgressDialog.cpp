@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccProgressDialog.cpp
+ *
+ * @brief Progress dialog implementation
+ *
+ * Implements ccProgressDialog: a modal progress bar dialog
+ * for long-running operations.
+ *
+ * ## Progress Tracking
+ *
+ * - **setMethodTitle()**: operation name in the title bar
+ * - **setInfo()**: status message
+ * - **setValue()**: progress percentage (0-100)
+ * - **cancel()**: request cancellation
+ *
+ * ## CCCoreLib Integration
+ *
+ * ccProgressDialog implements CCCoreLib::GenericProgressCallback
+ * so it can be passed directly to CCCoreLib algorithms.
+ *
+ * @see ccProgressDialog.h, CCCoreLib::GenericProgressCallback
+ */
+
 #include "ccProgressDialog.h"
 
 // Qt

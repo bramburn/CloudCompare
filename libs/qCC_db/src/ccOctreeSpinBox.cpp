@@ -15,6 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccOctreeSpinBox.cpp
+ *
+ * @brief Octree level spin box implementation
+ *
+ * Implements ccOctreeSpinBox: a QSpinBox specialized for
+ * selecting octree subdivision levels (1-20).
+ *
+ * ## Octree Levels
+ *
+ * The spin box is constrained to values 1-20:
+ * - Level 1: 2×2×2 cells
+ * - Level 2: 4×4×4 cells
+ * - Level N: 2^N × 2^N × 2^N cells
+ *
+ * Used throughout CloudCompare for selecting octree resolution.
+ *
+ * @see ccOctreeSpinBox.h
+ */
+
 #include "ccOctreeSpinBox.h"
 
 // CCCoreLib

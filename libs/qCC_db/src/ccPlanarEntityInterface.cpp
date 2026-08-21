@@ -1,3 +1,24 @@
+/**
+ * @file ccPlanarEntityInterface.cpp
+ *
+ * @brief Planar entity interface implementation
+ *
+ * Implements ccPlanarEntityInterface: interface for entities
+ * that have a natural planar orientation.
+ *
+ * ## Planar Entities
+ *
+ * Any entity that can be characterized by a plane (normal + height):
+ * - **ccPlane**: intrinsic plane primitive
+ * - **ccFacet**: triangulated planar patch
+ * - **ccSensor**: GBL sensor with scan plane
+ *
+ * The interface provides methods to get/set the plane equation
+ * and to project points onto the plane.
+ *
+ * @see ccPlanarEntityInterface.h
+ */
+
 #include "ccPlanarEntityInterface.h"
 
 // Local

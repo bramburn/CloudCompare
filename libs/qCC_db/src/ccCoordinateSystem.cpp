@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccCoordinateSystem.cpp
+ *
+ * @brief Coordinate system implementation
+ *
+ * Implements ccCoordinateSystem: a 3D coordinate system
+ * (three orthogonal axes) that can be displayed in the 3D view.
+ *
+ * ## Coordinate System
+ *
+ * - **X axis**: red, typically points right
+ * - **Y axis**: green, typically points forward
+ * - **Z axis**: blue, typically points up
+ *
+ * ## Properties
+ *
+ * - **Length**: display length of each axis arrow
+ * - **Origin**: center position of the system
+ * - **Orientation**: rotation via ccGLMatrix
+ *
+ * Used for displaying the world coordinate system or
+ * local entity coordinate systems.
+ *
+ * @see ccCoordinateSystem.h
+ */
+
 #include "ccCoordinateSystem.h"
 
 // qCC_db
