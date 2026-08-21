@@ -7,7 +7,7 @@
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
@@ -21,6 +21,20 @@
 #include "ccNormalVectors.h"
 #include "ccPointCloud.h"
 
+// ccCone::ccCone
+/**
+ * @brief Construct a cone or frustum
+ *
+ * @param[in] bottomRadius Radius at Z=-height/2
+ * @param[in] topRadius Radius at Z=+height/2 (can be 0 for pointed tip)
+ * @param[in] height Z extent
+ * @param[in] xOff X-axis snout offset (displaces top center)
+ * @param[in] yOff Y-axis snout offset (displaces top center)
+ * @param[in] transMat Optional transformation matrix
+ * @param[in] name Display name
+ * @param[in] precision Angular tessellation steps
+ * @param[in] uniqueID Optional unique ID
+ */
 ccCone::ccCone(PointCoordinateType bottomRadius,
                PointCoordinateType topRadius,
                PointCoordinateType height,
@@ -41,6 +55,12 @@ ccCone::ccCone(PointCoordinateType bottomRadius,
 	setDrawingPrecision(std::max<unsigned>(precision, MIN_DRAWING_PRECISION)); // automatically calls buildUp & applyTransformationToVertices
 }
 
+// ccCone::ccCone
+/**
+ * @brief Simplified constructor for ccHObject factory
+ *
+ * @param[in] name Display name
+ */
 ccCone::ccCone(QString name /*="Cylinder"*/)
     : ccGenericPrimitive(name)
     , m_bottomRadius(0)
@@ -51,39 +71,73 @@ ccCone::ccCone(QString name /*="Cylinder"*/)
 {
 }
 
+// ccCone::clone
+/**
+ * @brief Clone this cone
+ *
+ * @return Pointer to the cloned cone
+ */
 ccGenericPrimitive* ccCone::clone() const
 {
 	return finishCloneJob(new ccCone(m_bottomRadius, m_topRadius, m_height, m_xOff, m_yOff, &m_transformation, getName(), m_drawPrecision));
 }
 
+// ccCone::buildUp
+/**
+ * @brief Build the tessellated cone/frustum mesh
+ *
+ * Creates a mesh with configurable geometry:
+ *
+ * Vertex layout:
+ * - Vertex 0: bottom center
+ * - Vertex 1: top center
+ * - Vertices 2...(steps): bottom ring vertices (if bottomRadius > 0)
+ * - Remaining vertices: top ring vertices (if topRadius > 0)
+ * - After ring vertices: side normals (steps entries)
+ *
+ * Face structure:
+ * - Bottom disk: fan of triangles from bottom center to bottom ring
+ * - Top disk: fan of triangles from top center to top ring (if topRadius > 0)
+ * - Lateral surface: quads from bottom ring to top ring (if both > 0),
+ *   or triangles from ring to apex (if one radius is 0)
+ *
+ * Normal computation:
+ * - Bottom disk: all -Z
+ * - Top disk: all +Z
+ * - Lateral surface: perpendicular to the sloping surface, computed
+ *   from the cross product of the radial direction and the slope vector
+ *
+ * Snout mode: the top center is displaced by (m_xOff, m_yOff) from
+ * the bottom center, creating an offset frustum.
+ *
+ * @return true if the mesh was built successfully
+ */
 bool ccCone::buildUp()
 {
 	if (m_drawPrecision < MIN_DRAWING_PRECISION)
 		return false;
 
-	// invalid dimensions?
+	// Invalid dimensions: zero height or zero sum of radii
 	if (CCCoreLib::LessThanEpsilon(m_height) || CCCoreLib::LessThanEpsilon(m_bottomRadius + m_topRadius))
 	{
 		return false;
 	}
 
-	// topology
+	// Degenerate cases: one radius is zero (pointed cone)
 	bool singlePointBottom = CCCoreLib::LessThanEpsilon(m_bottomRadius);
 	bool singlePointTop    = CCCoreLib::LessThanEpsilon(m_topRadius);
-	assert(!singlePointBottom || !singlePointTop);
+	assert(!singlePointBottom || !singlePointTop); // both can't be zero
 
 	unsigned steps = m_drawPrecision;
 
-	// vertices
-	unsigned vertCount = 2;
+	// Pre-compute counts
+	unsigned vertCount = 2; // center points
 	if (!singlePointBottom)
 		vertCount += steps;
 	if (!singlePointTop)
 		vertCount += steps;
-	// normals
-	unsigned faceNormCounts = steps + 2;
-	// vertices
-	unsigned facesCount = steps;
+	unsigned faceNormCounts = steps + 2; // side normals + 2 disk normals
+	unsigned facesCount = steps; // lateral surface
 	if (!singlePointBottom)
 		facesCount += steps;
 	if (!singlePointTop)
@@ -91,7 +145,6 @@ bool ccCone::buildUp()
 	if (!singlePointBottom && !singlePointTop)
 		facesCount += steps;
 
-	// allocate (& clear) structures
 	if (!init(vertCount, false, facesCount, faceNormCounts))
 	{
 		ccLog::Error("[ccCone::buildUp] Not enough memory");
@@ -102,24 +155,23 @@ bool ccCone::buildUp()
 	assert(verts);
 	assert(m_triNormals);
 
-	// 2 first points: centers of the top & bottom surfaces
+	// 2 first vertices: centers of the top & bottom disks
+	// In local space: bottom at z=-height/2, top at z=+height/2
 	CCVector3 bottomCenter = CCVector3(m_xOff, m_yOff, -m_height) / 2;
 	CCVector3 topCenter    = CCVector3(-m_xOff, -m_yOff, m_height) / 2;
 	{
-		// bottom center
 		verts->addPoint(bottomCenter);
-		CompressedNormType nIndex = ccNormalVectors::GetNormIndex(CCVector3(0, 0, -1).u);
-		m_triNormals->addElement(nIndex);
-		// top center
+		m_triNormals->addElement(ccNormalVectors::GetNormIndex(CCVector3(0, 0, -1).u));
+
 		verts->addPoint(topCenter);
-		nIndex = ccNormalVectors::GetNormIndex(CCVector3(0, 0, 1).u);
-		m_triNormals->addElement(nIndex);
+		m_triNormals->addElement(ccNormalVectors::GetNormIndex(CCVector3(0, 0, 1).u));
 	}
 
-	// then, angular sweep for top and/or bottom surfaces
+	// Angular sweep for top and/or bottom rings
 	{
 		PointCoordinateType angle_rad_step = static_cast<PointCoordinateType>(2.0 * M_PI) / static_cast<PointCoordinateType>(steps);
-		// bottom surface
+
+		// Bottom ring vertices
 		if (!singlePointBottom)
 		{
 			for (unsigned i = 0; i < steps; ++i)
@@ -130,7 +182,8 @@ bool ccCone::buildUp()
 				verts->addPoint(P);
 			}
 		}
-		// top surface
+
+		// Top ring vertices
 		if (!singlePointTop)
 		{
 			for (unsigned i = 0; i < steps; ++i)
@@ -141,32 +194,36 @@ bool ccCone::buildUp()
 				verts->addPoint(P);
 			}
 		}
-		// side normals
+
+		// Lateral surface normals: perpendicular to the sloping surface
+		// The normal is perpendicular to both the tangent vector u (angular direction)
+		// and the slope vector v (from top to bottom along the sloping side)
 		{
 			for (unsigned i = 0; i < steps; ++i)
 			{
-				// slope
+				// u = tangent to the ring (perpendicular to radius in XY plane)
 				CCVector3 u(-sin(angle_rad_step * i), cos(angle_rad_step * i), 0);
+				// v = vector from top center to bottom center, adjusted for radius difference
 				CCVector3 v(bottomCenter.x - topCenter.x + u.y * (m_bottomRadius - m_topRadius),
 				            bottomCenter.y - topCenter.y - u.x * (m_bottomRadius - m_topRadius),
 				            bottomCenter.z - topCenter.z);
+				// N = cross(v, u) = outward normal (right-hand rule)
 				CCVector3 N = v.cross(u);
 				N.normalize();
 
-				CompressedNormType nIndex = ccNormalVectors::GetNormIndex(N.u);
-				m_triNormals->addElement(nIndex);
+				m_triNormals->addElement(ccNormalVectors::GetNormIndex(N.u));
 			}
 		}
 	}
 
-	// mesh faces
+	// Build faces
 	{
 		assert(m_triVertIndexes);
 
 		unsigned bottomIndex = 2;
 		unsigned topIndex    = 2 + (singlePointBottom ? 0 : steps);
 
-		// bottom surface
+		// Bottom disk fan
 		if (!singlePointBottom)
 		{
 			for (unsigned i = 0; i < steps; ++i)
@@ -175,7 +232,8 @@ bool ccCone::buildUp()
 				addTriangleNormalIndexes(0, 0, 0);
 			}
 		}
-		// top surface
+
+		// Top disk fan
 		if (!singlePointTop)
 		{
 			for (unsigned i = 0; i < steps; ++i)
@@ -185,8 +243,10 @@ bool ccCone::buildUp()
 			}
 		}
 
+		// Lateral surface: quad strips
 		if (!singlePointBottom && !singlePointTop)
 		{
+			// Frustum: each quad split into 2 triangles
 			for (unsigned i = 0; i < steps; ++i)
 			{
 				unsigned iNext = (i + 1) % steps;
@@ -198,20 +258,22 @@ bool ccCone::buildUp()
 		}
 		else if (!singlePointTop)
 		{
+			// Pointed at top: triangles from top center to bottom ring
 			for (unsigned i = 0; i < steps; ++i)
 			{
 				unsigned iNext = (i + 1) % steps;
 				addTriangle(topIndex + i, 0, topIndex + iNext);
-				addTriangleNormalIndexes(2 + i, 2 + iNext, 2 + iNext); // TODO: middle normal should be halfbetween?!
+				addTriangleNormalIndexes(2 + i, 2 + iNext, 2 + iNext);
 			}
 		}
 		else // if (!singlePointBottom)
 		{
+			// Pointed at bottom: triangles from bottom center to top ring
 			for (unsigned i = 0; i < steps; ++i)
 			{
 				unsigned iNext = (i + 1) % steps;
 				addTriangle(bottomIndex + i, bottomIndex + iNext, 1);
-				addTriangleNormalIndexes(2 + i, 2 + iNext, 2 + i); // TODO: last normal should be halfbetween?!
+				addTriangleNormalIndexes(2 + i, 2 + iNext, 2 + i);
 			}
 		}
 	}
@@ -222,42 +284,60 @@ bool ccCone::buildUp()
 	return true;
 }
 
+// ccCone::setHeight
+/**
+ * @brief Set the cone height
+ *
+ * @param[in] height New height (must be > 0)
+ */
 void ccCone::setHeight(PointCoordinateType height)
 {
 	if (m_height == height)
 		return;
-
 	assert(height > 0);
 	m_height = height;
-
 	buildUp();
 	applyTransformationToVertices();
 }
 
+// ccCone::setBottomRadius
+/**
+ * @brief Set the bottom radius
+ *
+ * @param[in] radius New bottom radius (must be > 0)
+ */
 void ccCone::setBottomRadius(PointCoordinateType radius)
 {
 	if (m_bottomRadius == radius)
 		return;
-
 	assert(radius > 0);
 	m_bottomRadius = radius;
-
 	buildUp();
 	applyTransformationToVertices();
 }
 
+// ccCone::setTopRadius
+/**
+ * @brief Set the top radius
+ *
+ * @param[in] radius New top radius (can be 0 for pointed tip)
+ */
 void ccCone::setTopRadius(PointCoordinateType radius)
 {
 	if (m_topRadius == radius)
 		return;
-
 	assert(radius > 0);
 	m_topRadius = radius;
-
 	buildUp();
 	applyTransformationToVertices();
 }
 
+// ccCone::getBottomCenter
+/**
+ * @brief Get the bottom center in world space
+ *
+ * @return Bottom center (local: (m_xOff/2, m_yOff/2, -height/2)) transformed to world
+ */
 CCVector3 ccCone::getBottomCenter() const
 {
 	CCVector3  bottomCenter = CCVector3(m_xOff, m_yOff, -m_height) / 2;
@@ -265,6 +345,13 @@ CCVector3 ccCone::getBottomCenter() const
 	trans.apply(bottomCenter);
 	return bottomCenter;
 }
+
+// ccCone::getTopCenter
+/**
+ * @brief Get the top center in world space
+ *
+ * @return Top center (local: (-m_xOff/2, -m_yOff/2, +height/2)) transformed to world
+ */
 CCVector3 ccCone::getTopCenter() const
 {
 	CCVector3  topCenter = CCVector3(-m_xOff, -m_yOff, m_height) / 2;
@@ -273,42 +360,50 @@ CCVector3 ccCone::getTopCenter() const
 	return topCenter;
 }
 
+// ccCone::getSmallCenter
+/**
+ * @brief Get the center of the smaller-radius end cap
+ *
+ * @return Bottom center if bottomRadius <= topRadius, else top center
+ */
 CCVector3 ccCone::getSmallCenter() const
 {
-	if (m_topRadius <= m_bottomRadius)
-	{
-		return getTopCenter();
-	}
-	return getBottomCenter();
+	return (m_topRadius <= m_bottomRadius) ? getTopCenter() : getBottomCenter();
 }
 
+// ccCone::getLargeCenter
+/**
+ * @brief Get the center of the larger-radius end cap
+ *
+ * @return Top center if topRadius >= bottomRadius, else bottom center
+ */
 CCVector3 ccCone::getLargeCenter() const
 {
-	if (m_topRadius >= m_bottomRadius)
-	{
-		return getTopCenter();
-	}
-	return getBottomCenter();
+	return (m_topRadius >= m_bottomRadius) ? getTopCenter() : getBottomCenter();
 }
 
+// ccCone::getSmallRadius
+/**
+ * @brief Get the smaller of the two radii
+ */
 PointCoordinateType ccCone::getSmallRadius() const
 {
-	if (m_topRadius <= m_bottomRadius)
-	{
-		return m_topRadius;
-	}
-	return m_bottomRadius;
+	return (m_topRadius <= m_bottomRadius) ? m_topRadius : m_bottomRadius;
 }
 
+// ccCone::getLargeRadius
+/**
+ * @brief Get the larger of the two radii
+ */
 PointCoordinateType ccCone::getLargeRadius() const
 {
-	if (m_topRadius >= m_bottomRadius)
-	{
-		return m_topRadius;
-	}
-	return m_bottomRadius;
+	return (m_topRadius >= m_bottomRadius) ? m_topRadius : m_bottomRadius;
 }
 
+// ccCone::toFile_MeOnly
+/**
+ * @brief Serialize to binary file (dataVersion >= 21)
+ */
 bool ccCone::toFile_MeOnly(QFile& out, short dataVersion) const
 {
 	assert(out.isOpen() && (out.openMode() & QIODevice::WriteOnly));
@@ -323,7 +418,6 @@ bool ccCone::toFile_MeOnly(QFile& out, short dataVersion) const
 		return false;
 	}
 
-	// parameters (dataVersion>=21)
 	QDataStream outStream(&out);
 	outStream << m_bottomRadius;
 	outStream << m_topRadius;
@@ -334,12 +428,15 @@ bool ccCone::toFile_MeOnly(QFile& out, short dataVersion) const
 	return true;
 }
 
+// ccCone::fromFile_MeOnly
+/**
+ * @brief Deserialize from binary file (dataVersion >= 21)
+ */
 bool ccCone::fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap)
 {
 	if (!ccGenericPrimitive::fromFile_MeOnly(in, dataVersion, flags, oldToNewIDMap))
 		return false;
 
-	// parameters (dataVersion>=21)
 	QDataStream inStream(&in);
 	ccSerializationHelper::CoordsFromDataStream(inStream, flags, &m_bottomRadius);
 	ccSerializationHelper::CoordsFromDataStream(inStream, flags, &m_topRadius);
@@ -350,20 +447,37 @@ bool ccCone::fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMa
 	return true;
 }
 
+// ccCone::minimumFileVersion_MeOnly
+/**
+ * @brief Minimum file version for this class
+ *
+ * @return 21
+ */
 short ccCone::minimumFileVersion_MeOnly() const
 {
 	return std::max(static_cast<short>(21), ccGenericPrimitive::minimumFileVersion_MeOnly());
 }
 
+// ccCone::computeApex
+/**
+ * @brief Compute the cone apex position
+ *
+ * For pointed cones (one radius is 0): returns the center of the pointed end.
+ * For frustums (both radii > 0): extrapolates the sloping side to the apex
+ * by projecting the small radius point along the slope direction.
+ *
+ * @return Apex position in world space
+ */
 CCVector3 ccCone::computeApex() const
 {
 	PointCoordinateType smallRadius = getSmallRadius();
 	if (CCCoreLib::LessThanEpsilon(smallRadius))
 	{
-		// cone is 'pointy'
+		// Cone is pointed: apex is at the zero-radius end
 		return getTopCenter();
 	}
 
+	// For frustums: extrapolate along the slope
 	CCVector3 smallCenter = getTopCenter();
 	CCVector3 largeCenter = getBottomCenter();
 	if (smallRadius == m_bottomRadius)
@@ -377,6 +491,15 @@ CCVector3 ccCone::computeApex() const
 	return smallCenter + smallRadius * slope;
 }
 
+// ccCone::computeHalfAngle_deg
+/**
+ * @brief Compute the cone half angle
+ *
+ * Returns the angle between the cone axis and the sloping surface,
+ * in degrees. For a right circular cone: atan2(deltaRadius, height).
+ *
+ * @return Half angle in degrees
+ */
 double ccCone::computeHalfAngle_deg() const
 {
 	double height      = (getTopCenter() - getBottomCenter()).normd();
