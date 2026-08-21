@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccScaleDlg.cpp
+ *
+ * @brief Scale dialog implementation
+ *
+ * Dialog for configuring entity scaling parameters.
+ *
+ * ## Scaling Modes
+ *
+ * - **Uniform**: same scale factor on all axes (X, Y, Z)
+ * - **Non-uniform**: different scale factors per axis
+ * - **Along axes**: scale only along specified axes
+ * - **From reference**: compute scale from a known reference distance
+ *
+ * ## Parameters
+ *
+ * - **Scale factor(s)**: per-axis or uniform multiplier
+ * - **Keep aspect ratio**: constrain to uniform when true
+ * - **Reference**: optional known distance for calibration
+ *
+ * @see ccScaleDlg.h
+ */
+
 #include "ccScaleDlg.h"
 
 #include "ui_scaleDlg.h"

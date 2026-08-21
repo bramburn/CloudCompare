@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccOrthoSectionGenerationDlg.cpp
+ *
+ * @brief Orthogonal section generation dialog implementation
+ *
+ * Dialog for configuring orthogonal (axis-aligned) section generation
+ * from a point cloud or mesh along a path.
+ *
+ * ## Orthogonal Sections
+ *
+ * Generates planar cross-sections perpendicular to a polyline path.
+ * Each section is a 2D slice through the 3D data at a given
+ * along-path distance.
+ *
+ * ## Parameters
+ *
+ * - **Section spacing**: distance between consecutive sections
+ * - **Section thickness**: depth of each slice (for 3D output)
+ * - **Projection direction**: which axis is perpendicular to the section
+ *
+ * @see ccOrthoSectionGenerationDlg.h
+ */
+
 #include "ccOrthoSectionGenerationDlg.h"
 
 // system

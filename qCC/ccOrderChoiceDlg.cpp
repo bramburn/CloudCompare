@@ -15,6 +15,24 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccOrderChoiceDlg.cpp
+ *
+ * @brief Order choice dialog implementation
+ *
+ * Dialog for assigning roles (e.g., source/target, fixed/moving)
+ * to two entities. The user picks which entity gets which role.
+ *
+ * ## Use Case
+ *
+ * When an algorithm requires two entities in a specific order
+ * (e.g., point pair registration: reference vs. aligned cloud),
+ * this dialog presents both entities and lets the user assign
+ * roles before proceeding.
+ *
+ * @see ccOrderChoiceDlg.h
+ */
+
 #include "ccOrderChoiceDlg.h"
 
 // common

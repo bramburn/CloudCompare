@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccItemSelectionDlg.cpp
+ *
+ * @brief Generic item selection dialog implementation
+ *
+ * Generic dialog for selecting one or more items from a scrollable list.
+ * Supports single or multi-select modes with optional filters.
+ *
+ * ## Usage
+ *
+ * 1. Populate the list with addItem() calls
+ * 2. Optionally set a filter via setFilter()
+ * 3. exec() to show the dialog
+ * 4. getSelectedItems() returns the chosen items
+ *
+ * Used throughout CloudCompare wherever the user needs to pick
+ * from a list of named items (e.g., scalar field selection,
+ * entity selection, etc.).
+ *
+ * @see ccItemSelectionDlg.h
+ */
+
 #include "ccItemSelectionDlg.h"
 
 // Qt

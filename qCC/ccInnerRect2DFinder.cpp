@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccInnerRect2DFinder.cpp
+ *
+ * @brief Inner rectangle finder implementation
+ *
+ * Finds the largest axis-aligned rectangle that fits entirely
+ * inside a 2D point cloud boundary.
+ *
+ * ## Algorithm
+ *
+ * Uses a rotating-calipers approach on the convex hull:
+ * 1. Compute the convex hull of the 2D point set
+ * 2. For each hull edge (rotating calipers), find the maximum
+ *    inscribed rectangle with one side on that edge
+ * 3. Return the largest rectangle found
+ *
+ * Used for finding optimal rectangular regions within point clouds
+ * for cropping or tiling operations.
+ *
+ * @see ccInnerRect2DFinder.h
+ */
+
 #include "ccInnerRect2DFinder.h"
 
 // qCC_db

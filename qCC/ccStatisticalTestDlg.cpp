@@ -15,6 +15,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccStatisticalTestDlg.cpp
+ *
+ * @brief Statistical test dialog implementation
+ *
+ * Dialog for configuring local statistical tests on point clouds.
+ *
+ * ## Statistical Tests
+ *
+ * Performs point-wise statistical tests to identify local
+ * anomalies or structural features:
+ * - **Local variance test**: flag points with unusually high variance
+ * - **Curvature test**: identify highly curved regions
+ * - **Normal deviation test**: flag points with inconsistent normals
+ *
+ * Used by tools like qCSF (Cloth Simulation Filter) to detect
+ * non-ground points based on local geometric statistics.
+ *
+ * @see ccStatisticalTestDlg.h
+ */
+
 #include "ccStatisticalTestDlg.h"
 
 #include "ui_statisticalTestDlg.h"
