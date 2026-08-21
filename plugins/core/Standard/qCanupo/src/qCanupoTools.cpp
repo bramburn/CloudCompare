@@ -15,6 +15,28 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qCanupoTools.cpp
+ *
+ * @brief Canupo tools implementation
+ *
+ * Implements Canupo (CANUn POint) multi-scale classification tools.
+ *
+ * ## Canupo Algorithm
+ *
+ * Classifies point clouds using multi-scale geometric features
+ * trained with a classifier:
+ * 1. Compute local features at multiple scales (roughness, curvature)
+ * 2. Feed features to a trained classifier (AdaBoost via dlib)
+ * 3. Assign class labels to each point
+ *
+ * ## Use Case
+ *
+ * Urban modeling: separate building, vegetation, and ground points.
+ *
+ * @see qCanupo.h
+ */
+
 #include "qCanupoTools.h"
 
 //Local

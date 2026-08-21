@@ -15,6 +15,25 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qCanupoProcess.cpp
+ *
+ * @brief Canupo processing implementation
+ *
+ * The main processing worker for Canupo classification.
+ * Runs in a thread to avoid blocking the UI.
+ *
+ * ## Processing Steps
+ *
+ * 1. Build kd-tree for neighborhood search
+ * 2. For each point: compute multi-scale features
+ * 3. For each scale: find k nearest neighbors
+ * 4. Classify point using the trained model
+ * 5. Store classification as a scalar field
+ *
+ * @see qCanupoProcess.h
+ */
+
 #include "qCanupoProcess.h"
 
 //local

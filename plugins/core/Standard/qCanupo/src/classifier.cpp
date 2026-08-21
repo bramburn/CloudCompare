@@ -18,6 +18,23 @@
 //This file is directly inspired of the equivalently named file in the
 //original CANUPO project, by N. Brodu and D. Lague.
 
+/**
+ * @file classifier.cpp
+ *
+ * @brief Canupo classifier wrapper implementation
+ *
+ * Wraps the dlib AdaBoost classifier for Canupo multi-scale
+ * geometric feature classification.
+ *
+ * ## Classifier
+ *
+ * - **Features**: multi-scale roughness/curvature at scales 0.1, 0.3, 0.5, 1.0m
+ * - **Model**: AdaBoost decision stumps trained via dlib
+ * - **Classes**: ground, building, vegetation (configurable)
+ *
+ * @see classifier.h
+ */
+
 #include "classifier.h"
 
 //Qt
