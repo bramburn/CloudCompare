@@ -164,19 +164,26 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | LasOpenDialog.cpp | ✅ Done | Committed: 01c64159 |
 | LasPlugin.cpp | ✅ Done | Committed: 12c26a72 |
 | LasSaveDialog.h | ✅ Done | Committed: d3edb168 |
+| LasSaveDialog.cpp | ✅ Done | Committed: 7c553fc8 |
 | LasDetails.cpp | ✅ Done | Committed: b16a2568 |
 | LasScalarField.cpp | ✅ Done | Committed: 46d3fb19 |
-| LasSaver.cpp | ✅ Done | Committed: 71ba5caf |
 | LasMetadata.h | ✅ Done | Committed: 2fc9dfbb |
 | LasMetadata.cpp | ✅ Done | Committed: 944e41a6 |
-| qLASIO | ⬜ Not started | Other files in plugin not started |
+| LasExtraScalarField.cpp | ✅ Done | Committed: a4a4569c |
+| LasExtraScalarFieldCard.cpp | ✅ Done | Committed: 4ebc6892 |
+| LasScalarFieldLoader.cpp | ✅ Done | Committed: 61607662 |
+| LasScalarFieldSaver.cpp | ✅ Done | Committed: fad06ef8 |
+| LasWaveformLoader.cpp | ✅ Done | Committed: cf3076b4 |
+| LasWaveformSaver.cpp | ✅ Done | Committed: 3347c25c |
+| CopcLoader.cpp | ✅ Done | Committed: 43fa28a8 |
+| qLASIO | ✅ Done | All major files documented |
 | qCoreIO | ⬜ Not started | |
 
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~83
-- **Completed**: 83
+- **Total files tracked**: ~96
+- **Completed**: 96
 - **In progress**: 0
 - **Percentage**: ~100%
 
