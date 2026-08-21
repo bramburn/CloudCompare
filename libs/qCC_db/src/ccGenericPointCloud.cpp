@@ -15,6 +15,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGenericPointCloud.cpp
+ *
+ * @brief Generic point cloud implementation
+ *
+ * Implements ccGenericPointCloud: visibility management, octree,
+ * point picking, and serialization for point cloud entities.
+ *
+ * Key subsystems:
+ * - Visibility table: per-point POINT_VISIBLE/HIDDEN array (m_pointsVisibility)
+ * - Octree proxy: stored as a child ccOctreeProxy, lazily computed
+ * - Point picking: octree-accelerated with TBB/OpenMP fallback
+ * - Serialization: global shift, visibility array, point size (v20/v33+)
+ *
+ * Parallelism:
+ * - Brute-force picking uses tbb::parallel_for or OpenMP
+ * - Octree build is in CCCoreLib (DgmOctree)
+ *
+ * @see ccGenericPointCloud.h for the class definition
+ */
+
 #ifdef CC_CORE_LIB_USES_TBB
 #include <oneapi/tbb/parallel_for.h>
 using namespace oneapi;
@@ -68,6 +89,15 @@ void ccGenericPointCloud::clear()
 	enableTempColor(false);
 }
 
+// ccGenericPointCloud::resetVisibilityArray
+/**
+ * @brief Allocate and initialize the visibility table
+ *
+ * Allocates m_pointsVisibility with size() elements, all set to
+ * POINT_VISIBLE. Called before selection operations.
+ *
+ * @return true on success, false if allocation failed
+ */
 bool ccGenericPointCloud::resetVisibilityArray()
 {
 	try
@@ -80,11 +110,16 @@ bool ccGenericPointCloud::resetVisibilityArray()
 		return false;
 	}
 
-	std::fill(m_pointsVisibility.begin(), m_pointsVisibility.end(), CCCoreLib::POINT_VISIBLE); // by default, all points are visible
-
+	std::fill(m_pointsVisibility.begin(), m_pointsVisibility.end(), CCCoreLib::POINT_VISIBLE);
 	return true;
 }
 
+// ccGenericPointCloud::invertVisibilityArray
+/**
+ * @brief Invert the visibility of all points
+ *
+ * POINT_VISIBLE becomes POINT_HIDDEN and vice versa.
+ */
 void ccGenericPointCloud::invertVisibilityArray()
 {
 	if (m_pointsVisibility.empty())
@@ -94,21 +129,25 @@ void ccGenericPointCloud::invertVisibilityArray()
 	}
 
 	for (unsigned char& vis : m_pointsVisibility)
-	{
 		vis = (vis == CCCoreLib::POINT_HIDDEN ? CCCoreLib::POINT_VISIBLE : CCCoreLib::POINT_HIDDEN);
-	}
 }
 
+// ccGenericPointCloud::unallocateVisibilityArray
+/** @brief Free the visibility table memory */
 void ccGenericPointCloud::unallocateVisibilityArray()
 {
 	m_pointsVisibility.resize(0);
 }
 
+// ccGenericPointCloud::isVisibilityTableInstantiated
+/** @brief Check if the visibility table has been allocated */
 bool ccGenericPointCloud::isVisibilityTableInstantiated() const
 {
 	return !m_pointsVisibility.empty();
 }
 
+// ccGenericPointCloud::deleteOctree
+/** @brief Remove the octree proxy child */
 void ccGenericPointCloud::deleteOctree()
 {
 	ccOctreeProxy* oct = getOctreeProxy();
@@ -118,32 +157,34 @@ void ccGenericPointCloud::deleteOctree()
 	}
 }
 
+// ccGenericPointCloud::getOctreeProxy
+/** @brief Find the ccOctreeProxy child in the hierarchy */
 ccOctreeProxy* ccGenericPointCloud::getOctreeProxy() const
 {
 	for (auto child : m_children)
-	{
 		if (child->isA(CC_TYPES::POINT_OCTREE))
-		{
 			return static_cast<ccOctreeProxy*>(child);
-		}
-	}
-
 	return nullptr;
 }
 
+// ccGenericPointCloud::getOctree
+/** @brief Get the shared octree (if already computed) */
 ccOctree::Shared ccGenericPointCloud::getOctree() const
 {
 	ccOctreeProxy* proxy = getOctreeProxy();
-	if (proxy != nullptr)
-	{
-		return proxy->getOctree();
-	}
-	else
-	{
-		return {};
-	}
+	return proxy ? proxy->getOctree() : ccOctree::Shared();
 }
 
+// ccGenericPointCloud::setOctree
+/**
+ * @brief Attach an externally-built octree
+ *
+ * Wraps the octree in a ccOctreeProxy child and optionally adds it
+ * to the hierarchy. Deletes any existing proxy first.
+ *
+ * @param[in] octree Octree to attach (must have projected points)
+ * @param[in] autoAddChild Whether to add the proxy as a child
+ */
 void ccGenericPointCloud::setOctree(ccOctree::Shared octree, bool autoAddChild /*=true*/)
 {
 	if (!octree || octree->getNumberOfProjectedPoints() == 0)
@@ -159,11 +200,20 @@ void ccGenericPointCloud::setOctree(ccOctree::Shared octree, bool autoAddChild /
 	proxy->setVisible(true);
 	proxy->setEnabled(false);
 	if (autoAddChild)
-	{
 		addChild(proxy);
-	}
 }
 
+// ccGenericPointCloud::computeOctree
+/**
+ * @brief Build and attach an octree for this cloud
+ *
+ * Deletes any existing octree proxy, creates a new DgmOctree, builds it
+ * with the optional progress callback, and attaches the proxy.
+ *
+ * @param[in] progressCb Progress callback (may be nullptr)
+ * @param[in] autoAddChild Whether to add the proxy as a child
+ * @return The built octree, or empty on failure
+ */
 ccOctree::Shared ccGenericPointCloud::computeOctree(CCCoreLib::GenericProgressCallback* progressCb, bool autoAddChild /*=true*/)
 {
 	deleteOctree();
@@ -181,16 +231,16 @@ ccOctree::Shared ccGenericPointCloud::computeOctree(CCCoreLib::GenericProgressCa
 	return octree;
 }
 
+// ccGenericPointCloud::getOwnBB
+/** @brief Get local bounding box from the point coordinates */
 ccBBox ccGenericPointCloud::getOwnBB(bool withGLFeatures /*=false*/)
 {
 	ccBBox box;
-
 	if (size())
 	{
 		getBoundingBox(box.minCorner(), box.maxCorner());
 		box.setValidity(true);
 	}
-
 	return box;
 }
 
@@ -294,6 +344,16 @@ short ccGenericPointCloud::minimumFileVersion_MeOnly() const
 	return std::max(static_cast<short>(33), ccHObject::minimumFileVersion_MeOnly());
 }
 
+// ccGenericPointCloud::importParametersFrom
+/**
+ * @brief Copy non-geometric parameters from another cloud
+ *
+ * Copies: global shift/scale, GL transformation history, point size,
+ * and metadata. Used when creating a derived cloud (e.g. CSF ground
+ * points) that should share the original's metadata.
+ *
+ * @param[in] cloud Source cloud (must not be null)
+ */
 void ccGenericPointCloud::importParametersFrom(const ccGenericPointCloud* cloud)
 {
 	if (!cloud)
@@ -319,6 +379,29 @@ void ccGenericPointCloud::importParametersFrom(const ccGenericPointCloud* cloud)
 #include <ScalarField.h>
 #endif
 
+// ccGenericPointCloud::pointPicking
+/**
+ * @brief Pick the nearest point to a 2D screen click
+ *
+ * Two-phase picking strategy:
+ * 1. Fast path: uses ccOctree::pointPicking() if octree is available
+ *    (or auto-computes it if autoComputeOctree=true)
+ * 2. Slow path: brute-force scan of all points with TBB/OpenMP
+ *   parallelization, respecting visibility table and SF hidden values
+ *
+ * Handles GL transformation by unprojecting the click in 3D and
+ * checking all projected points within the pick rectangle (pickWidth
+ * x pickHeight in pixels).
+ *
+ * @param[in] clickPos 2D screen position (pixel coordinates)
+ * @param[in] camera GL camera parameters for projection
+ * @param[out] nearestPointIndex Index of nearest point (-1 if none found)
+ * @param[out] nearestSquareDist Squared 3D distance to nearest point
+ * @param[in] pickWidth Pick rectangle half-width in pixels
+ * @param[in] pickHeight Pick rectangle half-height in pixels
+ * @param[in] autoComputeOctree Build octree if not present
+ * @return true if a point was found within the pick radius
+ */
 bool ccGenericPointCloud::pointPicking(const CCVector2d&           clickPos,
                                        const ccGLCameraParameters& camera,
                                        int&                        nearestPointIndex,
@@ -482,6 +565,22 @@ bool ccGenericPointCloud::pointPicking(const CCVector2d&           clickPos,
 	return (nearestPointIndex >= 0);
 }
 
+// ccGenericPointCloud::getTheVisiblePoints
+/**
+ * @brief Extract visible points as a ReferenceCloud
+ *
+ * Counts visible points (POINT_VISIBLE), allocates a ReferenceCloud
+ * to hold the indices, and fills it with all visible point indices.
+ *
+ * Supports reuse mode: if selection is provided, it must be an empty
+ * ReferenceCloud already associated with this cloud, and will be reused
+ * instead of allocating a new one.
+ *
+ * @param[in] visTable Visibility table (defaults to m_pointsVisibility)
+ * @param[in] silent Suppress warning if no points are visible
+ * @param[in,out] selection Optional pre-allocated ReferenceCloud for reuse
+ * @return ReferenceCloud with visible point indices, or nullptr on error
+ */
 CCCoreLib::ReferenceCloud* ccGenericPointCloud::getTheVisiblePoints(const VisibilityTableType* visTable /*=nullptr*/,
                                                                     bool                       silent /*=false*/,
                                                                     CCCoreLib::ReferenceCloud* selection /*=nullptr*/) const
