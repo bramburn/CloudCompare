@@ -1,3 +1,29 @@
+/**
+ * @file LasMetadata.cpp
+ *
+ * @brief LAS metadata serialization implementation
+ *
+ * Implements round-trip LAS header metadata storage in ccPointCloud::metaData().
+ *
+ * ## Key Implementation Details
+ *
+ * SaveMetadataInto() writes:
+ * - Scale factors, offsets, version, point format, global encoding
+ * - Project UUID as a 16-byte QByteArray (binary copy of the 4 GUID fields)
+ * - System identifier string
+ * - VLRs as a LasVlr QVariant (via Q_DECLARE_METATYPE)
+ * - Projection VLR as human-readable WKT string (if available)
+ *
+ * The QVariant storage means metadata survives file save/load cycles in CC.
+ *
+ * ## Legacy Compatibility
+ *
+ * LoadVlrs() handles a typo from version 2.14.beta:
+ * "LAS.variableLenghtRecords" (Lenght → Length).
+ *
+ * @see LasMetadata.h for the key definitions
+ */
+
 #include "LasMetadata.h"
 
 #include "LasDetails.h"
@@ -8,10 +34,21 @@ namespace LasMetadata
 {
 	static constexpr size_t SYSTEM_IDENTIFIER_SIZE = 32;
 
-	//! Projection VLR
+	//! ASPRS standard VLR user ID for projection/coordinate system
 	static const char ProjectionVLR[] = "LASF_Projection";
 
-	//! Converts a vlr to a QByteArray
+	/**
+	 * @brief Convert a projection VLR to a human-readable WKT string
+	 *
+	 * Handles VLR record IDs:
+	 * - 2111: WKT with "Math Transform" prefix
+	 * - 2112: WKT with "Coordinate System" prefix
+	 * - Others: silently ignored
+	 *
+	 * @param[in] vlr Source VLR structure
+	 * @return WKT string with prefix, or empty on failure
+	 */
+	static QString ProjectionVLRToString(const laszip_vlr_struct& vlr)
 	static QString ProjectionVLRToString(const laszip_vlr_struct& vlr)
 	{
 		if (QString(vlr.user_id) != ProjectionVLR)
@@ -46,6 +83,22 @@ namespace LasMetadata
 		return wkt;
 	}
 
+	/**
+	 * @brief Save LAS header metadata into a point cloud
+	 *
+	 * Copies all metadata from the laszip header into the point cloud's
+	 * QVariant metaData store. This enables round-trip persistence
+	 * when saving a cloud that was originally loaded from LAS.
+	 *
+	 * Special handling:
+	 * - Project UUID: copied as 16-byte binary QByteArray
+	 * - VLRs: serialized as LasVlr QVariant
+	 * - Projection VLR: also stored as human-readable WKT string
+	 *
+	 * @param[in] header Source LAS header
+	 * @param[out] pointCloud Target CloudCompare point cloud
+	 * @param[in] extraScalarFields Extra attribute definitions
+	 */
 	void SaveMetadataInto(const laszip_header&                    header,
 	                      ccPointCloud&                           pointCloud,
 	                      const std::vector<LasExtraScalarField>& extraScalarFields)
@@ -99,6 +152,16 @@ namespace LasMetadata
 		}
 	}
 
+	/**
+	 * @brief Load the project UUID into a LAS header
+	 *
+	 * Reads the 16-byte UUID from the cloud's metadata and copies
+	 * it into the four GUID data fields of the LAS header.
+	 *
+	 * @param[in] pointCloud Source cloud
+	 * @param[out] header Target LAS header
+	 * @return true if UUID was loaded
+	 */
 	bool LoadProjectUUID(const ccPointCloud& pointCloud, laszip_header& header)
 	{
 		if (pointCloud.hasMetaData(LasMetadata::PROJECT_UUID))
@@ -131,6 +194,16 @@ namespace LasMetadata
 		return false;
 	}
 
+	/**
+	 * @brief Load VLRs from cloud metadata
+	 *
+	 * Reads the LasVlr QVariant from the cloud's metadata.
+	 * Handles a legacy typo: "LAS.variableLenghtRecords" (2.14.beta).
+	 *
+	 * @param[in] pointCloud Source cloud
+	 * @param[out] vlr Target VLR container
+	 * @return true if VLRs were loaded
+	 */
 	bool LoadVlrs(const ccPointCloud& pointCloud, LasVlr& vlr)
 	{
 		QVariant value;
