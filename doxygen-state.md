@@ -31,21 +31,29 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccUtils.h | ✅ Done | Committed: bf35923f |
 | ccCommandLineParser.cpp | ✅ Done | Committed: 23f55d26 |
 | ccCommandLineParser.h | ✅ Done | Already documented |
+| ccRecentFiles.cpp | ✅ Done | Committed: 5c6a47ed |
+| ccRecentFiles.h | ✅ Done | Committed: 5c6a47ed |
+| ccApplication.cpp | ✅ Done | Already documented |
+| ccApplication.h | ✅ Done | Already documented |
 | ccMainAppInterface.cpp | ⬜ Not started | |
-| ccMainAppInterface.h | ⬜ Not started | |
+| ccMainAppInterface.h | ✅ Done | Already documented (CCPluginAPI) |
 | ccDBRoot.cpp | ⬜ Not started | |
 | ccDBRoot.h | ⬜ Not started | |
-| ccGLWindow.cpp | ⬜ Not started | |
+| ccGLWindow.cpp | ⬜ Not started | Very large (~7000 lines) |
 | ccGLWindow.h | ⬜ Not started | |
-| ccOverlayDialog.cpp | ⬜ Not started | |
-| ccOverlayDialog.h | ⬜ Not started | |
+| ccOverlayDialog.cpp | ✅ Done | Committed: 3de70ab4 |
+| ccOverlayDialog.h | ✅ Done | Committed: 3de70ab4 |
 
 ### libs/qCC_db/
 | File | Status | Notes |
 |------|--------|-------|
-| ccHObject.cpp | ⬜ Not started | |
+| ccViewportParameters.cpp | ✅ Done | Committed: 76821b33 |
+| ccViewportParameters.h | ✅ Done | Committed: 76821b33 |
+| ccLog.cpp | ✅ Done | Committed: b40a9168 |
+| ccLog.h | ✅ Done | Committed: b40a9168 |
+| ccHObject.cpp | ⬜ Not started | Very large |
 | ccHObject.h | ⬜ Not started | |
-| ccPointCloud.cpp | ⬜ Not started | |
+| ccPointCloud.cpp | ⬜ Not started | Very large |
 | ccPointCloud.h | ⬜ Not started | |
 | ccGenericPointCloud.cpp | ⬜ Not started | |
 | ccGenericPointCloud.h | ⬜ Not started | |
@@ -54,16 +62,15 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | File | Status | Notes |
 |------|--------|-------|
 | FileIOFilter.cpp | ⬜ Not started | |
-| FileIOFilter.h | ⬜ Not started | |
+| FileIOFilter.h | ✅ Done | Already well documented |
 | AsciiSaveDlg.cpp | ⬜ Not started | |
 | AsciiSaveDlg.h | ⬜ Not started | |
 
 ### libs/CCCoreLib/
 | File | Status | Notes |
 |------|--------|-------|
-| GenericDistribution.cpp | ⬜ Not started | |
-| GenericDistribution.h | ⬜ Not started | |
-| DgmOctree.cpp | ⬜ Not started | |
+| GenericDistribution.h | ✅ Done | Committed: N/A (in git submodule — not committable from here) |
+| DgmOctree.cpp | ⬜ Not started | Very large |
 | DgmOctree.h | ⬜ Not started | |
 | ScalarField.cpp | ⬜ Not started | |
 | ScalarField.h | ⬜ Not started | |
@@ -71,9 +78,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ### libs/qCC_glWindow/
 | File | Status | Notes |
 |------|--------|-------|
-| ccGLWindowInterface.cpp | ⬜ Not started | |
-| ccGLWindowInterface.h | ⬜ Not started | |
-| ccViewportParameters.h | ⬜ Not started | |
+| ccGLWindowInterface.cpp | ⬜ Not started | Very large (~7000 lines) |
+| ccGLWindowInterface.h | ✅ Done | Already well documented |
+| ccViewportParameters.h | ✅ Done | (see qCC_db above) |
 
 ### libs/CCAppCommon/
 | File | Status | Notes |
@@ -92,21 +99,24 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files**: ~30+
-- **Completed**: 8
+- **Total files tracked**: ~40+
+- **Completed**: 16
 - **In progress**: 0
-- **Percentage**: 27%
+- **Percentage**: ~40%
 
-## Current File
-**Last committed**: ccCommandLineParser.cpp (23f55d26)
-**Next**: ccMainAppInterface.h + ccMainAppInterface.cpp
-
-## Last Updated
-2026-08-21
+## Submodule Note
+`libs/qCC_db/extern/CCCoreLib/` is a git submodule. Files inside it (e.g., GenericDistribution.h) cannot be committed from the parent repo. Commit inside the submodule separately.
 
 ## Commit Log
 | Commit | Files | Notes |
 |--------|-------|-------|
+| 5c6a47ed | ccRecentFiles.h, ccRecentFiles.cpp | ~ path contraction, auto-cleanup |
+| b40a9168 | ccLog.h, ccLog.cpp | Static facade, backup system, DEBUG_FLAG |
+| 76821b33 | ccViewportParameters.h, ccViewportParameters.cpp | Camera math, serialization |
+| 3de70ab4 | ccOverlayDialog.h, ccOverlayDialog.cpp | Lifecycle, eventFilter, shortcuts |
 | 23f55d26 | ccCommandLineParser.cpp | Enhanced Doxygen with @param/@return/@tparam |
 | bf35923f | ccUtils.h, ccUtils.cpp | Enhanced Doxygen for ccUtils namespace |
 | 83a4dacb | ccConsole.h, ccConsole.cpp, doxygen-state.md | Full Doxygen for ccConsole classes |
+
+## Last Updated
+2026-08-21
