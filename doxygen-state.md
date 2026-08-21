@@ -77,6 +77,12 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccMaterialSet.cpp | ✅ Done | Committed: ee844262 |
 | ccTorus.cpp | ✅ Done | Committed: ee844262 |
 | ccClipBox.cpp | ✅ Done | Committed: ee844262 |
+| ccImage.cpp | ✅ Done | Committed: f75bd69c |
+| ccMaterial.cpp | ✅ Done | Committed: f75bd69c |
+| ccSubMesh.cpp | ✅ Done | Committed: f75bd69c |
+| ccSensor.cpp | ✅ Done | Committed: f75bd69c |
+| ccQuadric.cpp | ✅ Done | Committed: f75bd69c |
+| ccExtru.cpp | ✅ Done | Committed: f75bd69c |
 | ccStereoModeDlg.cpp | ✅ Done | Committed: b0d84c37 |
 | ccTranslationManager.cpp | ✅ Done | Committed: b0d84c37 |
 | ccPickOneElementDlg.cpp | ✅ Done | Committed: b0d84c37 |
@@ -249,8 +255,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~169
-- **Completed**: 169
+- **Total files tracked**: ~175
+- **Completed**: 175
 - **In progress**: 0
 - **Percentage**: ~100%
 
