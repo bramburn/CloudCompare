@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccTorus.cpp
+ *
+ * @brief Torus primitive implementation
+ *
+ * Implements ccTorus: a torus (doughnut shape) primitive.
+ *
+ * ## Geometry
+ *
+ * A torus is defined by:
+ * - **Major radius**: distance from center to the tube center
+ * - **Minor radius**: radius of the tube cross-section
+ * - **Tessellation**: number of segments around the tube (u) and around the major circle (v)
+ *
+ * ## Partial Torus
+ *
+ * Supports angular start/end for creating partial tori
+ * (arc segments), useful for parametric design.
+ *
+ * @see ccTorus.h
+ */
+
 #include "ccTorus.h"
 
 // Local

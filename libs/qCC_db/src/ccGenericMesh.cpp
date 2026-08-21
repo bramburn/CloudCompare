@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGenericMesh.cpp
+ *
+ * @brief Generic mesh implementation
+ *
+ * Implements ccGenericMesh: base class for all mesh entities.
+ * A mesh is a collection of triangles referenced from a point cloud.
+ *
+ * ## Mesh Structure
+ *
+ * - **Triangles**: triplets of vertex indices into the associated cloud
+ * - **Associated cloud**: the vertices (ccGenericPointCloud)
+ * - **Material set**: per-triangle material indexes
+ * - **Texture**: UV-mapped texture from associated image
+ *
+ * ## Key Methods
+ *
+ * - **triange()**: get the 3 vertices of a triangle by index
+ * - **getAssociatedCloud()**: vertex source
+ * - **merge()**: merge another mesh into this one
+ * - **subdivide()**: refine mesh by splitting triangles
+ * - **wavefrontSave()**: export to OBJ format
+ *
+ * @see ccGenericMesh.h, ccMesh, ccSubMesh
+ */
+
 // Always first
 #include "ccGenericMesh.h"
 

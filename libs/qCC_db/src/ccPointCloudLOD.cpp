@@ -15,6 +15,39 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPointCloudLOD.cpp
+ *
+ * @brief Point cloud Level-of-Detail implementation
+ *
+ * Implements point cloud Level-of-Detail (LoD) rendering.
+ * During interactive manipulation, large clouds are temporarily
+ * rendered at reduced density to maintain frame rate.
+ *
+ * ## LoD Levels
+ *
+ * The cloud is pre-stratified into N LOD levels, each with a
+ * progressively smaller fraction of the total points:
+ * - Level 0: full point cloud (when stationary)
+ * - Level 1: 50% of points
+ * - Level 2: 25% of points
+ * - Level 3: 12.5% of points
+ * ...
+ *
+ * ## Rendering
+ *
+ * During fast manipulation (high rotation/translation speed),
+ * ccGLWindow automatically selects a lower LOD level to keep
+ * rendering fast. When the view stabilizes, full resolution is used.
+ *
+ * ## Configuration
+ *
+ * - **minLoDCloudSize**: below this size (pixels), use full cloud
+ * - **decimateCloudOnMove**: enable/disable LoD during manipulation
+ *
+ * @see ccPointCloudLOD.h, ccGLWindow
+ */
+
 #include "ccPointCloudLOD.h"
 
 // Local

@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccMaterialSet.cpp
+ *
+ * @brief Material set implementation
+ *
+ * Implements ccMaterialSet: a collection of ccMaterial objects
+ * assigned to mesh triangles via per-triangle material indexes.
+ *
+ * ## Material Assignment
+ *
+ * Each triangle (face) in a mesh can have a material index
+ * referencing a material in the set. If a face has no assignment,
+ * the default material is used.
+ *
+ * ## Uniqueness
+ *
+ * Duplicate materials are merged: if two materials are identical,
+ * only one is kept and the indexes are redirected.
+ *
+ * ## Mesh Association
+ *
+ * A ccMaterialSet is typically owned by a ccMesh and provides
+ * its material data for GL rendering.
+ *
+ * @see ccMaterialSet.h, ccMaterial
+ */
+
 #include "ccMaterialSet.h"
 
 // Local

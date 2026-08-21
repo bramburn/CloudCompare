@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPolyline.cpp
+ *
+ * @brief Polyline implementation
+ *
+ * Implements ccPolyline: a polyline (connected line segments) entity.
+ *
+ * ## Polyline Features
+ *
+ * - **Vertices**: stored as 3D points, connected in sequence
+ * - **Width**: line rendering thickness in pixels
+ * - **2D mode**: project to a plane and work in 2D coordinates
+ * - **Closed**: can form a closed loop (polygon)
+ * - **Color**: per-vertex or per-segment colors
+ * - **SF support**: vertices can have scalar field values
+ *
+ * ## Key Methods
+ *
+ * - **addPoint()**: append a vertex
+ * - **pointAndTangentAt(): compute point and tangent at parameter t
+ * - **polygonSurface()**: area for closed polylines
+ * - **interpolateDTM()**: resample to a regular grid
+ * - **sampleDTM(): resample at fixed intervals along the polyline
+ *
+ * @see ccPolyline.h, ccHObject
+ */
+
 // Always first
 #include "ccPolyline.h"
 

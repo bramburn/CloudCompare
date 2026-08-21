@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccClipBox.cpp
+ *
+ * @brief Clipping box implementation
+ *
+ * Implements ccClipBox: an oriented bounding box used for
+ * clipping/hiding parts of entities.
+ *
+ * ## Clipping Modes
+ *
+ * - **Inside**: show points inside the box
+ * - **Outside**: show points outside the box
+ * - **Cross**: show points crossing the box boundary
+ *
+ * ## Features
+ *
+ * - **Oriented**: the box can have any rotation
+ * - **GL clipping planes**: uses OpenGL clip planes for fast GL rendering
+ * - **Persistent**: can be saved and restored
+ * - **Entity association**: associated with one or more entities to clip
+ *
+ * Used by the section tool for visualizing cut planes.
+ *
+ * @see ccClipBox.h, ccBox
+ */
+
 // Always first
 #include "ccClipBox.h"
 

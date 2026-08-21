@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccFacet.cpp
+ *
+ * @brief Facet primitive implementation
+ *
+ * Implements ccFacet: a triangulated 2.5D surface patch defined by
+ * a closed polyline contour and a fitted surface.
+ *
+ * ## Facet Structure
+ *
+ * A facet is a triangulated approximation of a surface patch:
+ * - **Contour**: closed polyline boundary in 3D
+ * - **Mesh**: triangulated interior fitted to the contour
+ * - **Normal**: fitted surface normal direction
+ * - **Height**: max Z deviation from the fitted plane
+ *
+ * ## Fitting
+ *
+ * Facets can be fitted to point clouds using:
+ * - **Fit to cloud**: PCA-based plane fit with convex hull boundary
+ * - **From polyline**: create facet from an existing closed polyline
+ *
+ * Used for surface reconstruction and planar patch representation.
+ *
+ * @see ccFacet.h
+ */
+
 #include "ccFacet.h"
 
 #include "ccMesh.h"
