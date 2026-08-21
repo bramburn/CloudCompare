@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccColorScale.cpp
+ *
+ * @brief Color scale implementation
+ *
+ * Implements ccColorScale: a color gradient for displaying
+ * scalar field values.
+ *
+ * ## Color Scale
+ *
+ * A color scale maps scalar field values to RGB colors:
+ * - **Relative mode**: values are mapped as percentage of [min, max]
+ * - **Absolute mode**: values are mapped directly to the scale's range
+ *
+ * ##插值
+ *
+ * Colors between stops are interpolated (linear RGB).
+ * Multiple built-in scales are available (gray, rgb, green-red, etc.).
+ *
+ * ## Singleton
+ *
+ * ccColorScalesManager provides the shared set of
+ * registered color scales accessible throughout CloudCompare.
+ *
+ * @see ccColorScale.h
+ */
+
 #include "ccColorScale.h"
 
 // Qt

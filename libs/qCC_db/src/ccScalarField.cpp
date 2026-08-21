@@ -15,6 +15,36 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccScalarField.cpp
+ *
+ * @brief Scalar field implementation
+ *
+ * Implements ccScalarField: a per-point scalar value array
+ * attached to a point cloud.
+ *
+ * ## Scalar Field
+ *
+ * A scalar field stores one float value per point:
+ * - **Min/Max**: bounds of the valid range
+ * - **Saturation**: display clipping range
+ * - **Stats**: mean, std deviation, histogram
+ *
+ * ## Operations
+ *
+ * - **arithmetic()**: element-wise +,-,*,/ with another SF
+ * - **setSortFilter()**: sort and filter values
+ * - **computeMeanAndStdDev()**: statistical analysis
+ * - **castTo()**: convert to different type
+ *
+ * ## History
+ *
+ * SFs track their history (how they were computed) for display
+ * in the scalar field manager.
+ *
+ * @see ccScalarField.h
+ */
+
 #include "ccScalarField.h"
 
 // Local

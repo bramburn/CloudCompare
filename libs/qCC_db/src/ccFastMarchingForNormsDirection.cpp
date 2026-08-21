@@ -15,6 +15,30 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccFastMarchingForNormsDirection.cpp
+ *
+ * @brief Fast marching for normal direction computation
+ *
+ * Implements normal direction propagation using the fast marching
+ * algorithm.
+ *
+ * ## Normal Propagation
+ *
+ * When only a subset of points have known normals, fast marching
+ * propagates normals from the known set to unknown points:
+ * 1. Initialize seeds (points with known normals)
+ * 2. Fast marching on the point cloud octree
+ * 3. At each front, interpolate normal from neighbors
+ *
+ * ## Use Case
+ *
+ * Useful for sensor data where only some returns have valid
+ * normal measurements (e.g., full-waveform LiDAR).
+ *
+ * @see ccFastMarchingForNormsDirection.h
+ */
+
 #include "ccFastMarchingForNormsDirection.h"
 
 // CCCoreLib

@@ -16,6 +16,35 @@
 // ##########################################################################
 
 // Always first
+/**
+ * @file ccGBLSensor.cpp
+ *
+ * @brief Ground-based LiDAR sensor implementation
+ *
+ * Implements ccGBLSensor: a terrestrial (ground-based) LiDAR scanner
+ * sensor with grid-structured acquisition.
+ *
+ * ## GBL Sensor
+ *
+ * A GBL sensor acquires points in a grid pattern (azimuth × zenith):
+ * - **Azimuth**: horizontal angle [0, 360°]
+ * - **Zenith**: vertical angle [0, 180°]
+ * - **Range**: distance measurement at each grid cell
+ *
+ * ## Sensor Model
+ *
+ * - **Intrinsic parameters**: focal length, principal point, distortion
+ * - **Extrinsic parameters**: sensor pose from position buffer
+ * - **Scan grid**: 2D grid of ranges for structured acquisition
+ *
+ * ## Depth Map
+ *
+ * GBL sensors can store their acquisition as a depth map
+ * (2D image of ranges) for efficient processing.
+ *
+ * @see ccGBLSensor.h, ccSensor
+ */
+
 #include "ccGBLSensor.h"
 
 #include "ccIncludeGL.h"

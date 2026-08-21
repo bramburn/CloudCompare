@@ -15,6 +15,40 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccRasterGrid.cpp
+ *
+ * @brief Raster grid implementation
+ *
+ * Implements ccRasterGrid: a 2.5D grid structure for representing
+ * point cloud data as a regular grid.
+ *
+ * ## Grid Structure
+ *
+ * A 2D grid (columns × rows) where each cell stores:
+ * - **Height (Z)**: interpolated or projected Z value
+ * - **Color**: interpolated RGB color
+ * - **Scalar field**: per-cell scalar values
+ * - **Valid flag**: whether the cell has data
+ *
+ * ## Operations
+ *
+ * - **Project**: project 3D points onto 2D grid
+ * - **Interpolate**: fill empty cells from neighbors
+ * - **Kriging**: geostatistical interpolation
+ * - **Volume**: compute volume between two grids
+ * - **Export**: save as image or ASCII grid
+ *
+ * ## Use Cases
+ *
+ * - DEM (Digital Elevation Model) generation
+ * - Ortho-image production
+ * - Grid-based volume calculation
+ * - Terrain analysis
+ *
+ * @see ccRasterGrid.h
+ */
+
 #include "ccRasterGrid.h"
 
 // CCCoreLib
