@@ -48,6 +48,19 @@
 #include <memory>
 #include <utility>
 
+/**
+ * @brief Determine global coordinate shift for large-coordinate LAS files
+ *
+ * Prompts the user (or auto-applies) a coordinate translation to avoid
+ * precision loss in single-precision float storage. Uses the LAS file's
+ * offset fields as default if no shift is already configured.
+ *
+ * @param[in,out] parameters Load parameters (may modify shiftHandlingMode)
+ * @param[out] preserveCoordinateShift Whether to preserve the shift in output
+ * @param[in] lasOffset Offset from LAS file header (typically origin)
+ * @param[in] firstPoint First point coordinates (for dialog prompting)
+ * @return The selected coordinate shift vector
+ */
 static CCVector3d GetGlobalShift(FileIOFilter::LoadParameters& parameters,
                                  bool&                         preserveCoordinateShift,
                                  const CCVector3d&             lasOffset,
@@ -99,6 +112,29 @@ LasIOFilter::LasIOFilter()
 	m_openDialog.resetShouldSkipDialog();
 }
 
+/**
+ * @brief Load a LAS/LAZ file into CloudCompare
+ *
+ * Full pipeline:
+ * 1. Create laszip reader and open file (auto-detects LAZ compression)
+ * 2. Detect COPC structure; if present, create CopcLoader for LOD/clipping
+ * 3. Parse available scalar fields for the point format and extra attributes
+ * 4. Show LasOpenDialog for field selection, coordinate shift, COPC options
+ * 5. Handle global shift via GetGlobalShift()
+ * 6. Read points in chunks (chunksToRead intervals):
+ *    - Apply scale/offset to get real coordinates
+ *    - Map standard LAS fields to scalar fields
+ *    - Load RGB/NIR as point colors
+ *    - Load extra attributes as extra scalar fields
+ *    - Optionally load normals from extra attributes
+ * 7. Set up the ccPointCloud with colors, scalar fields, and metadata
+ * 8. Add to container (cloud or group of tiles)
+ *
+ * @param[in] fileName Path to the LAS/LAZ/COPC file
+ * @param[out] container Root entity (receives the loaded cloud or tile group)
+ * @param[in] parameters Load parameters (progress callback, shift mode, etc.)
+ * @return CC_FILE_ERROR status
+ */
 CC_FILE_ERROR LasIOFilter::loadFile(const QString&  fileName,
                                     ccHObject&      container,
                                     LoadParameters& parameters)
@@ -613,6 +649,14 @@ CC_FILE_ERROR LasIOFilter::loadFile(const QString&  fileName,
 	return error;
 }
 
+/**
+ * @brief Check if this filter can save a given entity type
+ *
+ * @param[in] type Entity type
+ * @param[out] multiple Multiple entities not supported
+ * @param[out] exclusive This is the exclusive LAS save format
+ * @return true if type == POINT_CLOUD
+ */
 bool LasIOFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const
 {
 	multiple  = false;
@@ -620,6 +664,24 @@ bool LasIOFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) c
 	return type == CC_TYPES::POINT_CLOUD;
 }
 
+/**
+ * @brief Save a point cloud to a LAS/LAZ file
+ *
+ * Export pipeline:
+ * 1. Validate entity (must be ccPointCloud or container with clouds)
+ * 2. Show LasSaveDialog for options (scale, compression, fields)
+ * 3. Apply LasSaver to write:
+ *    - Coordinates (with scale factors and offset from global shift)
+ *    - Intensity (from scalar field)
+ *    - Classification (from scalar field)
+ *    - RGB/NIR (from point colors)
+ *    - GPS time, return info, scan angle (from scalar fields)
+ *
+ * @param[in] entity Point cloud to save (or container of clouds)
+ * @param[in] filename Output path (.las or .laz)
+ * @param[in] parameters Save parameters
+ * @return CC_FILE_ERROR status
+ */
 CC_FILE_ERROR LasIOFilter::saveToFile(ccHObject* entity, const QString& filename, const FileIOFilter::SaveParameters& parameters)
 {
 	if (!entity || filename.isEmpty())
