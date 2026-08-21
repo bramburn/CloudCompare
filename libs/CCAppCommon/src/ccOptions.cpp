@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccOptions.cpp
+ *
+ * @brief Application-wide options implementation
+ *
+ * Implements the ccOptions singleton for application-wide preferences:
+ * - **Display**: normals shown by default
+ * - **Dialogs**: use native file dialogs
+ * - **Confirmation**: quit, delete
+ *
+ * Stored in QSettings under the "Options" group.
+ *
+ * ## Singleton Access
+ *
+ * - ccOptions::Instance(): const reference
+ * - InstanceNonConst(): non-const reference (for modification)
+ * - Set(params, saveToPersistentSettings): update + optional save
+ * - ReleaseInstance(): cleanup on app exit
+ *
+ * @see ccOptions.h
+ */
+
 #include "ccOptions.h"
 
 // ccPluginAPI
@@ -29,6 +51,11 @@
 //! Unique instance of ccOptions
 static ccSingleton<ccOptions> s_options;
 
+/**
+ * @brief Get the non-const singleton instance
+ *
+ * Lazy-initializes from QSettings on first access.
+ */
 ccOptions& ccOptions::InstanceNonConst()
 {
 	if (!s_options.instance)
@@ -69,6 +96,9 @@ void ccOptions::reset()
 	confirmDelete             = true;
 }
 
+/**
+ * @brief Load options from QSettings
+ */
 void ccOptions::fromPersistentSettings()
 {
 	QSettings settings;
@@ -82,6 +112,9 @@ void ccOptions::fromPersistentSettings()
 	settings.endGroup();
 }
 
+/**
+ * @brief Save options to QSettings
+ */
 void ccOptions::toPersistentSettings() const
 {
 	QSettings settings;
