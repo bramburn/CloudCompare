@@ -16,6 +16,41 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file CopcLoader.cpp
+ *
+ * @brief COPC (Cloud-optimized Point Cloud) LAZ loader
+ *
+ * COPC is a LAZ file format with a hierarchical spatial index
+ * (octree) stored in the LAZ EVLR data. It enables:
+ *
+ * - **LOD streaming**: load only the octree levels needed
+ * - **Spatial clipping**: load only points in a spatial extent
+ * - **Chunk-based access**: read only the necessary byte ranges
+ *
+ * ## Octree Structure
+ *
+ * The COPC hierarchical index organizes points into an octree.
+ * Each node covers a spatial region and can be:
+ * - A **leaf node**: contains actual point data
+ * - An **internal node**: references child nodes
+ *
+ * ## COPC Identification
+ *
+ * A file is COPC if:
+ * - LAS version >= 1.4 (version_minor >= 4)
+ * - Point format > 5 and < 9 (6, 7, or 8)
+ * - Has at least one VLR
+ * - First VLR is a COPC VLR (user ID = "copc", record ID = 1)
+ *
+ * ## Chunk Intervals
+ *
+ * getChunkIntervalsSet() returns which byte ranges of the file
+ * contain points in the requested LOD level and/or extent.
+ *
+ * @see https://copc.io/
+ */
+
 #include "CopcLoader.h"
 
 #include "CopcVlrs.h"
@@ -38,6 +73,12 @@ namespace copc
 	static const uint8_t         COPC_RECORD_ID{1};
 	static constexpr const char* COPC_USER_ID = "copc";
 
+	/**
+	 * @brief Check if a file appears to be a COPC file
+	 *
+	 * @param[in] laszipHeader Source LAS header
+	 * @return true if the file meets COPC requirements
+	 */
 	bool CopcLoader::IsPutativeCOPCFile(const laszip_header* laszipHeader)
 	{
 		return laszipHeader->version_minor >= COPC_LAS_VERSION_MINOR
@@ -55,6 +96,15 @@ namespace copc
 		return (strcmp(COPC_USER_ID, vlr.user_id) == 0 && vlr.record_id == COPC_RECORD_ID);
 	}
 
+	/**
+	 * @brief Construct the COPC loader
+	 *
+	 * Parses the COPC hierarchy EVLR from the header to build
+	 * the octree index in memory.
+	 *
+	 * @param[in] laszipHeader Source LAS header (must be COPC)
+	 * @param[in] fileName Path to the COPC file
+	 */
 	CopcLoader::CopcLoader(const laszip_header* laszipHeader, const QString& fileName)
 	{
 		// Parse the info vlr
@@ -199,6 +249,13 @@ namespace copc
 		}
 	}
 
+	/**
+	 * @brief Build chunk table from hierarchy entries
+	 *
+	 * Converts hierarchy entries into a chunk table.
+	 *
+	 * @param[out] entries Hierarchy entries
+	 */
 	void CopcLoader::generateChunktableIntervalsHierarchy(std::vector<Entry>& entries)
 	{
 		// Sort entries by offset to be able to get the first point of each chunk.
@@ -342,6 +399,15 @@ namespace copc
 		return pointCount;
 	}
 
+	/**
+	 * @brief Get the byte ranges needed for the current query
+	 *
+	 * Returns which file byte ranges (chunks) contain points that
+	 * satisfy the current LOD and extent constraints.
+	 *
+	 * @param[out] sortedChunkIntervalSet Sorted list of required chunks
+	 * @param[out] estimatedPointCount Estimated total points in the chunks
+	 */
 	void CopcLoader::getChunkIntervalsSet(std::vector<std::reference_wrapper<ChunkInterval>>& sortedChunkIntervalSet, uint64_t& estimatedPointCount)
 	{
 		resetIntervalsStatus();
