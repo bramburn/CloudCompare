@@ -21,6 +21,17 @@
 #include <QFileInfo>
 #include <ccProgressDialog.h>
 
+/**
+ * @brief Tile a LAS/LAZ reader into a grid of output files
+ *
+ * Streams points from the reader and writes them to the
+ * appropriate tile file based on coordinate-based grid assignment.
+ *
+ * @param[in] laszipReader Open laszip reader (takes ownership)
+ * @param[in] originName Base name for output files
+ * @param[in] options Tiling configuration
+ * @return CC_FILE_ERROR status
+ */
 CC_FILE_ERROR TileLasReader(laszip_POINTER laszipReader, const QString& originName, const LasTilingOptions& options)
 {
 	laszip_header* laszipHeader{nullptr};
