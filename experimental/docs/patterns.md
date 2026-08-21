@@ -691,6 +691,175 @@ test in the same file is the regression test; the bug
 existed in the previous version of the function.
 
 ---
+
+## P19. 2026-08-21 — Cargo feature names with `-` are silently dropped by cxx-build 1.0.199
+
+**Problem:** `cxx-build 1.0.199`'s `CargoEnvCfgEvaluator` (in
+`bridge/cargo.rs`) reads `CARGO_FEATURE_<UPPER_SNAKE>` env vars
+and compares them case-insensitively against the
+`#[cfg(feature = "...")]` value. The comparison is
+**character-by-character** — `-` (0x2D) does NOT match `_`
+(0x5F) even after case folding. So a feature named `cxx-ffi`
+in `Cargo.toml` becomes `CARGO_FEATURE_CXX_FFI=1` in the build
+script's env, but the cxx-build's cfg evaluator compares
+`"cxx-ffi"` (from the cfg attribute) against the set
+`{"CXX_FFI"}` (from the env var), gets no match, evaluates the
+cfg to false, and silently drops the `#[cxx::bridge]` module.
+The CXX-generated `lib.rs.h` and `lib.rs.cc` are then empty
+(only `#pragma once` and `// empty`), and the C++ compile fails
+with a confusing "'cc_rust': is not a member of 'global
+namespace'" error pointing at the namespace declaration on
+line 15 of the C++ shim.
+
+**Solution:** Use **underscores** in feature names that are
+checked by `#[cxx::bridge]`. `cxx_ffi` works; `cxx-ffi` does
+not. (This is at odds with cargo's general preference for
+hyphenated feature names — e.g. `serde-derive` — but cargo
+itself is happy with either. cxx-build specifically is not.)
+
+**Verification:** `cargo test --features cxx_ffi` builds and
+runs 57/57 tests. `cargo test --features cxx-ffi` builds
+successfully but the bridge module is silently dropped, and
+the C++ compile fails.
+
+---
+
+## P20. 2026-08-21 — Cargo build-script link directives need `links = "..."` to reach test targets
+
+**Problem:** Build script `println!("cargo:rustc-link-lib=
+...")` directives are NOT propagated to test, example, or bench
+targets of the same crate unless the `[package]` has a `links
+= "..."` key. The main library target gets the directives
+from `cc::Build::compile()` and our explicit `println!()`s;
+the test target builds with a separate rustc invocation that
+silently drops them. Symptom: test binary builds successfully
+(rlib has the C symbols as `UNDEF`), but at startup
+`STATUS_DLL_NOT_FOUND` (0xC0000135) because
+`cxxbridge1$199$run_icp_cpp` is unresolved and the loader
+can't satisfy the `CCCoreLib.dll` import.
+
+**Solution:** Add a `links = "cc_rust_ffi"` (or any unique
+string) to `[package]` in `Cargo.toml`. This is documented at
+<https://doc.rust-lang.org/cargo/reference/build-scripts.html#the-links-manifest-key>
+as the way to opt the package's other targets into receiving
+build-script metadata. With `links` set, cargo passes the
+link directives to test/example/bench invocations too.
+
+**Verification:** `cargo test --features cxx_ffi` runs the
+test binary end-to-end. Without `links`, the test crashes at
+startup before printing any output.
+
+---
+
+## P21. 2026-08-21 — `CCCoreLib::PointProjectionTools::Transformation()` ctor leaves R and T uninitialised
+
+**Problem:** The C++ struct `PointProjectionTools::Transformation`
+has three members: `SquareMatrixd R`, `CCVector3d T`, `double s`.
+The default ctor is `Transformation() : s(1.0) {}` — **only `s`
+is initialised.** `R` and `T` are uninitialised POD. If
+`ICPRegistrationTools::Register` returns `ICP_NOTHING_TO_DO`
+(result code 0, e.g. when the data is already aligned to the
+model), the library exits early in `FindBestRegistration`
+without ever writing `R` or `T`. Reading them from Rust is UB;
+on Windows/MSVC it manifests as a STATUS_ACCESS_VIOLATION
+(0xC0000005) when the test asserts on the matrix elements.
+
+**Solution:** Pre-initialise `R` to the 3×3 identity and `T` to
+`(0, 0, 0)` in the C++ shim before calling `Register`. The
+identity is the natural "no transform applied" fallback. After
+the call, the elements are always safe to read, regardless of
+the result code.
+
+**Code:**
+```cpp
+CCCoreLib::PointProjectionTools::Transformation totalTrans;
+totalTrans.R = CCCoreLib::SquareMatrixd(3);  // zero-initialised
+totalTrans.R.setValue(0, 0, 1.0);
+totalTrans.R.setValue(1, 1, 1.0);
+totalTrans.R.setValue(2, 2, 1.0);
+totalTrans.T = CCVector3d(0.0, 0.0, 0.0);
+// s is already 1.0 from the default ctor.
+```
+
+**Verification:** `icp_cpp_identity` test passes (it explicitly
+exercises the `ICP_NOTHING_TO_DO` path with identical model
+and data).
+
+---
+
+## P22. 2026-08-21 — CXX 1.0.199 default namespace is the global namespace, not the crate name
+
+**Problem:** Several CXX tutorials and the
+`experimental/templates/rust_cxx_app/` template use
+`cc_rust::ffi_bridge::run_icp_cpp` (crate name + bridge module
+name) as the C++ namespace for the bridge items. CXX 1.0.199
+puts everything in the **global namespace** by default
+(`Namespace::ROOT`). The generated glue does:
+```cpp
+::IcpResultCpp (*run_icp_cpp$)(...) = ::run_icp_cpp;
+```
+which assigns the global symbol `::run_icp_cpp` (not
+`::cc_rust::ffi_bridge::run_icp_cpp`) to the function pointer.
+
+**Solution:** The C++ shim must define `::run_icp_cpp` (no
+namespace) and reference the CXX-generated shared structs as
+`IcpParamsCpp` and `IcpResultCpp` (no namespace prefix), even
+though the CXX-generated header at `cc_rust/src/ffi.rs.h`
+emits `struct IcpParamsCpp final { ... }` with no namespace
+wrapping. The Rust `#[cxx::bridge]` module can add `#[namespace
+= "..."]` if you need a non-global namespace — but the default
+is the global namespace.
+
+**Verification:** cxx-build's `bridge/mod.rs` line 164: `if
+cfg::eval(...)` — the namespace is taken from the bridge
+module's `namespace` attribute, defaulting to `Namespace::ROOT`
+(seen in `syntax/namespace.rs` line 26: `if input.is_empty()
+{ return Ok(Namespace::ROOT); }`).
+
+---
+
+## P23. 2026-08-21 — `CCCoreLib::SquareMatrixTpl` uses `getValue/setValue`, not `operator()(row, col)`
+
+**Problem:** Reading and writing matrix elements in the
+`ICPRegistrationTools` return path. The intuitive
+`R(row, col)` doesn't compile — `SquareMatrixTpl` doesn't
+have an `operator()`. It exposes:
+- `Scalar* row(unsigned index)` — pointer to row
+- `void setValue(unsigned row, unsigned column, Scalar value)`
+- `Scalar getValue(unsigned row, unsigned column) const`
+- And `R * v` for matrix-vector multiplication (operator*)
+
+**Solution:** Use `R.getValue(row, col)` for reads and
+`R.setValue(row, col, value)` for writes. In our shim, the
+3×3 rotation matrix is unpacked into 9 individual `f64`
+fields on `IcpResultCpp` (CXX 1.0.199 doesn't support
+fixed-size array fields in shared structs, so we use 12
+individual `r00..r22` fields instead).
+
+**Verification:** builds and runs.
+
+---
+
+## P24. 2026-08-21 — `CCCoreLib::PointCloud` has only a default constructor
+
+**Problem:** `CCCoreLib::PointCloud` (the ICP-facing cloud
+class) has only `PointCloud() = default;` declared. The
+intuitive `CCCoreLib::PointCloud modelCloud("model")` (with
+a name string) doesn't compile — no such ctor exists. The
+"cloud name" is a `qCC_db` concept (`ccPointCloud` carries a
+name string), not a `CCCoreLib` concept.
+
+**Solution:** Default-construct the cloud, then call
+`addPoint(CCVector3(x, y, z))` for each input point. The
+cloud has no name, but that's fine for the parity test —
+`Register` doesn't use the name.
+
+**Verification:** builds and runs. The `icp_cpp_identity`
+test constructs an 8-point cloud this way; the 200-point
+`icp_cpp_translation` and `icp_cpp_matches_rust` tests do
+the same with 200 points.
+
+---
 ## Adding a new pattern
 
 When you find a pattern that:

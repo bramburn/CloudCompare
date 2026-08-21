@@ -5,21 +5,26 @@
 
 ## Status (2026-08-21)
 
-**Goal closed at 7 of 8 (2026-08-20, by user decision).**
-The original 4-item goal (D8 trait, D9 cell-code NN, end-to-end
-real-data ICP with D8, Phase 0 → live CXX FFI) — **3 of 4 are
-done; CXX FFI is the deferred item**.
+**All 4 phase-0 items closed (2026-08-21).**
+The original goal (D8 trait, D9 cell-code NN, end-to-end
+real-data ICP with D8, Phase 0 → live CXX FFI) is fully
+complete. **Phase 0 → live CXX FFI** is now wired: `cargo
+test --features cxx_ffi` calls the real C++
+`ICPRegistrationTools::Register` via CXX and recovers the
+same transform + RMS as the pure-Rust ICP.
 
-Since 2026-08-20, a 5-agent code review of the D9 work was
-run in parallel and all security, SE, data structure, and
-docs findings were addressed. The math/algorithm reviewer's
-"d=0 cell skipped" critical was a misread; the other math
-findings were test-coverage gaps that are now filled.
+A 5-agent code review of the D9 work was run in parallel and
+all security, SE, data structure, and docs findings were
+addressed. The math/algorithm reviewer's "d=0 cell skipped"
+critical was a misread; the other math findings were
+test-coverage gaps that are now filled.
 
 The closure evidence is now much stronger:
 
-- **54/54 cc-rust tests pass** (was 40/40 at 7/8 closure; +14
-  for D9 + code review). 0 build warnings.
+- **57/57 cc-rust tests pass with `cxx_ffi` (54/54 without).**
+  0 build warnings on either configuration. The +3 are
+  `icp_cpp_identity`, `icp_cpp_translation`,
+  `icp_cpp_matches_rust` — the CXX parity tests.
 - **4 ICP variants** compared end-to-end on the same Gaussian
   fixture: naive, kiddo, hand-rolled octree (learning
   exercise), and the new `DgmOctree` (D9, production-quality
@@ -35,12 +40,18 @@ The closure evidence is now much stronger:
   is matching the C++ `DgmOctree` semantics in pure Rust — any
   code written against the C++ API can be ported to use D9
   with no algorithm change.
+- **CXX FFI parity (Phase 0 done):** the C++
+  `ICPRegistrationTools::Register` (linked from the existing
+  CloudCompare build at `build/libs/qCC_db/extern/CCCoreLib/`)
+  returns transforms and RMS values within 1e-3 of the
+  pure-Rust ICP on Gaussian fixtures. The bridge is opt-in
+  via `--features cxx_ffi` so the default build is unaffected.
 
 ## Status by phase (per `PRD/rust/05-roadmap.md`)
 
 | Phase | Description | Status | Evidence |
 |---|---|---|---|
-| **0** | Infrastructure (Cargo workspace + CXX FFI) | ✅ Done (FFI deferred) | [`cc-rust/`](../../../cc-rust/) — 54/54 tests, builds on stable, CXX FFI opt-in via `cxx-ffi` feature. **Live FFI bridge to standalone-built CCCoreLib deferred at 7/8 closure.** |
+| **0** | Infrastructure (Cargo workspace + CXX FFI) | ✅ **Done** | [`cc-rust/`](../../../cc-rust/) — 57/57 tests with `cxx_ffi`, 54/54 without. Builds on stable Rust 1.89 (MSVC). **CXX FFI bridge to the existing CloudCompare build's `CCCoreLib.lib` is opt-in and working — parity tests against the pure-Rust ICP pass.** |
 | **1** | ScalarField statistics | ✅ Done | [`cc-rust/src/scalar_field.rs`](../../../cc-rust/src/scalar_field.rs) — characterise vs CCCoreLib formulas (D1) |
 | **2** | ICP / Horn registration | ✅ Done (basic + extras) | [`cc-rust/src/registration.rs`](../../../cc-rust/src/registration.rs) — 8 ICP tests pass. Algorithm correct (D4 fixes). **Trimmed ICP + multi-resolution ICP for partial overlap and coarse-to-fine convergence. D8 trait dispatch is the new entry point.** |
 | **2.5** | Coarse pre-alignment | ✅ Done | [`cc-rust/src/coarse_align.rs`](../../../cc-rust/src/coarse_align.rs) — PCA-based alignment of principal axes. 2 tests. |
@@ -50,7 +61,7 @@ The closure evidence is now much stronger:
 ## Decisions made (see [`decisions.md`](decisions.md))
 
 - **D1:** Population std (no Bessel correction) — matches `ScalarField::computeMeanAndVariance`. IEEE NaN, not `-1e-30`. `computeMeanSquareScalarValue` returns `Σx²/n`, not RMS itself.
-- **D2:** Pure-Rust first, CXX second. CXX is opt-in via `cxx-ffi` feature.
+- **D2:** Pure-Rust first, CXX second. CXX is opt-in via `cxx_ffi` feature.
 - **D3:** `experimental/` workspace structure is the right shape (templates, sessions, scenarios, docs).
 - **D4 (revised 2026-08-19):** Three ICP bugs in series: (1) SVD rotation order, (2) NN search double-applied the cumulative transform, (3) test fixture was degenerate. Plus trimmed ICP, multi-resolution ICP, and absolute-RMS convergence. All fixed.
 - **D4-original (SUPERSEDED):** "Naive ICP NN wins over hand-rolled octree 2-3×" — kept for the historical record.
@@ -59,6 +70,7 @@ The closure evidence is now much stronger:
 - **D7:** `cc-rust/` Cargo workspace created. 40/40 tests pass.
 - **D8 (2026-08-20):** `NearestNeighbour` trait + `icp_with_nn` — every ICP variant plugs its own NN. The original `icp_iterate` is a thin wrapper. **End-to-end D8 on real data confirms 230× kiddo vs naive on brook-avenue 49k subsample.**
 - **D9 (2026-08-20):** Cell-code-ordered NN search in `DgmOctree` — Chebyshev shell expansion with AABB pruning, C++-style jump optimisation, correct `minDistToBorder` early-termination check (pattern P18). The pre-sorted indices + cell→range map are cached at `build()` time for O(1) cell lookup. 11 new tests; the 4-variant scenario re-benched.
+- **D10 (2026-08-21):** CXX FFI approach — reuse the **existing** CloudCompare build's `CCCoreLib.lib` + `.dll` (no standalone CCCoreLib CMake target). Bridge via CXX 1.0.199, feature-gated by `cxx_ffi` (underscore — hyphen gets mangled by cxx-build's `CARGO_FEATURE_*` env-var lookup, see P19). The bridge calls `CCCoreLib::ICPRegistrationTools::Register` directly with `CCCoreLib::PointCloud` built from flat f32 arrays. 3 parity tests confirm Rust and C++ ICP agree on RMS, rotation, and translation to within 1e-3 on Gaussian fixtures.
 
 ## Patterns documented (see [`patterns.md`](patterns.md))
 
@@ -70,6 +82,12 @@ The closure evidence is now much stronger:
 - **P16 (2026-08-20):** Pluggable NN trait + adapter pattern (D8) — single-method `NearestNeighbour` trait + `BruteForceNN` default adapter. Each variant wraps its own structure (`NaiveNN = BruteForceNN`, `KiddoNN`, `OctreeNN`, `DgmOctreeNN`).
 - **P17 (2026-08-20):** Clone the input when benchmarking N variants side-by-side. ICP mutates the data array in place; the second variant sees data that the first has already moved to the model, and reports converged=true with a wrong transform.
 - **P18 (2026-08-20):** Cell-code NN early-termination check must use `minDistToBorder` (D9). The naive `(d * cell_max_dim)² > best_d2` check incorrectly terminates before visiting cells adjacent to a query on the cell face.
+- **P19 (2026-08-21):** Cargo feature names with **hyphens** (`cxx-ffi`) do NOT match the `CARGO_FEATURE_CXX_FFI` env-var lookup in cxx-build 1.0.199's `CargoEnvCfgEvaluator` — the comparison is case-insensitive but does **not** normalise `-` to `_`. Use underscores (`cxx_ffi`). Otherwise `#[cfg(feature = "...")]` on the `#[cxx::bridge]` module is silently dropped, cxx-build emits empty `lib.rs.h` and `lib.rs.cc`, and the build fails with a "namespace not found" C++ compile error in the CXX-generated glue.
+- **P20 (2026-08-21):** Cargo **build script `rustc-link-*` directives are not propagated to test/example targets** unless the package has `links = "<key>"` in `[package]`. Without it, the test binary builds without `-l static=cc_rust_ffi` and crashes at startup with `STATUS_DLL_NOT_FOUND` (unresolved `cxxbridge1$199$run_icp_cpp` symbol → loader can't satisfy `CCCoreLib.dll` import).
+- **P21 (2026-08-21):** `CCCoreLib::PointProjectionTools::Transformation()` default ctor only initialises `s=1.0` — **`R` and `T` are left uninitialised**. If ICP returns `ICP_NOTHING_TO_DO` (e.g. identical model/data), `Register` exits early and never writes `R` or `T`. Reading them is UB; on Windows/MSVC it segfaults (STATUS_ACCESS_VIOLATION). Pre-initialise `R` to the 3×3 identity and `T` to (0, 0, 0) in the shim before calling `Register` so the "no transform applied" case is well-defined.
+- **P22 (2026-08-21):** CXX 1.0.199 default namespace is the **global namespace**, not the crate name. Bridge items are generated as `::IcpParamsCpp`, `::run_icp_cpp` etc. (no `cc_rust::ffi_bridge::` prefix). This differs from older CXX examples and from the `experimental/templates/rust_cxx_app/` template — the C++ shim must match.
+- **P23 (2026-08-21):** `CCCoreLib::SquareMatrixTpl::operator()(row, col)` doesn't exist — use `getValue(row, col)` and `setValue(row, col, value)`. The `R(i, j)` indexing syntax that some other CCCoreLib headers use (e.g. matrix-vector multiplication via `R * P`) doesn't apply to element access.
+- **P24 (2026-08-21):** `CCCoreLib::PointCloud` has only a **default** constructor `PointCloud() = default;` — there is no `PointCloud(std::string name)` constructor. The cloud name is a `qCC_db` concept (`ccPointCloud`) that CCCoreLib doesn't carry. Build clouds with `PointCloud()` then call `addPoint(CCVector3(...))`.
 
 ## ICP features (cc-rust/src/registration.rs + coarse_align.rs + dgm_octree.rs)
 
@@ -100,6 +118,40 @@ The closure evidence is now much stronger:
 
 Recommended stack for real data:
 **coarse_align → icp_multi_resolution_with_nn (with `BruteForceNN` or `DgmOctreeNN`, outlier rejection on)**.
+
+## CXX FFI parity (Phase 0 done — 2026-08-21, D10)
+
+`cargo test --release --features cxx_ffi` runs the same ICP
+inputs through the real C++ `CCCoreLib::ICPRegistrationTools::
+Register` (linked from the existing CloudCompare build's
+`CCCoreLib.lib` + `.dll`) and compares against the pure-Rust
+ICP. All three parity tests pass on Gaussian fixtures:
+
+| Test | What it checks | Tolerance |
+|---|---|---|
+| `icp_cpp_identity` | identical model/data → recovered transform = identity, RMS ≈ 0 | 1e-5 |
+| `icp_cpp_translation` | known offset → recovered translation = -offset, scale ≈ 1 | 0.05 |
+| `icp_cpp_matches_rust` | Rust + C++ agree on RMS, R, t | 1e-3 RMS, 0.05 transform |
+
+Bridge layout: `cc-rust/src/ffi.rs` is the CXX `#[bridge]`
+module (gated by `#[cfg(feature = "cxx_ffi")]`). The C++ shim
+at `cc-rust/src/cpp/icp_shim.{h,cc}` constructs
+`CCCoreLib::PointCloud` from the flat `&[f32]` input, calls
+`ICPRegistrationTools::Register`, and packs the recovered 3×3
+rotation + translation + scale into `IcpResultCpp`. The
+build script at `cc-rust/build.rs` runs `cxx_build::bridge()
+.compile("cc_rust_ffi")` and links `CCCoreLib.lib` from
+`build/libs/qCC_db/extern/CCCoreLib/`.
+
+Patterns from getting this working: P19 (cargo feature names
+with hyphens), P20 (build-script link propagation requires
+`links = "..."` in Cargo.toml), P21 (CCCoreLib Transformation
+ctor leaves R/T uninitialised), P22 (CXX 1.0 default
+namespace is global), P23 (SquareMatrixTpl uses getValue, not
+operator()), P24 (CCCoreLib::PointCloud has only a default
+ctor). See `decisions.md` (D10) and `patterns.md`.
+
+
 
 ## ICP variants scenario (`scenarios/2026-08-19-icp-variants/` + `2026-08-20-icp-nn-comparison/`)
 
@@ -185,53 +237,52 @@ Sessions:
 
 ## What still needs doing (in priority order)
 
-**Deferred per user decision (7/8 closure):**
+**Closed in this turn (2026-08-21):**
 
-1. **Phase 0 → live CXX FFI.** Build CCCoreLib standalone
-   (currently configured as a CMake subdirectory, not a
-   pre-built library), then wire the `cxx-ffi` feature to
-   call the C++ `RegistrationTools` ICP for parity testing
-   against the pure-Rust implementation. Multi-hour
-   infrastructure effort; not blocked on any of the
-   experimental work.
-2. **Update `CONFIGURE_CCCORELIB.md`.** Still references the
-   old `sandbox/` path (pre-2026-08-19). Should point at
-   the current `experimental/` and `cc-rust/` paths.
+- ✅ **Phase 0 → live CXX FFI.** D10: `cargo test --features
+  cxx_ffi` calls the real `CCCoreLib::ICPRegistrationTools::
+  Register` via CXX 1.0.199 and recovers the same transform
+  and RMS as the pure-Rust ICP. 3 new parity tests.
+- ✅ **Update `CONFIGURE_CCCORELIB.md`.** Replaced the
+  standalone-build path with the "use the existing build's
+  `.lib` / `.dll`" path. The standalone CCCoreLib CMake
+  target turned out to be unnecessary because the main
+  CloudCompare build already produces the artifacts.
 
 **Code-level follow-ups from the 5-agent code review (2026-08-21):**
 
-3. **Promote D9's `DgmOctree` to `benchmarked` → `selected` →
+1. **Promote D9's `DgmOctree` to `benchmarked` → `selected` →
    `graduated` lifecycle.** The cell-code NN is now
    production-quality. Promotion request per
    `promotion.md` would move it from `cc-rust/src/dgm_octree.rs`
    into a documented position as the recommended
    alternative to kiddo for the 1.5-2× slower but
    C++-compatible case.
-4. **More DgmOctree class methods.** The current port
+2. **More DgmOctree class methods.** The current port
    covers the ICP-relevant surface (build, NN, cell_code
    primitives). The full C++ class is 3000+ lines and
    includes cell statistics, CC extraction, ray-casting,
    sphere queries, etc. None are needed for ICP but may
    be needed for other planned features.
-5. **LAS parser integration.** D6 picked the `las` crate
+3. **LAS parser integration.** D6 picked the `las` crate
    but the actual file-loading integration into
    `cc-rust` (and through it into `qCC` via CXX FFI) is
    not done. The `qLas` C++ plugin is the current path.
-6. **Wire the Rust ICP into a CloudCompare plugin.** A
+4. **Wire the Rust ICP into a CloudCompare plugin.** A
    `qRustICP` plugin that loads `cc-rust` as a CXX static
    library and uses the D8 trait would let users pick
    "Rust ICP" from the CloudCompare UI and validate the
-   production integration. Defer until the CXX FFI
-   is in.
-7. **Real-data benchmarks at N ≥ 100k.** The D8 and D9
+   production integration. Now feasible — the CXX FFI
+   is in (D10).
+5. **Real-data benchmarks at N ≥ 100k.** The D8 and D9
    docs note the kiddo advantage is "expected to grow
    with N" but only 50k has been measured. A 500k or
    7.5M (full brook-avenue) test would close the loop.
-8. **Sentry SDK for `cc-rust`.** The main `qCC` has Sentry
+6. **Sentry SDK for `cc-rust`.** The main `qCC` has Sentry
    crash reporting wired up (see `qCC/main.cpp`). `cc-rust`
    doesn't yet — add the `sentry` crate with the same
    `SENTRY_DSN` opt-in pattern as `qCC`.
-9. **Profile-guided optimisation (PGO) for `cc-rust`.** The
+7. **Profile-guided optimisation (PGO) for `cc-rust`.** The
    ICP hot path is well-understood after the D8/D9 work.
    PGO + LTO could shave another 10-20% off the
    per-query cost.

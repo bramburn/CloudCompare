@@ -3,6 +3,13 @@ name = "cc_rust"
 version = "0.1.0"
 edition = "2021"
 authors = ["bramburn <noreply@example.com>"]
+# Marking the package with a `links` key (any string) causes cargo
+# to propagate `rustc-link-*` directives from the build script to
+# ALL targets (lib, bin, test, example, bench) — without this, on
+# some cargo versions the test target silently drops the
+# `-l static=cc_rust_ffi` / `-l CCCoreLib` flags and the test
+# binary crashes at startup with STATUS_DLL_NOT_FOUND.
+links = "cc_rust_ffi"
 description = "Rust migration of CCCoreLib compute kernels. Lives alongside CloudCompare's C++ build, linked via CXX FFI."
 
 [lib]
@@ -22,7 +29,7 @@ path = "src/main.rs"
 #  and ../experimental/templates/rust_cxx_app/ for a working template).
 [features]
 default = []
-cxx-ffi = ["dep:cxx"]
+cxx_ffi = ["dep:cxx", "dep:cxx-build"]
 
 [dependencies]
 # Numerics

@@ -17,7 +17,7 @@
 //!
 //! **Build status:**
 //! - Pure-Rust: builds and tests pass on stable Rust 1.89
-//! - CXX FFI: opt-in via `cargo build --features cxx-ffi` (requires MSVC)
+//! - CXX FFI: opt-in via `cargo build --features cxx_ffi` (requires MSVC)
 
 #![doc = include_str!("../docs/PHASES.md")]
 
@@ -27,6 +27,12 @@ pub mod octree;
 pub mod io;
 pub mod coarse_align;
 pub mod dgm_octree;
+
+// CXX FFI bridge to CCCoreLib's `ICPRegistrationTools::Register`.
+// Only compiled when the `cxx_ffi` feature is enabled (requires MSVC).
+// See `src/ffi.rs` for what it does and the build setup.
+#[cfg(feature = "cxx_ffi")]
+pub mod ffi;
 
 pub use scalar_field::{
     mean, min_max, rms, std, valid_count, apply_offset, apply_scale,

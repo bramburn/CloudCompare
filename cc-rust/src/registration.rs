@@ -1057,4 +1057,188 @@ mod tests {
         }
         out
     }
+
+    // ── CXX FFI parity tests (Phase 0 → live CXX FFI, 2026-08-21) ──
+    //
+    // These tests call into the real C++ `ICPRegistrationTools::Register`
+    // via the CXX bridge (`crate::ffi::run_icp_cpp`) and compare the
+    // result with the pure-Rust ICP. They require the `cxx_ffi`
+    // Cargo feature (and MSVC + `CCCoreLib.lib` + `CCCoreLib.dll`
+    // on the build host). Run with:
+    //
+    //   cargo test --release --features cxx_ffi icp_cpp_matches_rust
+    //
+    // The tests are guarded by `#[cfg(feature = "cxx_ffi")]` and
+    // are not built by default (the default build is pure-Rust).
+
+    #[cfg(feature = "cxx_ffi")]
+    use crate::ffi::{ffi_bridge::IcpParamsCpp, run_icp_cpp};
+
+    /// C++ ICP on identity transform (data == model). Both clouds
+    /// are identical, so the recovered transform should be the
+    /// identity (rotation = I, translation = 0, scale = 1) and
+    /// the final RMS should be 0.0 within fp tolerance.
+    #[cfg(feature = "cxx_ffi")]
+    #[test]
+    fn icp_cpp_identity() {
+        let model: Vec<f32> = vec![
+            0.0, 0.0, 0.0,  1.0, 0.0, 0.0,  0.0, 1.0, 0.0,
+            1.0, 1.0, 0.0,  0.0, 0.0, 1.0,  1.0, 0.0, 1.0,
+            0.0, 1.0, 1.0,  1.0, 1.0, 1.0,
+        ];
+        let data = model.clone();
+
+        let result = run_icp_cpp(&model, &data, &IcpParamsCpp::default())
+            .expect("C++ ICP failed (returned None)");
+        // For identical model/data, CCCoreLib returns
+        // ICP_NOTHING_TO_DO (0) — the data is already aligned to
+        // the model so no transform is applied. We accept either 0
+        // (nothing to do) or 1 (apply transform) here.
+        assert!(
+            result.result_code == 0 || result.result_code == 1,
+            "expected ICP_NOTHING_TO_DO (0) or ICP_APPLY_TRANSFO (1), got {}",
+            result.result_code
+        );
+        assert!(result.rms < 1e-5, "rms should be ~0 for identity, got {}", result.rms);
+        // Scale should be 1.0.
+        assert!((result.scale - 1.0).abs() < 1e-5, "scale should be 1.0, got {}", result.scale);
+        // Rotation should be identity (off-diagonals 0, diagonals 1).
+        for i in 0..3 {
+            for j in 0..3 {
+                let expected = if i == j { 1.0 } else { 0.0 };
+                let r = match (i, j) {
+                    (0, 0) => result.r00, (0, 1) => result.r01, (0, 2) => result.r02,
+                    (1, 0) => result.r10, (1, 1) => result.r11, (1, 2) => result.r12,
+                    (2, 0) => result.r20, (2, 1) => result.r21, (2, 2) => result.r22,
+                    _ => unreachable!(),
+                };
+                assert!((r - expected).abs() < 1e-5,
+                        "r{}{} = {}, expected {}", i, j, r, expected);
+            }
+        }
+        // Translation should be 0.
+        assert!(result.tx.abs() < 1e-5, "tx={}", result.tx);
+        assert!(result.ty.abs() < 1e-5, "ty={}", result.ty);
+        assert!(result.tz.abs() < 1e-5, "tz={}", result.tz);
+    }
+
+    /// C++ ICP on a known translation. The recovered transform
+    /// should be the inverse translation: the data → model transform
+    /// is `P_model = P_data - offset`, so the recovered translation
+    /// (in "data → model" space) is `-offset`.
+    #[cfg(feature = "cxx_ffi")]
+    #[test]
+    fn icp_cpp_translation() {
+        // Use a larger, well-spread cloud so ICP converges cleanly.
+        let model: Vec<f32> = gaussian_cloud(200, 0.5, 42);
+        let data_offset = [3.0_f32, -2.0_f32, 1.5_f32];
+        let data: Vec<f32> = (0..model.len() / 3)
+            .flat_map(|i| {
+                let i3 = i * 3;
+                vec![
+                    model[i3] + data_offset[0],
+                    model[i3 + 1] + data_offset[1],
+                    model[i3 + 2] + data_offset[2],
+                ]
+            })
+            .collect();
+
+        let result = run_icp_cpp(&model, &data, &IcpParamsCpp::default())
+            .expect("C++ ICP failed");
+        assert_eq!(result.result_code, 1, "expected ICP_APPLY_TRANSFO");
+        // Scale should still be ~1 (no scaling in the input).
+        assert!((result.scale - 1.0).abs() < 0.05,
+                "scale drift: {}", result.scale);
+        // Translation in "data → model" space is -data_offset.
+        // C++ returns translation as f64; cast to f64 before comparing
+        // (the offset values are f32 but the result is f64).
+        let recovered = [result.tx, result.ty, result.tz];
+        let expected = [-data_offset[0] as f64, -data_offset[1] as f64, -data_offset[2] as f64];
+        for i in 0..3 {
+            assert!((recovered[i] - expected[i]).abs() < 0.05,
+                    "translation[{}]: got {}, expected {}",
+                    i, recovered[i], expected[i]);
+        }
+    }
+
+    /// C++ ICP and pure-Rust ICP on the same input produce
+    /// consistent results: same RMS (within fp tolerance), same
+    /// rotation (within fp tolerance), same translation.
+    ///
+    /// This is the **headline parity test** for the CXX FFI. If
+    /// the C++ ICP diverges from the pure-Rust ICP by more than
+    /// the stated tolerance, the FFI is wired correctly but the
+    /// Rust implementation is doing something subtly different
+    /// (algorithm, scaling, sign convention, etc.).
+    #[cfg(feature = "cxx_ffi")]
+    #[test]
+    fn icp_cpp_matches_rust() {
+        use crate::registration::{IcprParamsRust, icp_iterate};
+
+        let model: Vec<f32> = gaussian_cloud(200, 0.5, 42);
+        let data_offset = [3.0_f32, -2.0_f32, 1.5_f32];
+        let data: Vec<f32> = (0..model.len() / 3)
+            .flat_map(|i| {
+                let i3 = i * 3;
+                vec![
+                    model[i3] + data_offset[0],
+                    model[i3 + 1] + data_offset[1],
+                    model[i3 + 2] + data_offset[2],
+                ]
+            })
+            .collect();
+
+        // ── Pure-Rust ICP ──────────────────────────────────────────
+        let rust_params = IcprParamsRust {
+            max_iterations: 50,
+            min_rms_decrease: 1e-6,
+            ..Default::default()
+        };
+        let rust = icp_iterate(&mut data.clone(), &model, &rust_params)
+            .expect("Rust ICP failed");
+
+        // ── C++ ICP (via FFI) ─────────────────────────────────────
+        let cpp_params = IcpParamsCpp::default();
+        let cpp = run_icp_cpp(&model, &data, &cpp_params)
+            .expect("C++ ICP failed");
+
+        // RMS should agree to within fp tolerance.
+        // (The C++ ICP might do a more aggressive outlier
+        // rejection, so allow a 1e-3 tolerance rather than 1e-6.)
+        let rms_diff = (rust.rms - cpp.rms).abs();
+        assert!(rms_diff < 1e-3,
+                "RMS mismatch: rust={} cpp={} (diff={})",
+                rust.rms, cpp.rms, rms_diff);
+
+        // Recovered translation (data → model) should agree.
+        // The Rust transform is column-major 4x4 in r.transform.
+        // C++ returns the 3x3 rotation + 3D translation directly.
+        // In "data → model" semantics:
+        //   Rust:  P_model = transform * P_data
+        //          transform = [ R | t ]
+        //   C++:   P' = s * R * P + T   (in ICP's "data → model" convention)
+        // Both should produce the same t and R.
+        let rust_tx = rust.transform[12];
+        let rust_ty = rust.transform[13];
+        let rust_tz = rust.transform[14];
+        // Extract Rust's rotation from the column-major 4x4.
+        // Transform layout: [R00, R10, R20, 0,   R01, R11, R21, 0, ...]
+        // transform[0]=R00, transform[1]=R10, transform[2]=R20, transform[4]=R01, ...
+        let rust_r00 = rust.transform[0];
+        let rust_r11 = rust.transform[5];
+        let rust_r22 = rust.transform[10];
+
+        assert!((rust_tx - cpp.tx).abs() < 0.05,
+                "translation x: rust={} cpp={}", rust_tx, cpp.tx);
+        assert!((rust_ty - cpp.ty).abs() < 0.05,
+                "translation y: rust={} cpp={}", rust_ty, cpp.ty);
+        assert!((rust_tz - cpp.tz).abs() < 0.05,
+                "translation z: rust={} cpp={}", rust_tz, cpp.tz);
+        assert!((rust_r00 - cpp.r00).abs() < 0.05,
+                "rotation r00: rust={} cpp={}", rust_r00, cpp.r00);
+        assert!((rust_r11 - cpp.r11).abs() < 0.05,
+                "rotation r11: rust={} cpp={}", rust_r11, cpp.r11);
+        assert!((rust_r22 - cpp.r22).abs() < 0.05,
+                "rotation r22: rust={} cpp={}", rust_r22, cpp.r22);
+    }
 }

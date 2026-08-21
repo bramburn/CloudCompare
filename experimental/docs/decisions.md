@@ -577,6 +577,82 @@ demonstrates the correct algorithm in the
 
 ---
 
+## D10. 2026-08-21 — Live CXX FFI to `CCCoreLib::ICPRegistrationTools`
+
+**Context:** Phase 0 of the Rust migration (`PRD/rust/05-roadmap.md`)
+includes wiring a CXX FFI bridge so the pure-Rust code can call
+into `CCCoreLib` for parity testing. The C++ ICP is the
+reference implementation — anything we write in pure Rust must
+match it (or we have to be able to explain why not). The
+deferred-at-7/8-closure question was how to get the C++ side
+buildable: standalone CMake target vs reusing the existing
+CloudCompare build's artifacts. The `CONFIGURE_CCCORELIB.md`
+guide at the time still pointed at a `sandbox/` path from
+before the `experimental/` restructuring.
+
+**Decisions:**
+
+- **Reuse the existing CloudCompare build's `CCCoreLib.lib` +
+  `.dll`.** The main `cc-configure.cmd` + `cc-build.cmd` already
+  produces `build/libs/qCC_db/extern/CCCoreLib/CCCoreLib.{lib,dll}`
+  + the include dir at `libs/qCC_db/extern/CCCoreLib/include/`.
+  No standalone CCCoreLib build needed — the build script just
+  links the import lib and copies the DLL next to the test
+  binary at build time.
+- **CXX 1.0.199 bridge module in `src/ffi.rs`, C++ shim in
+  `src/cpp/icp_shim.{h,cc}`.** The shim constructs
+  `CCCoreLib::PointCloud` from flat `&[f32]` inputs (8 points in
+  the `icp_cpp_identity` test, 200 in `icp_cpp_translation` and
+  `icp_cpp_matches_rust`), pre-initialises the output
+  `PointProjectionTools::Transformation` (because the C++
+  default ctor only inits `s=1.0`, not `R` or `T` — reading
+  them after `ICP_NOTHING_TO_DO` is UB), calls
+  `ICPRegistrationTools::Register` with the model's optional
+  mesh and the progress callback both nulled, and packs the
+  3×3 rotation via `getValue(row, col)` into 9 individual
+  `f64` fields on `IcpResultCpp` (CXX 1.0.199 doesn't support
+  fixed-size array fields in shared structs).
+- **Feature-gate the bridge with `cxx_ffi` (underscore, NOT
+  hyphen).** `cxx-build 1.0.199`'s `CargoEnvCfgEvaluator` reads
+  `CARGO_FEATURE_CXX_FFI` and compares it case-insensitively
+  against the `#[cfg(feature = "...")]` value — but does NOT
+  normalise `-` to `_`. So `cxx-ffi` silently fails to match,
+  cxx-build emits empty `lib.rs.h` and `lib.rs.cc`, the
+  namespace isn't generated, and the C++ compile fails with
+  `'cc_rust': is not a member of 'global namespace'`. Renaming
+  to `cxx_ffi` made the cfg evaluate true.
+- **Add `links = "cc_rust_ffi"` to `[package]`.** Without this,
+  cargo propagates the build script's `rustc-link-lib=static=
+  cc_rust_ffi` only to the main library target — `cargo test`
+  builds a separate rustc invocation for the test binary that
+  drops the flag, the `cxxbridge1$199$run_icp_cpp` symbol stays
+  unresolved, and the test binary crashes at startup with
+  `STATUS_DLL_NOT_FOUND`.
+- **Default namespace is the global namespace in CXX 1.0.199.**
+  Not `cc_rust::ffi_bridge::` like older CXX tutorials. The
+  generated glue assigns `::run_icp_cpp` (global) to a function
+  pointer, so the C++ shim must define `::run_icp_cpp` (not
+  inside any namespace) and the CXX-generated `extern "C"`
+  wrapper has the `noexcept` attribute — so the shim must
+  either not throw, or catch all exceptions internally before
+  returning. (We don't throw, so this is moot for the parity
+  tests.)
+
+**Source:** the live work in this turn — `cc-rust/src/ffi.rs`,
+`cc-rust/src/cpp/icp_shim.{h,cc}`, `cc-rust/build.rs`,
+`cc-rust/Cargo.toml`.
+
+**Verify:** `cargo test --release --features cxx_ffi` — 57/57
+tests pass (54 prior + 3 new CXX parity tests). The new tests
+are `icp_cpp_identity` (8 points, identical model/data →
+identity transform, RMS ≈ 0), `icp_cpp_translation` (200
+points, known offset → recovered translation = -offset, scale
+≈ 1), and `icp_cpp_matches_rust` (the headline parity test,
+same 200-point input fed to both Rust and C++ ICP, agreement
+within 1e-3 RMS and 0.05 transform).
+
+---
+
 ## Adding a new decision
 
 When you make an architectural decision in a session:
