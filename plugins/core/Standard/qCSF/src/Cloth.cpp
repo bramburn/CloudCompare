@@ -26,6 +26,31 @@
 //#                                                                                     #
 //#######################################################################################
 
+/**
+ * @file Cloth.cpp
+ *
+ * @brief Cloth simulation implementation
+ *
+ * Implements the cloth mesh and its simulation for the CSF algorithm.
+ *
+ * ## Cloth Representation
+ *
+ * A regular grid of cloth particles connected by springs:
+ * - **Structural springs**: connect adjacent particles (horizontal/vertical)
+ * - **Shear springs**: connect diagonal neighbors
+ * - **Bending springs**: connect particles 2 cells apart
+ *
+ * ## Simulation
+ *
+ * Verlet integration per time step:
+ * 1. Gravity force on all particles
+ * 2. Spring constraints between connected particles
+ * 3. Collision with point cloud points
+ * 4. Position update
+ *
+ * @see Cloth.h, Particle.h
+ */
+
 #include "Cloth.h"
 
 //qCC_db

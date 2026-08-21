@@ -16,7 +16,7 @@
 //#  Zhang W, Qi J, Wan P, Wang H, Xie D, Wang X, Yan G. An Easy-to-Use Airborne LiDAR  #
 //#  Data Filtering Method Based on Cloth Simulation. Remote Sensing. 2016; 8(6):501.   #
 //#                                                                                     #
-//#                                     Copyright ©                                     #
+//#                                     Copyright ï¿½                                     #
 //#               RAMM laboratory, School of Geography, Beijing Normal University       #
 //#                               (http://ramm.bnu.edu.cn/)                             #
 //#                                                                                     #
@@ -25,6 +25,23 @@
 //#                      contact us: 2009zwm@gmail.com; wpqjbzwm@126.com                #
 //#                                                                                     #
 //#######################################################################################
+
+/**
+ * @file Rasterization.cpp
+ *
+ * @brief Cloth rasterization implementation
+ *
+ * Converts the cloth mesh to a regular grid (raster) representation.
+ * Used for visualization and export.
+ *
+ * ## Raster Grid
+ *
+ * The cloth mesh is projected onto a 2D grid:
+ * - Each cell stores the cloth Z value at that position
+ * - Empty cells are marked as invalid
+ *
+ * @see Cloth.h
+ */
 
 #include "Rasterization.h"
 

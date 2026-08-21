@@ -16,7 +16,7 @@
 //#  Zhang W, Qi J, Wan P, Wang H, Xie D, Wang X, Yan G. An Easy-to-Use Airborne LiDAR  #
 //#  Data Filtering Method Based on Cloth Simulation. Remote Sensing. 2016; 8(6):501.   #
 //#                                                                                     #
-//#                                     Copyright ©                                     #
+//#                                     Copyright ï¿½                                     #
 //#               RAMM laboratory, School of Geography, Beijing Normal University       #
 //#                               (http://ramm.bnu.edu.cn/)                             #
 //#                                                                                     #
@@ -25,6 +25,28 @@
 //#                      contact us: 2009zwm@gmail.com; wpqjbzwm@126.com                #
 //#                                                                                     #
 //#######################################################################################
+
+/**
+ * @file Particle.cpp
+ *
+ * @brief Cloth particle implementation
+ *
+ * A single particle in the cloth mesh.
+ *
+ * ## Particle State
+ *
+ * - **Position**: current 3D coordinates
+ * - **Previous position**: for Verlet integration
+ * - **Mass**: particle mass (uniform)
+ * - **Movable**: whether the particle can move (top layer may be fixed)
+ *
+ * ## Forces
+ *
+ * Gravity is the primary force. Spring forces come from
+ * the cloth mesh connections (managed by Cloth).
+ *
+ * @see Particle.h
+ */
 
 #include "Particle.h"
 

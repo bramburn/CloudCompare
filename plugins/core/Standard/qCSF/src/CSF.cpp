@@ -27,6 +27,32 @@
 //#######################################################################################
 
 //CSF
+/**
+ * @file CSF.cpp
+ *
+ * @brief Cloth Simulation Filter implementation
+ *
+ * Implements the CSF (Cloth Simulation Filter) algorithm
+ * for ground/non-ground classification of point clouds.
+ *
+ * ## CSF Algorithm
+ *
+ * Simulates a cloth draped over the terrain surface:
+ * 1. Place a virtual cloth mesh above the point cloud
+ * 2. Apply gravity — cloth falls and rests on high points
+ * 3. Points below the final cloth = ground
+ * 4. Points above the cloth = non-ground (vegetation, buildings)
+ *
+ * ## Parameters
+ *
+ * - **Cloth resolution**: grid cell size for cloth mesh
+ * - **Cloth rigidity**: cloth stiffness (higher = less deformation)
+ * - **Time step**: simulation time step
+ * - **Iterations**: number of relaxation steps
+ *
+ * @see qCSF.h
+ */
+
 #include "CSF.h"
 #include "Vec3.h"
 #include "Cloth.h"

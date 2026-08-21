@@ -16,7 +16,7 @@
 //#  Zhang W, Qi J, Wan P, Wang H, Xie D, Wang X, Yan G. An Easy-to-Use Airborne LiDAR  #
 //#  Data Filtering Method Based on Cloth Simulation. Remote Sensing. 2016; 8(6):501.   #
 //#                                                                                     #
-//#                                     Copyright ©                                     #
+//#                                     Copyright ï¿½                                     #
 //#               RAMM laboratory, School of Geography, Beijing Normal University       #
 //#                               (http://ramm.bnu.edu.cn/)                             #
 //#                                                                                     #
@@ -25,6 +25,21 @@
 //#                      contact us: 2009zwm@gmail.com; wpqjbzwm@126.com                #
 //#                                                                                     #
 //#######################################################################################
+
+/**
+ * @file Cloud2CloudDist.cpp
+ *
+ * @brief Cloud-to-cloud distance implementation
+ *
+ * Computes per-point distances from a point cloud to a cloth mesh.
+ * Used by CSF to determine which points are above or below
+ * the final cloth position.
+ *
+ * For each cloth particle, find the closest point in the cloud
+ * and record the vertical distance.
+ *
+ * @see Cloth.h
+ */
 
 #include "Cloud2CloudDist.h"
  
