@@ -15,6 +15,17 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestStatisticalTesting.cpp
+ *
+ * @brief Standalone test for statistical comparison
+ *
+ * Tests significance of scalar field differences:
+ * - t-test and KS test
+ * - Threshold sensitivity
+ *
+ * @see StatisticalTestingTools.h
+ */
 #include <StatisticalTestingTools.h>
 #include <NormalDistribution.h>
 

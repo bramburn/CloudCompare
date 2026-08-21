@@ -4,6 +4,24 @@
 // QCoreApplication, Qt's command-line parser, and Qt logging all work
 // in a console context (no GUI).
 
+/**
+ * @file main.cpp
+ *
+ * @brief Console Qt application template
+ *
+ * Minimal Qt console application template demonstrating
+ * CloudCompare library integration from a standalone app.
+ *
+ * ## Usage
+ *
+ * This template shows how to:
+ * - Initialize the CCCoreLib library
+ * - Load a point cloud from a file
+ * - Process it using CCCoreLib algorithms
+ * - Print results to stdout
+ *
+ * Compile against the CloudCompare build artifacts.
+ */
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>

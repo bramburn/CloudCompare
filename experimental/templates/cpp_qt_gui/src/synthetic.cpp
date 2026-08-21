@@ -1,5 +1,20 @@
 // Synthetic point cloud generators for the desktop view template.
 
+/**
+ * @file synthetic.cpp
+ *
+ * @brief Synthetic point cloud generation
+ *
+ * Generates synthetic test point clouds:
+ * - Random uniform sphere
+ * - Gaussian cluster
+ * - Grid with noise
+ * - Parametric surfaces (plane, sphere, cylinder)
+ *
+ * Used for testing without requiring real scan data.
+ *
+ * @see synthetic.h
+ */
 #include "synthetic.h"
 
 #include <cmath>

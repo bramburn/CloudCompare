@@ -15,6 +15,18 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestGlobalShift.cpp
+ *
+ * @brief Standalone test for global coordinate shift
+ *
+ * Tests large-coordinate precision via global origin offset:
+ * - Shift threshold detection
+ * - Coordinate transformation
+ * - SF value round-trip preservation
+ *
+ * @see ccGlobalShiftManager.cpp
+ */
 #include "ccGlobalShiftManager.h"
 #include "ccPointCloud.h"
 

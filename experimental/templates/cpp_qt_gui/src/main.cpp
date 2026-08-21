@@ -14,6 +14,23 @@
 //   - Home:              reset to default view
 //   - "Reset View" button: same as Home
 
+/**
+ * @file main.cpp
+ *
+ * @brief Qt GUI application template
+ *
+ * Minimal Qt GUI application template demonstrating
+ * a point cloud viewer built on CloudCompare's GL window.
+ *
+ * ## Features
+ *
+ * - QOpenGLWidget-based 3D viewport (ccGLWindowInterface)
+ * - CloudCompare entity management (ccHObject, ccDBRoot)
+ * - Mouse interaction (pan, rotate, zoom)
+ * - File open dialog for point clouds
+ *
+ * Compile against the CloudCompare build artifacts.
+ */
 #include <QApplication>
 #include <QMainWindow>
 #include <QWidget>

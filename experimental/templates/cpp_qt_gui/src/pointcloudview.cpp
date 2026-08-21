@@ -1,5 +1,18 @@
 // PointCloudView — 3D viewport for point cloud rendering.
 
+/**
+ * @file pointcloudview.cpp
+ *
+ * @brief Point cloud viewport widget implementation
+ *
+ * Qt widget wrapping a ccGLWindow for point cloud display:
+ * - Inherits from ccGLWindowInterface
+ * - Provides OpenGL context and event handling
+ * - Manages entity rendering
+ * - Handles mouse/keyboard interaction
+ *
+ * @see pointcloudview.h
+ */
 #include "pointcloudview.h"
 
 #include <QOpenGLShaderProgram>
