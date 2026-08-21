@@ -176,16 +176,15 @@ class ccColorScaleElement
 /**
  * @brief Color scale for scalar field visualization.
  *
- * @details A color scale maps scalar values to colors.
+ * Maps scalar values to RGB colors via color-stop interpolation.
+ * Used by ccScalarField to colorize point clouds and meshes.
  *
- * Structure:
- * - Multiple color stops at relative positions
- * - Linear interpolation between stops
- * - Pre-computed lookup table for fast access
+ * Modes:
+ * - Relative: values normalized to [0,1] before lookup
+ * - Absolute: values mapped directly via [min,max] bounds
  *
- * Requirements:
- * - At least 2 stops (0.0 and 1.0)
- * - Stops must be within [0.0, 1.0] range
+ * Performance: insert() modifies stops, refresh() builds a pre-computed
+ * lookup table (m_colorTable) for O(1) getColorByTableIndex() calls.
  *
  * @extends ccSerializableObject
  */
@@ -466,12 +465,17 @@ class QCC_DB_LIB_API ccColorScale : public ccSerializableObject
 	/**
 	 * @brief Serialize to binary.
 	 */
-	bool toFile(QFile& out) const override;
+	bool toFile(QFile& out, short dataVersion) const override;
 
 	/**
 	 * @brief Deserialize from binary.
 	 */
-	bool fromFile(QFile& in, short dataVersion) override;
+	bool fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+
+	/**
+	 * @brief Minimum file version required to save this instance.
+	 */
+	short minimumFileVersion() const override;
 
   protected:
 	//! Scale name.
