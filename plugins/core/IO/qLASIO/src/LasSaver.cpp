@@ -1,3 +1,25 @@
+/**
+ * @file LasSaver.cpp
+ *
+ * @brief LAS/LAZ file writer implementation
+ *
+ * Implements the LasSaver class for serializing ccPointCloud to LAS/LAZ.
+ *
+ * ## Normal Export
+ *
+ * When shouldSaveNormalsAsExtraScalarField is true:
+ * 1. Temporarily exports point normals to scalar fields (NormalX/Y/Z)
+ * 2. Includes them as extra attributes in the output
+ * 3. Tracks which fields were newly exported (m_normalDimWasTemporarillyExported)
+ *
+ * ## Coordinate System
+ *
+ * Uses the LAS file's stored scale and offset. Coordinates are encoded
+ * as: `stored = round((real - offset) / scale)`
+ *
+ * @see LasSaver.h
+ */
+
 #include "LasSaver.h"
 
 #include "LasExtraScalarField.h"
@@ -8,8 +30,20 @@
 // qCC_db
 #include <ccPointCloud.h>
 
+//! Scalar field names for built-in normal vectors
 constexpr const char* const CC_NORMAL_NAMES[3]{"Nx", "Ny", "Nz"};
 
+/**
+ * @brief Construct a LAS saver for a point cloud
+ *
+ * Restores global encoding and project UUID from the cloud's metadata.
+ * If shouldSaveNormalsAsExtraScalarField is true, temporarily exports
+ * the cloud's normals to scalar fields so they can be written as
+ * extra attributes in the LAS file.
+ *
+ * @param[in] cloud Point cloud to save
+ * @param[in] parameters Save configuration
+ */
 LasSaver::LasSaver(ccPointCloud& cloud, Parameters parameters)
     : m_cloudToSave(cloud)
 {
