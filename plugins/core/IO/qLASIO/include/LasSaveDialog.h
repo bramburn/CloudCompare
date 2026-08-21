@@ -1,21 +1,27 @@
 /**
  * @file LasSaveDialog.h
  *
- * @brief LAS file save dialog.
+ * @brief LAS/LAZ file export configuration dialog
  *
- * @details Dialog for configuring LAS/LAZ file export options.
+ * Modal dialog for configuring LAS/LAZ export options:
+ * - **LAS version**: 1.2, 1.3, or 1.4
+ * - **Point format**: varies by version (formats 0-10)
+ * - **Coordinate encoding**: scale and offset factors
+ * - **RGB**: enable color export
+ * - **Extra scalar fields**: select which fields to save as extra attributes
+ * - **Waveform data**: include waveform packets
  *
- * ## Features
+ * ## Version/Format Matrix
  *
- * - LAS version selection (1.2 - 1.4)
- * - Point format selection
- * - Scale and offset configuration
- * - RGB export
- * - Extra scalar fields
- * - Waveform data
+ * | Version | Formats | Notes |
+ * |---------|---------|-------|
+ * | 1.2     | 0-5    |       |
+ * | 1.3     | 0-5    | Same as 1.2 |
+ * | 1.4     | 0-10   | Extended formats |
+ *
+ * Point format 6 or higher requires LAS 1.4.
  *
  * @extends QDialog
- *
  * @author Thomas Montaigu
  */
 
