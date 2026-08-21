@@ -21,12 +21,21 @@
 /**
  * @file ccMaterial.h
  *
- * @brief Material class for mesh textures
+ * @brief Material with colors, textures, and lighting properties
  *
- * Represents a material with colors, textures, and
- * lighting properties for mesh rendering.
+ * Represents a material for mesh rendering:
+ * - **Ambient/diffuse/specular colors**: standard Phong shading
+ * - **Shininess**: specular exponent
+ * - **Transparency**: alpha blending
+ * - **Texture**: QImage applied via UV mapping
  *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * Materials are stored in ccMaterialSet and assigned to meshes
+ * via per-triangle material indexes (ccMaterialSet). A single
+ * ccMaterial can be shared by multiple meshes.
+ *
+ * Texture loading supports: PNG, JPG, BMP, and other formats via QImage.
+ *
+ * @extends ccSerializableObject
  */
 // Local
 #include "ccColorTypes.h"
@@ -41,9 +50,11 @@ class QImage;
 class QOpenGLContext;
 
 /**
- * @brief Mesh material
+ * @class ccMaterial
  *
- * Material with colors, textures, and lighting properties.
+ * @brief Mesh material: colors, textures, Phong shading
+ *
+ * @extends ccSerializableObject
  */
 class QCC_DB_LIB_API ccMaterial : public ccSerializableObject
 {
