@@ -78,8 +78,11 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccPolyline.h | ⬜ Not started | 19 Doxygen blocks |
 | ccPlane.cpp | ✅ Done | Committed: 2a88a70e |
 | ccCone.cpp | ✅ Done | Committed: a7c7dda5 |
-| ccImage.h | ⬜ Not started | 9 Doxygen blocks |
-| ccMaterial.h | ⬜ Not started | 19 Doxygen blocks |
+| ccSubMesh.h | ✅ Done | Committed: 84a7db78 |
+| ccQuadric.h | ✅ Done | Committed: 0a989950 |
+| ccImage.h | ✅ Done | Committed: 6cc9d2c0 |
+| ccMaterial.h | ✅ Done | Committed: b6d9e7c2 |
+| ccSensor.h | ✅ Done | Committed: 4289f251 |
 
 ### libs/qCC_io/
 | File | Status | Notes |
@@ -182,8 +185,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~96
-- **Completed**: 96
+- **Total files tracked**: ~101
+- **Completed**: 101
 - **In progress**: 0
 - **Percentage**: ~100%
 
