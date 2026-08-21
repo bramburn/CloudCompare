@@ -15,6 +15,31 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPluginManager.cpp
+ *
+ * @brief Plugin manager implementation
+ *
+ * Implements dynamic plugin loading via Qt's plugin system:
+ * 1. Scans plugin directories for .dll/.so files
+ * 2. Attempts to load each file as a QPluginLoader
+ * 3. Queries for ccStdPluginInterface, ccIOPluginInterface, ccGLPluginInterface
+ * 4. Stores enabled plugins in QSettings for persistence
+ *
+ * ## Plugin Types
+ *
+ * - **ccStdPluginInterface**: Standard plugins (qCSF, qM3C2, etc.)
+ * - **ccIOPluginInterface**: I/O format plugins (qLASIO, qCoreIO)
+ * - **ccGLPluginInterface**: OpenGL post-processing plugins (qEDL, qSSAO)
+ *
+ * ## Plugin Directory
+ *
+ * Plugins are loaded from `QApplication::applicationDirPath() + "/plugins"`
+ * on Windows. Each plugin .dll should have a sibling `info.json` metadata file.
+ *
+ * @see ccPluginManager.h
+ */
+
 #include "ccPluginManager.h"
 
 #include "ccApplicationBase.h"
@@ -102,6 +127,9 @@ static bool IsMetaDataValid(QPluginLoader* loader)
 	return true;
 }
 
+/**
+ * @brief Construct the plugin manager
+ */
 ccPluginManager::ccPluginManager(QObject* parent)
     : QObject(parent)
 {
@@ -122,6 +150,16 @@ QStringList ccPluginManager::pluginPaths() const
 	return m_pluginPaths;
 }
 
+/**
+ * @brief Load all plugins from the search paths
+ *
+ * 1. loadFromPathsAndAddToList() — scan directories, try loading each .dll
+ * 2. Load previously-disabled plugins from QSettings
+ * 3. Set plugin paths
+ * 4. Load enabled plugins
+ *
+ * Logs plugin discovery and load failures via ccLog.
+ */
 void ccPluginManager::loadPlugins()
 {
 	m_pluginList.clear();
@@ -248,6 +286,12 @@ void ccPluginManager::getDisabledPluginIIDs(QStringList& disabledPlugins) const
 	settings.endGroup();
 }
 
+/**
+ * @brief Enable or disable a plugin
+ *
+ * @param[in] plugin Plugin to enable/disable
+ * @param[in] enabled true to enable, false to disable
+ */
 void ccPluginManager::setPluginEnabled(const ccPluginInterface* plugin, bool enabled)
 {
 	QStringList disabledList;
@@ -275,6 +319,12 @@ void ccPluginManager::setPluginEnabled(const ccPluginInterface* plugin, bool ena
 	settings.endGroup();
 }
 
+/**
+ * @brief Check if a plugin is currently enabled
+ *
+ * @param[in] plugin Plugin to check
+ * @return true if enabled
+ */
 bool ccPluginManager::isEnabled(const ccPluginInterface* plugin) const
 {
 	QStringList disabledList;
