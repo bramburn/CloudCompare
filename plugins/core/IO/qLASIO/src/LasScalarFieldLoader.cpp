@@ -15,6 +15,31 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file LasScalarFieldLoader.cpp
+ *
+ * @brief LAS standard and extra scalar field loader
+ *
+ * Loads point cloud scalar fields from a LAS file:
+ *
+ * - Standard fields: Intensity, Return Number, Classification,
+ *   Scan Angle, GPS Time, etc. (defined per point format)
+ * - Extra fields: LAS 1.4 extra bytes loaded as ccScalarField
+ *
+ * ## Scalar Field Creation
+ *
+ * createScalarFieldsForExtraBytes() creates a ccScalarField for each
+ * extra attribute, using the field's name, type, scale, and offset
+ * to decode the binary data.
+ *
+ * ## Per-Point Loading
+ *
+ * handleScalarFields() reads one point's worth of scalar field values
+ * and stores them in the ccScalarField buffers.
+ *
+ * @see LasScalarField.h, LasExtraScalarField.h
+ */
+
 #include "LasScalarFieldLoader.h"
 
 // qCC_db
@@ -22,7 +47,13 @@
 // System
 #include <utility>
 
-// TODO take by move
+/**
+ * @brief Construct the scalar field loader
+ *
+ * @param[in] standardScalarFields Standard LAS fields to load
+ * @param[in] extraScalarFields Extra attribute fields to load
+ * @param[in] pointCloud Target point cloud
+ */
 LasScalarFieldLoader::LasScalarFieldLoader(std::vector<LasScalarField>&      standardScalarFields,
                                            std::vector<LasExtraScalarField>& extraScalarFields,
                                            ccPointCloud&                     pointCloud)
@@ -32,6 +63,16 @@ LasScalarFieldLoader::LasScalarFieldLoader(std::vector<LasScalarField>&      sta
 	createScalarFieldsForExtraBytes(pointCloud);
 }
 
+/**
+ * @brief Load one point's scalar field values
+ *
+ * Reads the current laszip_point and stores each field's value
+ * in the corresponding ccScalarField.
+ *
+ * @param[in] pointCloud Target cloud
+ * @param[in] currentPoint Source LAS point
+ * @return CC_FILE_ERROR status
+ */
 CC_FILE_ERROR LasScalarFieldLoader::handleScalarFields(ccPointCloud&       pointCloud,
                                                        const laszip_point& currentPoint)
 {
@@ -256,6 +297,22 @@ LasScalarFieldLoader::handleScalarField(LasScalarField& sfInfo, ccPointCloud& po
 	return CC_FERR_NO_ERROR;
 }
 
+/**
+ * @brief Create ccScalarField objects for extra attributes
+ *
+ * For each extra attribute, creates a ccScalarField with:
+ * - Name from the extra attribute
+ * - Statistics from the min/max/scale/offset in the definition
+ *
+ * Handles:
+ * - Multi-dimensional extra fields (Nx, Ny, Nz → 3 separate SFs)
+ * - Signed/unsigned integer types (with range clamping)
+ * - Float types
+ * - IEEE NaN for no-data values
+ *
+ * @param[in] pointCloud Target cloud
+ * @return true on success
+ */
 bool LasScalarFieldLoader::createScalarFieldsForExtraBytes(ccPointCloud& pointCloud)
 {
 	for (LasExtraScalarField& extraField : m_extraScalarFields)
