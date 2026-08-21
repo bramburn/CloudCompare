@@ -15,6 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file MascaretFilter.cpp
+ *
+ * @brief MASCARET file filter implementation
+ *
+ * Implements MASCARET hydraulic model file I/O.
+ *
+ * ## MASCARET Format
+ *
+ * MASCARET is a 1D/2D hydraulic simulation software (EDF). Its files
+ * store cross-section profiles along a river or channel.
+ *
+ * ## Import
+ *
+ * Each cross-section becomes a polyline. Profiles are grouped
+ * and stored as separate entities with coordinate metadata.
+ *
+ * @see MascaretFilter.h
+ */
+
 #include "MascaretFilter.h"
 
 // local

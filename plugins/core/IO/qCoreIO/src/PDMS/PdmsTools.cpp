@@ -15,6 +15,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file PdmsTools.cpp
+ *
+ * @brief PDMS conversion tools implementation
+ *
+ * Converts PDMS geometric primitives to CloudCompare entities.
+ *
+ * ## Primitives
+ *
+ * - **PDMS cylinders/tubes**: converted to ccCylinder
+ * - **PDMS elbows**: converted to ccTorus (partial torus)
+ * - **PDMS cones**: converted to ccCone
+ * - **PDMS boxes**: converted to ccBox
+ * - **PDMS spheres**: converted to ccSphere
+ *
+ * Each primitive is created as a separate entity with
+ * the PDMS transformation matrix applied.
+ *
+ * @see PdmsTools.h
+ */
+
 #include "PdmsTools.h"
 
 #include <QSet>

@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qCoreIO.cpp
+ *
+ * @brief Core I/O plugin implementation
+ *
+ * The qCoreIO plugin provides built-in I/O formats for CloudCompare:
+ *
+ * ## Supported Formats
+ *
+ * | Format | Extension | Type |
+ * |-------|----------|------|
+ * | STL (Stereolithography) | .stl | Mesh |
+ * | OFF (Object File Format) | .off | Mesh |
+ * | PTX (Leica Cyclone) | .ptx | Cloud |
+ * | MA (Riegl) | .ma | Cloud |
+ * | MASCARET | .mascii | Cloud |
+ * | PDMS (Aveva) | .exp | Mesh/Cloud |
+ * | SimpleBin | .bin | Cloud |
+ *
+ * ## Plugin Entry
+ *
+ * Registers all filters via getFilters() and adds them to FileIOFilter.
+ *
+ * @extends QObject
+ * @extends ccIOPluginInterface
+ */
+
 #include "qCoreIO.h"
 
 #include "HeightProfileFilter.h"

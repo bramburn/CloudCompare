@@ -15,6 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file PDMSFilter.cpp
+ *
+ * @brief PDMS file filter implementation
+ *
+ * Implements Aveva PDMS plant design file I/O.
+ *
+ * ## PDMS Import
+ *
+ * Uses PdmsParser to parse the text format and PdmsTools
+ * to convert each PDMS primitive to a CloudCompare entity.
+ *
+ * ## Hierarchy
+ *
+ * PDMS zones become CloudCompare hierarchy groups,
+ * preserving the design structure for navigation.
+ *
+ * @see PDMSFilter.h, PdmsParser, PdmsTools
+ */
+
 #include "PDMSFilter.h"
 
 #include "PdmsParser.h"

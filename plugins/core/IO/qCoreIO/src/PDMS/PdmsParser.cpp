@@ -15,6 +15,35 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file PdmsParser.cpp
+ *
+ * @brief PDMS file parser implementation
+ *
+ * Implements a parser for Aveva PDMS (Plant Design Management System)
+ * text format.
+ *
+ * ## PDMS Format
+ *
+ * PDMS is a hierarchical text format:
+ * ```
+ * NAME value
+ * GROUP name
+ *   ...nested elements...
+ * ENDGROUP
+ * ```
+ *
+ * ## Elements
+ *
+ * - **WORLD**: top-level world element
+ * - **ZONE**: named grouping
+ * - **POSITION**: 3D coordinates (Cartesian or cylindrical)
+ * - **SHAPE**: geometric primitives (tube, elbow, cone, etc.)
+ * - **STRUCTURE**: named structures
+ *
+ * @see PdmsParser.h
+ */
+
 #include "PdmsParser.h"
 
 // system
