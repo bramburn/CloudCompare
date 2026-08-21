@@ -80,6 +80,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccGLWindowInterface.h | ✅ Done | Already well documented |
 | ccGLWindowInterface.cpp | ⬜ Not started | Very large (~7000 lines) |
 | ccViewportParameters.h | ✅ Done | Committed: 76821b33 |
+| ccGLUtils.h | ✅ Done | Committed: 4a6b2e46 |
+| ccGuiParameters.h | ✅ Done | Committed: 1dd31fe3 |
 | ccBBox.h | ⬜ Not started | |
 | ccGLUtils.h | ⬜ Not started | |
 
@@ -137,9 +139,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 
 ## Progress Summary
 - **Total files tracked**: ~55
-- **Completed**: 45
+- **Completed**: 47
 - **In progress**: 0
-- **Percentage**: ~82%
+- **Percentage**: ~85%
 
 ## Submodule Note
 `libs/qCC_db/extern/CCCoreLib/` is a git submodule. Files inside it cannot be committed from the parent repo.
