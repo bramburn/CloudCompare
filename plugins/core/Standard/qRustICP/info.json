@@ -1,0 +1,28 @@
+{
+	"type" : "Standard",
+	"name" : "qRustICP (Rust ICP via cc-rust)",
+	"icon" : ":/CC/plugin/qRustICP/images/icon.png",
+	"description": "ICP registration that runs the pure-Rust ICP from cc-rust/ on the selected model + data clouds. Uses subprocess execution of the cc_rust_cli binary. D9 cell-code-ordered NN is the default; kiddo is also available.",
+	"authors" : [
+		{
+			"name" : "Icelabz Rust Migration",
+			"email" : "noreply@example.com"
+		}
+	],
+	"maintainers" : [
+		{
+			"name" : "Icelabz",
+			"email" : "noreply@example.com"
+		}
+	],
+	"references" : [
+		{
+			"text" : "Phase 0 → live CXX FFI (D10): cc-rust CXX bridge to CCCoreLib::ICPRegistrationTools",
+			"url" : "https://github.com/bramburn/CloudCompare/blob/master/experimental/docs/decisions.md"
+		},
+		{
+			"text" : "cc-rust (Rust port of CCCoreLib compute kernels)",
+			"url" : "https://github.com/bramburn/CloudCompare/tree/master/cc-rust"
+		}
+	]
+}

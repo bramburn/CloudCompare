@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/CC/plugin/qRustICP">
+        <file>info.json</file>
+        <file>images/icon.png</file>
+    </qresource>
+</RCC>

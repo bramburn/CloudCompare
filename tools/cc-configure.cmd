@@ -33,11 +33,12 @@ set "NINJA_BIN=C:\ProgramData\chocolatey\bin\ninja.exe"
 :: Disabled plugins (known missing external dependencies on this machine)
 ::   cc3DFin: Taskflow requires C++20 on a C++17 project
 ::   qCompass/qRANSAC_SD/qSRA: ccTrace namespace collision with Qt 6.8.3 internal headers
-:: Enabled for testing (T1-D/E):
+:: Enabled plugins:
 ::   qM3C2: M3C2 statistics and normals tools
 ::   qCSF: Cloth Simulation Filter (Vec3, Particle, Cloth, Cloud2CloudDist)
 ::   qReCapIO: Autodesk ReCap SDK v27 — reads .rcs/.rcp files (native only, no ijwhost)
-set "PLUGIN_EXTRAS=-DPLUGIN_STANDARD_3DFIN=OFF -DPLUGIN_STANDARD_QCOMPASS=OFF -DPLUGIN_STANDARD_QRANSAC_SD=OFF -DPLUGIN_STANDARD_QSRA=OFF -DPLUGIN_STANDARD_QM3C2=ON -DPLUGIN_STANDARD_QCSF=ON -DPLUGIN_IO_QRECAP=ON"
+::   qLASIO: LAS/LAZ point cloud import via laszip (vcpkg-installed)
+set "PLUGIN_EXTRAS=-DPLUGIN_STANDARD_3DFIN=OFF -DPLUGIN_STANDARD_QCOMPASS=OFF -DPLUGIN_STANDARD_QRANSAC_SD=OFF -DPLUGIN_STANDARD_QSRA=OFF -DPLUGIN_STANDARD_QM3C2=ON -DPLUGIN_STANDARD_QCSF=ON -DPLUGIN_STANDARD_QRUSTICP=ON -DPLUGIN_IO_QRECAP=ON -DPLUGIN_IO_QLAS=ON"
 
 echo Configuring CloudCompare (Ninja generator)...
 echo   CMake:  %CMAKE_BIN%
