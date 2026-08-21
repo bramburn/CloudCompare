@@ -102,6 +102,7 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccGLWindowInterface.cpp | ⬜ Not started | Very large (~7000 lines) |
 | ccViewportParameters.h | ✅ Done | Committed: 76821b33 |
 | ccGLUtils.h | ✅ Done | Committed: 4a6b2e46 |
+| ccGLUtils.cpp | ✅ Done | Committed: e662a216 |
 | ccGuiParameters.h | ✅ Done | Committed: 1dd31fe3 |
 | ccBBox.h | ✅ Done | Already documented (8 blocks) |
 
@@ -188,8 +189,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~101
-- **Completed**: 101
+- **Total files tracked**: ~106
+- **Completed**: 106
 - **In progress**: 0
 - **Percentage**: ~100%
 
