@@ -25,12 +25,12 @@ and adds:
   pass, validated end-to-end on the brook-avenue 7.5M-point `.las`.
   The CXX FFI bridge to call the Rust from the C++ side is
   opt-in via `cargo build --features cxx-ffi`. See the
-  [Rust migration](fork/rust-migration) page.
+  [Rust migration](/docs/fork/rust-migration) page.
 - **An experimental workspace** — `experimental/` is a sandboxed
   area for new features (templates, sessions, scenarios, an
   8-state lifecycle, a promotion gate). Every non-trivial idea
   is prototyped here before touching `qCC/`, `ccViewer/`, or
-  `libs/`. See the [Experimental workspace](fork/experimental-workspace)
+  `libs/`. See the [Experimental workspace](/docs/fork/experimental-workspace)
   page.
 - **Sentry crash reporting** — opt-in via `qCC/CC_USE_SENTRY=ON`
   and the `SENTRY_DSN` env var. `sentry.dll` is copied to the
@@ -50,8 +50,8 @@ and adds:
   commits for an AI-readable API surface.
 - **This docs site**, published to GitHub Pages.
 
-See the full [fork vs upstream comparison](fork/upstream-vs-fork)
-and the central [Why this fork?](fork/index) page.
+See the full [fork vs upstream comparison](/docs/fork/upstream-vs-fork)
+and the central [Why this fork?](/docs/fork) page.
 
 ## What this site is and isn't
 

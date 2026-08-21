@@ -23,7 +23,7 @@ fork-specific docs / code.
 | **Rust migration** | — (no Rust) | ✓ `cc-rust/` Cargo workspace with Phase 0–4 work, 43 unit tests, end-to-end validated on the brook-avenue 7.5M-point `.las` |
 | **Experimental workspace** | — (no sandbox) | ✓ `experimental/` with 4 templates, ~15 sessions, 4 scenarios, an 8-state lifecycle, a promotion gate |
 | **Sentry crash reporting** | — | ✓ opt-in via `qCC/CC_USE_SENTRY=ON` + `SENTRY_DSN` env var; `sentry.dll` copied to the deploy bundle by CMake POST_BUILD |
-| **Plugin set** | 30+ (default catalogue) | 16 enabled (local set) + 20+ disabled (recipe per plugin in [Disabled priority](disabled-priority)) |
+| **Plugin set** | 30+ (default catalogue) | 16 enabled (local set) + 20+ disabled (recipe per plugin in [Disabled priority](/docs/plugins/disabled-priority)) |
 | **LAS support** | `qLASIO` plugin (uses `LASzip` C++) | `qLASIO` + a pure-Rust `las` crate in `cc-rust/` (D6: 7.2 M pts/s on real data; LASzip-free CXX FFI planned) |
 | **ICP / registration** | `RegistrationTools` in CCCoreLib (C++) | CCCoreLib (C++, unchanged) + a corrected Rust ICP in `cc-rust/` with trimmed ICP, multi-resolution, and PCA coarse pre-alignment (D4 fixes; 8 ICP tests pass on the asymmetric-9 fixture) |
 | **Octree / NN** | `DgmOctree` in CCCoreLib (C++) | CCCoreLib (C++, unchanged) + cell-code core in `cc-rust/src/dgm_octree.rs` (D3, 5 tests) + the D8 trait + `icp_with_nn` entry point that lets any NN plug in |

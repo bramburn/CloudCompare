@@ -75,8 +75,11 @@ const config = {
           // site root (the home page is then a separate React page).
           editUrl:
             'https://github.com/bramburn/CloudCompare/tree/master/website/',
-          showLastUpdateAuthor: true,
-          showLastUpdateTime: true,
+          // Disabled: git submodule status fails when cwd is website/ because
+          // submodules are registered relative to the repo root, not website/.
+          // In a monorepo, set these via CI env vars or disable them.
+          showLastUpdateAuthor: false,
+          showLastUpdateTime: false,
         },
         blog: {
           blogTitle: 'CloudCompare changelog',

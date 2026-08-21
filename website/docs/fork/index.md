@@ -25,16 +25,16 @@ workspace, and the docs site stay on the fork.
 
 ## What's in this section
 
-- **[Rust migration](rust-migration)** — the headline. What's
+- **[Rust migration](/docs/fork/rust-migration)** — the headline. What's
   ported, what's tested against CCCoreLib, what's next (CXX FFI,
   larger-N benchmarks, the D9 cell-code NN).
-- **[Experimental workspace](experimental-workspace)** — the
+- **[Experimental workspace](/docs/fork/experimental-workspace)** — the
   sandbox for new features. Templates, sessions, scenarios, an
   8-state lifecycle, and a promotion gate.
-- **[Upstream vs fork](upstream-vs-fork)** — feature-by-feature
+- **[Upstream vs fork](/docs/fork/upstream-vs-fork)** — feature-by-feature
   comparison table.
 - The full disabled-plugin recipe is in
-  [Plugins / Disabled priority](../plugins/disabled-priority)
+  [Plugins / Disabled priority](/docs/plugins/disabled-priority)
   (the recipe is about plugin enablement, not fork identity, so
   it lives in the Plugins section).
 
