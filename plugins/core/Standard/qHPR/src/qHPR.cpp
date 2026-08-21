@@ -15,6 +15,27 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qHPR.cpp
+ *
+ * @brief Hidden Point Removal plugin implementation
+ *
+ * Implements the HPR algorithm using Qhull for convex hull computation.
+ *
+ * Processing flow:
+ * 1. User selects a cloud and triggers the action
+ * 2. Viewpoint extracted from the active 3D view camera
+ * 3. Octree subsampling: cloud → cell centers at specified subdivision level
+ * 4. removeHiddenPoints(): spherical inversion + Qhull convex hull
+ * 5. For each visible cell center: expand to all points in the cell
+ * 6. Create new cloud from visible points
+ *
+ * Key design: operates on octree cell centers (not individual points)
+ * for efficiency, then expands the result back to full point resolution.
+ *
+ * @see qHPR
+ */
+
 #include "qHPR.h"
 #include "ccHprDlg.h"
 
@@ -72,6 +93,22 @@ void qHPR::onNewSelection(const ccHObject::Container& selectedEntities)
 	}
 }
 
+// qHPR::removeHiddenPoints
+/**
+ * @brief Core HPR algorithm: spherical inversion + convex hull
+ *
+ * Algorithm steps:
+ * 1. Translate points so viewPoint is at origin
+ * 2. Spherical inversion: P → (R/r − 1) × P where R = maxRadius × 10^fParam × 2
+ * 3. Add viewPoint at origin to the inverted set
+ * 4. Compute 3D convex hull with Qhull (command: "qhull QJ Qci")
+ * 5. Return points whose inverted counterparts lie on the hull
+ *
+ * @param[in] theCloud Input cloud
+ * @param[in] viewPoint Viewpoint (becomes origin after translation)
+ * @param[in] fParam Sharpness parameter (>0; default 3.5)
+ * @return ReferenceCloud of visible points, or nullptr on failure
+ */
 CCCoreLib::ReferenceCloud* qHPR::removeHiddenPoints(CCCoreLib::GenericIndexedCloudPersist* theCloud, const CCVector3d& viewPoint, double fParam)
 {
 	assert(theCloud);
@@ -212,6 +249,22 @@ CCCoreLib::ReferenceCloud* qHPR::removeHiddenPoints(CCCoreLib::GenericIndexedClo
 	return nullptr;
 }
 
+// qHPR::doAction
+/**
+ * @brief Execute the HPR algorithm
+ *
+ * Full pipeline:
+ * 1. Validate selection (exactly one point cloud, active 3D view)
+ * 2. Warn if in orthographic mode (perspective recommended)
+ * 3. Show parameter dialog (octree subdivision level)
+ * 4. Compute or reuse octree
+ * 5. Extract viewpoint from camera (handle object-centered mode)
+ * 6. Subsample cloud to octree cell centers
+ * 7. Run HPR on cell centers
+ * 8. Expand visible cells to full points
+ * 9. Create "cloudname.visible_points" result cloud
+ * 10. Attach viewport object to preserve the viewing angle
+ */
 void qHPR::doAction()
 {
 	assert(m_app);
