@@ -15,6 +15,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSetSFAsVec3Dlg.cpp
+ *
+ * @brief Set scalar fields as Vec3 dialog implementation
+ *
+ * Dialog for mapping up to 3 scalar fields to the X, Y, Z
+ * components of a Vec3 (e.g., a surface normal vector).
+ *
+ * ## Vec3 Mapping
+ *
+ * Choose up to 3 scalar fields from the point cloud:
+ * - SF1 → X component
+ * - SF2 → Y component
+ * - SF3 → Z component
+ *
+ * The resulting Vec3 can then be exported as normals, displayed
+ * as RGB, or used for other vector-valued operations.
+ *
+ * @see ccSetSFAsVec3Dlg.h
+ */
+
 #include "ccSetSFAsVec3Dlg.h"
 
 // qCC_db

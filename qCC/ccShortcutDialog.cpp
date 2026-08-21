@@ -1,3 +1,24 @@
+/**
+ * @file ccShortcutDialog.cpp
+ *
+ * @brief Keyboard shortcut dialogs implementation
+ *
+ * Implements two dialogs for keyboard shortcut management:
+ *
+ * ## ccShortcutDialog
+ *
+ * Shows a table of all known actions with their current shortcuts.
+ * Double-click a row to edit the shortcut. Changes are saved
+ * to QSettings under "Shortcuts/".
+ *
+ * ## ccShortcutEditDialog
+ *
+ * Captures a key sequence from the user via QKeySequenceEdit.
+ * Shows the captured key sequence in real time.
+ *
+ * @see ccShortcutDialog.h
+ */
+
 #include "ccShortcutDialog.h"
 
 #include "ccPersistentSettings.h"

@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSectionExtractionSubDlg.cpp
+ *
+ * @brief Section extraction sub-dialog implementation
+ *
+ * Dialog for configuring section (cross-section) extraction
+ * from a point cloud along a polyline path.
+ *
+ * ## Section Extraction
+ *
+ * Generates 2D cross-sections perpendicular to a drawn polyline.
+ * The polyline defines the section path, and perpendicular planes
+ * are generated at regular intervals along the path.
+ *
+ * ## Parameters
+ *
+ * - **Section thickness**: depth of the section slice
+ * - **Projection dimension**: which axis is perpendicular to sections
+ * - **Section level**: Z-height for level section mode
+ *
+ * @see ccSectionExtractionSubDlg.h, ccEnvelopeExtractor
+ */
+
 #include "ccSectionExtractionSubDlg.h"
 
 // system

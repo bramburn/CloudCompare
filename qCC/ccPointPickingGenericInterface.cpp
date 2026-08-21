@@ -15,6 +15,30 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPointPickingGenericInterface.cpp
+ *
+ * @brief Point picking interface implementation
+ *
+ * Implements ccPointPickingGenericInterface: the base class
+ * for all overlay dialogs that need to pick points in the 3D view.
+ *
+ * ## Picked Points
+ *
+ * Stores picked 3D points (CCVector3) and their associated
+ * screen coordinates (QPoint). Each subclass decides what
+ * to do with the picked points (measure, label, etc.).
+ *
+ * ## Picking Flow
+ *
+ * 1. linkWithGLWindow() connects the interface to a ccGLWindow
+ * 2. start() enables point picking mode
+ * 3. User clicks in the 3D view → onItemPicked() is called
+ * 4. stop() disables picking mode
+ *
+ * @see ccPointPickingGenericInterface.h
+ */
+
 #include "ccPointPickingGenericInterface.h"
 
 // Local

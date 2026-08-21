@@ -15,6 +15,30 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPrimitiveFactoryDlg.cpp
+ *
+ * @brief Primitive factory dialog implementation
+ *
+ * Dialog for creating 3D primitive shapes:
+ * box, sphere, cylinder, cone, torus, plane, etc.
+ *
+ * ## Primitive Types
+ *
+ * All ccGenericPrimitive subclasses are available:
+ * - Box, sphere, cylinder, cone, torus, dish
+ * - Plane (quad), polyline, facet
+ * - Infinite grid, box (AABB)
+ *
+ * Each type has its own parameter widgets (radius, height,
+ * width, number of segments, etc.).
+ *
+ * The dialog creates ccGenericPrimitive instances which are
+ * added to the db-tree as children of the current entity.
+ *
+ * @see ccPrimitiveFactoryDlg.h, ccGenericPrimitive
+ */
+
 #include "ccPrimitiveFactoryDlg.h"
 
 // local

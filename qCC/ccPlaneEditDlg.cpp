@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPlaneEditDlg.cpp
+ *
+ * @brief Plane edit dialog implementation
+ *
+ * Dialog for creating or editing plane primitives.
+ *
+ * ## Plane Parameters
+ *
+ * - **Equation**: a + bx + cy = 0 form
+ * - **Width / Height**: dimensions of the rectangular plane
+ * - **Precision**: number of segments in tessellation
+ *
+ * ## Interaction
+ *
+ * 1. **New plane**: enter equation and dimensions
+ * 2. **Fit to cloud**: click "Fit" to fit a plane to a selected cloud
+ *    using PCA (principal component analysis)
+ * 3. **Interactive**: use point picking to set the plane location
+ *
+ * Extends ccPickingListener to handle 3D point picking for
+ * interactive plane placement.
+ *
+ * @see ccPlaneEditDlg.h, ccPlane
+ */
+
 #include "ccPlaneEditDlg.h"
 
 // local

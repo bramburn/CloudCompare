@@ -15,6 +15,30 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGeomFeaturesDlg.cpp
+ *
+ * @brief Geometry features dialog implementation
+ *
+ * Dialog for selecting which geometric features to compute
+ * from a point cloud.
+ *
+ * ## Geometric Features
+ *
+ * - **Density**: local point density
+ * - **Roughness**: local surface roughness
+ * - **Curvature**: mean/gaussian curvature
+ * - **Moment of inertia**: eigenvalues for shape description
+ * - **Anisotropy**: eigenvalue-based anisotropy measure
+ * - **Planarity**: eigenvalue-based planarity measure
+ * - **Linearity**: eigenvalue-based linearity measure
+ * - **Sphericity**: eigenvalue-based sphericity measure
+ *
+ * Each selected feature creates a new scalar field on the cloud.
+ *
+ * @see ccGeomFeaturesDlg.h, ccLibAlgorithms
+ */
+
 #include "ccGeomFeaturesDlg.h"
 
 // Qt
