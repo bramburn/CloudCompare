@@ -1,8 +1,36 @@
+/**
+ * @file LasExtraScalarFieldCard.cpp
+ *
+ * @brief Extra scalar field configuration card widget
+ *
+ * A Qt widget embedded in LasOpenDialog for configuring a single
+ * extra scalar field. Supports up to 3 dimensions (e.g., Nx/Ny/Nz
+ * for normal vectors).
+ *
+ * ## UI Layout
+ *
+ * - Radio buttons: select dimension count (1, 2, or 3)
+ * - Per-dimension: combo box (choose scalar field) + scale + offset
+ * - Name: editable field name
+ * - Type: data type selector
+ * - Description: optional description
+ *
+ * @see LasExtraScalarFieldCard.h
+ */
+
 #include "LasExtraScalarFieldCard.h"
 
 #include <ccPointCloud.h>
 #include <ccScalarField.h>
 
+/**
+ * @brief Construct the card widget
+ *
+ * Sets up the UI, initializes dimension count to 1,
+ * and connects radio buttons to dimension-change handlers.
+ *
+ * @param[in] parent Parent widget
+ */
 LasExtraScalarFieldCard::LasExtraScalarFieldCard(QWidget* parent)
     : QWidget(parent)
 {
@@ -52,6 +80,11 @@ LasExtraScalarFieldCard::LasExtraScalarFieldCard(QWidget* parent)
 	reset();
 }
 
+/**
+ * @brief Reset the card to default state
+ *
+ * Clears all fields: name, type, description, and dimension fields.
+ */
 void LasExtraScalarFieldCard::reset()
 {
 	radioButton1->setChecked(true);
@@ -73,6 +106,11 @@ void LasExtraScalarFieldCard::reset()
 	advancedOptionsButton->setVisible(false);
 }
 
+/**
+ * @brief Populate the card from an existing extra field definition
+ *
+ * @param[in] field Source extra scalar field
+ */
 void LasExtraScalarFieldCard::fillFrom(const LasExtraScalarField& field)
 {
 	assert(field.ccName[0] == 0); // TODO
@@ -175,6 +213,14 @@ void LasExtraScalarFieldCard::fillFrom(const LasExtraScalarField& field)
 	unlockModificationsButton->setVisible(false);
 }
 
+/**
+ * @brief Set up a default field from a scalar field name
+ *
+ * Creates a default extra field configuration using an existing
+ * cloud scalar field's name, type, and statistics.
+ *
+ * @param[in] sfName Name of the source scalar field
+ */
 void LasExtraScalarFieldCard::fillAsDefault(const std::string& sfName)
 {
 	if (sfName.length() > LasExtraScalarField::MAX_NAME_SIZE)
