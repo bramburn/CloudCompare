@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #ifdef QCSF_PLUGIN_EXPORTS
 #  define QCSF_LIB_API Q_DECL_EXPORT
@@ -39,12 +39,24 @@
  *
  * @brief Cloth Simulation Filter plugin
  *
- * Point cloud filtering using Cloth Simulation Filter (CSF) algorithm
- * for ground/terrain filtering in LiDAR data.
+ * Implements the Cloth Simulation Filter (CSF) algorithm for ground/non-ground
+ * classification of point clouds, particularly airborne LiDAR data.
  *
- * Reference: Zhang W, Qi J, Wan P, Wang H, Xie D, Wang X, Yan G.
- * An Easy-to-Use Airborne LiDAR Data Filtering Method Based on Cloth Simulation.
- * Remote Sensing. 2016; 8(6):501.
+ * Algorithm overview:
+ * 1. Simulate a cloth draped over the point cloud (inverted Z axis)
+ * 2. Points that intersect the cloth = ground points
+ * 3. Points below the cloth = non-ground (vegetation, buildings, etc.)
+ *
+ * Key parameters:
+ * - Cloth resolution: grid size for the simulation
+ * - Max iteration: maximum iterations for cloth relaxation
+ * - Rigidness: cloth rigidity factor
+ * - Threshold: distance threshold for ground classification
+ *
+ * Reference: Zhang et al. "An Easy-to-Use Airborne LiDAR Data Filtering Method
+ * Based on Cloth Simulation." Remote Sensing 2016.
+ *
+ * @see https://doi.org/10.3390/rs8060501
  */
 
 #include "ccStdPluginInterface.h"
@@ -52,39 +64,80 @@
 /**
  * @brief Cloth Simulation Filter plugin
  *
- * Ground filtering algorithm using cloth simulation.
+ * Implements the CSF ground filtering algorithm as a CloudCompare Standard plugin.
+ * Activates when a point cloud is selected. Adds a "Cloth Simulation Filter"
+ * action to the Plugins menu.
+ *
+ * The plugin:
+ * - Checks for single-point-cloud selection
+ * - Opens a parameter dialog (resolution, rigidness, threshold)
+ * - Runs the CSF algorithm
+ * - Splits the cloud into ground and non-ground groups
+ *
+ * @extends QObject
+ * @extends ccStdPluginInterface
+ * @implements ccStdPluginInterface
  */
 class qCSF : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
-	Q_INTERFACES( ccPluginInterface ccStdPluginInterface )
-	
-	Q_PLUGIN_METADATA( IID "cccorp.cloudcompare.plugin.qCSF" FILE "../info.json" )
+	Q_INTERFACES(ccPluginInterface ccStdPluginInterface)
 
-public:
+	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qCSF" FILE "../info.json")
 
+  public:
 	/**
-	 * @brief Create plugin
-	 * @param[in] parent Parent object
+	 * @brief Construct the CSF plugin
+	 *
+	 * @param[in] parent QObject parent
 	 */
 	explicit qCSF(QObject* parent = nullptr);
 
-	/// Destructor
+	/**
+	 * @brief Destructor
+	 */
 	virtual ~qCSF() = default;
 
-	/// Handle new selection
+	// ccStdPluginInterface
+
+	/**
+	 * @brief Handle new entity selection
+	 *
+	 * Checks if a single point cloud is selected and enables/disables
+	 * the plugin action accordingly.
+	 *
+	 * @param[in] selectedEntities Current selection
+	 */
 	virtual void onNewSelection(const ccHObject::Container& selectedEntities) override;
 
-	/// Get plugin actions
-	virtual QList<QAction *> getActions() override;
+	/**
+	 * @brief Get the list of plugin actions
+	 *
+	 * Returns the "Cloth Simulation Filter" action for the Plugins menu.
+	 *
+	 * @return List containing the filter action
+	 */
+	virtual QList<QAction*> getActions() override;
 
-	/// Register command line commands
+	/**
+	 * @brief Register command-line commands
+	 *
+	 * Registers the -CSF command for batch processing.
+	 *
+	 * @param[in] cmd Command-line interface
+	 */
 	virtual void registerCommands(ccCommandLineInterface* cmd) override;
 
-protected:
-	/// Execute CSF action
+  protected:
+	/**
+	 * @brief Execute the CSF filter
+	 *
+	 * Opens the parameter dialog, runs the algorithm, and
+	 * creates ground/non-ground groups in the DB tree.
+	 */
 	void doAction();
 
-protected:
+  protected:
+	//! "Cloth Simulation Filter" action for the Plugins menu
 	QAction* m_action;
 };
