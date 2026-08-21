@@ -21,7 +21,7 @@ test-coverage gaps that are now filled.
 
 The closure evidence is now much stronger:
 
-- **57/57 cc-rust tests pass with `cxx_ffi` (54/54 without).**
+- **67/67 cc-rust tests pass with `cxx_ffi` (54/54 without).**
   0 build warnings on either configuration. The +3 are
   `icp_cpp_identity`, `icp_cpp_translation`,
   `icp_cpp_matches_rust` — the CXX parity tests.
@@ -51,7 +51,7 @@ The closure evidence is now much stronger:
 
 | Phase | Description | Status | Evidence |
 |---|---|---|---|
-| **0** | Infrastructure (Cargo workspace + CXX FFI) | ✅ **Done** | [`cc-rust/`](../../../cc-rust/) — 57/57 tests with `cxx_ffi`, 54/54 without. Builds on stable Rust 1.89 (MSVC). **CXX FFI bridge to the existing CloudCompare build's `CCCoreLib.lib` is opt-in and working — parity tests against the pure-Rust ICP pass.** |
+| **0** | Infrastructure (Cargo workspace + CXX FFI) | ✅ **Done** | [`cc-rust/`](../../../cc-rust/) — 67/67 tests with `cxx_ffi`, 54/54 without. Builds on stable Rust 1.89 (MSVC), 0 warnings. **CXX FFI bridge to the existing CloudCompare build's `CCCoreLib.lib` is opt-in and working — 13 CXX parity + edge-case + param-coverage tests.** |
 | **1** | ScalarField statistics | ✅ Done | [`cc-rust/src/scalar_field.rs`](../../../cc-rust/src/scalar_field.rs) — characterise vs CCCoreLib formulas (D1) |
 | **2** | ICP / Horn registration | ✅ Done (basic + extras) | [`cc-rust/src/registration.rs`](../../../cc-rust/src/registration.rs) — 8 ICP tests pass. Algorithm correct (D4 fixes). **Trimmed ICP + multi-resolution ICP for partial overlap and coarse-to-fine convergence. D8 trait dispatch is the new entry point.** |
 | **2.5** | Coarse pre-alignment | ✅ Done | [`cc-rust/src/coarse_align.rs`](../../../cc-rust/src/coarse_align.rs) — PCA-based alignment of principal axes. 2 tests. |
@@ -125,13 +125,44 @@ Recommended stack for real data:
 inputs through the real C++ `CCCoreLib::ICPRegistrationTools::
 Register` (linked from the existing CloudCompare build's
 `CCCoreLib.lib` + `.dll`) and compares against the pure-Rust
-ICP. All three parity tests pass on Gaussian fixtures:
+ICP. **13 CXX FFI tests, all pass** on Gaussian fixtures.
+
+**Parity tests** (Rust ICP ↔ C++ ICP, same input):
 
 | Test | What it checks | Tolerance |
 |---|---|---|
 | `icp_cpp_identity` | identical model/data → recovered transform = identity, RMS ≈ 0 | 1e-5 |
 | `icp_cpp_translation` | known offset → recovered translation = -offset, scale ≈ 1 | 0.05 |
-| `icp_cpp_matches_rust` | Rust + C++ agree on RMS, R, t | 1e-3 RMS, 0.05 transform |
+| `icp_cpp_rotation_parity` | known 30° rotation → recovered rotation matches (Rust + C++ agree) | 1e-3 RMS, trace ±0.05 |
+| `icp_cpp_matches_rust` | Rust + C++ agree on RMS, R, t (translation case) | 1e-3 RMS, 0.05 transform |
+
+**Edge-case tests** (shim error paths + wrapper contract):
+
+| Test | What it checks |
+|---|---|
+| `icp_cpp_malformed_model_len` | `model.len() % 3 != 0` → shim returns 105, wrapper returns `None` |
+| `icp_cpp_malformed_data_len` | `data.len() % 3 != 0` → same |
+| `icp_cpp_empty_model` | empty model → `None` (CCCoreLib treats empty model as error) |
+| `icp_cpp_empty_data` | empty data → `Some(_)` with `result_code = 0` (ICP_NOTHING_TO_DO) and the pre-init identity |
+| `icp_cpp_wrapper_returns_some_for_zero_and_one` | wrapper contract: 0/1 → `Some`, ≥100 → `None` |
+| `icp_cpp_deterministic_runs` | same input → identical results across two calls (catches C++ non-determinism) |
+
+**Param-coverage tests** (verify every `IcpParamsCpp` field is plumbed):
+
+| Test | Param varied | What it checks |
+|---|---|---|
+| `icp_cpp_adjust_scale_param_plumbed` | `adjust_scale: true` | rigid branch pins scale to 1.0; scale branch returns finite result |
+| `icp_cpp_final_overlap_ratio_param_plumbed` | `final_overlap_ratio: 0.5` | call succeeds, all fields finite |
+| `icp_cpp_max_iterations_one_iteration` | `nb_max_iterations: 1` | call succeeds, no NaN in result |
+
+**Note on translation-accuracy tests for scale-adjusting / half-overlap ICP:**
+the C++ library can land in degenerate local minima on these
+parameter settings (e.g. with `adjust_scale=true` on a pure-
+translation input, it can shrink the data and report a wildly
+wrong translation). The tests verify the *param is plumbed*
+(call succeeds, result is well-defined) rather than asserting
+specific translation values, which would be brittle against
+known ICP limitations.
 
 Bridge layout: `cc-rust/src/ffi.rs` is the CXX `#[bridge]`
 module (gated by `#[cfg(feature = "cxx_ffi")]`). The C++ shim

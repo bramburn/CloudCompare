@@ -10,8 +10,10 @@
 //! against `CCCoreLib.lib` from the existing main CloudCompare build
 //! (no standalone CCCoreLib build required).
 
-use std::env;
-use std::path::PathBuf;
+// NOTE: `std::env` and `std::path::PathBuf` are only used inside
+// `build_cxx()` (the `#[cfg(feature = "cxx_ffi")]` branch), so we
+// import them there to avoid "unused import" warnings on the
+// default build (which doesn't compile `build_cxx`).
 
 fn main() {
     println!("cargo:rerun-if-changed=src/lib.rs");
@@ -30,6 +32,8 @@ fn main() {
 
 #[cfg(feature = "cxx_ffi")]
 fn build_cxx() {
+    use std::env;
+    use std::path::PathBuf;
     // Locate the existing CloudCompare build's CCCoreLib.lib / .dll.
     // Used both as a C++ include dir (for `<CCCoreLib.h>`) and as a
     // linker search path. The standalone CCCoreLib build is not

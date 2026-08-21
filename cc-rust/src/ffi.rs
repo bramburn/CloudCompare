@@ -32,6 +32,7 @@ pub mod ffi_bridge {
     /// `CCCoreLib::ICPRegistrationTools::Parameters`. We expose only
     /// the fields needed for parity testing; the rest take their
     /// C++ defaults (set in the C++ shim's `Parameters` constructor).
+    #[derive(Debug, Clone)]
     pub struct IcpParamsCpp {
         pub min_rms_decrease: f64,
         pub nb_max_iterations: u32,
@@ -47,6 +48,7 @@ pub mod ffi_bridge {
     /// `r00..r22` is the 3×3 rotation matrix in **row-major** order.
     /// `tx, ty, tz` is the translation. `scale` is the optional
     /// uniform scale (1.0 for rigid).
+    #[derive(Debug, Clone)]
     pub struct IcpResultCpp {
         pub result_code: i32,
         pub rms: f64,

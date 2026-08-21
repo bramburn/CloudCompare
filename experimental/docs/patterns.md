@@ -860,6 +860,47 @@ test constructs an 8-point cloud this way; the 200-point
 the same with 200 points.
 
 ---
+
+## P25. 2026-08-21 — CXX bridge structs need explicit `#[derive(Debug)]` for `{:?}` formatting
+
+**Problem:** CXX 1.0.199 shared structs (`pub struct Foo { ... }`
+inside a `#[cxx::bridge]` module) do NOT implement `std::fmt::Debug`
+by default. If a test or library code uses `{:?}` or `dbg!` on a
+bridge struct, the Rust compiler errors with:
+```
+`IcpResultCpp` doesn't implement `std::fmt::Debug`
+`IcpResultCpp` cannot be formatted using `{:?}` because it doesn't
+implement `std::fmt::Debug`
+```
+
+The error is sometimes indirect: `Option<IcpResultCpp>` doesn't
+implement Debug either, so `assert!(result.is_none(), "got {:?}",
+result)` fails because `Debug` isn't implemented for the inner
+type.
+
+**Solution:** Add `#[derive(Debug)]` to every CXX shared struct
+that's expected to appear in test failure messages, log
+statements, or `dbg!` output. CXX 1.0.199 supports `Debug`,
+`Clone`, `Copy`, `Default`, `PartialEq`, `Eq`, `Hash`, `Ord`,
+`PartialOrd`, and the bitwise traits on shared structs (see
+`cxx-build-1.0.199/src/syntax/derive.rs`).
+
+```rust
+#[cxx::bridge]
+pub mod ffi_bridge {
+    #[derive(Debug, Clone)]
+    pub struct IcpParamsCpp { ... }
+
+    #[derive(Debug, Clone)]
+    pub struct IcpResultCpp { ... }
+}
+```
+
+**Verification:** `cargo test --release --features cxx_ffi` — 67/67
+tests pass, including ones that print the result struct in
+assertion messages.
+
+---
 ## Adding a new pattern
 
 When you find a pattern that:
