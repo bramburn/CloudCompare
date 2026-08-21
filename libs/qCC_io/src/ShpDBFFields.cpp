@@ -15,6 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ShpDBFFields.cpp
+ *
+ * @brief Shapefile DBF field utilities implementation
+ *
+ * Implements DBF (dBASE) field handling for Shapefiles.
+ *
+ * ## DBF Fields
+ *
+ * Shapefiles consist of .shp + .shx + .dbf files.
+ * The DBF file stores attribute data (per-feature fields).
+ *
+ * ## Field Mapping
+ *
+ * Maps DBF field types (C, N, F, D) to Qt types (QString, int, double).
+ * Used by the Shapefile import process.
+ *
+ * @see ShpDBFFields.h
+ */
+
 #ifdef CC_SHP_SUPPORT
 
 #include "ShpDBFFields.h"

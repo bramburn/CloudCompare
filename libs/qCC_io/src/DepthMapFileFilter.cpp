@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file DepthMapFileFilter.cpp
+ *
+ * @brief Depth map file filter implementation
+ *
+ * Implements depth map (range image) I/O.
+ *
+ * ## Depth Maps
+ *
+ * A depth map is a 2D image where each pixel stores the
+ * distance (range) from the sensor to the surface point.
+ * Can be stored as:
+ * - **Images**: PNG/JPEG with range as pixel value
+ * - **Proprietary formats**: e.g., .dt1 (Faro Focus)
+ *
+ * ## Conversion
+ *
+ * Projects 2D depth pixels to 3D point cloud using sensor
+ * intrinsic parameters (focal length, principal point).
+ *
+ * @see DepthMapFileFilter.h
+ */
+
 #include "DepthMapFileFilter.h"
 
 #include "FileIO.h"

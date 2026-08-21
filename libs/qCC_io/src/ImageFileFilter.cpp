@@ -15,6 +15,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ImageFileFilter.cpp
+ *
+ * @brief Image file filter implementation
+ *
+ * Implements image I/O for textures and standalone images.
+ *
+ * ## Supported Formats
+ *
+ * All formats supported by QImage:
+ * PNG, JPEG, BMP, TIFF, GIF, PPM, XPM, etc.
+ *
+ * ## Import
+ *
+ * Images can be imported as:
+ * - **Texture**: applied to a mesh via UV mapping
+ * - **Standalone**: displayed as a ccImage entity
+ *
+ * @see ImageFileFilter.h
+ */
+
 #include "ImageFileFilter.h"
 
 #include "FileIO.h"

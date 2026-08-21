@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file AsciiFilter.cpp
+ *
+ * @brief ASCII file filter implementation
+ *
+ * Implements ASCII text file I/O for point clouds:
+ * XYZ, XYZ+RGB, XYZ+RGB+SF formats.
+ *
+ * ## ASCII Format Detection
+ *
+ * Detects column structure automatically:
+ * - Detects separator (comma, semicolon, space, tab)
+ * - Detects header rows to skip
+ * - Identifies X, Y, Z, R, G, B, scalar columns
+ *
+ * ## Export
+ *
+ * Supports custom precision, separator, and optional headers.
+ *
+ * @see AsciiFilter.h
+ */
+
 #include "AsciiFilter.h"
 
 // Qt

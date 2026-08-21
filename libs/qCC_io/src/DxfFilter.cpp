@@ -15,6 +15,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file DxfFilter.cpp
+ *
+ * @brief DXF file filter implementation
+ *
+ * Implements DXF (AutoCAD Drawing Exchange Format) I/O.
+ *
+ * ## DXF Support
+ *
+ * - **Import**: POINT, LINE, POLYLINE, LWPOLYLINE, CIRCLE, ARC, ELLIPSE,
+ *   SPLINE, HATCH entities → clouds/polylines/meshes
+ * - **Export**: clouds → POINT entities, meshes → 3DFACE entities
+ *
+ * ## Layers
+ *
+ * DXF layers are imported as separate entities with layer
+ * name metadata.
+ *
+ * @see DxfFilter.h
+ */
+
 #include "DxfFilter.h"
 
 #include "FileIO.h"

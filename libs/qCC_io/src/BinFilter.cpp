@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file BinFilter.cpp
+ *
+ * @brief Binary file filter implementation
+ *
+ * Implements CloudCompare's native .bin format for
+ * serializing entities.
+ *
+ * ## Bin Format
+ *
+ * - **Header**: magic bytes, version, entity type
+ * - **Serialization**: each entity type serializes its own data
+ * via toFile_MeOnly() methods
+ * - **ID mapping**: maps old-to-new IDs during load for
+ * cross-file references
+ *
+ * The bin format preserves all CloudCompare-specific data
+ * (scalar fields, materials, GL transforms, etc.).
+ *
+ * @see BinFilter.h
+ */
+
 #include "BinFilter.h"
 
 // Qt

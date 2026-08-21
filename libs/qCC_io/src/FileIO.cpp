@@ -15,6 +15,19 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file FileIO.cpp
+ *
+ * @brief File I/O global helpers implementation
+ *
+ * Implements global file I/O utility functions:
+ * - Save dialogs and confirmations
+ * - Default filename generation
+ * - File format extension mapping
+ *
+ * @see FileIO.h
+ */
+
 #include "FileIO.h"
 
 #include <QDateTime>
