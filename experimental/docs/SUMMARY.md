@@ -282,13 +282,16 @@ Sessions:
 
 **Code-level follow-ups from the 5-agent code review (2026-08-21):**
 
-1. **Promote D9's `DgmOctree` to `benchmarked` → `selected` →
-   `graduated` lifecycle.** The cell-code NN is now
-   production-quality. Promotion request per
-   `promotion.md` would move it from `cc-rust/src/dgm_octree.rs`
-   into a documented position as the recommended
-   alternative to kiddo for the 1.5-2× slower but
-   C++-compatible case.
+1. ✅ **D9 `DgmOctree` lifecycle: `benchmarked → selected`.**
+   Promotion proposal at
+   [`experimental/scenarios/2026-08-19-icp-variants/04-dgm-octree/promotion.md`](../scenarios/2026-08-19-icp-variants/04-dgm-octree/promotion.md).
+   Per-variant status file at
+   [`04-dgm-octree/status.toml`](../scenarios/2026-08-19-icp-variants/04-dgm-octree/status.toml).
+   "When to use D9 vs kiddo" decision recorded in
+   `AGENTS.md`. Role: C++ `DgmOctree` semantic-compatibility
+   niche (porting code, exact-neighbour reproduction, cell-code
+   hinting). Code is already at `cc-rust/src/dgm_octree.rs` since
+   D7 — promotion is docs-only.
 2. **More DgmOctree class methods.** The current port
    covers the ICP-relevant surface (build, NN, cell_code
    primitives). The full C++ class is 3000+ lines and

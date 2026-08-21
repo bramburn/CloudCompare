@@ -41,6 +41,29 @@ Goal-level docs (`AGENTS_*.md` at the repo root) describe **in-flight projects**
 
 **Convention:** if you start a new goal that touches 3+ subsystems and deserves its own context folder, name the doc `AGENTS_<GOAL>.md` and put layered context under `docs/context/<goal>/`. Add a row to the table above.
 
+### When to use D9 (DgmOctree) vs kiddo in `cc-rust/`
+
+The D9 cell-code-ordered NN in `cc-rust/src/dgm_octree.rs` is **not** the
+per-query speed winner — that is `kiddo` (0.30-0.53 µs/q vs D9's
+0.49-0.91 µs/q at 2k-50k). Use the D8 trait (`icp_with_nn::<N: NearestNeighbour>`)
+to pick per query:
+
+- **Default to `kiddo` (or `BruteForceNN` for N<2k).** 1.5-3× faster per query
+  in every benchmarked size. No cell-code overhead.
+- **Use D9 (`DgmOctreeNN`) when:**
+  - Porting C++ code that already uses `CCCoreLib::DgmOctree::findNearestNeighbour`
+    — D9 produces the *same* nearest neighbour (cell-code addressing
+    matches exactly), so no algorithm change is needed.
+  - You need exact-neighbour reproduction of a C++ run.
+  - The query shares a cell with the model and you want to pass
+    the cell-code hint (D9's `nearest_with_hint(point, cell_code)`).
+- **Use `BruteForceNN` (the default) for N<2k** — D9's HashMap +
+  AABB-pruning overhead doesn't amortise below ~2k points.
+
+See `experimental/scenarios/2026-08-19-icp-variants/04-dgm-octree/promotion.md`
+for the full D9 promotion proposal (selected 2026-08-21, code
+already in `cc-rust/src/dgm_octree.rs` since D7).
+
 ---
 
 ## 1. Local setup (this Windows machine)

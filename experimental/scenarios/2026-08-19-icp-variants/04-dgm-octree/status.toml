@@ -1,0 +1,40 @@
+# Variant-level lifecycle status (this file)
+#
+# The parent scenario `2026-08-19-icp-variants/` is a comparison
+# (4 NNs, identical RMS, timings recorded); it stays at
+# `benchmarked` as a whole. **Per-variant** lifecycle state is
+# tracked here, because not all four variants have the same
+# "selected for what" answer:
+#
+#   01-naive-on2         — abandoned (O(n^2), superseded by kiddo)
+#   02-kiddo-kdtree      — selected (general-purpose NN winner)
+#   03-handrolled-octree — abandoned (no AABB pruning, 100-300x
+#                                    slower than D9)
+#   04-dgm-octree        — **selected** (C++-compat niche)
+#
+# See `promotion.md` for the full D9 proposal.
+
+[variant]
+name = "04-dgm-octree"
+scenario = "2026-08-19-icp-variants"
+parent_status = "benchmarked"
+
+# Per-variant lifecycle. The variant is "selected" for the
+# C++-compat role (see promotion.md). Code was already promoted
+# to `cc-rust/src/dgm_octree.rs` in D7.
+[variant.lifecycle]
+status = "selected"
+as_of = "2026-08-21"
+promotion_proposal = "promotion.md"
+code_destination = "cc-rust/src/dgm_octree.rs"
+
+# Why this status, not "graduated". Graduation would mean
+# "the role is documented AND the code is the canonical
+# implementation". The code is canonical (D7), but the
+# role-specific docs ("When to use D9 vs kiddo") still
+# need to be written in `cc-rust/AGENTS.md`. That's a
+# 30-min follow-up after this proposal lands.
+[variant.lifecycle.next_steps]
+- "Add 'When to use D9 vs kiddo' section to cc-rust/AGENTS.md"
+- "Add CHANGELOG entry in cc-rust/ for the D9 promotion"
+- "Update SUMMARY.md 'recommended stack' to mention D9 as the C++-compat option"
