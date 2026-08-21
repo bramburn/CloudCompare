@@ -26,21 +26,41 @@ class QIcon;
 /**
  * @file ccHObject.h
  *
- * @brief Hierarchical Object base class
+ * @brief Hierarchical scene graph object
  *
- * ccHObject is the base class for all objects in CloudCompare's
- * hierarchical scene graph. It provides:
- * - Parent-child relationships for organizing objects
- * - Display capabilities (ccDrawableObject)
- * - Metadata and properties
+ * Base class for all objects in CloudCompare's scene graph.
+ * Provides the core node in the entity hierarchy:
  *
- * Objects like point clouds, meshes, primitives, and groups
- * all inherit from ccHObject.
+ * Structure:
+ * - Parent pointer (m_parent) — single parent
+ * - Children vector (m_children) — any number of children
+ * - Dependency map (m_dependencies) — soft refs with lifecycle callbacks
+ * - GL transformation history (m_glTransHistory) — cumulative transforms
+ *
+ * Key subsystems:
+ * - Hierarchy: addChild/removeChild/detachChild/filterChildren/find
+ * - Dependencies: addDependency/removeDependency/onDeletionOf/onUpdateOf
+ * - Bounding box: getOwnBB/getBB_recursive/getGlobalBB_recursive
+ * - Display: ccDrawableObject (draw, setDisplay, setVisible, selection)
+ * - GL transform: applyGLTransformation/getAbsoluteGLTransformation
+ * - Serialization: toFile/fromFile (recursive by default)
+ * - Recursive calls: *_recursive macros apply to children too
+ *
+ * Dependency flags (DP_*):
+ * - DP_NOTIFY_OTHER_ON_DELETE: call onDeletionOf() when this is deleted
+ * - DP_NOTIFY_OTHER_ON_UPDATE: call onUpdateOf() when geometry changes
+ * - DP_DELETE_OTHER: delete other before deleting this
+ * - DP_PARENT_OF_OTHER: declares this as parent (implies DELETE_OTHER)
+ *
+ * Selection behavior (SELECTION_*):
+ * - SELECTION_AA_BBOX: axis-aligned bounding box
+ * - SELECTION_FIT_BBOX: best-fit bounding box
+ * - SELECTION_IGNORED: never selected
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- * @see ccGenericPointCloud for point cloud implementation
- * @see ccMesh for mesh implementation
- * @see ccPolyline for polyline implementation
+ * @see ccDrawableObject for display integration
+ * @see ccSerializableObject for serialization
+ * @see ccGenericPointCloud, ccMesh, ccPolyline for common subclasses
  */
 
 //! Hierarchical CloudCompare Object
