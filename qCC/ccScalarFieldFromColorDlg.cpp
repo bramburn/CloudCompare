@@ -15,6 +15,24 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccScalarFieldFromColorDlg.cpp
+ *
+ * @brief Scalar field from color dialog implementation
+ *
+ * Dialog for extracting scalar fields from RGB(A) color channels
+ * of a point cloud. Each selected channel creates a new scalar field
+ * with values normalized to [0, 255].
+ *
+ * ## Output Scalar Fields
+ *
+ * - **R/G/B**: single channel as grayscale scalar field
+ * - **Alpha**: transparency channel as scalar field
+ * - **Composite**: weighted combination (e.g., luminance)
+ *
+ * @see ccScalarFieldFromColorDlg.h
+ */
+
 #include "ccScalarFieldFromColorDlg.h"
 
 // Qt

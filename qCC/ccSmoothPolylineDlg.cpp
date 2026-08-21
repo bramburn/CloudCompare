@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSmoothPolylineDlg.cpp
+ *
+ * @brief Smooth polyline dialog implementation
+ *
+ * Implements ccSmoothPolylineDialog for smoothing polylines using
+ * Chaikin's corner-cutting algorithm.
+ *
+ * ## Chaikin Smoothing
+ *
+ * Each iteration replaces each segment with two new points at 1/4
+ * and 3/4 positions, preserving the polyline's overall shape
+ * while removing sharp corners. Multiple iterations produce
+ * progressively smoother curves.
+ *
+ * ## Parameters
+ *
+ * - **Iteration count**: number of Chaikin passes
+ * - **Ratio**: position of new points (default 0.25 = 1/4 and 3/4)
+ *
+ * @see ccSmoothPolylineDlg.h
+ */
+
 #include "ccSmoothPolylineDlg.h"
 
 // ui

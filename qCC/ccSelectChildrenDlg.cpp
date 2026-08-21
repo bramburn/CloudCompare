@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSelectChildrenDlg.cpp
+ *
+ * @brief Select children dialog implementation
+ *
+ * Modal dialog for filtering and selecting child entities from a parent.
+ * Supports filtering by name (plain or regex) and by entity type.
+ *
+ * ## Filter Modes
+ *
+ * - **By name**: matches entity display names, supports regex
+ * - **By type**: point cloud, mesh, sensor, etc. (CC_TYPES enum)
+ * - **Strict type**: match exactly or include subclasses
+ *
+ * ## Selection
+ *
+ * Returns selected children via getSelectedChildren().
+ * State persists across invocations (static variables).
+ *
+ * @see ccSelectChildrenDlg.h
+ */
+
 #include "ccSelectChildrenDlg.h"
 
 #include "ui_selectChildrenDlg.h"
@@ -26,6 +48,11 @@ static bool          s_lastTypeState       = true;
 static bool          s_lastTypeStrictState = true;
 static bool          s_lastUseRegex        = true;
 
+/**
+ * @brief Construct the select children dialog
+ *
+ * @param[in] parent Parent widget
+ */
 ccSelectChildrenDlg::ccSelectChildrenDlg(QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::Tool)
     , mUI(new Ui::SelectChildrenDialog)
