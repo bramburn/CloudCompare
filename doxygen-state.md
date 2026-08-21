@@ -117,9 +117,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | qM3C2.cpp | ✅ Done | Committed: f0954412 |
 | qHPR.h | ✅ Done | Committed: dae49892 |
 | qHPR.cpp | ✅ Done | Committed: dae49892 |
-| qBroom.h | ⬜ Not started | |
-| qPCV.h | ⬜ Not started | |
-| qAnimation.h | ⬜ Not started | |
+| qBroom.h | ✅ Done | Committed: 477bd26d |
+| qPCV.h | ✅ Done | Committed: d8eb0d99 |
+| qAnimation.h | ✅ Done | Committed: 20c8124d |
 | qVoxFall.h | ⬜ Not started | |
 | qCanupo.h | ⬜ Not started | |
 | 3DFin.h | ⬜ Not started | |
@@ -134,9 +134,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 
 ## Progress Summary
 - **Total files tracked**: ~55
-- **Completed**: 37
+- **Completed**: 41
 - **In progress**: 0
-- **Percentage**: ~67%
+- **Percentage**: ~75%
 
 ## Submodule Note
 `libs/qCC_db/extern/CCCoreLib/` is a git submodule. Files inside it cannot be committed from the parent repo.
