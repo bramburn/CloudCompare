@@ -69,6 +69,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccSphere.h | ✅ Done | Committed: 4c2fcfd3 |
 | ccSphere.cpp | ✅ Done | Committed: 9c653835 |
 | ccDish.h | ✅ Done | Committed: 43942200 |
+| ccDish.cpp | ✅ Done | Committed: 759405a5 |
+| ccCylinder.cpp | ✅ Done | Committed: 121d4f1f |
 | ccBox.h | ✅ Done | Already documented (8 blocks) |
 | ccBox.cpp | ✅ Done | Already documented |
 | ccPolyline.h | ⬜ Not started | 19 Doxygen blocks |
@@ -157,9 +159,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 
 ## Progress Summary
 - **Total files tracked**: ~65
-- **Completed**: 61
+- **Completed**: 63
 - **In progress**: 0
-- **Percentage**: ~94%
+- **Percentage**: ~97%
 
 ## Submodule Note
 `libs/qCC_db/extern/CCCoreLib/`, `plugins/core/Standard/qVoxFall/`, and `plugins/core/Standard/3DFin/` are git submodules. Files inside them **cannot** be committed from the parent repo.
