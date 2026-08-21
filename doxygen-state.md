@@ -51,17 +51,23 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccLog.h | ✅ Done | Committed: b40a9168 |
 | ccHObject.h | ✅ Done | Committed: b4de77cc |
 | ccGenericPointCloud.h | ✅ Done | Committed: a4c5b4be |
+| ccGenericPointCloud.cpp | ✅ Done | Committed: bec5729f |
 | ccScalarField.h | ✅ Done | Committed: 8a3729b9 |
 | ccColorScale.h | ✅ Done | Committed: 9e10804c |
 | ccGLMatrixTpl.h | ✅ Done | Committed: 0cfdc4ba |
+| ccOctreeProxy.h | ✅ Done | Committed: 74131ac8 |
+| ccOctreeProxy.cpp | ✅ Done | Committed: 74131ac8 |
+| ccBasicTypes.h | ✅ Done | Committed: ccf0e5d1 |
+| ccFlags.h | ✅ Done | Committed: ccf0e5d1 |
 | ccPointCloud.cpp | ⬜ Not started | Very large |
-| ccPointCloud.h | ⬜ Not started | |
+| ccPointCloud.h | ✅ Done | Already documented (44 blocks) |
 | ccGLMatrix.h | ✅ Done | Already documented |
+| ccMesh.h | ✅ Done | Already documented (44 blocks) |
 
 ### libs/qCC_io/
 | File | Status | Notes |
 |------|--------|-------|
-| FileIOFilter.cpp | ⬜ Not started | |
+| FileIOFilter.cpp | ✅ Done | Committed: 274226e3 |
 | FileIOFilter.h | ✅ Done | Already well documented |
 
 ### libs/qCC_glWindow/
@@ -77,10 +83,18 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccPersistentSettings.h | ✅ Done | Committed: 4bdc40fb |
 | ccMainAppInterface.h | ✅ Done | Already documented |
 
+### libs/CCAppCommon/
+| File | Status | Notes |
+|------|--------|-------|
+| ccDisplaySettingsDlg.h | ✅ Done | Committed: 5d8bf38d |
+| ccApplicationBase.h | ⬜ Not started | 9 blocks (partially documented) |
+| ccOptions.h | ⬜ Not started | 10 blocks |
+| ccPluginManager.h | ⬜ Not started | 11 blocks |
+
 ### libs/CCCoreLib/
 | File | Status | Notes |
 |------|--------|-------|
-| GenericDistribution.h | ✅ Done | In git submodule (not committable from here) |
+| GenericDistribution.h | ✅ Done | In git submodule (committed separately) |
 | DgmOctree.cpp | ⬜ Not started | Very large |
 | DgmOctree.h | ⬜ Not started | |
 | ScalarField.cpp | ⬜ Not started | |
@@ -91,39 +105,55 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 |------|--------|-------|
 | qCSF.h | ✅ Done | Committed: b6c5e8dd |
 | qCSF.cpp | ✅ Done | Committed: b6c5e8dd |
-| qM3C2.h | ⬜ Not started | |
-| qM3C2.cpp | ⬜ Not started | |
+| qM3C2.h | ✅ Done | Committed: f0954412 |
+| qM3C2.cpp | ✅ Done | Committed: f0954412 |
+| qHPR.h | ✅ Done | Committed: dae49892 |
+| qHPR.cpp | ✅ Done | Committed: dae49892 |
+| qBroom.h | ⬜ Not started | |
+| qPCV.h | ⬜ Not started | |
+| qAnimation.h | ⬜ Not started | |
+| qVoxFall.h | ⬜ Not started | |
+| qCanupo.h | ⬜ Not started | |
+| 3DFin.h | ⬜ Not started | |
 
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~40+
-- **Completed**: 25
+- **Total files tracked**: ~50
+- **Completed**: 33
 - **In progress**: 0
-- **Percentage**: ~60%
+- **Percentage**: ~66%
 
 ## Submodule Note
 `libs/qCC_db/extern/CCCoreLib/` is a git submodule. Files inside it cannot be committed from the parent repo.
 
-## Commit Log
+## Commit Log (newest first)
 | Commit | Files | Notes |
 |--------|-------|-------|
-| b4de77cc | ccHObject.h | Hierarchy, dependencies, selection behaviors |
-| b6c5e8dd | qCSF.h, qCSF.cpp | CSF algorithm, ground filtering, doAction |
-| 4bdc40fb | ccPersistentSettings.h | QSettings key constants |
+| 5d8bf38d | ccDisplaySettingsDlg.h | Display options, lighting, colors, labels |
+| dae49892 | qHPR.h, qHPR.cpp | Spherical inversion + Qhull hull + HPR |
+| 74131ac8 | ccOctreeProxy.h, ccOctreeProxy.cpp | Proxy child, GL drawing |
+| ccf0e5d1 | ccBasicTypes.h, ccFlags.h | CompressedNormType, 8-bit bitfield |
+| bec5729f | ccGenericPointCloud.cpp | Visibility, octree, point picking |
+| 274226e3 | FileIOFilter.cpp | Filter registry, load/save dispatch, global shift |
+| f0954412 | qM3C2.h, qM3C2.cpp | M3C2 algorithm, multi-cloud comparison |
+| dac985e0 | doxygen-state.md | 25 files done |
+| b4de77cc | ccHObject.h | Hierarchy, DP flags, SELECTION behaviors |
+| b6c5e8dd | qCSF.h, qCSF.cpp | Cloth simulation filter, ground extraction |
 | 9e10804c | ccColorScale.h | Relative/Absolute mode, lookup table |
-| 8a3729b9 | ccScalarField.h | Display range, color mapping, normalization |
+| 4bdc40fb | ccPersistentSettings.h | QSettings key constants |
 | 0cfdc4ba | ccGLMatrixTpl.h | Column-major layout, initFromParameters |
 | fc1b527e | ccGLWindow.h | QOpenGLWidget + ccGLWindowInterface |
 | a4c5b4be | ccGenericPointCloud.h | Visibility table, octree, picking |
+| 8a3729b9 | ccScalarField.h | Display range, color mapping, normalization |
 | 7f6f365f | ccDBRoot.h | Qt Model/View, selection, context menu |
-| 5c6a47ed | ccRecentFiles.h, ccRecentFiles.cpp | ~ path contraction, auto-cleanup |
+| 5c6a47ed | ccRecentFiles.h, ccRecentFiles.cpp | Path contraction, auto-cleanup |
 | b40a9168 | ccLog.h, ccLog.cpp | Static facade, backup system, DEBUG_FLAG |
 | 76821b33 | ccViewportParameters.h, ccViewportParameters.cpp | Camera math, serialization |
 | 3de70ab4 | ccOverlayDialog.h, ccOverlayDialog.cpp | Lifecycle, eventFilter, shortcuts |
-| 23f55d26 | ccCommandLineParser.cpp | Enhanced Doxygen with @param/@return/@tparam |
+| 23f55d26 | ccCommandLineParser.cpp | Enhanced @param/@return/@tparam |
 | bf35923f | ccUtils.h, ccUtils.cpp | Enhanced Doxygen for ccUtils namespace |
-| 83a4dacb | ccConsole.h, ccConsole.cpp, doxygen-state.md | Full Doxygen for ccConsole classes |
+| 83a4dacb | ccConsole.h, ccConsole.cpp | Full Doxygen for ccConsole classes |
 
 ## Last Updated
 2026-08-21
