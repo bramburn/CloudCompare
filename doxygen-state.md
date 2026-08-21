@@ -35,12 +35,10 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccRecentFiles.h | ✅ Done | Committed: 5c6a47ed |
 | ccApplication.cpp | ✅ Done | Already documented |
 | ccApplication.h | ✅ Done | Already documented |
-| ccMainAppInterface.cpp | ⬜ Not started | |
-| ccMainAppInterface.h | ✅ Done | Already documented (CCPluginAPI) |
-| ccDBRoot.cpp | ⬜ Not started | |
-| ccDBRoot.h | ⬜ Not started | |
+| ccMainAppInterface.h | ✅ Done | Already documented |
+| ccDBRoot.h | ✅ Done | Committed: 7f6f365f |
 | ccGLWindow.cpp | ⬜ Not started | Very large (~7000 lines) |
-| ccGLWindow.h | ⬜ Not started | |
+| ccGLWindow.h | ✅ Done | Committed: fc1b527e |
 | ccOverlayDialog.cpp | ✅ Done | Committed: 3de70ab4 |
 | ccOverlayDialog.h | ✅ Done | Committed: 3de70ab4 |
 
@@ -51,65 +49,74 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccViewportParameters.h | ✅ Done | Committed: 76821b33 |
 | ccLog.cpp | ✅ Done | Committed: b40a9168 |
 | ccLog.h | ✅ Done | Committed: b40a9168 |
-| ccHObject.cpp | ⬜ Not started | Very large |
-| ccHObject.h | ⬜ Not started | |
+| ccHObject.h | ✅ Done | Committed: b4de77cc |
+| ccGenericPointCloud.h | ✅ Done | Committed: a4c5b4be |
+| ccScalarField.h | ✅ Done | Committed: 8a3729b9 |
+| ccColorScale.h | ✅ Done | Committed: 9e10804c |
+| ccGLMatrixTpl.h | ✅ Done | Committed: 0cfdc4ba |
 | ccPointCloud.cpp | ⬜ Not started | Very large |
 | ccPointCloud.h | ⬜ Not started | |
-| ccGenericPointCloud.cpp | ⬜ Not started | |
-| ccGenericPointCloud.h | ⬜ Not started | |
+| ccGLMatrix.h | ✅ Done | Already documented |
 
 ### libs/qCC_io/
 | File | Status | Notes |
 |------|--------|-------|
 | FileIOFilter.cpp | ⬜ Not started | |
 | FileIOFilter.h | ✅ Done | Already well documented |
-| AsciiSaveDlg.cpp | ⬜ Not started | |
-| AsciiSaveDlg.h | ⬜ Not started | |
+
+### libs/qCC_glWindow/
+| File | Status | Notes |
+|------|--------|-------|
+| ccGLWindow.h | ✅ Done | Committed: fc1b527e |
+| ccGLWindowInterface.h | ✅ Done | Already well documented |
+| ccGLWindowInterface.cpp | ⬜ Not started | Very large (~7000 lines) |
+
+### libs/CCPluginAPI/
+| File | Status | Notes |
+|------|--------|-------|
+| ccPersistentSettings.h | ✅ Done | Committed: 4bdc40fb |
+| ccMainAppInterface.h | ✅ Done | Already documented |
 
 ### libs/CCCoreLib/
 | File | Status | Notes |
 |------|--------|-------|
-| GenericDistribution.h | ✅ Done | Committed: N/A (in git submodule — not committable from here) |
+| GenericDistribution.h | ✅ Done | In git submodule (not committable from here) |
 | DgmOctree.cpp | ⬜ Not started | Very large |
 | DgmOctree.h | ⬜ Not started | |
 | ScalarField.cpp | ⬜ Not started | |
 | ScalarField.h | ⬜ Not started | |
 
-### libs/qCC_glWindow/
+### plugins/core/Standard/
 | File | Status | Notes |
 |------|--------|-------|
-| ccGLWindowInterface.cpp | ⬜ Not started | Very large (~7000 lines) |
-| ccGLWindowInterface.h | ✅ Done | Already well documented |
-| ccViewportParameters.h | ✅ Done | (see qCC_db above) |
-
-### libs/CCAppCommon/
-| File | Status | Notes |
-|------|--------|-------|
-| ccApplication.cpp | ⬜ Not started | |
-| ccApplication.h | ⬜ Not started | |
-
-### plugins/core/Standard/ (Sample)
-| File | Status | Notes |
-|------|--------|-------|
-| qCSF.cpp | ⬜ Not started | |
-| qCSF.h | ⬜ Not started | |
-| qM3C2.cpp | ⬜ Not started | |
+| qCSF.h | ✅ Done | Committed: b6c5e8dd |
+| qCSF.cpp | ✅ Done | Committed: b6c5e8dd |
 | qM3C2.h | ⬜ Not started | |
+| qM3C2.cpp | ⬜ Not started | |
 
 ---
 
 ## Progress Summary
 - **Total files tracked**: ~40+
-- **Completed**: 16
+- **Completed**: 25
 - **In progress**: 0
-- **Percentage**: ~40%
+- **Percentage**: ~60%
 
 ## Submodule Note
-`libs/qCC_db/extern/CCCoreLib/` is a git submodule. Files inside it (e.g., GenericDistribution.h) cannot be committed from the parent repo. Commit inside the submodule separately.
+`libs/qCC_db/extern/CCCoreLib/` is a git submodule. Files inside it cannot be committed from the parent repo.
 
 ## Commit Log
 | Commit | Files | Notes |
 |--------|-------|-------|
+| b4de77cc | ccHObject.h | Hierarchy, dependencies, selection behaviors |
+| b6c5e8dd | qCSF.h, qCSF.cpp | CSF algorithm, ground filtering, doAction |
+| 4bdc40fb | ccPersistentSettings.h | QSettings key constants |
+| 9e10804c | ccColorScale.h | Relative/Absolute mode, lookup table |
+| 8a3729b9 | ccScalarField.h | Display range, color mapping, normalization |
+| 0cfdc4ba | ccGLMatrixTpl.h | Column-major layout, initFromParameters |
+| fc1b527e | ccGLWindow.h | QOpenGLWidget + ccGLWindowInterface |
+| a4c5b4be | ccGenericPointCloud.h | Visibility table, octree, picking |
+| 7f6f365f | ccDBRoot.h | Qt Model/View, selection, context menu |
 | 5c6a47ed | ccRecentFiles.h, ccRecentFiles.cpp | ~ path contraction, auto-cleanup |
 | b40a9168 | ccLog.h, ccLog.cpp | Static facade, backup system, DEBUG_FLAG |
 | 76821b33 | ccViewportParameters.h, ccViewportParameters.cpp | Camera math, serialization |
