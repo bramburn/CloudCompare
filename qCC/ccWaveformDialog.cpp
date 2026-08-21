@@ -15,6 +15,30 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccWaveformDialog.cpp
+ *
+ * @brief Waveform dialog implementation
+ *
+ * Dialog for visualizing waveform data from LAS files (e.g., full-waveform
+ * LiDAR). Displays waveforms as amplitude vs. time curves using QCustomPlot.
+ *
+ * ## Waveform Data
+ *
+ * Full-waveform LiDAR stores the entire return pulse as a waveform
+ * (amplitude vs. time) rather than just discrete returns. This dialog
+ * visualizes those waveforms.
+ *
+ * ## Features
+ *
+ * - **Waveform plot**: amplitude curve with baseline and peaks
+ * - **Return markers**: mark discrete returns on the waveform
+ * - **Metadata**: display pulse width, intensity, etc.
+ * - **Export**: save waveform data as ASCII
+ *
+ * @see ccWaveformDialog.h, LasWaveformLoader
+ */
+
 #include "ccWaveformDialog.h"
 
 // Local

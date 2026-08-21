@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccLibAlgorithms.cpp
+ *
+ * @brief Library algorithms implementation
+ *
+ * Implements shared algorithms and utilities for point cloud
+ * processing tools.
+ *
+ * ## Algorithms
+ *
+ * - **Compute density**: local point density estimation
+ * - **Compute roughness**: local surface roughness
+ * - **Compute curvature**: mean/gaussian curvature via quadric fitting
+ * - **Compute MFA**: Mesh-Fitted Approximation features
+ * - **Match scales**: match two clouds at different scales
+ * - **Filter by SF**: select points by scalar field range
+ * - **Resample cloud**: resample a cloud to a regular grid
+ *
+ * ## Kernel Size
+ *
+ * Many algorithms use a neighborhood radius (kernel size).
+ * GetDefaultCloudKernelSize() computes a sensible default
+ * from the cloud's bounding box and point count.
+ *
+ * @see ccLibAlgorithms.h, GeometricalAnalysisTools
+ */
+
 #include "ccLibAlgorithms.h"
 
 // CCCoreLib
