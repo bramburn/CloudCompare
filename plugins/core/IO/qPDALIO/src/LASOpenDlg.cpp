@@ -15,6 +15,19 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file LASOpenDlg.cpp
+ *
+ * @brief PDAL LAS open dialog implementation
+ *
+ * Dialog for configuring PDAL-based LAS/LAZ import:
+ * - **CRS/EPSG**: coordinate reference system selection
+ * - **Reprojection**: option to reproject on import
+ * - **Filters**: apply PDAL pipeline filters during import
+ * - **Scalebox**: apply scale/offset override
+ *
+ * @see LASFilter.h
+ */
 #include "LASOpenDlg.h"
 
 // Qt

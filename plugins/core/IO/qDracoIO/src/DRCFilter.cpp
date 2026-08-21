@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file DRCFilter.cpp
+ *
+ * @brief Google Draco mesh filter implementation
+ *
+ * Implements Google Draco mesh compression I/O:
+ * - **Import**: decode Draco binary → ccMesh
+ * - **Export**: ccMesh → encode as Draco binary
+ *
+ * ## Draco Compression
+ *
+ * Draco achieves high compression ratios using:
+ * - **Vertex deduplication**: shared vertices across faces
+ * - **Quantization**: reduced precision for position/normal/UV
+ * - **Sequencing**: prediction-based mesh topology encoding
+ * - **Entropy coding**: arithmetic coding on the bitstream
+ *
+ * Compression level 10 can achieve ~90% size reduction
+ * compared to uncompressed OBJ with negligible quality loss.
+ *
+ * @see DRCFilter.h
+ */
 #include "../include/DRCFilter.h"
 
 #include "../include/SaveDracoFileDlg.h"

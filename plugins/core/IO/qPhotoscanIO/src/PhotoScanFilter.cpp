@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file PhotoScanFilter.cpp
+ *
+ * @brief Agisoft PhotoScan/Metashape filter implementation
+ *
+ * Imports Agisoft PhotoScan (now Metashape) project data:
+ * - **Point clouds**: sparse (markers) and dense point clouds
+ * - **Cameras**: intrinsic and extrinsic parameters
+ * - **Markers**: scale bars and reference points
+ * - **Orthomosaics**: as textures on mesh
+ *
+ * ## PhotoScan Format
+ *
+ * PSDOC/PSX files store:
+ * - Dense point clouds (chunk) with colors
+ * - Camera positions (from SfM bundle adjustment)
+ * - Marker coordinates
+ * - Shape models and meshes
+ *
+ * ## Import
+ *
+ * Parses the PhotoScan project file (zlib-compressed).
+ * Cameras are stored as ccSensor entities.
+ *
+ * @see PhotoScanFilter.h
+ */
 #include "PhotoScanFilter.h"
 
 // Qt

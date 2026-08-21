@@ -13,6 +13,30 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ReCapFilter.cpp
+ *
+ * @brief Autodesk ReCap RCS/RCP filter implementation
+ *
+ * Imports Autodesk ReCap scan data:
+ * - **RCS**: ReCap Scan — individual scan station
+ * - **RCP**: ReCap Project — multi-station project
+ *
+ * ## Format
+ *
+ * ReCap stores TLS (terrestrial laser scanner) data:
+ * - Registered scan positions (trajectory)
+ * - Point cloud with color from registered photography
+ * - Spherical panoramas per station
+ * - Scan metadata (scanner model, date, weather)
+ *
+ * ## Import
+ *
+ * Uses the Autodesk ReCap SDK (RCStructuredScan, RCSphericalModel).
+ * Each scan station becomes a separate point cloud entity.
+ *
+ * @see ReCapFilter.h
+ */
 #include "ReCapFilter.h"
 
 // ReCap SDK
@@ -291,6 +315,7 @@ ReCapFilter::ReCapFilter()
           QStringList{},                    // no save filters (read-only)
           Import } )                        // import only
 {
+	ccLog::Warning( "[ReCap] ReCapFilter constructed — extensions: rcs rcp" );
 }
 
 CC_FILE_ERROR ReCapFilter::loadFile( const QString& filename,
@@ -299,6 +324,8 @@ CC_FILE_ERROR ReCapFilter::loadFile( const QString& filename,
 {
 	QFileInfo fileInfo( filename );
 	QString ext = fileInfo.suffix().toLower();
+
+	ccLog::Warning( QStringLiteral( "[ReCap] loadFile called: %1 (ext=%2)" ).arg( filename, ext ) );
 
 	QScopedPointer<ccProgressDialog> pDlg( nullptr );
 	if ( parameters.parentWidget )

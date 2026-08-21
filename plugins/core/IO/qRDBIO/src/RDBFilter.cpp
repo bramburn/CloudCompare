@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file RDBFilter.cpp
+ *
+ * @brief Riegl RDB file filter implementation
+ *
+ * Imports Riegl RDB (RiVlib Database) format from Riegl TLS scanners.
+ *
+ * ## RDB Format
+ *
+ * Riegl's native database format:
+ * - Multi-station registered scan data
+ * - Intensity values and return classification
+ * - Scan position trajectories (GPS/IMU)
+ * - Scanner metadata and calibration
+ *
+ * ## Import
+ *
+ * Reads RDB database files and exports each station
+ * as a separate point cloud with its transformation applied.
+ *
+ * @see RDBFilter.h
+ */
 #include "RDBFilter.h"
 
 // Local

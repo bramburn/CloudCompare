@@ -15,6 +15,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file LASFWFFilter.cpp
+ *
+ * @brief LAS Full-Waveform filter implementation
+ *
+ * Implements LAS 1.4 full-waveform data I/O.
+ *
+ * ## Full-Waveform
+ *
+ * LAS 1.4 supports digitised waveform data per return:
+ * - ** waveform location**: x,y,z of the return
+ * - ** waveform packets**: raw digitised signal samples
+ * - ** waveform parameters**: sample count, interval, digitiser gain/offset
+ *
+ * ## Import
+ *
+ * Parses waveform data from the LAS public block and VLR records.
+ * Waveforms are stored per return and linked to the point cloud.
+ *
+ * @see LASFWFFilter.h
+ */
 #include "LASFWFFilter.h"
 
 // qCC_db

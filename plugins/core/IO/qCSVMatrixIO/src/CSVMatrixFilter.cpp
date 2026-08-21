@@ -15,6 +15,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file CSVMatrixFilter.cpp
+ *
+ * @brief CSV matrix filter implementation
+ *
+ * Imports/exports a 2D matrix stored as a CSV (comma-separated values) file.
+ *
+ * ## Format
+ *
+ * - Rows represent measurement stations or time steps
+ * - Columns represent variables or spatial positions
+ * - Optional header row with column labels
+ * - Optional first column with row labels
+ *
+ * ## Use
+ *
+ * Stores the matrix as a ccPointCloud where each point's X/Y/Z
+ * represent the matrix coordinates and scalar fields hold the values.
+ *
+ * @see CSVMatrixFilter.h
+ */
 #include "CSVMatrixFilter.h"
 
 // Local

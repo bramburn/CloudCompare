@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file STEPFilter.cpp
+ *
+ * @brief STEP CAD file filter implementation
+ *
+ * Imports STEP (STandard for Exchange of Product) CAD files
+ * using OpenCASCADE Technology (OCCT).
+ *
+ * ## STEP Format
+ *
+ * ISO 10303 AP203/AP214 exchange file:
+ * - **B-rep geometry**: boundary representation of solid models
+ * - **Advanced faces**: analytic surfaces (planes, cylinders, cones, spheres)
+ * - **Product hierarchy**: assembly structure with transformations
+ * - **Colors/materials**: presentation attributes
+ *
+ * ## Import
+ *
+ * Converts STEP B-rep to CloudCompare meshes.
+ * Assembly hierarchy is preserved as entity groups.
+ *
+ * @see STEPFilter.h
+ */
 #include "../include/STEPFilter.h"
 
 // Qt

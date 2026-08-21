@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file FBXFilter.cpp
+ *
+ * @brief Autodesk FBX filter implementation
+ *
+ * Implements FBX (Filmbox) format I/O using the Autodesk FBX SDK.
+ *
+ * ## FBX Format
+ *
+ * Binary/ASCII format for 3D content exchange:
+ * - **Geometry**: meshes, Nurbs, patches
+ * - **Cameras/Lights**: full camera and light definitions
+ * - **Materials**: multi-layer material system
+ * - **Animation**: skeleton animation, morph targets
+ * - **Markers**: reference points
+ *
+ * ## Import
+ *
+ * Converts FBX meshes to ccMesh and cameras to ccSensor.
+ * Materials are converted to ccMaterial with texture references.
+ *
+ * @see FBXFilter.h
+ */
 #include "FBXFilter.h"
 
 // qCC_db

@@ -15,6 +15,34 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file E57Filter.cpp
+ *
+ * @brief E57 file filter implementation
+ *
+ * Implements ASTM E57 3D imaging data file format I/O.
+ * E57 is a vendor-neutral interchange format for 3D imaging
+ * data from TLS, mobile mapping, and photogrammetric systems.
+ *
+ * ## E57 Format
+ *
+ * XML header + binary data blocks:
+ * - **Imagery**: 2D intensity images
+ * - **Scan data**: cartesian (x,y,z) or spherical (range, angle) points
+ * - **Pose**: scanner position and orientation per scan
+ * - **Weather**: temperature, pressure (for range correction)
+ * - **Acquisition**: scan date, instrument serial, software version
+ *
+ * ## Import
+ *
+ * Uses libE57Format (from extern/) for reading:
+ * - Point clouds from all dataodor types
+ * - Scan poses (stored as indexed transformations)
+ * - Intensity images (imported as ccImage)
+ * - Color from imagery if available
+ *
+ * @see E57Filter.h
+ */
 #include "E57Filter.h"
 
 #include "FileIO.h"

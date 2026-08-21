@@ -15,6 +15,34 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file LASFilter.cpp
+ *
+ * @brief PDAL LAS/LAZ filter implementation
+ *
+ * Implements LAS/LAZ file I/O via the PDAL library
+ * (Point Data Abstraction Library).
+ *
+ * ## PDAL
+ *
+ * PDAL is a C++ library for point cloud translation:
+ * - Reads 30+ formats (LAS, LAZ, ASCII, SHP, BPF, RXP, ...)
+ * - Pipeline model: readers → filters → writers
+ * - Handles CRS (coordinate reference systems) via GDAL/Proj
+ *
+ * ## Advantages over qLASIO
+ *
+ * - Broader format support
+ * - CRS reprojection via GDAL/Proj
+ * - PDAL pipeline scripting (on-the-fly processing)
+ *
+ * ## Import
+ *
+ * Uses PDAL readers to import various formats as ccPointCloud.
+ * CRS is stored as a Global Shift if applicable.
+ *
+ * @see LASFilter.h
+ */
 #include "LASFilter.h"
 
 // Local
