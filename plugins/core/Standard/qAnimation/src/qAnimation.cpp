@@ -8,12 +8,22 @@
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
 //#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
+//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          #
 //#  GNU General Public License for more details.                          #
 //#                                                                        #
 //#             COPYRIGHT: Ryan Wicks, 2G Robotics Inc., 2015              #
 //#                                                                        #
 //##########################################################################
+
+/**
+ * @file qAnimation.cpp
+ *
+ * @brief Camera animation plugin implementation
+ *
+ * Implements animation capture via viewport interpolation.
+ *
+ * @see qAnimation
+ */
 
 #include "qAnimation.h"
 
@@ -33,23 +43,30 @@
 #include <QtGui>
 #include <QMainWindow>
 
-typedef std::vector<ExtendedViewport> ViewPortList;
-
-static ViewPortList GetSelectedViewPorts( const ccHObject::Container &selectedEntities )
+/**
+ * @brief Extract cc2DViewportObject entities from a selection
+ *
+ * Filters a selection to extract only cc2DViewportObject entities.
+ * These are the waypoints for the animation path.
+ *
+ * @param[in] selectedEntities Entity selection
+ * @return Vector of viewport objects
+ */
+static std::vector<ExtendedViewport> GetSelectedViewPorts(const ccHObject::Container& selectedEntities)
 {
-	ViewPortList viewports;
-	
-	for ( ccHObject *object : selectedEntities )
+	std::vector<ExtendedViewport> viewports;
+	for (ccHObject* object : selectedEntities)
 	{
-		if ( object->getClassID() == static_cast<CC_CLASS_ENUM>(CC_TYPES::VIEWPORT_2D_OBJECT) )
-		{
-			viewports.push_back( static_cast<cc2DViewportObject*>(object) );
-		}
+		if (object->getClassID() == static_cast<CC_CLASS_ENUM>(CC_TYPES::VIEWPORT_2D_OBJECT))
+			viewports.push_back(static_cast<cc2DViewportObject*>(object));
 	}
-	
 	return viewports;
 }
 
+// qAnimation::qAnimation
+/**
+ * @brief Construct the animation plugin
+ */
 qAnimation::qAnimation(QObject* parent)
 	: QObject( parent )
 	, ccStdPluginInterface( ":/CC/plugin/qAnimation/info.json" )
@@ -78,22 +95,29 @@ void qAnimation::onNewSelection(const ccHObject::Container& selectedEntities)
 	}
 }
 
-QList<QAction *> qAnimation::getActions()
+// qAnimation::getActions
+/**
+ * @brief Create and return the plugin action
+ */
+QList<QAction*> qAnimation::getActions()
 {
-	//default action (if it has not been already created, it's the moment to do it)
 	if (!m_action)
 	{
 		m_action = new QAction(getName(), this);
 		m_action->setToolTip(getDescription());
 		m_action->setIcon(getIcon());
-
 		connect(m_action, &QAction::triggered, this, &qAnimation::doAction);
 	}
-
-	return QList<QAction *>{ m_action };
+	return QList<QAction*>{m_action};
 }
 
-//what to do when clicked.
+// qAnimation::doAction
+/**
+ * @brief Execute the animation capture tool
+ *
+ * Validates active 3D view, backs up GL state, extracts viewports,
+ * opens animation dialog, restores GL state on completion.
+ */
 void qAnimation::doAction()
 {
 	//m_app should have already been initialized by CC when plugin is loaded!
@@ -139,7 +163,7 @@ void qAnimation::doAction()
 	glWindow->setCustomLightPosition(evp.customLightPos);
 	glWindow->redraw();
 
-	//Export trajectory (for debug)
+	// Export trajectory as polyline for debugging/verification
 	if (videoDlg.exportTrajectoryOnExit())
 	{
 		ccPolyline* trajectory = videoDlg.getTrajectory();
@@ -147,8 +171,6 @@ void qAnimation::doAction()
 		{
 			trajectory->setTempColor(ccColor::red);
 			trajectory->setWidth(2);
-			//trajectory->prepareDisplayForRefresh();
-
 			getMainAppInterface()->addToDB(trajectory);
 		}
 	}

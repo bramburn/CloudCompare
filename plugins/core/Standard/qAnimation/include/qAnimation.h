@@ -20,50 +20,99 @@
 /**
  * @file qAnimation.h
  *
- * @brief Animation plugin
+ * @brief Camera animation capture plugin
  *
- * Animation capture plugin for CloudCompare.
+ * Captures camera animation sequences from the 3D view by interpolating
+ * between saved viewpoint objects (cc2DViewportObject).
+ *
+ * Requires at least 2 cc2DViewportObject entities to be selected.
+ * The plugin interpolates camera parameters (position, orientation, zoom)
+ * between the selected viewports to create smooth animation sequences.
+ *
+ * Export formats: image sequence (PNG/JPG) or video (AVI/MP4).
+ *
+ * Use case: documenting scan processing workflows, creating turntable
+ * demonstrations, fly-through animations of 3D models.
  *
  * @author Ryan Wicks, 2G Robotics Inc.
  */
 
-//qCC
 #include "ccStdPluginInterface.h"
-
-//Qt
 #include <QObject>
 
 /**
- * @brief Animation plugin
+ * @class qAnimation
  *
- * Capture animations from CloudCompare.
+ * @brief Camera animation capture plugin
+ *
+ * Interpolates camera paths between saved viewport objects and exports
+ * the resulting animation as images or video.
+ *
+ * Activation requirements:
+ * - Exactly 2+ cc2DViewportObject entities must be selected
+ * - An active 3D view must be open
+ *
+ * Workflow:
+ * 1. User selects 2+ saved viewport objects in the DB tree
+ * 2. Triggers the "Animation" action
+ * 3. Plugin opens qAnimationDlg with the selected viewports
+ * 4. User configures frame rate, output format, etc.
+ * 5. Plugin iterates through interpolated camera positions, captures each frame
+ *
+ * @extends QObject
+ * @extends ccStdPluginInterface
+ * @implements ccStdPluginInterface
  */
 class qAnimation : public QObject, public ccStdPluginInterface
 {
 	Q_OBJECT
-	Q_INTERFACES( ccPluginInterface ccStdPluginInterface )
+	Q_INTERFACES(ccPluginInterface ccStdPluginInterface)
 
-	Q_PLUGIN_METADATA( IID "cccorp.cloudcompare.plugin.qAnimation" FILE "../info.json" )
+	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qAnimation" FILE "../info.json")
 
-public:
+  public:
 	/**
-	 * @brief Create plugin
-	 * @param[in] parent Parent object
+	 * @brief Construct the animation plugin
+	 *
+	 * @param[in] parent QObject parent
 	 */
 	qAnimation(QObject* parent = nullptr);
 
-	/// Destructor
+	/**
+	 * @brief Destructor
+	 */
 	virtual ~qAnimation() = default;
 
-	/// Handle new selection
+	// ccStdPluginInterface
+
+	/**
+	 * @brief Handle new entity selection
+	 *
+	 * Enables the action when at least 2 cc2DViewportObject entities
+	 * are selected. Otherwise shows a tooltip explaining the requirement.
+	 *
+	 * @param[in] selectedEntities Current selection
+	 */
 	void onNewSelection(const ccHObject::Container& selectedEntities) override;
 
-	/// Get plugin actions
-	virtual QList<QAction *> getActions() override;
+	/**
+	 * @brief Get the plugin's actions
+	 *
+	 * Returns the "Animation" action for the Plugins menu.
+	 *
+	 * @return List containing the animation action
+	 */
+	virtual QList<QAction*> getActions() override;
 
-private:
-	/// Execute animation action
+  private:
+	/**
+	 * @brief Execute the animation tool
+	 *
+	 * Validates active view, backs up GL state, opens animation dialog,
+	 * restores GL state on exit, optionally exports the camera path as polyline.
+	 */
 	void doAction();
 
+	//! "Animation" action for the Plugins menu
 	QAction* m_action;
 };
