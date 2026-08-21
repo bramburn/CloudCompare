@@ -1,9 +1,46 @@
+/**
+ * @file LasScalarField.cpp
+ *
+ * @brief LAS standard scalar field name mapping implementation
+ *
+ * Maps between LAS field IDs and their human-readable names.
+ * Each standard LAS point format (0-10) has a defined set of scalar
+ * fields. The ForPointFormat() function returns the complete set for a
+ * given format.
+ *
+ * ## LAS Standard Fields
+ *
+ * | ID                        | Name          | Formats |
+ * |---------------------------|---------------|--------|
+ * | Intensity                | Intensity     | all    |
+ * | ReturnNumber             | Return #     | all    |
+ * | NumberOfReturns          | # of Returns | all    |
+ * | ScanDirectionFlag        | Scan Dir.     | all    |
+ * | EdgeOfFlightLine         | E.F.L.        | all    |
+ * | Classification           | Class         | all    |
+ * | ScanAngleRank            | Scan Angle    | 0-5    |
+ * | ExtendedScanAngle        | Scan Angle    | 6-10   |
+ * | GpsTime                  | GPS Time      | 0-1, 3-5, 6-10 |
+ * | RGB/NIR                   | R/G/B/NIR    | 2-3, 5-10 |
+ * | Extended fields           | Extended...   | 6-10   |
+ *
+ * @see LasScalarField.h
+ */
+
 #include "LasScalarField.h"
 
 #include "LasDetails.h"
 
 #include <stdexcept>
 
+/**
+ * @brief Check if a point format is extended (formats 6-10)
+ *
+ * Extended formats (LAS 1.4+) use different field definitions.
+ *
+ * @param[in] pointFormat Point format ID (0-10)
+ * @return true if format >= 6
+ */
 static constexpr bool IsPointFormatExtended(unsigned pointFormat)
 {
 	return pointFormat >= 6;
