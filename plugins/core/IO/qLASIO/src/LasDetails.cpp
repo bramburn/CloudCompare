@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file LasDetails.cpp
+ *
+ * @brief LAS format detail utilities implementation
+ *
+ * Implements helpers for:
+ * - LAS version and point format queries
+ * - VLR detection (COPC, LASzip, extra bytes)
+ * - Point count (handles both standard and extended headers)
+ * - EVDL/EVLR header management
+ * - VLR cloning
+ *
+ * ## LAS Versions
+ *
+ * - LAS 1.2: point formats 0-5
+ * - LAS 1.3: point formats 0-5 (same as 1.2)
+ * - LAS 1.4: point formats 0-10
+ *
+ * ## EVLR (Extended Variable Length Record)
+ *
+ * EVLRs are like VLRs but with 64-bit record length fields,
+ * used for large data like waveform packets.
+ *
+ * @see LasDetails.h
+ */
+
 #include "LasDetails.h"
 
 #include "LasScalarField.h"
@@ -37,16 +63,29 @@ static const std::array<const char*, 3> VersionsArray{"1.2", "1.3", "1.4"};
 
 namespace LasDetails
 {
+	/**
+	 * @brief Check if this is a waveform data EVLR
+	 *
+	 * Record ID 65535 + user ID "LASF_Spec" = waveform packets.
+	 */
 	bool EvlrHeader::isWaveFormDataPackets() const
 	{
 		return recordID == 65'535 && strncmp(userID, "LASF_Spec", EvlrHeader::USER_ID_SIZE) == 0;
 	}
 
+	/**
+	 * @brief Check if this is a COPC EVLR entry
+	 *
+	 * Record ID 1000 + user ID "copc" = COPC spatial index entry.
+	 */
 	bool EvlrHeader::isCOPCEntry() const
 	{
 		return recordID == 1'000 && strncmp(userID, "copc", EvlrHeader::USER_ID_SIZE) == 0;
 	}
 
+	/**
+	 * @brief Create a waveform EVLR header
+	 */
 	EvlrHeader EvlrHeader::Waveform()
 	{
 		EvlrHeader self;
