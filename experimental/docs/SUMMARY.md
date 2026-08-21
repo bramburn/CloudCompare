@@ -273,53 +273,66 @@ Sessions:
 - ✅ **Phase 0 → live CXX FFI.** D10: `cargo test --features
   cxx_ffi` calls the real `CCCoreLib::ICPRegistrationTools::
   Register` via CXX 1.0.199 and recovers the same transform
-  and RMS as the pure-Rust ICP. 3 new parity tests.
+  and RMS as the pure-Rust ICP. 3 new parity tests (now 13
+  CXX FFI tests after the test coverage expansion).
 - ✅ **Update `CONFIGURE_CCCORELIB.md`.** Replaced the
   standalone-build path with the "use the existing build's
   `.lib` / `.dll`" path. The standalone CCCoreLib CMake
   target turned out to be unnecessary because the main
-  CloudCompare build already produces the artifacts.
+  CloudCompare build already produces the artifacts we
+  need.
+- ✅ **D9 `DgmOctree` lifecycle: `benchmarked → selected`.**
+  Promotion proposal at
+  [`experimental/scenarios/2026-08-19-icp-variants/04-dgm-octree/promotion.md`](../scenarios/2026-08-19-icp-variants/04-dgm-octree/promotion.md).
+  "When to use D9 vs kiddo" decision recorded in `AGENTS.md`.
+  Role: C++ `DgmOctree` semantic-compatibility niche.
+- ✅ **Sentry SDK for `cc-rust`.** Mirrors qCC's
+  `CC_USE_SENTRY` opt-in. 8 new tests, 62/62 with feature.
+- ✅ **Real-data benchmark at full 7.5M brook-avenue.**
+  kiddo 244.15s, D9 513.85s — both recover the 0.5m
+  translation to < 1mm. Confirms D9 promotion ratio
+  (~2.1× slower than kiddo at this scale).
+- ✅ **PGO for `cc-rust`.** PGO unavailable on MSVC rustc
+  (no `profiler_builtins`). Tried fat LTO as substitute;
+  fat LTO is 4% slower than thin. Kept thin LTO.
+- ✅ **`qRustICP` CloudCompare plugin.** Standard plugin
+  in `plugins/core/Standard/qRustICP/`. Subprocess
+  path (serialise selected clouds to CSV, run
+  `cc_rust_cli icp`, apply recovered transform). CXX FFI
+  reverse path is a future improvement.
+- ✅ **More DgmOctree methods.** Added
+  `DgmOctree::points_in_sphere(center, radius) ->
+  Vec<usize>`. Used for normal estimation, density,
+  SOR, region growing, local features. 5 new tests
+  (matches brute force on Gaussian). 64/64 default
+  build.
+- ✅ **LAS parser integration via `las` crate.** Pure-Rust
+  `read_las_points(path) -> Result<Vec<[f32; 3]>>` in
+  `cc-rust/src/io.rs`. Reads both `.las` and `.laz` (with
+  the `laz` feature). 5 new tests, 59/59 default build.
 
-**Code-level follow-ups from the 5-agent code review (2026-08-21):**
+**Remaining follow-ups (not in the original deferred list):**
 
-1. ✅ **D9 `DgmOctree` lifecycle: `benchmarked → selected`.**
-   Promotion proposal at
-   [`experimental/scenarios/2026-08-19-icp-variants/04-dgm-octree/promotion.md`](../scenarios/2026-08-19-icp-variants/04-dgm-octree/promotion.md).
-   Per-variant status file at
-   [`04-dgm-octree/status.toml`](../scenarios/2026-08-19-icp-variants/04-dgm-octree/status.toml).
-   "When to use D9 vs kiddo" decision recorded in
-   `AGENTS.md`. Role: C++ `DgmOctree` semantic-compatibility
-   niche (porting code, exact-neighbour reproduction, cell-code
-   hinting). Code is already at `cc-rust/src/dgm_octree.rs` since
-   D7 — promotion is docs-only.
-2. **More DgmOctree class methods.** The current port
-   covers the ICP-relevant surface (build, NN, cell_code
-   primitives). The full C++ class is 3000+ lines and
-   includes cell statistics, CC extraction, ray-casting,
-   sphere queries, etc. None are needed for ICP but may
-   be needed for other planned features.
-3. **LAS parser integration.** D6 picked the `las` crate
-   but the actual file-loading integration into
-   `cc-rust` (and through it into `qCC` via CXX FFI) is
-   not done. The `qLas` C++ plugin is the current path.
-4. **Wire the Rust ICP into a CloudCompare plugin.** A
-   `qRustICP` plugin that loads `cc-rust` as a CXX static
-   library and uses the D8 trait would let users pick
-   "Rust ICP" from the CloudCompare UI and validate the
-   production integration. Now feasible — the CXX FFI
-   is in (D10).
-5. **Real-data benchmarks at N ≥ 100k.** The D8 and D9
-   docs note the kiddo advantage is "expected to grow
-   with N" but only 50k has been measured. A 500k or
-   7.5M (full brook-avenue) test would close the loop.
-6. **Sentry SDK for `cc-rust`.** The main `qCC` has Sentry
-   crash reporting wired up (see `qCC/main.cpp`). `cc-rust`
-   doesn't yet — add the `sentry` crate with the same
-   `SENTRY_DSN` opt-in pattern as `qCC`.
-7. **Profile-guided optimisation (PGO) for `cc-rust`.** The
-   ICP hot path is well-understood after the D8/D9 work.
-   PGO + LTO could shave another 10-20% off the
-   per-query cost.
+1. **More DgmOctree class methods.** This commit added
+   `points_in_sphere` (sphere queries). Still missing
+   from the C++ DgmOctree class: cell statistics,
+   connected-components extraction, ray-casting. None
+   are needed for ICP; needed for other planned
+   features (segmentation, hole filling, etc.).
+2. **Wire the Rust ICP into a CloudCompare plugin as
+   a binary plugin (not just a Standard menu action).**
+   The qRustICP plugin is a Standard plugin that uses
+   a subprocess; a `qRustICPLib` binary plugin could
+   be built that directly links cc-rust via CXX FFI for
+   in-process ICP (no subprocess overhead). Lower
+   priority — the current subprocess path works.
+3. **Sentry SDK test for the `sentry_init` runtime
+   integration.** Current tests cover the
+   `resolve_dsn` pure function but not the live
+   `sentry::init()` call against the production DSN.
+   The smoke test does call `sentry_init()` but doesn't
+   assert the guard is enabled (which depends on network
+   reach to the Sentry DSN — flaky in CI).
 
 ## See also
 
