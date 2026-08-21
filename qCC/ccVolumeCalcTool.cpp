@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccVolumeCalcTool.cpp
+ *
+ * @brief Volume calculation tool implementation
+ *
+ * Tool for computing volume and surface area between two point clouds
+ * (or one cloud and a reference plane).
+ *
+ * ## Volume Calculation
+ *
+ * Computes the signed volume between two clouds:
+ * - Project both clouds onto a reference grid
+ * - For each grid cell, compute the vertical distance
+ * - Sum volumes using the trapezoidal rule
+ *
+ * ## Results
+ *
+ * - **Volume**: total volume between the two surfaces (m³)
+ * - **Surface area**: projected area of the comparison
+ * - **Above/below**: volume above and below the reference
+ * - **Grid stats**: cell count, average spacing, fill ratio
+ *
+ * Extends cc2Point5DimEditor for the 2.5D grid-based comparison.
+ *
+ * @see ccVolumeCalcTool.h, cc2Point5DimEditor
+ */
+
 #include "ccVolumeCalcTool.h"
 
 #include "ui_volumeCalcDlg.h"

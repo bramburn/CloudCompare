@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccTracePolylineTool.cpp
+ *
+ * @brief Trace polyline tool implementation
+ *
+ * Overlay dialog for drawing polylines by clicking points in the 3D view.
+ *
+ * ## Polyline Tracing
+ *
+ * Click in the 3D view to place vertices. The polyline is drawn
+ * in real time as points are placed. Supports:
+ * - **Snap to points**: snap to existing cloud points
+ * - **Snap to grid**: snap to a 3D grid
+ * - **Segment mode**: draw connected line segments
+ * - **Close polyline**: close the loop back to the first point
+ * - **Smooth**: apply Chaikin smoothing (see ccSmoothPolylineDialog)
+ *
+ * ## Interaction
+ *
+ * 1. Start the tool → enters point picking mode
+ * 2. Click to add vertices
+ * 3. Undo removes the last vertex
+ * 4. Confirm → creates a ccPolyline in the db-tree
+ *
+ * @see ccTracePolylineTool.h, ccPolyline
+ */
+
 #include "ccTracePolylineTool.h"
 
 #include "ui_tracePolylineDlg.h"

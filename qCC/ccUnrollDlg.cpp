@@ -15,6 +15,34 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccUnrollDlg.cpp
+ *
+ * @brief Unroll dialog implementation
+ *
+ * Dialog for unrolling point clouds that lie on cylindrical or conical
+ * surfaces into a 2D planar representation.
+ *
+ * ## Unrolling
+ *
+ * Projects 3D points from a curved surface onto a plane:
+ * - **Cylinder**: maps (theta, z) to (x, y) where x = r*theta
+ * - **Cone**: maps (theta, h) to 2D using cone surface coordinates
+ *
+ * Useful for unwrapping cylindrical scans (pipe inspection,
+ * tunnel surveys) into flat images.
+ *
+ * ## Parameters
+ *
+ * - **Type**: cylinder or cone
+ * - **Axis**: the axis of rotation (3D line)
+ * - **Radius**: for cylinder mode (constant or variable along axis)
+ * - **Half angle**: for cone mode
+ * - **Export UV**: also export UV coordinates as scalar fields
+ *
+ * @see ccUnrollDlg.h
+ */
+
 #include "ccUnrollDlg.h"
 
 #include "ccEntitySelectionDlg.h"
