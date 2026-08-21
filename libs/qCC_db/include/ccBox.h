@@ -5,85 +5,57 @@
 // #  This program is free software; you can redistribute it and/or modify  #
 // #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
-// #                                                                        //
+// #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
 // #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        //
+// #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
 
 /**
  * @file ccBox.h
  *
- * @brief 3D box primitive for geometric modeling.
+ * @brief Axis-aligned 3D box primitive
  *
- * @details Represents a 3D axis-aligned box primitive composed of
- * 6 rectangular plane faces.
+ * Represents a rectangular cuboid with 6 quad faces, 8 vertices,
+ * and configurable width/height/depth dimensions.
  *
- * ## Overview
+ * The box is axis-aligned in its local coordinate system (faces parallel
+ * to XY/XZ/YZ planes). Use applyRigidTransformation() to rotate/translate
+ * in world space.
  *
- * A box is defined by:
- * - **Dimensions**: Width (X), Height (Y), Depth (Z)
- * - **Transformation**: Position and orientation
+ * Mesh structure:
+ * - 8 vertices at the 8 corners of the cuboid
+ * - 12 triangles (2 per face) forming 6 quad faces
+ * - Normals: one normal per face (flat shading)
  *
  * Uses:
- * - Clipping operations
+ * - Primitive creation for geometric modeling
+ * - Clipping operations (box clip tool)
  * - Bounding box visualization
- * - Primitive creation for modeling
- * - Reference geometry
+ * - Reference geometry for measurements
  *
- * ## Mesh Structure
- *
- * The box mesh consists of:
- * - 6 quad faces
- * - 8 vertices
- * - 24 vertex indices
- *
- * ## Usage
- *
- * @code
- * // Create a box
- * ccBox* box = new ccBox(CCVector3(1.0, 2.0, 3.0));
- *
- * // Apply transformation
- * ccGLMatrix mat;
- * mat.setTranslation(CCVector3(10, 0, 0));
- * box->applyRigidTransformation(mat);
- *
- * // Modify dimensions
- * CCVector3 dims = box->getDimensions();
- * dims.x *= 2; // Double width
- * box->setDimensions(dims);
- *
- * // Add to scene
- * dbRoot->addChild(box);
- * @endcode
- *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccGenericPrimitive for base class
+ * @extends ccGenericPrimitive
  */
 
 #ifndef CC_BOX_PRIMITIVE_HEADER
 #define CC_BOX_PRIMITIVE_HEADER
 
-// Local
 #include "ccGenericPrimitive.h"
 
 /**
- * @brief 3D box primitive.
+ * @class ccBox
  *
- * @details A box is an axis-aligned rectangular cuboid
- * composed of 6 plane faces.
+ * @brief Axis-aligned 3D box primitive
  *
- * Features:
- * - Configurable dimensions
- * - Rigid transformation support
- * - Mesh generation
- * - Serialization
+ * A rectangular cuboid parameterized by width (X), height (Y), depth (Z).
+ * The box is always axis-aligned in its local frame; rotation and translation
+ * are applied via the inherited transformation from ccHObject.
+ *
+ * Mesh: flat-shaded 12-triangle mesh with per-face normals.
  *
  * @extends ccGenericPrimitive
  */
@@ -91,36 +63,37 @@ class QCC_DB_LIB_API ccBox : public ccGenericPrimitive
 {
   public:
 	/**
-	 * @brief Create a box with dimensions.
+	 * @brief Create a box with specified dimensions
 	 *
-	 * @param[in] dims Box dimensions (width, height, depth).
-	 * @param[in] transMat Optional transformation matrix.
-	 * @param[in] name Box name.
+	 * @param[in] dims Box dimensions (width, height, depth) in local units
+	 * @param[in] transMat Optional initial transformation matrix
+	 * @param[in] name Display name in the DB tree
 	 */
 	ccBox(const CCVector3&  dims,
 	      const ccGLMatrix* transMat = nullptr,
 	      QString           name     = QString("Box"));
 
 	/**
-	 * @brief Simplified constructor.
+	 * @brief Simplified constructor for the ccHObject factory
 	 *
-	 * @param[in] name Box name.
-	 *
-	 * @note For ccHObject factory only.
+	 * @param[in] name Display name
 	 */
-	ccBox(QString name = QString("Box"));
+	explicit ccBox(QString name = QString("Box"));
+
+	// ccHObject
 
 	/**
-	 * @brief Get class type.
+	 * @brief Returns CC_TYPES::BOX
 	 */
 	virtual CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::BOX;
 	}
 
-	// from ccGenericPrimitive
+	// ccGenericPrimitive
+
 	/**
-	 * @brief Get type name.
+	 * @brief Returns \"Box\"
 	 */
 	virtual QString getTypeName() const override
 	{
@@ -128,16 +101,18 @@ class QCC_DB_LIB_API ccBox : public ccGenericPrimitive
 	}
 
 	/**
-	 * @brief Create a clone of this box.
+	 * @brief Clone this box
+	 *
+	 * @return New ccBox with the same dimensions and transformation
 	 */
 	virtual ccGenericPrimitive* clone() const override;
 
 	/**
-	 * @brief Set box dimensions.
+	 * @brief Set the box dimensions
 	 *
-	 * @param[in] dims New dimensions (width, height, depth).
+	 * Rebuilds the mesh to match the new dimensions.
 	 *
-	 * @note Updates the mesh representation.
+	 * @param[in] dims New dimensions (width, height, depth)
 	 */
 	inline void setDimensions(CCVector3& dims)
 	{
@@ -146,9 +121,9 @@ class QCC_DB_LIB_API ccBox : public ccGenericPrimitive
 	}
 
 	/**
-	 * @brief Get box dimensions.
+	 * @brief Get the current box dimensions
 	 *
-	 * @return Current dimensions.
+	 * @return Current width/height/depth
 	 */
 	const CCVector3& getDimensions() const
 	{
@@ -157,28 +132,20 @@ class QCC_DB_LIB_API ccBox : public ccGenericPrimitive
 
   protected:
 	// Serialization
-	/**
-	 * @brief Serialize to file.
-	 */
 	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
-
-	/**
-	 * @brief Deserialize from file.
-	 */
 	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
-
-	/**
-	 * @brief Minimum file version.
-	 */
 	short minimumFileVersion_MeOnly() const override;
 
 	/**
-	 * @brief Build the box mesh.
+	 * @brief Build the triangle mesh from current dimensions
+	 *
+	 * Creates 12 triangles (2 per face) at the 8 corners of the cuboid,
+	 * with flat-shaded per-face normals.
 	 */
 	bool buildUp() override;
 
   private:
-	//! Box dimensions (width, height, depth).
+	//! Box dimensions (X=width, Y=height, Z=depth) in local coordinates
 	CCVector3 m_dims;
 };
 
