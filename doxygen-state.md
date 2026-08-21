@@ -63,12 +63,15 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccPointCloud.h | ✅ Done | Already documented (44 blocks) |
 | ccGLMatrix.h | ✅ Done | Already documented |
 | ccMesh.h | ✅ Done | Already documented (44 blocks) |
+| ccBox.h | ✅ Done | Committed: b2468119 |
+| ccBox.cpp | ✅ Done | Committed: b2468119 |
 
 ### libs/qCC_io/
 | File | Status | Notes |
 |------|--------|-------|
 | FileIOFilter.cpp | ✅ Done | Committed: 274226e3 |
 | FileIOFilter.h | ✅ Done | Already well documented |
+| AsciiFilter.h | ✅ Done | Committed: e98391f0 |
 
 ### libs/qCC_glWindow/
 | File | Status | Notes |
@@ -134,9 +137,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 
 ## Progress Summary
 - **Total files tracked**: ~55
-- **Completed**: 41
+- **Completed**: 44
 - **In progress**: 0
-- **Percentage**: ~75%
+- **Percentage**: ~80%
 
 ## Submodule Note
 `libs/qCC_db/extern/CCCoreLib/` is a git submodule. Files inside it cannot be committed from the parent repo.
