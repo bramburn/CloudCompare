@@ -25,6 +25,12 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | File | Status | Notes |
 |------|--------|-------|
 | main.cpp | ✅ Done | Committed: e5c398c6 |
+| ccSelectChildrenDlg.cpp | ✅ Done | Committed: 178522cf |
+| ccSmoothPolylineDlg.cpp | ✅ Done | Committed: 178522cf |
+| ccScalarFieldFromColorDlg.cpp | ✅ Done | Committed: 178522cf |
+| ccLabelingDlg.cpp | ✅ Done | Committed: 178522cf |
+| ccKrigingParamsDialog.cpp | ✅ Done | Committed: c9f41a62 |
+| ccSORFilterDlg.cpp | ✅ Done | Committed: c9f41a62 |
 | ccConsole.cpp | ✅ Done | Committed: 83a4dacb |
 | ccConsole.h | ✅ Done | Committed: 83a4dacb |
 | ccUtils.cpp | ✅ Done | Committed: bf35923f |
@@ -122,14 +128,14 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccOptions.cpp | ✅ Done | Committed: 90aa7bfa |
 | ccPluginManager.h | ✅ Done | Committed: 4af63721 |
 | ccPluginManager.cpp | ✅ Done | Committed: 799973b9 |
-| ccOptions.h | ✅ Done | Committed: 79bcc028 |
-| ccPluginManager.h | ✅ Done | Committed: 4af63721 |
 | ccApplicationBase.h | ✅ Done | Committed: 6ad25cbe |
+| ccApplicationBase.cpp | ✅ Done | Committed: 4a776709 |
 | ccCameraParamEditDlg.h | ✅ Done | Committed: 53c7f297 |
+| ccCameraParamEditDlg.cpp | ✅ Done | Committed: 13b9ffab |
 | ccPickOneElementDlg.h | ✅ Done | Committed: ab0f1e8d |
 | cc3DMouseManager.h | ✅ Done | Committed: 2f33957e |
-| ccPickOneElementDlg.h | ⬜ Not started | |
-| cc3DMouseManager.h | ⬜ Not started | |
+| ccGLUtils.h | ✅ Done | Committed: 4a6b2e46 |
+| ccGLUtils.cpp | ✅ Done | Committed: e662a216 |
 
 ### libs/CCCoreLib/ (submodule — commits inside submodule only)
 | File | Status | Notes |
@@ -194,8 +200,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~111
-- **Completed**: 111
+- **Total files tracked**: ~120
+- **Completed**: 120
 - **In progress**: 0
 - **Percentage**: ~100%
 
