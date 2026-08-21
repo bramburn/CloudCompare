@@ -69,6 +69,7 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccPointPairRegistrationDlg.cpp | ✅ Done | Committed: a5da400c |
 | ccRasterizeTool.cpp | ✅ Done | Committed: a5da400c |
 | ccSectionExtractionTool.cpp | ✅ Done | Committed: a5da400c |
+| ccCommandLineCommands.cpp | ✅ Done | Committed: 8f7064e2 |
 | ccStereoModeDlg.cpp | ✅ Done | Committed: b0d84c37 |
 | ccTranslationManager.cpp | ✅ Done | Committed: b0d84c37 |
 | ccPickOneElementDlg.cpp | ✅ Done | Committed: b0d84c37 |
@@ -241,8 +242,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~161
-- **Completed**: 161
+- **Total files tracked**: ~162
+- **Completed**: 162
 - **In progress**: 0
 - **Percentage**: ~100%
 
