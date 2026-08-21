@@ -59,6 +59,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccUnrollDlg.cpp | ✅ Done | Committed: 0aab7200 |
 | ccVolumeCalcTool.cpp | ✅ Done | Committed: 0aab7200 |
 | ccTracePolylineTool.cpp | ✅ Done | Committed: 0aab7200 |
+| ccWaveformDialog.cpp | ✅ Done | Committed: bd8c5263 |
+| ccLibAlgorithms.cpp | ✅ Done | Committed: bd8c5263 |
 | ccConsole.cpp | ✅ Done | Committed: 83a4dacb |
 | ccConsole.h | ✅ Done | Committed: 83a4dacb |
 | ccUtils.cpp | ✅ Done | Committed: bf35923f |
@@ -228,8 +230,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~150
-- **Completed**: 150
+- **Total files tracked**: ~152
+- **Completed**: 152
 - **In progress**: 0
 - **Percentage**: ~100%
 
