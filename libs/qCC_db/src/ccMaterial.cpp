@@ -18,6 +18,30 @@
 // Always first
 #include "ccIncludeGL.h"
 
+/**
+ * @file ccMaterial.cpp
+ *
+ * @brief Material implementation
+ *
+ * Implements ccMaterial: a material with colors, textures,
+ * and lighting properties for mesh rendering.
+ *
+ * ## Material Properties
+ *
+ * - **Ambient/diffuse/specular**: standard Phong shading components
+ * - **Shininess**: specular exponent for glossiness
+ * - **Transparency**: alpha blending (0=transparent, 1=opaque)
+ * - **Texture**: QImage applied via UV mapping
+ * - **UV translation**: UV offset and scale for texture tiling
+ *
+ * ## Texture Loading
+ *
+ * Textures are loaded from files via QImage and uploaded
+ * to OpenGL as 2D textures.
+ *
+ * @see ccMaterial.h
+ */
+
 // Local
 #include "ccMaterial.h"
 #include "ccMaterialDB.h"

@@ -15,6 +15,34 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSensor.cpp
+ *
+ * @brief Generic sensor implementation
+ *
+ * Implements ccSensor: base class for 3D acquisition sensors.
+ *
+ * ## Sensor Data
+ *
+ * Sensors store:
+ * - **Position buffer**: linked ccIndexedTransformationBuffer with poses
+ * - **Intrinsic parameters**: sensor-specific calibration
+ * - **Uncertainty**: positional uncertainty for accuracy analysis
+ * - **GL transformation**: rigid body transform to the position reference frame
+ *
+ * ## Position Buffer
+ *
+ * External positions from GPS/IMU are stored in a
+ * ccIndexedTransformationBuffer linked to the sensor.
+ * The sensor can query its position at any timestamp.
+ *
+ * ## Viewing Frustum
+ *
+ * Sensors can draw their acquisition frustum in the 3D view.
+ *
+ * @see ccSensor.h, ccIndexedTransformationBuffer
+ */
+
 #include "ccSensor.h"
 
 ccSensor::ccSensor(const QString& name)

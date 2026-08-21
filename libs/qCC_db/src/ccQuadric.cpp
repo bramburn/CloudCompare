@@ -16,6 +16,31 @@
 // ##########################################################################
 
 // Always on top!
+/**
+ * @file ccQuadric.cpp
+ *
+ * @brief Quadric primitive implementation
+ *
+ * Implements ccQuadric: a 2.5D quadric surface primitive.
+ *
+ * ## Equation
+ *
+ * `Z = a + bX + cY + dX^2 + eXY + fY^2`
+ *
+ * ## Geometry
+ *
+ * - **Base rectangle**: bounded by minCorner → maxCorner in local XY
+ * - **Local transform**: m_toLocalOrientation rotates the quadric surface
+ * - **Mesh generation**: tessellated mesh with Z computed from equation
+ *
+ * ## Use Cases
+ *
+ * - Fitting paraboloid or hyperbolic paraboloid surfaces
+ * - Surface approximation for ground/terrain modeling
+ *
+ * @see ccQuadric.h
+ */
+
 #include "ccQuadric.h"
 
 #include "ccIncludeGL.h"

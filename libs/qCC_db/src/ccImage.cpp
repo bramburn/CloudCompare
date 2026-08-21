@@ -16,6 +16,31 @@
 // ##########################################################################
 
 // Always first
+/**
+ * @file ccImage.cpp
+ *
+ * @brief Image entity implementation
+ *
+ * Implements ccImage: an image associated with 3D geometry.
+ *
+ * ## Image Data
+ *
+ * Stores QImage pixel data and metadata (width, height, aspect ratio).
+ * The image can be linked to a ccCameraSensor for georeferencing.
+ *
+ * ## Rendering
+ *
+ * Draws the image in the 3D view as a textured quad.
+ * Transparency is controlled by setAlpha() and stored in m_texAlpha.
+ *
+ * ## Serialization
+ *
+ * Saves the QImage as binary data in .bin files with width/height
+ * stored separately for cross-version compatibility.
+ *
+ * @see ccImage.h
+ */
+
 #include "ccImage.h"
 
 #include "ccIncludeGL.h"

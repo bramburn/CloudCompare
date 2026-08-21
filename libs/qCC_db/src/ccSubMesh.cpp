@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSubMesh.cpp
+ *
+ * @brief Sub-mesh implementation
+ *
+ * Implements ccSubMesh: a mesh that references a subset of
+ * triangles from another (parent) mesh.
+ *
+ * ## Sub-Mesh
+ *
+ * A sub-mesh stores only triangle indexes (not vertex data).
+ * The vertices come from the associated cloud (inherited from parent).
+ * This allows representing a mesh subset without duplicating vertex data.
+ *
+ * ## Selection
+ *
+ * Sub-meshes are commonly created from mesh selections:
+ * when the user selects a subset of triangles, a sub-mesh
+ * entity is created referencing those triangles.
+ *
+ * @see ccSubMesh.h, ccGenericMesh
+ */
+
 #include "ccSubMesh.h"
 
 // Local
