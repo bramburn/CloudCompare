@@ -28,6 +28,7 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccConsole.cpp | ✅ Done | Committed: 83a4dacb |
 | ccConsole.h | ✅ Done | Committed: 83a4dacb |
 | ccUtils.cpp | ✅ Done | Committed: bf35923f |
+| ccUtils.cpp (enhanced) | ✅ Done | Committed: 9b3260f1 |
 | ccUtils.h | ✅ Done | Committed: bf35923f |
 | ccCommandLineParser.cpp | ✅ Done | Committed: 23f55d26 |
 | ccCommandLineParser.h | ✅ Done | Already documented |
@@ -41,6 +42,7 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccGLWindow.h | ✅ Done | Committed: fc1b527e |
 | ccOverlayDialog.cpp | ✅ Done | Committed: 3de70ab4 |
 | ccOverlayDialog.h | ✅ Done | Committed: 3de70ab4 |
+| ccPropertiesTreeDelegate.h | ✅ Done | Committed: edc54431 |
 
 ### libs/qCC_db/
 | File | Status | Notes |
@@ -155,14 +157,16 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | LasIOFilter.cpp | ✅ Done | Committed: e9db3507 |
 | LasTiler.h | ✅ Done | Committed: f36e8c58 |
 | LasOpenDialog.h | ✅ Done | Committed: fe9f38a0 |
+| LasSaver.h | ✅ Done | Committed: 1627ece3 |
+| LasMetadata.h | ✅ Done | Committed: 2fc9dfbb |
 | qLASIO | ⬜ Not started | Other files in plugin not started |
 | qCoreIO | ⬜ Not started | |
 
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~65
-- **Completed**: 66
+- **Total files tracked**: ~70
+- **Completed**: 70
 - **In progress**: 0
 - **Percentage**: ~100%
 
