@@ -15,6 +15,20 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file HeightProfileFilter.cpp
+ *
+ * @brief Height profile filter implementation
+ *
+ * Exports a point cloud as a height profile (terrain cross-section):
+ * - Generates a 2D vertical slice at a given angle
+ * - Outputs XYZ as ASCII for CAD/GIS import
+ *
+ * Used for generating cross-section drawings from terrain scans.
+ *
+ * @see HeightProfileFilter.h
+ */
+
 #include "HeightProfileFilter.h"
 
 // qCC_db

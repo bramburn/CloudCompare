@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file PTXFilter.cpp
+ *
+ * @brief PTX file filter implementation
+ *
+ * Implements PTX (Leica Cyclone) file I/O.
+ *
+ * ## PTX Format
+ *
+ * Leica Cyclone exports point clouds as PTX files:
+ * - Header with transformation matrix
+ * - Per-point: x, y, z, intensity, R, G, B, and optional columns
+ * - Optional scan grid structure
+ *
+ * ## Import
+ *
+ * Points are imported as a ccPointCloud with optional colors and intensity.
+ * The PTX transformation matrix is applied to get world coordinates.
+ *
+ * @see PTXFilter.h
+ */
+
 #include "PTXFilter.h"
 
 // qCC_db

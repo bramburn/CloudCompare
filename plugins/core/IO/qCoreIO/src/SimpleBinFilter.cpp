@@ -15,6 +15,30 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file SimpleBinFilter.cpp
+ *
+ * @brief Simple binary format filter implementation
+ *
+ * Implements a simple binary cloud format for fast I/O:
+ * - **Header**: magic bytes + version + point count + has colors
+ * - **Data**: x y z [r g b] as float triplets
+ *
+ * ## Format
+ *
+ * ```
+ * [4 bytes] magic = 0x43434D50 ('CCMP')
+ * [4 bytes] version (uint32)
+ * [4 bytes] point count (uint32)
+ * [4 bytes] has colors (uint32, 0 or 1)
+ * [N * 12 bytes] x y z (float triplets, or N * 18 if colors)
+ * ```
+ *
+ * Used for fast temporary export during processing.
+ *
+ * @see SimpleBinFilter.h
+ */
+
 #include "SimpleBinFilter.h"
 
 // Qt

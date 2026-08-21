@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file OFFFilter.cpp
+ *
+ * @brief OFF file filter implementation
+ *
+ * Implements OFF (Object File Format) I/O.
+ *
+ * ## OFF Format
+ *
+ * Simple ASCII mesh format:
+ * ```
+ * OFF
+ * NVertices NFaces NEdges
+ * x y z [r g b [a]]  (per vertex, optional color)
+ * N v1 v2 ... vN [c]  (per face, optional color)
+ * ```
+ *
+ * ## Support
+ *
+ * - Vertices with optional RGBA colors
+ * - Faces with optional per-face colors
+ * - NEdges is ignored
+ *
+ * @see OFFFilter.h
+ */
+
 #include "OFFFilter.h"
 
 // qCC_db

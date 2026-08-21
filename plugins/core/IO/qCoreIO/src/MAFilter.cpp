@@ -15,6 +15,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file MAFilter.cpp
+ *
+ * @brief MA file filter implementation
+ *
+ * Implements MA (Riegl Multi-angle) file I/O.
+ *
+ * ## MA Format
+ *
+ * Riegl scanners export point clouds as MA files with multiple
+ * angles (sub-scans). Each angle is stored as a separate block
+ * of points with its own header.
+ *
+ * ## Import
+ *
+ * Points from all angles are merged into a single cloud.
+ * Per-angle metadata is stored as custom labels.
+ *
+ * @see MAFilter.h
+ */
+
 #include "MAFilter.h"
 
 #include "FileIO.h"

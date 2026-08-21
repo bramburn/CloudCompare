@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file STLFilter.cpp
+ *
+ * @brief STL file filter implementation
+ *
+ * Implements STL (Stereolithography) file I/O:
+ * - **Import**: ASCII (.stla) or binary (.stlb) STL files
+ * - **Export**: mesh → ASCII or binary STL
+ *
+ * ## STL Format
+ *
+ * STL describes a mesh as a list of triangular facets:
+ * - **ASCII**: human-readable, keyword-driven (facet/normal/vertex)
+ * - **Binary**: compact, 80-byte header + uint32 count + 50-byte facets
+ *
+ * ## Import
+ *
+ * Each triangle becomes a mesh face. Normals are computed if not present.
+ * Color from STL header is not supported.
+ *
+ * @see STLFilter.h
+ */
+
 #include "STLFilter.h"
 
 // Qt
