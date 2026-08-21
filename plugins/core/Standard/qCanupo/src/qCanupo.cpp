@@ -8,12 +8,30 @@
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
 //#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
+//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          #
 //#  GNU General Public License for more details.                          #
 //#                                                                        #
 //#      COPYRIGHT: UEB (UNIVERSITE EUROPEENNE DE BRETAGNE) / CNRS         #
 //#                                                                        #
 //##########################################################################
+
+/**
+ * @file qCanupo.cpp
+ *
+ * @brief CANUPO multi-scale classification plugin implementation
+ *
+ * Implements two plugin actions:
+ * - doClassifyAction: apply a trained CANUPO classifier
+ * - doTrainAction: build a new classifier from labeled training data
+ *
+ * Core point sources:
+ * - ORIGINAL: use the cloud itself as core points
+ * - OTHER: use another selected cloud
+ * - SUBSAMPLED: spatial subsampling of the cloud
+ * - MSC_FILE: load pre-computed Multi-Scale Curvature data
+ *
+ * @see qCanupo
+ */
 
 #include "qCanupo.h"
 
@@ -32,7 +50,11 @@
 #include <ccProgressDialog.h>
 
 
-qCanupoPlugin::qCanupoPlugin(QObject* parent/*=nullptr*/)
+// qCanupoPlugin::qCanupoPlugin
+/**
+ * @brief Construct the CANUPO plugin
+ */
+qCanupoPlugin::qCanupoPlugin(QObject* parent /*=nullptr*/)
 	: QObject(parent)
 	, ccStdPluginInterface( ":/CC/plugin/qCanupoPlugin/info.json" )
 	, m_classifyAction(nullptr)
@@ -56,6 +78,14 @@ void qCanupoPlugin::onNewSelection(const ccHObject::Container& selectedEntities)
 	m_selectedEntities = selectedEntities;
 }
 
+// qCanupoPlugin::getActions
+/**
+ * @brief Create and return the plugin's actions
+ *
+ * Creates two actions:
+ * - "Train classifier": opens training dialog for building a new classifier
+ * - "Classify": opens classification dialog for applying a trained classifier
+ */
 QList<QAction*> qCanupoPlugin::getActions()
 {
 	QList<QAction*> group;
@@ -81,6 +111,17 @@ QList<QAction*> qCanupoPlugin::getActions()
 	return group;
 }
 
+// qCanupoPlugin::doClassifyAction
+/**
+ * @brief Execute point cloud classification
+ *
+ * Pipeline:
+ * 1. Show disclaimer (first-use only)
+ * 2. Validate: exactly one point cloud
+ * 3. Show qCanupoClassifDialog (classifier file, core point source, params)
+ * 4. Determine core points: ORIGINAL / SUBSAMPLED / MSC_FILE
+ * 5. Call qCanupoProcess::Classify()
+ */
 void qCanupoPlugin::doClassifyAction()
 {
 	if (!m_app)
@@ -242,6 +283,17 @@ void qCanupoPlugin::doClassifyAction()
 	}
 }
 
+// qCanupoPlugin::doTrainAction
+/**
+ * @brief Execute classifier training
+ *
+ * Pipeline:
+ * 1. Show disclaimer
+ * 2. Show qCanupoTrainingDialog (scales, clouds, descriptor type)
+ * 3. Random subsampling of training clouds
+ * 4. Compute Multi-Scale Curvature (MSC) descriptors at each scale
+ * 5. Combine into a single .canupo classifier file
+ */
 void qCanupoPlugin::doTrainAction()
 {
 	//disclaimer accepted?
