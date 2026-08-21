@@ -21,13 +21,26 @@
 /**
  * @file ccImage.h
  *
- * @brief Image class for texture and photo management
+ * @brief Image entity for textures, photos, and depth maps
  *
- * Represents an image (texture, photo, or depth map) associated
- * with 3D geometry. Images can be linked to sensors for
- * texture mapping and photogrammetry.
+ * Represents an image that can be associated with 3D geometry.
+ * Supports:
+ * - **Textures**: applied to mesh faces via UV mapping
+ * - **Photos**: georeferenced images from cameras
+ * - **Depth maps**: stored alongside ccCameraSensor for photogrammetry
  *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * Key properties:
+ * - Stores QImage pixel data and dimensions
+ * - Optional alpha/transparency
+ * - Associated ccCameraSensor for georeferencing
+ * - Aspect ratio (can differ from w/h if pixels are non-square)
+ *
+ * ## Serialization
+ *
+ * Images are serialized to .bin files with dimensions stored separately
+ * from the QImage binary data.
+ *
+ * @extends ccHObject
  */
 
 // Local
@@ -39,10 +52,11 @@
 class ccCameraSensor;
 
 /**
- * @brief Image entity
+ * @class ccImage
  *
- * Represents an image that can be associated with 3D geometry
- * for textures, textures, or depth maps.
+ * @brief Image entity for textures, photos, and depth maps
+ *
+ * @extends ccHObject
  */
 class QCC_DB_LIB_API ccImage : public ccHObject
 {
