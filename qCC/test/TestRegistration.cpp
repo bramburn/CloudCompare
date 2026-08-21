@@ -8,6 +8,20 @@
 
 
 
+/**
+ * @file TestRegistration.cpp
+ *
+ * @brief Unit tests for point cloud registration
+ *
+ * Tests ICP and manual registration:
+ * - ICP convergence
+ * - Transformation matrix composition
+ * - Horn's SVD method
+ * - Error metrics (RMS, max deviation)
+ * - Multi-iteration refinement
+ *
+ * @see ccRegistrationTools.cpp
+ */
 #include <QtTest/QtTest>
 
 #include <ccPointCloud.h>

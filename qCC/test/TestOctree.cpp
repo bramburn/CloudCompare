@@ -15,6 +15,20 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestOctree.cpp
+ *
+ * @brief Unit tests for DgmOctree
+ *
+ * Tests octree operations:
+ * - Octree construction from points
+ * - Neighbor search (within radius, k nearest)
+ * - Cell-based iteration
+ * - Point location (which cell contains a point)
+ * - Memory usage
+ *
+ * @see DgmOctree.h
+ */
 #include <ccPointCloud.h>
 
 #include <DgmOctree.h>

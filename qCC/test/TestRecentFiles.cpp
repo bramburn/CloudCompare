@@ -22,6 +22,20 @@
 // This stub provides the same public API (constructor, menu(), addFilePath())
 // with in-memory storage and no MainWindow dependency.
 
+/**
+ * @file TestRecentFiles.cpp
+ *
+ * @brief Unit tests for ccRecentFiles
+ *
+ * Tests recent files management:
+ * - Adding and removing files
+ * - Path shortening (contractPath)
+ * - Persistence to QSettings
+ * - Limit enforcement (max 10 files)
+ * - File existence checking
+ *
+ * @see ccRecentFiles.cpp
+ */
 #include <QDir>
 #include <QAction>
 #include <QMenu>

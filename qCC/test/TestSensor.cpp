@@ -15,6 +15,20 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestSensor.cpp
+ *
+ * @brief Unit tests for ccSensor
+ *
+ * Tests sensor management:
+ * - Sensor type and intrinsic parameters
+ * - Position buffer (trajectory)
+ * - GPS/IMU pose integration
+ * - Depth map handling
+ * - Viewing frustum computation
+ *
+ * @see ccSensor.cpp
+ */
 #include <ccSensor.h>
 #include <ccGBLSensor.h>
 

@@ -15,6 +15,21 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestScalarField.cpp
+ *
+ * @brief Unit tests for ccScalarField
+ *
+ * Tests scalar field operations:
+ * - Value storage and retrieval
+ * - Arithmetic operations (+, -, *, /, min, max)
+ * - Statistics (min, max, mean, stddev)
+ * - Histogram computation
+ * - SF history management
+ * - Color scale mapping
+ *
+ * @see ccScalarField.h
+ */
 #include <ccPointCloud.h>
 #include <ccScalarField.h>
 

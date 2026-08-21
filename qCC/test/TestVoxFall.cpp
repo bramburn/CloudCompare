@@ -20,6 +20,19 @@
 // qVoxFallDialog.h which requires a MOC-generated UI header, so we embed the
 // tested functions directly here.
 
+/**
+ * @file TestVoxFall.cpp
+ *
+ * @brief Unit tests for VoxFall algorithm
+ *
+ * Tests voxel-based falling particle simulation
+ * for terrain surface estimation:
+ * - Voxel grid construction
+ * - Particle simulation (gravity + collision)
+ * - Surface reconstruction from settled particles
+ *
+ * @see qVoxFall.h
+ */
 #include <ccPointCloud.h>
 #include <ccGLMatrix.h>
 #include <ccBox.h>

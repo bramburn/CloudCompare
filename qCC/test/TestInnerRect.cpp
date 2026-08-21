@@ -8,6 +8,20 @@
 // ccGenericPointCloud* and an axis index (zDim, 0–2); the remaining two axes
 // form the 2-D search plane.
 
+/**
+ * @file TestInnerRect.cpp
+ *
+ * @brief Unit tests for largest inscribed rectangle
+ *
+ * Tests the rotating-calipers algorithm for finding
+ * the largest axis-aligned rectangle inside a polygon:
+ * - Convex hull computation
+ * - Calipers rotation
+ * - Area maximization
+ * - Edge cases (triangle, pentagon)
+ *
+ * @see ccInnerRect2DFinder.cpp
+ */
 #include <QtTest/QtTest>
 
 #include <ccPointCloud.h>

@@ -15,6 +15,20 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestFileIOFilter.cpp
+ *
+ * @brief Unit tests for FileIOFilter
+ *
+ * Tests the filter registry and loading:
+ * - Filter registration
+ * - Extension matching
+ * - Load/save round-trip
+ * - Progress reporting
+ * - Error handling
+ *
+ * @see FileIOFilter.cpp
+ */
 #include "FileIOFilter.h"
 
 #include <QTest>

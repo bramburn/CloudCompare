@@ -15,6 +15,20 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestHistogram.cpp
+ *
+ * @brief Unit tests for scalar field histogram
+ *
+ * Tests histogram computation and display:
+ * - Binning strategies
+ * - Frequency counting
+ * - Statistics (mean, stddev, skewness)
+ * - CDF computation
+ * - Display range computation
+ *
+ * @see ccScalarField.h
+ */
 #include <ccPointCloud.h>
 #include <ccScalarField.h>
 

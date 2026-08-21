@@ -15,6 +15,20 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestDistributions.cpp
+ *
+ * @brief Unit tests for scalar field distributions
+ *
+ * Tests statistical distribution functions:
+ * - Gaussian distribution (PDF, CDF)
+ * - Uniform distribution
+ * - Normalization
+ * - Mean, variance, standard deviation
+ * - SF population statistics computation
+ *
+ * @see GenericDistribution.h
+ */
 #include <ccPointCloud.h>
 #include <ccScalarField.h>
 

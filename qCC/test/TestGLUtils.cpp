@@ -18,6 +18,19 @@
 // ccGLUtils lives in qCC_glWindow, not qCC — put the test in the glWindow test dir
 // if that dir exists, otherwise put it in qCC/test with appropriate linking.
 
+/**
+ * @file TestGLUtils.cpp
+ *
+ * @brief Unit tests for GL utilities
+ *
+ * Tests OpenGL utility functions:
+ * - Texture loading and binding
+ * - Shader compilation
+ * - View matrix generation
+ * - GL error checking
+ *
+ * @see ccGLUtils.cpp
+ */
 #include <QCoreApplication>
 
 #include <QTest>

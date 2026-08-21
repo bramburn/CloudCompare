@@ -15,6 +15,19 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestShiftedObject.cpp
+ *
+ * @brief Unit tests for ccShiftedObject
+ *
+ * Tests global coordinate shift management:
+ * - Origin offset storage and retrieval
+ * - Shifted vs. unshifted coordinate conversion
+ * - High-precision arithmetic
+ * - SF value preservation under shift
+ *
+ * @see ccShiftedObject.cpp
+ */
 #include <ccPointCloud.h>  // ccPointCloud IS a ccShiftedObject
 
 #include <QTest>

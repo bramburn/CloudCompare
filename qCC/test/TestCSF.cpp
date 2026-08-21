@@ -3,6 +3,19 @@
 // Unit tests for qCSF: Vec3, Particle::timeStep, Cloth, Cloud2CloudDist.
 // Uses Qt Test — run via Python subprocess with explicit PATH (see BUILD-LOCAL.md §9).
 
+/**
+ * @file TestCSF.cpp
+ *
+ * @brief Unit tests for Cloth Simulation Filter
+ *
+ * Tests ground/non-ground classification:
+ * - Cloth mesh simulation (Verlet integration)
+ * - Point-cloth collision detection
+ * - Ground vs non-ground classification
+ * - Parameter sensitivity (rigidity, resolution)
+ *
+ * @see qCSF.h
+ */
 #include <QtTest/QtTest>
 #include <QDebug>
 

@@ -16,6 +16,21 @@
 // ##########################################################################
 
 // Local
+/**
+ * @file TestGLMatrix.cpp
+ *
+ * @brief Unit tests for ccGLMatrix
+ *
+ * Tests OpenGL transformation matrix operations:
+ * - Matrix-vector multiplication
+ * - Matrix-matrix multiplication (composition)
+ * - Inverse computation
+ * - Rotation extraction (Euler angles)
+ * - Translation and scale extraction
+ * - Column-major memory layout
+ *
+ * @see ccGLMatrixTpl.h
+ */
 #include <ccGLMatrix.h>
 
 #include <QTest>

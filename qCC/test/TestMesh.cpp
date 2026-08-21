@@ -15,6 +15,20 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestMesh.cpp
+ *
+ * @brief Unit tests for ccMesh
+ *
+ * Tests mesh operations:
+ * - Triangle adjacency computation
+ * - Face normal computation
+ * - Bounding box and center
+ * - Mesh-mesh intersection
+ * - Sub-mesh extraction
+ *
+ * @see ccGenericMesh.cpp
+ */
 #include <ccPointCloud.h>
 #include <ccMesh.h>
 

@@ -1,3 +1,17 @@
+/**
+ * @file TestArgumentParser.cpp
+ *
+ * @brief Unit tests for ccArgumentParser
+ *
+ * Tests command-line argument parsing:
+ * - Short option parsing (-o, -r)
+ * - Long option parsing (--open, --register)
+ * - Key-value pairs (KEY=VALUE)
+ * - Positional arguments
+ * - Error handling (missing required args)
+ *
+ * @see ccArgumentParser.cpp
+ */
 #include "ccArgumentParser.h"
 
 #include <QTest>

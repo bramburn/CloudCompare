@@ -21,6 +21,19 @@
 // Full original: plugins/core/Standard/qAnimation/
 
 // qCC_db
+/**
+ * @file TestAnimation.cpp
+ *
+ * @brief Unit tests for camera animation
+ *
+ * Tests viewpoint interpolation and animation:
+ * - Camera position interpolation (linear, spherical)
+ * - View direction interpolation
+ * - Keyframe sequencing
+ * - Frame rate and timing
+ *
+ * @see ccViewportParameters.h
+ */
 #include <ccViewportParameters.h>
 #include <ccGLMatrix.h>
 

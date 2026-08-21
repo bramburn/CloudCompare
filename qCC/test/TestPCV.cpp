@@ -16,6 +16,18 @@
 //##########################################################################
 
 // qPCV plugin
+/**
+ * @file TestPCV.cpp
+ *
+ * @brief Unit tests for PCV (Perspective Cloud View)
+ *
+ * Tests PCV ambient occlusion algorithm:
+ * - Visibility coefficient computation
+ * - Screen-space shading
+ * - Parameter sensitivity
+ *
+ * @see qPCV.cpp
+ */
 #include <PCV.h>
 
 // CCCoreLib

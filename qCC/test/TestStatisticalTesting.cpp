@@ -15,6 +15,19 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestStatisticalTesting.cpp
+ *
+ * @brief Unit tests for statistical testing tools
+ *
+ * Tests statistical comparison of two scalar fields:
+ * - Two-sample t-test
+ * - Mann-Whitney U test
+ * - Kolmogorov-Smirnov test
+ * - Significance threshold
+ *
+ * @see ccStatisticalTestDlg.cpp
+ */
 #include <StatisticalTestingTools.h>
 #include <NormalDistribution.h>
 

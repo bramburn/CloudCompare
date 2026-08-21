@@ -10,6 +10,19 @@
 // because it lives in the qCC executable (not a shared library) and cannot be
 // linked by a standalone test binary.
 
+/**
+ * @file TestLibAlgorithms.cpp
+ *
+ * @brief Unit tests for shared algorithms
+ *
+ * Tests geometric algorithms from ccLibAlgorithms:
+ * - Point cloud density estimation
+ * - Roughness computation
+ * - Curvature estimation
+ * - Match scales algorithm
+ *
+ * @see ccLibAlgorithms.cpp
+ */
 #include <QtTest/QtTest>
 
 // CCCoreLib

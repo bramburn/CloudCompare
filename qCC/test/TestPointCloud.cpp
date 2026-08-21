@@ -15,6 +15,21 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestPointCloud.cpp
+ *
+ * @brief Unit tests for ccPointCloud
+ *
+ * Tests point cloud data management:
+ * - Point insertion and deletion
+ * - Coordinates and colors
+ * - Scalar field management
+ * - Global shift handling
+ * - Bounding box computation
+ * - Octree integration
+ *
+ * @see ccPointCloud.h
+ */
 #include <ccPointCloud.h>
 #include <ccScalarField.h>
 

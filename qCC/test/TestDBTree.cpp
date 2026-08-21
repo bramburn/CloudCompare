@@ -15,6 +15,19 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestDBTree.cpp
+ *
+ * @brief Unit tests for database tree (ccDBRoot)
+ *
+ * Tests hierarchy management:
+ * - Entity add/remove operations
+ * - Tree structure and parent-child relations
+ * - Selection propagation
+ * - Visibility and color inheritance
+ *
+ * @see ccDBRoot.cpp
+ */
 #include <ccHObject.h>
 #include <ccPointCloud.h>
 #include <ccBBox.h>

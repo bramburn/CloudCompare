@@ -3,6 +3,20 @@
 // Unit tests for qM3C2 tools: ComputeStatistics and MakeNormalsHorizontal.
 // Uses Qt Test — run via Python subprocess with explicit PATH (see BUILD-LOCAL.md §9).
 
+/**
+ * @file TestM3C2.cpp
+ *
+ * @brief Unit tests for M3C2 algorithm
+ *
+ * Tests Multiscale Model to Model Cloud Comparison:
+ * - Cylinder casting along normals
+ * - Perpendicular plane fitting
+ * - Distance computation
+ * - Uncertainty estimation
+ * - Scale sensitivity
+ *
+ * @see qM3C2Process.cpp
+ */
 #include <QtTest/QtTest>
 
 #include <ccPointCloud.h>

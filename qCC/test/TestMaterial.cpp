@@ -15,6 +15,20 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestMaterial.cpp
+ *
+ * @brief Unit tests for ccMaterial
+ *
+ * Tests material properties and GL texture upload:
+ * - Ambient/diffuse/specular color
+ * - Shininess and transparency
+ * - Texture loading and UV mapping
+ * - GL texture object management
+ * - Phong shading computation
+ *
+ * @see ccMaterial.cpp
+ */
 #include <ccMaterial.h>
 #include <ccColorTypes.h>
 

@@ -15,6 +15,19 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestConsole.cpp
+ *
+ * @brief Unit tests for ccConsole
+ *
+ * Tests console output functionality:
+ * - Log message formatting
+ * - Color output (info, warning, error)
+ * - Message buffering and display
+ * - Multi-line output
+ *
+ * @see ccConsole.cpp
+ */
 #include <QCoreApplication>
 #include <QListWidget>
 
