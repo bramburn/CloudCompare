@@ -45,6 +45,16 @@ enum Cmd {
 }
 
 fn main() {
+    // ── Sentry crash reporting (opt-in via the `sentry` feature) ──
+    //
+    // Mirrors qCC's `CC_USE_SENTRY` opt-in. The guard is held for
+    // the program's lifetime; on drop it flushes any queued
+    // events and closes the Sentry transport (2-second deadline).
+    // If the `sentry` feature is not enabled, the call is a no-op
+    // (the function returns `None` and the module is empty).
+    #[cfg(feature = "sentry")]
+    let _sentry_guard = cc_rust::sentry_init::sentry_init();
+
     let cli = Cli::parse();
 
     match cli.cmd {

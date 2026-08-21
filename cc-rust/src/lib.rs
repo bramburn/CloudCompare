@@ -34,6 +34,13 @@ pub mod dgm_octree;
 #[cfg(feature = "cxx_ffi")]
 pub mod ffi;
 
+// Sentry crash reporting — opt-in via the `sentry` feature.
+// Mirrors qCC's `CC_USE_SENTRY` opt-in. `cc_rust_cli` calls
+// `sentry_init()` at the top of `main()` and holds the guard
+// for the program's lifetime. See `src/sentry_init.rs`.
+#[cfg(feature = "sentry")]
+pub mod sentry_init;
+
 pub use scalar_field::{
     mean, min_max, rms, std, valid_count, apply_offset, apply_scale,
     compute_stats, compare, ScalarStats, ScalarError,

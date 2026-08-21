@@ -30,6 +30,11 @@ path = "src/main.rs"
 [features]
 default = []
 cxx_ffi = ["dep:cxx", "dep:cxx-build"]
+# Sentry crash reporting (mirrors the qCC CMake POST_BUILD opt-in).
+# Same DSN as the main app (qCC/main.cpp) so crashes from Rust code
+# land in the same Sentry project as C++ crashes. Set CC_SENTRY_DSN
+# in the env to override (e.g. for dev/staging).
+sentry = ["dep:sentry"]
 
 [dependencies]
 # Numerics
