@@ -160,6 +160,10 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | LasOpenDialog.h | ✅ Done | Committed: fe9f38a0 |
 | LasSaver.h | ✅ Done | Committed: 1627ece3 |
 | LasSaver.cpp | ✅ Done | Committed: 71ba5caf |
+| LasVlr.cpp | ✅ Done | Committed: 5493fb7a |
+| LasOpenDialog.cpp | ✅ Done | Committed: 01c64159 |
+| LasScalarField.cpp | ✅ Done | Committed: 46d3fb19 |
+| LasSaver.cpp | ✅ Done | Committed: 71ba5caf |
 | LasMetadata.h | ✅ Done | Committed: 2fc9dfbb |
 | LasMetadata.cpp | ✅ Done | Committed: 944e41a6 |
 | qLASIO | ⬜ Not started | Other files in plugin not started |
@@ -168,8 +172,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~74
-- **Completed**: 74
+- **Total files tracked**: ~79
+- **Completed**: 79
 - **In progress**: 0
 - **Percentage**: ~100%
 
