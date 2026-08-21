@@ -71,7 +71,7 @@ Right-click a multi-selection:
 
 - **Merge** — combine multiple clouds into one. Loses scalar field
   names that don't match. See
-  [Merge multiple entities](/docs/cookbook#merge-multiple-entities-into-one).
+  [Merge multiple entities](/docs/cookbook/merge).
 - **Clone** — duplicate the entity. Use before any destructive
   operation (crop, subsample, delete).
 - **Delete** — remove the entity from the tree. **Not undoable** after
@@ -120,7 +120,7 @@ whether the octree is up to date.
 ## Gotchas
 
 - **Save to `.bin` to round-trip the whole tree.** See
-  [Save and reload](/docs/cookbook#save-and-reload-a-working-session).
+  [Save and reload](/docs/cookbook/save-session).
   Other formats only export a single entity, not the whole tree.
 - **Multi-monitor viewports flatten on save.** A `.bin` saves the
   geometry and the scalar fields but not the per-monitor camera setup.

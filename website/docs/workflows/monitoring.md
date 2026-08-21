@@ -22,7 +22,7 @@ the wall is moving, the slope is creeping, or the tank is settling.
 2. **Crop to the area of interest** — M3C2 is slow on full scans. Use
    `Edit > Crop` or `Tools > Segment` to bound both clouds to the
    structure or slope. See
-   [Crop a region](/docs/cookbook#crop-a-region-to-a-bounding-box-or-polygon).
+   [Crop a region](/docs/cookbook/crop).
 3. **Rough align** — pick three or more reference points that didn't move
    between the two epochs (a fixed benchmark, a piece of unmovable
    hardware). Use `Tools > Registration > Align (point pairs)` to seed

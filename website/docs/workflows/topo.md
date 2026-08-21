@@ -19,7 +19,7 @@ produce a Digital Terrain Model plus breaklines and contours.
 2. **Decimate** — for scans denser than ~5 mm point spacing, decimate by
    space to ~25 mm before any further processing. The CSF and M3C2 steps
    both scale badly with point count. See
-   [Subsample > Spatial](/docs/cookbook#subsample-a-cloud).
+   [Subsample > Spatial](/docs/cookbook/subsample).
 3. **Register** — if the scans have overlapping coverage, run ICP (or
    manual alignment for sites with sparse overlap). The fork ships the
    built-in ICP under `Tools > Registration > Align (point pairs)` plus
