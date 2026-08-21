@@ -58,3 +58,4 @@ pub use dgm_octree::{
     DgmOctree, DgmOctreeNN, compute_cell_code, get_cell_pos, get_bit_shift,
     MAX_OCTREE_LEVEL,
 };
+pub use octree::KiddoNN;

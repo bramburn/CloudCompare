@@ -1,19 +1,19 @@
-// src/octree.rs — Phase 3: Pure-Rust Octree + KD-Tree
-#![allow(dead_code)] // stub — fields filled in as Octree implementation is completed
+﻿// src/octree.rs â€” Phase 3: Pure-Rust Octree + KD-Tree
+#![allow(dead_code)] // stub â€” fields filled in as Octree implementation is completed
 //
 // Implements DgmOctree and KdTree in pure Rust.
 // Migration targets:
-//   • CCCoreLib::DgmOctree::build  (octree structure)
-//   • CCCoreLib::KdTree             (KD-tree nearest neighbour)
+//   â€¢ CCCoreLib::DgmOctree::build  (octree structure)
+//   â€¢ CCCoreLib::KdTree             (KD-tree nearest neighbour)
 //
 // These are the most complex Rust migration targets:
-//   • DgmOctree: TBB parallel cell computation → Rayon
-//   • KdTree:    manual new/delete → Box<KdTreeCell>
-//   • Both:      MultiThreadingWrapper races → Rust ownership
+//   â€¢ DgmOctree: TBB parallel cell computation â†’ Rayon
+//   â€¢ KdTree:    manual new/delete â†’ Box<KdTreeCell>
+//   â€¢ Both:      MultiThreadingWrapper races â†’ Rust ownership
 
 use smallvec::SmallVec;
 
-// ── Pure-Rust Octree / KD-Tree types ────────────────────────────────────────
+// â”€â”€ Pure-Rust Octree / KD-Tree types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /// Result of octree build.
 #[derive(Debug, Clone)]
@@ -36,7 +36,7 @@ pub struct NnResultRust {
     pub distance: f32,
 }
 
-// ── KD-Tree ────────────────────────────────────────────────────────────────
+// â”€â”€ KD-Tree â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /// KD-Tree cell. Replaces the manual `new KdTreeCell()` / `deleteSubTree()` in CCCoreLib.
 struct KdTreeCell {
@@ -72,7 +72,7 @@ impl KdTreeCell {
     }
 }
 
-// Box<KdTreeCell> implements Drop recursively — no manual delete needed.
+// Box<KdTreeCell> implements Drop recursively â€” no manual delete needed.
 // Rust's ownership model eliminates the KdTree.cpp manual memory management entirely.
 
 /// Pure-Rust KD-Tree for nearest neighbour search.
@@ -116,7 +116,7 @@ impl KdTree {
         self.search_nearest(self.root.as_deref(), query, k, &mut results);
         results.sort_by_key(|r| (r.distance * 1000.0) as u32); // sort by distance
         results.truncate(k);
-        results.into_vec() // convert SmallVec → Vec
+        results.into_vec() // convert SmallVec â†’ Vec
     }
 
     fn dist_sq(&self, a: &[f32; 3], b: &[f32; 3]) -> f32 {
@@ -159,7 +159,7 @@ impl Default for KdTree {
     fn default() -> Self { Self::new() }
 }
 
-// ── Octree ───────────────────────────────────────────────────────────────
+// â”€â”€ Octree â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /// Octree cell. Mirrors DgmOctree::OctreeCell.
 struct OctreeCell {
@@ -190,7 +190,7 @@ impl OctreeCell {
 }
 
 /// Pure-Rust DgmOctree implementation.
-/// Phase 3 migration target — most complex.
+/// Phase 3 migration target â€” most complex.
 pub struct Octree {
     points: Vec<f32>,     // interleaved xyz
     cells: Vec<OctreeCell>,
@@ -265,7 +265,7 @@ fn compute_bounding_box(points: &[f32]) -> ([f32; 3], [f32; 3]) {
     (min, max)
 }
 
-// ── FFI wrappers (called by CXX bridge) ────────────────────────────────
+// â”€â”€ FFI wrappers (called by CXX bridge) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /// Wraps the pure-Rust octree build for the FFI layer.
 pub fn build_octree(points: &[f32], max_level: u8) -> Result<OctreeDataRust, OctreeErrorRust> {
@@ -278,7 +278,7 @@ pub fn kdtree_nearest(points: &[f32], query: &[f32; 3], k: usize) -> Vec<NnResul
     tree.nearest(query, k)
 }
 
-// ── Tests ─────────────────────────────────────────────────────────────────
+// â”€â”€ Tests â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 #[cfg(test)]
 mod tests {
@@ -377,11 +377,109 @@ mod tests {
     #[test]
     fn test_box_cell_no_manual_delete() {
         // Verify Box<KdTreeCell> is properly dropped
-        // No assertion needed — if this compiles and runs without leak,
+        // No assertion needed â€” if this compiles and runs without leak,
         // Box's Drop impl handles cleanup automatically.
         let pts = vec![0.0_f32, 0.0, 0.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0];
         let _tree = KdTree::build(&pts);
-        // tree drops here → all Box<KdTreeCell> cells dropped automatically
-        // No deleteSubTree() needed — this is the Rust migration win
+        // tree drops here â†’ all Box<KdTreeCell> cells dropped automatically
+        // No deleteSubTree() needed â€” this is the Rust migration win
+    }
+}
+// ===========================================================================
+// Kiddo KD-tree adapter (D8, 2026-08-20)
+//
+// Was previously only in the experimental `02-kiddo-kdtree`
+// scenario crate. Promoted into the main lib so the CLI
+// and any other consumer can use it without pulling in
+// the experimental scenario as a dep.
+//
+// kiddo is a pure-Rust KD-tree (~30 KLOC, no C bindings).
+// It is the recommended NN for ICP: 1.5-3x faster than
+// DgmOctree's D9 at ICP scale (see the D9 promotion.md
+// benchmarks in
+// `experimental/scenarios/2026-08-19-icp-variants/04-dgm-octree/promotion.md`).
+// ===========================================================================
+
+use kiddo::KdTree as KiddoRawTree;
+use kiddo::SquaredEuclidean;
+use kiddo::leaf_strategies::VecOfArenas;
+use kiddo::stem_strategies::EytzingerFlexPf;
+
+/// kiddo 6.0 `KdTree` is generic over 6 type parameters:
+///   A     — item type (f32 or f64)
+///   T     — index type (u32 here)
+///   SS    — stem strategy (EytzingerFlexPf = best for
+///           read-heavy workloads like ICP NN queries)
+///   LS    — leaf strategy (VecOfArenas with bucket size
+///           and arena-size constants)
+///   const K: usize — dimension (3 = XYZ)
+///   const B: usize — leaf bucket size (32 is the
+///           standard; 16-64 are reasonable)
+///
+/// We use the f64 flavour because that's what the
+/// experimental scenario settled on (kiddo's f32 path
+/// has slightly less numerical headroom for ICP and the
+/// f32→f64 round-trip on insert is free). The trait
+/// adapter below does the f32→f64 cast on every query.
+pub type KiddoTree = KiddoRawTree<
+    f64,
+    u32,
+    EytzingerFlexPf,
+    VecOfArenas<f64, u32, 3, 32>,
+    3,
+    32,
+>;
+
+/// `NearestNeighbour` adapter over a kiddo `KdTree`. Used
+/// by `icp_with_nn` as the default NN — kiddo is 1.5-3x
+/// faster than DgmOctree's D9 at ICP scale (D9
+/// promotion.md).
+///
+/// Build cost is O(n log n) once; per-query cost is
+/// O(log n) amortised. For ICP with n = 7.5M points, the
+/// full ICP wall time is ~244s (vs D9's ~514s — both
+/// with thin LTO).
+pub struct KiddoNN {
+    tree: KiddoTree,
+}
+
+impl KiddoNN {
+    /// Build a kiddo KD-tree from a flat f32 point cloud
+    /// (the layout `icp_with_nn` uses: `[x, y, z, x, y, z,
+    /// ...]`). Returns a `KiddoNN` ready to plug into
+    /// `icp_with_nn`. Internally casts to f64 for kiddo's
+    /// f64 flavour (no precision loss vs CCCoreLib which
+    /// also uses f64 for ICP numerics).
+    pub fn build(model_points: &[f32]) -> Self {
+        let n = model_points.len() / 3;
+        let points: Vec<[f64; 3]> = (0..n)
+            .map(|i| [
+                model_points[i * 3] as f64,
+                model_points[i * 3 + 1] as f64,
+                model_points[i * 3 + 2] as f64,
+            ])
+            .collect();
+        // kiddo 6.0's bulk builder: takes a slice of
+        // points and assigns sequential item ids starting
+        // at 0. `n` may be 0 here; kiddo's `new_from_slice`
+        // handles the empty case (returns an empty tree).
+        let tree = KiddoTree::new_from_slice(&points)
+            .expect("kiddo kd-tree construction");
+        Self { tree }
+    }
+}
+
+impl crate::registration::NearestNeighbour for KiddoNN {
+    /// Per-query NN: returns `(point_index, squared_distance)`.
+    /// f32 → f64 cast on the query point is essentially
+    /// free relative to the cost of the tree descent.
+    fn nearest(&self, query: &[f32; 3]) -> (usize, f32) {
+        let q = [query[0] as f64, query[1] as f64, query[2] as f64];
+        let result = self
+            .tree
+            .query(&q)
+            .nearest_one::<SquaredEuclidean<f64>>()
+            .execute();
+        (result.item as usize, result.distance as f32)
     }
 }

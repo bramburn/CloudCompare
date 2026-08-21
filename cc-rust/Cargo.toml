@@ -65,6 +65,14 @@ serde_json = "1.0"
 # dep on the `laz` crate.
 las = { version = "0.9", default-features = false, features = ["laz"] }
 
+# Pure-Rust KD-tree (D8 winning NN — 1.5-3x faster than D9's
+# DgmOctree at 7.5M points, per the D9 promotion.md benchmarks).
+# Was previously only available via the experimental
+# `02-kiddo-kdtree` scenario crate; promoted into the main
+# lib so the CLI and any other consumer can use it without
+# pulling in the experimental scenario as a dep.
+kiddo = "6.0"
+
 # CXX (FFI; opt-in)
 cxx = { version = "1.0", optional = true }
 
