@@ -16,6 +16,31 @@
 // ##########################################################################
 
 // qCC
+/**
+ * @file ccGLWindow.cpp
+ *
+ * @brief GL window implementation
+ *
+ * Implements ccGLWindow: the concrete QOpenGLWidget-based
+ * 3D rendering window.
+ *
+ * ## Window
+ *
+ * ccGLWindow is the concrete implementation of ccGLWindowInterface
+ * using QOpenGLWidget as the base widget. It manages the OpenGL
+ * context, entity rendering, and user interaction.
+ *
+ * ## Rendering Pipeline
+ *
+ * 1. Entity collection via getOwnBB() and build/traverse DB-tree
+ * 2. Painter's algorithm (back-to-front sorting by z-center)
+ * 3. GL mode setup (lighting, blending, etc.)
+ * 4. drawMeOnly() for each entity
+ * 5. 2D overlay rendering
+ *
+ * @see ccGLWindow.h, ccGLWindowInterface
+ */
+
 #include "ccGLWindow.h"
 
 // qCC_db

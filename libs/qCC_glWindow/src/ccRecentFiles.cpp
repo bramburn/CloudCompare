@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccRecentFiles.cpp
+ *
+ * @brief Recent files management implementation
+ *
+ * Implements recent files management for the File menu.
+ *
+ * ## Recent Files
+ *
+ * - Tracks the last N (default 10) opened files
+ * - Stores full paths (shortened for display via pathContract)
+ * - Cleans up entries for files that no longer exist
+ * - Rebuilt on File → Open or drag-and-drop
+ *
+ * ## Persistence
+ *
+ * Saved to QSettings under "RecentFiles" as a QStringList.
+ * Loaded on startup to populate the File menu.
+ *
+ * @see ccRecentFiles.h
+ */
+
 #include "ccRecentFiles.h"
 
 #include <QAction>

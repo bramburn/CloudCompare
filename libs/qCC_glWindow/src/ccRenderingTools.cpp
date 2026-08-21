@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccRenderingTools.cpp
+ *
+ * @brief Rendering tools implementation
+ *
+ * Implements OpenGL rendering utilities for visual effects
+ * and enhancements in ccGLWindow.
+ *
+ * ## Rendering Tools
+ *
+ * - **EDL (Eye-Dome Lighting)**: depth-based shading for
+ *   point cloud visualization
+ * - **SSAO (Screen-Space Ambient Occlusion)**: contact shadows
+ *   for mesh rendering
+ * - **Sun shadow**: directional light shadow mapping
+ *
+ * These are implemented as post-processing passes or
+ * shader-based effects on the GL pipeline.
+ *
+ * @see ccRenderingTools.h
+ */
+
 #include "ccRenderingTools.h"
 
 // qCC

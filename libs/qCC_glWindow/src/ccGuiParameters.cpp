@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGuiParameters.cpp
+ *
+ * @brief GUI parameters implementation
+ *
+ * Implements per-window GUI parameters: the set of rendering
+ * and interaction settings specific to one ccGLWindow.
+ *
+ * ## Parameters
+ *
+ * - **Lighting**: ambient/diffuse/specular colors
+ * - **GL rendering**: point/line size, color material mode
+ * - **SF display**: color scale, shader, saturation
+ * - **Font**: label and coordinate font settings
+ * - **Interaction**: mouse buttons, zoom speed
+ * - **Zoom**: perspective FOV or ortho scale
+ * - **Octree**: auto-compute toggle
+ *
+ * Stored in QSettings and applied on window creation.
+ *
+ * @see ccGuiParameters.h
+ */
+
 #include "ccGuiParameters.h"
 
 // Qt

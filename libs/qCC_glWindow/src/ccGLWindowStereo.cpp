@@ -16,6 +16,27 @@
 // ##########################################################################
 
 // qCC
+/**
+ * @file ccGLWindowStereo.cpp
+ *
+ * @brief Stereo GL window implementation
+ *
+ * Implements stereo (3D) rendering mode for ccGLWindow.
+ *
+ * ## Stereo Modes
+ *
+ * - **Anaglyph**: red/cyan for cheap 3D glasses
+ * - **Page flip**: NVIDIA 3D Vision dual-buffer stereo
+ * - **HDMI 3D**: frame-packing via HDMI
+ *
+ * ## Stereo Rendering
+ *
+ * Renders the scene twice with eye-separated cameras,
+ * compositing the two views according to the active mode.
+ *
+ * @see ccGLWindowStereo.h, ccGLWindow
+ */
+
 #include "ccGLWindowStereo.h"
 
 // qCC_db
