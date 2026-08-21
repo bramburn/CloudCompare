@@ -15,6 +15,36 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGraphicalTransformationTool.cpp
+ *
+ * @brief Graphical transformation tool implementation
+ *
+ * Interactive overlay for manipulating entities (translate, rotate, scale)
+ * in the 3D view using mouse drag on a transformation widget.
+ *
+ * ## Transformation Modes
+ *
+ * - **Translate**: drag arrows (X/Y/Z axes) to move
+ * - **Rotate**: drag rings (X/Y/Z rotation planes) to rotate
+ * - **Scale**: drag corner handles to scale uniformly or per-axis
+ *
+ * ## Interaction
+ *
+ * The tool displays a 3D transformation widget attached to
+ * the selected entity. Dragging the handles updates the entity's
+ * GL transformation matrix in real time.
+ *
+ * ## Features
+ *
+ * - **Pivot modes**: center-based or object-based pivot
+ * - **Step mode**: precise unit-by-unit movement
+ * - **Snap to grid**: snap to a 3D grid
+ * - **Apply/reject**: confirm or cancel the transformation
+ *
+ * @see ccGraphicalTransformationTool.h
+ */
+
 #include "ccGraphicalTransformationTool.h"
 
 #include "mainwindow.h"

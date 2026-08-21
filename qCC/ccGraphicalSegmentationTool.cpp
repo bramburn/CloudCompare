@@ -15,6 +15,35 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGraphicalSegmentationTool.cpp
+ *
+ * @brief Graphical segmentation tool implementation
+ *
+ * Interactive overlay for segmenting point clouds by drawing
+ * lasso/polygon selections in the 3D view.
+ *
+ * ## Segmentation Modes
+ *
+ * - **Polyline**: draw a closed polygon, keep points inside
+ * - **Rectangle**: draw a 2D bounding rectangle
+ * - **Slice**: draw a plane, split the cloud at that plane
+ * - **Height filter**: select points by Z-coordinate range
+ * - **Free shape**: freehand drawing to select irregular regions
+ *
+ * ## Interaction
+ *
+ * 1. Select the segmentation mode
+ * 2. Draw in the 3D view (on entity surface or in screen space)
+ * 3. Points inside/outside the drawn shape are highlighted
+ * 4. Invert or confirm the selection
+ * 5. Apply: split or delete the selected region
+ *
+ * Extends ccPolyline and cc2DLabel for drawing and labeling.
+ *
+ * @see ccGraphicalSegmentationTool.h, ccGraphicalSegmentationOptionsDlg
+ */
+
 #include "ccGraphicalSegmentationTool.h"
 
 #include "ccGraphicalSegmentationOptionsDlg.h"
