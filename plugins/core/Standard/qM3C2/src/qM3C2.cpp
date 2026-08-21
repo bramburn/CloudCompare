@@ -7,7 +7,7 @@
 //#  the Free Software Foundation; version 2 or later of the License.      #
 //#                                                                        #
 //#  This program is distributed in the hope that it will be useful,       #
-//#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+//#  WITHOUT ANY WARRANTY; without even the implied warranty of        #
 //#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 //#  GNU General Public License for more details.                          #
 //#                                                                        #
@@ -23,18 +23,43 @@
  * Implements the Multiscale Model to Model Cloud Comparison (M3C2) algorithm.
  * Handles plugin lifecycle, selection validation, and M3C2 computation.
  *
- * Processing flow:
+ * ## M3C2 Algorithm Overview
+ *
+ * M3C2 (Lague et al. 2013) compares two point clouds without explicit
+ * registration. For each point in the core cloud, it:
+ * 1. Computes the local normal direction using a neighborhood at "normal scale" D
+ * 2. Casts two cylinders along the normal (±): coregistration cloud is sampled,
+ *    reference cloud is projected onto the axis
+ * 3. Computes mean position of points in each cylinder
+ * 4. Distance = difference in mean positions; uncertainty = standard deviation
+ *
+ * Multi-scale: tests multiple "search radii" and outputs:
+ * - M3C2 distance per point
+ * - Standard deviation per point (uncertainty)
+ * - Point density per point
+ * - Normal direction per point
+ *
+ * ## Processing Flow
+ *
  * 1. User selects 2-3 point clouds and triggers the action
- * 2. Disclaimer dialog shown on first use (saved to settings)
- * 3. Parameter dialog (normal scale, search scales, max distance)
+ * 2. Disclaimer dialog shown on first use (saved to persistent settings)
+ * 3. Parameter dialog (normal scale, search scales, max distance, projection mode)
  * 4. qM3C2Process::Compute() runs the comparison
  * 5. Output cloud with M3C2 distance scalar field added to DB
  *
- * Selection requirements:
- * - 2 clouds: coregistration comparison
- * - 3 clouds: two comparisons with shared reference cloud
+ * ## Selection Requirements
+ *
+ * - 2 clouds: compare cloud1 (core) against cloud2 (reference)
+ * - 3 clouds: compare cloud1 against cloud3, with cloud2 as reference for normals
+ *
+ * ## Command-line Mode
+ *
+ * The -M3C2 command enables batch processing via qCC -SILENT -CMD.
+ * Selection is passed via -O file1.las -O file2.las.
  *
  * @see qM3C2Plugin
+ * @see qM3C2Process
+ * @see qM3C2Dialog
  */
 
 #include "qM3C2.h"
@@ -57,7 +82,7 @@
  * @brief Construct the M3C2 plugin
  *
  * Initializes ccStdPluginInterface with embedded metadata
- * (":/CC/plugin/qM3C2Plugin/info.json").
+ * from the resource path ":/CC/plugin/qM3C2Plugin/info.json".
  */
 qM3C2Plugin::qM3C2Plugin(QObject* parent)
     : QObject(parent)
@@ -72,6 +97,10 @@ qM3C2Plugin::qM3C2Plugin(QObject* parent)
  *
  * Enables the "M3C2" action when exactly 2 or 3 point clouds are selected.
  * Selection is cached in m_selectedEntities for use in doAction().
+ *
+ * Selection rules:
+ * - 2 clouds: coregistration mode (cloud1 vs cloud2)
+ * - 3 clouds: two comparisons sharing cloud2 as the normal reference
  *
  * @param[in] selectedEntities Current entity selection
  */
@@ -97,7 +126,8 @@ void qM3C2Plugin::onNewSelection(const ccHObject::Container& selectedEntities)
 /**
  * @brief Create and return the plugin action
  *
- * Lazily creates the "M3C2" action and connects triggered() to doAction().
+ * Lazily creates the "M3C2" action (shown in the Plugins menu) and
+ * connects its triggered() signal to doAction().
  *
  * @return List containing the M3C2 action
  */
@@ -117,17 +147,22 @@ QList<QAction*> qM3C2Plugin::getActions()
 /**
  * @brief Execute the M3C2 comparison
  *
- * Workflow:
- * 1. Show disclaimer dialog (first-use guard, saves acceptance to settings)
+ * Full workflow:
+ * 1. Show disclaimer dialog (first-use guard; acceptance saved to QSettings)
  * 2. Validate cached selection (2 or 3 point clouds)
  * 3. Cast entities to ccPointCloud pointers
- * 4. Show parameter dialog (normal scale, search radii, max distance)
+ * 4. Show qM3C2Dialog for parameters:
+ *    - Normal scale D (neighborhood radius for normal estimation)
+ *    - Search scale(s) (cylinder radius, may be multi-scale)
+ *    - Max search distance (truncation distance)
+ *    - Projection mode, detrending, etc.
  * 5. Call qM3C2Process::Compute() for the actual algorithm
- * 6. Display results or error message
- * 7. Save dialog params for next invocation
+ * 6. On success: results added to DB automatically by Compute()
+ * 7. On failure: display error via dispToConsole()
+ * 8. Persist dialog parameters for next invocation
  *
  * @note Selection is cached by onNewSelection() to avoid re-querying
- *       the app during dialog interaction.
+ *       the application during dialog interaction.
  */
 void qM3C2Plugin::doAction()
 {
@@ -167,7 +202,7 @@ void qM3C2Plugin::doAction()
 
 	// Run M3C2 computation
 	QString errorMessage;
-	ccPointCloud* outputCloud = nullptr; // only needed for CLI mode
+	ccPointCloud* outputCloud = nullptr; // only populated in CLI mode
 	if (!qM3C2Process::Compute(dlg, errorMessage, outputCloud, true,
 	                            m_app->getMainWindow(), m_app))
 	{
@@ -183,9 +218,12 @@ void qM3C2Plugin::doAction()
  * @brief Register command-line commands
  *
  * Registers the -M3C2 command for batch processing via the command-line
- * interface (qCC -SILENT -CMD -O cloud1.las -O cloud2.las -M3C2 ...).
+ * interface. Usage:
+ * @code
+ * qCC -SILENT -CMD -O cloud1.las -O cloud2.las -M3C2 [options]
+ * @endcode
  *
- * @param[in] cmd Command-line interface (nullptr = not in CLI mode)
+ * @param[in] cmd Command-line interface (nullptr = not in CLI mode, skip)
  */
 void qM3C2Plugin::registerCommands(ccCommandLineInterface* cmd)
 {
