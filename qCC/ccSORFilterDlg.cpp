@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSORFilterDlg.cpp
+ *
+ * @brief SOR filter dialog implementation
+ *
+ * Dialog for configuring Statistical Outlier Removal (SOR) filter.
+ *
+ * ## SOR Algorithm
+ *
+ * For each point, find K nearest neighbors. Compute mean distance
+ * to all neighbors. If a point's mean distance exceeds the global
+ * mean by more than n*sigma (standard deviation), mark it as an outlier.
+ *
+ * ## Parameters
+ *
+ * - **KNN (K)**: number of nearest neighbors to consider
+ * - **n sigma**: threshold multiplier for outlier detection
+ * - **Max threads**: parallel processing threads
+ *
+ * @see ccSORFilterDlg.h
+ */
+
 #include "ccSORFilterDlg.h"
 
 #include "ui_sorFilterDlg.h"

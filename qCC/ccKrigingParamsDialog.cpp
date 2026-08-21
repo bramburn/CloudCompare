@@ -15,6 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccKrigingParamsDialog.cpp
+ *
+ * @brief Kriging parameters dialog implementation
+ *
+ * Dialog for configuring Kriging spatial interpolation parameters.
+ * Kriging is a geostatistical interpolation method that uses
+ * variogram models to compute optimal weighted averages.
+ *
+ * ## Parameters (ccRasterGrid::KrigingParams)
+ *
+ * - **Model type**: spherical, exponential, Gaussian, etc.
+ * - **Range**: distance beyond which correlation becomes zero
+ * - **Sill**: variance at zero distance
+ * - **Nugget**: variance at zero lag distance
+ * - **Search radius**: neighborhood size for interpolation
+ *
+ * @see ccKrigingParamsDialog.h, ccRasterGrid::KrigingParams
+ */
+
 #include "ccKrigingParamsDialog.h"
 
 // ui
