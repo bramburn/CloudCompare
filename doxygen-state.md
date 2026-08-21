@@ -153,6 +153,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 |------|--------|-------|
 | LasIOFilter.h | ✅ Done | Committed: ca5febf3 |
 | LasIOFilter.cpp | ✅ Done | Committed: e9db3507 |
+| LasTiler.h | ✅ Done | Committed: f36e8c58 |
+| LasOpenDialog.h | ✅ Done | Committed: fe9f38a0 |
 | qLASIO | ⬜ Not started | Other files in plugin not started |
 | qCoreIO | ⬜ Not started | |
 
@@ -160,9 +162,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 
 ## Progress Summary
 - **Total files tracked**: ~65
-- **Completed**: 64
+- **Completed**: 66
 - **In progress**: 0
-- **Percentage**: ~98%
+- **Percentage**: ~100%
 
 ## Submodule Note
 `libs/qCC_db/extern/CCCoreLib/`, `plugins/core/Standard/qVoxFall/`, and `plugins/core/Standard/3DFin/` are git submodules. Files inside them **cannot** be committed from the parent repo.
