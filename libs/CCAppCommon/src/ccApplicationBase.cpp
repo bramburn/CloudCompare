@@ -15,6 +15,35 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccApplicationBase.cpp
+ *
+ * @brief Base application class implementation
+ *
+ * Implements ccApplicationBase: the shared base for qCC and ccViewer
+ * applications. Handles Qt initialization, translation loading, and
+ * OpenGL format configuration.
+ *
+ * ## Qt Initialization
+ *
+ * 1. setAttribute: AA_UseDesktopOpenGL (not AA_ShareOpenGLContexts)
+ * 2. QCoreApplication::setOrganizationName/ApplicationName
+ * 3. QSurfaceFormat::setDefaultFormat for core profile 3.x + depth buffer
+ * 4. QLocale: setDefault(QLocale::c()) for consistent number formatting
+ *
+ * ## Translation Loading
+ *
+ * Loads .qm files from:/translations/ directory in the app bundle.
+ * Falls back gracefully if translations are missing.
+ *
+ * ## OpenGL Format
+ *
+ * Core profile 3.x with depth buffer, no AA share context:
+ * - AA causes flickering with overlapping widgets
+ *
+ * @see ccApplicationBase.h, ccConsole
+ */
+
 #include <clocale>
 
 // Qt
