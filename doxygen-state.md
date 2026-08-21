@@ -257,6 +257,7 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ## Progress Summary
 - **Total files tracked**: ~199
 - **Completed**: 199
+- **Percentage**: 100% — all .cpp files (>50 lines) in qCC/, libs/qCC_db/src/, libs/qCC_io/src/, libs/qCC_glWindow/src/, libs/CCAppCommon/src/, libs/CCPluginAPI/src/ documented!
 - **In progress**: 0
 - **Percentage**: ~100%
 
