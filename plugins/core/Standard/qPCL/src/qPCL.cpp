@@ -15,6 +15,29 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file qPCL.cpp
+ *
+ * @brief PCL (Point Cloud Library) plugin entry
+ *
+ * Integrates Point Cloud Library algorithms into CloudCompare.
+ *
+ * ## Features
+ *
+ * - **I/O**: PCD (Point Cloud Data) format
+ * - **Filters**: MLS smoothing, statistical outliers, voxel grid
+ * - **Registration**: Fast Global Registration
+ * - **Segmentation**: planar, cylindrical, euclidean cluster
+ * - **Keypoints**: ISS, NARF
+ *
+ * ## Architecture
+ *
+ * Converts ccPointCloud ↔ PCL PointCloud between CC and PCL
+ * data structures. Runs PCL algorithms via PclUtils classes.
+ *
+ * @extends QObject
+ * @extends ccStdPluginInterface
+ */
 #include "qPCL.h"
 
 //qCC_db

@@ -15,6 +15,18 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccCompassInfo.cpp
+ *
+ * @brief Compass info display implementation
+ *
+ * Displays metadata and statistics about a Compass project:
+ * - Point cloud summary (count, bounds)
+ * - Geo-object count and types
+ * - Topology graph statistics
+ *
+ * @see ccCompassInfo.h
+ */
 #include <QFile>
 #include <QTextEdit>
 #include <QTextStream>

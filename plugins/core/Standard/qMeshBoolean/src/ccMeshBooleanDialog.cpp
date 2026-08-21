@@ -15,6 +15,18 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccMeshBooleanDialog.cpp
+ *
+ * @brief Mesh boolean dialog implementation
+ *
+ * Dialog for configuring libigl CSG operations:
+ * - **Operation**: union / intersection / difference
+ * - **Pre-processing**: clean duplicate vertices
+ * - **Post-processing**: merge coplanar triangles
+ *
+ * @see ccMeshBooleanDialog.h
+ */
 #include "ccMeshBooleanDialog.h"
 
 ccMeshBooleanDialog::ccMeshBooleanDialog(QWidget* parent/*=nullptr*/)

@@ -15,6 +15,20 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccCorkDlg.cpp
+ *
+ * @brief Cork boolean dialog implementation
+ *
+ * Dialog for configuring Cork CSG (libcork) boolean operations:
+ * - Operation type: union / intersection / difference
+ * - Tolerance: marching cube isosurface threshold
+ *
+ * Requires MPIR (Multi-Precision Integers Library) for exact
+ * arithmetic in the marching cubes algorithm.
+ *
+ * @see ccCorkDlg.h
+ */
 #include "ccCorkDlg.h"
 
 ccCorkDlg::ccCorkDlg(QWidget* parent)

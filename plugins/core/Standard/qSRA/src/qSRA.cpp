@@ -15,6 +15,22 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qSRA.cpp
+ *
+ * @brief Strike & Relief Analysis plugin entry
+ *
+ * Implements geological strike/dip analysis on point clouds
+ * and meshes:
+ * - Import 2D profiles (DXF, CSV, ASCII)
+ * - Fit planes to profile segments
+ * - Compute true dip from apparent dip
+ * - Export profile cross-sections with dip annotations
+ * - Generate DXF profile drawings
+ *
+ * @extends QObject
+ * @extends ccStdPluginInterface
+ */
 #include "qSRA.h"
 
 //Local

@@ -15,6 +15,26 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qCork.cpp
+ *
+ * @brief Cork CSG plugin entry point
+ *
+ * Implements Constructive Solid Geometry (CSG) mesh operations
+ * using the libcork library.
+ *
+ * ## Operations
+ *
+ * - **Union**: merge two meshes
+ * - **Intersection**: keep overlapping region
+ * - **Difference**: subtract one mesh from another
+ *
+ * Uses exact arithmetic via MPIR for reliable mesh topology
+ * in the marching cubes isosurface extraction.
+ *
+ * @extends QObject
+ * @extends ccStdPluginInterface
+ */
 #include "qCork.h"
 
 //qCC_db

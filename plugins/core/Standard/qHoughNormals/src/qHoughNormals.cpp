@@ -15,6 +15,27 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qHoughNormals.cpp
+ *
+ * @brief Hough transform normal estimation plugin
+ *
+ * Estimates normals using the Hough transform voting scheme.
+ *
+ * ## Algorithm
+ *
+ * 1. For each point, vote in a 2D Hough accumulator (theta, phi)
+ * 2. Find peaks in the accumulator (major surface orientations)
+ * 3. Assign normals based on the closest peak
+ *
+ * ## Advantages over PCA
+ *
+ * Hough normals are more robust to noise and can better handle
+ * ambiguous neighborhoods (edges, corners).
+ *
+ * @extends QObject
+ * @extends ccStdPluginInterface
+ */
 #include "qHoughNormals.h"
 #include "qHoughNormalsDialog.h"
 

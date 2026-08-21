@@ -15,6 +15,19 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qHoughNormalsDialog.cpp
+ *
+ * @brief Hough normals dialog implementation
+ *
+ * Dialog for configuring the Hough transform normal estimation:
+ * - Search radius
+ * - Accumulator cell size (theta, phi)
+ * - Min vote threshold
+ * - Max normal deviation
+ *
+ * @see qHoughNormals.h
+ */
 #include "qHoughNormalsDialog.h"
 #include "ui_qHoughNormalsDlg.h"
 

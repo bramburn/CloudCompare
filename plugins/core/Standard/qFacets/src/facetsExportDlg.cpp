@@ -15,6 +15,19 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file facetsExportDlg.cpp
+ *
+ * @brief Facet export dialog implementation
+ *
+ * Dialog for exporting detected planar facets:
+ * - **Format**: DXF, OBJ, or CSV
+ * - **Include normals**: export facet normals
+ * - **Include confidence**: export fitting quality
+ * - **Merge coplanar**: combine adjacent co-planar facets
+ *
+ * @see facetsExportDlg.h
+ */
 #include "facetsExportDlg.h"
 
 //Qt

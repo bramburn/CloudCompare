@@ -15,6 +15,16 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccNote.cpp
+ *
+ * @brief Compass note implementation
+ *
+ * A text annotation attached to a specific 3D position
+ * in the Compass plugin. Notes are saved with the project.
+ *
+ * @see ccNote.h
+ */
 #include "ccNote.h"
 
 //pass ctors straight to PointPair

@@ -15,6 +15,19 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccPinchNode.cpp
+ *
+ * @brief Compass pinch node implementation
+ *
+ * A pinch node is a structural geology marker representing
+ * a pinch-out or truncation point where a geological layer
+ * terminates against another structure.
+ *
+ * Stored as a 3D point with a thickness value.
+ *
+ * @see ccPinchNode.h
+ */
 #include "ccPinchNode.h"
 
 //pass ctors straight to PointPair

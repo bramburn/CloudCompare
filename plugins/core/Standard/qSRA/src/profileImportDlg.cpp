@@ -15,6 +15,19 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file profileImportDlg.cpp
+ *
+ * @brief SRA profile import dialog implementation
+ *
+ * Dialog for importing profile data for the Strike & Dip
+ * analysis tool (qSRA):
+ * - **Format**: DXF polylines, CSV (X,Z), or ASCII
+ * - **Scale**: real-world unit conversion
+ * - **Orientation**: azimuth of profile direction
+ *
+ * @see profileImportDlg.h
+ */
 #include "profileImportDlg.h"
 
 //Qt

@@ -15,6 +15,25 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file RustICP.cpp
+ *
+ * @brief Rust ICP algorithm implementation
+ *
+ * ICP (Iterative Closest Point) registration implemented in Rust
+ * via CXX FFI. Exposes the `icp_register` function.
+ *
+ * ## Algorithm
+ *
+ * Point-to-plane ICP using kiddo KD-tree for nearest-neighbor.
+ * Iteratively:
+ * 1. Find correspondences (nearest neighbors)
+ * 2. Compute rigid transform (SVD / Horn's method)
+ * 3. Apply transform
+ * 4. Repeat until convergence
+ *
+ * @see RustICP.h
+ */
 #include "RustICP.h"
 
 #include <QCoreApplication>
