@@ -25,9 +25,31 @@
 /**
  * @file ccSubMesh.h
  *
- * @brief Sub-mesh
+ * @brief Sub-mesh — triangle subset of a parent mesh
  *
- * Sub-mesh equivalent to ReferenceCloud for meshes.
+ * A ccSubMesh is to a ccMesh what a CCCoreLib::ReferenceCloud is to a
+ * ccPointCloud: a lightweight container that references a subset of
+ * triangles from a parent mesh by index.
+ *
+ * ## Key Concepts
+ *
+ * - **References, not copies**: m_triIndexes stores indices into the
+ *   parent mesh's triangle array, not copies of the triangles themselves
+ * - **Parent mesh**: m_associatedMesh points to the owning ccMesh
+ * - **Global vs local index**: a triangle's global index is its position
+ *   in the parent mesh; local index is its position in m_triIndexes
+ * - **Visibility-based creation**: createNewSubMeshFromSelection() creates
+ *   a new sub-mesh from the currently visible vertices of the parent
+ *
+ * ## Iterator Pattern
+ *
+ * The class supports sequential iteration via m_globalIterator:
+ * - placeIteratorAtBeginning(): reset to index 0
+ * - forwardIterator(): advance one position
+ * - getCurrentTriGlobalIndex(): get the global index at current position
+ * - _getNextTriangle(): get the actual triangle object
+ *
+ * @extends ccGenericMesh
  */
 
 class ccMesh;
@@ -42,7 +64,11 @@ class ccMesh;
 class QCC_DB_LIB_API ccSubMesh : public ccGenericMesh
 {
   public:
-	//! Default constructor
+		/**
+	 * @brief Construct a sub-mesh referencing a parent mesh
+	 *
+	 * @param[in] parentMesh The owning mesh
+	 */
 	explicit ccSubMesh(ccMesh* parentMesh);
 	//! Destructor
 	~ccSubMesh() override = default;
