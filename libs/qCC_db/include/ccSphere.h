@@ -7,7 +7,7 @@
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
@@ -21,30 +21,48 @@
 /**
  * @file ccSphere.h
  *
- * @brief Sphere primitive class
+ * @brief Sphere primitive for visualization and sphere fitting
  *
- * Represents a 3D sphere primitive for visualization and fitting.
+ * Represents a tessellated 3D sphere (UV sphere mesh) positioned
+ * in 3D space by the transformation matrix. Used for:
+ * - Creating reference geometry
+ * - Fitting spheres to point clouds (sphere fitting tool)
+ * - Displaying approximated circular regions
  *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * The sphere mesh uses latitude/longitude tessellation with a configurable
+ * number of angular steps (default 24). The mesh is centered at the origin
+ * in local space; translation in the transformation matrix positions it.
+ *
+ * @extends ccGenericPrimitive
  */
 
-// Local
 #include "ccGenericPrimitive.h"
 
 /**
- * @brief Sphere primitive
+ * @class ccSphere
  *
- * A 3D sphere for visualization and geometric fitting.
+ * @brief Tessellated UV sphere primitive
+ *
+ * A sphere is parameterized by:
+ * - Radius: spatial extent
+ * - Precision: number of angular steps for tessellation (more = smoother)
+ * - Transformation: position and orientation
+ *
+ * Mesh: UV sphere tessellation with triangular facets.
+ * Normals are computed per-vertex for smooth shading.
+ *
+ * @extends ccGenericPrimitive
  */
 class QCC_DB_LIB_API ccSphere : public ccGenericPrimitive
 {
   public:
 	/**
-	 * @brief Create a sphere
+	 * @brief Create a sphere with specified radius
+	 *
 	 * @param[in] radius Sphere radius
 	 * @param[in] transMat Optional transformation matrix
-	 * @param[in] name Sphere name
-	 * @param[in] precision Drawing precision (angular steps)
+	 * @param[in] name Display name
+	 * @param[in] precision Number of angular steps (default 24)
 	 * @param[in] uniqueID Optional unique ID
 	 */
 	ccSphere(PointCoordinateType radius,
@@ -53,49 +71,58 @@ class QCC_DB_LIB_API ccSphere : public ccGenericPrimitive
 	         unsigned            precision = 24,
 	         unsigned            uniqueID  = ccUniqueIDGenerator::InvalidUniqueID);
 
-	//! Simplified constructor
-	/** For ccHObject factory only!
-	 **/
-	ccSphere(QString name = QString("Sphere"));
+	/**
+	 * @brief Simplified constructor for ccHObject factory
+	 *
+	 * @param[in] name Display name
+	 */
+	explicit ccSphere(QString name = QString("Sphere"));
 
-	//! Returns class ID
+	// ccHObject
 	virtual CC_CLASS_ENUM getClassID() const override
 	{
 		return CC_TYPES::SPHERE;
 	}
 
-	// inherited from ccGenericPrimitive
+	// ccGenericPrimitive
 	virtual QString getTypeName() const override
 	{
 		return "Sphere";
 	}
 	virtual bool hasDrawingPrecision() const override
 	{
-		return true;
+		return true;  // Precision affects the mesh tessellation
 	}
 	virtual ccGenericPrimitive* clone() const override;
 
-	//! Returns radius
+	/**
+	 * @brief Get the sphere radius
+	 */
 	inline PointCoordinateType getRadius() const
 	{
 		return m_radius;
 	}
-	//! Sets radius
-	/** \warning changes primitive content (calls ccGenericPrimitive::updateRepresentation)
-	 **/
+
+	/**
+	 * @brief Set the sphere radius
+	 *
+	 * @warning Triggers mesh rebuild via updateRepresentation()
+	 *
+	 * @param[in] radius New radius
+	 */
 	void setRadius(PointCoordinateType radius);
 
   protected:
-	// inherited from ccGenericPrimitive
+	// ccGenericPrimitive
 	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
 	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
 	bool  buildUp() override;
 
-	// inherited from ccHObject
+	// ccHObject
 	virtual void drawNameIn3D(CC_DRAW_CONTEXT& context) override;
 
-	//! Radius
+	//! Sphere radius
 	PointCoordinateType m_radius;
 };
 
