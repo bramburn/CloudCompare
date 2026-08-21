@@ -33,6 +33,15 @@
 namespace ccUtils
 {
 	// ccUtils::DisplayLockedVerticesWarning
+	/**
+	 * @brief Display a warning about locked vertices
+	 *
+	 * Warns the user that mesh vertices are locked (shared) and
+	 * operations should be applied directly to the vertex cloud.
+	 *
+	 * @param[in] meshName Name of the mesh
+	 * @param[in] displayAsError Show as error (red) instead of warning (yellow)
+	 */
 	void DisplayLockedVerticesWarning(const QString& meshName, bool displayAsError)
 	{
 		QString message = QString(
@@ -50,6 +59,21 @@ namespace ccUtils
 	}
 
 	// ccUtils::GetVectorFromClipboard
+	/**
+	 * @brief Read a 3D vector from the system clipboard
+	 *
+	 * Parses the clipboard text as a 3D vector using three fallback
+	 * separator formats:
+	 * 1. Space-separated: "x y z"
+	 * 2. Semicolon-separated: "x;y;z"
+	 * 3. Comma-separated: "x,y,z"
+	 *
+	 * Brackets are stripped if present: "[x y z]", "(x,y,z)", "{x;y;z}"
+	 *
+	 * @param[out] vector Parsed vector
+	 * @param[in] sendErrors Log errors to console if true
+	 * @return true if parsing succeeded
+	 */
 	bool GetVectorFromClipboard(CCVector3d& vector, bool sendErrors)
 	{
 		const QClipboard* clipboard = QApplication::clipboard();
