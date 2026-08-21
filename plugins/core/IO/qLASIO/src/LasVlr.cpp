@@ -15,6 +15,30 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file LasVlr.cpp
+ *
+ * @brief Variable Length Record container implementation
+ *
+ * VLRs (Variable Length Records) are extensible metadata blocks in
+ * LAS files. They store arbitrary binary data (projection info,
+ * coordinate systems, proprietary data, etc.).
+ *
+ * This file implements the LasVlr container class:
+ * - VLRs are copied from the LAS header (excluding COPC/LAZzip/extra bytes)
+ * - Serialized to/from QVariant for ccPointCloud metaData storage
+ * - Extra scalar field definitions are stored alongside VLRs
+ *
+ * ## VLRs Excluded from Copy
+ *
+ * These are handled separately and not copied back:
+ * - COPC VLRs (hierarchical octree index)
+ * - LASzip VLRs (compression metadata)
+ * - Extra bytes VLRs (replaced by structured LasExtraScalarField)
+ *
+ * @see LasVlr.h
+ */
+
 #include "LasVlr.h"
 
 #include "CopcLoader.h"
@@ -27,6 +51,16 @@
 // System
 #include <algorithm>
 
+/**
+ * @brief Construct from a LAS header
+ *
+ * Copies all VLRs from the header, filtering out:
+ * - COPC VLRs (managed by the octree index)
+ * - LASzip VLRs (compression state)
+ * - Extra bytes VLRs (replaced by LasExtraScalarField)
+ *
+ * @param[in] header Source LAS header
+ */
 LasVlr::LasVlr(const laszip_header& header)
 {
 	const auto vlrShouldBeCopied = [](const laszip_vlr_struct& vlr)
@@ -70,6 +104,12 @@ LasVlr::LasVlr(const LasVlr& rhs)
 	}
 }
 
+/**
+ * @brief Swap two LasVlr instances (no-throw)
+ *
+ * @param[in,out] lhs First instance
+ * @param[in,out] rhs Second instance
+ */
 void LasVlr::Swap(LasVlr& lhs, LasVlr& rhs) noexcept
 {
 	std::swap(lhs.vlrs, rhs.vlrs);
