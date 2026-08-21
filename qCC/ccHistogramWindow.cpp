@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccHistogramWindow.cpp
+ *
+ * @brief Histogram dialog implementation
+ *
+ * Dialog for displaying and analyzing scalar field histograms.
+ * Uses QCustomPlot for rendering with specialized bar types
+ * (colored bars, hidden areas, text annotations).
+ *
+ * ## Histogram Display
+ *
+ * - **Bar chart**: frequency distribution of scalar field values
+ * - **Binned display**: configurable bin count
+ * - **Log scale**: optional logarithmic Y axis
+ * - **Cumulative**: show cumulative distribution function
+ *
+ * ## Analysis Features
+ *
+ * - **Statistics**: mean, median, std dev, skewness, kurtosis
+ * - **Percentiles**: compute any percentile of the distribution
+ * - **Range markers**: highlight specific value ranges
+ * - **Export**: save histogram as PNG or ASCII
+ *
+ * @see ccHistogramWindow.h, QCustomPlot
+ */
+
 #include "ccHistogramWindow.h"
 
 #include "ccGuiParameters.h"
