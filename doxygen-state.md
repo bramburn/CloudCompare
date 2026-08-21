@@ -24,7 +24,7 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ### qCC/ (Main Application)
 | File | Status | Notes |
 |------|--------|-------|
-| main.cpp | ⬜ Not started | |
+| main.cpp | ✅ Done | Committed: e5c398c6 |
 | ccConsole.cpp | ✅ Done | Committed: 83a4dacb |
 | ccConsole.h | ✅ Done | Committed: 83a4dacb |
 | ccUtils.cpp | ✅ Done | Committed: bf35923f |
@@ -38,6 +38,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccApplication.h | ✅ Done | Already documented |
 | ccMainAppInterface.h | ✅ Done | Already documented |
 | ccDBRoot.h | ✅ Done | Committed: 7f6f365f |
+| ccDBRoot.cpp | ✅ Done | Committed: 2541e5d3 |
+| ccPropertiesTreeDelegate.h | ✅ Done | Committed: edc54431 |
+| ccPropertiesTreeDelegate.cpp | ✅ Done | Committed: 307bff66 |
 | ccGLWindow.cpp | ⬜ Not started | Very large (~7000 lines) |
 | ccGLWindow.h | ✅ Done | Committed: fc1b527e |
 | ccOverlayDialog.cpp | ✅ Done | Committed: 3de70ab4 |
