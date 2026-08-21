@@ -15,6 +15,27 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccRegistrationTools.cpp
+ *
+ * @brief Registration tools implementation
+ *
+ * Wrapper around CCCoreLib::RegistrationTools for the GUI layer.
+ * Provides a Qt-friendly interface to the ICP algorithm with
+ * progress dialog and cancellation support.
+ *
+ * ## Functions
+ *
+ * - **Register**: launch ICP between two clouds with a progress dialog
+ * - **ComputeRoughRegistration**: coarse alignment before ICP
+ * - **MatchBoundingBoxes**: align bounding boxes as initial guess
+ *
+ * The registration runs in a Qt modal dialog so the user can
+ * see iteration progress and cancel if needed.
+ *
+ * @see ccRegistrationTools.h, CCCoreLib::RegistrationTools
+ */
+
 #include "ccRegistrationTools.h"
 
 // CCCoreLib
