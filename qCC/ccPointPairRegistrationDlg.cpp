@@ -15,6 +15,32 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPointPairRegistrationDlg.cpp
+ *
+ * @brief Point pair registration dialog implementation
+ *
+ * Interactive dialog for manual point-pair based registration
+ * (Horn's closed-form absolute orientation solution).
+ *
+ * ## Algorithm
+ *
+ * The user picks corresponding point pairs in two clouds.
+ * With 3 or more pairs, Horn's SVD-based solution computes
+ * the optimal rotation + translation + scale to align them.
+ *
+ * ## Workflow
+ *
+ * 1. Pick at least 3 corresponding points (reference + aligned)
+ * 2. See real-time preview of the transformation
+ * 3. RMS error displayed for each pair
+ * 4. Apply the transformation to the aligned cloud
+ *
+ * Uses CCCoreLib::HornRegistrationTools internally.
+ *
+ * @see ccPointPairRegistrationDlg.h, CCCoreLib::HornRegistrationTools
+ */
+
 #include <ccPointPairRegistrationDlg.h>
 
 // Local

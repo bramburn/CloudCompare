@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccRasterizeTool.cpp
+ *
+ * @brief Rasterize tool implementation
+ *
+ * Tool for converting point clouds to 2.5D raster grids.
+ *
+ * ## Rasterization
+ *
+ * Projects a 3D point cloud onto a 2D grid:
+ * - **Grid dimensions**: cell size, grid width/height
+ * - **Projection**: per-cell interpolation of Z, color, SF
+ * - **Fill holes**: interpolate empty cells from neighbors
+ * - **Output**: 2.5D grid or 2D image
+ *
+ * ## Output Types
+ *
+ * - **DEM**: height map as image (Z → pixel value)
+ * - **Ortho-projection**: georeferenced ortho-image
+ * - **Density**: number of points per cell
+ * - **SF grid**: scalar field values projected onto grid
+ *
+ * Extends cc2Point5DimEditor for grid-based editing.
+ *
+ * @see ccRasterizeTool.h, cc2Point5DimEditor
+ */
+
 #include "ccRasterizeTool.h"
 
 #include "ui_rasterizeDlg.h"

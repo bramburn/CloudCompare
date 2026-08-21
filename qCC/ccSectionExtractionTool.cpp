@@ -15,6 +15,33 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccSectionExtractionTool.cpp
+ *
+ * @brief Section extraction tool implementation
+ *
+ * Interactive overlay for drawing section planes and extracting
+ * cross-sections from point clouds.
+ *
+ * ## Section Extraction
+ *
+ * Draws section planes in the 3D view and extracts points that
+ * lie near each plane:
+ * - **Section plane**: a oriented rectangle in 3D space
+ * - **Thickness**: points within ±thickness/2 of the plane are extracted
+ * - **Polyline path**: a polyline defining the section's along-path direction
+ *
+ * ## Output
+ *
+ * - **Section cloud**: 2D slice of the point cloud
+ * - **Section mesh**: triangulated surface from the slice
+ * - **Ortho-sections**: multiple parallel sections at regular intervals
+ *
+ * Extends ccSectionExtractionSubDlg for parameter configuration.
+ *
+ * @see ccSectionExtractionTool.h, ccSectionExtractionSubDlg
+ */
+
 #include "ccSectionExtractionTool.h"
 
 // Local
