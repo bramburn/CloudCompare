@@ -26,6 +26,19 @@
 //#                                                                                     #
 //#######################################################################################
 
+/**
+ * @file ccCSFDlg.cpp
+ *
+ * @brief Cloth Simulation Filter dialog implementation
+ *
+ * Dialog for configuring CSF ground classification:
+ * - Cloth resolution (grid cell size)
+ * - Cloth rigidity (stiffness)
+ * - Time step and iteration count
+ * - Reclassify non-ground as ground threshold
+ *
+ * @see ccCSFDlg.h
+ */
 #include "ccCSFDlg.h"
 
 static int MaxIteration = 500;

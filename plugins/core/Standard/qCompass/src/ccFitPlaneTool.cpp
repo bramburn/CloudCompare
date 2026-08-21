@@ -15,6 +15,19 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccFitPlaneTool.cpp
+ *
+ * @brief Compass fit-plane tool
+ *
+ * Interactive tool for fitting planar surfaces
+ * to point selections in the Compass plugin:
+ * - Pick points defining the plane
+ * - Computes best-fit plane (PCA / SVD)
+ * - Stores strike/dip measurements
+ *
+ * @see ccFitPlaneTool.h
+ */
 #include "ccFitPlaneTool.h"
 
 #include "Neighbourhood.h"

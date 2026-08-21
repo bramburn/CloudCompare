@@ -15,6 +15,21 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccPinchNodeTool.cpp
+ *
+ * @brief Compass pinch node placement tool
+ *
+ * Interactive tool for marking pinch-out points
+ * (structural geology term: where a layer terminates).
+ *
+ * ## Interaction
+ *
+ * Click on the point cloud to place a pinch node marker.
+ * Assign a thickness value to the node.
+ *
+ * @see ccPinchNodeTool.h
+ */
 #include "ccPinchNodeTool.h"
 
 ccPinchNodeTool::ccPinchNodeTool()

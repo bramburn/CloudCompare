@@ -15,6 +15,22 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qPclIO.cpp
+ *
+ * @brief PCL PCD I/O plugin entry
+ *
+ * Point Cloud Data (PCD) file format support via PCL:
+ * - **ASCII PCD**: human-readable format
+ * - **Binary PCD**: compact, fast loading
+ *
+ * PCD is PCL's native format with support for:
+ * - Arbitrary n-D descriptive features
+ * - Point clouds + associated sensor data
+ *
+ * @extends QObject
+ * @extends ccIOPluginInterface
+ */
 #include "qPclIO.h"
 
 //Local

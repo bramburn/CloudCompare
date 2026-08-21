@@ -17,6 +17,22 @@
 //
 //#ifdef LP_PCL_PATCH_ENABLED
 
+/**
+ * @file copy.cpp
+ *
+ * @brief PCL to CloudCompare copy utilities
+ *
+ * Bidirectional conversion between PCL PointCloud
+ * and ccPointCloud data structures.
+ *
+ * ## Conversion
+ *
+ * - **PCL → CC**: copies xyz, normals, colors, intensities
+ * - **CC → PCL**: creates PCL PointXYZ, PointXYZRGB, PointNormal
+ * - Handles scalar field mapping
+ *
+ * @see copy.h
+ */
 #include "copy.h"
 
 //qCC_db

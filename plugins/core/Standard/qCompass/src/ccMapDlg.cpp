@@ -15,6 +15,19 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccMapDlg.cpp
+ *
+ * @brief Compass project map dialog
+ *
+ * 2D map view of the Compass project:
+ * - Shows all geo-objects in a top-down view
+ * - Displays topology graph edges
+ * - Allows selection and editing of features
+ * - Coordinate grid and scale bar
+ *
+ * @see ccMapDlg.h
+ */
 #include "ccMapDlg.h"
 
 //qCC_db

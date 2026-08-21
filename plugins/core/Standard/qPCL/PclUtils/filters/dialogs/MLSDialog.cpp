@@ -15,6 +15,19 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file MLSDialog.cpp
+ *
+ * @brief Moving Least Squares dialog
+ *
+ * Dialog for configuring MLS (Moving Least Squares) smoothing:
+ * - **Polynomial order**: 1 (linear), 2 (quadratic)
+ * - **Search radius**: neighborhood size
+ * - **Upsampling**: voxel grid or random sampling
+ * - **Output**: smoothed points, projected points, or normals
+ *
+ * @see MLSDialog.h
+ */
 #include "MLSDialog.h"
 #include "../MLSSmoothingUpsampling.h"
 

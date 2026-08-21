@@ -15,6 +15,18 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccTopologyTool.cpp
+ *
+ * @brief Compass topology graph tool
+ *
+ * Interactive tool for building the geological topology graph:
+ * - Connect geo-objects with relationship edges
+ * - Assign relationship types (cross-cuts, overprints, etc.)
+ * - Validate the topology for contradictions
+ *
+ * @see ccTopologyTool.h
+ */
 #include "ccTopologyTool.h"
 #include "ccCompass.h"
 

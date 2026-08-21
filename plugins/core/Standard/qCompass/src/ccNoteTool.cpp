@@ -15,6 +15,21 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccNoteTool.cpp
+ *
+ * @brief Compass note placement tool
+ *
+ * Interactive tool for placing text annotations
+ * at specific 3D positions in the point cloud.
+ *
+ * ## Use
+ *
+ * Click to place a note. Double-click to edit text.
+ * Notes are saved with the Compass project.
+ *
+ * @see ccNoteTool.h
+ */
 #include "ccNoteTool.h"
 
 ccNoteTool::ccNoteTool()

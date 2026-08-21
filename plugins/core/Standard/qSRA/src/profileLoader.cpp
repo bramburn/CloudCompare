@@ -15,6 +15,20 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file profileLoader.cpp
+ *
+ * @brief SRA profile loader implementation
+ *
+ * Parses and imports cross-section profile data:
+ * - **DXF**: reads POLYLINE and LINE entities
+ * - **CSV**: X,Z or X,Y,Z columns
+ * - **ASCII**: whitespace-separated coordinates
+ *
+ * Converts 2D profiles to ccPolyline with elevation as Z.
+ *
+ * @see profileLoader.h
+ */
 #include "profileLoader.h"
 
 //qCC_db

@@ -15,6 +15,20 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccTraceTool.cpp
+ *
+ * @brief Compass trace digitising tool
+ *
+ * Interactive polyline drawing tool for digitising geological
+ * trace lines on the point cloud surface:
+ * - Click to place vertices
+ * - Double-click to close the polyline
+ * - Automatically snaps to point cloud surface
+ * - Stores trace as a ccPolyline in the Compass project
+ *
+ * @see ccTraceTool.h
+ */
 #include <QApplication>
 #include <QMainWindow>
 #include <QMessageBox>

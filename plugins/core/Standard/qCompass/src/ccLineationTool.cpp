@@ -15,6 +15,18 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ccLineationTool.cpp
+ *
+ * @brief Compass lineation placement tool
+ *
+ * Interactive tool for marking lineations (linear geological features):
+ * - Pick two points to define the lineation direction
+ * - Lineations have a trend (azimuth) and plunge (dip angle)
+ * - Stored as a dip-direction pair in the Compass project
+ *
+ * @see ccLineationTool.h
+ */
 #include "ccLineationTool.h"
 #include "ccCompass.h"
 

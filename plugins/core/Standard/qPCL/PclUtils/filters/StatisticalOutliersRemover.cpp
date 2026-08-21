@@ -15,6 +15,20 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file StatisticalOutliersRemover.cpp
+ *
+ * @brief PCL statistical outlier removal implementation
+ *
+ * Removes isolated points based on nearest-neighbor statistics:
+ * 1. For each point, compute mean distance to k nearest neighbors
+ * 2. Points with mean > (global mean + stddev × threshold) are outliers
+ * 3. Remove or mark outliers
+ *
+ * Parameters: k (neighbors), stddev multiplier threshold.
+ *
+ * @see StatisticalOutliersRemover.h
+ */
 #include "StatisticalOutliersRemover.h"
 
 //Local

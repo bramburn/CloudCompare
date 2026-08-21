@@ -15,6 +15,21 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file NormalEstimation.cpp
+ *
+ * @brief PCL normal estimation implementation
+ *
+ * Computes surface normals using PCL's integral images
+ * (for organized data) or nearest neighbors (for unorganized):
+ * - **Integral image**: fast for depth map / range image
+ * - **KNN search**: uses k nearest neighbors for covariance PCA
+ * - **RNN search**: fixed radius neighborhood
+ *
+ * Parameters: search radius, K (neighbors), viewpoint.
+ *
+ * @see NormalEstimation.h
+ */
 #include "NormalEstimation.h"
 
 //Local

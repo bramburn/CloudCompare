@@ -15,6 +15,23 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ViewInterpolate.cpp
+ *
+ * @brief View interpolation implementation
+ *
+ * Interpolates between two camera viewpoints for animation.
+ *
+ * ## Interpolation
+ *
+ * - **Position**: spherical lerp between two camera positions
+ * - **Target**: linear interpolation between look-at points
+ * - **Up vector**: quaternion slerp for smooth rotation
+ *
+ * Generates a sequence of keyframes at a given frame rate.
+ *
+ * @see ViewInterpolate.h
+ */
 #include "ViewInterpolate.h"
 
 //qCC_db
