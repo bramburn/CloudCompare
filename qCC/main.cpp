@@ -3,13 +3,37 @@
  *
  * @brief CloudCompare main entry point
  *
- * CloudCompare is an advanced 3D point cloud and mesh processing software.
- * This file contains the application entry point (main function) and
- * initialization routines for the Qt-based GUI application.
+ * ## Application Initialization Sequence
  *
- * \author EDF R&D / TELECOM ParisTech (ENST-TSI)
- * \copyright GNU General Public License v2 or later
- * \date Initial release: 2005
+ * 1. Qt application: setAttribute, setOrganizationName, QApplication construction
+ * 2. Sentry crash handler: sentry_init() (if CC_USE_SENTRY=ON)
+ * 3. Command-line parsing: qCC::CommandLineParser if --SILENT or --CMD
+ * 4. QSettings: restore last-used language
+ * 5. OpenGL: ccGLUtils::SetForwardCompatibleGL for the GPU
+ * 6. Normal vectors table: ccNormalVectors::GetUnique()
+ * 7. Color scales manager: ccColorScalesManager::Initialize()
+ * 8. Main window: MainWindow construction
+ * 9. Plugins: ccPluginManager::loadPlugins()
+ * 10. Splash screen: shown during initialization, hidden when ready
+ * 11. ccConsole::Init(): message sink registration
+ * 12. ccLog: startup banner (version, date, Qt version)
+ * 13. ccCommandLineParser: parse CLI args if in command mode
+ * 14. exec(): Qt event loop
+ * 15. Cleanup: sentry_close()
+ *
+ * ## Command-Line Modes
+ *
+ * - **Silent mode** (--SILENT): batch processing without GUI
+ * - **Command mode** (--CMD): CLI with console
+ * - **Normal mode**: full GUI with splash screen
+ *
+ * ## Environment Variables
+ *
+ * - CC_SENTRY_DSN: Sentry DSN for crash reporting
+ * - CC_USE_SENTRY: enable/disable Sentry
+ * - QT_QPA_PLATFORM: offscreen on headless servers
+ *
+ * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
  */
 
 // ##########################################################################
