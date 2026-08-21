@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file LasOpenDialog.cpp
+ *
+ * @brief LAS open dialog implementation
+ *
+ * Implements the LasOpenDialog class:
+ * - Tab-based UI: Load / COPC / Tile
+ * - Field selection: standard + extra attributes checkboxes
+ * - QSettings persistence for last-used values
+ * - COPC LOD and extent selection
+ * - Tiling grid configuration
+ *
+ * ## QSettings Keys
+ *
+ * Values are persisted per-plugin session via QSettings:
+ * - Skip dialog flag
+ * - Last used scalar fields
+ * - Last used COPC max level
+ * - Last used tiling options
+ *
+ * @see LasOpenDialog.h
+ */
+
 #include "LasOpenDialog.h"
 
 // Qt
@@ -26,9 +49,17 @@
 // System
 #include <algorithm>
 
+//! Tab indices for the dialog's QTabWidget
 constexpr int TILING_TAB_INDEX = 1;
 constexpr int COPC_TAB_INDEX   = 2;
 
+/**
+ * @brief Create a checkbox list item
+ *
+ * @param[in] name Display text
+ * @param[in] checked Initial check state
+ * @return New QListWidgetItem
+ */
 static QListWidgetItem* CreateItem(const char* name, bool checked = true)
 {
 	auto item = new QListWidgetItem(name);
