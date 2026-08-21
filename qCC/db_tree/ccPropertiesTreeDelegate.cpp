@@ -15,6 +15,38 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPropertiesTreeDelegate.cpp
+ *
+ * @brief Properties panel delegate implementation
+ *
+ * Implements ccPropertiesTreeDelegate: the Qt Model/View delegate
+ * for the right-side Properties panel in CloudCompare.
+ *
+ * ## Editor Types
+ *
+ * Each property row gets an appropriate inline editor:
+ * - QSpinBox / QDoubleSpinBox: numeric values
+ * - QComboBox: enum/choice values
+ * - Color buttons: ccColorButton
+ * - Checkboxes: QCheckBox
+ * - Text editors: QLineEdit / QTextEdit
+ *
+ * ## Property Categories
+ *
+ * Each ccHObject subclass adds its own rows:
+ * - ccGenericPointCloud: scalar field, LOD, normals, colors
+ * - ccGenericMesh: materials, wireframe, stippling
+ * - ccPolyline: width
+ * - ccSensor: frustum, scale, uncertainty, transformation
+ * - ccFacet: contour, mesh, normal vector
+ * - ccGenericPrimitive: precision, radius, height, etc.
+ * - ccCoordinateSystem: display scale, axis width
+ * - cc2DLabel: 2D display, point legend
+ *
+ * @see ccPropertiesTreeDelegate.h
+ */
+
 #include "ccPropertiesTreeDelegate.h"
 
 // Local
@@ -144,6 +176,13 @@ static QStandardItem* PERSISTENT_EDITOR(ccPropertiesTreeDelegate::CC_PROPERTY_RO
 	return ITEM(QString(), Qt::ItemIsEditable, role);
 }
 
+/**
+ * @brief Construct the delegate
+ *
+ * @param[in] model Standard item model backing the tree
+ * @param[in] dbTreeWidget DB tree (for context)
+ * @param[in] parent Parent widget
+ */
 ccPropertiesTreeDelegate::ccPropertiesTreeDelegate(QStandardItemModel* model,
                                                    QAbstractItemView*  view,
                                                    QObject*            parent)
@@ -206,6 +245,15 @@ ccHObject* ccPropertiesTreeDelegate::getCurrentObject()
 	return m_currentObject;
 }
 
+/**
+ * @brief Populate the properties panel for an object
+ *
+ * Clears the model and dispatches to the appropriate fillWith*()
+ * method based on the object's type. Adds separator rows and
+ * entity-specific property rows.
+ *
+ * @param[in] hObject Object whose properties to display
+ */
 void ccPropertiesTreeDelegate::fillModel(ccHObject* hObject)
 {
 	if (!hObject)
