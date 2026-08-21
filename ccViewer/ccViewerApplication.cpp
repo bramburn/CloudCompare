@@ -15,6 +15,24 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccViewerApplication.cpp
+ *
+ * @brief ccViewer application entry point
+ *
+ * The ccViewer application is a lightweight read-only point cloud
+ * and mesh viewer built on the CloudCompare core libraries.
+ *
+ * ## Differences from qCC
+ *
+ * - No editing capabilities (read-only)
+ * - Separate plugin path (plugins are loaded from ccViewer's
+ *   own plugin directory, not qCC's)
+ * - Simpler menu: open, view modes, screenshot, exit
+ * - Faster startup for quick visualization
+ *
+ * @see main.cpp
+ */
 #include <QtGlobal>
 
 #ifdef Q_OS_MAC

@@ -4,6 +4,16 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file ActionLoadCloud.cpp
+ *
+ * @brief HelloCloud load cloud action implementation
+ *
+ * Action for the HelloCloud experimental plugin:
+ * opens a file dialog and loads the selected point cloud.
+ *
+ * @see ActionLoadCloud.h
+ */
 #include "ActionLoadCloud.h"
 
 #include "ccHObject.h"

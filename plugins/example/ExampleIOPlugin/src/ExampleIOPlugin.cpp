@@ -31,6 +31,17 @@
 //	 "description" is used as a tootip if the plugin has actions and is displayed in the plugin dialog
 //	 "authors", "maintainers", and "references" show up in the plugin dialog as well
 
+/**
+ * @file ExampleIOPlugin.cpp
+ *
+ * @brief Example I/O plugin implementation
+ *
+ * Template plugin demonstrating the I/O plugin interface.
+ * Shows how to register a FileIOFilter for a custom format.
+ *
+ * @extends QObject
+ * @extends ccIOPluginInterface
+ */
 #include "ExampleIOPlugin.h"
 
 #include "FooFilter.h"

@@ -15,6 +15,22 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccDefaultPluginInterface.cpp
+ *
+ * @brief Default plugin interface implementation
+ *
+ * Stub implementation of ccStdPluginInterface for plugins
+ * that don't need the full plugin interface.
+ *
+ * ## Use
+ *
+ * Provides a no-op implementation of the optional
+ * plugin interface methods. Plugins can override
+ * only the methods they need.
+ *
+ * @see ccDefaultPluginInterface.h
+ */
 #include "ccDefaultPluginInterface.h"
 
 #include "ccLog.h"

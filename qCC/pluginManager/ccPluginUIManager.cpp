@@ -15,6 +15,25 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPluginUIManager.cpp
+ *
+ * @brief Plugin UI manager implementation
+ *
+ * Manages the UI integration of plugins with CloudCompare:
+ * - Registers plugin actions in the app menus and toolbars
+ * - Handles plugin action shortcuts
+ * - Provides plugin action icons
+ * - Manages plugin-specific dialogs
+ *
+ * ## Action Mapping
+ *
+ * Each plugin exports its actions via getActions().
+ * ccPluginUIManager wires these to the main window's
+ * menu bar and toolbar based on the plugin's category.
+ *
+ * @see ccPluginUIManager.h
+ */
 #include "ccPluginUIManager.h"
 
 #include "ccPluginInfoDlg.h"

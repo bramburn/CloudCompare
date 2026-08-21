@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccShader.cpp
+ *
+ * @brief GLSL shader wrapper implementation
+ *
+ * Wraps OpenGL GLSL shader compilation and linking:
+ * - Compiles vertex and fragment shaders from source strings
+ * - Links shaders into a program object
+ * - Binds/unbinds the program for rendering
+ * - Provides uniform setter methods (float, int, vec, mat)
+ *
+ * ## Usage
+ *
+ * 1. Create ccShader
+ * 2. setShaders(vertSrc, fragSrc)
+ * 3. compile()
+ * 4. bind() before drawing
+ * 5. setUniform*(...) to update uniforms
+ * 6. release() after drawing
+ *
+ * @see ccShader.h
+ */
 #include "ccShader.h"
 
 // Qt

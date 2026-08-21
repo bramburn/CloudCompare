@@ -15,6 +15,20 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file FooFilter.cpp
+ *
+ * @brief Example filter implementation
+ *
+ * Template file filter demonstrating the FileIOFilter pattern:
+ * - open(): read Foo format → ccPointCloud
+ * - save(): write ccPointCloud → Foo format
+ * - Checks specific extensions and magic bytes
+ *
+ * Replace with actual format implementation.
+ *
+ * @see FooFilter.h
+ */
 #include <QString>
 
 #include "FooFilter.h"

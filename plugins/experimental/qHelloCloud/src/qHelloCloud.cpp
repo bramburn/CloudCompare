@@ -4,6 +4,20 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qHelloCloud.cpp
+ *
+ * @brief HelloCloud experimental plugin entry point
+ *
+ * Minimal experimental plugin demonstrating the CloudCompare
+ * plugin system. Shows how to:
+ * - Register actions with the main window
+ * - Access the main app interface
+ * - Interact with the database tree
+ *
+ * @extends QObject
+ * @extends ccStdPluginInterface
+ */
 #include <QtGui>
 
 #include "qHelloCloud.h"

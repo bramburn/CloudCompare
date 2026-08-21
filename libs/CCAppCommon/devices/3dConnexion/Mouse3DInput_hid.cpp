@@ -20,6 +20,27 @@
 
 #ifdef CC_3DMOUSE_HID
 
+/**
+ * @file Mouse3DInput_hid.cpp
+ *
+ * @brief 3D mouse HID input implementation
+ *
+ * Implements raw HID (Human Interface Device) communication
+ * with 3DConnexion space mice (SpacePilot, SpaceMouse, etc.).
+ *
+ * ## HID Protocol
+ *
+ * Space mice communicate via HID reports:
+ * - **Report ID 0x01**: motion data (6-DOF: tx, ty, tz, rx, ry, rz)
+ * - **Report ID 0x02**: button state changes
+ * - **Report ID 0x03**: LED state
+ *
+ * Motion values are 16-bit signed integers scaled by the
+ * device sensitivity. The `hidapi` library (from extern/)
+ * handles the cross-platform HID I/O.
+ *
+ * @see Mouse3DInput_hid.h, cc3DMouseManager.h
+ */
 #include "Mouse3DInput_hid.h"
 
 #include "Mouse3DInput.h"

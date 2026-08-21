@@ -15,6 +15,25 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccFrameBufferObject.cpp
+ *
+ * @brief Framebuffer Object implementation
+ *
+ * Wraps OpenGL framebuffer objects for render-to-texture:
+ * - **Color texture**: rendered image output
+ * - **Depth renderbuffer**: depth testing without on-screen buffer
+ * - **FBO creation/destruction**: resource management
+ * - **Bind/unbind**: activate for rendering or restore default
+ *
+ * ## Use Cases
+ *
+ * - EDL post-processing (render scene → depth FBO → EDL shader)
+ * - SSAO (render normals → SSAO shader → composite)
+ * - Screenshot capture (render to FBO → read pixels)
+ *
+ * @see ccFrameBufferObject.h
+ */
 #include "ccFrameBufferObject.h"
 
 // system

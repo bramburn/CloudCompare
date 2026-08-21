@@ -31,6 +31,23 @@
 //	 "description" is used as a tootip if the plugin has actions and is displayed in the plugin dialog
 //	 "authors", "maintainers", and "references" show up in the plugin dialog as well
 
+/**
+ * @file ExamplePlugin.cpp
+ *
+ * @brief Example Standard plugin implementation
+ *
+ * Template plugin demonstrating the Standard plugin interface.
+ * Shows how to register actions and interact with the main window.
+ *
+ * ## Actions
+ *
+ * Replace with actual plugin actions:
+ * - doAction(): main entry called when menu item is clicked
+ * - addToMenu(): register in the Plugins menu
+ *
+ * @extends QObject
+ * @extends ccStdPluginInterface
+ */
 #include <QtGui>
 
 #include "ExamplePlugin.h"

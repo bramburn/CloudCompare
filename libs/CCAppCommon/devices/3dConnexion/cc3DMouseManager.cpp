@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file cc3DMouseManager.cpp
+ *
+ * @brief 3D mouse manager implementation
+ *
+ * Manages 3DConnexion space mice and maps their 6-DOF
+ * input to viewport camera manipulation.
+ *
+ * ## Mapping
+ *
+ * - **Translation (tx, ty, tz)**: pan the camera parallel to the view plane
+ * - **Rotation (rx, ry, rz)**: rotate around the pivot point
+ * - **Buttons**: configurable action shortcuts
+ *
+ * ## Coordinate System
+ *
+ * The device reports in its own coordinate frame (Y up, Z toward user).
+ * This is transformed to OpenGL coordinates (Y up, -Z toward viewer)
+ * with a rotation matrix.
+ *
+ * @see cc3DMouseManager.h, Mouse3DInput_hid.h
+ */
 #include "cc3DMouseManager.h"
 
 #include "Mouse3DInput.h"

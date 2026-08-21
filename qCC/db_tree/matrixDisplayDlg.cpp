@@ -15,6 +15,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file matrixDisplayDlg.cpp
+ *
+ * @brief Matrix display dialog implementation
+ *
+ * Dialog for displaying a 2D matrix (scalar field grid) as a
+ * color-coded image with histogram and statistics.
+ *
+ * ## Features
+ *
+ * - Color-mapped grid display (using active color scale)
+ * - Histogram of matrix values
+ * - Min/max/mean/stddev statistics
+ * - Zoom and pan controls
+ *
+ * @see matrixDisplayDlg.h
+ */
 #include "matrixDisplayDlg.h"
 
 #include "CCMath.h"

@@ -15,6 +15,21 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccPluginInfoDlg.cpp
+ *
+ * @brief Plugin info dialog implementation
+ *
+ * Displays detailed information about a CloudCompare plugin:
+ * - **Name and version**: from plugin metadata
+ * - **Type**: Standard / I/O / GL
+ * - **Author**: copyright and contact
+ * - **Description**: what the plugin does
+ * - **Tags**: categorization for search
+ * - **File path**: location of the plugin .dll/.so
+ *
+ * @see ccPluginInfoDlg.h
+ */
 #include "ccPluginInfoDlg.h"
 
 #include "ccPluginManager.h"
