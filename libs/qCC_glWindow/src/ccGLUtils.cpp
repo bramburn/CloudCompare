@@ -15,6 +15,31 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGLUtils.cpp
+ *
+ * @brief OpenGL utility functions implementation
+ *
+ * Implements OpenGL helpers from ccGLUtils.h:
+ * - **Texture display**: draw textures in 2D overlays
+ * - **Shader compilation**: compile/check GLSL shaders
+ * - **Vertex buffer objects**: VBO creation and binding
+ * - **GL error checking**: glCheckError() for debugging
+ *
+ * ## Texture Display
+ *
+ * DisplayTexture2DPosition() draws a QImage or GL texture in the
+ * 2D overlay layer of the 3D view. Supports full-area and
+ * title-bar-area placement.
+ *
+ * ## Shader Utilities
+ *
+ * CheckShader() and CheckProgram() report GLSL compile/link errors
+ * with ccLog::Warning for easy debugging.
+ *
+ * @see ccGLUtils.h
+ */
+
 #include "ccGLUtils.h"
 
 #include <QOpenGLTexture>
@@ -22,6 +47,19 @@
 
 //*********** OPENGL TEXTURES ***********//
 
+/**
+ * @brief Draw a QImage as a 2D texture overlay
+ *
+ * Creates a GL texture from the image and calls DisplayTexture2DPosition(textureId,...).
+ *
+ * @param[in] image Source image
+ * @param[in] x Screen X position
+ * @param[in] y Screen Y position
+ * @param[in] w Target width
+ * @param[in] h Target height
+ * @param[in] alpha Opacity (0-255)
+ * @param[in] area Where to draw (Full or TopBarOnly)
+ */
 void ccGLUtils::DisplayTexture2DPosition(QImage image, int x, int y, int w, int h, unsigned char alpha /*=255*/, TextureArea area /*=Full*/)
 {
 	QOpenGLTexture texture(image);
@@ -29,6 +67,20 @@ void ccGLUtils::DisplayTexture2DPosition(QImage image, int x, int y, int w, int 
 	DisplayTexture2DPosition(texture.textureId(), x, y, w, h, alpha, area);
 }
 
+/**
+ * @brief Draw a GL texture as a 2D overlay
+ *
+ * Uses glPixelZoom for scaling. Draws in the 2D overlay layer
+ * (orthographic projection on top of the 3D scene).
+ *
+ * @param[in] texID OpenGL texture ID
+ * @param[in] x Screen X position
+ * @param[in] y Screen Y position
+ * @param[in] w Target width
+ * @param[in] h Target height
+ * @param[in] alpha Opacity (0-255)
+ * @param[in] area Where to draw
+ */
 void ccGLUtils::DisplayTexture2DPosition(GLuint texID, int x, int y, int w, int h, unsigned char alpha /*=255*/, TextureArea area /*=Full*/)
 {
 	QOpenGLContext* context = QOpenGLContext::currentContext();
@@ -93,6 +145,13 @@ void ccGLUtils::DisplayTexture2DPosition(GLuint texID, int x, int y, int w, int 
 
 //*********** OPENGL MATRICES ***********//
 
+/**
+ * @brief Generate a view matrix for a named orientation
+ *
+ * @param[in] orientation Named orientation (TOP, FRONT, ISO1, etc.)
+ * @param[in] perspectiveMode Use perspective projection if true
+ * @return 4x4 view transformation matrix
+ */
 ccGLMatrixd ccGLUtils::GenerateViewMat(CC_VIEW_ORIENTATION orientation,
                                        const CCVector3d&   vertDir /*=CCVector3d(0, 0, 1)*/,
                                        double*             _vertAngle_rad /*=nullptr*/,
