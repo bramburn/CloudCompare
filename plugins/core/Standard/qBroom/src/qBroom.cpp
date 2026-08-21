@@ -15,6 +15,24 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qBroom.cpp
+ *
+ * @brief Virtual broom plugin implementation
+ *
+ * Implements the qBroom plugin lifecycle.
+ *
+ * Processing flow:
+ * 1. Show disclaimer (first-use guard via ShowDisclaimer)
+ * 2. Validate selection (one point cloud)
+ * 3. Create qBroomDlg (passes the cloud to it)
+ * 4. Show dialog (non-modal so user can interact with 3D view)
+ * 5. Deselect the input cloud (so it doesn't interfere with broom interaction)
+ * 6. Enter exec() loop — qBroomDlg handles the actual broom logic
+ *
+ * @see qBroom
+ */
+
 #include "qBroom.h"
 #include "qBroomDlg.h"
 #include "qBroomDisclaimerDialog.h"
@@ -38,19 +56,24 @@ qBroom::qBroom(QObject* parent)
 {
 }
 
-QList<QAction *> qBroom::getActions()
+// qBroom::getActions
+/**
+ * @brief Create and return the plugin action
+ *
+ * Lazily creates the "Broom" action and connects triggered() to doAction().
+ *
+ * @return List containing the broom action
+ */
+QList<QAction*> qBroom::getActions()
 {
-	//default action
 	if (!m_action)
 	{
-		m_action = new QAction(getName(),this);
+		m_action = new QAction(getName(), this);
 		m_action->setToolTip(getDescription());
 		m_action->setIcon(getIcon());
-		//connect signal
 		connect(m_action, &QAction::triggered, this, &qBroom::doAction);
 	}
-
-	return QList<QAction *>{ m_action };
+	return QList<QAction*>{m_action};
 }
 
 void qBroom::onNewSelection(const ccHObject::Container& selectedEntities)
@@ -62,6 +85,18 @@ void qBroom::onNewSelection(const ccHObject::Container& selectedEntities)
 	}
 }
 
+// qBroom::doAction
+/**
+ * @brief Execute the broom tool
+ *
+ * Workflow:
+ * 1. Show disclaimer dialog (first-use only)
+ * 2. Validate: one point cloud selected
+ * 3. Create qBroomDlg, show it non-modally
+ * 4. Deselect input cloud (prevents interference with brush interaction)
+ * 5. Pass cloud to dialog and enter exec() loop
+ * 6. Refresh all views after completion
+ */
 void qBroom::doAction()
 {
 	if (!m_app)
