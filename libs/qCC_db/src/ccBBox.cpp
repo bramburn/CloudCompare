@@ -16,6 +16,35 @@
 // ##########################################################################
 
 // Always first
+/**
+ * @file ccBBox.cpp
+ *
+ * @brief Bounding box implementation
+ *
+ * Implements ccBBox: an axis-aligned bounding box (AABB)
+ * utility class.
+ *
+ * ## Bounding Box
+ *
+ * An AABB is defined by min and max corners:
+ * - **minCorner**: smallest X, Y, Z values
+ * - **maxCorner**: largest X, Y, Z values
+ *
+ * ## Operations
+ *
+ * - **Contains**: check if a point is inside the box
+ * - **Intersects**: check if two boxes overlap
+ * - **Scale**: scale the box around its center
+ * - **Merge**: extend box to include another box or point
+ * - **Diagonal**: vector from min to max corner
+ * - **Center**: midpoint of the box
+ *
+ * Used by octree construction, entity bounding boxes, and
+ * visibility culling.
+ *
+ * @see ccBBox.h
+ */
+
 #include "ccBBox.h"
 
 #include "ccIncludeGL.h"

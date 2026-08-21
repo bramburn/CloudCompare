@@ -15,6 +15,24 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccAdvancedTypes.cpp
+ *
+ * @brief Advanced types implementation
+ *
+ * Implements advanced data types for CloudCompare:
+ * - ccTorus: torus primitive
+ * - ccBox: axis-aligned box primitive
+ * - ccFacet: triangulated surface patch
+ * - ccPlane: 2.5D plane primitive
+ * - ccSphere: sphere primitive
+ *
+ * This file provides the class definitions and registration
+ * for advanced entity types that are not in the core CCCoreLib.
+ *
+ * @see ccAdvancedTypes.h
+ */
+
 #include "ccAdvancedTypes.h"
 
 NormsIndexesTableType::NormsIndexesTableType()

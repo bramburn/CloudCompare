@@ -16,6 +16,24 @@
 // ##########################################################################
 
 // Local
+/**
+ * @file cc2DViewportObject.cpp
+ *
+ * @brief 2D viewport object implementation
+ *
+ * Implements cc2DViewportObject: a 2D object attached to a
+ * specific viewport (camera pose) rather than to world geometry.
+ *
+ * ## Viewport Objects
+ *
+ * Viewport objects are associated with a specific camera pose
+ * (ccViewportParameters) and move with the camera as the view
+ * changes. Used for overlaying information (labels, markers)
+ * that should appear fixed relative to the view.
+ *
+ * @see cc2DViewportObject.h
+ */
+
 #include "cc2DViewportObject.h"
 
 cc2DViewportObject::cc2DViewportObject(QString name /*=QString()*/)

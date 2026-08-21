@@ -15,6 +15,26 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccColorTypes.cpp
+ *
+ * @brief Color types implementation
+ *
+ * Implements color type definitions and conversions:
+ * - **RGB888**: 3-byte RGB color (0-255 per channel)
+ * - **RGBA8888**: 4-byte RGBA color with alpha
+ * - **RGB16**: 16-bit per channel RGB (for high precision)
+ * - **Encoded color**: compressed color for storage
+ *
+ * ## Conversions
+ *
+ * - To/from QColor
+ * - To/from RGB float tuple
+ * - Hex string encoding
+ *
+ * @see ccColorTypes.h
+ */
+
 #include "ccColorTypes.h"
 
 #include <cmath>

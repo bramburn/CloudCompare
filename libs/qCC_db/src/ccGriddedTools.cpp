@@ -15,6 +15,29 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file ccGriddedTools.cpp
+ *
+ * @brief Gridded tools implementation
+ *
+ * Implements grid-based processing tools for point clouds
+ * (typically from GBL sensors).
+ *
+ * ## Grid Operations
+ *
+ * - **Project to grid**: project 3D points onto a 2D grid
+ * - **Interpolate**: fill grid cells from neighbor values
+ * - **Kriging**: geostatistical interpolation on grids
+ *
+ * ## GBL Sensor
+ *
+ * Gridded tools work closely with ccGBLSensor to process
+ * terrestrial laser scanner point clouds that have a natural
+ * grid structure from the scanner's acquisition pattern.
+ *
+ * @see ccGriddedTools.h, ccGBLSensor
+ */
+
 #include "ccGriddedTools.h"
 
 // Local
