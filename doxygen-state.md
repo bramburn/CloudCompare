@@ -64,6 +64,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccGLMatrix.h | ✅ Done | Already documented |
 | ccMesh.h | ✅ Done | Already documented (44 blocks) |
 | ccPlane.h | ✅ Done | Committed: 0b3df67e |
+| ccDish.h | ✅ Done | Committed: 43942200 |
+| ccDish.h | ✅ Done | Committed: 43942200 |
 | ccCone.h | ✅ Done | Committed: 83917d65 |
 | ccSphere.h | ✅ Done | Committed: 4c2fcfd3 |
 | ccCylinder.h | ✅ Done | Committed: 12375a88 |
@@ -124,7 +126,7 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | qCSF.h | ✅ Done | Committed: b6c5e8dd |
 | qCSF.cpp | ✅ Done | Committed: b6c5e8dd |
 | qM3C2.h | ✅ Done | Committed: f0954412 |
-| qM3C2.cpp | ✅ Done | Committed: f0954412 |
+| qM3C2.cpp | ✅ Done | Committed: 2ba17da2 |
 | qHPR.h | ✅ Done | Committed: dae49892 |
 | qHPR.cpp | ✅ Done | Committed: dae49892 |
 | qBroom.h | ✅ Done | Committed: 477bd26d |
@@ -144,9 +146,9 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 
 ## Progress Summary
 - **Total files tracked**: ~55
-- **Completed**: 52
+- **Completed**: 54
 - **In progress**: 0
-- **Percentage**: ~95%
+- **Percentage**: ~98%
 
 ## Submodule Note
 `libs/qCC_db/extern/CCCoreLib/` is a git submodule. Files inside it cannot be committed from the parent repo.
