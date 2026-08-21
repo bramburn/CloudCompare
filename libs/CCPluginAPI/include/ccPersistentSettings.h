@@ -1,7 +1,7 @@
 // ##########################################################################
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
-// #                                                                        //
+// #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
 // #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
@@ -10,53 +10,38 @@
 // #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        //
+// #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
 
 /**
  * @file ccPersistentSettings.h
  *
- * @brief Standardized QSettings key constants.
+ * @brief Standardized QSettings key constants
  *
- * @details Provides standardized key strings for QSettings to persist
- * application preferences across sessions.
+ * Central registry of all QSettings key strings used to persist application
+ * preferences. Using these inline functions instead of string literals
+ * ensures consistency across all modules and prevents typos.
  *
- * ## Overview
- *
- * These keys ensure consistent settings storage:
- * - Window geometry and state
- * - File dialog paths
- * - Recent files
- * - Plugin settings
- * - Tool preferences
- *
- * ## Usage
- *
+ * Usage:
  * @code
  * QSettings settings;
- *
- * // Save window geometry
  * settings.setValue(ccPS::MainWinGeom(), saveGeometry());
- *
- * // Load last path
- * QString path = settings.value(ccPS::CurrentPath()).toString();
- *
- * // Save plugin setting
- * settings.beginGroup(ccPS::Plugins());
- * settings.setValue("MyPlugin/enabled", true);
+ * settings.beginGroup(ccPS::Console());
+ * bool qtMessages = settings.value("QtMessagesEnabled", false).toBool();
  * settings.endGroup();
  * @endcode
  *
- * ## Categories
- *
- * - **UI**: Window geometry, styles
- * - **Files**: Recent files, dialog paths, filters
- * - **Tools**: Tool-specific settings
- * - **Plugins**: Plugin preferences
+ * Key groups:
+ * - UI: mainWindowGeometry, mainWindowState, AppStyle
+ * - Files: LoadFile, SaveFile, CurrentPath, selectedInputFilter, etc.
+ * - Tools: HeightGridGeneration, VolumeCalculation, duplicatePoints
+ * - Display: GlobalShift, AutoPickRotationCenter, View3dRotationAxisLocked
+ * - Plugins: Plugins, Options, Translation, Shortcuts
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
+ * @see QSettings
  */
 
 #pragma once
@@ -65,228 +50,85 @@
 #include <QString>
 
 /**
- * @brief Persistent settings key constants.
+ * @brief Persistent settings key constants
  *
- * @details Namespace containing standardized settings keys.
+ * Namespace providing canonical string keys for QSettings. All keys use
+ * lowercase names matching the Qt-internal convention. Plugins should
+ * use beginGroup/endGroup with ccPS::Plugins() for their own settings.
  *
- * Use these instead of string literals to ensure
- * consistency across the application.
+ * @see QSettings
  */
 namespace ccPS
 {
-	/**
-	 * @brief Get load file dialog key.
-	 */
-	inline const QString LoadFile()
-	{
-		return QStringLiteral("LoadFile");
-	}
+	// File dialog paths
+	/** @brief "LoadFile" — last directory used for opening files */
+	inline const QString LoadFile() { return QStringLiteral("LoadFile"); }
+	/** @brief "SaveFile" — last directory used for saving files */
+	inline const QString SaveFile() { return QStringLiteral("SaveFile"); }
 
-	/**
-	 * @brief Get save file dialog key.
-	 */
-	inline const QString SaveFile()
-	{
-		return QStringLiteral("SaveFile");
-	}
+	// Window state
+	/** @brief "mainWindowGeometry" — QMainWindow saveGeometry() */
+	inline const QString MainWinGeom() { return QStringLiteral("mainWindowGeometry"); }
+	/** @brief "mainWindowState" — QMainWindow saveState() */
+	inline const QString MainWinState() { return QStringLiteral("mainWindowState"); }
+	/** @brief "doNotRestoreWindowGeometry" — skip geometry restore at startup */
+	inline const QString DoNotRestoreWindowGeometry() { return QStringLiteral("doNotRestoreWindowGeometry"); }
 
-	/**
-	 * @brief Get main window geometry key.
-	 */
-	inline const QString MainWinGeom()
-	{
-		return QStringLiteral("mainWindowGeometry");
-	}
+	// UI
+	/** @brief "AppStyle" — Qt stylesheet or style name */
+	inline const QString AppStyle() { return QStringLiteral("AppStyle"); }
+	/** @brief "currentPath" — current working directory for file dialogs */
+	inline const QString CurrentPath() { return QStringLiteral("currentPath"); }
 
-	/**
-	 * @brief Get main window state key.
-	 */
-	inline const QString MainWinState()
-	{
-		return QStringLiteral("mainWindowState");
-	}
+	// File filters
+	/** @brief "selectedInputFilter" — last selected import filter */
+	inline const QString SelectedInputFilter() { return QStringLiteral("selectedInputFilter"); }
+	/** @brief "selectedOutputFilterCloud" — last selected cloud export format */
+	inline const QString SelectedOutputFilterCloud() { return QStringLiteral("selectedOutputFilterCloud"); }
+	/** @brief "selectedOutputFilterMesh" — last selected mesh export format */
+	inline const QString SelectedOutputFilterMesh() { return QStringLiteral("selectedOutputFilterMesh"); }
+	/** @brief "selectedOutputFilterImage" — last selected image export format */
+	inline const QString SelectedOutputFilterImage() { return QStringLiteral("selectedOutputFilterImage"); }
+	/** @brief "selectedOutputFilterPoly" — last selected polyline export format */
+	inline const QString SelectedOutputFilterPoly() { return QStringLiteral("selectedOutputFilterPoly"); }
 
-	/**
-	 * @brief Get don't restore window geometry flag key.
-	 */
-	inline const QString DoNotRestoreWindowGeometry()
-	{
-		return QStringLiteral("doNotRestoreWindowGeometry");
-	}
+	// Tool settings
+	/** @brief "duplicatePoints" — group key for duplicate detection settings */
+	inline const QString DuplicatePointsGroup() { return QStringLiteral("duplicatePoints"); }
+	/** @brief "minDist" — minimum distance for duplicate detection */
+	inline const QString DuplicatePointsMinDist() { return QStringLiteral("minDist"); }
+	/** @brief "HeightGridGeneration" — group key for height grid settings */
+	inline const QString HeightGridGeneration() { return QStringLiteral("HeightGridGeneration"); }
+	/** @brief "VolumeCalculation" — group key for volume calc settings */
+	inline const QString VolumeCalculation() { return QStringLiteral("VolumeCalculation"); }
 
-	/**
-	 * @brief Get application style key.
-	 */
-	inline const QString AppStyle()
-	{
-		return QStringLiteral("AppStyle");
-	}
+	// Console
+	/** @brief "Console" — group key for console settings */
+	inline const QString Console() { return QStringLiteral("Console"); }
 
-	/**
-	 * @brief Get current working directory path key.
-	 */
-	inline const QString CurrentPath()
-	{
-		return QStringLiteral("currentPath");
-	}
+	// Global shift / coordinates
+	/** @brief "GlobalShift" — group key for global shift settings */
+	inline const QString GlobalShift() { return QStringLiteral("GlobalShift"); }
+	/** @brief "MaxAbsCoord" — maximum absolute coordinate threshold */
+	inline const QString MaxAbsCoord() { return QStringLiteral("MaxAbsCoord"); }
+	/** @brief "MaxAbsDiag" — maximum absolute diagonal threshold */
+	inline const QString MaxAbsDiag() { return QStringLiteral("MaxAbsDiag"); }
 
-	/**
-	 * @brief Get selected input file filter key.
-	 */
-	inline const QString SelectedInputFilter()
-	{
-		return QStringLiteral("selectedInputFilter");
-	}
+	// 3D view
+	/** @brief "AutoPickRotationCenter" — auto-pick pivot at screen center */
+	inline const QString AutoPickRotationCenter() { return QStringLiteral("AutoPickRotationCenter"); }
+	/** @brief "View3dRotationAxisLocked" — lock rotation to a fixed axis */
+	inline const QString View3dRotationAxisLocked() { return QStringLiteral("View3dRotationAxisLocked"); }
+	/** @brief "View3dLockedAxisRotation" — locked rotation angle */
+	inline const QString View3dLockedAxisRotation() { return QStringLiteral("View3dLockedAxisRotation"); }
 
-	/**
-	 * @brief Get selected cloud output filter key.
-	 */
-	inline const QString SelectedOutputFilterCloud()
-	{
-		return QStringLiteral("selectedOutputFilterCloud");
-	}
-
-	/**
-	 * @brief Get selected mesh output filter key.
-	 */
-	inline const QString SelectedOutputFilterMesh()
-	{
-		return QStringLiteral("selectedOutputFilterMesh");
-	}
-
-	/**
-	 * @brief Get selected image output filter key.
-	 */
-	inline const QString SelectedOutputFilterImage()
-	{
-		return QStringLiteral("selectedOutputFilterImage");
-	}
-
-	/**
-	 * @brief Get selected polyline output filter key.
-	 */
-	inline const QString SelectedOutputFilterPoly()
-	{
-		return QStringLiteral("selectedOutputFilterPoly");
-	}
-
-	/**
-	 * @brief Get duplicate points group key.
-	 */
-	inline const QString DuplicatePointsGroup()
-	{
-		return QStringLiteral("duplicatePoints");
-	}
-
-	/**
-	 * @brief Get min distance for duplicate detection key.
-	 */
-	inline const QString DuplicatePointsMinDist()
-	{
-		return QStringLiteral("minDist");
-	}
-
-	/**
-	 * @brief Get height grid generation settings key.
-	 */
-	inline const QString HeightGridGeneration()
-	{
-		return QStringLiteral("HeightGridGeneration");
-	}
-
-	/**
-	 * @brief Get volume calculation settings key.
-	 */
-	inline const QString VolumeCalculation()
-	{
-		return QStringLiteral("VolumeCalculation");
-	}
-
-	/**
-	 * @brief Get console settings key.
-	 */
-	inline const QString Console()
-	{
-		return QStringLiteral("Console");
-	}
-
-	/**
-	 * @brief Get global shift settings key.
-	 */
-	inline const QString GlobalShift()
-	{
-		return QStringLiteral("GlobalShift");
-	}
-
-	/**
-	 * @brief Get max absolute coordinate key.
-	 */
-	inline const QString MaxAbsCoord()
-	{
-		return QStringLiteral("MaxAbsCoord");
-	}
-
-	/**
-	 * @brief Get max absolute diagonal key.
-	 */
-	inline const QString MaxAbsDiag()
-	{
-		return QStringLiteral("MaxAbsDiag");
-	}
-
-	/**
-	 * @brief Get auto pick rotation center key.
-	 */
-	inline const QString AutoPickRotationCenter()
-	{
-		return QStringLiteral("AutoPickRotationCenter");
-	}
-
-	/**
-	 * @brief Get 3D view rotation axis locked key.
-	 */
-	inline const QString View3dRotationAxisLocked()
-	{
-		return QStringLiteral("View3dRotationAxisLocked");
-	}
-
-	/**
-	 * @brief Get 3D view locked axis rotation key.
-	 */
-	inline const QString View3dLockedAxisRotation()
-	{
-		return QStringLiteral("View3dLockedAxisRotation");
-	}
-
-	/**
-	 * @brief Get options/settings group key.
-	 */
-	inline const QString Options()
-	{
-		return QStringLiteral("Options");
-	}
-
-	/**
-	 * @brief Get plugins settings group key.
-	 */
-	inline const QString Plugins()
-	{
-		return QStringLiteral("Plugins");
-	}
-
-	/**
-	 * @brief Get translation/language key.
-	 */
-	inline const QString Translation()
-	{
-		return QStringLiteral("Translation");
-	}
-
-	/**
-	 * @brief Get keyboard shortcuts key.
-	 */
-	inline const QString Shortcuts()
-	{
-		return QStringLiteral("Shortcuts");
-	}
+	// App-level
+	/** @brief "Options" — group key for application options */
+	inline const QString Options() { return QStringLiteral("Options"); }
+	/** @brief "Plugins" — group key for plugin settings */
+	inline const QString Plugins() { return QStringLiteral("Plugins"); }
+	/** @brief "Translation" — current language/translation */
+	inline const QString Translation() { return QStringLiteral("Translation"); }
+	/** @brief "Shortcuts" — keyboard shortcut mappings */
+	inline const QString Shortcuts() { return QStringLiteral("Shortcuts"); }
 }; // namespace ccPS
