@@ -15,6 +15,23 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file FastGlobalRegistrationFilter.cpp
+ *
+ * @brief PCL FGR filter wrapper implementation
+ *
+ * CloudCompare-side wrapper for the PCL Fast Global Registration filter.
+ *
+ * ## Parameters
+ *
+ * - FPFH downsampling voxel size
+ * - Maximum correspondence distance
+ * - Number of RANSAC iterations
+ * - RANSAC inlier threshold
+ * - Transformation epsilon
+ *
+ * @see FastGlobalRegistrationFilter.h
+ */
 #include "FastGlobalRegistrationFilter.h"
 #include "FastGlobalRegistration.h"
 #include "FastGlobalRegistrationDlg.h"

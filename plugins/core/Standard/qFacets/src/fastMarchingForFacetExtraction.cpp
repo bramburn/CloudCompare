@@ -15,6 +15,22 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file fastMarchingForFacetExtraction.cpp
+ *
+ * @brief Fast marching for planar facet extraction
+ *
+ * Uses the fast marching algorithm to propagate planar region
+ * labels across the point cloud for facet extraction:
+ * 1. Start from seed points (high-confidence planar regions)
+ * 2. Fast march outward, assigning labels to neighboring points
+ * 3. Stop when curvature exceeds the threshold
+ *
+ * Based on the marching squares/cubes approach adapted for
+ * scattered point data.
+ *
+ * @see fastMarchingForFacetExtraction.h
+ */
 #include "fastMarchingForFacetExtraction.h"
 
 //CCCoreLib

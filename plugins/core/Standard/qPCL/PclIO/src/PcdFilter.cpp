@@ -15,6 +15,27 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file PcdFilter.cpp
+ *
+ * @brief PCL PCD (Point Cloud Data) filter implementation
+ *
+ * Imports/exports PCL PCD format files.
+ *
+ * ## PCD Format
+ *
+ * PCL's native format:
+ * - **VERSION**: PCD header version
+ * - **FIELDS**: field names (x, y, z, normal_x, rgb, ...)
+ * - **SIZE / TYPE / COUNT**: binary data layout
+ * - **WIDTH / HEIGHT**: structured or unstructured
+ * - **POINTS**: total count
+ * - **DATA**: ascii or binary
+ *
+ * Supports arbitrary fields for sensor data and features.
+ *
+ * @see PcdFilter.h
+ */
 #include "PcdFilter.h"
 
 //PclUtils

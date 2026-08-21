@@ -15,6 +15,22 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file stereogramDlg.cpp
+ *
+ * @brief Facet stereogram dialog implementation
+ *
+ * Displays a lower-hemisphere equal-area (Schmidt) stereonet
+ * of facet poles (normal vectors projected to a point):
+ * - Colored by facet class or area
+ * - Clustering shows dominant orientations
+ * - Click to select corresponding facet in the cloud
+ *
+ * Used for geological structural analysis (bedding planes,
+ * joint sets, foliation poles).
+ *
+ * @see stereogramDlg.h
+ */
 #include "stereogramDlg.h"
 
 //Local

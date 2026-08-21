@@ -15,6 +15,18 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file cc2sm.cpp
+ *
+ * @brief CloudCompare to PCL sensor message conversion
+ *
+ * Converts CloudCompare sensor data to PCL sensor messages:
+ * - ccSensor → pcl::RangeImage or pcl::PointCloud
+ * - Handles GBL (Ground-Based Lidar) sensor format
+ * - Converts depth map to organized PCL point cloud
+ *
+ * @see cc2sm.h
+ */
 #include "cc2sm.h"
 
 //Local

@@ -1,3 +1,18 @@
+/**
+ * @file ccSymbolCloud.cpp
+ *
+ * @brief SRA symbol cloud implementation
+ *
+ * A point cloud containing geological symbol representations:
+ * - **Dip symbols**: arrows pointing in dip direction with plunge angle
+ * - **Strike lines**: horizontal line segments
+ * - **Label text**: strike/dip value annotations
+ *
+ * Used for generating stereonet symbols and map-ready
+ * DXF output for geological mapping.
+ *
+ * @see ccSymbolCloud.h
+ */
 #include "ccSymbolCloud.h"
 
 //qCC_db

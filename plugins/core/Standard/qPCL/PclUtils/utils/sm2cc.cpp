@@ -15,6 +15,21 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file sm2cc.cpp
+ *
+ * @brief PCL sensor message to CloudCompare conversion
+ *
+ * Converts PCL sensor messages back to CloudCompare entities:
+ * - pcl::RangeImage → ccGBLSensor
+ * - PCL sensor data → ccPointCloud
+ * - Organized clouds → depth map representation
+ *
+ * Used for round-tripping: CloudCompare → PCL → CloudCompare
+ * after applying PCL processing.
+ *
+ * @see sm2cc.h
+ */
 #include "sm2cc.h"
 
 //Local

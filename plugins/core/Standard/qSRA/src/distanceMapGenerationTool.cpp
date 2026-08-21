@@ -15,6 +15,25 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file distanceMapGenerationTool.cpp
+ *
+ * @brief SRA distance map generation implementation
+ *
+ * Generates a 2D distance map from a point cloud cross-section:
+ * 1. Slice the point cloud with a vertical plane
+ * 2. Generate a regular grid (distance map)
+ * 3. For each grid cell, compute distance to nearest point
+ * 4. Output as ccScalarField or raster grid
+ *
+ * ## Use
+ *
+ * Used for comparing a measured cross-section to a reference
+ * profile or theoretical shape. The distance map shows
+ * deviations as positive/negative distances.
+ *
+ * @see distanceMapGenerationTool.h
+ */
 #include "distanceMapGenerationTool.h"
 
 //qCC

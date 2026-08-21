@@ -15,6 +15,19 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file FastGlobalRegistrationDlg.cpp
+ *
+ * @brief Fast Global Registration dialog
+ *
+ * Dialog for configuring FGR parameters:
+ * - Downsampling voxel size
+ * - FPFH search radius
+ * - Correspondence rejection distance
+ * - Maximum iterations
+ *
+ * @see FastGlobalRegistrationDlg.h
+ */
 #include "FastGlobalRegistrationDlg.h"
 
 //common

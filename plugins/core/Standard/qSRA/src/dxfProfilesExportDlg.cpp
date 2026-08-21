@@ -15,6 +15,19 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file dxfProfilesExportDlg.cpp
+ *
+ * @brief SRA DXF export dialog implementation
+ *
+ * Dialog for configuring DXF profile export:
+ * - **Layer mapping**: assign layers to profile groups
+ * - **Symbol scale**: size of dip/strike symbols
+ * - **Annotation**: include/exclude text labels
+ * - **Coordinate system**: real-world or relative offsets
+ *
+ * @see dxfProfilesExportDlg.h
+ */
 #include "ccFileUtils.h"
 
 #include "dxfProfilesExportDlg.h"

@@ -15,6 +15,20 @@
 //#                                                                        #
 //##########################################################################
 //
+/**
+ * @file BaseFilter.cpp
+ *
+ * @brief PCL filter base class implementation
+ *
+ * Base class for all PCL-based filters in qPCL.
+ * Provides:
+ * - ccPointCloud → PCL conversion
+ * - Progress reporting
+ * - PCL → ccPointCloud conversion
+ * - Exception handling
+ *
+ * @see BaseFilter.h
+ */
 #include "BaseFilter.h"
 
 //qCC_db

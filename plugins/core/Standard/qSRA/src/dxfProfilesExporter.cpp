@@ -15,6 +15,23 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file dxfProfilesExporter.cpp
+ *
+ * @brief SRA DXF profile exporter implementation
+ *
+ * Exports SRA cross-section profiles to AutoCAD DXF format:
+ * - **Profiles**: polylines with elevation as Z
+ * - **Dip symbols**:.att entities with dip angle and direction
+ * - **Strike lines**: line entities
+ * - **Text labels**: MTEXT for strike/dip annotations
+ * - **Layer structure**: groups by profile name
+ *
+ * DXF export preserves the geological information for use
+ * in CAD/GIS software and map production.
+ *
+ * @see dxfProfilesExporter.h
+ */
 #include "dxfProfilesExporter.h"
 
 //qCC_db

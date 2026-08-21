@@ -15,6 +15,33 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qM3C2Process.cpp
+ *
+ * @brief M3C2 algorithm implementation
+ *
+ * Implements the M3C2 (Multiscale Model to Model Cloud
+ * Comparison) algorithm for change detection between
+ * two point cloud epochs.
+ *
+ * ## M3C2 Algorithm (Lague et al. 2013)
+ *
+ * 1. For each point in cloud A, cast a cylinder along the
+ *    local normal direction
+ * 2. Find points of cloud B inside the cylinder
+ * 3. Fit a perpendicular plane to those points
+ * 4. Compute distance as projection of the seed point
+ *    onto the fitted plane
+ * 5. Repeat at multiple scales for uncertainty estimation
+ *
+ * ## Output
+ *
+ * - **Distance SF**: per-point distance (positive = A above B)
+ * - **Uncertainty SF**: standard deviation of distances
+ * - **Significance SF**: distance / uncertainty
+ *
+ * @see qM3C2Process.h
+ */
 #include "qM3C2Process.h"
 
 //local

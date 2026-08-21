@@ -27,6 +27,27 @@
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
 
+/**
+ * @file FastGlobalRegistration.cpp
+ *
+ * @brief PCL Fast Global Registration implementation
+ *
+ * Implements the Fast Global Registration (FGR) algorithm
+ * from Zhou et al. 2016 for global point cloud alignment
+ * without initial alignment.
+ *
+ * ## FGR Algorithm
+ *
+ * 1. Compute FPFH (Fast Point Feature Histogram) descriptors
+ * 2. Build a correspondence proposal engine
+ * 3. Optimize correspondence selection using CAD (TROY)
+ * 4. Converges in ~5-10 iterations vs. hundreds for ICP
+ *
+ * Works without a good initial guess; used as a pre-alignment
+ * step before fine ICP registration.
+ *
+ * @see FastGlobalRegistration.h
+ */
 #include "FastGlobalRegistration.h"
 
 #pragma warning( push )

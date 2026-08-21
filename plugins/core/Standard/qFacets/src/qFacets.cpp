@@ -15,6 +15,28 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qFacets.cpp
+ *
+ * @brief Planar facets extraction plugin
+ *
+ * Extracts planar facets (regions of consistent orientation)
+ * from point clouds using region growing:
+ * 1. Seed points are normals that are well-defined
+ * 2. Grow regions by adding neighbors with similar normals
+ * 3. Merge coplanar adjacent regions
+ * 4. Fit planes to final facets
+ *
+ * ## Output
+ *
+ * - Facet meshes with per-triangle labels
+ * - Facet statistics (area, orientation, curvature)
+ * - Stereo net of facet poles
+ * - Ruled surface between adjacent facets
+ *
+ * @extends QObject
+ * @extends ccStdPluginInterface
+ */
 #include "qFacets.h"
 
 // Local

@@ -15,6 +15,24 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file MLSSmoothingUpsampling.cpp
+ *
+ * @brief PCL Moving Least Squares implementation
+ *
+ * Implements MLS (Moving Least Squares) smoothing
+ * and upsampling for point clouds.
+ *
+ * ## MLS Operations
+ *
+ * - **Smoothing**: project points onto the locally-fitted surface
+ * - **Upsampling**: densify by sampling new points on the surface
+ * - **Output types**: smoothed points, projected points, or normals
+ *
+ * Uses polynomial surface fitting (order 1 or 2) within a search radius.
+ *
+ * @see MLSSmoothingUpsampling.h
+ */
 #include "MLSSmoothingUpsampling.h"
 
 //Local

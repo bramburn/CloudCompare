@@ -15,6 +15,21 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file kdTreeForFacetExtraction.cpp
+ *
+ * @brief KD-tree for facet extraction neighbor search
+ *
+ * Uses a KD-tree for efficient nearest-neighbor queries
+ * in the planar facet extraction algorithm.
+ *
+ * ## Role
+ *
+ * For each candidate plane, finds points within the search
+ * radius to compute local covariance and fit plane quality.
+ *
+ * @see kdTreeForFacetExtraction.h
+ */
 #include "kdTreeForFacetExtraction.h"
 
 //CCCoreLib

@@ -15,6 +15,35 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qRANSAC_SD.cpp
+ *
+ * @brief RANSAC Shape Detection plugin
+ *
+ * Detects and segments primitive shapes from point clouds
+ * using RANSAC (Random Sample Consensus):
+ *
+ * ## Detected Primitives
+ *
+ * - **Plane**: infinite plane (3 points)
+ * - **Sphere**: 4-point fitting (center + radius)
+ * - **Cylinder**: axis + radius (7 points)
+ * - **Cone**: apex + axis angle + radius (7 points)
+ * - **Torus**: not directly supported
+ *
+ * ## Algorithm
+ *
+ * 1. Select random minimal subset of points
+ * 2. Fit primitive to the subset
+ * 3. Count inliers within eps (epsilon tolerance)
+ * 4. Repeat for max iterations
+ * 5. Keep best model; remove inliers; repeat for k shapes
+ *
+ * SD = Shape Detection variant with improved sampling strategy.
+ *
+ * @extends QObject
+ * @extends ccStdPluginInterface
+ */
 #include "qRANSAC_SD.h"
 #include "qRANSAC_SD_Commands.h"
 
