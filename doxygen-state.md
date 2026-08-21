@@ -46,6 +46,13 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 | ccSubsamplingDlg.cpp | ✅ Done | Committed: f9f82bf4 |
 | ccScalarFieldArithmeticsDlg.cpp | ✅ Done | Committed: f9f82bf4 |
 | ccPointPropertiesDlg.cpp | ✅ Done | Committed: f9f82bf4 |
+| ccGeomFeaturesDlg.cpp | ✅ Done | Committed: 2efc2563 |
+| ccPlaneEditDlg.cpp | ✅ Done | Committed: 2efc2563 |
+| ccPointPickingGenericInterface.cpp | ✅ Done | Committed: 2efc2563 |
+| ccPrimitiveFactoryDlg.cpp | ✅ Done | Committed: 2efc2563 |
+| ccSectionExtractionSubDlg.cpp | ✅ Done | Committed: 2efc2563 |
+| ccSetSFAsVec3Dlg.cpp | ✅ Done | Committed: 2efc2563 |
+| ccShortcutDialog.cpp | ✅ Done | Committed: 2efc2563 |
 | ccConsole.cpp | ✅ Done | Committed: 83a4dacb |
 | ccConsole.h | ✅ Done | Committed: 83a4dacb |
 | ccUtils.cpp | ✅ Done | Committed: bf35923f |
@@ -215,8 +222,8 @@ Systematically add Doxygen comments throughout the CloudCompare application code
 ---
 
 ## Progress Summary
-- **Total files tracked**: ~137
-- **Completed**: 137
+- **Total files tracked**: ~144
+- **Completed**: 144
 - **In progress**: 0
 - **Percentage**: ~100%
 
