@@ -16,6 +16,20 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestAsciiFilter.cpp
+ *
+ * @brief Unit tests for AsciiFilter
+ *
+ * Tests ASCII point cloud file import:
+ * - Format detection (column count, separator)
+ * - Coordinate parsing (space/comma/semicolon/tab)
+ * - RGB color parsing
+ * - Scalar field parsing
+ * - Error handling (missing columns, invalid values)
+ *
+ * @see AsciiFilter.cpp
+ */
 #include "AsciiFilter.h"
 #include "AsciiOpenDlg.h"
 #include "FileIOFilter.h"

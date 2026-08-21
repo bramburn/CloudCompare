@@ -15,6 +15,19 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestPlyFilter.cpp
+ *
+ * @brief Unit tests for PlyFilter
+ *
+ * Tests Stanford PLY format:
+ * - ASCII vs binary detection
+ * - Vertex property parsing (x, y, z, nx, ny, nz, red, green, blue, alpha)
+ * - Face data parsing
+ * - Property type conversion (float, uchar, int)
+ *
+ * @see PlyOpenDlg.cpp
+ */
 #include <QCoreApplication>
 #include <QFile>
 #include <QTemporaryDir>

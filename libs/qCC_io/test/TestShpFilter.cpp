@@ -1,3 +1,16 @@
+/**
+ * @file TestShpFilter.cpp
+ *
+ * @brief Unit tests for Shapefile filter
+ *
+ * Tests ESRI Shapefile import/export:
+ * - Point, polyline, and polygon geometry parsing
+ * - DBF attribute reading
+ * - Field type mapping (numeric, string, date)
+ * - CRS (coordinate reference system) handling
+ *
+ * @see ShpDBFFields.cpp
+ */
 #include "TestShpFilter.h"
 
 #include "FileIOFilter.h"

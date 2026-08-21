@@ -15,6 +15,19 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestDxfFilter.cpp
+ *
+ * @brief Unit tests for DxfFilter
+ *
+ * Tests AutoCAD DXF import:
+ * - LINE and POLYLINE entity parsing
+ * - Coordinate system (WCS vs UCS)
+ * - Layer filtering
+ * - Block insertion points
+ *
+ * @see DxfFilter.cpp
+ */
 #include <QCoreApplication>
 #include <QFile>
 #include <QTemporaryDir>

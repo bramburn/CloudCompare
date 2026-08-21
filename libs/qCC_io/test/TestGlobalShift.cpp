@@ -15,6 +15,19 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestGlobalShift.cpp
+ *
+ * @brief Unit tests for ccGlobalShiftManager
+ *
+ * Tests large-coordinate precision management:
+ * - Origin shift threshold detection
+ * - Shift computation and application
+ * - Coordinate restoration after shift
+ * - SF precision preservation
+ *
+ * @see ccGlobalShiftManager.cpp
+ */
 #include "ccGlobalShiftManager.h"
 #include "ccPointCloud.h"
 

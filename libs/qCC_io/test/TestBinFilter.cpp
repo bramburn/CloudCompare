@@ -15,6 +15,20 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestBinFilter.cpp
+ *
+ * @brief Unit tests for BinFilter
+ *
+ * Tests CloudCompare native binary format:
+ * - Magic bytes detection
+ * - Version compatibility
+ * - Point data serialization (coordinates, colors)
+ * - Scalar field data
+ * - Entity metadata
+ *
+ * @see BinFilter.cpp
+ */
 #include "BinFilter.h"
 #include "ccPointCloud.h"
 #include "ccOctree.h"

@@ -15,6 +15,19 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file TestImageFilter.cpp
+ *
+ * @brief Unit tests for ImageFileFilter
+ *
+ * Tests image/texture import:
+ * - PNG, JPEG, BMP, TIFF format detection
+ * - Color format conversion (RGB, RGBA, grayscale)
+ * - Resolution and aspect ratio
+ * - Transparency handling
+ *
+ * @see ImageFileFilter.cpp
+ */
 #include <QBuffer>
 #include <QCoreApplication>
 #include <QFile>
