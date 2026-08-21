@@ -1,3 +1,26 @@
+/**
+ * @file PCVCommand.cpp
+ *
+ * @brief PCV (Perspective Cloud View) command implementation
+ *
+ * Implements the PCV rendering filter for point clouds.
+ *
+ * ## PCV Algorithm
+ *
+ * A screen-space ambient occlusion technique:
+ * 1. For each pixel, find points projected near it
+ * 2. Compute a visibility coefficient from the angular spread
+ * 3. Shade the pixel based on occlusion (more occlusion = darker)
+ *
+ * ## Difference from EDL
+ *
+ * PCV uses a spherical kernel around each point; EDL uses
+ * the depth buffer. PCV works on projected images, EDL works
+ * on a depth framebuffer.
+ *
+ * @see PCV.h
+ */
+
 #include "PCVCommand.h"
 #include "PCV.h"
 #include "qPCV.h"

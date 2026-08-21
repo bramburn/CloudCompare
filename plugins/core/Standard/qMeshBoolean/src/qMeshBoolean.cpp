@@ -15,6 +15,30 @@
 //#                                                                        #
 //##########################################################################
 
+/**
+ * @file qMeshBoolean.cpp
+ *
+ * @brief Mesh boolean operations implementation
+ *
+ * Implements CSG (Constructive Solid Geometry) boolean
+ * operations on meshes using libigl.
+ *
+ * ## Boolean Operations
+ *
+ * - **Union (A ∪ B)**: combine two meshes
+ * - **Intersection (A ∩ B)**: keep overlapping region
+ * - **Difference (A − B)**: subtract B from A
+ *
+ * ## Algorithm
+ *
+ * Uses libigl's mesh boolean implementation:
+ * 1. Orient both meshes consistently (outward normals)
+ * 2. Compute intersection of triangle meshes
+ * 3. Stitch the result into a clean mesh
+ *
+ * @see qMeshBoolean.h
+ */
+
 #include "qMeshBoolean.h"
 
 //qCC_db
