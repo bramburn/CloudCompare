@@ -52,7 +52,7 @@
  * @param[in] selectedEntities Entity selection
  * @return Vector of viewport objects
  */
-static std::vector<ExtendedViewport> GetSelectedViewPorts(const ccHObject::Container& selectedEntities)
+std::vector<ExtendedViewport> qAnimation::GetSelectedViewPorts(const ccHObject::Container& selectedEntities)
 {
 	std::vector<ExtendedViewport> viewports;
 	for (ccHObject* object : selectedEntities)

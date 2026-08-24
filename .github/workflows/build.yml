@@ -83,7 +83,7 @@ jobs:
             -DPLUGIN_IO_QRDB_FETCH_DEPENDENCY=${{ matrix.config.compile_riegl }}  \
             -DPLUGIN_IO_QRDB_INSTALL_DEPENDENCY=${{ matrix.config.compile_riegl }}  \
             -DPLUGIN_STANDARD_QANIMATION=ON \
-            -DQANIMATION_WITH_FFMPEG_SUPPORT=ON \
+            -DQANIMATION_WITH_FFMPEG_SUPPORT=OFF \
             -DPLUGIN_STANDARD_QBROOM=ON \
             -DPLUGIN_STANDARD_QCANUPO=ON \
             -DPLUGIN_STANDARD_QCOMPASS=OFF \
