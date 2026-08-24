@@ -236,6 +236,9 @@ class ccPluginUIManager : public QObject
 	//! Remove filter action.
 	QAction* m_actionRemoveFilter;
 
+	//! Plugins list.
+	QList<ccPluginInterface*> m_plugins;
+
   private:
 	//! Main plugin toolbar.
 	QToolBar* m_mainPluginToolbar;
@@ -248,6 +251,15 @@ class ccPluginUIManager : public QObject
 
 	//! Show GL toolbar action.
 	QAction* m_actionShowGLFilterToolbar;
+
+	//! Show plugin toolbar action.
+	QAction* m_showPluginToolbar;
+
+	//! Show GL filter toolbar action.
+	QAction* m_showGLFilterToolbar;
+
+	//! GL filter actions group.
+	QActionGroup* m_glFilterActions;
 
 	//! Additional plugin toolbars.
 	QList<QToolBar*> m_additionalPluginToolbars;
