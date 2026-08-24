@@ -39,6 +39,9 @@
 class ccPointCloud;
 class ccMouseCircle;
 
+class QString;
+class QModelIndex;
+
 /**
  * @class ccCloudLayersDlg
  *
@@ -125,4 +128,24 @@ class ccCloudLayersDlg : public ccOverlayDialog
 
 	/// Output class index changed
 	void outputClassIndexChanged(int index);
+
+	/// ASPRS model signals
+	void codeChanged(ccAsprsModel::AsprsItem item, int oldCode);
+	void colorChanged(ccAsprsModel::AsprsItem item);
+	void classNameChanged(int row, QString newName);
+
+	/// Show color picker dialog
+	void tableViewDoubleClicked(const QModelIndex& index);
+
+	/// Update input and output comboboxes
+	void updateInputOutput();
+	void swapInputOutput();
+
+	void mouseMoved(int x, int y, Qt::MouseButtons buttons);
+
+  private:
+	ccMainAppInterface* m_app;
+	ccAsprsModel m_asprsModel;
+	ccCloudLayersHelper* m_helper;
+	ccMouseCircle* m_mouseCircle;
 };
