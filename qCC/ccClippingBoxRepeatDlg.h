@@ -56,7 +56,7 @@ class ccClippingBoxRepeatDlg : public QDialog
 	 * @param[in] dim Flat dimension (single slice mode)
 	 */
 	void setFlatDim(unsigned char dim);
-	
+
 	/**
 	 * @brief Set repeat dimension
 	 * @param[in] dim Repeat dimension (multi-slice mode)

@@ -437,9 +437,9 @@ void ccPointPropertiesDlg::close2DZone()
 
 	m_rect2DLabel->setSelected(true);
 
-	bool           ok;
+	bool ok;
 	static QString s_last2DLabelComment;
-	QString        title = QInputDialog::getText(this, "Set area label title", "Title:", QLineEdit::Normal, s_last2DLabelComment, &ok);
+	QString title = QInputDialog::getText(this, "Set area label title", "Title:", QLineEdit::Normal, s_last2DLabelComment, &ok);
 	if (!ok)
 	{
 		m_rect2DLabel->setVisible(false);

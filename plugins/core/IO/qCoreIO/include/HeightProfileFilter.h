@@ -41,7 +41,7 @@ class HeightProfileFilter : public FileIOFilter
 	HeightProfileFilter();
 
 	// inherited from FileIOFilter
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };
 

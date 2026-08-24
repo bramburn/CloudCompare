@@ -36,7 +36,7 @@
  * @param[in] name DB tree display name
  */
 ccOctreeProxy::ccOctreeProxy(ccOctree::Shared octree /*=ccOctree::Shared(nullptr)*/,
-                             QString          name /*="Octree"*/)
+                             QString name /*="Octree"*/)
     : ccHObject(name)
     , m_octree(octree)
 {
@@ -92,7 +92,7 @@ void ccOctreeProxy::drawMeOnly(CC_DRAW_CONTEXT& context)
 		return;
 
 	// entity picking mode
-	bool         entityPickingMode = MACRO_EntityPicking(context);
+	bool entityPickingMode = MACRO_EntityPicking(context);
 	ccColor::Rgb pickingColor;
 	if (entityPickingMode)
 	{

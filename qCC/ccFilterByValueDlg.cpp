@@ -17,10 +17,10 @@
 
 #include "ccFilterByValueDlg.h"
 
-ccFilterByValueDlg::ccFilterByValueDlg(double   minRange,
-                                       double   maxRange,
-                                       double   minVal /*=-1.0e9*/,
-                                       double   maxVal /*=1.0e9*/,
+ccFilterByValueDlg::ccFilterByValueDlg(double minRange,
+                                       double maxRange,
+                                       double minVal /*=-1.0e9*/,
+                                       double maxVal /*=1.0e9*/,
                                        QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::Tool)
     , Ui::FilterByValueDialog()

@@ -144,13 +144,13 @@ class DrawMeOnlyVisitor
 		{
 			ccKdTree::Node* trueNode = static_cast<ccKdTree::Node*>(node);
 			// visit left child
-			PointCoordinateType oldBBPos                     = m_drawCellBBox.maxCorner().u[trueNode->splitDim];
+			PointCoordinateType oldBBPos = m_drawCellBBox.maxCorner().u[trueNode->splitDim];
 			m_drawCellBBox.maxCorner().u[trueNode->splitDim] = trueNode->splitValue;
 			visit(context, trueNode->leftChild);
 			m_drawCellBBox.maxCorner().u[trueNode->splitDim] = oldBBPos; // restore old limit
 
 			// then visit right child
-			oldBBPos                                         = m_drawCellBBox.minCorner().u[trueNode->splitDim];
+			oldBBPos = m_drawCellBBox.minCorner().u[trueNode->splitDim];
 			m_drawCellBBox.minCorner().u[trueNode->splitDim] = trueNode->splitValue;
 			visit(context, trueNode->rightChild);
 			m_drawCellBBox.minCorner().u[trueNode->splitDim] = oldBBPos; // restore old limit
@@ -162,7 +162,7 @@ class DrawMeOnlyVisitor
 	}
 
   protected:
-	ccBBox       m_drawCellBBox;
+	ccBBox m_drawCellBBox;
 	ccColor::Rgb m_color;
 };
 
@@ -211,7 +211,7 @@ bool ccKdTree::convertCellIndexToSF()
 	ccPointCloud* pc = static_cast<ccPointCloud*>(m_associatedGenericCloud);
 
 	const char c_defaultSFName[] = "Kd-tree indexes";
-	int        sfIdx             = pc->getScalarFieldIndexByName(c_defaultSFName);
+	int sfIdx = pc->getScalarFieldIndexByName(c_defaultSFName);
 	if (sfIdx < 0)
 		sfIdx = pc->addScalarField(c_defaultSFName);
 	if (sfIdx < 0)
@@ -256,7 +256,7 @@ bool ccKdTree::convertCellIndexToRandomColor()
 	// for each cell
 	for (size_t i = 0; i < leaves.size(); ++i)
 	{
-		ccColor::Rgba              col(ccColor::Generator::Random(), ccColor::MAX);
+		ccColor::Rgba col(ccColor::Generator::Random(), ccColor::MAX);
 		CCCoreLib::ReferenceCloud* subset = leaves[i]->points;
 		if (subset)
 		{
@@ -335,9 +335,9 @@ class GetNeighborLeavesVisitor
 {
   public:
 	GetNeighborLeavesVisitor(ccKdTree::BaseNode* cell,
-	                         ccKdTree::LeafSet&  neighbors,
-	                         const ccBBox&       cellBox,
-	                         const ccBBox&       treeBox)
+	                         ccKdTree::LeafSet& neighbors,
+	                         const ccBBox& cellBox,
+	                         const ccBBox& treeBox)
 	    : m_targetCell(cell)
 	    , m_targetCellBox(cellBox)
 	    , m_currentCellBox(treeBox)
@@ -350,7 +350,7 @@ class GetNeighborLeavesVisitor
 	void setUserDataFilter(int value)
 	{
 		m_userDataFilterEnabled = true;
-		m_userDataFilterValue   = value;
+		m_userDataFilterValue = value;
 	}
 
 	void visit(ccKdTree::BaseNode* node)
@@ -366,13 +366,13 @@ class GetNeighborLeavesVisitor
 			{
 				ccKdTree::Node* trueNode = static_cast<ccKdTree::Node*>(node);
 				// visit left child
-				PointCoordinateType oldBBPos                       = m_currentCellBox.maxCorner().u[trueNode->splitDim];
+				PointCoordinateType oldBBPos = m_currentCellBox.maxCorner().u[trueNode->splitDim];
 				m_currentCellBox.maxCorner().u[trueNode->splitDim] = trueNode->splitValue;
 				visit(trueNode->leftChild);
 				m_currentCellBox.maxCorner().u[trueNode->splitDim] = oldBBPos; // restore old limit
 
 				// then visit right child
-				oldBBPos                                           = m_currentCellBox.minCorner().u[trueNode->splitDim];
+				oldBBPos = m_currentCellBox.minCorner().u[trueNode->splitDim];
 				m_currentCellBox.minCorner().u[trueNode->splitDim] = trueNode->splitValue;
 				visit(trueNode->rightChild);
 				m_currentCellBox.minCorner().u[trueNode->splitDim] = oldBBPos; // restore old limit
@@ -395,11 +395,11 @@ class GetNeighborLeavesVisitor
 
   protected:
 	ccKdTree::BaseNode* m_targetCell;
-	ccBBox              m_targetCellBox;
-	ccBBox              m_currentCellBox;
-	ccKdTree::LeafSet*  m_neighbors;
-	bool                m_userDataFilterEnabled;
-	int                 m_userDataFilterValue;
+	ccBBox m_targetCellBox;
+	ccBBox m_currentCellBox;
+	ccKdTree::LeafSet* m_neighbors;
+	bool m_userDataFilterEnabled;
+	int m_userDataFilterValue;
 };
 
 bool ccKdTree::getNeighborLeaves(ccKdTree::BaseNode* cell, ccKdTree::LeafSet& neighbors, const int* userDataFilter /*=nullptr*/)

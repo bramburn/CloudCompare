@@ -129,8 +129,8 @@ class QCC_DB_LIB_API ccMaterialSet : public std::vector<ccMaterial::CShared>
 
   protected:
 	// inherited from ccHObject
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
 
 	//! Default destructor (protected: use 'release' instead)

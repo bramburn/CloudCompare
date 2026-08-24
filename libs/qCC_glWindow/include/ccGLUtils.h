@@ -37,8 +37,9 @@
  */
 
 #include "qCC_glWindow.h"
-#include <ccIncludeGL.h> // Always first!
+
 #include <QImage>
+#include <ccIncludeGL.h> // Always first!
 
 /**
  * @brief Standard view orientations for the 3D viewport
@@ -48,14 +49,14 @@
  */
 enum CC_VIEW_ORIENTATION
 {
-	CC_TOP_VIEW,      //!< Top view (eye: +Z, looking down)
-	CC_BOTTOM_VIEW,   //!< Bottom view (eye: -Z)
-	CC_FRONT_VIEW,    //!< Front view (eye: -Y)
-	CC_BACK_VIEW,     //!< Back view (eye: +Y)
-	CC_LEFT_VIEW,     //!< Left view (eye: -X)
-	CC_RIGHT_VIEW,    //!< Right view (eye: +X)
-	CC_ISO_VIEW_1,   //!< Isometric view 1 (standard 45°/35.264°)
-	CC_ISO_VIEW_2,   //!< Isometric view 2 (rotated 90° from ISO_VIEW_1)
+	CC_TOP_VIEW,    //!< Top view (eye: +Z, looking down)
+	CC_BOTTOM_VIEW, //!< Bottom view (eye: -Z)
+	CC_FRONT_VIEW,  //!< Front view (eye: -Y)
+	CC_BACK_VIEW,   //!< Back view (eye: +Y)
+	CC_LEFT_VIEW,   //!< Left view (eye: -X)
+	CC_RIGHT_VIEW,  //!< Right view (eye: +X)
+	CC_ISO_VIEW_1,  //!< Isometric view 1 (standard 45°/35.264°)
+	CC_ISO_VIEW_2,  //!< Isometric view 2 (rotated 90° from ISO_VIEW_1)
 };
 
 /**
@@ -75,9 +76,9 @@ class CCGLWINDOW_LIB_API ccGLUtils
 	 */
 	enum TextureArea
 	{
-		Full,      //!< Full texture
-		HalfLeft,  //!< Left half only
-		HalfRight  //!< Right half only
+		Full,     //!< Full texture
+		HalfLeft, //!< Left half only
+		HalfRight //!< Right half only
 	};
 
 	/**
@@ -92,12 +93,12 @@ class CCGLWINDOW_LIB_API ccGLUtils
 	 * @param[in] area Which half to display (Full/HalfLeft/HalfRight)
 	 */
 	static void DisplayTexture2DPosition(QImage image,
-	                                    int     x,
-	                                    int     y,
-	                                    int     w,
-	                                    int     h,
-	                                    unsigned char alpha   = 255,
-	                                    TextureArea          = Full);
+	                                     int x,
+	                                     int y,
+	                                     int w,
+	                                     int h,
+	                                     unsigned char alpha = 255,
+	                                     TextureArea = Full);
 
 	/**
 	 * @brief Display a QImage as a centered 2D texture
@@ -123,13 +124,13 @@ class CCGLWINDOW_LIB_API ccGLUtils
 	 * @param[in] alpha Global alpha
 	 * @param[in] area Which half to display
 	 */
-	static void DisplayTexture2DPosition(GLuint           texID,
-	                                    int              x,
-	                                    int              y,
-	                                    int              w,
-	                                    int              h,
-	                                    unsigned char     alpha   = 255,
-	                                    TextureArea       area    = Full);
+	static void DisplayTexture2DPosition(GLuint texID,
+	                                     int x,
+	                                     int y,
+	                                     int w,
+	                                     int h,
+	                                     unsigned char alpha = 255,
+	                                     TextureArea area = Full);
 
 	/**
 	 * @brief Display an OpenGL texture by ID, centered
@@ -160,9 +161,9 @@ class CCGLWINDOW_LIB_API ccGLUtils
 	 * @return 4×4 view matrix
 	 */
 	static ccGLMatrixd GenerateViewMat(CC_VIEW_ORIENTATION orientation,
-	                                   const CCVector3d&   vertDir         = CCVector3d(0, 0, 1),
-	                                   double*             _vertAngle_rad  = nullptr,
-	                                   double*             _orthoAngle_rad = nullptr);
+	                                   const CCVector3d& vertDir = CCVector3d(0, 0, 1),
+	                                   double* _vertAngle_rad = nullptr,
+	                                   double* _orthoAngle_rad = nullptr);
 
 	/**
 	 * @brief Generate a view matrix from rotation angles
@@ -173,6 +174,6 @@ class CCGLWINDOW_LIB_API ccGLUtils
 	 * @return 4×4 view matrix
 	 */
 	static ccGLMatrixd GenerateViewMat(const CCVector3d& vertDir,
-	                                   double            vertAngle_rad,
-	                                   double            orthoAngle_rad);
+	                                   double vertAngle_rad,
+	                                   double orthoAngle_rad);
 };

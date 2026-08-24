@@ -171,10 +171,10 @@ class ccGLMatrixTpl : public ccSerializableObject
 	{
 		// we compute the transformation matrix between glMat1 and glMat2
 		ccGLMatrixTpl<T> invTrans1 = glMat1.inverse();
-		ccGLMatrixTpl<T> m12       = invTrans1 * glMat2;
+		ccGLMatrixTpl<T> m12 = invTrans1 * glMat2;
 
 		Vector3Tpl<T> axis, Tr;
-		T             alpha;
+		T alpha;
 		m12.getParameters(alpha, axis, Tr);
 
 		// we only have to interpolate the angle value
@@ -197,8 +197,8 @@ class ccGLMatrixTpl : public ccSerializableObject
 	**/
 	static ccGLMatrixTpl<T> FromToRotation(const Vector3Tpl<T>& from, const Vector3Tpl<T>& to)
 	{
-		T                c = from.dot(to);
-		T                f = (c < 0 ? -c : c);
+		T c = from.dot(to);
+		T f = (c < 0 ? -c : c);
 		ccGLMatrixTpl<T> result;
 
 		if (CCCoreLib::LessThanEpsilon(1.0 - f)) //"from" and "to"-vector almost parallel
@@ -243,13 +243,13 @@ class ccGLMatrixTpl : public ccSerializableObject
 		{
 			// see Efficiently Building a Matrix to Rotate One Vector to Another
 			// T. Moller and J.F. Hugues (1999)
-			Vector3Tpl<T> v    = from.cross(to);
-			T             h    = 1 / (1 + c);
-			T             hvx  = h * v.x;
-			T             hvz  = h * v.z;
-			T             hvxy = hvx * v.y;
-			T             hvxz = hvx * v.z;
-			T             hvyz = hvz * v.y;
+			Vector3Tpl<T> v = from.cross(to);
+			T h = 1 / (1 + c);
+			T hvx = h * v.x;
+			T hvz = h * v.z;
+			T hvxy = hvx * v.y;
+			T hvxz = hvx * v.z;
+			T hvyz = hvz * v.y;
 
 			T* mat = result.data();
 			mat[0] = c + hvx * v.x;
@@ -260,8 +260,8 @@ class ccGLMatrixTpl : public ccSerializableObject
 			mat[5] = c + h * v.y * v.y;
 			mat[6] = hvyz + v.x;
 
-			mat[8]  = hvxz + v.y;
-			mat[9]  = hvyz - v.x;
+			mat[8] = hvxz + v.y;
+			mat[9] = hvyz - v.x;
 			mat[10] = c + hvz * v.z;
 		}
 
@@ -278,7 +278,7 @@ class ccGLMatrixTpl : public ccSerializableObject
 		assert(q);
 
 		ccGLMatrixTpl<T> rotMat;
-		T*               mat = rotMat.data();
+		T* mat = rotMat.data();
 
 		// diagonal
 		{
@@ -287,8 +287,8 @@ class ccGLMatrixTpl : public ccSerializableObject
 			Tq q22 = q[2] * q[2];
 			Tq q33 = q[3] * q[3];
 
-			mat[0]  = static_cast<T>(q00 + q11 - q22 - q33);
-			mat[5]  = static_cast<T>(q00 - q11 + q22 - q33);
+			mat[0] = static_cast<T>(q00 + q11 - q22 - q33);
+			mat[5] = static_cast<T>(q00 - q11 + q22 - q33);
 			mat[10] = static_cast<T>(q00 - q11 - q22 + q33);
 			mat[15] = static_cast<T>(1);
 		}
@@ -335,21 +335,21 @@ class ccGLMatrixTpl : public ccSerializableObject
 
 		ccGLMatrixTpl<T> matrix;
 		{
-			T* mat  = matrix.data();
-			mat[0]  = uSide.x;
-			mat[4]  = uSide.y;
-			mat[8]  = uSide.z;
+			T* mat = matrix.data();
+			mat[0] = uSide.x;
+			mat[4] = uSide.y;
+			mat[8] = uSide.z;
 			mat[12] = 0;
-			mat[1]  = uUp.x;
-			mat[5]  = uUp.y;
-			mat[9]  = uUp.z;
+			mat[1] = uUp.x;
+			mat[5] = uUp.y;
+			mat[9] = uUp.z;
 			mat[13] = 0;
-			mat[2]  = -uForward.x;
-			mat[6]  = -uForward.y;
+			mat[2] = -uForward.x;
+			mat[6] = -uForward.y;
 			mat[10] = -uForward.z;
 			mat[14] = 0;
-			mat[3]  = 0;
-			mat[7]  = 0;
+			mat[3] = 0;
+			mat[7] = 0;
 			mat[11] = 0;
 			mat[15] = static_cast<T>(1);
 		}
@@ -370,7 +370,7 @@ class ccGLMatrixTpl : public ccSerializableObject
 		}
 
 		ccGLMatrixTpl<T> matrix;
-		T*               matValues = matrix.data();
+		T* matValues = matrix.data();
 		for (unsigned i = 0; i < OPENGL_MATRIX_SIZE; ++i)
 		{
 			matValues[i] = static_cast<T>(valuesStr[(i % 4) * 4 + (i >> 2)].toDouble(&success));
@@ -463,9 +463,9 @@ class ccGLMatrixTpl : public ccSerializableObject
 			// simpler/faster to ignore this (very) specific case!
 			return newRotMat;
 		}
-		T phi     = -asin(CC_MAT_R13);
+		T phi = -asin(CC_MAT_R13);
 		T cos_phi = cos(phi);
-		T theta   = atan2(CC_MAT_R23 / cos_phi, CC_MAT_R33 / cos_phi);
+		T theta = atan2(CC_MAT_R23 / cos_phi, CC_MAT_R33 / cos_phi);
 
 		newRotMat.CC_MAT_R22 = newRotMat.CC_MAT_R33 = cos(theta);
 		newRotMat.CC_MAT_R32 = newRotMat.CC_MAT_R23 = sin(theta);
@@ -488,9 +488,9 @@ class ccGLMatrixTpl : public ccSerializableObject
 			// simpler/faster to ignore this (very) specific case!
 			return newRotMat;
 		}
-		T theta     = asin(CC_MAT_R32);
+		T theta = asin(CC_MAT_R32);
 		T cos_theta = cos(theta);
-		T phi       = atan2(-CC_MAT_R31 / cos_theta, CC_MAT_R33 / cos_theta);
+		T phi = atan2(-CC_MAT_R31 / cos_theta, CC_MAT_R33 / cos_theta);
 
 		newRotMat.CC_MAT_R11 = newRotMat.CC_MAT_R33 = cos(phi);
 		newRotMat.CC_MAT_R31 = newRotMat.CC_MAT_R13 = sin(phi);
@@ -505,7 +505,7 @@ class ccGLMatrixTpl : public ccSerializableObject
 	ccGLMatrixTpl<T> zRotation() const
 	{
 		// we can use the standard Euler angles convention here
-		T             phi, theta, psi;
+		T phi, theta, psi;
 		Vector3Tpl<T> Tr;
 		getParameters(phi, theta, psi, Tr);
 		assert(Tr.norm2() == 0);
@@ -559,12 +559,12 @@ class ccGLMatrixTpl : public ccSerializableObject
 	    \param[in] axis3D rotation axis
 	    \param[in] t3D translation
 	**/
-	void initFromParameters(T                    alpha_rad,
+	void initFromParameters(T alpha_rad,
 	                        const Vector3Tpl<T>& axis3D,
 	                        const Vector3Tpl<T>& t3D)
 	{
-		T cos_t     = cos(alpha_rad);
-		T sin_t     = sin(alpha_rad);
+		T cos_t = cos(alpha_rad);
+		T sin_t = sin(alpha_rad);
 		T inv_cos_t = static_cast<T>(1) - cos_t;
 
 		// normalize rotation axis
@@ -611,9 +611,9 @@ class ccGLMatrixTpl : public ccSerializableObject
 	    \param[in] t3D translation
 	    \param[in] scale rotation scale
 	**/
-	void initFromParameters(T                    phi_rad,
-	                        T                    theta_rad,
-	                        T                    psi_rad,
+	void initFromParameters(T phi_rad,
+	                        T theta_rad,
+	                        T psi_rad,
 	                        const Vector3Tpl<T>& t3D)
 	{
 		T c1 = cos(phi_rad);
@@ -655,16 +655,16 @@ class ccGLMatrixTpl : public ccSerializableObject
 	    \param[out] t3D translation
 	    \param[out] scale [optional] scale
 	**/
-	void getParameters(T&             alpha_rad,
+	void getParameters(T& alpha_rad,
 	                   Vector3Tpl<T>& axis3D,
 	                   Vector3Tpl<T>& t3D,
-	                   T*             scale = nullptr) const
+	                   T* scale = nullptr) const
 	{
 		T trace = CC_MAT_R11 + CC_MAT_R22 + CC_MAT_R33;
 
 		// we arbitrarily consider the first column to read the scale
-		Vector3Tpl<T> rotX   = getColumnAsVec3D(0);
-		T             _scale = rotX.norm();
+		Vector3Tpl<T> rotX = getColumnAsVec3D(0);
+		T _scale = rotX.norm();
 		if (scale)
 		{
 			*scale = _scale;
@@ -713,11 +713,11 @@ class ccGLMatrixTpl : public ccSerializableObject
 	    \param[out] t3D translation
 	    \param[out] scale [optional] scale
 	**/
-	void getParameters(T&             phi_rad,
-	                   T&             theta_rad,
-	                   T&             psi_rad,
+	void getParameters(T& phi_rad,
+	                   T& theta_rad,
+	                   T& psi_rad,
 	                   Vector3Tpl<T>& t3D,
-	                   T*             scale = nullptr) const
+	                   T* scale = nullptr) const
 	{
 		Vector3Tpl<T> rotX = getColumnAsVec3D(0);
 		Vector3Tpl<T> rotY = getColumnAsVec3D(1);
@@ -738,10 +738,10 @@ class ccGLMatrixTpl : public ccSerializableObject
 
 		if (std::abs(rotX.z) != 1)
 		{
-			theta_rad   = -asin(rotX.z);
+			theta_rad = -asin(rotX.z);
 			T cos_theta = cos(theta_rad);
-			psi_rad     = atan2(rotY.z / cos_theta, rotZ.z / cos_theta);
-			phi_rad     = atan2(rotX.y / cos_theta, rotX.x / cos_theta);
+			psi_rad = atan2(rotY.z / cos_theta, rotZ.z / cos_theta);
+			phi_rad = atan2(rotX.y / cos_theta, rotX.x / cos_theta);
 
 			// Other solution
 			// theta = M_PI + asin(rotX.z);
@@ -756,12 +756,12 @@ class ccGLMatrixTpl : public ccSerializableObject
 			if (rotX.z == -1)
 			{
 				theta_rad = static_cast<T>(M_PI_2);
-				psi_rad   = atan2(rotY.x, rotZ.x);
+				psi_rad = atan2(rotY.x, rotZ.x);
 			}
 			else
 			{
 				theta_rad = -static_cast<T>(M_PI_2);
-				psi_rad   = -atan2(rotY.x, rotZ.x);
+				psi_rad = -atan2(rotY.x, rotZ.x);
 			}
 		}
 
@@ -904,7 +904,7 @@ class ccGLMatrixTpl : public ccSerializableObject
 
 		const T* A = m_mat;
 		const T* B = mat.m_mat;
-		T*       C = result.m_mat;
+		T* C = result.m_mat;
 
 		for (unsigned j = 0; j < 4; ++j, B += 4)
 			for (unsigned i = 0; i < 4; ++i)

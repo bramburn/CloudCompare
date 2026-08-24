@@ -60,56 +60,56 @@ class ccScalarField;
 class ccPointCloud;
 
 //! LAS scale X metadata key.
-static const char LAS_SCALE_X_META_DATA[]         = "LAS.scale.x";
+static const char LAS_SCALE_X_META_DATA[] = "LAS.scale.x";
 //! LAS scale Y metadata key.
-static const char LAS_SCALE_Y_META_DATA[]         = "LAS.scale.y";
+static const char LAS_SCALE_Y_META_DATA[] = "LAS.scale.y";
 //! LAS scale Z metadata key.
-static const char LAS_SCALE_Z_META_DATA[]         = "LAS.scale.z";
+static const char LAS_SCALE_Z_META_DATA[] = "LAS.scale.z";
 //! LAS offset X metadata key.
-static const char LAS_OFFSET_X_META_DATA[]        = "LAS.offset.x";
+static const char LAS_OFFSET_X_META_DATA[] = "LAS.offset.x";
 //! LAS offset Y metadata key.
-static const char LAS_OFFSET_Y_META_DATA[]        = "LAS.offset.y";
+static const char LAS_OFFSET_Y_META_DATA[] = "LAS.offset.y";
 //! LAS offset Z metadata key.
-static const char LAS_OFFSET_Z_META_DATA[]        = "LAS.offset.z";
+static const char LAS_OFFSET_Z_META_DATA[] = "LAS.offset.z";
 //! LAS version major metadata key.
-static const char LAS_VERSION_MAJOR_META_DATA[]   = "LAS.version.major";
+static const char LAS_VERSION_MAJOR_META_DATA[] = "LAS.version.major";
 //! LAS version minor metadata key.
-static const char LAS_VERSION_MINOR_META_DATA[]   = "LAS.version.minor";
+static const char LAS_VERSION_MINOR_META_DATA[] = "LAS.version.minor";
 //! LAS point format metadata key.
-static const char LAS_POINT_FORMAT_META_DATA[]    = "LAS.point_format";
+static const char LAS_POINT_FORMAT_META_DATA[] = "LAS.point_format";
 //! LAS global encoding metadata key.
 static const char LAS_GLOBAL_ENCODING_META_DATA[] = "LAS.global_encoding";
 //! LAS project UUID metadata key.
-static const char LAS_PROJECT_UUID_META_DATA[]    = "LAS.project_uuid";
+static const char LAS_PROJECT_UUID_META_DATA[] = "LAS.project_uuid";
 
 /**
  * @brief LAS field identifiers.
  */
 enum LAS_FIELDS
 {
-	LAS_X                 = 0, //!< X coordinate.
-	LAS_Y                 = 1, //!< Y coordinate.
-	LAS_Z                 = 2, //!< Z coordinate.
-	LAS_INTENSITY         = 3, //!< Return intensity.
-	LAS_RETURN_NUMBER     = 4, //!< Return number.
+	LAS_X = 0,                 //!< X coordinate.
+	LAS_Y = 1,                 //!< Y coordinate.
+	LAS_Z = 2,                 //!< Z coordinate.
+	LAS_INTENSITY = 3,         //!< Return intensity.
+	LAS_RETURN_NUMBER = 4,     //!< Return number.
 	LAS_NUMBER_OF_RETURNS = 5, //!< Number of returns.
-	LAS_SCAN_DIRECTION    = 6, //!< Scan direction flag.
-	LAS_FLIGHT_LINE_EDGE  = 7, //!< Edge of flight line.
-	LAS_CLASSIFICATION    = 8, //!< Point classification.
-	LAS_SCAN_ANGLE_RANK   = 9, //!< Scan angle rank.
-	LAS_USER_DATA         = 10, //!< User data.
-	LAS_POINT_SOURCE_ID   = 11, //!< Point source ID.
-	LAS_RED               = 12, //!< Red color channel.
-	LAS_GREEN             = 13, //!< Green color channel.
-	LAS_BLUE              = 14, //!< Blue color channel.
-	LAS_TIME              = 15, //!< GPS time.
-	LAS_EXTRA             = 16, //!< Extra bytes.
+	LAS_SCAN_DIRECTION = 6,    //!< Scan direction flag.
+	LAS_FLIGHT_LINE_EDGE = 7,  //!< Edge of flight line.
+	LAS_CLASSIFICATION = 8,    //!< Point classification.
+	LAS_SCAN_ANGLE_RANK = 9,   //!< Scan angle rank.
+	LAS_USER_DATA = 10,        //!< User data.
+	LAS_POINT_SOURCE_ID = 11,  //!< Point source ID.
+	LAS_RED = 12,              //!< Red color channel.
+	LAS_GREEN = 13,            //!< Green color channel.
+	LAS_BLUE = 14,             //!< Blue color channel.
+	LAS_TIME = 15,             //!< GPS time.
+	LAS_EXTRA = 16,            //!< Extra bytes.
 	// Sub fields
-	LAS_CLASSIF_VALUE     = 17, //!< Classification value.
+	LAS_CLASSIF_VALUE = 17,     //!< Classification value.
 	LAS_CLASSIF_SYNTHETIC = 18, //!< Synthetic flag.
-	LAS_CLASSIF_KEYPOINT  = 19, //!< Key-point flag.
-	LAS_CLASSIF_WITHHELD  = 20, //!< Withheld flag.
-	LAS_CLASSIF_OVERLAP   = 21, //!< Overlap flag.
+	LAS_CLASSIF_KEYPOINT = 19,  //!< Key-point flag.
+	LAS_CLASSIF_WITHHELD = 20,  //!< Withheld flag.
+	LAS_CLASSIF_OVERLAP = 21,   //!< Overlap flag.
 	// Invalid
 	LAS_INVALID = 255 //!< Invalid field.
 };

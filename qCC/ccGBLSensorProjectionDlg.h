@@ -50,7 +50,7 @@ class ccGBLSensorProjectionDlg : public QDialog
 
 	/// Initialize with previous values
 	void initWithPrevious();
-	
+
 	/// Save values for next time
 	void saveForNextTime();
 

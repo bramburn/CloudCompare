@@ -57,14 +57,14 @@ struct PlyLoadingContext
 	{
 	}
 
-	QStringList          allProperties;
+	QStringList allProperties;
 	std::vector<QString> standardCombosProperties;
 	std::vector<QString> sfCombosProperties;
 	std::vector<QString> listCombosProperties;
 	std::vector<QString> singleCombosProperties;
-	int                  ignoredProps;
-	bool                 valid;
-	bool                 applyAll;
+	int ignoredProps;
+	bool valid;
+	bool applyAll;
 };
 //! Last loading context
 static PlyLoadingContext s_lastContext;
@@ -108,7 +108,7 @@ PlyOpenDlg::PlyOpenDlg(QWidget* parent)
 
 void PlyOpenDlg::setDefaultComboItems(const QStringList& stdPropsText)
 {
-	m_stdPropsText    = stdPropsText;
+	m_stdPropsText = stdPropsText;
 	int stdPropsCount = stdPropsText.count();
 
 	for (QComboBox* combo : m_standardCombos)
@@ -128,7 +128,7 @@ void PlyOpenDlg::setDefaultComboItems(const QStringList& stdPropsText)
 
 void PlyOpenDlg::setListComboItems(const QStringList& listPropsText)
 {
-	m_listPropsText    = listPropsText;
+	m_listPropsText = listPropsText;
 	int listPropsCount = listPropsText.count();
 
 	for (QComboBox* combo : m_listCombos)
@@ -141,7 +141,7 @@ void PlyOpenDlg::setListComboItems(const QStringList& listPropsText)
 
 void PlyOpenDlg::setSingleComboItems(const QStringList& singlePropsText)
 {
-	m_singlePropsText    = singlePropsText;
+	m_singlePropsText = singlePropsText;
 	int singlePropsCount = singlePropsText.count();
 
 	for (QComboBox* combo : m_singleCombos)
@@ -163,9 +163,9 @@ bool PlyOpenDlg::restorePreviousContext(bool& hasAPreviousContext)
 	if (!hasAPreviousContext)
 		return false;
 
-	int  unassignedProps = 0;
-	int  mismatchProps   = 0;
-	bool restored        = restoreContext(&s_lastContext, unassignedProps, mismatchProps);
+	int unassignedProps = 0;
+	int mismatchProps = 0;
+	bool restored = restoreContext(&s_lastContext, unassignedProps, mismatchProps);
 
 	// auto-stop: we can't keep 'apply all' if something has changed
 	if (!restored || mismatchProps != 0 /* || unassignedProps > 0*/)
@@ -265,7 +265,7 @@ void PlyOpenDlg::saveContext(PlyLoadingContext* context)
 	}
 
 	context->ignoredProps = context->allProperties.size() - assignedProps;
-	context->valid        = true;
+	context->valid = true;
 }
 
 bool PlyOpenDlg::restoreContext(PlyLoadingContext* context, int& unassignedProps, int& mismatchProps)
@@ -277,7 +277,7 @@ bool PlyOpenDlg::restoreContext(PlyLoadingContext* context, int& unassignedProps
 	}
 
 	// first check if all new properties are in the old properties set
-	mismatchProps  = 0;
+	mismatchProps = 0;
 	int totalProps = 0;
 	{
 		assert(m_standardCombos.front());
@@ -473,8 +473,8 @@ bool PlyOpenDlg::canBeSkipped() const
 void PlyOpenDlg::addSFComboBox(int selectedIndex /*=0*/)
 {
 	// create a new item in the SF list
-	QString          itemTitle = QString("Scalar #%1").arg(m_sfCombos.size());
-	QListWidgetItem* sfItem    = new QListWidgetItem(itemTitle);
+	QString itemTitle = QString("Scalar #%1").arg(m_sfCombos.size());
+	QListWidgetItem* sfItem = new QListWidgetItem(itemTitle);
 
 	// create a new combo-box
 	QComboBox* sfCombo = new QComboBox;

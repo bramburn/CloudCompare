@@ -29,12 +29,10 @@
  *
  * @see ccGenericMesh.cpp
  */
-#include <ccPointCloud.h>
-#include <ccMesh.h>
-
-#include <QTest>
 #include <QString>
-
+#include <QTest>
+#include <ccMesh.h>
+#include <ccPointCloud.h>
 #include <cmath>
 
 // Helper: compute triangle area using cross product
@@ -54,12 +52,11 @@ static CCVector3 triangleNormal(const CCVector3& A, const CCVector3& B, const CC
 	return AB.cross(AC);
 }
 
-
 class TestMesh : public QObject
 {
 	Q_OBJECT
 
-private slots:
+  private slots:
 
 	void testAddTriangle()
 	{
@@ -123,10 +120,9 @@ private slots:
 	{
 		// Right triangle: (0,0,0), (3,0,0), (0,4,0) — area = 6
 		float area = triangleArea(
-			CCVector3(0.0f, 0.0f, 0.0f),
-			CCVector3(3.0f, 0.0f, 0.0f),
-			CCVector3(0.0f, 4.0f, 0.0f)
-		);
+		    CCVector3(0.0f, 0.0f, 0.0f),
+		    CCVector3(3.0f, 0.0f, 0.0f),
+		    CCVector3(0.0f, 4.0f, 0.0f));
 		QCOMPARE(area, 6.0f);
 	}
 
@@ -135,10 +131,9 @@ private slots:
 		// Equilateral triangle side 1: area = sqrt(3)/4
 		float s = 1.0f;
 		float area = triangleArea(
-			CCVector3(0.0f, 0.0f, 0.0f),
-			CCVector3(s, 0.0f, 0.0f),
-			CCVector3(s / 2.0f, s * std::sqrt(3.0f) / 2.0f, 0.0f)
-		);
+		    CCVector3(0.0f, 0.0f, 0.0f),
+		    CCVector3(s, 0.0f, 0.0f),
+		    CCVector3(s / 2.0f, s * std::sqrt(3.0f) / 2.0f, 0.0f));
 		QVERIFY(std::abs(area - std::sqrt(3.0f) / 4.0f) < 1e-6f);
 	}
 
@@ -146,10 +141,9 @@ private slots:
 	{
 		// Degenerate triangle (collinear points): area = 0
 		float area = triangleArea(
-			CCVector3(0.0f, 0.0f, 0.0f),
-			CCVector3(1.0f, 0.0f, 0.0f),
-			CCVector3(2.0f, 0.0f, 0.0f)
-		);
+		    CCVector3(0.0f, 0.0f, 0.0f),
+		    CCVector3(1.0f, 0.0f, 0.0f),
+		    CCVector3(2.0f, 0.0f, 0.0f));
 		QCOMPARE(area, 0.0f);
 	}
 
@@ -157,10 +151,9 @@ private slots:
 	{
 		// CCW winding (when viewed from +z): normal points toward +z
 		CCVector3 norm = triangleNormal(
-			CCVector3(0.0f, 0.0f, 0.0f),
-			CCVector3(1.0f, 0.0f, 0.0f),
-			CCVector3(0.0f, 1.0f, 0.0f)
-		);
+		    CCVector3(0.0f, 0.0f, 0.0f),
+		    CCVector3(1.0f, 0.0f, 0.0f),
+		    CCVector3(0.0f, 1.0f, 0.0f));
 		// z component should be positive (right-hand rule)
 		QVERIFY(norm.z > 0.0f);
 		// x and y components should be 0
@@ -172,10 +165,9 @@ private slots:
 	{
 		// Reversed winding: normal points toward -z
 		CCVector3 norm = triangleNormal(
-			CCVector3(0.0f, 0.0f, 0.0f),
-			CCVector3(0.0f, 1.0f, 0.0f),
-			CCVector3(1.0f, 0.0f, 0.0f)
-		);
+		    CCVector3(0.0f, 0.0f, 0.0f),
+		    CCVector3(0.0f, 1.0f, 0.0f),
+		    CCVector3(1.0f, 0.0f, 0.0f));
 		// z component should be negative
 		QVERIFY(norm.z < 0.0f);
 	}

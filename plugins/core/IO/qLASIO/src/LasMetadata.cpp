@@ -48,8 +48,7 @@ namespace LasMetadata
 	 * @param[in] vlr Source VLR structure
 	 * @return WKT string with prefix, or empty on failure
 	 */
-	static QString ProjectionVLRToString(const laszip_vlr_struct& vlr)
-	static QString ProjectionVLRToString(const laszip_vlr_struct& vlr)
+	static QString ProjectionVLRToString(const laszip_vlr_struct& vlr) static QString ProjectionVLRToString(const laszip_vlr_struct& vlr)
 	{
 		if (QString(vlr.user_id) != ProjectionVLR)
 		{

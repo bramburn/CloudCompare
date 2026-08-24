@@ -31,9 +31,8 @@
  *
  * @see ccGLMatrixTpl.h
  */
-#include <ccGLMatrix.h>
-
 #include <QTest>
+#include <ccGLMatrix.h>
 
 // CCCoreLib
 #include <CCGeom.h>
@@ -146,7 +145,10 @@ class TestGLMatrix : public QObject
 				double expected = (r == c) ? 1.0 : 0.0;
 				QVERIFY2(approxEq(I_check.getValue(r, c), expected),
 				         qPrintable(QString("R×R^T[%1][%2] should be %3 (got %4)")
-				                    .arg(r).arg(c).arg(expected).arg(I_check.getValue(r, c))));
+				                        .arg(r)
+				                        .arg(c)
+				                        .arg(expected)
+				                        .arg(I_check.getValue(r, c))));
 			}
 		}
 	}
@@ -184,7 +186,10 @@ class TestGLMatrix : public QObject
 				double expected = (r == c) ? 1.0 : 0.0;
 				QVERIFY2(approxEq(product.getValue(r, c), expected),
 				         qPrintable(QString("A×A⁻¹[%1][%2] should be %3 (got %4)")
-				                    .arg(r).arg(c).arg(expected).arg(product.getValue(r, c))));
+				                        .arg(r)
+				                        .arg(c)
+				                        .arg(expected)
+				                        .arg(product.getValue(r, c))));
 			}
 		}
 	}
@@ -236,7 +241,10 @@ class TestGLMatrix : public QObject
 			{
 				QVERIFY2(approxEq(Att.getValue(r, c), A.getValue(r, c)),
 				         qPrintable(QString("(Aᵀ)ᵀ[%1][%2] should equal A[%1][%2] (got %3, expected %4)")
-				                    .arg(r).arg(c).arg(Att.getValue(r, c)).arg(A.getValue(r, c))));
+				                        .arg(r)
+				                        .arg(c)
+				                        .arg(Att.getValue(r, c))
+				                        .arg(A.getValue(r, c))));
 			}
 		}
 	}
@@ -343,7 +351,7 @@ class TestGLMatrix : public QObject
 	{
 		// Identity quaternion (w=1, x=y=z=0) → identity matrix
 		SquareMatrixd R(3);
-		double q_identity[] = { 1.0, 0.0, 0.0, 0.0 }; // w, x, y, z
+		double q_identity[] = {1.0, 0.0, 0.0, 0.0}; // w, x, y, z
 		R.initFromQuaternion(q_identity);
 
 		// Verify R ≈ I
@@ -354,7 +362,10 @@ class TestGLMatrix : public QObject
 				double expected = (r == c) ? 1.0 : 0.0;
 				QVERIFY2(approxEq(R.getValue(r, c), expected),
 				         qPrintable(QString("q=(1,0,0,0) → R[%1][%2] should be %3 (got %4)")
-				                    .arg(r).arg(c).arg(expected).arg(R.getValue(r, c))));
+				                        .arg(r)
+				                        .arg(c)
+				                        .arg(expected)
+				                        .arg(R.getValue(r, c))));
 			}
 		}
 	}
@@ -375,10 +386,13 @@ class TestGLMatrix : public QObject
 
 		// Expected: q ≈ (0, 0, 0, 1) or q ≈ (0, 0, 0, -1)
 		// R_z(180°): w=cos(90°)=0, axis=Z, z=sin(90°)=1 → q=(0,0,0,1)
-		double q_expected[] = { 0.0, 0.0, 0.0, 1.0 };
+		double q_expected[] = {0.0, 0.0, 0.0, 1.0};
 		QVERIFY2(quaternionMatches(q, q_expected),
 		         qPrintable(QString("R_z(180°) → q should be ±(0,0,0,1), got (%1,%2,%3,%4)")
-		                    .arg(q[0]).arg(q[1]).arg(q[2]).arg(q[3])));
+		                        .arg(q[0])
+		                        .arg(q[1])
+		                        .arg(q[2])
+		                        .arg(q[3])));
 
 		// Round-trip: R → q → R2 should give same matrix
 		SquareMatrixd R2(3);
@@ -389,7 +403,10 @@ class TestGLMatrix : public QObject
 			{
 				QVERIFY2(approxEq(R2.getValue(r, c), R.getValue(r, c)),
 				         qPrintable(QString("Round-trip R→q→R: [%1][%2] differs (got %3, expected %4)")
-				                    .arg(r).arg(c).arg(R2.getValue(r, c)).arg(R.getValue(r, c))));
+				                        .arg(r)
+				                        .arg(c)
+				                        .arg(R2.getValue(r, c))
+				                        .arg(R.getValue(r, c))));
 			}
 		}
 	}
@@ -415,7 +432,8 @@ class TestGLMatrix : public QObject
 		float arr[16];
 		// ccGLMatrixTpl<double>::data() returns const double* — copy manually
 		const double* src = mat.data();
-		for (int i = 0; i < 16; ++i) arr[i] = static_cast<float>(src[i]);
+		for (int i = 0; i < 16; ++i)
+			arr[i] = static_cast<float>(src[i]);
 
 		// Check column-major layout: arr[c*4+r] should equal mat[r][c]
 		// For ccGLMatrix, mat[r][c] is at m_mat[c*4+r]
@@ -427,7 +445,11 @@ class TestGLMatrix : public QObject
 				float expected = static_cast<float>(mat.data()[idx]);
 				QVERIFY2(approxEq(static_cast<double>(arr[idx]), static_cast<double>(expected), 1e-6),
 				         qPrintable(QString("arr[%1] (r=%2,c=%3) should be %4 (got %5)")
-				                    .arg(idx).arg(r).arg(c).arg(expected).arg(arr[idx])));
+				                        .arg(idx)
+				                        .arg(r)
+				                        .arg(c)
+				                        .arg(expected)
+				                        .arg(arr[idx])));
 			}
 		}
 

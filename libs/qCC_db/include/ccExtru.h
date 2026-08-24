@@ -46,9 +46,9 @@ class QCC_DB_LIB_API ccExtru : public ccGenericPrimitive
 	 * @param[in] name Extrusion name
 	 */
 	ccExtru(const std::vector<CCVector2>& profile,
-	        PointCoordinateType           height,
-	        const ccGLMatrix*             transMat = nullptr,
-	        QString                       name     = QString("Extrusion"));
+	        PointCoordinateType height,
+	        const ccGLMatrix* transMat = nullptr,
+	        QString name = QString("Extrusion"));
 
 	//! Simplified constructor
 	/** For ccHObject factory only!
@@ -82,10 +82,10 @@ class QCC_DB_LIB_API ccExtru : public ccGenericPrimitive
 
   protected:
 	// inherited from ccGenericPrimitive
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	bool  buildUp() override;
+	bool buildUp() override;
 
 	//! Extrusion thickness
 	PointCoordinateType m_height;

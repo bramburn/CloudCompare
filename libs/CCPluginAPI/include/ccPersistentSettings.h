@@ -62,73 +62,154 @@ namespace ccPS
 {
 	// File dialog paths
 	/** @brief "LoadFile" — last directory used for opening files */
-	inline const QString LoadFile() { return QStringLiteral("LoadFile"); }
+	inline const QString LoadFile()
+	{
+		return QStringLiteral("LoadFile");
+	}
 	/** @brief "SaveFile" — last directory used for saving files */
-	inline const QString SaveFile() { return QStringLiteral("SaveFile"); }
+	inline const QString SaveFile()
+	{
+		return QStringLiteral("SaveFile");
+	}
 
 	// Window state
 	/** @brief "mainWindowGeometry" — QMainWindow saveGeometry() */
-	inline const QString MainWinGeom() { return QStringLiteral("mainWindowGeometry"); }
+	inline const QString MainWinGeom()
+	{
+		return QStringLiteral("mainWindowGeometry");
+	}
 	/** @brief "mainWindowState" — QMainWindow saveState() */
-	inline const QString MainWinState() { return QStringLiteral("mainWindowState"); }
+	inline const QString MainWinState()
+	{
+		return QStringLiteral("mainWindowState");
+	}
 	/** @brief "doNotRestoreWindowGeometry" — skip geometry restore at startup */
-	inline const QString DoNotRestoreWindowGeometry() { return QStringLiteral("doNotRestoreWindowGeometry"); }
+	inline const QString DoNotRestoreWindowGeometry()
+	{
+		return QStringLiteral("doNotRestoreWindowGeometry");
+	}
 
 	// UI
 	/** @brief "AppStyle" — Qt stylesheet or style name */
-	inline const QString AppStyle() { return QStringLiteral("AppStyle"); }
+	inline const QString AppStyle()
+	{
+		return QStringLiteral("AppStyle");
+	}
 	/** @brief "currentPath" — current working directory for file dialogs */
-	inline const QString CurrentPath() { return QStringLiteral("currentPath"); }
+	inline const QString CurrentPath()
+	{
+		return QStringLiteral("currentPath");
+	}
 
 	// File filters
 	/** @brief "selectedInputFilter" — last selected import filter */
-	inline const QString SelectedInputFilter() { return QStringLiteral("selectedInputFilter"); }
+	inline const QString SelectedInputFilter()
+	{
+		return QStringLiteral("selectedInputFilter");
+	}
 	/** @brief "selectedOutputFilterCloud" — last selected cloud export format */
-	inline const QString SelectedOutputFilterCloud() { return QStringLiteral("selectedOutputFilterCloud"); }
+	inline const QString SelectedOutputFilterCloud()
+	{
+		return QStringLiteral("selectedOutputFilterCloud");
+	}
 	/** @brief "selectedOutputFilterMesh" — last selected mesh export format */
-	inline const QString SelectedOutputFilterMesh() { return QStringLiteral("selectedOutputFilterMesh"); }
+	inline const QString SelectedOutputFilterMesh()
+	{
+		return QStringLiteral("selectedOutputFilterMesh");
+	}
 	/** @brief "selectedOutputFilterImage" — last selected image export format */
-	inline const QString SelectedOutputFilterImage() { return QStringLiteral("selectedOutputFilterImage"); }
+	inline const QString SelectedOutputFilterImage()
+	{
+		return QStringLiteral("selectedOutputFilterImage");
+	}
 	/** @brief "selectedOutputFilterPoly" — last selected polyline export format */
-	inline const QString SelectedOutputFilterPoly() { return QStringLiteral("selectedOutputFilterPoly"); }
+	inline const QString SelectedOutputFilterPoly()
+	{
+		return QStringLiteral("selectedOutputFilterPoly");
+	}
 
 	// Tool settings
 	/** @brief "duplicatePoints" — group key for duplicate detection settings */
-	inline const QString DuplicatePointsGroup() { return QStringLiteral("duplicatePoints"); }
+	inline const QString DuplicatePointsGroup()
+	{
+		return QStringLiteral("duplicatePoints");
+	}
 	/** @brief "minDist" — minimum distance for duplicate detection */
-	inline const QString DuplicatePointsMinDist() { return QStringLiteral("minDist"); }
+	inline const QString DuplicatePointsMinDist()
+	{
+		return QStringLiteral("minDist");
+	}
 	/** @brief "HeightGridGeneration" — group key for height grid settings */
-	inline const QString HeightGridGeneration() { return QStringLiteral("HeightGridGeneration"); }
+	inline const QString HeightGridGeneration()
+	{
+		return QStringLiteral("HeightGridGeneration");
+	}
 	/** @brief "VolumeCalculation" — group key for volume calc settings */
-	inline const QString VolumeCalculation() { return QStringLiteral("VolumeCalculation"); }
+	inline const QString VolumeCalculation()
+	{
+		return QStringLiteral("VolumeCalculation");
+	}
 
 	// Console
 	/** @brief "Console" — group key for console settings */
-	inline const QString Console() { return QStringLiteral("Console"); }
+	inline const QString Console()
+	{
+		return QStringLiteral("Console");
+	}
 
 	// Global shift / coordinates
 	/** @brief "GlobalShift" — group key for global shift settings */
-	inline const QString GlobalShift() { return QStringLiteral("GlobalShift"); }
+	inline const QString GlobalShift()
+	{
+		return QStringLiteral("GlobalShift");
+	}
 	/** @brief "MaxAbsCoord" — maximum absolute coordinate threshold */
-	inline const QString MaxAbsCoord() { return QStringLiteral("MaxAbsCoord"); }
+	inline const QString MaxAbsCoord()
+	{
+		return QStringLiteral("MaxAbsCoord");
+	}
 	/** @brief "MaxAbsDiag" — maximum absolute diagonal threshold */
-	inline const QString MaxAbsDiag() { return QStringLiteral("MaxAbsDiag"); }
+	inline const QString MaxAbsDiag()
+	{
+		return QStringLiteral("MaxAbsDiag");
+	}
 
 	// 3D view
 	/** @brief "AutoPickRotationCenter" — auto-pick pivot at screen center */
-	inline const QString AutoPickRotationCenter() { return QStringLiteral("AutoPickRotationCenter"); }
+	inline const QString AutoPickRotationCenter()
+	{
+		return QStringLiteral("AutoPickRotationCenter");
+	}
 	/** @brief "View3dRotationAxisLocked" — lock rotation to a fixed axis */
-	inline const QString View3dRotationAxisLocked() { return QStringLiteral("View3dRotationAxisLocked"); }
+	inline const QString View3dRotationAxisLocked()
+	{
+		return QStringLiteral("View3dRotationAxisLocked");
+	}
 	/** @brief "View3dLockedAxisRotation" — locked rotation angle */
-	inline const QString View3dLockedAxisRotation() { return QStringLiteral("View3dLockedAxisRotation"); }
+	inline const QString View3dLockedAxisRotation()
+	{
+		return QStringLiteral("View3dLockedAxisRotation");
+	}
 
 	// App-level
 	/** @brief "Options" — group key for application options */
-	inline const QString Options() { return QStringLiteral("Options"); }
+	inline const QString Options()
+	{
+		return QStringLiteral("Options");
+	}
 	/** @brief "Plugins" — group key for plugin settings */
-	inline const QString Plugins() { return QStringLiteral("Plugins"); }
+	inline const QString Plugins()
+	{
+		return QStringLiteral("Plugins");
+	}
 	/** @brief "Translation" — current language/translation */
-	inline const QString Translation() { return QStringLiteral("Translation"); }
+	inline const QString Translation()
+	{
+		return QStringLiteral("Translation");
+	}
 	/** @brief "Shortcuts" — keyboard shortcut mappings */
-	inline const QString Shortcuts() { return QStringLiteral("Shortcuts"); }
+	inline const QString Shortcuts()
+	{
+		return QStringLiteral("Shortcuts");
+	}
 }; // namespace ccPS

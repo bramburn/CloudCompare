@@ -89,16 +89,16 @@ class LasExtraScalarField
 	{
 		Undocumented = 0, //!< Undocumented type.
 		u8           = 1, //!< Unsigned 8-bit.
-		i8,                //!< Signed 8-bit.
-		u16,               //!< Unsigned 16-bit.
-		i16,               //!< Signed 16-bit.
-		u32,               //!< Unsigned 32-bit.
-		i32,               //!< Signed 32-bit.
-		u64,               //!< Unsigned 64-bit.
-		i64,               //!< Signed 64-bit.
-		f32,               //!< Float 32-bit.
-		f64,               //!< Float 64-bit.
-		Invalid            //!< Invalid type.
+		i8,               //!< Signed 8-bit.
+		u16,              //!< Unsigned 16-bit.
+		i16,              //!< Signed 16-bit.
+		u32,              //!< Unsigned 32-bit.
+		i32,              //!< Signed 32-bit.
+		u64,              //!< Unsigned 64-bit.
+		i64,              //!< Signed 64-bit.
+		f32,              //!< Float 32-bit.
+		f64,              //!< Float 64-bit.
+		Invalid           //!< Invalid type.
 	};
 
 	/**

@@ -36,8 +36,8 @@
 #include <QSettings>
 
 static const int DefaultCoordsQuant = 11;
-static const int DefaultNormQuant   = 8;
-static const int DefaultSFQuant     = 8;
+static const int DefaultNormQuant = 8;
+static const int DefaultSFQuant = 8;
 
 SaveDracoFileDlg::SaveDracoFileDlg(QWidget* parent /*=nullptr*/)
     : QDialog(parent)
@@ -57,8 +57,8 @@ void SaveDracoFileDlg::initFromPersistentSettings()
 
 	// read parameters
 	int coordQuantization = settings.value("coordQuantization", DefaultCoordsQuant).toInt();
-	int normQuantization  = settings.value("normalQuantization", DefaultNormQuant).toInt();
-	int sfQuantization    = settings.value("sfQuantization", DefaultSFQuant).toInt();
+	int normQuantization = settings.value("normalQuantization", DefaultNormQuant).toInt();
+	int sfQuantization = settings.value("sfQuantization", DefaultSFQuant).toInt();
 
 	// apply parameters
 	coordsQuantSpinBox->setValue(coordQuantization);

@@ -31,10 +31,10 @@
  */
 #include "FileIOFilter.h"
 
-#include <QTest>
-#include <QTemporaryDir>
 #include <QDir>
 #include <QFile>
+#include <QTemporaryDir>
+#include <QTest>
 #include <QTextStream>
 
 class TestFileIOFilter : public QObject

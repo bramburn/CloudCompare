@@ -24,6 +24,7 @@
  */
 
 #include "ccUtils.h"
+
 #include "ccConsole.h"
 
 // Qt
@@ -45,12 +46,12 @@ namespace ccUtils
 	void DisplayLockedVerticesWarning(const QString& meshName, bool displayAsError)
 	{
 		QString message = QString(
-		                 "Vertices of mesh '%1' are locked (they may be shared by "
-		                 "multiple entities for instance).\n"
-		                 "You should call this method directly on the vertices cloud.\n"
-		                 "(warning: all entities depending on this cloud will be "
-		                 "impacted!)")
-		                .arg(meshName);
+		                      "Vertices of mesh '%1' are locked (they may be shared by "
+		                      "multiple entities for instance).\n"
+		                      "You should call this method directly on the vertices cloud.\n"
+		                      "(warning: all entities depending on this cloud will be "
+		                      "impacted!)")
+		                      .arg(meshName);
 
 		if (displayAsError)
 			ccConsole::Error(message);
@@ -132,7 +133,7 @@ namespace ccUtils
 		// Parse each component as a double
 		for (unsigned char i = 0; i < 3; ++i)
 		{
-			bool ok     = false;
+			bool ok = false;
 			vector.u[i] = tokens[i].toDouble(&ok);
 			if (!ok)
 			{

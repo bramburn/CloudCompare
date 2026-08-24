@@ -29,12 +29,10 @@
  *
  * @see ccSensor.cpp
  */
-#include <ccSensor.h>
-#include <ccGBLSensor.h>
-
-#include <QTest>
 #include <QString>
-
+#include <QTest>
+#include <ccGBLSensor.h>
+#include <ccSensor.h>
 #include <cmath>
 
 // Test pure spherical/cartesian math without needing an actual sensor device.
@@ -43,7 +41,7 @@ class TestSensor : public QObject
 {
 	Q_OBJECT
 
-private slots:
+  private slots:
 
 	void testSensorConstruction()
 	{
@@ -67,7 +65,7 @@ private slots:
 		// z = r * sin(phi)
 		double r = 1.0;
 		double phi = 0.0;   // elevation = 0 (horizontal)
-		double theta = 0.0;  // azimuth = 0 (pointing along +X)
+		double theta = 0.0; // azimuth = 0 (pointing along +X)
 
 		double x = r * std::cos(phi) * std::sin(theta);
 		double y = r * std::cos(phi) * std::cos(theta);
@@ -119,7 +117,7 @@ private slots:
 		// phi = asin(z/r) = asin(0) = 0
 		// theta = atan2(y, x) = atan2(0, 1) = 0
 		double x = 1.0, y = 0.0, z = 0.0;
-		double r = std::sqrt(x*x + y*y + z*z);
+		double r = std::sqrt(x * x + y * y + z * z);
 		double phi = std::asin(z / r);
 		double theta = std::atan2(y, x);
 

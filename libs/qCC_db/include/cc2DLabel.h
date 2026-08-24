@@ -267,29 +267,29 @@ class QCC_DB_LIB_API cc2DLabel : public ccHObject
 	}
 
 	//! Point (marker) picking
-	bool pointPicking(const CCVector2d&           clickPos,
+	bool pointPicking(const CCVector2d& clickPos,
 	                  const ccGLCameraParameters& camera,
-	                  int&                        nearestPointIndex,
-	                  double&                     nearestSquareDist) const;
+	                  int& nearestPointIndex,
+	                  double& nearestSquareDist) const;
 
   protected:
 	//! Value of a single scalar field at the picked point
 	struct SFValue
 	{
-		QString    name;
+		QString name;
 		ScalarType value = 0;
 	};
 
 	//! One-point label info
 	struct LabelInfo1
 	{
-		bool          hasNormal;
-		CCVector3     normal;
-		bool          hasRGB;
+		bool hasNormal;
+		CCVector3 normal;
+		bool hasRGB;
 		ccColor::Rgba color;
-		bool          hasSF;
-		ScalarType    sfValue;
-		QString       sfName;
+		bool hasSF;
+		ScalarType sfValue;
+		QString sfName;
 		//! Values of all scalar fields at the picked point (not just the displayed one)
 		std::vector<SFValue> sfValues;
 		//! Default constructor
@@ -330,10 +330,10 @@ class QCC_DB_LIB_API cc2DLabel : public ccHObject
 	//! Three-points label info
 	struct LabelInfo3
 	{
-		CCVector3           normal;
+		CCVector3 normal;
 		PointCoordinateType area;
-		CCVector3d          angles;
-		CCVector3d          edges;
+		CCVector3d angles;
+		CCVector3d edges;
 		//! Default constructor
 		LabelInfo3()
 		    : normal(0, 0, 0)
@@ -347,11 +347,11 @@ class QCC_DB_LIB_API cc2DLabel : public ccHObject
 	void getLabelInfo3(LabelInfo3& info) const;
 
 	// inherited from ccHObject
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	void  drawMeOnly(CC_DRAW_CONTEXT& context) override;
-	void  onDeletionOf(const ccHObject* obj) override;
+	void drawMeOnly(CC_DRAW_CONTEXT& context) override;
+	void onDeletionOf(const ccHObject* obj) override;
 
 	//! Draws the entity only (not its children) - 2D version
 	void drawMeOnly2D(CC_DRAW_CONTEXT& context);

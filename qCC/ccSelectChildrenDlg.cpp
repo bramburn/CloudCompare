@@ -41,12 +41,12 @@
 
 #include "ui_selectChildrenDlg.h"
 
-static QString       s_lastName;
-static bool          s_lastNameState       = false;
-static CC_CLASS_ENUM s_lastType            = CC_TYPES::POINT_CLOUD;
-static bool          s_lastTypeState       = true;
-static bool          s_lastTypeStrictState = true;
-static bool          s_lastUseRegex        = true;
+static QString s_lastName;
+static bool s_lastNameState = false;
+static CC_CLASS_ENUM s_lastType = CC_TYPES::POINT_CLOUD;
+static bool s_lastTypeState = true;
+static bool s_lastTypeStrictState = true;
+static bool s_lastUseRegex = true;
 
 /**
  * @brief Construct the select children dialog
@@ -87,12 +87,12 @@ void ccSelectChildrenDlg::addType(QString typeName, CC_CLASS_ENUM type)
 
 void ccSelectChildrenDlg::onAccept()
 {
-	s_lastNameState       = mUI->nameCheckBox->isChecked();
-	s_lastName            = mUI->nameLineEdit->text();
-	s_lastTypeState       = mUI->typeCheckBox->isChecked();
+	s_lastNameState = mUI->nameCheckBox->isChecked();
+	s_lastName = mUI->nameLineEdit->text();
+	s_lastTypeState = mUI->typeCheckBox->isChecked();
 	s_lastTypeStrictState = mUI->typeCheckBox->isChecked();
-	s_lastType            = getSelectedType();
-	s_lastUseRegex        = getNameIsRegex();
+	s_lastType = getSelectedType();
+	s_lastUseRegex = getNameIsRegex();
 }
 
 CC_CLASS_ENUM ccSelectChildrenDlg::getSelectedType()

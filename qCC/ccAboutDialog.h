@@ -50,7 +50,7 @@ class ccAboutDialog : public QDialog
 	 * @param[in] parent Parent widget
 	 */
 	ccAboutDialog(QWidget* parent = nullptr);
-	
+
 	/**
 	 * @brief Destructor
 	 */

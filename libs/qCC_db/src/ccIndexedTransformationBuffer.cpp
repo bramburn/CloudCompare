@@ -86,11 +86,11 @@ void ccIndexedTransformationBuffer::sort()
 	ParallelSort(begin(), end(), IndexedSortOperator);
 }
 
-bool ccIndexedTransformationBuffer::findNearest(double                          index,
+bool ccIndexedTransformationBuffer::findNearest(double index,
                                                 const ccIndexedTransformation*& trans1,
                                                 const ccIndexedTransformation*& trans2,
-                                                size_t*                         trans1IndexInBuffer,
-                                                size_t*                         trans2IndexInBuffer) const
+                                                size_t* trans1IndexInBuffer,
+                                                size_t* trans2IndexInBuffer) const
 {
 	// no transformation in buffer?
 	if (empty())
@@ -181,9 +181,9 @@ ccBBox ccIndexedTransformationBuffer::getOwnBB(bool withGLFeatures /*=false*/)
 	return box;
 }
 
-bool ccIndexedTransformationBuffer::getInterpolatedTransformation(double                   index,
+bool ccIndexedTransformationBuffer::getInterpolatedTransformation(double index,
                                                                   ccIndexedTransformation& trans,
-                                                                  double                   maxIndexDistForInterpolation /*=DBL_MAX*/) const
+                                                                  double maxIndexDistForInterpolation /*=DBL_MAX*/) const
 {
 	const ccIndexedTransformation* t1 = nullptr;
 	const ccIndexedTransformation* t2 = nullptr;

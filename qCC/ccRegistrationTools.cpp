@@ -67,23 +67,23 @@ static const unsigned s_defaultSampledPointsOnDataMesh = 50000;
 //! Default temporary registration scalar field
 static const char REGISTRATION_DISTS_SF[] = "RegistrationDistances";
 
-bool ccRegistrationTools::ICP(ccHObject*                                         data,
-                              ccHObject*                                         model,
-                              ccGLMatrix&                                        transMat,
-                              double&                                            finalScale,
-                              double&                                            finalRMS,
-                              unsigned&                                          finalPointCount,
+bool ccRegistrationTools::ICP(ccHObject* data,
+                              ccHObject* model,
+                              ccGLMatrix& transMat,
+                              double& finalScale,
+                              double& finalRMS,
+                              unsigned& finalPointCount,
                               const CCCoreLib::ICPRegistrationTools::Parameters& inputParameters,
-                              bool                                               useDataSFAsWeights /*=false*/,
-                              bool                                               useModelSFAsWeights /*=false*/,
-                              QWidget*                                           parent /*=nullptr*/)
+                              bool useDataSFAsWeights /*=false*/,
+                              bool useModelSFAsWeights /*=false*/,
+                              QWidget* parent /*=nullptr*/)
 {
 	QElapsedTimer timer;
 	timer.start();
 
-	bool                                        restoreColorState = false;
-	bool                                        restoreSFState    = false;
-	CCCoreLib::ICPRegistrationTools::Parameters params            = inputParameters;
+	bool restoreColorState = false;
+	bool restoreSFState = false;
+	CCCoreLib::ICPRegistrationTools::Parameters params = inputParameters;
 
 	// progress bar
 	QScopedPointer<ccProgressDialog> progressDlg;
@@ -96,10 +96,10 @@ bool ccRegistrationTools::ICP(ccHObject*                                        
 
 	// if the 'model' entity is a mesh, we need to sample points on it
 	CCCoreLib::GenericIndexedCloudPersist* modelCloud = nullptr;
-	ccGenericMesh*                         modelMesh  = nullptr;
+	ccGenericMesh* modelMesh = nullptr;
 	if (model->isKindOf(CC_TYPES::MESH))
 	{
-		modelMesh  = ccHObjectCaster::ToGenericMesh(model);
+		modelMesh = ccHObjectCaster::ToGenericMesh(model);
 		modelCloud = modelMesh->getAssociatedCloud();
 	}
 	else
@@ -126,18 +126,18 @@ bool ccRegistrationTools::ICP(ccHObject*                                        
 
 	// we activate a temporary scalar field for registration distances computation
 	CCCoreLib::ScalarField* dataDisplayedSF = nullptr;
-	int                     oldDataSfIdx    = -1;
-	int                     dataSfIdx       = -1;
+	int oldDataSfIdx = -1;
+	int dataSfIdx = -1;
 
 	// if the 'data' entity is a real ccPointCloud, we can even create a proper temporary SF for registration distances
 	if (data->isA(CC_TYPES::POINT_CLOUD))
 	{
-		ccPointCloud* pc  = static_cast<ccPointCloud*>(data);
+		ccPointCloud* pc = static_cast<ccPointCloud*>(data);
 		restoreColorState = pc->colorsShown();
-		restoreSFState    = pc->sfShown();
-		dataDisplayedSF   = pc->getCurrentDisplayedScalarField();
-		oldDataSfIdx      = pc->getCurrentInScalarFieldIndex();
-		dataSfIdx         = pc->getScalarFieldIndexByName(REGISTRATION_DISTS_SF);
+		restoreSFState = pc->sfShown();
+		dataDisplayedSF = pc->getCurrentDisplayedScalarField();
+		oldDataSfIdx = pc->getCurrentInScalarFieldIndex();
+		dataSfIdx = pc->getScalarFieldIndexByName(REGISTRATION_DISTS_SF);
 		if (dataSfIdx < 0)
 			dataSfIdx = pc->addScalarField(REGISTRATION_DISTS_SF);
 		if (dataSfIdx >= 0)
@@ -159,7 +159,7 @@ bool ccRegistrationTools::ICP(ccHObject*                                        
 
 	// add a 'safety' margin to input ratio
 	static double s_overlapMarginRatio = 0.2;
-	params.finalOverlapRatio           = std::max(params.finalOverlapRatio, 0.01); // 1% minimum
+	params.finalOverlapRatio = std::max(params.finalOverlapRatio, 0.01); // 1% minimum
 	// do we need to reduce the input point cloud (so as to be close
 	// to the theoretical number of overlapping points - but not too
 	// low so as we are not registered yet ;)
@@ -170,22 +170,22 @@ bool ccRegistrationTools::ICP(ccHObject*                                        
 		// level = 8 if < 10.000.000
 		// level = 9 if > 10.000.000
 		int gridLevel = static_cast<int>(log10(static_cast<double>(std::max(dataCloud->size(), modelCloud->size())))) + 2; // static_cast is equivalent to floor if value >= 0
-		gridLevel     = std::min(std::max(gridLevel, 7), 9);
-		int result    = -1;
+		gridLevel = std::min(std::max(gridLevel, 7), 9);
+		int result = -1;
 		if (modelMesh)
 		{
 			CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams c2mParams;
-			c2mParams.octreeLevel     = gridLevel;
-			c2mParams.maxSearchDist   = 0;
-			c2mParams.useDistanceMap  = true;
+			c2mParams.octreeLevel = gridLevel;
+			c2mParams.maxSearchDist = 0;
+			c2mParams.useDistanceMap = true;
 			c2mParams.signedDistances = false;
-			c2mParams.flipNormals     = false;
-			c2mParams.multiThread     = false;
-			c2mParams.robust          = true;
-			result                    = CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances(dataCloud,
-                                                                                     modelMesh,
-                                                                                     c2mParams,
-                                                                                     progressDlg.data());
+			c2mParams.flipNormals = false;
+			c2mParams.multiThread = false;
+			c2mParams.robust = true;
+			result = CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances(dataCloud,
+			                                                                         modelMesh,
+			                                                                         c2mParams,
+			                                                                         progressDlg.data());
 		}
 		else
 		{
@@ -205,7 +205,7 @@ bool ccRegistrationTools::ICP(ccHObject*                                        
 		// determine the max distance that (roughly) corresponds to the input overlap ratio
 		ScalarType maxSearchDist = 0;
 		{
-			unsigned                count = dataCloud->size();
+			unsigned count = dataCloud->size();
 			std::vector<ScalarType> distances;
 			try
 			{
@@ -232,7 +232,7 @@ bool ccRegistrationTools::ICP(ccHObject*                                        
 		{
 			CCCoreLib::ReferenceCloud* refCloud = new CCCoreLib::ReferenceCloud(dataCloud);
 			cloudGarbage.add(refCloud);
-			unsigned countBefore   = dataCloud->size();
+			unsigned countBefore = dataCloud->size();
 			unsigned baseIncrement = static_cast<unsigned>(std::max(100.0, countBefore * params.finalOverlapRatio * 0.05));
 			for (unsigned i = 0; i < countBefore; ++i)
 			{
@@ -251,7 +251,7 @@ bool ccRegistrationTools::ICP(ccHObject*                                        
 			dataCloud = refCloud;
 
 			unsigned countAfter = dataCloud->size();
-			double   keptRatio  = static_cast<double>(countAfter) / countBefore;
+			double keptRatio = static_cast<double>(countAfter) / countBefore;
 			ccLog::Print(QString("[ICP][Partial overlap] Selecting %1 points out of %2 (%3%) for registration").arg(countAfter).arg(countBefore).arg(static_cast<int>(100 * keptRatio)));
 
 			// update the relative 'final overlap' ratio
@@ -261,13 +261,13 @@ bool ccRegistrationTools::ICP(ccHObject*                                        
 
 	// weights
 	params.modelWeights = nullptr;
-	params.dataWeights  = nullptr;
+	params.dataWeights = nullptr;
 	{
 		if (!modelMesh && useModelSFAsWeights)
 		{
 			if (modelCloud == dynamic_cast<CCCoreLib::GenericIndexedCloudPersist*>(model) && model->isA(CC_TYPES::POINT_CLOUD))
 			{
-				ccPointCloud* pc    = static_cast<ccPointCloud*>(model);
+				ccPointCloud* pc = static_cast<ccPointCloud*>(model);
 				params.modelWeights = pc->getCurrentDisplayedScalarField();
 				if (!params.modelWeights)
 					ccLog::Warning("[ICP] 'useDataSFAsWeights' is true but model has no displayed scalar field!");
@@ -296,7 +296,7 @@ bool ccRegistrationTools::ICP(ccHObject*                                        
 
 	ccLog::Print(QString("[ICP] Will use %1 threads").arg(params.maxThreadCount));
 
-	CCCoreLib::ICPRegistrationTools::RESULT_TYPE    result;
+	CCCoreLib::ICPRegistrationTools::RESULT_TYPE result;
 	CCCoreLib::PointProjectionTools::Transformation transform;
 
 	result = CCCoreLib::ICPRegistrationTools::Register(modelCloud,
@@ -319,7 +319,7 @@ bool ccRegistrationTools::ICP(ccHObject*                                        
 
 		if (result == CCCoreLib::ICPRegistrationTools::ICP_APPLY_TRANSFO)
 		{
-			transMat   = FromCCLibMatrix<double, float>(transform.R, transform.T, transform.s);
+			transMat = FromCCLibMatrix<double, float>(transform.R, transform.T, transform.s);
 			finalScale = transform.s;
 		}
 	}

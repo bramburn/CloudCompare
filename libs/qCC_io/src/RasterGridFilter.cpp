@@ -87,8 +87,8 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 			             poDataset->GetDriver()->GetMetadataItem(GDAL_DMD_LONGNAME));
 
 			int rasterCount = poDataset->GetRasterCount();
-			int rasterX     = poDataset->GetRasterXSize();
-			int rasterY     = poDataset->GetRasterYSize();
+			int rasterX = poDataset->GetRasterXSize();
+			int rasterY = poDataset->GetRasterYSize();
 			ccLog::Print("Size is %dx%dx%d", rasterX, rasterY, rasterCount);
 
 			if (poDataset->GetProjectionRef() != nullptr)
@@ -117,14 +117,14 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 			ccLog::Print(QString("Pixel Type = ") + (aeraOrPoint ? aeraOrPoint : "AREA")); // Area by default
 
 			// first check if the raster actually has 'color' bands
-			int               colorBands             = 0;
-			bool              hasUndefinedColorBands = false;
+			int colorBands = 0;
+			bool hasUndefinedColorBands = false;
 			std::vector<bool> isColorBand(rasterCount, false);
 			{
 				int undefinedColorBandCount = 0;
 				for (int i = 1; i <= rasterCount; ++i)
 				{
-					GDALRasterBand* poBand      = poDataset->GetRasterBand(i);
+					GDALRasterBand* poBand = poDataset->GetRasterBand(i);
 					GDALColorInterp colorInterp = poBand->GetColorInterpretation();
 
 					switch (colorInterp)
@@ -140,7 +140,7 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 					case GCI_GrayIndex:
 					{
 						// Sometimes GDAL fails to recognize color bands as such, or it can flag a Z band as gray values if altitudes are between 0 and 255...
-						int    bGotMin = 0, bGotMax = 0;
+						int bGotMin = 0, bGotMax = 0;
 						double adfMinMax[2]{poBand->GetMinimum(&bGotMin), poBand->GetMaximum(&bGotMax)};
 						if (0 == bGotMin || 0 == bGotMax)
 						{
@@ -207,7 +207,7 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 
 			// create blank raster 'grid'
 			ccMesh* quad = nullptr;
-			QImage  quadTexture;
+			QImage quadTexture;
 			if (loadAsTexturedQuad)
 			{
 				quad = new ccMesh(pc);
@@ -254,8 +254,8 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 					{
 						// Xgeo = adfGeoTransform(0) + Xpixel * adfGeoTransform(1) + Yline * adfGeoTransform(2)
 						// Ygeo = adfGeoTransform(3) + Xpixel * adfGeoTransform(4) + Yline * adfGeoTransform(5)
-						double    x = adfGeoTransform[0] + (i + 0.5) * adfGeoTransform[1] + (j + 0.5) * adfGeoTransform[2] + Pshift.x;
-						double    y = adfGeoTransform[3] + (i + 0.5) * adfGeoTransform[4] + (j + 0.5) * adfGeoTransform[5] + Pshift.y;
+						double x = adfGeoTransform[0] + (i + 0.5) * adfGeoTransform[1] + (j + 0.5) * adfGeoTransform[2] + Pshift.x;
+						double y = adfGeoTransform[3] + (i + 0.5) * adfGeoTransform[4] + (j + 0.5) * adfGeoTransform[5] + Pshift.y;
 						CCVector3 P(static_cast<PointCoordinateType>(x), static_cast<PointCoordinateType>(y), static_cast<PointCoordinateType>(z));
 						pc->addPoint(P);
 					}
@@ -267,9 +267,9 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 			}
 
 			// fetch raster bands
-			bool                      zRasterProcessed = false;
+			bool zRasterProcessed = false;
 			CCCoreLib::ReferenceCloud validPoints(pc);
-			double                    zMinMax[2]{0, 0};
+			double zMinMax[2]{0, 0};
 
 			for (int i = 1; i <= rasterCount; ++i)
 			{
@@ -288,7 +288,7 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 				assert(nXSize == rasterX);
 				assert(nYSize == rasterY);
 
-				int    bGotMin = 0, bGotMax = 0;
+				int bGotMin = 0, bGotMax = 0;
 				double adfMinMax[2]{poBand->GetMinimum(&bGotMin), poBand->GetMaximum(&bGotMax)};
 				if (!bGotMin || !bGotMax)
 				{
@@ -323,11 +323,11 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 					ccLog::Print("[GDAL] We will load this band to set Z coordinates");
 
 					zRasterProcessed = true;
-					zMinMax[0]       = adfMinMax[0];
-					zMinMax[1]       = adfMinMax[1];
+					zMinMax[0] = adfMinMax[0];
+					zMinMax[1] = adfMinMax[1];
 
-					size_t  byteCount = sizeof(double) * static_cast<size_t>(nXSize);
-					double* scanline  = static_cast<double*>(CPLMalloc(byteCount));
+					size_t byteCount = sizeof(double) * static_cast<size_t>(nXSize);
+					double* scanline = static_cast<double*>(CPLMalloc(byteCount));
 					memset(scanline, 0, byteCount);
 
 					if (!validPoints.reserve(pc->capacity()))
@@ -339,8 +339,8 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 						return CC_FERR_READING;
 					}
 
-					int    hasNoDataValue = 0;
-					double noDataValue    = poBand->GetNoDataValue(&hasNoDataValue);
+					int hasNoDataValue = 0;
+					double noDataValue = poBand->GetNoDataValue(&hasNoDataValue);
 					if (hasNoDataValue != 0)
 					{
 						ccLog::Print(QString("[GDAL] No data value = %1").arg(noDataValue));
@@ -372,7 +372,7 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 
 						for (int k = 0; k < nXSize; ++k)
 						{
-							double   z          = static_cast<double>(scanline[k]) + Pshift.z;
+							double z = static_cast<double>(scanline[k]) + Pshift.z;
 							unsigned pointIndex = static_cast<unsigned>(k + j * rasterX);
 							if (pointIndex <= pc->size())
 							{
@@ -396,8 +396,8 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 				}
 				else // colors or scalars
 				{
-					bool isRGB     = false;
-					bool isScalar  = false;
+					bool isRGB = false;
+					bool isScalar = false;
 					bool isPalette = false;
 
 					switch (colorInterp)
@@ -450,8 +450,8 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 							{
 								assert(poBand->GetRasterDataType() <= GDT_Int32);
 
-								size_t byteCount  = sizeof(int) * static_cast<size_t>(nXSize);
-								int*   colIndexes = static_cast<int*>(CPLMalloc(byteCount));
+								size_t byteCount = sizeof(int) * static_cast<size_t>(nXSize);
+								int* colIndexes = static_cast<int*>(CPLMalloc(byteCount));
 								memset(colIndexes, 0, byteCount);
 
 								for (int j = 0; j < nYSize; ++j)
@@ -486,7 +486,7 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 											if (loadAsTexturedQuad)
 											{
 												QRgb origColor = quadTexture.pixel(k, j);
-												C              = ccColor::FromQRgba(origColor);
+												C = ccColor::FromQRgba(origColor);
 											}
 											else
 											{
@@ -547,8 +547,8 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 					}
 					else if (isScalar && !loadAsTexturedQuad)
 					{
-						QString        sfName = QString("band #%1 (%2)").arg(i).arg(GDALGetColorInterpretationName(colorInterp)); // SF names really need to be unique!
-						ccScalarField* sf     = new ccScalarField(sfName.toStdString());
+						QString sfName = QString("band #%1 (%2)").arg(i).arg(GDALGetColorInterpretationName(colorInterp)); // SF names really need to be unique!
+						ccScalarField* sf = new ccScalarField(sfName.toStdString());
 						if (!sf->resizeSafe(pc->size(), true, CCCoreLib::NAN_VALUE))
 						{
 							ccLog::Warning(QString("Failed to instantiate memory for storing '%1' as a scalar field!").arg(QString::fromStdString(sf->getName())));
@@ -557,7 +557,7 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 						}
 						else
 						{
-							size_t  byteCount = sizeof(double) * static_cast<size_t>(nXSize);
+							size_t byteCount = sizeof(double) * static_cast<size_t>(nXSize);
 							double* colValues = static_cast<double*>(CPLMalloc(byteCount));
 							memset(colValues, 0, byteCount);
 
@@ -625,7 +625,7 @@ CC_FILE_ERROR RasterGridFilter::loadFile(const QString& filename, ccHObject& con
 				{
 					// shall we remove the points with invalid heights?
 					static bool s_alwaysRemoveInvalidHeights = false;
-					int         result                       = QMessageBox::Yes;
+					int result = QMessageBox::Yes;
 					if (parameters.parentWidget) // otherwise it means we are in command line mode --> no popup
 					{
 						result = (s_alwaysRemoveInvalidHeights

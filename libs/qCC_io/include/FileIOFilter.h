@@ -34,25 +34,25 @@ class QWidget;
  */
 enum CC_FILE_ERROR
 {
-	CC_FERR_NO_ERROR,                       //!< No error
-	CC_FERR_BAD_ARGUMENT,                   //!< Invalid argument provided
-	CC_FERR_UNKNOWN_FILE,                   //!< File not found
-	CC_FERR_WRONG_FILE_TYPE,                //!< File type mismatch
-	CC_FERR_WRITING,                        //!< Error writing file
-	CC_FERR_READING,                        //!< Error reading file
-	CC_FERR_NO_SAVE,                        //!< Cannot save (e.g., no data)
-	CC_FERR_NO_LOAD,                        //!< Cannot load (e.g., empty file)
-	CC_FERR_BAD_ENTITY_TYPE,                 //!< Entity type not supported
-	CC_FERR_CANCELED_BY_USER,               //!< User cancelled operation
-	CC_FERR_NOT_ENOUGH_MEMORY,              //!< Out of memory
-	CC_FERR_MALFORMED_FILE,                 //!< File format error
-	CC_FERR_CONSOLE_ERROR,                  //!< Console error occurred
-	CC_FERR_BROKEN_DEPENDENCY_ERROR,        //!< Missing dependency
+	CC_FERR_NO_ERROR,                           //!< No error
+	CC_FERR_BAD_ARGUMENT,                       //!< Invalid argument provided
+	CC_FERR_UNKNOWN_FILE,                       //!< File not found
+	CC_FERR_WRONG_FILE_TYPE,                    //!< File type mismatch
+	CC_FERR_WRITING,                            //!< Error writing file
+	CC_FERR_READING,                            //!< Error reading file
+	CC_FERR_NO_SAVE,                            //!< Cannot save (e.g., no data)
+	CC_FERR_NO_LOAD,                            //!< Cannot load (e.g., empty file)
+	CC_FERR_BAD_ENTITY_TYPE,                    //!< Entity type not supported
+	CC_FERR_CANCELED_BY_USER,                   //!< User cancelled operation
+	CC_FERR_NOT_ENOUGH_MEMORY,                  //!< Out of memory
+	CC_FERR_MALFORMED_FILE,                     //!< File format error
+	CC_FERR_CONSOLE_ERROR,                      //!< Console error occurred
+	CC_FERR_BROKEN_DEPENDENCY_ERROR,            //!< Missing dependency
 	CC_FERR_FILE_WAS_WRITTEN_BY_UNKNOWN_PLUGIN, //!< File from unknown source
-	CC_FERR_THIRD_PARTY_LIB_FAILURE,        //!< Third-party library error
-	CC_FERR_THIRD_PARTY_LIB_EXCEPTION,     //!< Third-party library exception
-	CC_FERR_NOT_IMPLEMENTED,                //!< Feature not implemented
-	CC_FERR_INTERNAL                        //!< Internal error
+	CC_FERR_THIRD_PARTY_LIB_FAILURE,            //!< Third-party library error
+	CC_FERR_THIRD_PARTY_LIB_EXCEPTION,          //!< Third-party library exception
+	CC_FERR_NOT_IMPLEMENTED,                    //!< Feature not implemented
+	CC_FERR_INTERNAL                            //!< Internal error
 };
 
 /**
@@ -179,8 +179,8 @@ class FileIOFilter
 	    \param parameters generic loading parameters
 	    \return error
 	**/
-	virtual CC_FILE_ERROR loadFile(const QString&  filename,
-	                               ccHObject&      container,
+	virtual CC_FILE_ERROR loadFile(const QString& filename,
+	                               ccHObject& container,
 	                               LoadParameters& parameters)
 	{
 		Q_UNUSED(filename);
@@ -197,8 +197,8 @@ class FileIOFilter
 	    \param parameters generic saving parameters
 	    \return error
 	**/
-	virtual CC_FILE_ERROR saveToFile(ccHObject*            entity,
-	                                 const QString&        filename,
+	virtual CC_FILE_ERROR saveToFile(ccHObject* entity,
+	                                 const QString& filename,
 	                                 const SaveParameters& parameters)
 	{
 		Q_UNUSED(entity);
@@ -236,10 +236,10 @@ class FileIOFilter
 	    \param[out] result file error code
 	    \return loaded entities (or 0 if an error occurred)
 	**/
-	QCC_IO_LIB_API static ccHObject* LoadFromFile(const QString&  filename,
+	QCC_IO_LIB_API static ccHObject* LoadFromFile(const QString& filename,
 	                                              LoadParameters& parameters,
-	                                              Shared          filter,
-	                                              CC_FILE_ERROR&  result);
+	                                              Shared filter,
+	                                              CC_FILE_ERROR& result);
 
 	//! Loads one or more entities from a file with known type
 	/** Shortcut to the other version of FileIOFilter::LoadFromFile
@@ -249,10 +249,10 @@ class FileIOFilter
 	    \param fileFilter input filter 'file filter' (if empty, the best I/O filter will be guessed from the file extension)
 	    \return loaded entities (or 0 if an error occurred)
 	**/
-	QCC_IO_LIB_API static ccHObject* LoadFromFile(const QString&  filename,
+	QCC_IO_LIB_API static ccHObject* LoadFromFile(const QString& filename,
 	                                              LoadParameters& parameters,
-	                                              CC_FILE_ERROR&  result,
-	                                              const QString&  fileFilter = QString());
+	                                              CC_FILE_ERROR& result,
+	                                              const QString& fileFilter = QString());
 
 	//! Saves an entity (or a group of) to a specific file thanks to a given filter
 	/** Shortcut to FileIOFilter::saveFile
@@ -262,10 +262,10 @@ class FileIOFilter
 	    \param filter output filter
 	    \return error type (if any)
 	**/
-	QCC_IO_LIB_API static CC_FILE_ERROR SaveToFile(ccHObject*            entities,
-	                                               const QString&        filename,
+	QCC_IO_LIB_API static CC_FILE_ERROR SaveToFile(ccHObject* entities,
+	                                               const QString& filename,
 	                                               const SaveParameters& parameters,
-	                                               Shared                filter);
+	                                               Shared filter);
 
 	//! Saves an entity (or a group of) to a specific file thanks to a given filter
 	/** Shortcut to the other version of FileIOFilter::SaveToFile
@@ -275,10 +275,10 @@ class FileIOFilter
 	    \param fileFilter output filter 'file filter'
 	    \return error type (if any)
 	**/
-	QCC_IO_LIB_API static CC_FILE_ERROR SaveToFile(ccHObject*            entities,
-	                                               const QString&        filename,
+	QCC_IO_LIB_API static CC_FILE_ERROR SaveToFile(ccHObject* entities,
+	                                               const QString& filename,
 	                                               const SaveParameters& parameters,
-	                                               const QString&        fileFilter);
+	                                               const QString& fileFilter);
 
 	//! Shortcut to the ccGlobalShiftManager mechanism specific for files
 	/** \param[in] P sample point (typically the first loaded)
@@ -289,17 +289,17 @@ class FileIOFilter
 	    \return whether global shift has been defined/enabled
 	**/
 	QCC_IO_LIB_API static bool HandleGlobalShift(const CCVector3d& P,
-	                                             CCVector3d&       Pshift,
-	                                             bool&             preserveCoordinateShift,
-	                                             LoadParameters&   loadParameters,
-	                                             bool              useInputCoordinatesShiftIfPossible = false);
+	                                             CCVector3d& Pshift,
+	                                             bool& preserveCoordinateShift,
+	                                             LoadParameters& loadParameters,
+	                                             bool useInputCoordinatesShiftIfPossible = false);
 
 	//! Displays (to console) the message corresponding to a given error code
 	/** \param err error code
 	    \param action "saving", "reading", etc.
 	    \param filename corresponding file
 	**/
-	QCC_IO_LIB_API static void DisplayErrorMessage(CC_FILE_ERROR  err,
+	QCC_IO_LIB_API static void DisplayErrorMessage(CC_FILE_ERROR err,
 	                                               const QString& action,
 	                                               const QString& filename);
 

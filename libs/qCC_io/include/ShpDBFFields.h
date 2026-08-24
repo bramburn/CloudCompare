@@ -72,10 +72,10 @@ class QCC_IO_LIB_API GenericDBFField
 	}
 
 	// to be reimplemented by siblings
-	virtual DBFFieldType type() const    = 0;
-	virtual int          width() const   = 0;
-	virtual int          decimal() const = 0;
-	virtual bool         save(DBFHandle handle, int fieldIndex) const
+	virtual DBFFieldType type() const = 0;
+	virtual int width() const = 0;
+	virtual int decimal() const = 0;
+	virtual bool save(DBFHandle handle, int fieldIndex) const
 	{
 		return false;
 	} // 1D version

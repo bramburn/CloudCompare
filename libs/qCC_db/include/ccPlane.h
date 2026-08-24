@@ -79,8 +79,8 @@ class QCC_DB_LIB_API ccPlane : public ccGenericPrimitive
 	 */
 	ccPlane(PointCoordinateType xWidth,
 	        PointCoordinateType yWidth,
-	        const ccGLMatrix*   transMat = nullptr,
-	        QString             name     = QString("Plane"));
+	        const ccGLMatrix* transMat = nullptr,
+	        QString name = QString("Plane"));
 
 	/**
 	 * @brief Simplified constructor for ccHObject factory
@@ -234,10 +234,10 @@ class QCC_DB_LIB_API ccPlane : public ccGenericPrimitive
 	void drawMeOnly(CC_DRAW_CONTEXT& context) override;
 
 	// ccGenericPrimitive
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	bool  buildUp() override;
+	bool buildUp() override;
 
 	//! Width along local X axis
 	PointCoordinateType m_xWidth;

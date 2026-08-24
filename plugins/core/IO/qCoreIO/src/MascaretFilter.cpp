@@ -83,7 +83,7 @@ bool MascaretFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive
 {
 	if (type == CC_TYPES::POLY_LINE)
 	{
-		multiple  = true;
+		multiple = true;
 		exclusive = true;
 		return true;
 	}
@@ -199,7 +199,7 @@ CC_FILE_ERROR MascaretFilter::saveToFile(ccHObject* entity, const QString& filen
 	{
 		for (size_t i = 0; i < profiles.size() - 1; ++i)
 		{
-			size_t smallestIndex    = i;
+			size_t smallestIndex = i;
 			double smallestAbscissa = profiles[i]->getMetaData(ccPolyline::MetaKeyAbscissa()).toDouble();
 			for (size_t j = i + 1; j < profiles.size(); ++j)
 			{
@@ -207,7 +207,7 @@ CC_FILE_ERROR MascaretFilter::saveToFile(ccHObject* entity, const QString& filen
 				if (a < smallestAbscissa)
 				{
 					smallestAbscissa = a;
-					smallestIndex    = j;
+					smallestIndex = j;
 				}
 			}
 
@@ -223,8 +223,8 @@ CC_FILE_ERROR MascaretFilter::saveToFile(ccHObject* entity, const QString& filen
 	// for each profile
 	for (size_t i = 0; i < profiles.size(); ++i)
 	{
-		ccPolyline* poly      = profiles[i];
-		unsigned    vertCount = poly ? poly->size() : 0;
+		ccPolyline* poly = profiles[i];
+		unsigned vertCount = poly ? poly->size() : 0;
 		if (vertCount < 2)
 		{
 			// invalid size
@@ -234,9 +234,9 @@ CC_FILE_ERROR MascaretFilter::saveToFile(ccHObject* entity, const QString& filen
 		}
 
 		// decode meta-data
-		bool       ok    = true;
-		int        upDir = 2;
-		double     absc  = 0.0;
+		bool ok = true;
+		int upDir = 2;
+		double absc = 0.0;
 		CCVector3d Cd(0, 0, 0);
 		CCVector3d Ud(0, 0, 0);
 		while (true) // fake loop for easy break
@@ -272,7 +272,7 @@ CC_FILE_ERROR MascaretFilter::saveToFile(ccHObject* entity, const QString& filen
 		}
 
 		QString profileName = poly->getName();
-		profileName         = MakeMascaretName(profileName);
+		profileName = MakeMascaretName(profileName);
 
 		CCVector3 C = Cd.toPC();
 		CCVector3 U = Ud.toPC();
@@ -287,15 +287,15 @@ CC_FILE_ERROR MascaretFilter::saveToFile(ccHObject* entity, const QString& filen
 		// for "geo"-mascaret, we add some more information:
 		//  - first point
 		{
-			const CCVector3* firstP  = poly->getPoint(0);
-			CCVector3d       firstPg = poly->toGlobal3d(*firstP);
+			const CCVector3* firstP = poly->getPoint(0);
+			CCVector3d firstPg = poly->toGlobal3d(*firstP);
 			outFile << " ";
 			outFile << firstPg.u[xDir] << " " << firstPg.u[yDir];
 		}
 		// - last point
 		{
-			const CCVector3* lastP  = poly->getPoint(vertCount - 1);
-			CCVector3d       lastPg = poly->toGlobal3d(*lastP);
+			const CCVector3* lastP = poly->getPoint(vertCount - 1);
+			CCVector3d lastPg = poly->toGlobal3d(*lastP);
 			outFile << " ";
 			outFile << lastPg.u[xDir] << " " << lastPg.u[yDir];
 		}

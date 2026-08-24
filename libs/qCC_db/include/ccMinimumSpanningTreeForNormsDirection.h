@@ -47,8 +47,8 @@ class ccMinimumSpanningTreeForNormsDirection
 	 * @param[in] progressDlg Progress dialog
 	 * @return Success
 	 */
-	static bool OrientNormals(ccPointCloud*     cloud,
-	                          unsigned          kNN         = 6,
+	static bool OrientNormals(ccPointCloud* cloud,
+	                          unsigned kNN = 6,
 	                          ccProgressDialog* progressDlg = nullptr);
 };
 

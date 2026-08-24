@@ -71,13 +71,13 @@ class QCC_DB_LIB_API ccQuadric : public ccGenericPrimitive
 	 * @param[in] name Quadric name
 	 * @param[in] precision Drawing precision
 	 */
-	ccQuadric(CCVector2                      minCorner,
-	          CCVector2                      maxCorner,
-	          const PointCoordinateType      eq[6],
+	ccQuadric(CCVector2 minCorner,
+	          CCVector2 maxCorner,
+	          const PointCoordinateType eq[6],
 	          const CCCoreLib::SquareMatrix* toLocalOrientation = nullptr,
-	          const ccGLMatrix*              transMat           = nullptr,
-	          QString                        name               = QString("Quadric"),
-	          unsigned                       precision          = DEFAULT_DRAWING_PRECISION);
+	          const ccGLMatrix* transMat = nullptr,
+	          QString name = QString("Quadric"),
+	          unsigned precision = DEFAULT_DRAWING_PRECISION);
 
 	//! Simplified constructor
 	/** For ccHObject factory only!
@@ -147,10 +147,10 @@ class QCC_DB_LIB_API ccQuadric : public ccGenericPrimitive
 
   protected:
 	// inherited from ccGenericPrimitive
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	bool  buildUp() override;
+	bool buildUp() override;
 
 	//! Min corner
 	CCVector2 m_minCorner;

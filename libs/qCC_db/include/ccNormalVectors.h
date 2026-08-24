@@ -112,20 +112,20 @@ class QCC_DB_LIB_API ccNormalVectors
 	enum Orientation
 	{
 
-		PLUS_X              = 0,  //!< N.x always positive
-		MINUS_X             = 1,  //!< N.x always negative
-		PLUS_Y              = 2,  //!< N.y always positive
-		MINUS_Y             = 3,  //!< N.y always negative
-		PLUS_Z              = 4,  //!< N.z always positive
-		MINUS_Z             = 5,  //!< N.z always negative
-		PLUS_BARYCENTER     = 6,  //!< Normals always opposite to the cloud barycenter
-		MINUS_BARYCENTER    = 7,  //!< Normals always towards the cloud barycenter
-		PLUS_ORIGIN         = 8,  //!< Normals always opposite to the origin
-		MINUS_ORIGIN        = 9,  //!< Normals always towards the origin
-		PREVIOUS            = 10, //!< Re-use previous normal (if any)
-		PLUS_SENSOR_ORIGIN  = 11, //!< Normals opposite to the associated sensor origin (if any, and if multiple, the first one will be used)
+		PLUS_X = 0,               //!< N.x always positive
+		MINUS_X = 1,              //!< N.x always negative
+		PLUS_Y = 2,               //!< N.y always positive
+		MINUS_Y = 3,              //!< N.y always negative
+		PLUS_Z = 4,               //!< N.z always positive
+		MINUS_Z = 5,              //!< N.z always negative
+		PLUS_BARYCENTER = 6,      //!< Normals always opposite to the cloud barycenter
+		MINUS_BARYCENTER = 7,     //!< Normals always towards the cloud barycenter
+		PLUS_ORIGIN = 8,          //!< Normals always opposite to the origin
+		MINUS_ORIGIN = 9,         //!< Normals always towards the origin
+		PREVIOUS = 10,            //!< Re-use previous normal (if any)
+		PLUS_SENSOR_ORIGIN = 11,  //!< Normals opposite to the associated sensor origin (if any, and if multiple, the first one will be used)
 		MINUS_SENSOR_ORIGIN = 12, //!< Normals towards the associated sensor origin (if any, and if multiple, the first one will be used)
-		UNDEFINED           = 255 //!< Undefined (no orientation is required)
+		UNDEFINED = 255           //!< Undefined (no orientation is required)
 	};
 
 	//! Computes normal at each point of a given cloud
@@ -138,13 +138,13 @@ class QCC_DB_LIB_API ccNormalVectors
 	    \param inputOctree inputOctree input cloud octree (optional).
 	    \return success
 	**/
-	static bool ComputeCloudNormals(ccGenericPointCloud*                cloud,
-	                                NormsIndexesTableType&              theNormsCodes,
-	                                CCCoreLib::LOCAL_MODEL_TYPES        localModel,
-	                                PointCoordinateType                 localRadius,
-	                                Orientation                         preferredOrientation = UNDEFINED,
-	                                CCCoreLib::GenericProgressCallback* progressCb           = nullptr,
-	                                CCCoreLib::DgmOctree*               inputOctree          = nullptr);
+	static bool ComputeCloudNormals(ccGenericPointCloud* cloud,
+	                                NormsIndexesTableType& theNormsCodes,
+	                                CCCoreLib::LOCAL_MODEL_TYPES localModel,
+	                                PointCoordinateType localRadius,
+	                                Orientation preferredOrientation = UNDEFINED,
+	                                CCCoreLib::GenericProgressCallback* progressCb = nullptr,
+	                                CCCoreLib::DgmOctree* inputOctree = nullptr);
 
 	//! Updates normals orientation based on a preferred orientation
 	/** \param theCloud point cloud on which to process the normals.
@@ -152,9 +152,9 @@ class QCC_DB_LIB_API ccNormalVectors
 	    \param preferredOrientation specifies a preferred orientation for normals
 	    \return success
 	**/
-	static bool UpdateNormalOrientations(ccGenericPointCloud*   theCloud,
+	static bool UpdateNormalOrientations(ccGenericPointCloud* theCloud,
 	                                     NormsIndexesTableType& theNormsCodes,
-	                                     Orientation            preferredOrientation);
+	                                     Orientation preferredOrientation);
 
 	//! Converts a normal vector to geological 'strike & dip' parameters (N[dip]°E - [strike]°)
 	/** \param[in] N normal (should be normalized!)

@@ -185,9 +185,9 @@ class QCC_DB_LIB_API ccHObjectCaster
 
 	    \return success
 	**/
-	static bool CloneChildren(const ccHObject*  sourceEntity,
-	                          ccHObject*        destEntity,
+	static bool CloneChildren(const ccHObject* sourceEntity,
+	                          ccHObject* destEntity,
 	                          std::vector<int>* newPointOrTriangleIndex = nullptr,
-	                          const ccHObject*  sourceEntityProxy       = nullptr,
-	                          ccHObject*        destEntityProxy         = nullptr);
+	                          const ccHObject* sourceEntityProxy = nullptr,
+	                          ccHObject* destEntityProxy = nullptr);
 };

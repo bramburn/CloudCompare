@@ -39,8 +39,9 @@
  */
 
 #include "ccOptions.h"
-#include <ccGuiParameters.h>
+
 #include <QDialog>
+#include <ccGuiParameters.h>
 
 namespace Ui
 {

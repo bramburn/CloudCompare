@@ -53,7 +53,7 @@ class ccUnrollDlg : public QDialog
 	 * @param[in] parent Parent widget
 	 */
 	explicit ccUnrollDlg(ccHObject* dbRootEntity, QWidget* parent = nullptr);
-	
+
 	/// Destructor
 	~ccUnrollDlg() override;
 
@@ -105,5 +105,5 @@ class ccUnrollDlg : public QDialog
 
   protected:
 	Ui::UnrollDialog* m_ui;
-	ccHObject*        m_dbRootEntity;
+	ccHObject* m_dbRootEntity;
 };

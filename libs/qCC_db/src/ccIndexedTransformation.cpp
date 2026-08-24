@@ -119,7 +119,7 @@ ccIndexedTransformation ccIndexedTransformation::operator*(const ccGLMatrix& M) 
 ccIndexedTransformation& ccIndexedTransformation::operator*=(const ccGLMatrix& M)
 {
 	ccGLMatrix temp = (*this) * M;
-	(*this)         = temp;
+	(*this) = temp;
 
 	return (*this);
 }
@@ -167,7 +167,7 @@ ccIndexedTransformation ccIndexedTransformation::inverse() const
 	return t;
 }
 
-ccIndexedTransformation ccIndexedTransformation::Interpolate(double                         index,
+ccIndexedTransformation ccIndexedTransformation::Interpolate(double index,
                                                              const ccIndexedTransformation& trans1,
                                                              const ccIndexedTransformation& trans2)
 {

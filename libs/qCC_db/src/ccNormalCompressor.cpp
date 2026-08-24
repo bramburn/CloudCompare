@@ -63,7 +63,7 @@ unsigned ccNormalCompressor::Compress(const PointCoordinateType n[3])
 	assert(QUANTIZE_LEVEL != 0);
 
 	/// compute in which sector lie the elements
-	unsigned            res = 0;
+	unsigned res = 0;
 	PointCoordinateType x;
 	PointCoordinateType y;
 	PointCoordinateType z;
@@ -152,7 +152,7 @@ unsigned ccNormalCompressor::Compress(const PointCoordinateType n[3])
 				if (sector != 3)
 				{
 					box[3 + sector] = box[sector];
-					box[sector]     = psnorm;
+					box[sector] = psnorm;
 				}
 				else
 				{
@@ -168,7 +168,7 @@ unsigned ccNormalCompressor::Compress(const PointCoordinateType n[3])
 				box[5] = halfBox[2];
 				if (sector != 3)
 				{
-					box[sector]     = box[3 + sector];
+					box[sector] = box[3 + sector];
 					box[3 + sector] = psnorm;
 				}
 				else
@@ -195,7 +195,7 @@ void ccNormalCompressor::Decompress(unsigned index, PointCoordinateType n[3], un
 
 	/// recompute the box in the sector...
 	PointCoordinateType box[6] = {0, 0, 0, 1, 1, 1};
-	bool                flip   = false;
+	bool flip = false;
 
 	unsigned char l_shift = level * 2;
 	for (unsigned char k = 0; k < level; ++k)
@@ -205,13 +205,13 @@ void ccNormalCompressor::Decompress(unsigned index, PointCoordinateType n[3], un
 		if (flip)
 		{
 			const PointCoordinateType tmp = box[sector];
-			box[0]                        = (box[0] + box[3]) / 2;
-			box[1]                        = (box[1] + box[4]) / 2;
-			box[2]                        = (box[2] + box[5]) / 2;
+			box[0] = (box[0] + box[3]) / 2;
+			box[1] = (box[1] + box[4]) / 2;
+			box[2] = (box[2] + box[5]) / 2;
 			if (sector != 3)
 			{
 				box[3 + sector] = box[sector];
-				box[sector]     = tmp;
+				box[sector] = tmp;
 			}
 			else
 			{
@@ -228,7 +228,7 @@ void ccNormalCompressor::Decompress(unsigned index, PointCoordinateType n[3], un
 
 			if (sector != 3)
 			{
-				box[sector]     = box[3 + sector];
+				box[sector] = box[3 + sector];
 				box[3 + sector] = tmp;
 			}
 			else

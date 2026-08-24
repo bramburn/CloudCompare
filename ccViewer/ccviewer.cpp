@@ -373,7 +373,7 @@ void ccViewer::selectEntity(ccHObject* toSelect)
 		}
 
 		ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(toSelect);
-		bool          hasSF = (cloud ? cloud->hasScalarFields() : false);
+		bool hasSF = (cloud ? cloud->hasScalarFields() : false);
 		ui.actionShowScalarField->setEnabled(hasSF);
 		ui.actionShowScalarField->setChecked(toSelect->sfShown());
 		ui.actionShowColorRamp->setEnabled(hasSF);
@@ -424,7 +424,7 @@ bool ccViewer::checkForLoadedEntities()
 	if (m_glWindow->getDisplayParameters().displayCross != loadedEntities)
 	{
 		ccGui::ParamStruct params = m_glWindow->getDisplayParameters();
-		params.displayCross       = loadedEntities;
+		params.displayCross = loadedEntities;
 		m_glWindow->setDisplayParameters(params);
 	}
 
@@ -443,9 +443,9 @@ void ccViewer::updateGLFrameGradient()
 	// display parameters
 	static const ccColor::Rgbub s_black(0, 0, 0);
 	static const ccColor::Rgbub s_white(255, 255, 255);
-	bool                        stereoModeEnabled = m_glWindow->stereoModeIsEnabled();
-	const ccColor::Rgbub&       bkgCol            = stereoModeEnabled ? s_black : m_glWindow->getDisplayParameters().backgroundCol;
-	const ccColor::Rgbub&       forCol            = stereoModeEnabled ? s_white : m_glWindow->getDisplayParameters().pointsDefaultCol;
+	bool stereoModeEnabled = m_glWindow->stereoModeIsEnabled();
+	const ccColor::Rgbub& bkgCol = stereoModeEnabled ? s_black : m_glWindow->getDisplayParameters().backgroundCol;
+	const ccColor::Rgbub& forCol = stereoModeEnabled ? s_white : m_glWindow->getDisplayParameters().pointsDefaultCol;
 
 	QString styleSheet = QString("QFrame#GLframe{border: 2px solid white; border-radius: 10px; background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 rgb(%1,%2,%3), stop:1 rgb(%4,%5,%6));}")
 	                         .arg(bkgCol.r)
@@ -474,8 +474,8 @@ ccHObject* ccViewer::addToDB(QStringList filenames)
 
 	FileIOFilter::LoadParameters parameters;
 	parameters.alwaysDisplayLoadDialog = false;
-	parameters.shiftHandlingMode       = ccGlobalShiftManager::NO_DIALOG_AUTO_SHIFT;
-	parameters.parentWidget            = this;
+	parameters.shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG_AUTO_SHIFT;
+	parameters.parentWidget = this;
 
 	const ccOptions& options = ccOptions::Instance();
 	FileIOFilter::ResetSesionCounter();
@@ -484,8 +484,8 @@ ccHObject* ccViewer::addToDB(QStringList filenames)
 
 	for (int i = 0; i < filenames.size(); ++i)
 	{
-		CC_FILE_ERROR result   = CC_FERR_NO_ERROR;
-		ccHObject*    newGroup = FileIOFilter::LoadFromFile(filenames[i], parameters, result);
+		CC_FILE_ERROR result = CC_FERR_NO_ERROR;
+		ccHObject* newGroup = FileIOFilter::LoadFromFile(filenames[i], parameters, result);
 
 		if (newGroup)
 		{
@@ -527,7 +527,7 @@ ccHObject* ccViewer::addToDB(QStringList filenames)
 						{
 							mesh->showSF(true);
 							scaleAlreadyDisplayed = true;
-							ccPointCloud* pc      = static_cast<ccPointCloud*>(mesh->getAssociatedCloud());
+							ccPointCloud* pc = static_cast<ccPointCloud*>(mesh->getAssociatedCloud());
 							pc->showSFColorsScale(true);
 						}
 					}
@@ -553,10 +553,10 @@ ccHObject* ccViewer::addToDB(QStringList filenames)
 }
 
 void ccViewer::addToDB(ccHObject* entity,
-                       bool       updateZoom /*=false*/,
-                       bool       autoExpandDBTree /*=true*/,
-                       bool       checkDimensions /*=false*/,
-                       bool       autoRedraw /*=true*/)
+                       bool updateZoom /*=false*/,
+                       bool autoExpandDBTree /*=true*/,
+                       bool checkDimensions /*=false*/,
+                       bool autoRedraw /*=true*/)
 {
 	assert(entity && m_glWindow);
 
@@ -634,7 +634,7 @@ void ccViewer::reflectPerspectiveState()
 	if (m_glWindow == nullptr)
 		return;
 
-	bool objectCentered     = false;
+	bool objectCentered = false;
 	bool perspectiveEnabled = m_glWindow->getPerspectiveState(objectCentered);
 
 	ui.actionSetOrthoView->setChecked(!perspectiveEnabled);
@@ -880,7 +880,7 @@ void ccViewer::toggleRotationAboutVertAxis()
 		return;
 
 	bool wasLocked = m_glWindow->isRotationAxisLocked();
-	bool isLocked  = !wasLocked;
+	bool isLocked = !wasLocked;
 
 	m_glWindow->lockRotationAxis(isLocked, CCVector3d(0.0, 0.0, 1.0));
 
@@ -1217,10 +1217,10 @@ void ccViewer::on3DMouseKeyDown(int key)
 	{
 		if (m_glWindow)
 		{
-			CCVector3d  axis(0, 0, -1);
-			CCVector3d  trans(0, 0, 0);
+			CCVector3d axis(0, 0, -1);
+			CCVector3d trans(0, 0, 0);
 			ccGLMatrixd mat;
-			double      angle = M_PI / 2;
+			double angle = M_PI / 2;
 			if (key == Mouse3DInput::V3DK_CCW)
 				angle = -angle;
 			mat.initFromParameters(angle, axis, trans);
@@ -1289,10 +1289,10 @@ void ccViewer::on3DMouseCMDKeyDown(int cmd)
 	{
 		if (m_glWindow)
 		{
-			CCVector3d  axis(0, 0, -1);
-			CCVector3d  trans(0, 0, 0);
+			CCVector3d axis(0, 0, -1);
+			CCVector3d trans(0, 0, 0);
 			ccGLMatrixd mat;
-			double      angle = M_PI / 2;
+			double angle = M_PI / 2;
 			if (cmd == Mouse3DInput::V3DCMD_VIEW_ROLLCCW)
 				angle = -angle;
 			mat.initFromParameters(angle, axis, trans);
@@ -1306,10 +1306,10 @@ void ccViewer::on3DMouseCMDKeyDown(int cmd)
 	{
 		if (m_glWindow)
 		{
-			CCVector3d  axis(0, 1, 0);
-			CCVector3d  trans(0, 0, 0);
+			CCVector3d axis(0, 1, 0);
+			CCVector3d trans(0, 0, 0);
 			ccGLMatrixd mat;
-			double      angle = M_PI / 2;
+			double angle = M_PI / 2;
 			if (cmd == Mouse3DInput::V3DCMD_VIEW_SPINCCW)
 				angle = -angle;
 			mat.initFromParameters(angle, axis, trans);
@@ -1322,10 +1322,10 @@ void ccViewer::on3DMouseCMDKeyDown(int cmd)
 	{
 		if (m_glWindow)
 		{
-			CCVector3d  axis(1, 0, 0);
-			CCVector3d  trans(0, 0, 0);
+			CCVector3d axis(1, 0, 0);
+			CCVector3d trans(0, 0, 0);
 			ccGLMatrixd mat;
-			double      angle = M_PI / 2;
+			double angle = M_PI / 2;
 			if (cmd == Mouse3DInput::V3DCMD_VIEW_TILTCCW)
 				angle = -angle;
 			mat.initFromParameters(angle, axis, trans);
@@ -1486,8 +1486,8 @@ void ccViewer::selectNextSF(int deltaPos)
 	int sfIdx = cloud->getCurrentDisplayedScalarFieldIndex();
 	{
 		int newSFIndex = sfIdx + deltaPos;
-		newSFIndex     = std::max(0, newSFIndex);
-		newSFIndex     = std::min(static_cast<int>(cloud->getNumberOfScalarFields()) - 1, newSFIndex);
+		newSFIndex = std::max(0, newSFIndex);
+		newSFIndex = std::min(static_cast<int>(cloud->getNumberOfScalarFields()) - 1, newSFIndex);
 		if (newSFIndex != sfIdx)
 		{
 			QAction* newAction = FindAction(ui.menuSelectSF->actions(), QString::fromStdString(cloud->getScalarFieldName(newSFIndex)));

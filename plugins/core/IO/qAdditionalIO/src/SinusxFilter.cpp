@@ -61,7 +61,7 @@ bool SinusxFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) 
 {
 	if (type == CC_TYPES::POLY_LINE)
 	{
-		multiple  = true;
+		multiple = true;
 		exclusive = true;
 		return true;
 	}
@@ -109,7 +109,7 @@ CC_FILE_ERROR SinusxFilter::saveToFile(ccHObject* entity, const QString& filenam
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
 		return CC_FERR_WRITING;
 
-	QTextStream      outFile(&file);
+	QTextStream outFile(&file);
 	static const int s_precision = 12;
 	outFile.setRealNumberNotation(QTextStream::FixedNotation);
 	outFile.setRealNumberPrecision(s_precision);
@@ -122,8 +122,8 @@ CC_FILE_ERROR SinusxFilter::saveToFile(ccHObject* entity, const QString& filenam
 	// for each profile
 	for (size_t i = 0; i < profiles.size(); ++i)
 	{
-		ccPolyline* poly      = profiles[i];
-		unsigned    vertCount = poly ? poly->size() : 0;
+		ccPolyline* poly = profiles[i];
+		unsigned vertCount = poly ? poly->size() : 0;
 		if (vertCount < 2)
 		{
 			// invalid size
@@ -151,8 +151,8 @@ CC_FILE_ERROR SinusxFilter::saveToFile(ccHObject* entity, const QString& filenam
 
 		for (unsigned j = 0; j < vertCount; ++j)
 		{
-			const CCVector3* P  = poly->getPoint(j);
-			CCVector3d       Pg = poly->toGlobal3d(*P);
+			const CCVector3* P = poly->getPoint(j);
+			CCVector3d Pg = poly->toGlobal3d(*P);
 
 			for (unsigned k = 0; k < 3; ++k)
 			{
@@ -190,15 +190,15 @@ CC_FILE_ERROR SinusxFilter::loadFile(const QString& filename, ccHObject& contain
 		return CC_FERR_READING;
 	QTextStream stream(&file);
 
-	QString       currentLine("C");
-	ccPolyline*   currentPoly     = nullptr;
+	QString currentLine("C");
+	ccPolyline* currentPoly = nullptr;
 	ccPointCloud* currentVertices = nullptr;
-	unsigned      lineNumber      = 0;
-	CurveType     curveType       = INVALID;
-	unsigned      cpIndex         = 0;
-	CC_FILE_ERROR result          = CC_FERR_NO_ERROR;
-	CCVector3d    Pshift(0, 0, 0);
-	bool          firstVertex = true;
+	unsigned lineNumber = 0;
+	CurveType curveType = INVALID;
+	unsigned cpIndex = 0;
+	CC_FILE_ERROR result = CC_FERR_NO_ERROR;
+	CCVector3d Pshift(0, 0, 0);
+	bool firstVertex = true;
 
 	while (!currentLine.isEmpty() && file.error() == QFile::NoError)
 	{
@@ -226,7 +226,7 @@ CC_FILE_ERROR SinusxFilter::loadFile(const QString& filename, ccHObject& contain
 				{
 					delete currentPoly;
 				}
-				currentPoly     = nullptr;
+				currentPoly = nullptr;
 				currentVertices = nullptr;
 			}
 			// read type
@@ -238,7 +238,7 @@ CC_FILE_ERROR SinusxFilter::loadFile(const QString& filename, ccHObject& contain
 				continue;
 			}
 			QChar curveTypeChar = tokens[1].at(0);
-			curveType           = INVALID;
+			curveType = INVALID;
 			if (curveTypeChar == SHORTCUT[CUREV_S])
 				curveType = CUREV_S;
 			else if (curveTypeChar == SHORTCUT[CURVE_P])
@@ -262,7 +262,7 @@ CC_FILE_ERROR SinusxFilter::loadFile(const QString& filename, ccHObject& contain
 
 			// block is ready
 			currentVertices = new ccPointCloud("vertices");
-			currentPoly     = new ccPolyline(currentVertices);
+			currentPoly = new ccPolyline(currentVertices);
 			currentPoly->addChild(currentVertices);
 			currentVertices->setEnabled(false);
 			cpIndex = 0;
@@ -289,11 +289,11 @@ CC_FILE_ERROR SinusxFilter::loadFile(const QString& filename, ccHObject& contain
 					bool ok = (tokens.size() == 3);
 					if (ok)
 					{
-						bool ok1         = true;
-						bool ok2         = true;
-						int  isConnected = tokens[1].toInt(&ok1);
-						int  isClosed    = tokens[2].toInt(&ok2);
-						ok               = ok1 && ok2;
+						bool ok1 = true;
+						bool ok2 = true;
+						int isConnected = tokens[1].toInt(&ok1);
+						int isClosed = tokens[2].toInt(&ok2);
+						ok = ok1 && ok2;
 						if (ok)
 						{
 							if (isConnected == 0)
@@ -377,7 +377,7 @@ CC_FILE_ERROR SinusxFilter::loadFile(const QString& filename, ccHObject& contain
 					bool ok = (tokens.size() == 2);
 					if (ok)
 					{
-						int   vertDir       = 2;
+						int vertDir = 2;
 						QChar basePlaneChar = tokens[1].at(0);
 						if (basePlaneChar == '0')
 							vertDir = 2;
@@ -411,7 +411,7 @@ CC_FILE_ERROR SinusxFilter::loadFile(const QString& filename, ccHObject& contain
 
 				// shoud be a point!
 				QStringList tokens = currentLine.simplified().split(QChar(' '), Qt::SkipEmptyParts);
-				bool        ok     = (tokens.size() == 4);
+				bool ok = (tokens.size() == 4);
 				if (ok)
 				{
 					CCVector3d Pd;
@@ -434,7 +434,7 @@ CC_FILE_ERROR SinusxFilter::loadFile(const QString& filename, ccHObject& contain
 								// first point: check for 'big' coordinates
 								if (firstVertex /*currentVertices->size() == 0*/)
 								{
-									firstVertex                  = false;
+									firstVertex = false;
 									bool preserveCoordinateShift = true;
 									if (HandleGlobalShift(Pd, Pshift, preserveCoordinateShift, parameters))
 									{

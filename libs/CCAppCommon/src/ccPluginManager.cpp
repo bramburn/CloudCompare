@@ -379,7 +379,7 @@ void ccPluginManager::loadFromPathsAndAddToList()
 				continue;
 			}
 
-			QObject*           plugin   = loader->instance();
+			QObject* plugin = loader->instance();
 			ccPluginInterface* ccPlugin = qobject_cast<ccPluginInterface*>(plugin);
 
 			if ((plugin == nullptr) || (ccPlugin == nullptr))

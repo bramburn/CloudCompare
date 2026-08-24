@@ -32,10 +32,8 @@
  * @see ccGLUtils.cpp
  */
 #include <QCoreApplication>
-
-#include <QTest>
 #include <QString>
-
+#include <QTest>
 #include <cmath>
 
 // Test pure trig math for view orientation computation.
@@ -46,14 +44,14 @@ class TestGLUtilsMath : public QObject
 {
 	Q_OBJECT
 
-private slots:
+  private slots:
 
 	void testViewMatrixTrigonometry()
 	{
 		// Test view direction normalisation
 		// A view direction should have unit length
 		double dx = 1.0, dy = 1.0, dz = 1.0;
-		double len = std::sqrt(dx*dx + dy*dy + dz*dz);
+		double len = std::sqrt(dx * dx + dy * dy + dz * dz);
 		QVERIFY(std::abs(len - std::sqrt(3.0)) < 1e-10);
 	}
 
@@ -68,15 +66,15 @@ private slots:
 		double view_x = 0.0, view_y = 0.0, view_z = 1.0;
 
 		// right · view = 0
-		double dot_right_view = right_x*view_x + right_y*view_y + right_z*view_z;
+		double dot_right_view = right_x * view_x + right_y * view_y + right_z * view_z;
 		QCOMPARE(dot_right_view, 0.0);
 
 		// up · view = 0
-		double dot_up_view = up_x*view_x + up_y*view_y + up_z*view_z;
+		double dot_up_view = up_x * view_x + up_y * view_y + up_z * view_z;
 		QCOMPARE(dot_up_view, 0.0);
 
 		// right · up = 0
-		double dot_right_up = right_x*up_x + right_y*up_y + right_z*up_z;
+		double dot_right_up = right_x * up_x + right_y * up_y + right_z * up_z;
 		QCOMPARE(dot_right_up, 0.0);
 	}
 
@@ -102,7 +100,7 @@ private slots:
 		double c = std::cos(theta);
 		double s = std::sin(theta);
 		// 2x2 det = c*c + s*s = 1 (trivially)
-		double det = c*c + s*s;
+		double det = c * c + s * s;
 		QCOMPARE(std::abs(det - 1.0), 0.0);
 	}
 
@@ -121,7 +119,7 @@ private slots:
 		// but we can verify the angle conversions are sensible
 		QVERIFY(rx >= 0.0 && rx < M_PI);
 		QVERIFY(ry >= 0.0 && ry < M_PI);
-		QVERIFY(rz >= 0.0 && rz < 2*M_PI);
+		QVERIFY(rz >= 0.0 && rz < 2 * M_PI);
 	}
 
 	void testDepthRangeConversion()

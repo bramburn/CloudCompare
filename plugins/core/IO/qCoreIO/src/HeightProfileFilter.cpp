@@ -53,7 +53,7 @@ bool HeightProfileFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& excl
 {
 	if (type == CC_TYPES::POLY_LINE)
 	{
-		multiple  = false;
+		multiple = false;
 		exclusive = true;
 		return true;
 	}
@@ -74,8 +74,8 @@ CC_FILE_ERROR HeightProfileFilter::saveToFile(ccHObject* entity, const QString& 
 	{
 		return CC_FERR_BAD_ENTITY_TYPE;
 	}
-	ccPolyline* poly      = static_cast<ccPolyline*>(entity);
-	unsigned    vertCount = poly->size();
+	ccPolyline* poly = static_cast<ccPolyline*>(entity);
+	unsigned vertCount = poly->size();
 	if (vertCount == 0)
 	{
 		// invalid size
@@ -96,7 +96,7 @@ CC_FILE_ERROR HeightProfileFilter::saveToFile(ccHObject* entity, const QString& 
 	outFile << "Curvilinear abscissa; Z" << Qt::endl;
 
 	// curvilinear abscissa
-	double           s     = 0;
+	double s = 0;
 	const CCVector3* lastP = nullptr;
 	for (unsigned j = 0; j < vertCount; ++j)
 	{

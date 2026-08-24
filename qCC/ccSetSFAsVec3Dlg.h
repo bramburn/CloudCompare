@@ -55,11 +55,11 @@ class ccSetSFsAsVec3Dialog : public QDialog
 	 * @param[in] parent Parent widget
 	 */
 	ccSetSFsAsVec3Dialog(const ccPointCloud* cloud,
-	                     const QString&      xLabel,
-	                     const QString&      yLabel,
-	                     const QString&      zLabel,
-	                     bool                allowUnchanged,
-	                     QWidget*            parent = nullptr);
+	                     const QString& xLabel,
+	                     const QString& yLabel,
+	                     const QString& zLabel,
+	                     bool allowUnchanged,
+	                     QWidget* parent = nullptr);
 
 	/// No SF index
 	static const int SF_INDEX_NO = -1;

@@ -112,7 +112,7 @@ void ccWaveWidget::clear()
 void ccWaveWidget::clearInternal()
 {
 	m_curveValues.resize(0);
-	m_dt   = 0;
+	m_dt = 0;
 	m_minA = m_maxA = 0;
 }
 
@@ -208,7 +208,7 @@ void ccWaveWidget::init(ccPointCloud* cloud, unsigned pointIndex, bool logScale,
 		m_maxA = logScale ? AbsLog(maxValue) : maxValue;
 	}
 
-	m_dt      = w.descriptor().samplingRate_ps;
+	m_dt = w.descriptor().samplingRate_ps;
 	m_echoPos = w.echoTime_ps();
 }
 
@@ -242,7 +242,7 @@ void ccWaveWidget::refresh()
 
 	// clear previous display
 	m_vertBar = nullptr;
-	m_curve   = nullptr;
+	m_curve = nullptr;
 	m_peakBar = nullptr;
 	this->clearGraphs();
 	this->clearPlottables();
@@ -288,7 +288,7 @@ void ccWaveWidget::refresh()
 
 		// horizontal position
 		int curvePos = static_cast<int>(curveSize * m_verticalIndicatorPositionPercent);
-		keyData[0]   = curvePos * m_dt;
+		keyData[0] = curvePos * m_dt;
 		valueData[0] = m_maxA;
 
 		m_vertBar->setData(keyData, valueData);
@@ -315,7 +315,7 @@ void ccWaveWidget::refresh()
 		QVector<double> valueData(1);
 
 		// horizontal position
-		keyData[0]   = m_echoPos;
+		keyData[0] = m_echoPos;
 		valueData[0] = m_maxA;
 
 		m_peakBar->setData(keyData, valueData);
@@ -370,7 +370,7 @@ void ccWaveWidget::mouseMoveEvent(QMouseEvent* event)
 			QRect roi = /*m_curve->*/ rect();
 			if (roi.contains(event->pos(), false))
 			{
-				m_drawVerticalIndicator            = true;
+				m_drawVerticalIndicator = true;
 				m_verticalIndicatorPositionPercent = static_cast<double>(event->x() - roi.x()) / roi.width();
 				refresh();
 			}
@@ -384,7 +384,7 @@ void ccWaveWidget::mouseMoveEvent(QMouseEvent* event)
 
 ccWaveDialog::ccWaveDialog(ccPointCloud* cloud,
                            ccPickingHub* pickingHub,
-                           QWidget*      parent /*=nullptr*/)
+                           QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::WindowMaximizeButtonHint | Qt::WindowCloseButtonHint)
     , m_cloud(cloud)
     , m_widget(new ccWaveWidget(this))
@@ -407,7 +407,7 @@ ccWaveDialog::ccWaveDialog(ccPointCloud* cloud,
 		m_gui->pointIndexSpinBox->setSuffix(QString(" / %1").arg(cloud->size() - 1));
 
 		// init m_waveMax
-		double           waveMin = 0;
+		double waveMin = 0;
 		ccProgressDialog pDlg(parent);
 		if (cloud->computeFWFAmplitude(waveMin, m_waveMax, &pDlg))
 		{
@@ -466,7 +466,7 @@ void ccWaveDialog::add2DLabel(ccPointCloud* cloud, unsigned pointIndex)
 	m_display->getGLCameraParameters(camera);
 
 	const CCVector3& P = *cloud->getPoint(pointIndex);
-	CCVector3d       Y;
+	CCVector3d Y;
 	camera.project(P, Y);
 	Y.y = m_display->getScreenSize().height() - Y.y;
 

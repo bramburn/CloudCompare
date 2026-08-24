@@ -62,14 +62,14 @@ class ccEnvelopeExtractor
 	    \return envelope polyline (or 0 if an error occurred)
 	**/
 	static ccPolyline* ExtractFlatEnvelope(CCCoreLib::GenericIndexedCloudPersist* points,
-	                                       bool                                   allowMultiPass,
-	                                       PointCoordinateType                    maxEdgeLength         = 0,
-	                                       const PointCoordinateType*             preferredNormDim      = nullptr,
-	                                       const PointCoordinateType*             preferredUpDir        = nullptr,
-	                                       EnvelopeType                           envelopeType          = FULL,
-	                                       std::vector<unsigned>*                 originalPointIndexes  = nullptr,
-	                                       bool                                   enableVisualDebugMode = false,
-	                                       double                                 maxAngleDeg           = 0.0);
+	                                       bool allowMultiPass,
+	                                       PointCoordinateType maxEdgeLength = 0,
+	                                       const PointCoordinateType* preferredNormDim = nullptr,
+	                                       const PointCoordinateType* preferredUpDir = nullptr,
+	                                       EnvelopeType envelopeType = FULL,
+	                                       std::vector<unsigned>* originalPointIndexes = nullptr,
+	                                       bool enableVisualDebugMode = false,
+	                                       double maxAngleDeg = 0.0);
 
 	//! Extracts one or several parts of the (2D) envelope polyline of a point cloud
 	/** Projects the cloud on its best fitting LS plane first.
@@ -86,14 +86,14 @@ class ccEnvelopeExtractor
 	    \return success
 	**/
 	static bool ExtractFlatEnvelope(CCCoreLib::GenericIndexedCloudPersist* points,
-	                                bool                                   allowMultiPass,
-	                                PointCoordinateType                    maxEdgeLength,
-	                                std::vector<ccPolyline*>&              parts,
-	                                EnvelopeType                           envelopeType          = FULL,
-	                                bool                                   allowSplitting        = true,
-	                                const PointCoordinateType*             preferredNormDim      = nullptr,
-	                                const PointCoordinateType*             preferredUpDir        = nullptr,
-	                                bool                                   enableVisualDebugMode = false);
+	                                bool allowMultiPass,
+	                                PointCoordinateType maxEdgeLength,
+	                                std::vector<ccPolyline*>& parts,
+	                                EnvelopeType envelopeType = FULL,
+	                                bool allowSplitting = true,
+	                                const PointCoordinateType* preferredNormDim = nullptr,
+	                                const PointCoordinateType* preferredUpDir = nullptr,
+	                                bool enableVisualDebugMode = false);
 
   protected:
 	//! Determines the 'concave' hull of a set of points
@@ -112,10 +112,10 @@ class ccEnvelopeExtractor
 	    \return success
 	**/
 	static bool ExtractConcaveHull2D(std::vector<CCCoreLib::PointProjectionTools::IndexedCCVector2>& points,
-	                                 std::list<CCCoreLib::PointProjectionTools::IndexedCCVector2*>&  hullPoints,
-	                                 EnvelopeType                                                    envelopeType,
-	                                 bool                                                            allowMultiPass,
-	                                 PointCoordinateType                                             maxSquareLength       = 0,
-	                                 bool                                                            enableVisualDebugMode = false,
-	                                 double                                                          maxAngleDeg           = 90.0);
+	                                 std::list<CCCoreLib::PointProjectionTools::IndexedCCVector2*>& hullPoints,
+	                                 EnvelopeType envelopeType,
+	                                 bool allowMultiPass,
+	                                 PointCoordinateType maxSquareLength = 0,
+	                                 bool enableVisualDebugMode = false,
+	                                 double maxAngleDeg = 90.0);
 };

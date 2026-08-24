@@ -63,7 +63,7 @@ using namespace PdmsObjects;
 #define PDMS_SQR(a) ((a) * (a))
 
 /////////// GLOBALS ////////////
-Token               DistanceValue::workingUnit = PDMS_MILLIMETRE;
+Token DistanceValue::workingUnit = PDMS_MILLIMETRE;
 static GroupElement defaultWorld(PDMS_WORLD);
 
 ///////////////////////////////
@@ -171,7 +171,7 @@ bool DistanceValue::execute(PdmsObjects::GenericItem*& item) const
 Reference& Reference::operator=(const Reference& ref)
 {
 	command = ref.command;
-	token   = ref.token;
+	token = ref.token;
 	strcpy(refname, ref.refname);
 
 	return *this;
@@ -296,7 +296,7 @@ bool Reference::execute(PdmsObjects::GenericItem*& item) const
 		if (!item)
 			return false;
 		item->owner = result;
-		result      = item;
+		result = item;
 	}
 
 	if (result)
@@ -354,7 +354,7 @@ bool Coordinates::isValid() const
 bool Coordinates::getVector(CCVector3& u) const
 {
 	bool ok[3] = {false, false, false};
-	u          = CCVector3(0, 0, 0);
+	u = CCVector3(0, 0, 0);
 
 	int nb = getNbComponents();
 	for (int i = 0; i < nb; i++)
@@ -367,34 +367,34 @@ bool Coordinates::getVector(CCVector3& u) const
 		{
 		case PDMS_X:
 		case PDMS_EST:
-			u[0]  = coords[i].getValueInWorkingUnit();
+			u[0] = coords[i].getValueInWorkingUnit();
 			ok[0] = true;
 			break;
 
 		case PDMS_WEST:
-			u[0]  = -coords[i].getValueInWorkingUnit();
+			u[0] = -coords[i].getValueInWorkingUnit();
 			ok[0] = true;
 			break;
 
 		case PDMS_Y:
 		case PDMS_NORTH:
-			u[1]  = coords[i].getValueInWorkingUnit();
+			u[1] = coords[i].getValueInWorkingUnit();
 			ok[1] = true;
 			break;
 
 		case PDMS_SOUTH:
-			u[1]  = -coords[i].getValueInWorkingUnit();
+			u[1] = -coords[i].getValueInWorkingUnit();
 			ok[1] = true;
 			break;
 
 		case PDMS_Z:
 		case PDMS_UP:
-			u[2]  = coords[i].getValueInWorkingUnit();
+			u[2] = coords[i].getValueInWorkingUnit();
 			ok[2] = true;
 			break;
 
 		case PDMS_DOWN:
-			u[2]  = -coords[i].getValueInWorkingUnit();
+			u[2] = -coords[i].getValueInWorkingUnit();
 			ok[2] = true;
 			break;
 
@@ -540,7 +540,7 @@ bool Orientation::handle(Token t)
 		if (++component >= 3)
 			return false;
 		orientation[component].command = t;
-		current                        = nullptr;
+		current = nullptr;
 		return true;
 	}
 	return false;
@@ -639,10 +639,10 @@ bool Orientation::axisFromCoords(const Coordinates& coords, CCVector3& u)
 	if (coords.getNbComponents(true) == 2)
 	{
 		PointCoordinateType alpha = static_cast<PointCoordinateType>(CCCoreLib::DegreesToRadians(u[0]));
-		PointCoordinateType beta  = static_cast<PointCoordinateType>(CCCoreLib::DegreesToRadians(u[1]));
-		u[0]                      = cos(alpha) * cos(beta);
-		u[1]                      = sin(alpha) * cos(beta);
-		u[2]                      = sin(beta);
+		PointCoordinateType beta = static_cast<PointCoordinateType>(CCCoreLib::DegreesToRadians(u[1]));
+		u[0] = cos(alpha) * cos(beta);
+		u[1] = sin(alpha) * cos(beta);
+		u[2] = sin(beta);
 	}
 
 	return true;
@@ -809,7 +809,7 @@ bool ElementCreation::execute(PdmsObjects::GenericItem*& item) const
 			break;
 		case PDMS_BOX:
 		case PDMS_NBOX:
-			newElement                              = new Box;
+			newElement = new Box;
 			static_cast<Box*>(newElement)->negative = (elementType == PDMS_NBOX);
 			break;
 		case PDMS_PYRAMID:
@@ -820,7 +820,7 @@ bool ElementCreation::execute(PdmsObjects::GenericItem*& item) const
 			break;
 		case PDMS_EXTRU:
 		case PDMS_NEXTRU:
-			newElement                                    = new Extrusion;
+			newElement = new Extrusion;
 			static_cast<Extrusion*>(newElement)->negative = (elementType == PDMS_NEXTRU);
 			break;
 		case PDMS_LOOP:
@@ -951,7 +951,7 @@ bool ElementCreation::splitPath(const char* str)
 			if (i != 0)
 				path.emplace_back(str, i);
 			str = &str[i + 1];
-			i   = 0;
+			i = 0;
 		}
 		else
 		{
@@ -1081,13 +1081,13 @@ GenericItem::GenericItem()
     , positionReference(nullptr)
 {
 	orientationReferences[0] = orientationReferences[1] = orientationReferences[2] = nullptr;
-	orientation[0]                                                                 = CCVector3(0, 0, 0);
-	orientation[0][0]                                                              = 1;
-	orientation[1]                                                                 = CCVector3(0, 0, 0);
-	orientation[1][1]                                                              = 1;
-	orientation[2]                                                                 = CCVector3(0, 0, 0);
-	orientation[2][2]                                                              = 1;
-	name[0]                                                                        = '\0';
+	orientation[0] = CCVector3(0, 0, 0);
+	orientation[0][0] = 1;
+	orientation[1] = CCVector3(0, 0, 0);
+	orientation[1][1] = 1;
+	orientation[2] = CCVector3(0, 0, 0);
+	orientation[2][2] = 1;
+	name[0] = '\0';
 }
 
 bool GenericItem::setPosition(const CCVector3& p)
@@ -1701,9 +1701,9 @@ bool RTorus::setValue(Token t, PointCoordinateType value)
 
 PointCoordinateType RTorus::surface() const
 {
-	PointCoordinateType inside  = static_cast<PointCoordinateType>(2.0 * M_PI) * inside_radius * height;
+	PointCoordinateType inside = static_cast<PointCoordinateType>(2.0 * M_PI) * inside_radius * height;
 	PointCoordinateType outside = static_cast<PointCoordinateType>(2.0 * M_PI) * outside_radius * height;
-	PointCoordinateType updown  = static_cast<PointCoordinateType>(2.0 * M_PI) * (PDMS_SQR(outside_radius) - PDMS_SQR(inside_radius));
+	PointCoordinateType updown = static_cast<PointCoordinateType>(2.0 * M_PI) * (PDMS_SQR(outside_radius) - PDMS_SQR(inside_radius));
 	return (angle / static_cast<PointCoordinateType>(2.0 * M_PI)) * (inside + outside + updown);
 }
 

@@ -41,7 +41,7 @@
 #include <QSettings>
 
 ccGraphicalSegmentationOptionsDlg::ccGraphicalSegmentationOptionsDlg(const QString windowTitle /*=QString()*/,
-                                                                     QWidget*      parent /*=nullptr*/)
+                                                                     QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::Tool)
     , Ui::GraphicalSegmentationOptionsDlg()
 {

@@ -81,10 +81,10 @@ class QCC_DB_LIB_API ccPolyline : public CCCoreLib::Polyline
 	void setAssociatedCloud(GenericIndexedCloudPersist* cloud) override;
 
 	// inherited methods (ccShiftedObject)
-	void              setGlobalShift(const CCVector3d& shift) override;
-	void              setGlobalScale(double scale) override;
+	void setGlobalShift(const CCVector3d& shift) override;
+	void setGlobalScale(double scale) override;
 	const CCVector3d& getGlobalShift() const override;
-	double            getGlobalScale() const override;
+	double getGlobalScale() const override;
 
 	//! Removes unused capacity
 	inline void shrinkToFit()
@@ -144,7 +144,7 @@ class QCC_DB_LIB_API ccPolyline : public CCCoreLib::Polyline
 	}
 
 	// inherited methods (ccHObject)
-	ccBBox      getOwnBB(bool withGLFeatures = false) override;
+	ccBBox getOwnBB(bool withGLFeatures = false) override;
 	inline void drawBB(CC_DRAW_CONTEXT& context, const ccColor::Rgb& col) override
 	{
 		// DGM: only for 3D polylines!
@@ -205,9 +205,9 @@ class QCC_DB_LIB_API ccPolyline : public CCCoreLib::Polyline
 	unsigned segmentCount() const;
 
 	//! Samples points on the polyline
-	ccPointCloud* samplePoints(bool   densityBased,
+	ccPointCloud* samplePoints(bool densityBased,
 	                           double samplingParameter,
-	                           bool   withRGB);
+	                           bool withRGB);
 
 	//! Smoothes the polyline (Chaikin algorithm)
 	/** \param ratio between 0 and 0.5 (excluded)
@@ -215,7 +215,7 @@ class QCC_DB_LIB_API ccPolyline : public CCCoreLib::Polyline
 	    \return smoothed polyline
 	**/
 	ccPolyline* smoothChaikin(PointCoordinateType ratio,
-	                          unsigned            iterationCount) const;
+	                          unsigned iterationCount) const;
 
 	//! Creates a polyline mesh with the selected vertices only
 	/** This method is called after a graphical segmentation.
@@ -266,12 +266,12 @@ class QCC_DB_LIB_API ccPolyline : public CCCoreLib::Polyline
 
   protected:
 	// inherited from ccHObject
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	void  drawMeOnly(CC_DRAW_CONTEXT& context) override;
-	void  onDeletionOf(const ccHObject* obj) override;
-	void  onUpdateOf(ccHObject* obj) override;
+	void drawMeOnly(CC_DRAW_CONTEXT& context) override;
+	void onDeletionOf(const ccHObject* obj) override;
+	void onUpdateOf(ccHObject* obj) override;
 
 	//! Unique RGB color
 	ccColor::Rgb m_rgbColor;

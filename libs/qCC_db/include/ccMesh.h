@@ -101,10 +101,10 @@ class QCC_DB_LIB_API ccMesh : public ccGenericMesh
 	 * @param[in] cloneTexCoords Internal use
 	 * @return New mesh clone
 	 */
-	ccMesh* cloneMesh(ccGenericPointCloud*    vertices         = nullptr,
-	                  ccMaterialSet*          clonedMaterials  = nullptr,
-	                  NormsIndexesTableType*  clonedNormsTable = nullptr,
-	                  TextureCoordsContainer* cloneTexCoords   = nullptr);
+	ccMesh* cloneMesh(ccGenericPointCloud* vertices = nullptr,
+	                  ccMaterialSet* clonedMaterials = nullptr,
+	                  NormsIndexesTableType* clonedNormsTable = nullptr,
+	                  TextureCoordsContainer* cloneTexCoords = nullptr);
 
 	/**
 	 * @brief Create Delaunay triangulation from point cloud
@@ -120,11 +120,11 @@ class QCC_DB_LIB_API ccMesh : public ccGenericMesh
 	 *
 	 * @see CCCoreLib::PointProjectionTools::computeTriangulation
 	 */
-	static ccMesh* Triangulate(ccGenericPointCloud*           cloud,
+	static ccMesh* Triangulate(ccGenericPointCloud* cloud,
 	                           CCCoreLib::TRIANGULATION_TYPES type,
-	                           bool                           updateNormals = false,
-	                           PointCoordinateType            maxEdgeLength = 0,
-	                           unsigned char                  dim           = 2);
+	                           bool updateNormals = false,
+	                           PointCoordinateType maxEdgeLength = 0,
+	                           unsigned char dim = 2);
 
 	//! Creates a Delaunay 2.5D mesh from two polylines
 	static ccMesh* TriangulateTwoPolylines(ccPolyline* p1, ccPolyline* p2, CCVector3* projectionDir = nullptr);
@@ -138,7 +138,7 @@ class QCC_DB_LIB_API ccMesh : public ccGenericMesh
 
 	// inherited methods (ccHObject)
 	ccBBox getOwnBB(bool withGLFeatures = false) override;
-	bool   isSerializable() const override
+	bool isSerializable() const override
 	{
 		return true;
 	}
@@ -149,27 +149,27 @@ class QCC_DB_LIB_API ccMesh : public ccGenericMesh
 	{
 		return m_associatedCloud;
 	}
-	void     refreshBB() override;
-	bool     interpolateNormalsBC(unsigned triIndex, const CCVector3d& w, CCVector3& N) override;
-	bool     interpolateColors(unsigned triIndex, const CCVector3& P, ccColor::Rgb& C) override;
-	bool     interpolateColorsBC(unsigned triIndex, const CCVector3d& w, ccColor::Rgb& C) override;
-	bool     interpolateColors(unsigned triIndex, const CCVector3& P, ccColor::Rgba& C) override;
-	bool     interpolateColorsBC(unsigned triIndex, const CCVector3d& w, ccColor::Rgba& C) override;
-	void     computeInterpolationWeights(unsigned triIndex, const CCVector3& P, CCVector3d& weights) const override;
-	bool     getColorFromMaterial(unsigned triIndex, const CCVector3& P, ccColor::Rgba& C, bool interpolateColorIfNoTexture) override;
-	bool     getVertexColorFromMaterial(unsigned triIndex, unsigned char vertIndex, ccColor::Rgba& color, bool returnColorIfNoTexture) override;
+	void refreshBB() override;
+	bool interpolateNormalsBC(unsigned triIndex, const CCVector3d& w, CCVector3& N) override;
+	bool interpolateColors(unsigned triIndex, const CCVector3& P, ccColor::Rgb& C) override;
+	bool interpolateColorsBC(unsigned triIndex, const CCVector3d& w, ccColor::Rgb& C) override;
+	bool interpolateColors(unsigned triIndex, const CCVector3& P, ccColor::Rgba& C) override;
+	bool interpolateColorsBC(unsigned triIndex, const CCVector3d& w, ccColor::Rgba& C) override;
+	void computeInterpolationWeights(unsigned triIndex, const CCVector3& P, CCVector3d& weights) const override;
+	bool getColorFromMaterial(unsigned triIndex, const CCVector3& P, ccColor::Rgba& C, bool interpolateColorIfNoTexture) override;
+	bool getVertexColorFromMaterial(unsigned triIndex, unsigned char vertIndex, ccColor::Rgba& color, bool returnColorIfNoTexture) override;
 	unsigned capacity() const override;
 
 	// inherited methods (GenericIndexedMesh)
-	void                        placeIteratorAtBeginning() override;
+	void placeIteratorAtBeginning() override;
 	CCCoreLib::GenericTriangle* _getNextTriangle() override;                   // temporary
 	CCCoreLib::GenericTriangle* _getTriangle(unsigned triangleIndex) override; // temporary
 	CCCoreLib::VerticesIndexes* getNextTriangleVertIndexes() override;
 	CCCoreLib::VerticesIndexes* getTriangleVertIndexes(unsigned triangleIndex) override;
-	void                        getTriangleVertices(unsigned triangleIndex, CCVector3& A, CCVector3& B, CCVector3& C) const override;
-	unsigned                    size() const override;
-	void                        getBoundingBox(CCVector3& bbMin, CCVector3& bbMax) override;
-	bool                        normalsAvailable() const override
+	void getTriangleVertices(unsigned triangleIndex, CCVector3& A, CCVector3& B, CCVector3& C) const override;
+	unsigned size() const override;
+	void getBoundingBox(CCVector3& bbMin, CCVector3& bbMax) override;
+	bool normalsAvailable() const override
 	{
 		return hasNormals();
 	}
@@ -240,9 +240,9 @@ class QCC_DB_LIB_API ccMesh : public ccGenericMesh
 	/*********************************************************/
 
 	// inherited from ccGenericMesh
-	bool                   hasTriNormals() const override;
-	void                   getTriangleNormalIndexes(unsigned triangleIndex, int& i1, int& i2, int& i3) const override;
-	bool                   getTriangleNormals(unsigned triangleIndex, CCVector3& Na, CCVector3& Nb, CCVector3& Nc) const override;
+	bool hasTriNormals() const override;
+	void getTriangleNormalIndexes(unsigned triangleIndex, int& i1, int& i2, int& i3) const override;
+	bool getTriangleNormals(unsigned triangleIndex, CCVector3& Na, CCVector3& Nb, CCVector3& Nc) const override;
 	NormsIndexesTableType* getTriNormsTable() const override
 	{
 		return m_triNormals;
@@ -306,7 +306,7 @@ class QCC_DB_LIB_API ccMesh : public ccGenericMesh
 	/********************************************************/
 
 	// inherited from ccGenericMesh
-	bool                 hasMaterials() const override;
+	bool hasMaterials() const override;
 	const ccMaterialSet* getMaterialSet() const override
 	{
 		return m_materials;
@@ -372,7 +372,7 @@ class QCC_DB_LIB_API ccMesh : public ccGenericMesh
 	/******************************************************************/
 
 	// inherited from ccGenericMesh
-	bool                    hasTextures() const override;
+	bool hasTextures() const override;
 	TextureCoordsContainer* getTexCoordinatesTable() const override
 	{
 		return m_texCoords;
@@ -436,9 +436,9 @@ class QCC_DB_LIB_API ccMesh : public ccGenericMesh
 	    \param factor smoothing 'force'
 	    \param progressCb progress dialog callback
 	**/
-	bool laplacianSmooth(unsigned            nbIteration = 100,
-	                     PointCoordinateType factor      = static_cast<PointCoordinateType>(0.01),
-	                     ccProgressDialog*   progressCb  = nullptr);
+	bool laplacianSmooth(unsigned nbIteration = 100,
+	                     PointCoordinateType factor = static_cast<PointCoordinateType>(0.01),
+	                     ccProgressDialog* progressCb = nullptr);
 
 	//! Mesh scalar field processes
 	enum MESH_SCALAR_FIELD_PROCESS
@@ -477,9 +477,9 @@ class QCC_DB_LIB_API ccMesh : public ccGenericMesh
 	    \param	withChildEntities				whether child entities should be transferred as well (see ccHObjectCaster::CloneChildren)
 	    \return	the new mesh (if successful) or itself if all vertices were visible/selected
 	**/
-	ccMesh* createNewMeshFromSelection(bool              removeSelectedTriangles,
+	ccMesh* createNewMeshFromSelection(bool removeSelectedTriangles,
 	                                   std::vector<int>* newIndexesOfRemainingTriangles = nullptr,
-	                                   bool              withChildEntities              = false);
+	                                   bool withChildEntities = false);
 
 	//! Swaps two triangles
 	/** Automatically updates internal structures (i.e. lookup tables for
@@ -508,24 +508,24 @@ class QCC_DB_LIB_API ccMesh : public ccGenericMesh
 	    \param progressCb for progress notification
 	    \return the unrolled point cloud
 	**/
-	ccMesh* unroll(ccPointCloud::UnrollMode            mode,
-	               ccPointCloud::UnrollBaseParams*     params,
-	               bool                                removeStretchedTriangles,
-	               bool                                exportDeviationSF = false,
-	               double                              startAngle_deg    = 0.0,
-	               double                              stopAngle_deg     = 360.0,
-	               bool                                arbitraryOutputCS = false,
-	               CCCoreLib::GenericProgressCallback* progressCb        = nullptr) const;
+	ccMesh* unroll(ccPointCloud::UnrollMode mode,
+	               ccPointCloud::UnrollBaseParams* params,
+	               bool removeStretchedTriangles,
+	               bool exportDeviationSF = false,
+	               double startAngle_deg = 0.0,
+	               double stopAngle_deg = 360.0,
+	               bool arbitraryOutputCS = false,
+	               CCCoreLib::GenericProgressCallback* progressCb = nullptr) const;
 
   protected: // methods
 	// inherited from ccHObject
-	void  drawMeOnly(CC_DRAW_CONTEXT& context) override;
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	void drawMeOnly(CC_DRAW_CONTEXT& context) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	void  applyGLTransformation(const ccGLMatrix& trans) override;
-	void  onUpdateOf(ccHObject* obj) override;
-	void  onDeletionOf(const ccHObject* obj) override;
+	void applyGLTransformation(const ccGLMatrix& trans) override;
+	void onUpdateOf(ccHObject* obj) override;
+	void onDeletionOf(const ccHObject* obj) override;
 
 	//! Same as other 'computeInterpolationWeights' method with a set of 3 vertices indexes
 	void computeInterpolationWeights(const CCCoreLib::VerticesIndexes& vertIndexes, const CCVector3& P, CCVector3d& weights) const;

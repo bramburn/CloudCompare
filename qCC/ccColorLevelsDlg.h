@@ -72,10 +72,10 @@ class ccColorLevelsDlg : public QDialog
 	/// Channel
 	enum CHANNELS
 	{
-		RGB   = 0,
-		RED   = 1,
+		RGB = 0,
+		RED = 1,
 		GREEN = 2,
-		BLUE  = 3
+		BLUE = 3
 	};
 
 	/// Update histogram

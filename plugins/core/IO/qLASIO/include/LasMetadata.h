@@ -67,33 +67,33 @@ class ccPointCloud;
 namespace LasMetadata
 {
 	//! X scale metadata key.
-	constexpr const char X_SCALE[]           = "LAS.scale.x";
+	constexpr const char X_SCALE[] = "LAS.scale.x";
 	//! Y scale metadata key.
-	constexpr const char Y_SCALE[]           = "LAS.scale.y";
+	constexpr const char Y_SCALE[] = "LAS.scale.y";
 	//! Z scale metadata key.
-	constexpr const char Z_SCALE[]           = "LAS.scale.z";
+	constexpr const char Z_SCALE[] = "LAS.scale.z";
 	//! X offset metadata key.
-	constexpr const char X_OFFSET[]          = "LAS.offset.x";
+	constexpr const char X_OFFSET[] = "LAS.offset.x";
 	//! Y offset metadata key.
-	constexpr const char Y_OFFSET[]          = "LAS.offset.y";
+	constexpr const char Y_OFFSET[] = "LAS.offset.y";
 	//! Z offset metadata key.
-	constexpr const char Z_OFFSET[]          = "LAS.offset.z";
+	constexpr const char Z_OFFSET[] = "LAS.offset.z";
 	//! Version major metadata key.
-	constexpr const char VERSION_MAJOR[]     = "LAS.version.major";
+	constexpr const char VERSION_MAJOR[] = "LAS.version.major";
 	//! Version minor metadata key.
-	constexpr const char VERSION_MINOR[]     = "LAS.version.minor";
+	constexpr const char VERSION_MINOR[] = "LAS.version.minor";
 	//! Point format metadata key.
-	constexpr const char POINT_FORMAT[]      = "LAS.point_format";
+	constexpr const char POINT_FORMAT[] = "LAS.point_format";
 	//! Global encoding metadata key.
-	constexpr const char GLOBAL_ENCODING[]   = "LAS.global_encoding";
+	constexpr const char GLOBAL_ENCODING[] = "LAS.global_encoding";
 	//! Project UUID metadata key.
-	constexpr const char PROJECT_UUID[]      = "LAS.project_uuid";
+	constexpr const char PROJECT_UUID[] = "LAS.project_uuid";
 	//! System identifier metadata key.
 	constexpr const char SYSTEM_IDENTIFIER[] = "LAS.system_identifier";
 	//! VLRs metadata key.
-	constexpr const char VLRS[]              = "LAS.variableLengthRecords";
+	constexpr const char VLRS[] = "LAS.variableLengthRecords";
 	//! Extra fields metadata key.
-	constexpr const char EXTRA_FIELDS[]      = "LAS.extra_fields";
+	constexpr const char EXTRA_FIELDS[] = "LAS.extra_fields";
 
 	/**
 	 * @brief Save LAS header metadata into a point cloud

@@ -90,10 +90,10 @@ struct AsciiOpenContext
 	void save(Ui_AsciiOpenDialog* ui)
 	{
 		extractSFNameFrom1stLine = ui->extractSFNamesFrom1stLineCheckBox->isChecked();
-		maxPointCountPerCloud    = ui->maxCloudSizeDoubleSpinBox->value();
-		separator                = ui->lineEditSeparator->text().at(0);
-		skipLines                = ui->spinBoxSkipLines->value();
-		commaDecimal             = ui->commaDecimalCheckBox->isChecked();
+		maxPointCountPerCloud = ui->maxCloudSizeDoubleSpinBox->value();
+		separator = ui->lineEditSeparator->text().at(0);
+		skipLines = ui->spinBoxSkipLines->value();
+		commaDecimal = ui->commaDecimalCheckBox->isChecked();
 	}
 
 	//! Restores state
@@ -115,12 +115,12 @@ struct AsciiOpenContext
 	}
 
 	AsciiOpenDlg::Sequence sequence;
-	QChar                  separator;
-	bool                   extractSFNameFrom1stLine;
-	double                 maxPointCountPerCloud;
-	int                    skipLines;
-	bool                   applyAll;
-	bool                   commaDecimal;
+	QChar separator;
+	bool extractSFNameFrom1stLine;
+	double maxPointCountPerCloud;
+	int skipLines;
+	bool applyAll;
+	bool commaDecimal;
 };
 
 //! Semi-persistent loading context
@@ -170,7 +170,7 @@ AsciiOpenDlg::~AsciiOpenDlg()
 bool AsciiOpenDlg::setInput(const QString& filename, QTextStream* stream /*=nullptr*/)
 {
 	m_filename = filename;
-	m_stream   = stream;
+	m_stream = stream;
 
 	// update title
 	m_ui->lineEditFileName->setText(m_filename);
@@ -195,7 +195,7 @@ void AsciiOpenDlg::autoFindBestSeparator()
 
 	// We try all default separators...
 	size_t maxValidColumnCount = 0;
-	QChar  bestSep             = separators.front();
+	QChar bestSep = separators.front();
 	for (QChar sep : separators)
 	{
 		setSeparator(sep); // this eventually calls 'updateTable'
@@ -213,7 +213,7 @@ void AsciiOpenDlg::autoFindBestSeparator()
 		if (validColumnCount > maxValidColumnCount)
 		{
 			maxValidColumnCount = validColumnCount;
-			bestSep             = sep;
+			bestSep = sep;
 		}
 	}
 
@@ -325,15 +325,15 @@ static bool CouldBeLabel(const QString& colHeader)
 	return colHeader.contains("LABEL") || colHeader.contains("NAME");
 }
 
-static const unsigned MAX_COLUMNS          = 512; // maximum number of columns that can be handled
+static const unsigned MAX_COLUMNS = 512;          // maximum number of columns that can be handled
 static const unsigned LINES_READ_FOR_STATS = 200; // number of lines read for stats
-static const unsigned DISPLAYED_LINES      = 20;  // number of displayed lines
+static const unsigned DISPLAYED_LINES = 20;       // number of displayed lines
 
-static unsigned X_BIT     = 1;
-static unsigned Y_BIT     = 2;
-static unsigned Z_BIT     = 4;
-static unsigned W_BIT     = 8;
-static unsigned XYZ_BITS  = X_BIT | Y_BIT | Z_BIT;
+static unsigned X_BIT = 1;
+static unsigned Y_BIT = 2;
+static unsigned Z_BIT = 4;
+static unsigned W_BIT = 8;
+static unsigned XYZ_BITS = X_BIT | Y_BIT | Z_BIT;
 static unsigned XYZW_BITS = XYZ_BITS | W_BIT;
 
 static int EnabledBits(unsigned bitField)
@@ -449,10 +449,10 @@ void AsciiOpenDlg::updateTable()
 	}
 	m_ui->tableWidget->setRowCount(DISPLAYED_LINES + 1); //+1 for first line shifting
 
-	unsigned lineCount     = 0; // number of lines read
-	unsigned totalChars    = 0; // total read characters (for stats)
-	unsigned columnsCount  = 0; // max columns count per line
-	unsigned commentLines  = 0; // number of comments line skipped
+	unsigned lineCount = 0;     // number of lines read
+	unsigned totalChars = 0;    // total read characters (for stats)
+	unsigned columnsCount = 0;  // max columns count per line
+	unsigned commentLines = 0;  // number of comments line skipped
 	unsigned maxPartsCount = 0; // max columns count per line, before it's clamped to MAX_COLUMNS
 
 	std::vector<bool> valueIsNumber;   // identifies columns with numbers only [mandatory]
@@ -460,9 +460,9 @@ void AsciiOpenDlg::updateTable()
 	std::vector<bool> valueIsInteger;  // identifies columns with integer values only
 	std::vector<bool> valueIsBelow255; // identifies columns with integer values between 0 and 255 only
 
-	bool    commaAsDecimal = useCommaAsDecimal();
+	bool commaAsDecimal = useCommaAsDecimal();
 	QLocale locale(commaAsDecimal ? QLocale::French : QLocale::English);
-	QChar   decimalPoint = commaAsDecimal ? ',' : '.';
+	QChar decimalPoint = commaAsDecimal ? ',' : '.';
 	while (lineCount < LINES_READ_FOR_STATS)
 	{
 		QString currentLine = m_stream->readLine();
@@ -489,8 +489,8 @@ void AsciiOpenDlg::updateTable()
 					maxPartsCount = rawPartsCount;
 				}
 
-				unsigned partsCount              = std::min(MAX_COLUMNS, rawPartsCount);
-				bool     columnCountHasIncreased = (partsCount > columnsCount);
+				unsigned partsCount = std::min(MAX_COLUMNS, rawPartsCount);
+				bool columnCountHasIncreased = (partsCount > columnsCount);
 
 				// do we need to add one or several new columns?
 				if (columnCountHasIncreased)
@@ -529,13 +529,13 @@ void AsciiOpenDlg::updateTable()
 					QTableWidgetItem* newItem = new QTableWidgetItem(parts[i]);
 
 					// test values
-					bool   isANumber = false;
-					double value     = locale.toDouble(parts[i], &isANumber);
+					bool isANumber = false;
+					double value = locale.toDouble(parts[i], &isANumber);
 					if (!isANumber)
 					{
-						valueIsNumber[i]   = false;
+						valueIsNumber[i] = false;
 						valueIsBelowOne[i] = false;
-						valueIsInteger[i]  = false;
+						valueIsInteger[i] = false;
 						valueIsBelow255[i] = false;
 						newItem->setBackground(QBrush(QColor(255, 160, 160)));
 					}
@@ -545,13 +545,13 @@ void AsciiOpenDlg::updateTable()
 						{
 							// the previous lines were probably header lines
 							// we can forget about their content otherwise it will prevent us from detecting the right pattern
-							valueIsNumber[i]   = true;
+							valueIsNumber[i] = true;
 							valueIsBelowOne[i] = true;
-							valueIsInteger[i]  = true;
+							valueIsInteger[i] = true;
 							valueIsBelow255[i] = true;
 						}
 						valueIsBelowOne[i] = valueIsBelowOne[i] && (std::abs(value) <= 1.0);
-						valueIsInteger[i]  = valueIsInteger[i] && !parts[i].contains(decimalPoint);
+						valueIsInteger[i] = valueIsInteger[i] && !parts[i].contains(decimalPoint);
 						valueIsBelow255[i] = valueIsBelow255[i] && valueIsInteger[i] && (value >= 0.0 && value <= 255.0);
 					}
 
@@ -587,7 +587,7 @@ void AsciiOpenDlg::updateTable()
 	if (!m_headerLine.isEmpty())
 	{
 		m_headerLine = m_headerLine.trimmed();
-		int n        = 0;
+		int n = 0;
 		while (n < m_headerLine.size() && m_headerLine.at(n) == '/')
 		{
 			++n;
@@ -636,7 +636,7 @@ void AsciiOpenDlg::updateTable()
 	}
 
 	// average line size
-	m_averageLineSize                  = static_cast<double>(totalChars) / lineCount;
+	m_averageLineSize = static_cast<double>(totalChars) / lineCount;
 	unsigned approximateTotalLineCount = static_cast<unsigned>(file.size() / m_averageLineSize);
 
 	// we add a type selector for each column
@@ -673,12 +673,12 @@ void AsciiOpenDlg::updateTable()
 		static const QIcon QuatIcon(QString::fromUtf8(":/CC/images/typeQuaternion.png"));
 
 		int columnWidth = (m_ui->tableWidget->width() * 9) / (columnsCount * 10);
-		columnWidth     = std::max(columnWidth, 80);
+		columnWidth = std::max(columnWidth, 80);
 
 		for (unsigned i = 0; i < columnsCount; i++)
 		{
 			QComboBox* columnHeaderWidget = static_cast<QComboBox*>(m_ui->tableWidget->cellWidget(0, i));
-			QComboBox* _columnHeader      = columnHeaderWidget;
+			QComboBox* _columnHeader = columnHeaderWidget;
 			if (!columnHeaderWidget)
 			{
 				columnHeaderWidget = new QComboBox();
@@ -750,14 +750,14 @@ void AsciiOpenDlg::updateTable()
 	// auto-detect columns 'roles'
 	{
 		// DGM: bit flags now
-		unsigned assignedXYZFlags        = 0;
-		unsigned assignedNormFlags       = 0;
-		unsigned assignedRGBFlags        = 0;
+		unsigned assignedXYZFlags = 0;
+		unsigned assignedNormFlags = 0;
+		unsigned assignedRGBFlags = 0;
 		unsigned assignedQuaternionFlags = 0;
 
 		// split header (if any)
 		QStringList headerParts = m_headerLine.simplified().split(m_separator);
-		bool        validHeader = (headerParts.size() >= static_cast<int>(columnsCount));
+		bool validHeader = (headerParts.size() >= static_cast<int>(columnsCount));
 		m_ui->extractSFNamesFrom1stLineCheckBox->setEnabled(validHeader); // can we consider the first ignored line as a header?
 		if (!validHeader)
 		{
@@ -938,7 +938,7 @@ void AsciiOpenDlg::updateTable()
 					{
 						// label
 						columnHeaderWidget->setCurrentIndex(ASCII_OPEN_DLG_Label);
-						m_columnType[i]     = VALID;
+						m_columnType[i] = VALID;
 						labelColumnAssigned = true;
 					}
 
@@ -1196,7 +1196,7 @@ bool AsciiOpenDlg::CheckOpenSequence(const AsciiOpenDlg::Sequence& sequence, QSt
 bool AsciiOpenDlg::apply()
 {
 	QString errorMessage;
-	auto    sequence = getOpenSequence();
+	auto sequence = getOpenSequence();
 
 	if (!CheckOpenSequence(sequence, errorMessage))
 	{
@@ -1207,7 +1207,7 @@ bool AsciiOpenDlg::apply()
 	{
 		// save semi-persistent values
 		s_maxCloudSizeDoubleSpinBoxValue = m_ui->maxCloudSizeDoubleSpinBox->value();
-		s_csEntitiesScale                = m_ui->quatCSScaleDoubleSpinBox->value();
+		s_csEntitiesScale = m_ui->quatCSScaleDoubleSpinBox->value();
 
 		if (!s_asciiOpenContext)
 		{
@@ -1330,8 +1330,8 @@ bool AsciiOpenDlg::safeSequence() const
 	if (m_headerLine.isEmpty())
 		return false;
 
-	AsciiOpenDlg::Sequence seq         = getOpenSequence();
-	QStringList            headerParts = m_headerLine.simplified().split(m_separator);
+	AsciiOpenDlg::Sequence seq = getOpenSequence();
+	QStringList headerParts = m_headerLine.simplified().split(m_separator);
 
 	// not enough column headers?
 	if (headerParts.size() < static_cast<int>(seq.size()))
@@ -1473,7 +1473,7 @@ void AsciiOpenDlg::columnsTypeHasChanged(int index)
 				// Auto select the next columns type
 				if (i + 2 < m_columnsCount)
 				{
-					QComboBox* nextCombo     = static_cast<QComboBox*>(m_ui->tableWidget->cellWidget(0, i + 1));
+					QComboBox* nextCombo = static_cast<QComboBox*>(m_ui->tableWidget->cellWidget(0, i + 1));
 					QComboBox* nextNextCombo = static_cast<QComboBox*>(m_ui->tableWidget->cellWidget(0, i + 2));
 					// if the two next columns have no assigned type, we set them auto.
 					if (nextCombo->currentIndex() == int(ASCII_OPEN_DLG_None)

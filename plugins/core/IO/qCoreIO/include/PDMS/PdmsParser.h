@@ -64,15 +64,15 @@ class PdmsLexer
 	virtual ~PdmsLexer() = default;
 
 	virtual bool initializeSession();
-	bool         gotoNextToken();
-	void         finish()
+	bool gotoNextToken();
+	void finish()
 	{
 		stop = true;
 	}
 	virtual void closeSession(bool destroyLoadedObject = false);
 
 	PointCoordinateType valueFromBuffer();
-	const char*         nameFromBuffer() const;
+	const char* nameFromBuffer() const;
 
 	virtual void printWarning(const char* str) = 0;
 
@@ -98,17 +98,17 @@ class PdmsLexer
 	 **/
 	static const int c_max_buff_size = 2048;
 
-	PdmsObjects::GenericItem*    loadedObject;
-	Token                        currentToken;
-	char                         tokenBuffer[c_max_buff_size];
-	char                         nextBuffer[c_max_buff_size];
+	PdmsObjects::GenericItem* loadedObject;
+	Token currentToken;
+	char tokenBuffer[c_max_buff_size];
+	char nextBuffer[c_max_buff_size];
 	std::map<std::string, Token> dictionary;
-	bool                         stop;
-	char                         metaGroupMask;
+	bool stop;
+	char metaGroupMask;
 
-	void         pushIntoDictionary(const char* str, Token token, int minSize = 0);
+	void pushIntoDictionary(const char* str, Token token, int minSize = 0);
 	virtual void parseCurrentToken();
-	virtual void skipComment()       = 0;
+	virtual void skipComment() = 0;
 	virtual void skipHandleCommand() = 0;
 	virtual bool moveForward();
 };
@@ -118,10 +118,10 @@ class PdmsFileSession : public PdmsLexer
 {
   protected:
 	QString m_filename;
-	int     m_currentLine;
-	bool    m_eol;
-	bool    m_eof;
-	QFile   m_file;
+	int m_currentLine;
+	bool m_eol;
+	bool m_eof;
+	QFile m_file;
 
   public:
 	PdmsFileSession(const QString& filename);
@@ -138,7 +138,7 @@ class PdmsFileSession : public PdmsLexer
 	bool moveForward() override;
 	void skipComment() override;
 	void skipHandleCommand() override;
-	int  readChar();
+	int readChar();
 };
 
 // PDMS Parser
@@ -156,16 +156,16 @@ class PdmsParser
 	PdmsParser();
 	~PdmsParser();
 
-	void                      reset();
-	void                      linkWithSession(PdmsLexer* s);
-	bool                      parseSessionContent();
+	void reset();
+	void linkWithSession(PdmsLexer* s);
+	bool parseSessionContent();
 	PdmsObjects::GenericItem* getLoadedObject(bool forgetIt = true);
 
   protected:
 	bool processCurrentToken();
 
-	PdmsLexer*                session;
-	PdmsCommands::Command*    currentCommand;
+	PdmsLexer* session;
+	PdmsCommands::Command* currentCommand;
 	PdmsObjects::GenericItem* currentItem;
 	PdmsObjects::GenericItem* root;
 };

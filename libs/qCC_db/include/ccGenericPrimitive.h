@@ -46,9 +46,9 @@ class QCC_DB_LIB_API ccGenericPrimitive : public ccMesh
 	 * @param[in] transMat Optional transformation (display only, use applyGLTransformation_recursive to apply)
 	 * @param[in] uniqueID Optional unique ID
 	 */
-	ccGenericPrimitive(QString           name     = QString(),
+	ccGenericPrimitive(QString name = QString(),
 	                   const ccGLMatrix* transMat = nullptr,
-	                   unsigned          uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
+	                   unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
 	/**
 	 * @brief Get type name
@@ -132,8 +132,8 @@ class QCC_DB_LIB_API ccGenericPrimitive : public ccMesh
 	void applyGLTransformation(const ccGLMatrix& trans) override;
 
 	// inherited from ccMesh
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
 
 	//! Builds primitive

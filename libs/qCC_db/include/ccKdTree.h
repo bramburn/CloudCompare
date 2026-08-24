@@ -127,6 +127,62 @@ class QCC_DB_LIB_API ccKdTree : public CCCoreLib::TrueKdTree
 	 * @param[out] sf Scalar field to store indices.
 	 */
 	void flagPointsWithCellIndex(CCCoreLib::ScalarField* sf);
+
+	/**
+	 * @brief Convert cell index to scalar field.
+	 *
+	 * @return true on success.
+	 */
+	bool convertCellIndexToSF();
+
+	/**
+	 * @brief Convert cell index to random color.
+	 *
+	 * @return true on success.
+	 */
+	bool convertCellIndexToRandomColor();
+
+	/**
+	 * @brief Get the bounding-box of a given cell.
+	 *
+	 * @param[in] node Cell node.
+	 *
+	 * @return Cell's bounding box.
+	 */
+	ccBBox getCellBBox(BaseNode* node) const;
+
+	/**
+	 * @brief A set of leaves.
+	 */
+	typedef std::unordered_set<Leaf*> LeafSet;
+
+	/**
+	 * @brief Get the neighbor leaves around a given cell.
+	 *
+	 * @param[in] cell Input cell.
+	 * @param[out] neighbors Output neighbor set.
+	 * @param[in] userDataFilter Optional filter.
+	 *
+	 * @return true on success.
+	 */
+	bool getNeighborLeaves(BaseNode* cell, ccKdTree::LeafSet& neighbors, const int* userDataFilter = nullptr);
+
+	/**
+	 * @brief Returns the associated (generic) point cloud.
+	 *
+	 * @return Associated generic point cloud (may be null).
+	 */
+	inline ccGenericPointCloud* associatedGenericCloud() const
+	{
+		return m_associatedGenericCloud;
+	}
+
+  protected:
+	// Inherited from ccHObject
+	virtual void drawMeOnly(CC_DRAW_CONTEXT& context) override;
+
+	//! Associated cloud
+	ccGenericPointCloud* m_associatedGenericCloud;
 };
 
 #endif // CC_KD_TREE_HEADER

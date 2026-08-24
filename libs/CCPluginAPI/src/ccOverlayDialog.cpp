@@ -60,7 +60,8 @@ ccOverlayDialog::ccOverlayDialog(QWidget* parent, Qt::WindowFlags flags)
 {
 	// Escape key closes the dialog
 	QShortcut* escShortcut = new QShortcut(QKeySequence(Qt::Key_Escape), this);
-	connect(escShortcut, &QShortcut::activated, [this]() { close(); });
+	connect(escShortcut, &QShortcut::activated, [this]()
+	        { close(); });
 }
 
 // ccOverlayDialog::~ccOverlayDialog

@@ -1,19 +1,19 @@
-//##########################################################################
-//#                                                                        #
-//#                          CLOUDCOMPARE                                   #
-//#                                                                        #
-//#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU General Public License as published by  #
-//#  the Free Software Foundation; version 2 of the License.              #
-//#                                                                        #
-//#  This program is distributed in the hope that it will be useful,         #
-//#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          #
-//#  GNU General Public License for more details.                          #
-//#                                                                        #
-//#                   COPYRIGHT: THE UNIVERSITY OF NEWCASTLE                 #
-//#                                                                        #
-//##########################################################################
+// ##########################################################################
+// #                                                                        #
+// #                          CLOUDCOMPARE                                   #
+// #                                                                        #
+// #  This program is free software; you can redistribute it and/or modify  #
+// #  it under the terms of the GNU General Public License as published by  #
+// #  the Free Software Foundation; version 2 of the License.              #
+// #                                                                        #
+// #  This program is distributed in the hope that it will be useful,         #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          #
+// #  GNU General Public License for more details.                          #
+// #                                                                        #
+// #                   COPYRIGHT: THE UNIVERSITY OF NEWCASTLE                 #
+// #                                                                        #
+// ##########################################################################
 
 // Self-contained tests for qVoxFallTools: Grid2Index, Index2Grid, FindAdjacents,
 // and qVoxFallTransform.  The actual plugin header (qVoxFallTools.h) includes
@@ -33,17 +33,15 @@
  *
  * @see qVoxFall.h
  */
-#include <ccPointCloud.h>
-#include <ccGLMatrix.h>
-#include <ccBox.h>
-
-#include <QTest>
-#include <QString>
 #include <QObject>
-
+#include <QString>
+#include <QTest>
+#include <ccBox.h>
+#include <ccGLMatrix.h>
+#include <ccPointCloud.h>
 #include <cmath>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 static const double FUZZ = 1e-5;
 
@@ -159,17 +157,15 @@ class qVoxFallTransform
 		Vector3Tpl<float> xZ(0.0f, sx, cx);
 
 		// Z*X combined: col_j = Z * col_j(X)
-		Vector3Tpl<float> mX( cz * xX.x + sz * xY.x, -sz * xX.x + cz * xY.x, xZ.x);
-		Vector3Tpl<float> mY( cz * xX.y + sz * xY.y, -sz * xX.y + cz * xY.y, xZ.y);
-		Vector3Tpl<float> mZ( cz * xX.z + sz * xY.z, -sz * xX.z + cz * xY.z, xZ.z);
+		Vector3Tpl<float> mX(cz * xX.x + sz * xY.x, -sz * xX.x + cz * xY.x, xZ.x);
+		Vector3Tpl<float> mY(cz * xX.y + sz * xY.y, -sz * xX.y + cz * xY.y, xZ.y);
+		Vector3Tpl<float> mZ(cz * xX.z + sz * xY.z, -sz * xX.z + cz * xY.z, xZ.z);
 		Vector3Tpl<float> mTr(0.0f, 0.0f, 0.0f);
 
 		matrix = ccGLMatrix(mX, mY, mZ, mTr);
 		inverse = matrix.inverse();
 	}
 };
-
-
 
 class TestVoxFall : public QObject
 {
@@ -220,16 +216,16 @@ class TestVoxFall : public QObject
 
 		for (const Tuple3i& t : cases)
 		{
-			int             idx    = Grid2Index(t, steps);
-			Tuple3i         result = Index2Grid(static_cast<unsigned>(idx), steps);
+			int idx = Grid2Index(t, steps);
+			Tuple3i result = Index2Grid(static_cast<unsigned>(idx), steps);
 			QVERIFY2(tupleEq(result, t),
 			         qPrintable(QString("Roundtrip failed for (%1,%2,%3): got (%4,%5,%6)")
-			             .arg(t.x)
-			             .arg(t.y)
-			             .arg(t.z)
-			             .arg(result.x)
-			             .arg(result.y)
-			             .arg(result.z)));
+			                        .arg(t.x)
+			                        .arg(t.y)
+			                        .arg(t.z)
+			                        .arg(result.x)
+			                        .arg(result.y)
+			                        .arg(result.z)));
 		}
 	}
 
@@ -252,7 +248,7 @@ class TestVoxFall : public QObject
 		// Large Z: formula gives 10 * 3 * 4 = 120 (mathematically correct,
 		// even though z=10 is physically out of range for a depth-5 grid).
 		int idxLarge = Grid2Index({0, 0, 10}, steps);
-		QCOMPARE(idxLarge, 120);  // 10 * 3 * 4 = 120
+		QCOMPARE(idxLarge, 120); // 10 * 3 * 4 = 120
 	}
 
 	// -----------------------------------------------------------------------
@@ -262,7 +258,7 @@ class TestVoxFall : public QObject
 	{
 		// 5×5×5 grid: central cell (2,2,2) has all 26 neighbors
 		CCVector3 steps = make3(5.0f, 5.0f, 5.0f);
-		Tuple3i        center = {2, 2, 2};
+		Tuple3i center = {2, 2, 2};
 
 		std::vector<Tuple3i> adj = FindAdjacents(center, steps, false);
 
@@ -276,7 +272,7 @@ class TestVoxFall : public QObject
 		}
 
 		// Corner cell (0,0,0) has only 7 neighbors (positive octant only)
-		Tuple3i                   corner  = {0, 0, 0};
+		Tuple3i corner = {0, 0, 0};
 		std::vector<Tuple3i> adjCorner = FindAdjacents(corner, steps, false);
 		QVERIFY2(static_cast<int>(adjCorner.size()) < 26,
 		         "Corner should have fewer than 26 neighbors");

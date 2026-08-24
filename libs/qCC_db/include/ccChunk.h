@@ -78,7 +78,7 @@ class ccChunk
 	static const size_t SIZE_POWER = 16;
 
 	//! Chunk size in elements (64KB).
-	static const size_t SIZE       = (1 << SIZE_POWER);
+	static const size_t SIZE = (1 << SIZE_POWER);
 
 	/**
 	 * @brief Count chunks needed for elements.

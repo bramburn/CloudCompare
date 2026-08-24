@@ -34,8 +34,8 @@ extern "C"
 	 * Types
 	 * ---------------------------------------------------------------------- */
 	/* structures are opaque */
-	typedef struct t_ply_*          p_ply;
-	typedef struct t_ply_element_*  p_ply_element;
+	typedef struct t_ply_* p_ply;
+	typedef struct t_ply_element_* p_ply_element;
 	typedef struct t_ply_property_* p_ply_property;
 	typedef struct t_ply_argument_* p_ply_argument;
 
@@ -101,8 +101,8 @@ extern "C"
 p_ply ply_open(const char* name,
 #endif
 	               p_ply_error_cb error_cb,
-	               long           idata,
-	               void*          pdata);
+	               long idata,
+	               void* pdata);
 
 	/* ----------------------------------------------------------------------
 	 * Reads and parses the header of a PLY file returned by ply_open
@@ -148,7 +148,7 @@ p_ply ply_open(const char* name,
 	 * ---------------------------------------------------------------------- */
 	int ply_get_argument_element(p_ply_argument argument,
 	                             p_ply_element* element,
-	                             long*          instance_index);
+	                             long* instance_index);
 
 	/* ----------------------------------------------------------------------
 	 * Returns information about the property originating a callback
@@ -160,10 +160,10 @@ p_ply ply_open(const char* name,
 	 *
 	 * Returns 1 if successful, 0 otherwise
 	 * ---------------------------------------------------------------------- */
-	int ply_get_argument_property(p_ply_argument  argument,
+	int ply_get_argument_property(p_ply_argument argument,
 	                              p_ply_property* property,
-	                              long*           length,
-	                              long*           value_index);
+	                              long* length,
+	                              long* value_index);
 
 	/* ----------------------------------------------------------------------
 	 * Returns user data associated with callback
@@ -247,7 +247,7 @@ p_ply ply_open(const char* name,
 	 *
 	 * Returns element if successful or NULL if no more properties
 	 * ---------------------------------------------------------------------- */
-	p_ply_property ply_get_next_property(p_ply_element  element,
+	p_ply_property ply_get_next_property(p_ply_element element,
 	                                     p_ply_property last);
 
 	/* ----------------------------------------------------------------------
@@ -279,9 +279,9 @@ p_ply ply_open(const char* name,
 p_ply ply_create(const char* name,
 #endif
 	                 e_ply_storage_mode storage_mode,
-	                 p_ply_error_cb     error_cb,
-	                 long               idata,
-	                 void*              pdata);
+	                 p_ply_error_cb error_cb,
+	                 long idata,
+	                 void* pdata);
 
 	/* ----------------------------------------------------------------------
 	 * Adds a new element to the PLY file created by ply_create

@@ -98,7 +98,7 @@ class ccColorBasedEntityPicking
 			return IDToColor(ids[obj]);
 		}
 		entities[++lastID] = obj;
-		ids[obj]           = lastID;
+		ids[obj] = lastID;
 		return IDToColor(lastID);
 	}
 

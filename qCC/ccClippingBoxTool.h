@@ -116,29 +116,29 @@ class ccClippingBoxTool : public ccOverlayDialog
 	**/
 	static bool ExtractSlicesAndContours(
 	    const std::vector<ccGenericPointCloud*>& clouds,
-	    const std::vector<ccGenericMesh*>&       meshes,
-	    ccClipBox&                               clipBox,
-	    bool                                     singleSliceMode,
-	    bool                                     processDimensions[3],
-	    std::vector<ccHObject*>&                 outputSlices,
+	    const std::vector<ccGenericMesh*>& meshes,
+	    ccClipBox& clipBox,
+	    bool singleSliceMode,
+	    bool processDimensions[3],
+	    std::vector<ccHObject*>& outputSlices,
 
-	    bool                              extractEnvelopes,
-	    PointCoordinateType               maxEdgeLength,
+	    bool extractEnvelopes,
+	    PointCoordinateType maxEdgeLength,
 	    ccEnvelopeExtractor::EnvelopeType envelopeType,
-	    std::vector<ccPolyline*>&         outputEnvelopes,
+	    std::vector<ccPolyline*>& outputEnvelopes,
 
-	    bool                      extractLevelSet,
-	    double                    levelSetGridStep,
-	    int                       levelSetMinVertCount,
+	    bool extractLevelSet,
+	    double levelSetGridStep,
+	    int levelSetMinVertCount,
 	    std::vector<ccPolyline*>& levelSet,
 
-	    PointCoordinateType gap                   = 0,
-	    bool                multiPass             = false,
-	    bool                splitEnvelopes        = false,
-	    bool                projectOnBestFitPlane = false,
-	    bool                visualDebugMode       = false,
-	    bool                generateRandomColors  = false,
-	    ccProgressDialog*   progressDialog        = 0);
+	    PointCoordinateType gap = 0,
+	    bool multiPass = false,
+	    bool splitEnvelopes = false,
+	    bool projectOnBestFitPlane = false,
+	    bool visualDebugMode = false,
+	    bool generateRandomColors = false,
+	    ccProgressDialog* progressDialog = 0);
 
   protected:
 	void toggleInteractors(bool);

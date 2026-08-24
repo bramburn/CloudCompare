@@ -206,7 +206,7 @@ class QCC_DB_LIB_API ccColorScale : public ccSerializableObject
 		{
 		}
 
-		double  value = 0.0;
+		double value = 0.0;
 		QString text;
 
 		bool operator<(const Label& otherLabel) const
@@ -357,8 +357,8 @@ class QCC_DB_LIB_API ccColorScale : public ccSerializableObject
 	{
 		return true;
 	}
-	bool  toFile(QFile& out, short dataVersion) const override;
-	bool  fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile(QFile& out, short dataVersion) const override;
+	bool fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion() const override;
 
   protected:

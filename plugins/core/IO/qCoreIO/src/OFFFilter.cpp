@@ -69,7 +69,7 @@ bool OFFFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) con
 {
 	if (type == CC_TYPES::MESH)
 	{
-		multiple  = false;
+		multiple = false;
 		exclusive = true;
 		return true;
 	}
@@ -116,15 +116,15 @@ CC_FILE_ERROR OFFFilter::saveToFile(ccHObject* entity, const QString& filename, 
 
 	// 2nd line: vertices count / faces count / edges count
 	unsigned vertCount = vertices->size();
-	unsigned triCount  = mesh->size();
+	unsigned triCount = mesh->size();
 	stream << vertCount << ' ' << triCount << ' ' << 0 << Qt::endl;
 
 	// save vertices
 	{
 		for (unsigned i = 0; i < vertCount; ++i)
 		{
-			const CCVector3* P       = vertices->getPoint(i);
-			CCVector3d       Pglobal = vertices->toGlobal3d<PointCoordinateType>(*P);
+			const CCVector3* P = vertices->getPoint(i);
+			CCVector3d Pglobal = vertices->toGlobal3d<PointCoordinateType>(*P);
 			stream << Pglobal.x << ' ' << Pglobal.y << ' ' << Pglobal.z << Qt::endl;
 		}
 	}
@@ -189,7 +189,7 @@ CC_FILE_ERROR OFFFilter::loadFile(const QString& filename, ccHObject& container,
 			return CC_FERR_MALFORMED_FILE;
 	}
 
-	bool     ok        = false;
+	bool ok = false;
 	unsigned vertCount = tokens[0].toUInt(&ok);
 	if (!ok)
 		return CC_FERR_MALFORMED_FILE;
@@ -211,7 +211,7 @@ CC_FILE_ERROR OFFFilter::loadFile(const QString& filename, ccHObject& container,
 		for (unsigned i = 0; i < vertCount; ++i)
 		{
 			currentLine = GetNextLine(stream);
-			tokens      = currentLine.simplified().split(QChar(' '), Qt::SkipEmptyParts);
+			tokens = currentLine.simplified().split(QChar(' '), Qt::SkipEmptyParts);
 			if (tokens.size() < 3)
 			{
 				delete vertices;
@@ -222,7 +222,7 @@ CC_FILE_ERROR OFFFilter::loadFile(const QString& filename, ccHObject& container,
 			CCVector3d Pd(0, 0, 0);
 			{
 				bool vertexIsOk = false;
-				Pd.x            = tokens[0].toDouble(&vertexIsOk);
+				Pd.x = tokens[0].toDouble(&vertexIsOk);
 				if (vertexIsOk)
 				{
 					Pd.y = tokens[1].toDouble(&vertexIsOk);
@@ -269,7 +269,7 @@ CC_FILE_ERROR OFFFilter::loadFile(const QString& filename, ccHObject& container,
 		for (unsigned i = 0; i < triCount; ++i)
 		{
 			currentLine = GetNextLine(stream);
-			tokens      = currentLine.simplified().split(QChar(' '), Qt::SkipEmptyParts);
+			tokens = currentLine.simplified().split(QChar(' '), Qt::SkipEmptyParts);
 			if (tokens.size() < 3)
 			{
 				delete mesh;

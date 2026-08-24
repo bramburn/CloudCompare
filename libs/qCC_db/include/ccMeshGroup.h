@@ -143,13 +143,13 @@ class QCC_DB_LIB_API ccMeshGroup : public ccGenericMesh
 	{
 		return 0;
 	}
-	bool trianglePicking(const CCVector2d&           clickPos,
+	bool trianglePicking(const CCVector2d& clickPos,
 	                     const ccGLCameraParameters& camera,
-	                     bool                        edgeOnly,
-	                     int&                        nearestTriIndex,
-	                     double&                     nearestSquareDist,
-	                     CCVector3d&                 nearestPoint,
-	                     CCVector3d*                 barycentricCoords = nullptr) const override
+	                     bool edgeOnly,
+	                     int& nearestTriIndex,
+	                     double& nearestSquareDist,
+	                     CCVector3d& nearestPoint,
+	                     CCVector3d* barycentricCoords = nullptr) const override
 	{
 		return false;
 	}
@@ -167,8 +167,8 @@ class QCC_DB_LIB_API ccMeshGroup : public ccGenericMesh
 	{
 		return true;
 	}
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
 
 	// inherited methods (GenericIndexedMesh)

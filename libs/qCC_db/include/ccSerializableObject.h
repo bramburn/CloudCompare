@@ -234,13 +234,13 @@ class ccSerializationHelper
 		// array data (dataVersion>=20)
 		{
 			// DGM: do it by chunks, in case it's too big to be processed by the system
-			const char* _data     = (const char*)data.data();
-			qint64      byteCount = static_cast<qint64>(elementCount);
+			const char* _data = (const char*)data.data();
+			qint64 byteCount = static_cast<qint64>(elementCount);
 			byteCount *= sizeof(Type);
 			while (byteCount != 0)
 			{
 				static const qint64 s_maxByteSaveCount = (1 << 26); // 64 Mb each time
-				qint64              saveCount          = std::min(byteCount, s_maxByteSaveCount);
+				qint64 saveCount = std::min(byteCount, s_maxByteSaveCount);
 				if (out.write(_data, saveCount) < 0)
 					return ccSerializableObject::WriteError();
 				_data += saveCount;
@@ -258,12 +258,12 @@ class ccSerializationHelper
 	**/
 	template <class Type, int N, class ComponentType>
 	static bool GenericArrayFromFile(std::vector<Type>& data,
-	                                 QFile&             in,
-	                                 short              dataVersion,
-	                                 const QString&     verboseDescription)
+	                                 QFile& in,
+	                                 short dataVersion,
+	                                 const QString& verboseDescription)
 	{
-		::uint8_t  componentCount = 0;
-		::uint32_t elementCount   = 0;
+		::uint8_t componentCount = 0;
+		::uint32_t elementCount = 0;
 		if (!ReadArrayHeader(in, dataVersion, componentCount, elementCount))
 		{
 			return false;
@@ -293,7 +293,7 @@ class ccSerializationHelper
 				static const qint64 MaxElementPerChunk = (static_cast<qint64>(1) << 24);
 				assert(sizeof(ComponentType) * N == sizeof(Type));
 				qint64 byteCount = static_cast<qint64>(data.size()) * (sizeof(ComponentType) * N);
-				char*  dest      = (char*)data.data();
+				char* dest = (char*)data.data();
 				while (byteCount > 0)
 				{
 					qint64 chunkSize = std::min(MaxElementPerChunk, byteCount);
@@ -319,13 +319,13 @@ class ccSerializationHelper
 	**/
 	template <class Type, int N, class ComponentType, class FileComponentType>
 	static bool GenericArrayFromTypedFile(std::vector<Type>& data,
-	                                      QFile&             in,
-	                                      short              dataVersion,
-	                                      const QString&     verboseDescription,
+	                                      QFile& in,
+	                                      short dataVersion,
+	                                      const QString& verboseDescription,
 	                                      FileComponentType* _autoOffset = nullptr)
 	{
-		::uint8_t  componentCount = 0;
-		::uint32_t elementCount   = 0;
+		::uint8_t componentCount = 0;
+		::uint32_t elementCount = 0;
 		if (!ReadArrayHeader(in, dataVersion, componentCount, elementCount))
 		{
 			return false;
@@ -366,7 +366,7 @@ class ccSerializationHelper
 					for (unsigned k = 0; k < N; ++k)
 					{
 						*_autoOffset = dummyArray[k];
-						*_data++     = 0;
+						*_data++ = 0;
 					}
 				}
 				else
@@ -414,9 +414,9 @@ class ccSerializationHelper
 	}
 
   protected:
-	static bool ReadArrayHeader(QFile&      in,
-	                            short       dataVersion,
-	                            ::uint8_t&  componentCount,
+	static bool ReadArrayHeader(QFile& in,
+	                            short dataVersion,
+	                            ::uint8_t& componentCount,
 	                            ::uint32_t& elementCount)
 	{
 		assert(in.isOpen() && (in.openMode() & QIODevice::ReadOnly));

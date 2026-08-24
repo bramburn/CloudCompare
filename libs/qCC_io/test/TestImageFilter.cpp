@@ -28,29 +28,24 @@
  *
  * @see ImageFileFilter.cpp
  */
+#include <ImageFileFilter.h>
 #include <QBuffer>
 #include <QCoreApplication>
 #include <QFile>
-#include <QTemporaryDir>
 #include <QImage>
 #include <QImageReader>
 #include <QImageWriter>
-
-#include <ccPointCloud.h>
-
-#include <ImageFileFilter.h>
-
-#include <QTest>
 #include <QString>
-
+#include <QTemporaryDir>
+#include <QTest>
+#include <ccPointCloud.h>
 #include <cmath>
-
 
 class TestImageFilter : public QObject
 {
 	Q_OBJECT
 
-private slots:
+  private slots:
 
 	void testCanSavePointCloud()
 	{

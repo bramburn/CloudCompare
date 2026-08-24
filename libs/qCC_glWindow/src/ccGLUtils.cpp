@@ -153,45 +153,45 @@ void ccGLUtils::DisplayTexture2DPosition(GLuint texID, int x, int y, int w, int 
  * @return 4x4 view transformation matrix
  */
 ccGLMatrixd ccGLUtils::GenerateViewMat(CC_VIEW_ORIENTATION orientation,
-                                       const CCVector3d&   vertDir /*=CCVector3d(0, 0, 1)*/,
-                                       double*             _vertAngle_rad /*=nullptr*/,
-                                       double*             _orthoAngle_rad /*=nullptr*/)
+                                       const CCVector3d& vertDir /*=CCVector3d(0, 0, 1)*/,
+                                       double* _vertAngle_rad /*=nullptr*/,
+                                       double* _orthoAngle_rad /*=nullptr*/)
 {
-	double vertAngle_rad  = 0.0;
+	double vertAngle_rad = 0.0;
 	double orthoAngle_rad = 0.0;
 
 	switch (orientation)
 	{
 	case CC_TOP_VIEW:
-		vertAngle_rad  = 0.0;
+		vertAngle_rad = 0.0;
 		orthoAngle_rad = M_PI_2;
 		break;
 	case CC_BOTTOM_VIEW:
-		vertAngle_rad  = -M_PI;
+		vertAngle_rad = -M_PI;
 		orthoAngle_rad = -M_PI_2;
 		break;
 	case CC_FRONT_VIEW:
-		vertAngle_rad  = 0.0;
+		vertAngle_rad = 0.0;
 		orthoAngle_rad = 0.0;
 		break;
 	case CC_BACK_VIEW:
-		vertAngle_rad  = -M_PI;
+		vertAngle_rad = -M_PI;
 		orthoAngle_rad = 0.0;
 		break;
 	case CC_LEFT_VIEW:
-		vertAngle_rad  = M_PI_2;
+		vertAngle_rad = M_PI_2;
 		orthoAngle_rad = 0.0;
 		break;
 	case CC_RIGHT_VIEW:
-		vertAngle_rad  = -M_PI_2;
+		vertAngle_rad = -M_PI_2;
 		orthoAngle_rad = 0.0;
 		break;
 	case CC_ISO_VIEW_1:
-		vertAngle_rad  = M_PI / 4;
+		vertAngle_rad = M_PI / 4;
 		orthoAngle_rad = M_PI / 4;
 		break;
 	case CC_ISO_VIEW_2:
-		vertAngle_rad  = -M_PI / 4;
+		vertAngle_rad = -M_PI / 4;
 		orthoAngle_rad = -M_PI / 4;
 		break;
 	default:
@@ -220,8 +220,8 @@ ccGLMatrixd ccGLUtils::GenerateViewMat(CC_VIEW_ORIENTATION orientation,
 }
 
 ccGLMatrixd ccGLUtils::GenerateViewMat(const CCVector3d& vertDir,
-                                       double            vertAngle_rad,
-                                       double            orthoAngle_rad)
+                                       double vertAngle_rad,
+                                       double orthoAngle_rad)
 {
 	ccGLMatrixd vertRot;
 	vertRot.initFromParameters(vertAngle_rad, vertDir, CCVector3d(0, 0, 0));

@@ -66,7 +66,7 @@ class MatrixDisplayDlg : public QWidget
 	 * @param[in] mat Matrix
 	 */
 	void fillDialogWith(const ccGLMatrix& mat);
-	
+
 	/**
 	 * @brief Fill with double matrix
 	 * @param[in] mat Matrix
@@ -76,7 +76,7 @@ class MatrixDisplayDlg : public QWidget
   public:
 	/// Export to ASCII file
 	void exportToASCII();
-	
+
 	/// Export to clipboard
 	void exportToClipboard();
 

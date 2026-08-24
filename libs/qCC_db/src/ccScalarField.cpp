@@ -94,8 +94,8 @@ ccScalarField::ccScalarField(const ccScalarField& sf)
 	computeMinAndMax();
 
 	// restore the display ranges after 'computeMinAndMax' is called
-	m_displayRange       = sf.m_displayRange;
-	m_saturationRange    = sf.m_saturationRange;
+	m_displayRange = sf.m_displayRange;
+	m_saturationRange = sf.m_saturationRange;
 	m_logSaturationRange = sf.m_logSaturationRange;
 }
 
@@ -156,7 +156,7 @@ void ccScalarField::setColorScale(ccColorScale::Shared scale)
 	if (m_colorScale != scale)
 	{
 		bool wasAbsolute = (m_colorScale && !m_colorScale->isRelative());
-		bool isAbsolute  = (scale && !scale->isRelative());
+		bool isAbsolute = (scale && !scale->isRelative());
 
 		m_colorScale = scale;
 
@@ -210,9 +210,9 @@ void ccScalarField::computeMinAndMax()
 		}
 		else
 		{
-			unsigned count           = currentSize();
+			unsigned count = currentSize();
 			unsigned numberOfClasses = static_cast<unsigned>(ceil(sqrt(static_cast<double>(count))));
-			numberOfClasses          = std::max<unsigned>(std::min<unsigned>(numberOfClasses, MAX_HISTOGRAM_SIZE), 4);
+			numberOfClasses = std::max<unsigned>(std::min<unsigned>(numberOfClasses, MAX_HISTOGRAM_SIZE), 4);
 
 			m_histogram.maxValue = 0;
 
@@ -528,11 +528,11 @@ bool ccScalarField::fromFile(QFile& in, short dataVersion, int flags, LoadedIDMa
 	}
 
 	// data (dataVersion >= 20)
-	bool   result     = false;
+	bool result = false;
 	double baseOffset = 0.0;
 	{
-		QString sfDescription     = "SF " + QString::fromStdString(m_name);
-		bool    fileScalarIsFloat = (flags & ccSerializableObject::DF_SCALAR_VAL_32_BITS);
+		QString sfDescription = "SF " + QString::fromStdString(m_name);
+		bool fileScalarIsFloat = (flags & ccSerializableObject::DF_SCALAR_VAL_32_BITS);
 		if (fileScalarIsFloat) // file is 'float'
 		{
 			result = ccSerializationHelper::GenericArrayFromFile<float, 1, float>(*this, in, dataVersion, sfDescription);
@@ -778,13 +778,13 @@ bool ccScalarField::mayHaveHiddenValues() const
 void ccScalarField::showNaNValuesInGrey(bool state)
 {
 	m_showNaNValuesInGrey = state;
-	m_modified            = true;
+	m_modified = true;
 }
 
 void ccScalarField::alwaysShowZero(bool state)
 {
 	m_alwaysShowZero = state;
-	m_modified       = true;
+	m_modified = true;
 }
 
 void ccScalarField::importParametersFrom(const ccScalarField* sf)

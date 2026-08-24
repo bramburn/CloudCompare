@@ -65,8 +65,7 @@ static const double DefaultLASScale = 1.0e-3;
  * Shown next to each standard field in the dialog.
  * Displays the field name and a status indicator (mapped/not mapped).
  */
-class MappingLabel : public QWidget
-class MappingLabel : public QWidget
+class MappingLabel : public QWidget class MappingLabel : public QWidget
 {
   public:
 	explicit MappingLabel(QWidget* parent = nullptr)

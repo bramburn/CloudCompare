@@ -67,7 +67,7 @@ struct LasScalarField
 		ScanDirectionFlag,   //!< Scan direction.
 		EdgeOfFlightLine,    //!< Edge of flight line.
 		Classification,      //!< Classification.
-		SyntheticFlag,        //!< Synthetic flag.
+		SyntheticFlag,       //!< Synthetic flag.
 		KeypointFlag,        //!< Keypoint flag.
 		WithheldFlag,        //!< Withheld flag.
 		ScanAngleRank,       //!< Scan angle rank.
@@ -75,13 +75,13 @@ struct LasScalarField
 		PointSourceId,       //!< Point source ID.
 		GpsTime,             //!< GPS time.
 		// Extended (LAS 1.4)
-		ExtendedScanAngle,            //!< Extended scan angle.
-		ExtendedScannerChannel,      //!< Scanner channel.
-		OverlapFlag,                //!< Overlap flag.
-		ExtendedClassification,       //!< Extended classification.
-		ExtendedReturnNumber,        //!< Extended return number.
-		ExtendedNumberOfReturns,     //!< Extended number of returns.
-		NearInfrared                //!< Near infrared.
+		ExtendedScanAngle,       //!< Extended scan angle.
+		ExtendedScannerChannel,  //!< Scanner channel.
+		OverlapFlag,             //!< Overlap flag.
+		ExtendedClassification,  //!< Extended classification.
+		ExtendedReturnNumber,    //!< Extended return number.
+		ExtendedNumberOfReturns, //!< Extended number of returns.
+		NearInfrared             //!< Near infrared.
 	};
 
 	/**

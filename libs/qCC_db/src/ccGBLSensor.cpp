@@ -62,10 +62,10 @@ static const int s_MaxDepthBufferSize = (1 << 14); // 16384
 
 enum Errors
 {
-	ERROR_BAD_INPUT      = -1,
-	ERROR_MEMORY         = -2,
+	ERROR_BAD_INPUT = -1,
+	ERROR_MEMORY = -2,
 	ERROR_PROC_CANCELLED = -3,
-	ERROR_DB_TOO_SMALL   = -4,
+	ERROR_DB_TOO_SMALL = -4,
 };
 
 QString ccGBLSensor::GetErrorString(int errorCode)
@@ -140,7 +140,7 @@ void ccGBLSensor::setPitchRange(PointCoordinateType minPhi, PointCoordinateType 
 	if (m_phiMax > static_cast<PointCoordinateType>(M_PI))
 	{
 		m_pitchAnglesAreShifted = true;
-		m_phiMin                = std::max(m_phiMin, static_cast<PointCoordinateType>(0));
+		m_phiMin = std::max(m_phiMin, static_cast<PointCoordinateType>(0));
 	}
 
 	clearDepthBuffer();
@@ -163,7 +163,7 @@ void ccGBLSensor::setYawRange(PointCoordinateType minTheta, PointCoordinateType 
 	if (m_thetaMax > static_cast<PointCoordinateType>(M_PI))
 	{
 		m_yawAnglesAreShifted = true;
-		m_thetaMin            = std::max(m_thetaMin, static_cast<PointCoordinateType>(0));
+		m_thetaMin = std::max(m_thetaMin, static_cast<PointCoordinateType>(0));
 	}
 
 	clearDepthBuffer();
@@ -178,10 +178,10 @@ void ccGBLSensor::setYawStep(PointCoordinateType dTheta)
 	}
 }
 
-void ccGBLSensor::projectPoint(const CCVector3&     sourcePoint,
-                               CCVector2&           destPoint,
+void ccGBLSensor::projectPoint(const CCVector3& sourcePoint,
+                               CCVector2& destPoint,
                                PointCoordinateType& depth,
-                               double               posIndex /*=0*/) const
+                               double posIndex /*=0*/) const
 {
 	// project point in sensor world
 	CCVector3 P = sourcePoint;
@@ -235,7 +235,7 @@ void ccGBLSensor::projectPoint(const CCVector3&     sourcePoint,
 }
 
 PointCoordinateType ccGBLSensor::computeDistanceToPoint(const CCVector3& sourcePoint,
-                                                        double           posIndex /*=0*/) const
+                                                        double posIndex /*=0*/) const
 {
 	// project point in sensor world
 	CCVector3 P = sourcePoint;
@@ -290,8 +290,8 @@ bool ccGBLSensor::convertToDepthMapCoords(PointCoordinateType yaw, PointCoordina
 }
 
 ccGBLSensor::NormalGrid* ccGBLSensor::projectNormals(CCCoreLib::GenericCloud* cloud,
-                                                     const NormalGrid&        theNorms,
-                                                     double                   posIndex /*=0*/) const
+                                                     const NormalGrid& theNorms,
+                                                     double posIndex /*=0*/) const
 {
 	if (!cloud || theNorms.capacity() == 0)
 		return nullptr;
@@ -331,24 +331,24 @@ ccGBLSensor::NormalGrid* ccGBLSensor::projectNormals(CCCoreLib::GenericCloud* cl
 			const CCVector3& N = theNorms[i];
 
 			// project point
-			CCVector2           Q;
+			CCVector2 Q;
 			PointCoordinateType depth1;
 			projectPoint(*P, Q, depth1, m_activeIndex);
 
-			CCVector3           U            = *P - sensorOrigin;
+			CCVector3 U = *P - sensorOrigin;
 			PointCoordinateType distToSensor = U.norm();
 
 			CCVector3 S;
 			if (CCCoreLib::GreaterThanEpsilon(distToSensor))
 			{
 				// project point + normal
-				CCVector3           P2 = *P + N;
-				CCVector2           Q2;
+				CCVector3 P2 = *P + N;
+				CCVector2 Q2;
 				PointCoordinateType depth2;
 				projectPoint(P2, Q2, depth2, m_activeIndex);
 
-				S.x                           = (Q2.x - Q.x);
-				S.y                           = (Q2.y - Q.y);
+				S.x = (Q2.x - Q.x);
+				S.y = (Q2.y - Q.y);
 				PointCoordinateType squareS2D = (S.x * S.x + S.y * S.y);
 
 				if (CCCoreLib::GreaterThanSquareEpsilon(squareS2D))
@@ -402,7 +402,7 @@ ccGBLSensor::NormalGrid* ccGBLSensor::projectNormals(CCCoreLib::GenericCloud* cl
 }
 
 ccGBLSensor::ColorGrid* ccGBLSensor::projectColors(CCCoreLib::GenericCloud* cloud,
-                                                   const ColorGrid&         theColors) const
+                                                   const ColorGrid& theColors) const
 {
 	if (!cloud || theColors.capacity() == 0)
 		return nullptr;
@@ -457,8 +457,8 @@ ccGBLSensor::ColorGrid* ccGBLSensor::projectColors(CCCoreLib::GenericCloud* clou
 		{
 			for (unsigned i = 0; i < pointCount; ++i)
 			{
-				const CCVector3*    P = cloud->getNextPoint();
-				CCVector2           Q;
+				const CCVector3* P = cloud->getNextPoint();
+				CCVector2 Q;
 				PointCoordinateType depth;
 				projectPoint(*P, Q, depth, m_activeIndex);
 
@@ -469,8 +469,8 @@ ccGBLSensor::ColorGrid* ccGBLSensor::projectColors(CCCoreLib::GenericCloud* clou
 					unsigned index = y * m_depthBuffer.width + x;
 
 					// accumulate color
-					const ccColor::Rgb& srcC  = theColors[i];
-					ccColor::Rgbf&      destC = colorAccumGrid[index];
+					const ccColor::Rgb& srcC = theColors[i];
+					ccColor::Rgbf& destC = colorAccumGrid[index];
 
 					destC.r += srcC.r;
 					destC.g += srcC.g;
@@ -492,11 +492,11 @@ ccGBLSensor::ColorGrid* ccGBLSensor::projectColors(CCCoreLib::GenericCloud* clou
 		{
 			if (pointPerDMCell[i] != 0)
 			{
-				const ccColor::Rgbf& srcC  = colorAccumGrid[i];
-				ccColor::Rgb&        destC = colorGrid->at(i);
-				destC.r                    = static_cast<ColorCompType>(srcC.r / pointPerDMCell[i]);
-				destC.g                    = static_cast<ColorCompType>(srcC.g / pointPerDMCell[i]);
-				destC.b                    = static_cast<ColorCompType>(srcC.b / pointPerDMCell[i]);
+				const ccColor::Rgbf& srcC = colorAccumGrid[i];
+				ccColor::Rgb& destC = colorGrid->at(i);
+				destC.r = static_cast<ColorCompType>(srcC.r / pointPerDMCell[i]);
+				destC.g = static_cast<ColorCompType>(srcC.g / pointPerDMCell[i]);
+				destC.b = static_cast<ColorCompType>(srcC.b / pointPerDMCell[i]);
 			}
 		}
 	}
@@ -585,7 +585,7 @@ bool ccGBLSensor::computeAutoParameters(CCCoreLib::GenericCloud* theCloud)
 	unsigned pointCount = theCloud->size();
 
 	bool hasValidThetaRange = (m_thetaMin != m_thetaMax);
-	bool hasValidPhiRange   = (m_phiMin != m_phiMax);
+	bool hasValidPhiRange = (m_phiMin != m_phiMax);
 
 	if (!hasValidThetaRange || !hasValidPhiRange)
 	{
@@ -602,21 +602,21 @@ bool ccGBLSensor::computeAutoParameters(CCCoreLib::GenericCloud* theCloud)
 			return false;
 		}
 		// force no shift for auto search (we'll fix this later if necessary)
-		m_yawAnglesAreShifted   = false;
+		m_yawAnglesAreShifted = false;
 		m_pitchAnglesAreShifted = false;
 
 		PointCoordinateType minPitch = 0;
 		PointCoordinateType maxPitch = 0;
-		PointCoordinateType minYaw   = 0;
-		PointCoordinateType maxYaw   = 0;
+		PointCoordinateType minYaw = 0;
+		PointCoordinateType maxYaw = 0;
 		PointCoordinateType maxDepth = 0;
 		{
 			// first project all points to compute the (yaw,pitch) ranges
 			theCloud->placeIteratorAtBeginning();
 			for (unsigned i = 0; i < pointCount; ++i)
 			{
-				const CCVector3*    P = theCloud->getNextPoint();
-				CCVector2           Q;
+				const CCVector3* P = theCloud->getNextPoint();
+				CCVector2 Q;
 				PointCoordinateType depth;
 				// Q.x and Q.y are inside [-pi;pi] by default (result of atan2)
 				projectPoint(*P, Q, depth, m_activeIndex);
@@ -662,10 +662,10 @@ bool ccGBLSensor::computeAutoParameters(CCCoreLib::GenericCloud* theCloud)
 			}
 		}
 
-		Interval bestEmptyPartYaw   = Interval::FindBiggest<bool>(nonEmptyAnglesYaw, false, true);
+		Interval bestEmptyPartYaw = Interval::FindBiggest<bool>(nonEmptyAnglesYaw, false, true);
 		Interval bestEmptyPartPitch = Interval::FindBiggest<bool>(nonEmptyAnglesPitch, false, true);
 
-		m_yawAnglesAreShifted   = (bestEmptyPartYaw.start != 0 && bestEmptyPartYaw.span > 1 && bestEmptyPartYaw.start + bestEmptyPartYaw.span < 360);
+		m_yawAnglesAreShifted = (bestEmptyPartYaw.start != 0 && bestEmptyPartYaw.span > 1 && bestEmptyPartYaw.start + bestEmptyPartYaw.span < 360);
 		m_pitchAnglesAreShifted = (bestEmptyPartPitch.start != 0 && bestEmptyPartPitch.span > 1 && bestEmptyPartPitch.start + bestEmptyPartPitch.span < 360);
 
 		if (m_yawAnglesAreShifted || m_pitchAnglesAreShifted)
@@ -674,8 +674,8 @@ bool ccGBLSensor::computeAutoParameters(CCCoreLib::GenericCloud* theCloud)
 			theCloud->placeIteratorAtBeginning();
 			for (unsigned i = 0; i < pointCount; ++i)
 			{
-				const CCVector3*    P = theCloud->getNextPoint();
-				CCVector2           Q;
+				const CCVector3* P = theCloud->getNextPoint();
+				CCVector2 Q;
 				PointCoordinateType depth;
 				projectPoint(*P, Q, depth, m_activeIndex);
 
@@ -713,7 +713,7 @@ bool ccGBLSensor::computeAutoParameters(CCCoreLib::GenericCloud* theCloud)
 		theCloud->placeIteratorAtBeginning();
 		for (unsigned i = 0; i < pointCount; ++i)
 		{
-			const CCVector3*    P     = theCloud->getNextPoint();
+			const CCVector3* P = theCloud->getNextPoint();
 			PointCoordinateType depth = computeDistanceToPoint(*P, m_activeIndex);
 
 			if (depth > maxDepth)
@@ -743,21 +743,21 @@ bool ccGBLSensor::computeDepthBuffer(CCCoreLib::GenericCloud* theCloud, int& err
 	// init new Z-buffer
 	{
 		PointCoordinateType deltaTheta = m_deltaTheta;
-		PointCoordinateType deltaPhi   = m_deltaPhi;
+		PointCoordinateType deltaPhi = m_deltaPhi;
 
 		// yaw as X
 		int width = static_cast<int>(ceil((m_thetaMax - m_thetaMin) / m_deltaTheta));
 		if (width > s_MaxDepthBufferSize)
 		{
 			deltaTheta = (m_thetaMax - m_thetaMin) / static_cast<PointCoordinateType>(s_MaxDepthBufferSize);
-			width      = s_MaxDepthBufferSize;
+			width = s_MaxDepthBufferSize;
 		}
 		// pitch as Y
 		int height = static_cast<int>(ceil((m_phiMax - m_phiMin) / m_deltaPhi));
 		if (height > s_MaxDepthBufferSize)
 		{
 			deltaPhi = (m_phiMax - m_phiMin) / static_cast<PointCoordinateType>(s_MaxDepthBufferSize);
-			height   = s_MaxDepthBufferSize;
+			height = s_MaxDepthBufferSize;
 		}
 
 		if (width <= 0 || height <= 0)
@@ -780,10 +780,10 @@ bool ccGBLSensor::computeDepthBuffer(CCCoreLib::GenericCloud* theCloud, int& err
 			return false;
 		}
 
-		m_depthBuffer.width      = static_cast<unsigned>(width);
-		m_depthBuffer.height     = static_cast<unsigned>(height);
+		m_depthBuffer.width = static_cast<unsigned>(width);
+		m_depthBuffer.height = static_cast<unsigned>(height);
 		m_depthBuffer.deltaTheta = deltaTheta;
-		m_depthBuffer.deltaPhi   = deltaPhi;
+		m_depthBuffer.deltaPhi = deltaPhi;
 	}
 
 	unsigned pointCount = theCloud->size();
@@ -805,7 +805,7 @@ bool ccGBLSensor::computeDepthBuffer(CCCoreLib::GenericCloud* theCloud, int& err
 		theCloud->placeIteratorAtBeginning();
 		{
 			// progress bar
-			ccProgressDialog              pdlg(true);
+			ccProgressDialog pdlg(true);
 			CCCoreLib::NormalizedProgress nprogress(&pdlg, pointCount);
 			pdlg.setMethodTitle(QObject::tr("Depth buffer"));
 			pdlg.setInfo(QObject::tr("Points: %L1").arg(pointCount));
@@ -814,8 +814,8 @@ bool ccGBLSensor::computeDepthBuffer(CCCoreLib::GenericCloud* theCloud, int& err
 
 			for (unsigned i = 0; i < pointCount; ++i)
 			{
-				const CCVector3*    P = theCloud->getNextPoint();
-				CCVector2           Q;
+				const CCVector3* P = theCloud->getNextPoint();
+				CCVector2 Q;
 				PointCoordinateType depth;
 				projectPoint(*P, Q, depth, m_activeIndex);
 
@@ -824,8 +824,8 @@ bool ccGBLSensor::computeDepthBuffer(CCCoreLib::GenericCloud* theCloud, int& err
 				if (convertToDepthMapCoords(Q.x, Q.y, x, y))
 				{
 					PointCoordinateType& zBuf = m_depthBuffer.zBuff[y * m_depthBuffer.width + x];
-					zBuf                      = std::max(zBuf, depth);
-					m_sensorRange             = std::max(m_sensorRange, depth);
+					zBuf = std::max(zBuf, depth);
+					m_sensorRange = std::max(m_sensorRange, depth);
 				}
 
 				if (projectedCloud)
@@ -859,7 +859,7 @@ unsigned char ccGBLSensor::checkVisibility(const CCVector3& P) const
 	}
 
 	// project point
-	CCVector2           Q;
+	CCVector2 Q;
 	PointCoordinateType depth;
 	projectPoint(P, Q, depth, m_activeIndex);
 
@@ -878,7 +878,7 @@ unsigned char ccGBLSensor::checkVisibility(const CCVector3& P) const
 	}
 
 	// hidden?
-	PointCoordinateType bufferDepth     = m_depthBuffer.zBuff[y * m_depthBuffer.width + x];
+	PointCoordinateType bufferDepth = m_depthBuffer.zBuff[y * m_depthBuffer.width + x];
 	PointCoordinateType safeBufferDepth = bufferDepth * (CCCoreLib::PC_ONE + m_uncertainty);
 
 	if (depth > safeBufferDepth)
@@ -908,7 +908,7 @@ void ccGBLSensor::drawMeOnly(CC_DRAW_CONTEXT& context)
 		return;
 
 	// color-based entity picking
-	bool         entityPickingMode = MACRO_EntityPicking(context);
+	bool entityPickingMode = MACRO_EntityPicking(context);
 	ccColor::Rgb pickingColor;
 	if (entityPickingMode)
 	{
@@ -1075,13 +1075,13 @@ bool ccGBLSensor::applyViewport(ccGenericGLDisplay* win /*=nullptr*/) const
 	{
 	case ccGBLSensor::YAW_THEN_PITCH:
 	{
-		double      theta = (getMinYaw() + getMaxYaw()) / 2;
+		double theta = (getMinYaw() + getMaxYaw()) / 2;
 		ccGLMatrixd rotz;
 		rotz.initFromParameters(theta, sensorZ, CCVector3d(0, 0, 0));
 		rotz.applyRotation(sensorX);
 		rotz.applyRotation(sensorY);
 
-		double      phi = 0; //(getMinPitch() + getMaxPitch())/2;
+		double phi = 0; //(getMinPitch() + getMaxPitch())/2;
 		ccGLMatrixd roty;
 		roty.initFromParameters(-phi, sensorY, CCVector3d(0, 0, 0)); // theta = 0 corresponds to the upward vertical direction!
 		roty.applyRotation(sensorX);
@@ -1091,13 +1091,13 @@ bool ccGBLSensor::applyViewport(ccGenericGLDisplay* win /*=nullptr*/) const
 	}
 	case ccGBLSensor::PITCH_THEN_YAW:
 	{
-		double      phi = (getMinPitch() + getMaxPitch()) / 2;
+		double phi = (getMinPitch() + getMaxPitch()) / 2;
 		ccGLMatrixd roty;
 		roty.initFromParameters(-phi, sensorY, CCVector3d(0, 0, 0)); // theta = 0 corresponds to the upward vertical direction!
 		roty.applyRotation(sensorX);
 		roty.applyRotation(sensorZ);
 
-		double      theta = (getMinYaw() + getMaxYaw()) / 2;
+		double theta = (getMinYaw() + getMaxYaw()) / 2;
 		ccGLMatrixd rotz;
 		rotz.initFromParameters(theta, sensorZ, CCVector3d(0, 0, 0));
 		rotz.applyRotation(sensorX);
@@ -1110,8 +1110,8 @@ bool ccGBLSensor::applyViewport(ccGenericGLDisplay* win /*=nullptr*/) const
 	}
 
 	// center camera on sensor
-	CCVector3d  sensorCenterd = trans.getTranslationAsVec3D();
-	ccGLMatrixd viewMat       = ccGLMatrixd::FromViewDirAndUpDir(sensorX, sensorZ);
+	CCVector3d sensorCenterd = trans.getTranslationAsVec3D();
+	ccGLMatrixd viewMat = ccGLMatrixd::FromViewDirAndUpDir(sensorX, sensorZ);
 	viewMat.invert();
 	viewMat.setTranslation(sensorCenterd);
 	// TODO: can we set the right FOV?

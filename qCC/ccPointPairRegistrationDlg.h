@@ -67,7 +67,7 @@ class ccPointPairRegistrationDlg : public ccOverlayDialog
 	void stop(bool state) override;
 
 	//! Inits dialog
-	bool init(ccGLWindowInterface*        win,
+	bool init(ccGLWindowInterface* win,
 	          const ccHObject::Container& alignedEntities,
 	          const ccHObject::Container* referenceEntities = nullptr);
 
@@ -123,19 +123,19 @@ class ccPointPairRegistrationDlg : public ccOverlayDialog
 
 	//! Calls the registration routine
 	bool callRegistration(CCCoreLib::PointProjectionTools::Transformation& trans,
-	                      double&                                          rms,
-	                      bool                                             autoUpdateTab,
-	                      bool&                                            withUmeyama,
-	                      QStringList*                                     report = nullptr);
+	                      double& rms,
+	                      bool autoUpdateTab,
+	                      bool& withUmeyama,
+	                      QStringList* report = nullptr);
 
 	//! Clears the RMS rows
 	void clearRMSColumns();
 
 	//! Adds a point to one of the table (ref./to-be-aligned)
-	void addPointToTable(QTableWidget*     tableWidget,
-	                     int               rowIndex,
+	void addPointToTable(QTableWidget* tableWidget,
+	                     int rowIndex,
 	                     const CCVector3d& P,
-	                     QString           pointLabel);
+	                     QString pointLabel);
 
 	//! Converts a picked point to a sphere center (if necessary)
 	/** \param P input point (may be converted to a sphere center)
@@ -157,11 +157,11 @@ class ccPointPairRegistrationDlg : public ccOverlayDialog
 		//! Restores cloud original state
 		void restore();
 
-		ccHObject*          entity;
+		ccHObject* entity;
 		ccGenericGLDisplay* originalDisplay;
-		bool                wasVisible;
-		bool                wasEnabled;
-		bool                wasSelected;
+		bool wasVisible;
+		bool wasEnabled;
+		bool wasSelected;
 	};
 
 	//! Set of contexts
@@ -175,14 +175,14 @@ class ccPointPairRegistrationDlg : public ccOverlayDialog
 				ctx.restore();
 		}
 
-		bool       isShifted;
+		bool isShifted;
 		CCVector3d shift;
-		double     scale = 1.0;
+		double scale = 1.0;
 	};
 
 	//! Removes a label (and restore its associated label if any)
-	void removeLabel(ccPointCloud&         points,
-	                 unsigned              childIndex,
+	void removeLabel(ccPointCloud& points,
+	                 unsigned childIndex,
 	                 const EntityContexts& entities);
 
   protected: // members

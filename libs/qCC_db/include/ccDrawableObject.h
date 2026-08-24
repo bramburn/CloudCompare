@@ -550,13 +550,13 @@ class QCC_DB_LIB_API ccDrawableObject
 		//! Shared pointer type.
 		using Shared = QSharedPointer<DisplayState>;
 
-		bool                visible           = false;
-		bool                colorsDisplayed   = false;
-		bool                normalsDisplayed  = false;
-		bool                sfDisplayed       = false;
-		bool                colorIsOverridden = false;
-		bool                showNameIn3D      = false;
-		ccGenericGLDisplay* display           = nullptr;
+		bool visible = false;
+		bool colorsDisplayed = false;
+		bool normalsDisplayed = false;
+		bool sfDisplayed = false;
+		bool colorIsOverridden = false;
+		bool showNameIn3D = false;
+		ccGenericGLDisplay* display = nullptr;
 	};
 
 	/**

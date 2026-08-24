@@ -93,13 +93,13 @@ void ccEnvelopeExtractorDlg::init()
 
 		ccGui::ParamStruct params = m_glWindow->getDisplayParameters();
 		// black (text) & white (background) display by default
-		params.backgroundCol          = ccColor::white;
-		params.textDefaultCol         = ccColor::black;
-		params.pointsDefaultCol       = ccColor::black;
+		params.backgroundCol = ccColor::white;
+		params.textDefaultCol = ccColor::black;
+		params.pointsDefaultCol = ccColor::black;
 		params.drawBackgroundGradient = false;
-		params.decimateMeshOnMove     = false;
-		params.displayCross           = false;
-		params.colorScaleUseShader    = false;
+		params.decimateMeshOnMove = false;
+		params.displayCross = false;
+		params.colorScaleUseShader = false;
 		m_glWindow->setDisplayParameters(params, true);
 		m_glWindow->setPerspectiveState(false, true);
 		m_glWindow->setInteractionMode(ccGLWindowInterface::INTERACT_PAN | ccGLWindowInterface::INTERACT_ZOOM_CAMERA | ccGLWindowInterface::INTERACT_CLICKABLE_ITEMS);
@@ -121,7 +121,7 @@ void ccEnvelopeExtractorDlg::zoomOn(const ccBBox& box)
 	m_glWindow->setPivotPoint(C);
 	m_glWindow->setCameraPos(C);
 
-	double pixSize   = std::max(box.getDiagVec().x / std::max(20, m_glWindow->glWidth() - 20), box.getDiagVec().y / std::max(20, m_glWindow->glHeight() - 20));
+	double pixSize = std::max(box.getDiagVec().x / std::max(20, m_glWindow->glWidth() - 20), box.getDiagVec().y / std::max(20, m_glWindow->glHeight() - 20));
 	double dimension = pixSize * m_glWindow->glWidth();
 	m_glWindow->setCameraFocalToFitWidth(dimension);
 }

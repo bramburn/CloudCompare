@@ -70,7 +70,7 @@ CC_FILE_ERROR PDMSFilter::loadFile(const QString& filename, ccHObject& container
 {
 	Q_UNUSED(parameters);
 
-	PdmsParser      parser;
+	PdmsParser parser;
 	PdmsFileSession session(filename);
 
 	parser.linkWithSession(&session);
@@ -118,31 +118,31 @@ CC_FILE_ERROR PDMSFilter::loadFile(const QString& filename, ccHObject& container
 				case PDMS_SCYLINDER:
 				{
 					PdmsTools::PdmsObjects::SCylinder* pdmsCyl = static_cast<PdmsTools::PdmsObjects::SCylinder*>(currentPair.first);
-					primitive                                  = new ccCylinder(pdmsCyl->diameter / 2, pdmsCyl->height, nullptr, pdmsCyl->name);
+					primitive = new ccCylinder(pdmsCyl->diameter / 2, pdmsCyl->height, nullptr, pdmsCyl->name);
 				}
 				break;
 				case PDMS_CTORUS:
 				{
 					PdmsTools::PdmsObjects::CTorus* pdmsCTor = static_cast<PdmsTools::PdmsObjects::CTorus*>(currentPair.first);
-					primitive                                = new ccTorus(pdmsCTor->inside_radius, pdmsCTor->outside_radius, pdmsCTor->angle /**M_PI/180.0*/, false, 0, nullptr, pdmsCTor->name);
+					primitive = new ccTorus(pdmsCTor->inside_radius, pdmsCTor->outside_radius, pdmsCTor->angle /**M_PI/180.0*/, false, 0, nullptr, pdmsCTor->name);
 				}
 				break;
 				case PDMS_RTORUS:
 				{
 					PdmsTools::PdmsObjects::RTorus* pdmsRTor = static_cast<PdmsTools::PdmsObjects::RTorus*>(currentPair.first);
-					primitive                                = new ccTorus(pdmsRTor->inside_radius, pdmsRTor->outside_radius, pdmsRTor->angle /**M_PI/180.0*/, false, pdmsRTor->height, nullptr, pdmsRTor->name);
+					primitive = new ccTorus(pdmsRTor->inside_radius, pdmsRTor->outside_radius, pdmsRTor->angle /**M_PI/180.0*/, false, pdmsRTor->height, nullptr, pdmsRTor->name);
 				}
 				break;
 				case PDMS_DISH:
 				{
 					PdmsTools::PdmsObjects::Dish* pdmsDish = static_cast<PdmsTools::PdmsObjects::Dish*>(currentPair.first);
-					primitive                              = new ccDish(pdmsDish->diameter / 2, pdmsDish->height, pdmsDish->radius, nullptr, pdmsDish->name);
+					primitive = new ccDish(pdmsDish->diameter / 2, pdmsDish->height, pdmsDish->radius, nullptr, pdmsDish->name);
 				}
 				break;
 				case PDMS_CONE:
 				{
 					PdmsTools::PdmsObjects::Cone* pdmsCone = static_cast<PdmsTools::PdmsObjects::Cone*>(currentPair.first);
-					primitive                              = new ccCone(pdmsCone->dbottom / 2, pdmsCone->dtop / 2, pdmsCone->height, 0, 0, nullptr, pdmsCone->name);
+					primitive = new ccCone(pdmsCone->dbottom / 2, pdmsCone->dtop / 2, pdmsCone->height, 0, 0, nullptr, pdmsCone->name);
 				}
 				break;
 				case PDMS_PYRAMID:
@@ -151,13 +151,13 @@ CC_FILE_ERROR PDMSFilter::loadFile(const QString& filename, ccHObject& container
 				case PDMS_SNOUT:
 				{
 					PdmsTools::PdmsObjects::Snout* pdmsSnout = static_cast<PdmsTools::PdmsObjects::Snout*>(currentPair.first);
-					primitive                                = new ccCone(pdmsSnout->dbottom / 2, pdmsSnout->dtop / 2, pdmsSnout->height, pdmsSnout->xoff, pdmsSnout->yoff, nullptr, pdmsSnout->name);
+					primitive = new ccCone(pdmsSnout->dbottom / 2, pdmsSnout->dtop / 2, pdmsSnout->height, pdmsSnout->xoff, pdmsSnout->yoff, nullptr, pdmsSnout->name);
 				}
 				break;
 				case PDMS_BOX:
 				{
 					PdmsTools::PdmsObjects::Box* pdmsBox = static_cast<PdmsTools::PdmsObjects::Box*>(currentPair.first);
-					primitive                            = new ccBox(pdmsBox->lengths, nullptr, pdmsBox->name);
+					primitive = new ccBox(pdmsBox->lengths, nullptr, pdmsBox->name);
 				}
 				break;
 				case PDMS_NBOX:
@@ -166,7 +166,7 @@ CC_FILE_ERROR PDMSFilter::loadFile(const QString& filename, ccHObject& container
 				case PDMS_EXTRU:
 				{
 					PdmsTools::PdmsObjects::Extrusion* pdmsExtru = static_cast<PdmsTools::PdmsObjects::Extrusion*>(currentPair.first);
-					size_t                             count     = pdmsExtru->loop->loop.size();
+					size_t count = pdmsExtru->loop->loop.size();
 					if (count)
 					{
 						std::vector<CCVector2> profile;

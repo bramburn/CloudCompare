@@ -56,7 +56,7 @@ class ccAdjustZoomDlg : public QDialog
 	void onPixelCountChanged(int);
 
   protected:
-	int    m_windowWidth_pix;
+	int m_windowWidth_pix;
 	double m_distanceToWidthRatio;
 };
 

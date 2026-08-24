@@ -157,7 +157,7 @@ QStringList ccRecentFiles::listRecent()
 QString ccRecentFiles::contractFilePath(const QString& filePath)
 {
 	QString homePath = QDir::toNativeSeparators(QDir::homePath());
-	QString newPath  = QDir::toNativeSeparators(filePath);
+	QString newPath = QDir::toNativeSeparators(filePath);
 
 	if (newPath.startsWith(homePath))
 	{

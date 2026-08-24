@@ -214,9 +214,9 @@ class MainWindow : public QMainWindow
 	 * @param[in] destWin Optional destination 3D window for immediate display
 	 * @see loadFile() for loading a single file
 	 */
-	virtual void addToDB(const QStringList&   filenames,
-	                     QString              fileFilter = QString(),
-	                     ccGLWindowInterface* destWin    = nullptr);
+	virtual void addToDB(const QStringList& filenames,
+	                     QString fileFilter = QString(),
+	                     ccGLWindowInterface* destWin = nullptr);
 
 	/**
 	 * @brief Add an entity to the database
@@ -227,10 +227,10 @@ class MainWindow : public QMainWindow
 	 * @param[in] autoRedraw Refresh 3D views after adding
 	 */
 	void addToDB(ccHObject* obj,
-	             bool       updateZoom       = false,
-	             bool       autoExpandDBTree = true,
-	             bool       checkDimensions  = false,
-	             bool       autoRedraw       = true) override;
+	             bool updateZoom = false,
+	             bool autoExpandDBTree = true,
+	             bool checkDimensions = false,
+	             bool autoRedraw = true) override;
 
 	/**
 	 * @brief Register an overlay dialog
@@ -319,11 +319,11 @@ class MainWindow : public QMainWindow
 	 * @param[in] xAxisLabel Label for the x-axis
 	 */
 	void spawnHistogramDialog(const std::vector<unsigned>& histoValues,
-	                                                 double                       minVal,
-	                                                 double                       maxVal,
-	                                                 QString                      title,
-	                                                 QString                      xAxisLabel) override;
-	ccPickingHub*               pickingHub() override
+	                          double minVal,
+	                          double maxVal,
+	                          QString title,
+	                          QString xAxisLabel) override;
+	ccPickingHub* pickingHub() override
 	{
 		return m_pickingHub;
 	}
@@ -451,12 +451,12 @@ class MainWindow : public QMainWindow
 	void updateUI() override;
 
 	virtual void toggleActiveWindowStereoVision(bool);
-	void         toggleActiveWindowCenteredPerspective() override;
-	void         toggleActiveWindowCustomLight() override;
-	void         toggleActiveWindowSunLight() override;
-	void         toggleActiveWindowViewerBasedPerspective() override;
-	void         zoomOnSelectedEntities() override;
-	void         setGlobalZoom() override;
+	void toggleActiveWindowCenteredPerspective() override;
+	void toggleActiveWindowCustomLight() override;
+	void toggleActiveWindowSunLight() override;
+	void toggleActiveWindowViewerBasedPerspective() override;
+	void zoomOnSelectedEntities() override;
+	void setGlobalZoom() override;
 
 	void increasePointSize() override;
 	void decreasePointSize() override;
@@ -745,12 +745,12 @@ class MainWindow : public QMainWindow
 	void applyTransformation(const ccGLMatrixd& transMat, bool applyToGlobal);
 
 	//! Creates point clouds from multiple 'components'
-	void createComponentsClouds(ccGenericPointCloud*                cloud,
+	void createComponentsClouds(ccGenericPointCloud* cloud,
 	                            CCCoreLib::ReferenceCloudContainer& components,
-	                            unsigned                            minPointPerComponent,
-	                            bool                                randomColors,
-	                            bool                                selectComponents,
-	                            bool                                sortBysize = true);
+	                            unsigned minPointPerComponent,
+	                            bool randomColors,
+	                            bool selectComponents,
+	                            bool sortBysize = true);
 
 	//! Saves position and state of all GUI elements
 	void saveGUIElementsPos();
@@ -854,7 +854,7 @@ class MainWindow : public QMainWindow
 	struct ccMDIDialogs
 	{
 		ccOverlayDialog* dialog;
-		Qt::Corner       position;
+		Qt::Corner position;
 
 		//! Constructor with dialog and position
 		ccMDIDialogs(ccOverlayDialog* dlg, Qt::Corner pos)

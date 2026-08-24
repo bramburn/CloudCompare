@@ -118,8 +118,8 @@ bool ccImage::load(const QString& filename, QString& error)
 
 void ccImage::setData(const QImage& image)
 {
-	m_image  = image;
-	m_width  = m_image.width();
+	m_image = image;
+	m_width = m_image.width();
 	m_height = m_image.height();
 	updateAspectRatio();
 }
@@ -131,12 +131,12 @@ void ccImage::updateAspectRatio()
 
 QSizeF ccImage::computeDisplayedSize(int glWidth, int glHeight) const
 {
-	int   realWidth  = static_cast<int>(m_height * m_aspectRatio); // take aspect ratio into account!
-	float cw         = realWidth > 0 ? static_cast<float>(glWidth) / realWidth : 0;
-	float ch         = m_height > 0 ? static_cast<float>(glHeight) / m_height : 0;
+	int realWidth = static_cast<int>(m_height * m_aspectRatio); // take aspect ratio into account!
+	float cw = realWidth > 0 ? static_cast<float>(glWidth) / realWidth : 0;
+	float ch = m_height > 0 ? static_cast<float>(glHeight) / m_height : 0;
 	float zoomFactor = (cw > ch ? ch : cw);
-	float dX         = realWidth * zoomFactor;
-	float dY         = m_height * zoomFactor;
+	float dX = realWidth * zoomFactor;
+	float dY = m_height * zoomFactor;
 
 	return {dX, dY};
 }

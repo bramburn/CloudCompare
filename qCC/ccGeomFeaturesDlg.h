@@ -55,20 +55,20 @@ class ccGeomFeaturesDlg : public QDialog
 	 * @param[in] features Features to select
 	 */
 	void setSelectedFeatures(const ccLibAlgorithms::GeomCharacteristicSet& features);
-	
+
 	/**
 	 * @brief Get selected features
 	 * @param[out] features Selected features
 	 * @return true if selection is valid
 	 */
 	bool getSelectedFeatures(ccLibAlgorithms::GeomCharacteristicSet& features) const;
-	
+
 	/**
 	 * @brief Set radius
 	 * @param[in] r Radius
 	 */
 	void setRadius(double r);
-	
+
 	/**
 	 * @brief Get radius
 	 * @return Radius
@@ -80,7 +80,7 @@ class ccGeomFeaturesDlg : public QDialog
 	 * @param[in] upDir Up direction
 	 */
 	void setUpDirection(const CCVector3& upDir);
-	
+
 	/**
 	 * @brief Get up direction
 	 * @return Up direction, or nullptr

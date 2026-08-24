@@ -63,7 +63,7 @@ bool PNFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) cons
 {
 	if (type == CC_TYPES::POINT_CLOUD)
 	{
-		multiple  = false;
+		multiple = false;
 		exclusive = true;
 		return true;
 	}
@@ -169,7 +169,7 @@ CC_FILE_ERROR PNFilter::loadFile(const QString& filename, ccHObject& container, 
 		return CC_FERR_READING;
 
 	// we deduce the points number from the file size
-	qint64 fileSize        = in.size();
+	qint64 fileSize = in.size();
 	qint64 singlePointSize = 6 * sizeof(float);
 	// check that size is ok
 	if (fileSize == 0)
@@ -191,12 +191,12 @@ CC_FILE_ERROR PNFilter::loadFile(const QString& filename, ccHObject& container, 
 
 	ccPointCloud* loadedCloud = nullptr;
 	// if the file is too big, it will be chuncked in multiple parts
-	unsigned chunkIndex    = 0;
-	unsigned fileChunkPos  = 0;
+	unsigned chunkIndex = 0;
+	unsigned fileChunkPos = 0;
 	unsigned fileChunkSize = 0;
 	// number of points read for the current cloud part
-	unsigned      pointsRead = 0;
-	CC_FILE_ERROR result     = CC_FERR_NO_ERROR;
+	unsigned pointsRead = 0;
+	CC_FILE_ERROR result = CC_FERR_NO_ERROR;
 
 	for (unsigned i = 0; i < numberOfPoints; i++)
 	{
@@ -205,9 +205,9 @@ CC_FILE_ERROR PNFilter::loadFile(const QString& filename, ccHObject& container, 
 		{
 			if (loadedCloud)
 				container.addChild(loadedCloud);
-			fileChunkPos  = pointsRead;
+			fileChunkPos = pointsRead;
 			fileChunkSize = std::min<unsigned>(numberOfPoints - pointsRead, CC_MAX_NUMBER_OF_POINTS_PER_CLOUD);
-			loadedCloud   = new ccPointCloud(QString("unnamed - Cloud #%1").arg(++chunkIndex));
+			loadedCloud = new ccPointCloud(QString("unnamed - Cloud #%1").arg(++chunkIndex));
 			if (!loadedCloud || !loadedCloud->reserveThePointsTable(fileChunkSize) || !loadedCloud->reserveTheNormsTable())
 			{
 				result = CC_FERR_NOT_ENOUGH_MEMORY;

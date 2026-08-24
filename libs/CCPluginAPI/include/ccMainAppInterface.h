@@ -144,10 +144,10 @@ class ccMainAppInterface
 	    \param autoRedraw whether to redraw the 3D view automatically or not (warning: if 'updateZoom' is true, the 3D view will always be redrawn)
 	**/
 	virtual void addToDB(ccHObject* obj,
-	                     bool       updateZoom       = false,
-	                     bool       autoExpandDBTree = true,
-	                     bool       checkDimensions  = false,
-	                     bool       autoRedraw       = true) = 0;
+	                     bool updateZoom = false,
+	                     bool autoExpandDBTree = true,
+	                     bool checkDimensions = false,
+	                     bool autoRedraw = true) = 0;
 
 	//! Removes an entity from main db tree
 	/** Object is automatically detached from its parent.
@@ -161,9 +161,9 @@ class ccMainAppInterface
 	 **/
 	struct ccHObjectContext
 	{
-		ccHObject* parent      = nullptr;
-		int        childFlags  = 0;
-		int        parentFlags = 0;
+		ccHObject* parent = nullptr;
+		int childFlags = 0;
+		int parentFlags = 0;
 	};
 
 	//! Removes object temporarily from DB tree
@@ -269,10 +269,10 @@ class ccMainAppInterface
 
 	//! Spawns an histogram dialog
 	virtual void spawnHistogramDialog(const std::vector<unsigned>& histoValues,
-	                                  double                       minVal,
-	                                  double                       maxVal,
-	                                  QString                      title,
-	                                  QString                      xAxisLabel)
+	                                  double minVal,
+	                                  double maxVal,
+	                                  QString title,
+	                                  QString xAxisLabel)
 	{
 	}
 
@@ -285,12 +285,12 @@ class ccMainAppInterface
 	// other useful methods
 	virtual void setView(CC_VIEW_ORIENTATION view) = 0;
 
-	virtual void toggleActiveWindowCenteredPerspective()    = 0;
-	virtual void toggleActiveWindowCustomLight()            = 0;
-	virtual void toggleActiveWindowSunLight()               = 0;
+	virtual void toggleActiveWindowCenteredPerspective() = 0;
+	virtual void toggleActiveWindowCustomLight() = 0;
+	virtual void toggleActiveWindowSunLight() = 0;
 	virtual void toggleActiveWindowViewerBasedPerspective() = 0;
-	virtual void zoomOnSelectedEntities()                   = 0;
-	virtual void setGlobalZoom()                            = 0;
+	virtual void zoomOnSelectedEntities() = 0;
+	virtual void setGlobalZoom() = 0;
 
 	virtual void increasePointSize() = 0;
 	virtual void decreasePointSize() = 0;

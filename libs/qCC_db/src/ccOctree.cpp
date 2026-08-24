@@ -64,7 +64,7 @@ void ccOctree::setDisplayedLevel(int level)
 {
 	if (level != m_displayedLevel)
 	{
-		m_displayedLevel     = level;
+		m_displayedLevel = level;
 		m_glListIsDeprecated = true;
 	}
 }
@@ -73,7 +73,7 @@ void ccOctree::setDisplayMode(DisplayMode mode)
 {
 	if (m_displayMode != mode)
 	{
-		m_displayMode        = mode;
+		m_displayMode = mode;
 		m_glListIsDeprecated = true;
 	}
 }
@@ -96,7 +96,7 @@ void ccOctree::clear()
 		}
 	}
 
-	m_glListID           = 0;
+	m_glListID = 0;
 	m_glListIsDeprecated = true;
 
 	DgmOctree::clear();
@@ -175,9 +175,9 @@ void ccOctree::draw(CC_DRAW_CONTEXT& context, ccColor::Rgb* pickingColor /*=null
 		if (pickingColor)
 		{
 			ccGL::Color(glFunc, *pickingColor);
-			glParams.showSF     = false;
+			glParams.showSF = false;
 			glParams.showColors = false;
-			glParams.showNorms  = false;
+			glParams.showNorms = false;
 		}
 		else if (!glParams.showColors)
 		{
@@ -240,8 +240,8 @@ void ccOctree::draw(CC_DRAW_CONTEXT& context, ccColor::Rgb* pickingColor /*=null
 			{
 				// by default we use a box as primitive
 				PointCoordinateType cs = getCellSize(m_displayedLevel);
-				CCVector3           dims(cs, cs, cs);
-				ccBox               box(dims);
+				CCVector3 dims(cs, cs, cs);
+				ccBox box(dims);
 				box.showColors(glParams.showColors || glParams.showSF);
 				box.showNormals(glParams.showNorms);
 
@@ -254,8 +254,8 @@ void ccOctree::draw(CC_DRAW_CONTEXT& context, ccColor::Rgb* pickingColor /*=null
 
 				// fake context
 				CC_DRAW_CONTEXT fakeContext = context;
-				fakeContext.drawingFlags    = CC_DRAW_3D | CC_DRAW_FOREGROUND | CC_LIGHT_ENABLED;
-				fakeContext.display         = nullptr;
+				fakeContext.drawingFlags = CC_DRAW_3D | CC_DRAW_FOREGROUND | CC_LIGHT_ENABLED;
+				fakeContext.display = nullptr;
 
 				void* additionalParameters[] = {reinterpret_cast<void*>(&glParams),
 				                                reinterpret_cast<void*>(m_theAssociatedCloudAsGPC),
@@ -290,11 +290,11 @@ void ccOctree::draw(CC_DRAW_CONTEXT& context, ccColor::Rgb* pickingColor /*=null
 }
 
 bool ccOctree::DrawCellAsABox(const CCCoreLib::DgmOctree::octreeCell& cell,
-                              void**                                  additionalParameters,
-                              CCCoreLib::NormalizedProgress*          nProgress /*=nullptr*/)
+                              void** additionalParameters,
+                              CCCoreLib::NormalizedProgress* nProgress /*=nullptr*/)
 {
-	ccOctreeFrustumIntersector* ofi    = static_cast<ccOctreeFrustumIntersector*>(additionalParameters[0]);
-	QOpenGLFunctions_2_1*       glFunc = static_cast<QOpenGLFunctions_2_1*>(additionalParameters[1]);
+	ccOctreeFrustumIntersector* ofi = static_cast<ccOctreeFrustumIntersector*>(additionalParameters[0]);
+	QOpenGLFunctions_2_1* glFunc = static_cast<QOpenGLFunctions_2_1*>(additionalParameters[1]);
 	assert(glFunc != nullptr);
 
 	CCVector3 bbMin;
@@ -357,19 +357,19 @@ bool ccOctree::DrawCellAsABox(const CCCoreLib::DgmOctree::octreeCell& cell,
 }
 
 bool ccOctree::DrawCellAsAPoint(const CCCoreLib::DgmOctree::octreeCell& cell,
-                                void**                                  additionalParameters,
-                                CCCoreLib::NormalizedProgress*          nProgress /*=nullptr*/)
+                                void** additionalParameters,
+                                CCCoreLib::NormalizedProgress* nProgress /*=nullptr*/)
 {
 	// variables additionnelles
-	glDrawParams*         glParams = reinterpret_cast<glDrawParams*>(additionalParameters[0]);
-	ccGenericPointCloud*  cloud    = reinterpret_cast<ccGenericPointCloud*>(additionalParameters[1]);
-	QOpenGLFunctions_2_1* glFunc   = static_cast<QOpenGLFunctions_2_1*>(additionalParameters[2]);
+	glDrawParams* glParams = reinterpret_cast<glDrawParams*>(additionalParameters[0]);
+	ccGenericPointCloud* cloud = reinterpret_cast<ccGenericPointCloud*>(additionalParameters[1]);
+	QOpenGLFunctions_2_1* glFunc = static_cast<QOpenGLFunctions_2_1*>(additionalParameters[2]);
 	assert(glFunc != nullptr);
 
 	if (glParams->showSF)
 	{
-		ScalarType          dist = CCCoreLib::ScalarFieldTools::computeMeanScalarValue(cell.points);
-		const ccColor::Rgb* col  = cloud->geScalarValueColor(dist);
+		ScalarType dist = CCCoreLib::ScalarFieldTools::computeMeanScalarValue(cell.points);
+		const ccColor::Rgb* col = cloud->geScalarValueColor(dist);
 		ccGL::Color(glFunc, col ? *col : ccColor::lightGreyRGB);
 	}
 	else if (glParams->showColors)
@@ -391,14 +391,14 @@ bool ccOctree::DrawCellAsAPoint(const CCCoreLib::DgmOctree::octreeCell& cell,
 }
 
 bool ccOctree::DrawCellAsAPrimitive(const CCCoreLib::DgmOctree::octreeCell& cell,
-                                    void**                                  additionalParameters,
-                                    CCCoreLib::NormalizedProgress*          nProgress /*=nullptr*/)
+                                    void** additionalParameters,
+                                    CCCoreLib::NormalizedProgress* nProgress /*=nullptr*/)
 {
 	// variables additionnelles
-	glDrawParams*        glParams  = reinterpret_cast<glDrawParams*>(additionalParameters[0]);
-	ccGenericPointCloud* cloud     = reinterpret_cast<ccGenericPointCloud*>(additionalParameters[1]);
-	ccGenericPrimitive*  primitive = reinterpret_cast<ccGenericPrimitive*>(additionalParameters[2]);
-	CC_DRAW_CONTEXT*     context   = reinterpret_cast<CC_DRAW_CONTEXT*>(additionalParameters[3]);
+	glDrawParams* glParams = reinterpret_cast<glDrawParams*>(additionalParameters[0]);
+	ccGenericPointCloud* cloud = reinterpret_cast<ccGenericPointCloud*>(additionalParameters[1]);
+	ccGenericPrimitive* primitive = reinterpret_cast<ccGenericPrimitive*>(additionalParameters[2]);
+	CC_DRAW_CONTEXT* context = reinterpret_cast<CC_DRAW_CONTEXT*>(additionalParameters[3]);
 
 	// get the set of OpenGL functions (version 2.1)
 	QOpenGLFunctions_2_1* glFunc = context->glFunctions<QOpenGLFunctions_2_1>();
@@ -412,8 +412,8 @@ bool ccOctree::DrawCellAsAPrimitive(const CCCoreLib::DgmOctree::octreeCell& cell
 
 	if (glParams->showSF)
 	{
-		ScalarType          dist = CCCoreLib::ScalarFieldTools::computeMeanScalarValue(cell.points);
-		const ccColor::Rgb* rgb  = cloud->geScalarValueColor(dist);
+		ScalarType dist = CCCoreLib::ScalarFieldTools::computeMeanScalarValue(cell.points);
+		const ccColor::Rgb* rgb = cloud->geScalarValueColor(dist);
 		if (rgb)
 			primitive->setColor(*rgb);
 	}
@@ -492,7 +492,7 @@ bool ccOctree::intersectWithFrustum(ccCameraSensor* sensor, std::vector<unsigned
 		return false;
 
 	// initialization
-	float     globalPlaneCoefficients[6][4];
+	float globalPlaneCoefficients[6][4];
 	CCVector3 globalCorners[8];
 	CCVector3 globalEdges[6];
 	CCVector3 globalCenter;
@@ -522,12 +522,12 @@ bool ccOctree::intersectWithFrustum(ccCameraSensor* sensor, std::vector<unsigned
 	return true;
 }
 
-bool ccOctree::pointPicking(const CCVector2d&           clickPos,
+bool ccOctree::pointPicking(const CCVector2d& clickPos,
                             const ccGLCameraParameters& camera,
-                            PointDescriptor&            output,
-                            double                      pickWidth_pix /*=3.0*/) const
+                            PointDescriptor& output,
+                            double pickWidth_pix /*=3.0*/) const
 {
-	output.point       = nullptr;
+	output.point = nullptr;
 	output.squareDistd = -1.0;
 
 	if (!m_theAssociatedCloudAsGPC)
@@ -550,7 +550,7 @@ bool ccOctree::pointPicking(const CCVector2d&           clickPos,
 	}
 
 	ccGLMatrix trans;
-	bool       hasGLTrans = m_theAssociatedCloudAsGPC->getAbsoluteGLTransformation(trans);
+	bool hasGLTrans = m_theAssociatedCloudAsGPC->getAbsoluteGLTransformation(trans);
 
 	// compute 3D picking 'ray'
 	CCVector3 rayAxis;
@@ -563,7 +563,7 @@ bool ccOctree::pointPicking(const CCVector2d&           clickPos,
 			return false;
 		}
 
-		rayAxis   = (Y - X).toPC();
+		rayAxis = (Y - X).toPC();
 		rayOrigin = X.toPC();
 
 		if (hasGLTrans)
@@ -577,7 +577,7 @@ bool ccOctree::pointPicking(const CCVector2d&           clickPos,
 	}
 
 	CCVector3 margin(0, 0, 0);
-	double    maxFOV_rad = 0;
+	double maxFOV_rad = 0;
 	if (camera.perspective)
 	{
 		maxFOV_rad = 0.002 * pickWidth_pix; // empirical conversion from pixels to FOV angle (in radians)
@@ -585,7 +585,7 @@ bool ccOctree::pointPicking(const CCVector2d&           clickPos,
 	else
 	{
 		double maxRadius = pickWidth_pix * camera.fov_deg / 2;
-		margin           = CCVector3(1, 1, 1) * static_cast<PointCoordinateType>(maxRadius);
+		margin = CCVector3(1, 1, 1) * static_cast<PointCoordinateType>(maxRadius);
 	}
 
 	// first test with the total bounding box
@@ -604,7 +604,7 @@ bool ccOctree::pointPicking(const CCVector2d&           clickPos,
 	// binary shift for cell code truncation at current level
 	unsigned char currentBitDec = GET_BIT_SHIFT(level);
 	// current cell code
-	CellCode currentCellCode          = INVALID_CELL_CODE;
+	CellCode currentCellCode = INVALID_CELL_CODE;
 	CellCode currentCellTruncatedCode = INVALID_CELL_CODE;
 	// whether the current cell should be skipped or not
 	bool skipThisCell = false;
@@ -626,7 +626,7 @@ bool ccOctree::pointPicking(const CCVector2d&           clickPos,
 	    && !visTable // if the visibility table is instantiated, we always display ALL points
 	)
 	{
-		ccPointCloud*  pc = static_cast<ccPointCloud*>(m_theAssociatedCloudAsGPC);
+		ccPointCloud* pc = static_cast<ccPointCloud*>(m_theAssociatedCloudAsGPC);
 		ccScalarField* sf = pc->getCurrentDisplayedScalarField();
 		if (sf && sf->mayHaveHiddenValues() && sf->getColorScale())
 		{
@@ -665,20 +665,20 @@ bool ccOctree::pointPicking(const CCVector2d&           clickPos,
 
 				// first test with the total bounding box
 				PointCoordinateType halfCellSize = getCellSize(level) / 2;
-				CCVector3           cellCenter((2 * cellPos.x + 1) * halfCellSize,
-                                     (2 * cellPos.y + 1) * halfCellSize,
-                                     (2 * cellPos.z + 1) * halfCellSize);
+				CCVector3 cellCenter((2 * cellPos.x + 1) * halfCellSize,
+				                     (2 * cellPos.y + 1) * halfCellSize,
+				                     (2 * cellPos.z + 1) * halfCellSize);
 
 				CCVector3 halfCell = CCVector3(halfCellSize, halfCellSize, halfCellSize);
 
 				if (camera.perspective)
 				{
-					double radialSqDist   = 0.0;
+					double radialSqDist = 0.0;
 					double sqDistToOrigin = 0.0;
 					rayLocal.squareDistances(cellCenter, radialSqDist, sqDistToOrigin);
 
-					double dx      = sqrt(sqDistToOrigin);
-					double dy      = std::max<double>(0, sqrt(radialSqDist) - CCCoreLib::SQRT_3 * halfCellSize);
+					double dx = sqrt(sqDistToOrigin);
+					double dy = std::max<double>(0, sqrt(radialSqDist) - CCCoreLib::SQRT_3 * halfCellSize);
 					double fov_rad = atan2(dy, dx);
 
 					skipThisCell = (fov_rad > maxFOV_rad);
@@ -696,7 +696,7 @@ bool ccOctree::pointPicking(const CCVector2d&           clickPos,
 					++level;
 			}
 
-			currentBitDec            = GET_BIT_SHIFT(level);
+			currentBitDec = GET_BIT_SHIFT(level);
 			currentCellTruncatedCode = (currentCellCode >> currentBitDec);
 		}
 
@@ -712,14 +712,14 @@ bool ccOctree::pointPicking(const CCVector2d&           clickPos,
 			{
 				// test the point
 				const CCVector3* P = m_theAssociatedCloud->getPoint(it->theIndex);
-				CCVector3        Q = *P;
+				CCVector3 Q = *P;
 				if (hasGLTrans)
 				{
 					trans.apply(Q);
 				}
 
 				CCVector3d Q2D;
-				bool       insideFrustum = false;
+				bool insideFrustum = false;
 				camera.project(Q, Q2D, &insideFrustum);
 				if (insideFrustum)
 				{
@@ -729,8 +729,8 @@ bool ccOctree::pointPicking(const CCVector2d&           clickPos,
 						double squareDist = CCVector3d(X.x - Q.x, X.y - Q.y, X.z - Q.z).norm2d();
 						if (!output.point || squareDist < output.squareDistd)
 						{
-							output.point       = P;
-							output.pointIndex  = it->theIndex;
+							output.point = P;
+							output.pointIndex = it->theIndex;
 							output.squareDistd = squareDist;
 						}
 					}
@@ -755,9 +755,9 @@ PointCoordinateType ccOctree::GuessNaiveRadius(ccGenericPointCloud* cloud)
 	return largestDim / std::min<unsigned>(100, std::max<unsigned>(1, cloud->size() / 100));
 }
 
-PointCoordinateType ccOctree::GuessBestRadiusAutoComputeOctree(ccGenericPointCloud*    cloud,
+PointCoordinateType ccOctree::GuessBestRadiusAutoComputeOctree(ccGenericPointCloud* cloud,
                                                                const BestRadiusParams& params,
-                                                               QWidget*                parentWidget /*=nullptr*/)
+                                                               QWidget* parentWidget /*=nullptr*/)
 {
 	if (!cloud)
 	{
@@ -778,9 +778,9 @@ PointCoordinateType ccOctree::GuessBestRadiusAutoComputeOctree(ccGenericPointClo
 	return ccOctree::GuessBestRadius(cloud, params, cloud->getOctree().data());
 }
 
-PointCoordinateType ccOctree::GuessBestRadius(ccGenericPointCloud*                cloud,
-                                              const BestRadiusParams&             params,
-                                              CCCoreLib::DgmOctree*               inputOctree /*=nullptr*/,
+PointCoordinateType ccOctree::GuessBestRadius(ccGenericPointCloud* cloud,
+                                              const BestRadiusParams& params,
+                                              CCCoreLib::DgmOctree* inputOctree /*=nullptr*/,
                                               CCCoreLib::GenericProgressCallback* progressCb /*=nullptr*/)
 {
 	if (!cloud)
@@ -818,22 +818,22 @@ PointCoordinateType ccOctree::GuessBestRadius(ccGenericPointCloud*              
 	{
 		const unsigned sampleCount = std::min<unsigned>(200, cloud->size() / 10);
 
-		double              aimedPop    = params.aimedPopulationPerCell;
-		PointCoordinateType radius      = bestRadius;
-		PointCoordinateType lastRadius  = radius;
-		double              lastMeanPop = 0;
+		double aimedPop = params.aimedPopulationPerCell;
+		PointCoordinateType radius = bestRadius;
+		PointCoordinateType lastRadius = radius;
+		double lastMeanPop = 0;
 
-		std::random_device                      rd;        // non-deterministic generator
-		std::mt19937                            gen(rd()); // to seed mersenne twister.
+		std::random_device rd;  // non-deterministic generator
+		std::mt19937 gen(rd()); // to seed mersenne twister.
 		std::uniform_int_distribution<unsigned> dist(0, cloud->size() - 1);
 
 		// we may have to do this several times
 		for (size_t attempt = 0; attempt < 10; ++attempt)
 		{
-			int totalCount       = 0;
+			int totalCount = 0;
 			int totalSquareCount = 0;
-			int minPop           = 0;
-			int maxPop           = 0;
+			int minPop = 0;
+			int maxPop = 0;
 			int aboveMinPopCount = 0;
 
 			unsigned char octreeLevel = octree->findBestLevelForAGivenNeighbourhoodSizeExtraction(radius);
@@ -843,9 +843,9 @@ PointCoordinateType ccOctree::GuessBestRadius(ccGenericPointCloud*              
 				unsigned randomIndex = dist(gen);
 				assert(randomIndex < cloud->size());
 
-				const CCVector3*                    P = cloud->getPoint(randomIndex);
+				const CCVector3* P = cloud->getPoint(randomIndex);
 				CCCoreLib::DgmOctree::NeighboursSet Yk;
-				int                                 n = octree->getPointsInSphericalNeighbourhood(*P, radius, Yk, octreeLevel);
+				int n = octree->getPointsInSphericalNeighbourhood(*P, radius, Yk, octreeLevel);
 				assert(n >= 1);
 
 				totalCount += n;
@@ -868,8 +868,8 @@ PointCoordinateType ccOctree::GuessBestRadius(ccGenericPointCloud*              
 				}
 			}
 
-			double meanPop          = static_cast<double>(totalCount) / sampleCount;
-			double stdDevPop        = sqrt(std::abs(static_cast<double>(totalSquareCount) / sampleCount - meanPop * meanPop));
+			double meanPop = static_cast<double>(totalCount) / sampleCount;
+			double stdDevPop = sqrt(std::abs(static_cast<double>(totalSquareCount) / sampleCount - meanPop * meanPop));
 			double aboveMinPopRatio = static_cast<double>(aboveMinPopCount) / sampleCount;
 
 			ccLog::Print(QString("[GuessBestRadius] Radius = %1 -> samples population in [%2 ; %3] (mean %4 / std. dev. %5 / %6% above minimum)")
@@ -916,7 +916,7 @@ PointCoordinateType ccOctree::GuessBestRadius(ccGenericPointCloud*              
 					bestRadius = radius;
 				}
 
-				double slope           = (radius * radius - lastRadius * lastRadius) / (meanPop - lastMeanPop);
+				double slope = (radius * radius - lastRadius * lastRadius) / (meanPop - lastMeanPop);
 				double newSquareRadius = static_cast<double>(lastRadius) * lastRadius + (aimedPop - lastMeanPop) * slope;
 				if (newSquareRadius > 0)
 				{
@@ -929,7 +929,7 @@ PointCoordinateType ccOctree::GuessBestRadius(ccGenericPointCloud*              
 				}
 			}
 
-			lastRadius  = radius;
+			lastRadius = radius;
 			lastMeanPop = meanPop;
 
 			radius = static_cast<PointCoordinateType>(newRadius);

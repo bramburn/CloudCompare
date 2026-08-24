@@ -72,11 +72,11 @@ static int s_maxThreadCount = ccQtHelpers::GetMaxThreadCount();
  * @param parent Parent widget
  * @param noDisplay If true, suppress display updates
  */
-ccComparisonDlg::ccComparisonDlg(ccHObject*         compEntity,
-                                 ccHObject*         refEntity,
+ccComparisonDlg::ccComparisonDlg(ccHObject* compEntity,
+                                 ccHObject* refEntity,
                                  CC_COMPARISON_TYPE cpType,
-                                 QWidget*           parent /*=nullptr*/,
-                                 bool               noDisplay /*=false*/)
+                                 QWidget* parent /*=nullptr*/,
+                                 bool noDisplay /*=false*/)
     : QDialog(parent, Qt::Tool)
     , Ui::ComparisonDialog()
     , m_compEnt(compEntity)
@@ -124,7 +124,7 @@ ccComparisonDlg::ccComparisonDlg(ccHObject*         compEntity,
 	refName->setText(m_refEnt ? m_refEnt->getName() : QString());
 	preciseResultsTabWidget->setCurrentIndex(0);
 
-	m_refVisibility    = (m_refEnt ? m_refEnt->isVisible() : false);
+	m_refVisibility = (m_refEnt ? m_refEnt->isVisible() : false);
 	m_compSFVisibility = (m_compEnt ? m_compEnt->sfShown() : false);
 
 	if (!prepareEntitiesForComparison())
@@ -219,7 +219,7 @@ bool ccComparisonDlg::prepareEntitiesForComparison()
 
 	if (m_compType == CLOUDMESH_DIST)
 	{
-		m_refMesh  = ccHObjectCaster::ToGenericMesh(m_refEnt);
+		m_refMesh = ccHObjectCaster::ToGenericMesh(m_refEnt);
 		m_refCloud = m_refMesh->getAssociatedCloud();
 		m_refOctree.clear();
 	}
@@ -364,7 +364,7 @@ bool ccComparisonDlg::computeApproxDistances()
 		progressDlg->show();
 	}
 
-	int           approxResult = -1;
+	int approxResult = -1;
 	QElapsedTimer eTimer;
 	eTimer.start();
 	switch (m_compType)
@@ -385,12 +385,12 @@ bool ccComparisonDlg::computeApproxDistances()
 	{
 		CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams c2mParams;
 		{
-			c2mParams.octreeLevel     = DEFAULT_OCTREE_LEVEL;
-			c2mParams.maxSearchDist   = 0;
-			c2mParams.useDistanceMap  = true;
+			c2mParams.octreeLevel = DEFAULT_OCTREE_LEVEL;
+			c2mParams.maxSearchDist = 0;
+			c2mParams.useDistanceMap = true;
 			c2mParams.signedDistances = false;
-			c2mParams.flipNormals     = false;
-			c2mParams.multiThread     = false;
+			c2mParams.flipNormals = false;
+			c2mParams.multiThread = false;
 		}
 		approxResult = CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances(m_compCloud,
 		                                                                               m_refMesh,
@@ -452,7 +452,7 @@ bool ccComparisonDlg::computeApproxDistances()
 
 		// Max relative error
 		PointCoordinateType cs = m_compOctree->getCellSize(DEFAULT_OCTREE_LEVEL);
-		double              e  = cs / 2.0;
+		double e = cs / 2.0;
 		approxStats->setItem(curRow, 0, new QTableWidgetItem("Max error"));
 		approxStats->setItem(curRow++, 1, new QTableWidgetItem(QString("%1").arg(e)));
 
@@ -513,7 +513,7 @@ int ccComparisonDlg::determineBestOctreeLevel(double maxSearchDist)
 	}
 
 	// evalutate the theoretical time for each octree level
-	const int           MAX_OCTREE_LEVEL = m_refMesh ? 9 : CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL; // DGM: can't go higher than level 9 with a mesh as the grid is 'plain' and would take too much memory!
+	const int MAX_OCTREE_LEVEL = m_refMesh ? 9 : CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL; // DGM: can't go higher than level 9 with a mesh as the grid is 'plain' and would take too much memory!
 	std::vector<double> timings;
 	try
 	{
@@ -526,8 +526,8 @@ int ccComparisonDlg::determineBestOctreeLevel(double maxSearchDist)
 	}
 
 	// if the reference is a mesh
-	double                         meanTriangleSurface = 1.0;
-	CCCoreLib::GenericIndexedMesh* mesh                = nullptr;
+	double meanTriangleSurface = 1.0;
+	CCCoreLib::GenericIndexedMesh* mesh = nullptr;
 	if (!m_refOctree)
 	{
 		if (!m_refMesh)
@@ -551,8 +551,8 @@ int ccComparisonDlg::determineBestOctreeLevel(double maxSearchDist)
 	}
 
 	// we skip the lowest subdivision levels (useless + incompatible with below formulas ;)
-	static const int s_minOctreeLevel   = 6;
-	int              theBestOctreeLevel = s_minOctreeLevel;
+	static const int s_minOctreeLevel = 6;
+	int theBestOctreeLevel = s_minOctreeLevel;
 
 	// we don't test the very first and very last level
 	QScopedPointer<ccProgressDialog> progressDlg;
@@ -566,18 +566,18 @@ int ccComparisonDlg::determineBestOctreeLevel(double maxSearchDist)
 	CCCoreLib::NormalizedProgress nProgress(progressDlg.data(), MAX_OCTREE_LEVEL - 2);
 	QApplication::processEvents();
 
-	bool                maxDistanceDefined = maxDistCheckBox->isChecked();
-	PointCoordinateType maxDistance        = static_cast<PointCoordinateType>(maxDistanceDefined ? maxSearchDistSpinBox->value() : 0);
+	bool maxDistanceDefined = maxDistCheckBox->isChecked();
+	PointCoordinateType maxDistance = static_cast<PointCoordinateType>(maxDistanceDefined ? maxSearchDistSpinBox->value() : 0);
 
 	uint64_t maxNeighbourhoodVolume = static_cast<uint64_t>(1) << (3 * MAX_OCTREE_LEVEL);
 
 	// for each level
 	for (int level = s_minOctreeLevel; level < MAX_OCTREE_LEVEL; ++level)
 	{
-		const unsigned char bitDec               = CCCoreLib::DgmOctree::GET_BIT_SHIFT(level);
-		unsigned            numberOfPointsInCell = 0;
-		unsigned            index                = 0;
-		double              cellDist             = -1;
+		const unsigned char bitDec = CCCoreLib::DgmOctree::GET_BIT_SHIFT(level);
+		unsigned numberOfPointsInCell = 0;
+		unsigned index = 0;
+		double cellDist = -1;
 		// unsigned skippedCells = 0;
 
 		// we compute a 'correction factor' that converts an approximate distance into an
@@ -653,8 +653,8 @@ int ccComparisonDlg::determineBestOctreeLevel(double maxSearchDist)
 				}
 
 				numberOfPointsInCell = 0;
-				cellDist             = 0;
-				tempCode             = truncatedCode;
+				cellDist = 0;
+				tempCode = truncatedCode;
 			}
 
 			ScalarType pointDist = approxDistances->getValue(index);
@@ -718,10 +718,10 @@ bool ccComparisonDlg::computeDistances()
 
 	// options
 	bool signedDistances = signedDistCheckBox->isEnabled() && signedDistCheckBox->isChecked();
-	bool flipNormals     = (signedDistances ? flipNormalsCheckBox->isChecked() : false);
-	bool robust          = (signedDistances ? robustCheckBox->isChecked() : true);
-	bool split3D         = split3DCheckBox->isEnabled() && split3DCheckBox->isChecked();
-	bool mergeXY         = compute2DCheckBox->isChecked();
+	bool flipNormals = (signedDistances ? flipNormalsCheckBox->isChecked() : false);
+	bool robust = (signedDistances ? robustCheckBox->isChecked() : true);
+	bool split3D = split3DCheckBox->isEnabled() && split3DCheckBox->isChecked();
+	bool mergeXY = compute2DCheckBox->isChecked();
 
 	// does the cloud has already a temporary scalar field that we can use?
 	int sfIdx = m_compCloud->getScalarFieldIndexByName(CC_TEMP_DISTANCES_DEFAULT_SF_NAME);
@@ -746,11 +746,11 @@ bool ccComparisonDlg::computeDistances()
 	bool multiThread = multiThreadedCheckBox->isChecked();
 
 	CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams c2cParams;
-	CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams  c2mParams;
+	CCCoreLib::DistanceComputationTools::Cloud2MeshDistancesComputationParams c2mParams;
 	s_maxThreadCount = c2cParams.maxThreadCount = c2mParams.maxThreadCount = maxThreadCountSpinBox->value();
 	ccLog::Print(QString("[Distances] Will use %1 threads").arg(s_maxThreadCount));
 
-	int                              result = -1;
+	int result = -1;
 	QScopedPointer<ccProgressDialog> progressDlg;
 	if (parentWidget())
 	{
@@ -861,14 +861,14 @@ bool ccComparisonDlg::computeDistances()
 				if (c2cParams.localModel != CCCoreLib::NO_MODEL)
 				{
 					c2cParams.useSphericalSearchForLocalModel = lmRadiusRadioButton->isChecked();
-					c2cParams.kNNForLocalModel                = static_cast<unsigned>(std::max(0, lmKNNSpinBox->value()));
-					c2cParams.radiusForLocalModel             = static_cast<ScalarType>(lmRadiusDoubleSpinBox->value());
-					c2cParams.reuseExistingLocalModels        = lmOptimizeCheckBox->isChecked();
+					c2cParams.kNNForLocalModel = static_cast<unsigned>(std::max(0, lmKNNSpinBox->value()));
+					c2cParams.radiusForLocalModel = static_cast<ScalarType>(lmRadiusDoubleSpinBox->value());
+					c2cParams.reuseExistingLocalModels = lmOptimizeCheckBox->isChecked();
 				}
 			}
 			c2cParams.maxSearchDist = maxSearchDist;
-			c2cParams.multiThread   = multiThread;
-			c2cParams.CPSet         = nullptr;
+			c2cParams.multiThread = multiThread;
+			c2cParams.CPSet = nullptr;
 		}
 
 		result = CCCoreLib::DistanceComputationTools::computeCloud2CloudDistances(m_compCloud,
@@ -883,13 +883,13 @@ bool ccComparisonDlg::computeDistances()
 
 		// setup parameters
 		{
-			c2mParams.octreeLevel     = static_cast<unsigned char>(octreeLevel);
-			c2mParams.maxSearchDist   = maxSearchDist;
-			c2mParams.useDistanceMap  = false;
+			c2mParams.octreeLevel = static_cast<unsigned char>(octreeLevel);
+			c2mParams.maxSearchDist = maxSearchDist;
+			c2mParams.useDistanceMap = false;
 			c2mParams.signedDistances = signedDistances;
-			c2mParams.flipNormals     = flipNormals;
-			c2mParams.multiThread     = multiThread;
-			c2mParams.robust          = robust;
+			c2mParams.flipNormals = flipNormals;
+			c2mParams.multiThread = multiThread;
+			c2mParams.robust = robust;
 		}
 
 		result = CCCoreLib::DistanceComputationTools::computeCloud2MeshDistances(m_compCloud,
@@ -964,7 +964,7 @@ bool ccComparisonDlg::computeDistances()
 				if (sf)
 				{
 					static const QChar CharDim[3]{'X', 'Y', 'Z'};
-					QString            dimSFName = m_sfName + QString(" (%1)").arg(CharDim[j]);
+					QString dimSFName = m_sfName + QString(" (%1)").arg(CharDim[j]);
 					sf->setName(dimSFName.toStdString());
 					sf->computeMinAndMax();
 					// check that SF doesn't already exist
@@ -980,7 +980,7 @@ bool ccComparisonDlg::computeDistances()
 			{
 				ccLog::Warning("[ComputeDistances] compute 2D distances (xy plane)");
 				QString sfNameXY = m_sfName + " (XY)";
-				int     sf2D     = m_compCloud->getScalarFieldIndexByName(sfNameXY.toStdString());
+				int sf2D = m_compCloud->getScalarFieldIndexByName(sfNameXY.toStdString());
 				if (sf2D < 0)
 				{
 					sf2D = m_compCloud->addScalarField(sfNameXY.toStdString());

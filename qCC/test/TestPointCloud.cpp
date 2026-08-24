@@ -30,11 +30,10 @@
  *
  * @see ccPointCloud.h
  */
+#include <QString>
+#include <QTest>
 #include <ccPointCloud.h>
 #include <ccScalarField.h>
-
-#include <QTest>
-#include <QString>
 
 class TestPointCloud : public QObject
 {

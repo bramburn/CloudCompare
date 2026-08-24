@@ -50,7 +50,7 @@ class STLFilter : public FileIOFilter
 	// inherited from FileIOFilter
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
-	bool          canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
+	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 
   private:
@@ -59,15 +59,15 @@ class STLFilter : public FileIOFilter
 	CC_FILE_ERROR saveToBINFile(ccGenericMesh* mesh, QFile& theFile, QWidget* parentWidget = nullptr);
 
 	//! Custom load method for ASCII files
-	CC_FILE_ERROR loadASCIIFile(QFile&          fp,
-	                            ccMesh*         mesh,
-	                            ccPointCloud*   vertices,
+	CC_FILE_ERROR loadASCIIFile(QFile& fp,
+	                            ccMesh* mesh,
+	                            ccPointCloud* vertices,
 	                            LoadParameters& parameters);
 
 	//! Custom load method for binary files
-	CC_FILE_ERROR loadBinaryFile(QFile&          fp,
-	                             ccMesh*         mesh,
-	                             ccPointCloud*   vertices,
+	CC_FILE_ERROR loadBinaryFile(QFile& fp,
+	                             ccMesh* mesh,
+	                             ccPointCloud* vertices,
 	                             LoadParameters& parameters);
 };
 

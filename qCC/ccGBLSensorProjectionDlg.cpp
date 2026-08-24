@@ -146,16 +146,16 @@ void ccGBLSensorProjectionDlg::updateGBLSensor(ccGBLSensor* sensor)
 		ccGLMatrix rot;
 		{
 			float* mat = rot.data();
-			mat[0]     = x1rot->text().toFloat();
-			mat[1]     = y1rot->text().toFloat();
-			mat[2]     = z1rot->text().toFloat();
+			mat[0] = x1rot->text().toFloat();
+			mat[1] = y1rot->text().toFloat();
+			mat[2] = z1rot->text().toFloat();
 
 			mat[4] = x2rot->text().toFloat();
 			mat[5] = y2rot->text().toFloat();
 			mat[6] = z2rot->text().toFloat();
 
-			mat[8]  = x3rot->text().toFloat();
-			mat[9]  = y3rot->text().toFloat();
+			mat[8] = x3rot->text().toFloat();
+			mat[9] = y3rot->text().toFloat();
 			mat[10] = z3rot->text().toFloat();
 		}
 

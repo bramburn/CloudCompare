@@ -28,19 +28,15 @@
  *
  * @see PlyOpenDlg.cpp
  */
+#include <PlyFilter.h>
 #include <QCoreApplication>
 #include <QFile>
-#include <QTemporaryDir>
-#include <QTextStream>
-
-#include <ccPointCloud.h>
-#include <ccMesh.h>
-
-#include <PlyFilter.h>
-
-#include <QTest>
 #include <QString>
-
+#include <QTemporaryDir>
+#include <QTest>
+#include <QTextStream>
+#include <ccMesh.h>
+#include <ccPointCloud.h>
 #include <cmath>
 
 // Minimal ASCII PLY — 3 vertices, x y z format
@@ -86,12 +82,11 @@ end_header
 0.0 1.0 0.0 3.0
 )";
 
-
 class TestPlyFilter : public QObject
 {
 	Q_OBJECT
 
-private slots:
+  private slots:
 
 	void testLoadAsciiMinimal()
 	{

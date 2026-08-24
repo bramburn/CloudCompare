@@ -18,7 +18,6 @@
 #include "ccPlane.h"
 
 #include "ccIncludeGL.h"
-
 #include "ccMaterialSet.h"
 #include "ccPointCloud.h"
 
@@ -93,10 +92,10 @@ bool ccPlane::buildUp()
 	// B ------ C
 	// |        |
 	// A ------ D
-	verts->addPoint(CCVector3(-m_xWidth / 2, -m_yWidth / 2, 0));  // A
-	verts->addPoint(CCVector3(-m_xWidth / 2,  m_yWidth / 2, 0));  // B
-	verts->addPoint(CCVector3( m_xWidth / 2,  m_yWidth / 2, 0));  // C
-	verts->addPoint(CCVector3( m_xWidth / 2, -m_yWidth / 2, 0));  // D
+	verts->addPoint(CCVector3(-m_xWidth / 2, -m_yWidth / 2, 0)); // A
+	verts->addPoint(CCVector3(-m_xWidth / 2, m_yWidth / 2, 0));  // B
+	verts->addPoint(CCVector3(m_xWidth / 2, m_yWidth / 2, 0));   // C
+	verts->addPoint(CCVector3(m_xWidth / 2, -m_yWidth / 2, 0));  // D
 
 	// Normal: +Z in local space
 	m_triNormals->addElement(ccNormalVectors::GetNormIndex(CCVector3(0, 0, 1)));
@@ -179,7 +178,7 @@ void ccPlane::getEquation(CCVector3& N, PointCoordinateType& constVal) const
  */
 const PointCoordinateType* ccPlane::getEquation()
 {
-	CCVector3 N        = getNormal();
+	CCVector3 N = getNormal();
 	m_PlaneEquation[0] = N.x;
 	m_PlaneEquation[1] = N.y;
 	m_PlaneEquation[2] = N.z;
@@ -237,7 +236,7 @@ ccPlane* ccPlane::Fit(CCCoreLib::GenericIndexedCloudPersist* cloud, double* rms 
 	assert(G);
 
 	// Local orthonormal basis: N = normal, X = main direction, Y = N × X
-	CCVector3        N(theLSPlane);
+	CCVector3 N(theLSPlane);
 	const CCVector3* X = Yk.getLSPlaneX();
 	assert(X);
 	CCVector3 Y = N * (*X);
@@ -271,8 +270,8 @@ ccPlane* ccPlane::Fit(CCCoreLib::GenericIndexedCloudPersist* cloud, double* rms 
 	// Recenter on the bounding box center
 	PointCoordinateType dX = maxXY.x - minXY.x;
 	PointCoordinateType dY = maxXY.y - minXY.y;
-	CCVector3           Gt = *G + *X * (minXY.x + dX / 2) + Y * (minXY.y + dY / 2);
-	ccGLMatrix          glMat(*X, Y, N, Gt);
+	CCVector3 Gt = *G + *X * (minXY.x + dX / 2) + Y * (minXY.y + dY / 2);
+	ccGLMatrix glMat(*X, Y, N, Gt);
 
 	ccPlane* plane = new ccPlane(dX, dY, &glMat);
 

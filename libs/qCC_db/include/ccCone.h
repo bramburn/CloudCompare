@@ -90,12 +90,12 @@ class QCC_DB_LIB_API ccCone : public ccGenericPrimitive
 	ccCone(PointCoordinateType bottomRadius,
 	       PointCoordinateType topRadius,
 	       PointCoordinateType height,
-	       PointCoordinateType xOff      = 0,
-	       PointCoordinateType yOff      = 0,
-	       const ccGLMatrix*   transMat  = nullptr,
-	       QString             name      = QString("Cone"),
-	       unsigned            precision = DEFAULT_DRAWING_PRECISION,
-	       unsigned            uniqueID  = ccUniqueIDGenerator::InvalidUniqueID);
+	       PointCoordinateType xOff = 0,
+	       PointCoordinateType yOff = 0,
+	       const ccGLMatrix* transMat = nullptr,
+	       QString name = QString("Cone"),
+	       unsigned precision = DEFAULT_DRAWING_PRECISION,
+	       unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
 	/**
 	 * @brief Simplified constructor for ccHObject factory
@@ -239,10 +239,10 @@ class QCC_DB_LIB_API ccCone : public ccGenericPrimitive
 
   protected:
 	// ccGenericPrimitive
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	bool  buildUp() override;
+	bool buildUp() override;
 
 	//! Radius at Z=0
 	PointCoordinateType m_bottomRadius;

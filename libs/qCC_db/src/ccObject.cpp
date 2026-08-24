@@ -324,8 +324,8 @@ bool ccObject::fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& ol
 		for (uint32_t i = 0; i < metaDataCount; ++i)
 		{
 			QDataStream inStream(&in);
-			QString     key;
-			QVariant    value;
+			QString key;
+			QVariant value;
 			inStream >> key;
 #if 1 // patch to overcome the issue with LAS vlrs not being readable anymore as QVariant object with Qt 6
 			if (key == "LAS.vlrs")

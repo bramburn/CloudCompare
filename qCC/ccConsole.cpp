@@ -29,6 +29,7 @@
 
 // Local
 #include "ccConsole.h"
+
 #include "ccPersistentSettings.h"
 #include "mainwindow.h"
 
@@ -82,7 +83,7 @@ void ccCustomQListWidget::keyPressEvent(QKeyEvent* event)
 	if (event->matches(QKeySequence::Copy))
 	{
 		// Collect all selected item texts
-		int         itemsCount = count();
+		int itemsCount = count();
 		QStringList strings;
 		strings.reserve(itemsCount);
 		for (int i = 0; i < itemsCount; ++i)
@@ -256,11 +257,11 @@ void ccConsole::Init(QListWidget* textDisplay, QWidget* parentWidget, MainWindow
 		return;
 	}
 
-	s_console.instance                 = new ccConsole;
-	s_console.instance->m_textDisplay  = textDisplay;
+	s_console.instance = new ccConsole;
+	s_console.instance->m_textDisplay = textDisplay;
 	s_console.instance->m_parentWidget = parentWidget;
 	s_console.instance->m_parentWindow = parentWindow;
-	s_redirectToStdOut                 = redirectToStdOut;
+	s_redirectToStdOut = redirectToStdOut;
 
 	if (s_redirectToStdOut)
 	{

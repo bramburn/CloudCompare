@@ -52,7 +52,7 @@ class ccScalarFieldsManagerDialog : public QDialog
   public:
 	//! Default constructor
 	ccScalarFieldsManagerDialog(const ccHObject::Container& selectedEntities,
-	                            QWidget*                    parent = nullptr);
+	                            QWidget* parent = nullptr);
 
 	//! Destructor
 	~ccScalarFieldsManagerDialog() override;
@@ -87,8 +87,8 @@ class ccScalarFieldsManagerDialog : public QDialog
 		STD
 	};
 
-	ccPointCloud*               m_pointCloud;      //!< Active point cloud
-	unsigned                    m_sfCount;         //!< Number of scalar fields
-	std::vector<ccPointCloud*>  m_availableClouds; //!< Point clouds (derived from the initial selection)
-	Ui::ScalarFieldsManagerDlg* m_ui;              //!< Associated Qt UI
+	ccPointCloud* m_pointCloud;                   //!< Active point cloud
+	unsigned m_sfCount;                           //!< Number of scalar fields
+	std::vector<ccPointCloud*> m_availableClouds; //!< Point clouds (derived from the initial selection)
+	Ui::ScalarFieldsManagerDlg* m_ui;             //!< Associated Qt UI
 };

@@ -46,15 +46,15 @@ class QCC_DB_LIB_API WaveformDescriptor : public ccSerializableObject
 	{
 		return true;
 	}
-	bool  toFile(QFile& out, short dataVersion) const override;
-	bool  fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile(QFile& out, short dataVersion) const override;
+	bool fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion() const override;
 
 	uint32_t numberOfSamples; //!< Number of samples
 	uint32_t samplingRate_ps; //!< Sampling rate in pico seconds
-	double   digitizerGain;   //!< Digitizer gain (VOLTS = OFFSET + GAIN * Raw_Waveform_Amplitude)
-	double   digitizerOffset; //!< Digitizer offset (VOLTS = OFFSET + GAIN * Raw_Waveform_Amplitude)
-	uint8_t  bitsPerSample;   //!< Number of bits per sample
+	double digitizerGain;     //!< Digitizer gain (VOLTS = OFFSET + GAIN * Raw_Waveform_Amplitude)
+	double digitizerOffset;   //!< Digitizer offset (VOLTS = OFFSET + GAIN * Raw_Waveform_Amplitude)
+	uint8_t bitsPerSample;    //!< Number of bits per sample
 };
 
 /**
@@ -178,8 +178,8 @@ class QCC_DB_LIB_API ccWaveform : public ccSerializableObject
 	{
 		return true;
 	}
-	bool  toFile(QFile& out, short dataVersion) const override;
-	bool  fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile(QFile& out, short dataVersion) const override;
+	bool fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion() const override;
 
   protected: // members

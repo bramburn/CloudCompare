@@ -165,8 +165,8 @@ static bool ResolveNormalsWithMST(ccPointCloud* cloud,
                                   const Graph& graph,
 #else
                                   ccOctree::Shared& octree,
-                                  unsigned char     level,
-                                  unsigned          kNN,
+                                  unsigned char level,
+                                  unsigned kNN,
 #endif
                                   ccProgressDialog* progressCb = nullptr)
 {
@@ -189,8 +189,8 @@ static bool ResolveNormalsWithMST(ccPointCloud* cloud,
 
 	// reset
 	std::priority_queue<Edge> priorityQueue;
-	std::vector<bool>         visited;
-	unsigned                  visitedCount = 0;
+	std::vector<bool> visited;
+	unsigned visitedCount = 0;
 #ifdef WITH_GRAPH
 	unsigned vertexCount = graph.vertexCount();
 #else
@@ -218,14 +218,14 @@ static bool ResolveNormalsWithMST(ccPointCloud* cloud,
 
 #ifndef WITH_GRAPH
 		CCCoreLib::DgmOctree::NearestNeighboursSearchStruct nNSS;
-		nNSS.level                = level;
+		nNSS.level = level;
 		nNSS.minNumberOfNeighbors = kNN + 1; //+1 because we'll get the query point itself!
 #endif
 
 		// while unvisited vertices remain...
 		unsigned firstUnvisitedIndex = 0;
-		size_t   patchCount          = 0;
-		size_t   inversionCount      = 0;
+		size_t patchCount = 0;
+		size_t inversionCount = 0;
 		while (visitedCount < vertexCount)
 		{
 			// find the first not-yet-visited vertex
@@ -247,7 +247,7 @@ static bool ResolveNormalsWithMST(ccPointCloud* cloud,
 				}
 #else
 				const CCVector3* P = cloud->getPoint(firstUnvisitedIndex);
-				nNSS.queryPoint    = *P;
+				nNSS.queryPoint = *P;
 				octree->getTheCellPosWhichIncludesThePoint(P, nNSS.cellPos, level);
 				octree->computeCellCenter(nNSS.cellPos, level, nNSS.cellCenter);
 				nNSS.pointsInNeighbourhood.clear();
@@ -255,7 +255,7 @@ static bool ResolveNormalsWithMST(ccPointCloud* cloud,
 
 				// look for neighbors in a sphere
 				unsigned neighborCount = octree->findNearestNeighborsStartingFromCell(nNSS, false);
-				neighborCount          = std::min(neighborCount, kNN + 1);
+				neighborCount = std::min(neighborCount, kNN + 1);
 
 				// current point index
 				const CCVector3& N1 = cloud->getPointNormal(firstUnvisitedIndex);
@@ -303,10 +303,10 @@ static bool ResolveNormalsWithMST(ccPointCloud* cloud,
 				priorityQueue.pop();
 
 				// shall the normal be inverted?
-				const CCVector3& N1          = cloud->getPointNormal(static_cast<unsigned>(element.v1()));
-				const CCVector3& N2          = cloud->getPointNormal(static_cast<unsigned>(element.v2()));
-				bool             inverNormal = (N1.dot(N2) < 0);
-				unsigned         v           = 0;
+				const CCVector3& N1 = cloud->getPointNormal(static_cast<unsigned>(element.v1()));
+				const CCVector3& N2 = cloud->getPointNormal(static_cast<unsigned>(element.v2()));
+				bool inverNormal = (N1.dot(N2) < 0);
+				unsigned v = 0;
 				// we should change the vertex that has not been visited yet
 				if (!visited[element.v1()])
 				{
@@ -342,7 +342,7 @@ static bool ResolveNormalsWithMST(ccPointCloud* cloud,
 						priorityQueue.push(Edge(v, *it, graph.weight(v, *it)));
 #else
 					const CCVector3* P = cloud->getPoint(v);
-					nNSS.queryPoint    = *P;
+					nNSS.queryPoint = *P;
 					octree->getTheCellPosWhichIncludesThePoint(P, nNSS.cellPos, level);
 					octree->computeCellCenter(nNSS.cellPos, level, nNSS.cellCenter);
 					nNSS.pointsInNeighbourhood.clear();
@@ -350,7 +350,7 @@ static bool ResolveNormalsWithMST(ccPointCloud* cloud,
 
 					// look for neighbors in a sphere
 					unsigned neighborCount = octree->findNearestNeighborsStartingFromCell(nNSS, false);
-					neighborCount          = std::min(neighborCount, kNN + 1);
+					neighborCount = std::min(neighborCount, kNN + 1);
 					// current point index
 					const CCVector3& N1 = cloud->getPointNormal(v);
 					for (unsigned j = 0; j < neighborCount; ++j)
@@ -417,18 +417,18 @@ static bool ResolveNormalsWithMST(ccPointCloud* cloud,
 
 #ifdef WITH_GRAPH
 static bool ComputeMSTGraphAtLevel(const CCCoreLib::DgmOctree::octreeCell& cell,
-                                   void**                                  additionalParameters,
-                                   CCCoreLib::NormalizedProgress*          nProgress /*=nullptr*/)
+                                   void** additionalParameters,
+                                   CCCoreLib::NormalizedProgress* nProgress /*=nullptr*/)
 {
 	// parameters
-	Graph*        graph = static_cast<Graph*>(additionalParameters[0]);
+	Graph* graph = static_cast<Graph*>(additionalParameters[0]);
 	ccPointCloud* cloud = static_cast<ccPointCloud*>(additionalParameters[1]);
 
 	// structure for the nearest neighbor search
 	unsigned kNN = *static_cast<unsigned*>(additionalParameters[2]);
 
 	CCCoreLib::DgmOctree::NearestNeighboursSearchStruct nNSS;
-	nNSS.level                = cell.level;
+	nNSS.level = cell.level;
 	nNSS.minNumberOfNeighbors = kNN + 1; //+1 because we'll get the query point itself!
 	cell.parentOctree->getCellPos(cell.truncatedCode, cell.level, nNSS.cellPos, true);
 	cell.parentOctree->computeCellCenter(nNSS.cellPos, cell.level, nNSS.cellCenter);
@@ -449,7 +449,7 @@ static bool ComputeMSTGraphAtLevel(const CCCoreLib::DgmOctree::octreeCell& cell,
 		CCCoreLib::DgmOctree::NeighboursSet::iterator it = nNSS.pointsInNeighbourhood.begin();
 		for (unsigned i = 0; i < n; ++i, ++it)
 		{
-			it->point      = cell.points->getPointPersistentPtr(i);
+			it->point = cell.points->getPointPersistentPtr(i);
 			it->pointIndex = cell.points->getPointGlobalIndex(i);
 		}
 	}
@@ -462,11 +462,11 @@ static bool ComputeMSTGraphAtLevel(const CCCoreLib::DgmOctree::octreeCell& cell,
 
 		// look for neighbors in a sphere
 		unsigned neighborCount = cell.parentOctree->findNearestNeighborsStartingFromCell(nNSS, false);
-		neighborCount          = std::min(neighborCount, kNN + 1);
+		neighborCount = std::min(neighborCount, kNN + 1);
 
 		// current point index
-		unsigned         index = cell.points->getPointGlobalIndex(i);
-		const CCVector3& N1    = cloud->getPointNormal(index);
+		unsigned index = cell.points->getPointGlobalIndex(i);
+		const CCVector3& N1 = cloud->getPointNormal(index);
 		// const CCVector3* P1 = cloud->getPoint(static_cast<unsigned>(index));
 		for (unsigned j = 0; j < neighborCount; ++j)
 		{
@@ -499,8 +499,8 @@ static bool ComputeMSTGraphAtLevel(const CCCoreLib::DgmOctree::octreeCell& cell,
 }
 #endif
 
-bool ccMinimumSpanningTreeForNormsDirection::OrientNormals(ccPointCloud*     cloud,
-                                                           unsigned          kNN /*=6*/,
+bool ccMinimumSpanningTreeForNormsDirection::OrientNormals(ccPointCloud* cloud,
+                                                           unsigned kNN /*=6*/,
                                                            ccProgressDialog* progressDlg /*=nullptr*/)
 {
 	assert(cloud);

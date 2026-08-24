@@ -50,10 +50,10 @@
 // ui template
 #include <ui_roleChoiceDlg.h>
 
-ccOrderChoiceDlg::ccOrderChoiceDlg(ccHObject*          firstEntity,
-                                   QString             firstRole,
-                                   ccHObject*          secondEntity,
-                                   QString             secondRole,
+ccOrderChoiceDlg::ccOrderChoiceDlg(ccHObject* firstEntity,
+                                   QString firstRole,
+                                   ccHObject* secondEntity,
+                                   QString secondRole,
                                    ccMainAppInterface* app /*=nullptr*/)
     : QDialog(app ? app->getMainWindow() : nullptr, Qt::Tool)
     , m_gui(new Ui_RoleChoiceDialog)

@@ -35,17 +35,17 @@ static ccSingleton<ccColorScalesManager> s_uniqueInstance;
 
 /*** Persistent settings ***/
 
-static const char c_csm_groupName[]        = "ccColorScalesManager";
-static const char c_csm_relative[]         = "relative";
-static const char c_csm_minVal[]           = "minVal";
-static const char c_csm_maxVal[]           = "maxVal";
-static const char c_csm_scaleName[]        = "scaleName";
-static const char c_csm_stepsList[]        = "steps";
-static const char c_csm_stepRelativePos[]  = "value";
-static const char c_csm_stepColor[]        = "color";
-static const char c_csm_customLabels[]     = "labels";
+static const char c_csm_groupName[] = "ccColorScalesManager";
+static const char c_csm_relative[] = "relative";
+static const char c_csm_minVal[] = "minVal";
+static const char c_csm_maxVal[] = "maxVal";
+static const char c_csm_scaleName[] = "scaleName";
+static const char c_csm_stepsList[] = "steps";
+static const char c_csm_stepRelativePos[] = "value";
+static const char c_csm_stepColor[] = "color";
+static const char c_csm_customLabels[] = "labels";
 static const char c_csm_customLabelValue[] = "value";
-static const char c_csm_customLabelText[]  = "text";
+static const char c_csm_customLabelText[] = "text";
 
 // matplotlib library colorscale created by Stefan van der Walt and Nathaniel Smith
 static const double s_viridis[] =
@@ -821,10 +821,10 @@ static const double s_viridis[] =
 
 struct ColorStep
 {
-	uint8_t red   = 0;
+	uint8_t red = 0;
 	uint8_t green = 0;
-	uint8_t blue  = 0;
-	double  pos   = 0.0;
+	uint8_t blue = 0;
+	double pos = 0.0;
 };
 
 static const ColorStep s_cividis[]{
@@ -1146,8 +1146,8 @@ void ccColorScalesManager::fromPersistentSettings()
 	{
 		settings.beginGroup(scales[j]);
 
-		QString name     = settings.value(c_csm_scaleName, "unknown").toString();
-		bool    relative = settings.value(c_csm_relative, true).toBool();
+		QString name = settings.value(c_csm_scaleName, "unknown").toString();
+		bool relative = settings.value(c_csm_relative, true).toBool();
 
 		ccColorScale::Shared scale(new ccColorScale(name, scales[j]));
 		if (!relative)
@@ -1166,8 +1166,8 @@ void ccColorScalesManager::fromPersistentSettings()
 				{
 					settings.setArrayIndex(i);
 					double relativePos = settings.value(c_csm_stepRelativePos, 0.0).toDouble();
-					QRgb   rgb         = static_cast<QRgb>(settings.value(c_csm_stepColor, 0).toInt());
-					QColor color       = QColor::fromRgb(rgb);
+					QRgb rgb = static_cast<QRgb>(settings.value(c_csm_stepColor, 0).toInt());
+					QColor color = QColor::fromRgb(rgb);
 					scale->insert(ccColorScaleElement(relativePos, color), false);
 				}
 				settings.endArray();
@@ -1179,8 +1179,8 @@ void ccColorScalesManager::fromPersistentSettings()
 				for (int i = 0; i < size; ++i)
 				{
 					settings.setArrayIndex(i);
-					double  label = settings.value(c_csm_customLabelValue, 0.0).toDouble();
-					QString text  = settings.value(c_csm_customLabelText, QString()).toString();
+					double label = settings.value(c_csm_customLabelValue, 0.0).toDouble();
+					QString text = settings.value(c_csm_customLabelText, QString()).toString();
 					scale->customLabels().insert({label, text});
 				}
 				settings.endArray();
@@ -1535,7 +1535,7 @@ ccColorScale::Shared ccColorScalesManager::Create(DEFAULT_SCALES scaleType)
 			classes.push_back({"Temporal exclusion", 22, Qt::black});
 		}
 
-		const double epsilon  = 0.001;
+		const double epsilon = 0.001;
 		const double maxValue = static_cast<double>(/*std::max(*/ std::get<1>(classes.back()) /*, 255)*/ + 1) - epsilon;
 
 		for (size_t i = 0; i < classes.size(); ++i)

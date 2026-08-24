@@ -118,10 +118,10 @@ class LasSaveDialog : public QDialog
 	 */
 	enum Offset
 	{
-		GLOBAL_SHIFT,    //!< Global shift.
+		GLOBAL_SHIFT,     //!< Global shift.
 		ORIGN_LAS_OFFSET, //!< Original LAS offset.
 		MIN_BB_CORNER,    //!< Min bounding box corner.
-		BB_CENTER,       //!< Bounding box center.
+		BB_CENTER,        //!< Bounding box center.
 		CUSTOM_LAS_OFFSET //!< Custom offset.
 	};
 

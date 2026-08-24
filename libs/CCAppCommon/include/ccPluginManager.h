@@ -42,6 +42,7 @@
  */
 
 #include "CCAppCommon.h"
+
 #include <QObject>
 #include <QVector>
 

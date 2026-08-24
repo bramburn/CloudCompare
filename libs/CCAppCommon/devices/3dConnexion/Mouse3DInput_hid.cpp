@@ -63,7 +63,7 @@
 // Newer devices (since ~2016) use 0x256f. Older devices (SpaceNavigator,
 // SpaceExplorer, SpacePilot, etc.) use the Logitech vendor ID 0x046d.
 // See https://3dconnexion.com/uk/support/faq/how-can-i-check-if-my-usb-3d-mouse-is-recognized-by-windows/
-static constexpr unsigned short c_3dconnexionVID    = 0x256f;
+static constexpr unsigned short c_3dconnexionVID = 0x256f;
 static constexpr unsigned short c_old3dconnexionVID = 0x046d;
 
 //! Object angular velocity per mouse tick (in radians per ms per count)
@@ -82,7 +82,7 @@ static constexpr float c_3dmouseProgressiveRef = 250.0f;
 //! deflections get amplified. Curve: out = raw * (1 + |raw|/ref) * gain * ds.
 static float scaleAxis(int raw, double ds)
 {
-	float a           = static_cast<float>(raw);
+	float a = static_cast<float>(raw);
 	float progressive = 1.0f + std::min(std::abs(a) / c_3dmouseProgressiveRef, 1.0f);
 	return a * progressive * c_3dmouseGain * static_cast<float>(ds);
 }
@@ -226,21 +226,21 @@ void HIDWorker::run()
 	unsigned int prevButtonMask = 0;
 	// State for "released" emission (analogous to SI_ZERO_EVENT on Windows)
 	auto lastMotionTime = std::chrono::steady_clock::now();
-	bool motionActive   = false;
+	bool motionActive = false;
 
 	// Tracks whether any report has ever arrived. Used to warn the user once
 	// if no reports arrive within the first few seconds of running, which
 	// typically means the 3Dconnexion driver daemon is holding an exclusive
 	// lock on the device and silently consuming reports.
-	auto threadStartTime  = lastMotionTime;
-	bool warnedNoReports  = false;
+	auto threadStartTime = lastMotionTime;
+	bool warnedNoReports = false;
 	bool anyReportArrived = false;
 
 	unsigned char buf[80] = {0};
 
 	// Give up only after this many consecutive read errors (e.g. device unplugged).
 	constexpr int kMaxConsecutiveErrors = 100;
-	int           consecutiveErrors     = 0;
+	int consecutiveErrors = 0;
 
 	// Read with a timeout so the loop stays responsive to m_running changes
 	// and doesn't busy-poll. hid_read_timeout returns 0 on timeout (not -1).
@@ -273,7 +273,7 @@ void HIDWorker::run()
 			// period, analogous to SI_ZERO_EVENT on Windows.
 			if (motionActive)
 			{
-				auto now     = std::chrono::steady_clock::now();
+				auto now = std::chrono::steady_clock::now();
 				auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastMotionTime).count();
 				if (elapsed > 100)
 				{
@@ -329,14 +329,14 @@ void HIDWorker::run()
 			// first byte as the report ID and skips it when parsing axes.
 			processMotion(buf, n);
 			lastMotionTime = std::chrono::steady_clock::now();
-			motionActive   = true;
+			motionActive = true;
 		}
 		else if (n == 7)
 		{
 			// Separate translation/rotation report (SpaceMouse Compact).
 			processMotion(buf, n);
 			lastMotionTime = std::chrono::steady_clock::now();
-			motionActive   = true;
+			motionActive = true;
 		}
 		else
 		{
@@ -389,8 +389,8 @@ void HIDWorker::processMotion(const unsigned char* buf, int n)
 		Rotation     // 7-byte, ID 0x02, 3 rotation axes
 	};
 
-	const unsigned char* p    = buf;
-	ReportKind           kind = Combined;
+	const unsigned char* p = buf;
+	ReportKind kind = Combined;
 
 	if (n >= 13)
 	{
@@ -504,7 +504,7 @@ void HIDWorker::processButtons(const unsigned char* buf, int n, unsigned int& pr
 	}
 
 	// Detect edges.
-	unsigned int pressed  = curButtonMask & ~prevButtonMask;
+	unsigned int pressed = curButtonMask & ~prevButtonMask;
 	unsigned int released = ~curButtonMask & prevButtonMask;
 
 	for (size_t bit = 0; bit < c_buttonMapSize; ++bit)

@@ -75,7 +75,7 @@ void ccOptions::ReleaseInstance()
 void ccOptions::Set(const ccOptions& params, bool saveToPersistentSettings /*=false*/)
 {
 	ccOptions& options = InstanceNonConst();
-	options            = params;
+	options = params;
 
 	if (saveToPersistentSettings)
 	{
@@ -91,9 +91,9 @@ ccOptions::ccOptions()
 void ccOptions::reset()
 {
 	normalsDisplayedByDefault = false;
-	useNativeDialogs          = true;
-	confirmQuit               = true;
-	confirmDelete             = true;
+	useNativeDialogs = true;
+	confirmQuit = true;
+	confirmDelete = true;
 }
 
 /**
@@ -105,9 +105,9 @@ void ccOptions::fromPersistentSettings()
 	settings.beginGroup(ccPS::Options());
 	{
 		normalsDisplayedByDefault = settings.value("normalsDisplayedByDefault", false).toBool();
-		useNativeDialogs          = settings.value("useNativeDialogs", true).toBool();
-		confirmQuit               = settings.value("confirmQuit", true).toBool();
-		confirmDelete             = settings.value("confirmDelete", true).toBool();
+		useNativeDialogs = settings.value("useNativeDialogs", true).toBool();
+		confirmQuit = settings.value("confirmQuit", true).toBool();
+		confirmDelete = settings.value("confirmDelete", true).toBool();
 	}
 	settings.endGroup();
 }

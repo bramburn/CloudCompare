@@ -56,7 +56,7 @@ struct laszip_header;
 struct laszip_vlr;
 typedef laszip_vlr laszip_vlr_struct;
 
-constexpr size_t LAS_VLR_HEADER_SIZE = 54; //!< VLR header size.
+constexpr size_t LAS_VLR_HEADER_SIZE = 54;    //!< VLR header size.
 constexpr double SCAN_ANGLE_SCALE    = 0.006; //!< Scan angle scale factor.
 
 /**
@@ -67,41 +67,41 @@ constexpr double SCAN_ANGLE_SCALE    = 0.006; //!< Scan angle scale factor.
 namespace LasNames
 {
 	//! Intensity field name.
-	constexpr const char* Intensity         = "Intensity";
+	constexpr const char* Intensity = "Intensity";
 	//! Return number field name.
-	constexpr const char* ReturnNumber      = "Return Number";
+	constexpr const char* ReturnNumber = "Return Number";
 	//! Number of returns field name.
-	constexpr const char* NumberOfReturns   = "Number Of Returns";
+	constexpr const char* NumberOfReturns = "Number Of Returns";
 	//! Scan direction flag field name.
 	constexpr const char* ScanDirectionFlag = "Scan Direction Flag";
 	//! Edge of flight line field name.
-	constexpr const char* EdgeOfFlightLine  = "EdgeOfFlightLine";
+	constexpr const char* EdgeOfFlightLine = "EdgeOfFlightLine";
 	//! Classification field name.
-	constexpr const char* Classification    = "Classification";
+	constexpr const char* Classification = "Classification";
 	//! Synthetic flag field name.
-	constexpr const char* SyntheticFlag     = "Synthetic Flag";
+	constexpr const char* SyntheticFlag = "Synthetic Flag";
 	//! Keypoint flag field name.
-	constexpr const char* KeypointFlag      = "Keypoint Flag";
+	constexpr const char* KeypointFlag = "Keypoint Flag";
 	//! Withheld flag field name.
-	constexpr const char* WithheldFlag      = "Withheld Flag";
+	constexpr const char* WithheldFlag = "Withheld Flag";
 	//! Scan angle rank field name.
-	constexpr const char* ScanAngleRank     = "Scan Angle Rank";
+	constexpr const char* ScanAngleRank = "Scan Angle Rank";
 	//! User data field name.
-	constexpr const char* UserData          = "User Data";
+	constexpr const char* UserData = "User Data";
 	//! Point source ID field name.
-	constexpr const char* PointSourceId     = "Point Source ID";
+	constexpr const char* PointSourceId = "Point Source ID";
 	//! GPS time field name.
-	constexpr const char* GpsTime           = "Gps Time";
+	constexpr const char* GpsTime = "Gps Time";
 
 	// 1.4 point format 6 stuff
 	//! Scan angle field name.
-	constexpr const char* ScanAngle      = "Scan Angle";
+	constexpr const char* ScanAngle = "Scan Angle";
 	//! Scanner channel field name.
 	constexpr const char* ScannerChannel = "Scanner Channel";
 	//! Overlap flag field name.
-	constexpr const char* OverlapFlag    = "Overlap Flag";
+	constexpr const char* OverlapFlag = "Overlap Flag";
 	//! Near infrared field name.
-	constexpr const char* NearInfrared   = "Near Infrared";
+	constexpr const char* NearInfrared = "Near Infrared";
 } // namespace LasNames
 
 /**
@@ -145,7 +145,9 @@ namespace LasDetails
 		 */
 		ChunkInterval(uint64_t _pointOffsetInFile, uint64_t _pointCount)
 		    : pointOffsetInFile(_pointOffsetInFile)
-		    , pointCount(_pointCount) {}
+		    , pointCount(_pointCount)
+		{
+		}
 
 		//! Offset in LAS file.
 		uint64_t pointOffsetInFile{0};

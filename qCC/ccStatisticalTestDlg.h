@@ -51,11 +51,11 @@ class ccStatisticalTestDlg : public QDialog
 	 * @param[in] windowTitle Window title
 	 * @param[in] parent Parent widget
 	 */
-	ccStatisticalTestDlg(QString  param1Label,
-	                     QString  param2Label,
-	                     QString  param3Label = QString(),
-	                     QString  windowTitle = QString(),
-	                     QWidget* parent      = nullptr);
+	ccStatisticalTestDlg(QString param1Label,
+	                     QString param2Label,
+	                     QString param3Label = QString(),
+	                     QString windowTitle = QString(),
+	                     QWidget* parent = nullptr);
 
 	/// Destructor
 	~ccStatisticalTestDlg();

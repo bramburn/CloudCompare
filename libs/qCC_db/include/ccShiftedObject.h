@@ -122,7 +122,7 @@ class QCC_DB_LIB_API ccShiftedObject : public ccHObject
 	}
 
 	// inherited from ccHObject
-	bool              getOwnGlobalBB(CCVector3d& minCorner, CCVector3d& maxCorner) override;
+	bool getOwnGlobalBB(CCVector3d& minCorner, CCVector3d& maxCorner) override;
 	GlobalBoundingBox getOwnGlobalBB(bool withGLFeatures = false) override;
 
   protected:

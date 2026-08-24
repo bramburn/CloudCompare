@@ -114,7 +114,7 @@ bool ccBilateralFilter::init(unsigned width, unsigned height, const QString& sha
 		}
 	}
 
-	m_width  = width;
+	m_width = width;
 	m_height = height;
 
 	setValid(true);
@@ -125,8 +125,8 @@ bool ccBilateralFilter::init(unsigned width, unsigned height, const QString& sha
 void ccBilateralFilter::setParams(unsigned halfSpatialSize, float spatialSigma, float depthSigma)
 {
 	m_halfSpatialSize = std::min<unsigned>(halfSpatialSize, KERNEL_MAX_HALF_SIZE);
-	m_spatialSigma    = spatialSigma;
-	m_depthSigma      = depthSigma;
+	m_spatialSigma = spatialSigma;
+	m_depthSigma = depthSigma;
 
 	updateDampingTable();
 }
@@ -220,7 +220,7 @@ void ccBilateralFilter::updateDampingTable()
 
 	// constant quotient
 	float q = m_halfSpatialSize * m_spatialSigma;
-	q       = 2 * (q * q);
+	q = 2 * (q * q);
 
 	for (unsigned c = 0; c <= m_halfSpatialSize; c++)
 	{

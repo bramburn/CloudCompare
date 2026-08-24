@@ -80,7 +80,7 @@ class ccCommandLineInterface;
  */
 enum CC_PLUGIN_TYPE
 {
-	CC_STD_PLUGIN       = 1, //!< Standard processing plugin.
+	CC_STD_PLUGIN = 1,       //!< Standard processing plugin.
 	CC_GL_FILTER_PLUGIN = 2, //!< OpenGL rendering filter.
 	CC_IO_FILTER_PLUGIN = 4  //!< File I/O handler plugin.
 };

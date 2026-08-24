@@ -84,7 +84,7 @@ struct ExtraLasField : LasField
 			ccLog::Warning(QString("Extra field '%1' renamed '%2' to comply to LAS specifications").arg(fieldName).arg(sanitizedName));
 		}
 
-		sf        = _sf;
+		sf = _sf;
 		isShifted = (sf && sf->getGlobalShift() != 0.0);
 	}
 
@@ -97,8 +97,8 @@ struct ExtraLasField : LasField
 
 	QString fieldName;
 	QString sanitizedName;
-	bool    isShifted;
-	I32     startIndex;
+	bool isShifted;
+	I32 startIndex;
 };
 
 //! Projection VLR
@@ -110,7 +110,7 @@ static const uint16_t VLR_HEADER_SIZE = static_cast<uint16_t>(2 + 16 + 2 + 2 + 3
 static QByteArray ToQByteArray(const LASvlr& vlr)
 {
 	QByteArray buffer;
-	uint16_t   bufferSize = VLR_HEADER_SIZE + vlr.record_length_after_header;
+	uint16_t bufferSize = VLR_HEADER_SIZE + vlr.record_length_after_header;
 	buffer.resize(bufferSize);
 	if (buffer.size() == bufferSize)
 	{
@@ -244,7 +244,7 @@ bool LASFWFFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) 
 		return false;
 	}
 
-	multiple  = false;
+	multiple = false;
 	exclusive = true;
 	return true;
 }
@@ -265,10 +265,10 @@ CC_FILE_ERROR LASFWFFilter::saveToFile(ccHObject* entity, const QString& filenam
 
 	try
 	{
-		bool hasFWF       = cloud->hasFWF();
-		bool hasColors    = cloud->hasColors();
+		bool hasFWF = cloud->hasFWF();
+		bool hasColors = cloud->hasColors();
 		bool hasIntensity = (cloud->getScalarFieldIndexByName(LAS_FIELD_NAMES[LAS_INTENSITY]) >= 0);
-		bool isShifted    = cloud->isShifted();
+		bool isShifted = cloud->isShifted();
 
 		if (hasFWF)
 		{
@@ -278,8 +278,8 @@ CC_FILE_ERROR LASFWFFilter::saveToFile(ccHObject* entity, const QString& filenam
 			// save the FWF data before anything (in case it fails)
 			// we save it in a separate file
 			QFileInfo fi(filename);
-			QString   fwFilename = fi.absolutePath() + "/" + fi.completeBaseName() + ".wdp";
-			QFile     fwfFile(fwFilename);
+			QString fwFilename = fi.absolutePath() + "/" + fi.completeBaseName() + ".wdp";
+			QFile fwfFile(fwFilename);
 			if (fwfFile.open(QFile::WriteOnly))
 			{
 				// write the	EVLR header first
@@ -319,7 +319,7 @@ CC_FILE_ERROR LASFWFFilter::saveToFile(ccHObject* entity, const QString& filenam
 
 		// match cloud SFs with official LAS fields
 		std::vector<LasField> fieldsToSave;
-		uint8_t               minPointFormat = 0;
+		uint8_t minPointFormat = 0;
 		LasField::GetLASFields(cloud, fieldsToSave, minPointFormat);
 
 		// extended fields (i.e. other scalar fields)
@@ -358,7 +358,7 @@ CC_FILE_ERROR LASFWFFilter::saveToFile(ccHObject* entity, const QString& filenam
 			}
 
 			// let the user choose between the original scale and the 'optimal' one (for accuracy, not for compression ;)
-			bool       hasScaleMetaData = false;
+			bool hasScaleMetaData = false;
 			CCVector3d originalLasScale(0, 0, 0);
 			originalLasScale.x = cloud->getMetaData(LAS_SCALE_X_META_DATA).toDouble(&hasScaleMetaData);
 			if (hasScaleMetaData)
@@ -370,7 +370,7 @@ CC_FILE_ERROR LASFWFFilter::saveToFile(ccHObject* entity, const QString& filenam
 				}
 			}
 
-			bool       hasOffsetMetaData = false;
+			bool hasOffsetMetaData = false;
 			CCVector3d lasOffset(0, 0, 0);
 			lasOffset.x = cloud->getMetaData(LAS_OFFSET_X_META_DATA).toDouble(&hasOffsetMetaData);
 			if (hasOffsetMetaData)
@@ -387,7 +387,7 @@ CC_FILE_ERROR LASFWFFilter::saveToFile(ccHObject* entity, const QString& filenam
 				// Try to use the global shift if no LAS offset is defined
 				if (isShifted)
 				{
-					lasOffset         = -cloud->getGlobalShift(); //'global shift' is the opposite of LAS offset ;)
+					lasOffset = -cloud->getGlobalShift(); //'global shift' is the opposite of LAS offset ;)
 					hasOffsetMetaData = true;
 				}
 				else
@@ -416,7 +416,7 @@ CC_FILE_ERROR LASFWFFilter::saveToFile(ccHObject* entity, const QString& filenam
 						lasOffset.x = bbMin.x;
 						lasOffset.y = bbMin.y;
 						lasOffset.z = 0;
-						isShifted   = false; // let's not use the current shift (but the bbox min corner)
+						isShifted = false; // let's not use the current shift (but the bbox min corner)
 					}
 					else
 					{
@@ -457,8 +457,8 @@ CC_FILE_ERROR LASFWFFilter::saveToFile(ccHObject* entity, const QString& filenam
 			// uniformize the value to make it less disturbing to some lastools users ;)
 			{
 				double maxScale = std::max(optimalScale.x, std::max(optimalScale.y, optimalScale.z));
-				double n        = ceil(log10(maxScale)); // ceil because n should be negative
-				maxScale        = pow(10.0, n);
+				double n = ceil(log10(maxScale)); // ceil because n should be negative
+				maxScale = pow(10.0, n);
 				optimalScale.x = optimalScale.y = optimalScale.z = maxScale;
 			}
 
@@ -542,7 +542,7 @@ CC_FILE_ERROR LASFWFFilter::saveToFile(ccHObject* entity, const QString& filenam
 			minPointFormat = LasField::UpdateMinPointFormat(minPointFormat, hasColors, hasFWF, false); // no legacy format with this plugin
 
 			lasheader.point_data_format = minPointFormat;
-			lasheader.version_minor     = LasField::VersionMinorForPointFormat(minPointFormat);
+			lasheader.version_minor = LasField::VersionMinorForPointFormat(minPointFormat);
 			if (lasheader.version_minor == 4)
 			{
 				// add the 148 byte difference between LAS 1.4 and LAS 1.2 header sizes
@@ -620,7 +620,7 @@ CC_FILE_ERROR LASFWFFilter::saveToFile(ccHObject* entity, const QString& filenam
 					LASattribute attribute(f.isShifted || sizeof(ScalarType) == 8 ? LAS_ATTRIBUTE_F64 : LAS_ATTRIBUTE_F32, qPrintable(f.sanitizedName), "additional attributes");
 					lasheader.point_data_record_length += (attribute.data_type == LAS_ATTRIBUTE_F32 + 1 ? 4 : 8); // strangely, LASlib shifts the official type indexes :|
 					I32 attributeIndex = lasheader.add_attribute(attribute);
-					f.startIndex       = lasheader.get_attribute_start(attributeIndex);
+					f.startIndex = lasheader.get_attribute_start(attributeIndex);
 
 					// U8* data = new U8[192];
 					// memset(data, 0, 192);
@@ -649,7 +649,7 @@ CC_FILE_ERROR LASFWFFilter::saveToFile(ccHObject* entity, const QString& filenam
 
 		// open laswriter
 		LASwriterLAS laswriter;
-		bool         useLAZ = QFileInfo(filename).suffix().toUpper().endsWith('Z');
+		bool useLAZ = QFileInfo(filename).suffix().toUpper().endsWith('Z');
 		if (!laswriter.open(qUtf8Printable(filename), &lasheader, useLAZ ? LASZIP_COMPRESSOR_LAYERED_CHUNKED : LASZIP_COMPRESSOR_NONE))
 		{
 			return CC_FERR_WRITING;
@@ -976,7 +976,7 @@ CC_FILE_ERROR LASFWFFilter::loadFile(const QString& filename, ccHObject& contain
 		CCCoreLib::NormalizedProgress nProgress(progressDialog.data(), pointCount);
 
 		// number of points read from the beginning of the current cloud part
-		unsigned   pointsRead = 0;
+		unsigned pointsRead = 0;
 		CCVector3d Pshift(0, 0, 0);
 
 		// create cloud
@@ -989,11 +989,11 @@ CC_FILE_ERROR LASFWFFilter::loadFile(const QString& filename, ccHObject& contain
 			return CC_FERR_NOT_ENOUGH_MEMORY;
 		}
 
-		bool     ignoreColors       = false;
-		bool     hasColors          = false;
-		bool     hasColorsAboveZero = false;
-		int      colorBitDec        = 0;
-		uint64_t fwfDataOffset      = 0;
+		bool ignoreColors = false;
+		bool hasColors = false;
+		bool hasColorsAboveZero = false;
+		int colorBitDec = 0;
+		uint64_t fwfDataOffset = 0;
 
 		// DGM: from now on, we only enable scalar fields when we detect a valid value!
 		std::vector<LasField::Shared> fieldsToLoad;
@@ -1025,9 +1025,9 @@ CC_FILE_ERROR LASFWFFilter::loadFile(const QString& filename, ccHObject& contain
 		for (I32 i = 0; i < lasreader.header.number_attributes; ++i)
 		{
 			const LASattribute& attribute = lasreader.header.attributes[i];
-			ExtraLasField*      field     = new ExtraLasField(attribute.name);
-			field->startIndex             = i; // lasreader.header.attribute_starts[i];
-			field->isShifted              = (attribute.data_type == 10);
+			ExtraLasField* field = new ExtraLasField(attribute.name);
+			field->startIndex = i; // lasreader.header.attribute_starts[i];
+			field->isShifted = (attribute.data_type == 10);
 			fieldsToLoad.push_back(LasField::Shared(field));
 		}
 
@@ -1046,7 +1046,7 @@ CC_FILE_ERROR LASFWFFilter::loadFile(const QString& filename, ccHObject& contain
 			}
 
 			// determine the total size of the FWF data
-			QFile    fwfDataSource;
+			QFile fwfDataSource;
 			uint64_t fwfDataCount = 0;
 			if (lasreader.header.start_of_waveform_data_packet_record != 0)
 			{
@@ -1108,8 +1108,8 @@ CC_FILE_ERROR LASFWFFilter::loadFile(const QString& filename, ccHObject& contain
 
 				if (fwfDataCount > 60)
 				{
-					QByteArray  evlrHeader = fwfDataSource.read(60);
-					const char* userID     = reinterpret_cast<const char*>(evlrHeader.constData() + 2); // see LAS 1.4 EVLR header specifications
+					QByteArray evlrHeader = fwfDataSource.read(60);
+					const char* userID = reinterpret_cast<const char*>(evlrHeader.constData() + 2); // see LAS 1.4 EVLR header specifications
 					if (strncmp(userID, "LASF_Spec", 9) == 0)
 					{
 						// this is a valid EVLR header, we can skip it
@@ -1148,7 +1148,7 @@ CC_FILE_ERROR LASFWFFilter::loadFile(const QString& filename, ccHObject& contain
 			}
 		}
 
-		CCVector3d lasScale  = CCVector3d(lasreader.header.x_scale_factor, lasreader.header.y_scale_factor, lasreader.header.z_scale_factor);
+		CCVector3d lasScale = CCVector3d(lasreader.header.x_scale_factor, lasreader.header.y_scale_factor, lasreader.header.z_scale_factor);
 		CCVector3d lasOffset = CCVector3d(lasreader.header.x_offset, lasreader.header.y_offset, lasreader.header.z_offset);
 
 		cloud->setMetaData(LAS_SCALE_X_META_DATA, QVariant(lasScale.x));
@@ -1175,12 +1175,12 @@ CC_FILE_ERROR LASFWFFilter::loadFile(const QString& filename, ccHObject& contain
 					if (!descriptors.contains(packetIndex))
 					{
 						LASvlr_wave_packet_descr* descriptor = lasreader.header.vlr_wave_packet_descr[packetIndex];
-						WaveformDescriptor        wfd;
+						WaveformDescriptor wfd;
 						if (descriptor)
 						{
 							wfd.numberOfSamples = descriptor->getNumberOfSamples();
-							wfd.bitsPerSample   = descriptor->getBitsPerSample();
-							wfd.digitizerGain   = descriptor->getDigitizerGain();
+							wfd.bitsPerSample = descriptor->getBitsPerSample();
+							wfd.digitizerGain = descriptor->getDigitizerGain();
 							if (wfd.digitizerGain == 0)
 							{
 								// shouldn't be 0 by default!
@@ -1205,7 +1205,7 @@ CC_FILE_ERROR LASFWFFilter::loadFile(const QString& filename, ccHObject& contain
 			{
 				// backup input global parameters
 				ccGlobalShiftManager::Mode csModeBackup = parameters.shiftHandlingMode;
-				bool                       useLasOffset = false;
+				bool useLasOffset = false;
 				// set the lasOffset as default if none was provided
 				CCVector3d lasOffsetXY(lasOffset.x, lasOffset.y, 0.0);
 				if (lasOffsetXY.norm2() != 0 && ((nullptr == parameters._coordinatesShiftEnabled) || (false == *parameters._coordinatesShiftEnabled)))
@@ -1213,7 +1213,7 @@ CC_FILE_ERROR LASFWFFilter::loadFile(const QString& filename, ccHObject& contain
 					if (csModeBackup != ccGlobalShiftManager::NO_DIALOG) // No dialog, practically means that we don't want any shift!
 					{
 						useLasOffset = true;
-						Pshift       = -lasOffsetXY;
+						Pshift = -lasOffsetXY;
 						if (csModeBackup != ccGlobalShiftManager::NO_DIALOG_AUTO_SHIFT)
 						{
 							parameters.shiftHandlingMode = ccGlobalShiftManager::ALWAYS_DISPLAY_DIALOG;

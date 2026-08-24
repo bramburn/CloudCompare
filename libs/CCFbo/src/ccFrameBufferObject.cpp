@@ -101,7 +101,7 @@ bool ccFrameBufferObject::init(unsigned w, unsigned h)
 		reset();
 	}
 
-	m_width  = w;
+	m_width = w;
 	m_height = h;
 
 	// create a framebuffer object
@@ -139,7 +139,7 @@ void ccFrameBufferObject::deleteColorTexture()
 	{
 		m_glFunc.glDeleteTextures(1, &m_colorTexture);
 	}
-	m_colorTexture    = 0;
+	m_colorTexture = 0;
 	m_ownColorTexture = false;
 }
 
@@ -149,14 +149,14 @@ void ccFrameBufferObject::deleteDepthTexture()
 	{
 		m_glFunc.glDeleteTextures(1, &m_depthTexture);
 	}
-	m_depthTexture    = 0;
+	m_depthTexture = 0;
 	m_ownDepthTexture = false;
 }
 
-bool ccFrameBufferObject::initColor(GLint  internalformat /*=GL_RGBA*/,
+bool ccFrameBufferObject::initColor(GLint internalformat /*=GL_RGBA*/,
                                     GLenum format /*=GL_RGBA*/,
                                     GLenum type /*=GL_UNSIGNED_BYTE*/,
-                                    GLint  minMagFilter /*=GL_NEAREST*/,
+                                    GLint minMagFilter /*=GL_NEAREST*/,
                                     GLenum target /*=GL_TEXTURE_2D*/)
 {
 	if (!m_isValid || m_fboId == 0)
@@ -193,7 +193,7 @@ bool ccFrameBufferObject::initColor(GLint  internalformat /*=GL_RGBA*/,
 }
 
 bool ccFrameBufferObject::attachColor(GLuint texID,
-                                      bool   ownTexture /*=false*/,
+                                      bool ownTexture /*=false*/,
                                       GLenum target /*=GL_TEXTURE_2D*/)
 {
 	if (!m_isValid || m_fboId == 0)
@@ -226,7 +226,7 @@ bool ccFrameBufferObject::attachColor(GLuint texID,
 		// remove the previous texture (if any)
 		deleteColorTexture();
 		// save the new one
-		m_colorTexture    = texID;
+		m_colorTexture = texID;
 		m_ownColorTexture = ownTexture;
 		break;
 
@@ -239,9 +239,9 @@ bool ccFrameBufferObject::attachColor(GLuint texID,
 	return success;
 }
 
-bool ccFrameBufferObject::initDepth(GLint  wrapParam /*=GL_CLAMP_TO_BORDER*/,
+bool ccFrameBufferObject::initDepth(GLint wrapParam /*=GL_CLAMP_TO_BORDER*/,
                                     GLenum internalFormat /*=GL_DEPTH_COMPONENT32*/,
-                                    GLint  minMagFilter /*=GL_NEAREST*/,
+                                    GLint minMagFilter /*=GL_NEAREST*/,
                                     GLenum target /*=GL_TEXTURE_2D*/)
 {
 	if (!m_isValid || m_fboId == 0)
@@ -285,7 +285,7 @@ bool ccFrameBufferObject::initDepth(GLint  wrapParam /*=GL_CLAMP_TO_BORDER*/,
 }
 
 bool ccFrameBufferObject::attachDepth(GLuint texID,
-                                      bool   ownTexture /*=false*/,
+                                      bool ownTexture /*=false*/,
                                       GLenum target /*=GL_TEXTURE_2D*/)
 {
 	if (!m_isValid || m_fboId == 0)
@@ -318,7 +318,7 @@ bool ccFrameBufferObject::attachDepth(GLuint texID,
 		// remove the previous texture (if any)
 		deleteDepthTexture();
 		// save the new one
-		m_depthTexture    = texID;
+		m_depthTexture = texID;
 		m_ownDepthTexture = ownTexture;
 		break;
 

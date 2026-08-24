@@ -54,8 +54,8 @@
 #include <QResizeEvent>
 
 ccGLWindow::ccGLWindow(QSurfaceFormat* format /*=nullptr*/,
-                       QOpenGLWidget*  parent /*=nullptr*/,
-                       bool            silentInitialization /*=false*/)
+                       QOpenGLWidget* parent /*=nullptr*/,
+                       bool silentInitialization /*=false*/)
     : QOpenGLWidget(parent)
     , ccGLWindowInterface(this, silentInitialization)
 {

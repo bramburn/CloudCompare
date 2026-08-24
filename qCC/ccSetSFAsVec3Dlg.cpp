@@ -42,11 +42,11 @@
 #include <ccPointCloud.h>
 
 ccSetSFsAsVec3Dialog::ccSetSFsAsVec3Dialog(const ccPointCloud* cloud,
-                                           const QString&      xLabel,
-                                           const QString&      yLabel,
-                                           const QString&      zLabel,
-                                           bool                allowUnchanged,
-                                           QWidget*            parent /*=nullptr*/)
+                                           const QString& xLabel,
+                                           const QString& yLabel,
+                                           const QString& zLabel,
+                                           bool allowUnchanged,
+                                           QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::Tool)
     , Ui::SetSFsAsVec3Dialog()
     , m_constFields(0)

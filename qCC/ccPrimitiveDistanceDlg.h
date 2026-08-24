@@ -53,13 +53,13 @@ class ccPrimitiveDistanceDlg : public QDialog
 	{
 		return signedDistCheckBox->isChecked();
 	}
-	
+
 	/// Get flip normals flag
 	inline bool flipNormals() const
 	{
 		return flipNormalsCheckBox->isChecked();
 	}
-	
+
 	/// Get treat planes as bounded flag
 	inline bool treatPlanesAsBounded() const
 	{

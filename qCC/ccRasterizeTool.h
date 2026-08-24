@@ -63,23 +63,23 @@ class ccRasterizeTool : public QDialog
 	//! Bands to be exported
 	struct ExportBands
 	{
-		bool height    = true;
-		bool rgb       = false;
-		bool density   = false;
+		bool height = true;
+		bool rgb = false;
+		bool density = false;
 		bool visibleSF = false;
-		bool allSFs    = false;
+		bool allSFs = false;
 	};
 
 	//! Exports a raster grid as a geotiff file
-	static bool ExportGeoTiff(const QString&                    outputFilename,
-	                          const ExportBands&                exportBands,
+	static bool ExportGeoTiff(const QString& outputFilename,
+	                          const ExportBands& exportBands,
 	                          ccRasterGrid::EmptyCellFillOption fillEmptyCellsStrategy,
-	                          const ccRasterGrid&               grid,
-	                          const ccBBox&                     gridBBox,
-	                          unsigned char                     Z,
-	                          double                            customHeightForEmptyCells = std::numeric_limits<double>::quiet_NaN(),
-	                          ccGenericPointCloud*              originCloud               = nullptr,
-	                          int                               visibleSfIndex            = -1);
+	                          const ccRasterGrid& grid,
+	                          const ccBBox& gridBBox,
+	                          unsigned char Z,
+	                          double customHeightForEmptyCells = std::numeric_limits<double>::quiet_NaN(),
+	                          ccGenericPointCloud* originCloud = nullptr,
+	                          int visibleSfIndex = -1);
 
   private:
 	//! Exports the grid as a cloud
@@ -164,8 +164,8 @@ class ccRasterizeTool : public QDialog
 
   private: // standard methods
 	// Inherited from cc2Point5DimEditor
-	double                       getGridStep() const override;
-	unsigned char                getProjectionDimension() const override;
+	double getGridStep() const override;
+	unsigned char getProjectionDimension() const override;
 	ccRasterGrid::ProjectionType getTypeOfProjection() const override;
 
 	//! Returns the index of the std. dev. layer (field)
@@ -210,26 +210,26 @@ class ccRasterizeTool : public QDialog
 
   protected: // raster grid related stuff
 	//! Converts the grid to a cloud with scalar field(s)
-	ccPointCloud* convertGridToCloud(bool                                               exportHeightStats,
-	                                 bool                                               exportSFStats,
+	ccPointCloud* convertGridToCloud(bool exportHeightStats,
+	                                 bool exportSFStats,
 	                                 const std::vector<ccRasterGrid::ExportableFields>& exportedStatistics,
-	                                 bool                                               projectSFs,
-	                                 bool                                               projectColors,
-	                                 bool                                               copyHillshadeSF,
-	                                 bool                                               copyXRaySF,
-	                                 const QString&                                     activeSFName,
-	                                 double                                             percentileValue,
-	                                 bool                                               exportToOriginalCS,
-	                                 bool                                               appendGridSizeToSFNames,
-	                                 ccProgressDialog*                                  progressDialog = nullptr) const;
+	                                 bool projectSFs,
+	                                 bool projectColors,
+	                                 bool copyHillshadeSF,
+	                                 bool copyXRaySF,
+	                                 const QString& activeSFName,
+	                                 double percentileValue,
+	                                 bool exportToOriginalCS,
+	                                 bool appendGridSizeToSFNames,
+	                                 ccProgressDialog* progressDialog = nullptr) const;
 
   private: // members
 	//! Layer types
 	enum LayerType
 	{
 		LAYER_HEIGHT = 0,
-		LAYER_RGB    = 1,
-		LAYER_SF     = 2
+		LAYER_RGB = 1,
+		LAYER_SF = 2
 	};
 
 	//! Associated Qt UI

@@ -58,7 +58,7 @@ class ccColorFromScalarDlg : public QDialog
 	~ccColorFromScalarDlg();
 
 	static constexpr int c_channelCount = 4;
-	void                 refreshDisplay();
+	void refreshDisplay();
 	// update and redraw histograms
 	void updateHistogram(int);
 
@@ -181,12 +181,12 @@ class ccColorFromScalarDlg : public QDialog
 	// scalar fields
 	ccScalarField* m_scalars[c_channelCount]; // 0 - red, 1 - green, 2 - blue, 3 - alpha
 	// gui elements
-	QComboBox*      m_combos[c_channelCount];
+	QComboBox* m_combos[c_channelCount];
 	QDoubleSpinBox* m_boxes_min[c_channelCount];
 	QDoubleSpinBox* m_boxes_max[c_channelCount];
-	QLabel*         m_labels_min[c_channelCount];
-	QLabel*         m_labels_max[c_channelCount];
-	QCheckBox*      m_reverse[c_channelCount];
+	QLabel* m_labels_min[c_channelCount];
+	QLabel* m_labels_max[c_channelCount];
+	QCheckBox* m_reverse[c_channelCount];
 	// saturation values
 	double m_minSat[c_channelCount];
 	double m_maxSat[c_channelCount];

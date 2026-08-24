@@ -49,10 +49,10 @@ class QCC_DB_LIB_API ccDisc : public ccGenericPrimitive
 	 * @param[in] uniqueID Optional unique ID
 	 */
 	ccDisc(PointCoordinateType radius,
-	       const ccGLMatrix*   transMat  = nullptr,
-	       QString             name      = QString("Disc"),
-	       unsigned            precision = DEFAULT_DRAWING_PRECISION,
-	       unsigned            uniqueID  = ccUniqueIDGenerator::InvalidUniqueID);
+	       const ccGLMatrix* transMat = nullptr,
+	       QString name = QString("Disc"),
+	       unsigned precision = DEFAULT_DRAWING_PRECISION,
+	       unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
 	//! Simplified constructor
 	/** For ccHObject factory only!
@@ -88,10 +88,10 @@ class QCC_DB_LIB_API ccDisc : public ccGenericPrimitive
 
   protected:
 	// inherited from ccGenericPrimitive
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	bool  buildUp() override;
+	bool buildUp() override;
 
 	//! Radius
 	PointCoordinateType m_radius;

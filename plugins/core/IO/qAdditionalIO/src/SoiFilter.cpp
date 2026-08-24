@@ -65,7 +65,7 @@ CC_FILE_ERROR SoiFilter::loadFile(const QString& filename, ccHObject& container,
 
 	std::string line;
 	line.resize(MAX_ASCII_FILE_LINE_LENGTH);
-	unsigned nbScansTotal  = 0;
+	unsigned nbScansTotal = 0;
 	unsigned nbPointsTotal = 0;
 
 	// we read the first line
@@ -155,7 +155,7 @@ CC_FILE_ERROR SoiFilter::loadFile(const QString& filename, ccHObject& container,
 		for (unsigned i = 0; i < nbOfPoints; i++)
 		{
 			float P[3];
-			int   c = 0;
+			int c = 0;
 			if (fscanf(fp, "%f %f %f %i", P, P + 1, P + 2, &c) < 4)
 			{
 				fclose(fp);

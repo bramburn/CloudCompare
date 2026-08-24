@@ -79,7 +79,7 @@ void ccCamSensorProjectionDlg::initWithCamSensor(const ccCameraSensor* sensor)
 	{
 		// center
 		const ccGLMatrix& mat = sensor->getRigidTransformation();
-		CCVector3d        C   = mat.getTranslationAsVec3D();
+		CCVector3d C = mat.getTranslationAsVec3D();
 		if (inWorldCSCheckBox->isChecked())
 		{
 			mat.applyRotation(C);
@@ -126,7 +126,7 @@ void ccCamSensorProjectionDlg::initWithCamSensor(const ccCameraSensor* sensor)
 
 	/*** Distortion / uncertainty ***/
 	{
-		QString                                                 distInfo;
+		QString distInfo;
 		const ccCameraSensor::LensDistortionParameters::Shared& distParams = sensor->getDistortionParameters();
 
 		if (!distParams)
@@ -136,14 +136,14 @@ void ccCamSensorProjectionDlg::initWithCamSensor(const ccCameraSensor* sensor)
 		else if (distParams->getModel() == ccCameraSensor::SIMPLE_RADIAL_DISTORTION)
 		{
 			const ccCameraSensor::RadialDistortionParameters* rdParams = static_cast<ccCameraSensor::RadialDistortionParameters*>(distParams.data());
-			distInfo                                                   = "Radial distortion model:\n";
+			distInfo = "Radial distortion model:\n";
 			distInfo += QString("k1 = %1\n").arg(rdParams->k1);
 			distInfo += QString("k2 = %1\n").arg(rdParams->k2);
 		}
 		else if (distParams->getModel() == ccCameraSensor::BROWN_DISTORTION)
 		{
 			const ccCameraSensor::BrownDistortionParameters* bParams = static_cast<ccCameraSensor::BrownDistortionParameters*>(distParams.data());
-			distInfo                                                 = "Brown distortion / uncertainty model:\n";
+			distInfo = "Brown distortion / uncertainty model:\n";
 			distInfo += "* Radial distortion:\n";
 			distInfo += QString("\tK1 = %1\n").arg(bParams->K_BrownParams[0]);
 			distInfo += QString("\tK2 = %1\n").arg(bParams->K_BrownParams[1]);
@@ -185,16 +185,16 @@ void ccCamSensorProjectionDlg::updateCamSensor(ccCameraSensor* sensor)
 		ccGLMatrixd rot;
 		{
 			double* mat = rot.data();
-			mat[0]      = x1rot->text().toDouble();
-			mat[1]      = y1rot->text().toDouble();
-			mat[2]      = z1rot->text().toDouble();
+			mat[0] = x1rot->text().toDouble();
+			mat[1] = y1rot->text().toDouble();
+			mat[2] = z1rot->text().toDouble();
 
 			mat[4] = x2rot->text().toDouble();
 			mat[5] = y2rot->text().toDouble();
 			mat[6] = z2rot->text().toDouble();
 
-			mat[8]  = x3rot->text().toDouble();
-			mat[9]  = y3rot->text().toDouble();
+			mat[8] = x3rot->text().toDouble();
+			mat[9] = y3rot->text().toDouble();
 			mat[10] = z3rot->text().toDouble();
 		}
 
@@ -217,15 +217,15 @@ void ccCamSensorProjectionDlg::updateCamSensor(ccCameraSensor* sensor)
 	{
 		ccCameraSensor::IntrinsicParameters iParams;
 
-		iParams.vertFocal_pix      = static_cast<float>(focalDoubleSpinBox->value());
-		iParams.vFOV_rad           = static_cast<float>(CCCoreLib::DegreesToRadians(fovDoubleSpinBox->value()));
-		iParams.arrayWidth         = arrayWSpinBox->value();
-		iParams.arrayHeight        = arrayHSpinBox->value();
-		iParams.pixelSize_mm[0]    = static_cast<float>(pixWDoubleSpinBox->value());
-		iParams.pixelSize_mm[1]    = static_cast<float>(pixHDoubleSpinBox->value());
-		iParams.zNear_mm           = static_cast<float>(zNearDoubleSpinBox->value());
-		iParams.zFar_mm            = static_cast<float>(zFarDoubleSpinBox->value());
-		iParams.skew               = static_cast<float>(skewDoubleSpinBox->value());
+		iParams.vertFocal_pix = static_cast<float>(focalDoubleSpinBox->value());
+		iParams.vFOV_rad = static_cast<float>(CCCoreLib::DegreesToRadians(fovDoubleSpinBox->value()));
+		iParams.arrayWidth = arrayWSpinBox->value();
+		iParams.arrayHeight = arrayHSpinBox->value();
+		iParams.pixelSize_mm[0] = static_cast<float>(pixWDoubleSpinBox->value());
+		iParams.pixelSize_mm[1] = static_cast<float>(pixHDoubleSpinBox->value());
+		iParams.zNear_mm = static_cast<float>(zNearDoubleSpinBox->value());
+		iParams.zFar_mm = static_cast<float>(zFarDoubleSpinBox->value());
+		iParams.skew = static_cast<float>(skewDoubleSpinBox->value());
 		iParams.principal_point[0] = static_cast<float>(cxDoubleSpinBox->value());
 		iParams.principal_point[1] = static_cast<float>(cyDoubleSpinBox->value());
 

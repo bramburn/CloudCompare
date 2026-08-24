@@ -82,12 +82,12 @@ ccHObject* ccCropTool::Crop(ccHObject* entity, const ccBBox& box, bool inside /*
 	}
 	else if (entity->isKindOf(CC_TYPES::MESH))
 	{
-		ccGenericMesh*                                       mesh = static_cast<ccGenericMesh*>(entity);
+		ccGenericMesh* mesh = static_cast<ccGenericMesh*>(entity);
 		CCCoreLib::ManualSegmentationTools::MeshCutterParams params;
-		params.bbMin               = box.minCorner();
-		params.bbMax               = box.maxCorner();
+		params.bbMin = box.minCorner();
+		params.bbMax = box.maxCorner();
 		params.generateOutsideMesh = !inside;
-		params.trackOrigIndexes    = mesh->hasColors() || mesh->hasScalarFields() || mesh->hasMaterials();
+		params.trackOrigIndexes = mesh->hasColors() || mesh->hasScalarFields() || mesh->hasMaterials();
 
 		ccGenericPointCloud* origVertices = mesh->getAssociatedCloud();
 		assert(origVertices);
@@ -192,10 +192,10 @@ ccHObject* ccCropTool::Crop(ccHObject* entity, const ccBBox& box, bool inside /*
 
 								// scalar fields
 								std::vector<ccScalarField*> importedSFs;
-								ccPointCloud*               origVertices_pc = nullptr;
+								ccPointCloud* origVertices_pc = nullptr;
 								if (origVertices->hasScalarFields())
 								{
-									origVertices_pc  = origVertices->isA(CC_TYPES::POINT_CLOUD) ? static_cast<ccPointCloud*>(origVertices) : nullptr;
+									origVertices_pc = origVertices->isA(CC_TYPES::POINT_CLOUD) ? static_cast<ccPointCloud*>(origVertices) : nullptr;
 									unsigned sfCount = origVertices_pc ? origVertices_pc->getNumberOfScalarFields() : 1;
 
 									// now try to import each SF
@@ -238,8 +238,8 @@ ccHObject* ccCropTool::Crop(ccHObject* entity, const ccBBox& box, bool inside /*
 									for (unsigned i = 0; i < croppedMesh->size(); ++i)
 									{
 										// get the origin triangle
-										unsigned                          origTriIndex = origTriIndexes[i];
-										const CCCoreLib::VerticesIndexes* tsio         = mesh->getTriangleVertIndexes(origTriIndex);
+										unsigned origTriIndex = origTriIndexes[i];
+										const CCCoreLib::VerticesIndexes* tsio = mesh->getTriangleVertIndexes(origTriIndex);
 
 										// get the new triangle
 										const CCCoreLib::VerticesIndexes* tsic = croppedMesh->getTriangleVertIndexes(i);
@@ -279,9 +279,9 @@ ccHObject* ccCropTool::Crop(ccHObject* entity, const ccBBox& box, bool inside /*
 													if (origVertices_pc)
 													{
 														const CCCoreLib::ScalarField* sf = origVertices_pc->getScalarField(s);
-														scalarValues.x                   = sf->getValue(tsio->i1);
-														scalarValues.y                   = sf->getValue(tsio->i2);
-														scalarValues.z                   = sf->getValue(tsio->i3);
+														scalarValues.x = sf->getValue(tsio->i1);
+														scalarValues.y = sf->getValue(tsio->i2);
+														scalarValues.z = sf->getValue(tsio->i3);
 													}
 													else
 													{
@@ -328,7 +328,7 @@ ccHObject* ccCropTool::Crop(ccHObject* entity, const ccBBox& box, bool inside /*
 									{
 										// get the origin triangle
 										unsigned origTriIndex = origTriIndexes[i];
-										int      mtlIndex     = mesh->getTriangleMtlIndex(origTriIndex);
+										int mtlIndex = mesh->getTriangleMtlIndex(origTriIndex);
 										croppedMesh->addTriangleMtlIndex(mtlIndex);
 
 										if (mtlIndex >= 0)
@@ -398,10 +398,10 @@ ccHObject* ccCropTool::Crop(ccHObject* entity, const ccBBox& box, bool inside /*
 										for (unsigned i = 0; i < croppedMesh->size(); ++i)
 										{
 											// get the origin triangle
-											unsigned     origTriIndex = origTriIndexes[i];
-											TexCoords2D* tx1          = nullptr;
-											TexCoords2D* tx2          = nullptr;
-											TexCoords2D* tx3          = nullptr;
+											unsigned origTriIndex = origTriIndexes[i];
+											TexCoords2D* tx1 = nullptr;
+											TexCoords2D* tx2 = nullptr;
+											TexCoords2D* tx3 = nullptr;
 											mesh->getTriangleTexCoordinates(origTriIndex, tx1, tx2, tx3);
 
 											// get the new triangle
@@ -411,8 +411,8 @@ ccHObject* ccCropTool::Crop(ccHObject* entity, const ccBBox& box, bool inside /*
 											int texIndexes[3] = {-1, -1, -1};
 											for (unsigned j = 0; j < 3; ++j)
 											{
-												unsigned         vertIndex = tsic->i[j];
-												const CCVector3* Vcj       = croppedVertices->getPoint(vertIndex);
+												unsigned vertIndex = tsic->i[j];
+												const CCVector3* Vcj = croppedVertices->getPoint(vertIndex);
 
 												// intepolation weights
 												CCVector3d w;

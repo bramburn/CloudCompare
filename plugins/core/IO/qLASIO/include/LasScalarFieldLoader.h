@@ -62,8 +62,8 @@ class LasScalarFieldLoader
 	 * @param[in,out] pointCloud Point cloud.
 	 */
 	LasScalarFieldLoader(std::vector<LasScalarField>&      standardScalarFields,
-	                    std::vector<LasExtraScalarField>& extraScalarFields,
-	                    ccPointCloud&                     pointCloud);
+	                     std::vector<LasExtraScalarField>& extraScalarFields,
+	                     ccPointCloud&                     pointCloud);
 
 	/**
 	 * @brief Handle scalar fields for current point.

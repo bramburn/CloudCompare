@@ -107,20 +107,20 @@ class ccSectionExtractionTool : public ccOverlayDialog
 
 	//! Convert one or several ReferenceCloud instances to a single cloud and add it to the main DB
 	bool extractSectionCloud(const std::vector<CCCoreLib::ReferenceCloud*>& refClouds,
-	                         unsigned                                       sectionIndex,
-	                         bool&                                          cloudGenerated);
+	                         unsigned sectionIndex,
+	                         bool& cloudGenerated);
 
 	//! Extract the envelope from a set of 2D points and add it to the main DB
-	bool extractSectionEnvelope(const ccPolyline*                 originalSection,
-	                            const ccPointCloud*               originalSectionCloud,
-	                            ccPointCloud*                     unrolledSectionCloud, //'2D' cloud with Z = 0
-	                            unsigned                          sectionIndex,
+	bool extractSectionEnvelope(const ccPolyline* originalSection,
+	                            const ccPointCloud* originalSectionCloud,
+	                            ccPointCloud* unrolledSectionCloud, //'2D' cloud with Z = 0
+	                            unsigned sectionIndex,
 	                            ccEnvelopeExtractor::EnvelopeType type,
-	                            PointCoordinateType               maxEdgeLength,
-	                            bool                              multiPass,
-	                            bool                              splitEnvelope,
-	                            bool&                             envelopeGenerated,
-	                            bool                              visualDebugMode = false);
+	                            PointCoordinateType maxEdgeLength,
+	                            bool multiPass,
+	                            bool splitEnvelope,
+	                            bool& envelopeGenerated,
+	                            bool visualDebugMode = false);
 
 	//! Creates (if necessary) and returns a group to store entities in the main DB
 	ccHObject* getExportGroup(unsigned& defaultGroupID, const QString& defaultName);
@@ -163,7 +163,7 @@ class ccSectionExtractionTool : public ccOverlayDialog
 			{
 				ccPolyline* poly = reinterpret_cast<ccPolyline*>(e);
 				// backup color
-				backupColor      = poly->getColor();
+				backupColor = poly->getColor();
 				backupColorShown = poly->colorsShown();
 				// backup thickness
 				backupWidth = poly->getWidth();
@@ -175,13 +175,13 @@ class ccSectionExtractionTool : public ccOverlayDialog
 			return entity == ie.entity;
 		}
 
-		EntityType*         entity;
+		EntityType* entity;
 		ccGenericGLDisplay* originalDisplay;
-		bool                isInDB;
+		bool isInDB;
 
 		// backup info (for polylines only)
-		ccColor::Rgb        backupColor;
-		bool                backupColorShown;
+		ccColor::Rgb backupColor;
+		bool backupColorShown;
 		PointCoordinateType backupWidth;
 	};
 
@@ -211,7 +211,7 @@ class ccSectionExtractionTool : public ccOverlayDialog
 		//...			= 4,
 		//...			= 8,
 		//...			= 16,
-		PAUSED  = 32,
+		PAUSED = 32,
 		STARTED = 64,
 		RUNNING = 128,
 	};

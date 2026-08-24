@@ -77,7 +77,7 @@ bool STLFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) con
 {
 	if (type == CC_TYPES::MESH)
 	{
-		multiple  = false;
+		multiple = false;
 		exclusive = true;
 		return true;
 	}
@@ -104,7 +104,7 @@ CC_FILE_ERROR STLFilter::saveToFile(ccHObject* entity, const QString& filename, 
 	bool binaryMode = true;
 	if (parameters.alwaysDisplaySaveDialog)
 	{
-		QMessageBox  msgBox(QMessageBox::Question, "Choose output format", "Save in BINARY or ASCII format?");
+		QMessageBox msgBox(QMessageBox::Question, "Choose output format", "Save in BINARY or ASCII format?");
 		QPushButton* binaryButton = msgBox.addButton("BINARY", QMessageBox::AcceptRole);
 		msgBox.addButton("ASCII", QMessageBox::AcceptRole);
 		msgBox.exec();
@@ -306,11 +306,11 @@ CC_FILE_ERROR STLFilter::loadFile(const QString& filename, ccHObject& container,
 
 	// ASCII OR BINARY?
 	QString name("mesh");
-	bool    ascii = true;
+	bool ascii = true;
 	{
 		// buffer
-		char   header[80] = {0};
-		qint64 sz         = fp.read(header, 80);
+		char header[80] = {0};
+		qint64 sz = fp.read(header, 80);
 		if (sz < 80)
 		{
 			// either ASCII or BINARY STL FILES are always > 80 bytes
@@ -331,7 +331,7 @@ CC_FILE_ERROR STLFilter::loadFile(const QString& filename, ccHObject& container,
 			stream.readLine();
 			// we look if the second line (if any) starts by 'facet'
 			QString line = stream.readLine();
-			ascii        = true;
+			ascii = true;
 			if (line.isEmpty()
 			    || fp.error() != QFile::NoError
 			    || !QString(line).trimmed().toUpper().startsWith("FACET"))
@@ -419,9 +419,9 @@ CC_FILE_ERROR STLFilter::loadFile(const QString& filename, ccHObject& container,
 	return CC_FERR_NO_ERROR;
 }
 
-CC_FILE_ERROR STLFilter::loadASCIIFile(QFile&          fp,
-                                       ccMesh*         mesh,
-                                       ccPointCloud*   vertices,
+CC_FILE_ERROR STLFilter::loadASCIIFile(QFile& fp,
+                                       ccMesh* mesh,
+                                       ccPointCloud* vertices,
                                        LoadParameters& parameters)
 {
 	assert(fp.isOpen() && mesh && vertices);
@@ -467,11 +467,11 @@ CC_FILE_ERROR STLFilter::loadASCIIFile(QFile&          fp,
 	// current vertex shift
 	CCVector3d Pshift(0, 0, 0);
 
-	unsigned               pointCount                    = 0;
-	unsigned               faceCount                     = 0;
-	static const unsigned  s_defaultMemAllocCount        = 65536;
-	bool                   normalWarningAlreadyDisplayed = false;
-	NormsIndexesTableType* normals                       = mesh->getTriNormsTable();
+	unsigned pointCount = 0;
+	unsigned faceCount = 0;
+	static const unsigned s_defaultMemAllocCount = 65536;
+	bool normalWarningAlreadyDisplayed = false;
+	NormsIndexesTableType* normals = mesh->getTriNormsTable();
 
 	CC_FILE_ERROR result = CC_FERR_NO_ERROR;
 
@@ -479,7 +479,7 @@ CC_FILE_ERROR STLFilter::loadASCIIFile(QFile&          fp,
 	while (true)
 	{
 		CCVector3 N;
-		bool      normalIsOk = false;
+		bool normalIsOk = false;
 
 		// 1st line of a 'facet': "facet normal ni nj nk" / or 'endsolid' (i.e. end of file)
 		{
@@ -581,7 +581,7 @@ CC_FILE_ERROR STLFilter::loadASCIIFile(QFile&          fp,
 			CCVector3d Pd(0, 0, 0);
 			{
 				bool vertexIsOk = false;
-				Pd.x            = tokens[1].toDouble(&vertexIsOk);
+				Pd.x = tokens[1].toDouble(&vertexIsOk);
 				if (vertexIsOk)
 				{
 					Pd.y = tokens[2].toDouble(&vertexIsOk);
@@ -670,7 +670,7 @@ CC_FILE_ERROR STLFilter::loadASCIIFile(QFile&          fp,
 			if (normalIsOk)
 			{
 				// compress normal
-				index                     = static_cast<int>(normals->currentSize());
+				index = static_cast<int>(normals->currentSize());
 				CompressedNormType nIndex = ccNormalVectors::GetNormIndex(N.u);
 				normals->addElement(nIndex);
 			}
@@ -727,15 +727,15 @@ CC_FILE_ERROR STLFilter::loadASCIIFile(QFile&          fp,
 	return result;
 }
 
-CC_FILE_ERROR STLFilter::loadBinaryFile(QFile&          fp,
-                                        ccMesh*         mesh,
-                                        ccPointCloud*   vertices,
+CC_FILE_ERROR STLFilter::loadBinaryFile(QFile& fp,
+                                        ccMesh* mesh,
+                                        ccPointCloud* vertices,
                                         LoadParameters& parameters)
 {
 	assert(fp.isOpen() && mesh && vertices);
 
 	unsigned pointCount = 0;
-	unsigned faceCount  = 0;
+	unsigned faceCount = 0;
 
 	// UINT8[80] Header (we skip it)
 	fp.seek(80);
@@ -832,7 +832,7 @@ CC_FILE_ERROR STLFilter::loadBinaryFile(QFile&          fp,
 		if (normals)
 		{
 			// compress normal
-			int                index  = static_cast<int>(normals->currentSize());
+			int index = static_cast<int>(normals->currentSize());
 			CompressedNormType nIndex = ccNormalVectors::GetNormIndex(N.u);
 			normals->addElement(nIndex);
 			mesh->addTriangleNormalIndexes(index, index, index);

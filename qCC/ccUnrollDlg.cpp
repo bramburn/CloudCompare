@@ -56,10 +56,10 @@
 #include <QSettings>
 
 // semi-persistent settings
-static double s_startAngle_deg           = 0.0;
-static double s_stopAngle_deg            = 360.0;
-static bool   s_arbitraryOutputCS        = false;
-static bool   s_removeStretchedTriangles = true;
+static double s_startAngle_deg = 0.0;
+static double s_stopAngle_deg = 360.0;
+static bool s_arbitraryOutputCS = false;
+static bool s_removeStretchedTriangles = true;
 
 ccUnrollDlg::ccUnrollDlg(ccHObject* dbRootEntity, QWidget* parent /*=nullptr*/)
     : QDialog(parent)
@@ -167,7 +167,7 @@ bool ccUnrollDlg::removeStretchedTriangles() const
 void ccUnrollDlg::getAngleRange(double& start_deg, double& stop_deg) const
 {
 	start_deg = m_ui->startAngleDoubleSpinBox->value();
-	stop_deg  = m_ui->stopAngleDoubleSpinBox->value();
+	stop_deg = m_ui->stopAngleDoubleSpinBox->value();
 }
 
 CCVector3 ccUnrollDlg::getAxisPosition() const
@@ -315,7 +315,7 @@ void ccUnrollDlg::toPersistentSettings() const
 
 		getAngleRange(s_startAngle_deg, s_stopAngle_deg);
 
-		s_arbitraryOutputCS        = useArbitraryOutputCS();
+		s_arbitraryOutputCS = useArbitraryOutputCS();
 		s_removeStretchedTriangles = removeStretchedTriangles();
 	}
 	settings.endGroup();
@@ -326,31 +326,31 @@ void ccUnrollDlg::fromPersistentSettings()
 	QSettings settings;
 	settings.beginGroup("Unroll");
 	{
-		int    shapeType         = settings.value("shapeType", m_ui->comboBoxUnrollShapeType->currentIndex()).toInt();
-		int    projectionType    = settings.value("projectionType", -1).toInt();
-		int    axisDim           = settings.value("axisDimension", m_ui->comboBoxAxisDimension->currentIndex()).toInt();
-		double angle             = settings.value("angle", m_ui->halfAngleDoubleSpinBox->value()).toDouble();
-		double radius            = settings.value("radius", m_ui->radiusDoubleSpinBox->value()).toDouble();
-		bool   autoCenter        = settings.value("autoCenter", m_ui->checkBoxAuto->isChecked()).toBool();
-		bool   exportDeviationSF = settings.value("exportDeviationSF", m_ui->exportDeviationSFCheckBox->isChecked()).toBool();
-		double spanRatio         = settings.value("spanRatio", (2 * M_PI) / 100).toDouble(); // see https://github.com/CloudCompare/CloudCompare/issues/1767
+		int shapeType = settings.value("shapeType", m_ui->comboBoxUnrollShapeType->currentIndex()).toInt();
+		int projectionType = settings.value("projectionType", -1).toInt();
+		int axisDim = settings.value("axisDimension", m_ui->comboBoxAxisDimension->currentIndex()).toInt();
+		double angle = settings.value("angle", m_ui->halfAngleDoubleSpinBox->value()).toDouble();
+		double radius = settings.value("radius", m_ui->radiusDoubleSpinBox->value()).toDouble();
+		bool autoCenter = settings.value("autoCenter", m_ui->checkBoxAuto->isChecked()).toBool();
+		bool exportDeviationSF = settings.value("exportDeviationSF", m_ui->exportDeviationSFCheckBox->isChecked()).toBool();
+		double spanRatio = settings.value("spanRatio", (2 * M_PI) / 100).toDouble(); // see https://github.com/CloudCompare/CloudCompare/issues/1767
 
 		// compatibility with older versions
 		if (projectionType < 0 || shapeType > 1)
 		{
 			if (shapeType == ccPointCloud::CONE_CONICAL)
 			{
-				shapeType      = 1;
+				shapeType = 1;
 				projectionType = 0;
 			}
 			else if (shapeType == ccPointCloud::CONE_CYLINDRICAL_FIXED_RADIUS)
 			{
-				shapeType      = 1;
+				shapeType = 1;
 				projectionType = 1;
 			}
 			else if (shapeType == ccPointCloud::CONE_CYLINDRICAL_ADAPTIVE_RADIUS)
 			{
-				shapeType      = 1;
+				shapeType = 1;
 				projectionType = 2;
 			}
 		}
@@ -420,10 +420,10 @@ void ccUnrollDlg::loadParametersFromEntity()
 			return;
 		}
 
-		const ccCylinder*   cylinder = static_cast<const ccCylinder*>(cylinders[selectedIndex]);
-		CCVector3           axis     = cylinder->getTransformation().getColumnAsVec3D(2); // Z axis is the cylinder axis
-		CCVector3           origin   = cylinder->getTransformation().getTranslationAsVec3D();
-		PointCoordinateType radius   = cylinder->getBottomRadius();
+		const ccCylinder* cylinder = static_cast<const ccCylinder*>(cylinders[selectedIndex]);
+		CCVector3 axis = cylinder->getTransformation().getColumnAsVec3D(2); // Z axis is the cylinder axis
+		CCVector3 origin = cylinder->getTransformation().getTranslationAsVec3D();
+		PointCoordinateType radius = cylinder->getBottomRadius();
 
 		m_ui->comboBoxAxisDimension->setCurrentIndex(3); // custom
 		m_ui->axisXDoubleSpinBox->setValue(axis.x);
@@ -452,11 +452,11 @@ void ccUnrollDlg::loadParametersFromEntity()
 			return;
 		}
 
-		const ccCone*       cone      = static_cast<const ccCone*>(cones[selectedIndex]);
-		CCVector3           axis      = cone->getTransformation().getColumnAsVec3D(2); // Z axis is the cylinder axis
-		CCVector3           apex      = cone->computeApex();
-		double              angle_deg = cone->computeHalfAngle_deg();
-		PointCoordinateType radius    = cone->getLargeRadius();
+		const ccCone* cone = static_cast<const ccCone*>(cones[selectedIndex]);
+		CCVector3 axis = cone->getTransformation().getColumnAsVec3D(2); // Z axis is the cylinder axis
+		CCVector3 apex = cone->computeApex();
+		double angle_deg = cone->computeHalfAngle_deg();
+		PointCoordinateType radius = cone->getLargeRadius();
 
 		m_ui->comboBoxAxisDimension->setCurrentIndex(3); // custom
 		m_ui->axisXDoubleSpinBox->setValue(axis.x);

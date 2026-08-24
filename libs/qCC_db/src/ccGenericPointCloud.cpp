@@ -402,13 +402,13 @@ void ccGenericPointCloud::importParametersFrom(const ccGenericPointCloud* cloud)
  * @param[in] autoComputeOctree Build octree if not present
  * @return true if a point was found within the pick radius
  */
-bool ccGenericPointCloud::pointPicking(const CCVector2d&           clickPos,
+bool ccGenericPointCloud::pointPicking(const CCVector2d& clickPos,
                                        const ccGLCameraParameters& camera,
-                                       int&                        nearestPointIndex,
-                                       double&                     nearestSquareDist,
-                                       double                      pickWidth /*=2.0*/,
-                                       double                      pickHeight /*=2.0*/,
-                                       bool                        autoComputeOctree /*=false*/)
+                                       int& nearestPointIndex,
+                                       double& nearestSquareDist,
+                                       double pickWidth /*=2.0*/,
+                                       double pickHeight /*=2.0*/,
+                                       bool autoComputeOctree /*=false*/)
 {
 	// can we use the octree to accelerate the point picking process?
 	if (pickWidth == pickHeight)
@@ -427,8 +427,8 @@ bool ccGenericPointCloud::pointPicking(const CCVector2d&           clickPos,
 			CCCoreLib::ScalarField* sf = nullptr;
 			if (getClassID() == CC_TYPES::POINT_CLOUD)
 			{
-				ccPointCloud* pc    = static_cast<ccPointCloud*>(this);
-				int           sfIdx = pc->getScalarFieldIndexByName("octree_picking");
+				ccPointCloud* pc = static_cast<ccPointCloud*>(this);
+				int sfIdx = pc->getScalarFieldIndexByName("octree_picking");
 				if (sfIdx < 0)
 				{
 					sfIdx = pc->addScalarField("octree_picking");
@@ -486,7 +486,7 @@ bool ccGenericPointCloud::pointPicking(const CCVector2d&           clickPos,
 
 		// warning: we have to handle the relative GL transformation!
 		ccGLMatrix trans;
-		bool       noGLTrans = !getAbsoluteGLTransformation(trans);
+		bool noGLTrans = !getAbsoluteGLTransformation(trans);
 
 		// visibility table (if any)
 		const ccGenericPointCloud::VisibilityTableType* visTable = isVisibilityTableInstantiated() ? &getTheVisibilityArray() : nullptr;
@@ -498,7 +498,7 @@ bool ccGenericPointCloud::pointPicking(const CCVector2d&           clickPos,
 		    && !visTable // if the visibility table is instantiated, we always display ALL points
 		)
 		{
-			ccPointCloud*  pc = static_cast<ccPointCloud*>(this);
+			ccPointCloud* pc = static_cast<ccPointCloud*>(this);
 			ccScalarField* sf = pc->getCurrentDisplayedScalarField();
 			if (sf && sf->mayHaveHiddenValues() && sf->getColorScale())
 			{
@@ -524,7 +524,7 @@ bool ccGenericPointCloud::pointPicking(const CCVector2d&           clickPos,
 				const CCVector3* P = getPoint(i);
 
 				CCVector3d Q2D;
-				bool       insideFrustum = false;
+				bool insideFrustum = false;
 				if (noGLTrans)
 				{
 					camera.project(*P, Q2D, &insideFrustum);
@@ -582,7 +582,7 @@ bool ccGenericPointCloud::pointPicking(const CCVector2d&           clickPos,
  * @return ReferenceCloud with visible point indices, or nullptr on error
  */
 CCCoreLib::ReferenceCloud* ccGenericPointCloud::getTheVisiblePoints(const VisibilityTableType* visTable /*=nullptr*/,
-                                                                    bool                       silent /*=false*/,
+                                                                    bool silent /*=false*/,
                                                                     CCCoreLib::ReferenceCloud* selection /*=nullptr*/) const
 {
 	if (!visTable)

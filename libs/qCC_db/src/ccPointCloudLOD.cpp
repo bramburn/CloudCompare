@@ -111,8 +111,8 @@ class ccPointCloudLODThread : public QThread
 	{
 		assert(m_octree);
 
-		const ccOctree::cellsContainer&      cellCodes                = m_octree->pointsAndTheirCellCodes();
-		const unsigned char                  bitDec                   = CCCoreLib::DgmOctree::GET_BIT_SHIFT(node.level);
+		const ccOctree::cellsContainer& cellCodes = m_octree->pointsAndTheirCellCodes();
+		const unsigned char bitDec = CCCoreLib::DgmOctree::GET_BIT_SHIFT(node.level);
 		const CCCoreLib::DgmOctree::CellCode currentTruncatedCellCode = (cellCodes[node.firstCodeIndex].theCode >> bitDec);
 
 		// first count the number of points and compute their center
@@ -138,8 +138,8 @@ class ccPointCloudLODThread : public QThread
 				double maxSquareRadius = 0;
 				for (uint32_t i = 0; i < node.pointCount; ++i)
 				{
-					const CCVector3* P            = m_cloud.getPoint(cellCodes[node.firstCodeIndex + i].theIndex);
-					double           squareRadius = (P->toDouble() - sumP).norm2();
+					const CCVector3* P = m_cloud.getPoint(cellCodes[node.firstCodeIndex + i].theIndex);
+					double squareRadius = (P->toDouble() - sumP).norm2();
 					if (squareRadius > maxSquareRadius)
 					{
 						maxSquareRadius = squareRadius;
@@ -285,9 +285,9 @@ class ccPointCloudLODThread : public QThread
 					{
 						for (uint32_t i = 0; i < node.pointCount;)
 						{
-							int32_t                childNodeIndex = m_lod.newCell(node.level + 1);
-							ccPointCloudLOD::Node& childNode      = m_lod.node(childNodeIndex, node.level + 1);
-							childNode.firstCodeIndex              = node.firstCodeIndex + i;
+							int32_t childNodeIndex = m_lod.newCell(node.level + 1);
+							ccPointCloudLOD::Node& childNode = m_lod.node(childNodeIndex, node.level + 1);
+							childNode.firstCodeIndex = node.firstCodeIndex + i;
 
 							uint8_t childIndex = fillNode_flat(childNode);
 							if (m_earlyStop)
@@ -344,9 +344,9 @@ class ccPointCloudLODThread : public QThread
 					{
 						for (uint32_t i = 0; i < node.pointCount;)
 						{
-							int32_t                childNodeIndex = m_lod.newCell(node.level + 1);
-							ccPointCloudLOD::Node& childNode      = m_lod.node(childNodeIndex, node.level + 1);
-							childNode.firstCodeIndex              = node.firstCodeIndex + i;
+							int32_t childNodeIndex = m_lod.newCell(node.level + 1);
+							ccPointCloudLOD::Node& childNode = m_lod.node(childNodeIndex, node.level + 1);
+							childNode.firstCodeIndex = node.firstCodeIndex + i;
 
 							uint8_t childIndex = fillNode_flat(childNode);
 							if (m_earlyStop)
@@ -389,12 +389,12 @@ class ccPointCloudLODThread : public QThread
 		m_earlyStop = 0;
 	}
 
-	ccPointCloud&    m_cloud;
+	ccPointCloud& m_cloud;
 	ccPointCloudLOD& m_lod;
 	ccOctree::Shared m_octree;
-	uint32_t         m_maxCountPerCell;
-	uint8_t          m_maxLevel;
-	QAtomicInt       m_earlyStop;
+	uint32_t m_maxCountPerCell;
+	uint8_t m_maxLevel;
+	QAtomicInt m_earlyStop;
 };
 
 ccPointCloudLOD::ccPointCloudLOD()
@@ -421,7 +421,7 @@ size_t ccPointCloudLOD::memory() const
 	{
 		totalNodeCount += m_levels[i].data.size();
 	}
-	size_t nodeSize  = sizeof(Node);
+	size_t nodeSize = sizeof(Node);
 	size_t nodesSize = totalNodeCount * nodeSize;
 
 	return nodesSize + thisSize;
@@ -562,7 +562,7 @@ void ccPointCloudLOD::resetVisibility()
 		for (Node& n : level.data)
 		{
 			n.displayedPointCount = 0;
-			n.intersection        = Frustum::INSIDE;
+			n.intersection = Frustum::INSIDE;
 		}
 	}
 }
@@ -571,8 +571,8 @@ class PointCloudLODVisibilityFlagger
 {
   public:
 	PointCloudLODVisibilityFlagger(ccPointCloudLOD& lod,
-	                               const Frustum&   frustum,
-	                               unsigned char    maxLevel)
+	                               const Frustum& frustum,
+	                               unsigned char maxLevel)
 	    : m_lod(lod)
 	    , m_frustum(frustum)
 	    , m_maxLevel(maxLevel)
@@ -685,10 +685,10 @@ class PointCloudLODVisibilityFlagger
 	}
 
 	ccPointCloudLOD& m_lod;
-	const Frustum&   m_frustum;
-	unsigned char    m_maxLevel;
-	ccClipPlaneSet   m_clipPlanes;
-	bool             m_hasClipPlanes;
+	const Frustum& m_frustum;
+	unsigned char m_maxLevel;
+	ccClipPlaneSet m_clipPlanes;
+	bool m_hasClipPlanes;
 };
 
 uint32_t ccPointCloudLOD::flagVisibility(const Frustum& frustum, ccClipPlaneSet* clipPlanes /*=nullptr*/)
@@ -747,13 +747,13 @@ uint32_t ccPointCloudLOD::addNPointsToIndexMap(Node& node, uint32_t count)
 				}
 				else
 				{
-					double ratio  = static_cast<double>(childNodeRemainingCount) / thisNodeRemainingCount;
+					double ratio = static_cast<double>(childNodeRemainingCount) / thisNodeRemainingCount;
 					childMaxCount = static_cast<uint32_t>(ceil(ratio * count));
 					if (displayedCount + childMaxCount > count)
 					{
 						assert(count >= displayedCount);
 						childMaxCount = count - displayedCount;
-						i             = 8; // we can stop right now
+						i = 8; // we can stop right now
 					}
 				}
 
@@ -824,10 +824,10 @@ LODIndexSet& ccPointCloudLOD::getIndexMap(unsigned char level, unsigned& maxCoun
 		return m_lastIndexMap; // empty
 	}
 
-	Level&   l                    = m_levels[level];
+	Level& l = m_levels[level];
 	uint32_t thisPassDisplayCount = 0;
 
-	bool   earlyStop      = false;
+	bool earlyStop = false;
 	size_t earlyStopIndex = 0;
 
 	// special case: we have to finish/continue at the same level than the previous run
@@ -848,7 +848,7 @@ LODIndexSet& ccPointCloudLOD::getIndexMap(unsigned char level, unsigned& maxCoun
 			if (node.pointCount == node.displayedPointCount)
 				continue;
 
-			uint32_t nodeMaxCount       = 0;
+			uint32_t nodeMaxCount = 0;
 			uint32_t nodeRemainingCount = (node.pointCount - node.displayedPointCount);
 			if (displayAll)
 			{
@@ -864,7 +864,7 @@ LODIndexSet& ccPointCloudLOD::getIndexMap(unsigned char level, unsigned& maxCoun
 					assert(maxCount >= m_indexMap.size());
 					nodeMaxCount = maxCount - static_cast<uint32_t>(m_indexMap.size());
 
-					earlyStop      = true;
+					earlyStop = true;
 					earlyStopIndex = i;
 
 					i = l.data.size(); // we can stop after this node!
@@ -906,7 +906,7 @@ LODIndexSet& ccPointCloudLOD::getIndexMap(unsigned char level, unsigned& maxCoun
 			if (node.pointCount == node.displayedPointCount)
 				continue;
 
-			uint32_t nodeMaxCount       = 0;
+			uint32_t nodeMaxCount = 0;
 			uint32_t nodeRemainingCount = (node.pointCount - node.displayedPointCount);
 			if (displayAll)
 			{
@@ -922,7 +922,7 @@ LODIndexSet& ccPointCloudLOD::getIndexMap(unsigned char level, unsigned& maxCoun
 					assert(maxCount >= m_indexMap.size());
 					nodeMaxCount = maxCount - static_cast<uint32_t>(m_indexMap.size());
 
-					earlyStop      = true;
+					earlyStop = true;
 					earlyStopIndex = i;
 
 					i = l.data.size(); // we can stop after this node!
@@ -966,12 +966,12 @@ LODIndexSet& ccPointCloudLOD::getIndexMap(unsigned char level, unsigned& maxCoun
 
 	if (remainingPointsAtThisLevel)
 	{
-		m_currentState.unfinishedLevel  = static_cast<int>(level);
+		m_currentState.unfinishedLevel = static_cast<int>(level);
 		m_currentState.unfinishedPoints = remainingPointsAtThisLevel;
 	}
 	else
 	{
-		m_currentState.unfinishedLevel  = -1;
+		m_currentState.unfinishedLevel = -1;
 		m_currentState.unfinishedPoints = 0;
 	}
 

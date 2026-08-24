@@ -55,13 +55,13 @@ class QCC_DB_LIB_API ccTorus : public ccGenericPrimitive
 	 */
 	ccTorus(PointCoordinateType insideRadius,
 	        PointCoordinateType outsideRadius,
-	        double              angle_rad          = 2.0 * M_PI,
-	        bool                rectangularSection = false,
-	        PointCoordinateType rectSectionHeight  = 0,
-	        const ccGLMatrix*   transMat           = nullptr,
-	        QString             name               = QString("Torus"),
-	        unsigned            precision          = DEFAULT_DRAWING_PRECISION,
-	        unsigned            uniqueID           = ccUniqueIDGenerator::InvalidUniqueID);
+	        double angle_rad = 2.0 * M_PI,
+	        bool rectangularSection = false,
+	        PointCoordinateType rectSectionHeight = 0,
+	        const ccGLMatrix* transMat = nullptr,
+	        QString name = QString("Torus"),
+	        unsigned precision = DEFAULT_DRAWING_PRECISION,
+	        unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
 	//! Simplified constructor
 	/** For ccHObject factory only!
@@ -87,10 +87,10 @@ class QCC_DB_LIB_API ccTorus : public ccGenericPrimitive
 
   protected:
 	// inherited from ccGenericPrimitive
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	bool  buildUp() override;
+	bool buildUp() override;
 
 	//! Inside radius
 	PointCoordinateType m_insideRadius;

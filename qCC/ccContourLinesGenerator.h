@@ -51,15 +51,15 @@ class ccContourLinesGenerator
 	 */
 	struct Parameters
 	{
-		double         startAltitude             = 0.0;
-		double         maxAltitude               = 0.0;
-		double         step                      = 0.0;
-		ccScalarField* altitudes                 = nullptr;
-		int            minVertexCount            = 3;
-		bool           projectContourOnAltitudes = false;
-		double         emptyCellsValue           = std::numeric_limits<double>::quiet_NaN();
-		QWidget* parentWidget  = nullptr;
-		bool     ignoreBorders = false;
+		double startAltitude = 0.0;
+		double maxAltitude = 0.0;
+		double step = 0.0;
+		ccScalarField* altitudes = nullptr;
+		int minVertexCount = 3;
+		bool projectContourOnAltitudes = false;
+		double emptyCellsValue = std::numeric_limits<double>::quiet_NaN();
+		QWidget* parentWidget = nullptr;
+		bool ignoreBorders = false;
 	};
 
 	/**
@@ -70,8 +70,8 @@ class ccContourLinesGenerator
 	 * @param[out] contourLines Generated contour lines
 	 * @return true on success
 	 */
-	static bool GenerateContourLines(ccRasterGrid*             rasterGrid,
-	                                 const CCVector2d&         gridMinCornerXY,
-	                                 const Parameters&         params,
+	static bool GenerateContourLines(ccRasterGrid* rasterGrid,
+	                                 const CCVector2d& gridMinCornerXY,
+	                                 const Parameters& params,
 	                                 std::vector<ccPolyline*>& contourLines);
 };

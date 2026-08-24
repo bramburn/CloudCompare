@@ -313,11 +313,11 @@ ccCircle* ccHObjectCaster::ToCircle(ccHObject* obj)
 	return (obj && obj->isKindOf(CC_TYPES::CIRCLE) ? static_cast<ccCircle*>(obj) : nullptr);
 }
 
-bool ccHObjectCaster::CloneChildren(const ccHObject*  sourceEntity,
-                                    ccHObject*        destEntity,
+bool ccHObjectCaster::CloneChildren(const ccHObject* sourceEntity,
+                                    ccHObject* destEntity,
                                     std::vector<int>* newPointOrTriangleIndex /*=nullptr*/,
-                                    const ccHObject*  sourceEntityProxy /*=nullptr*/,
-                                    ccHObject*        destEntityProxy /*=nullptr*/)
+                                    const ccHObject* sourceEntityProxy /*=nullptr*/,
+                                    ccHObject* destEntityProxy /*=nullptr*/)
 {
 	if (!sourceEntity || !destEntity)
 	{
@@ -325,12 +325,12 @@ bool ccHObjectCaster::CloneChildren(const ccHObject*  sourceEntity,
 		return false;
 	}
 
-	bool sourceIsCloud         = sourceEntity->isKindOf(CC_TYPES::POINT_CLOUD);
-	bool destIsCloud           = destEntity->isKindOf(CC_TYPES::POINT_CLOUD);
+	bool sourceIsCloud = sourceEntity->isKindOf(CC_TYPES::POINT_CLOUD);
+	bool destIsCloud = destEntity->isKindOf(CC_TYPES::POINT_CLOUD);
 	bool sourceAndDestAreCloud = sourceIsCloud && destIsCloud;
 
-	bool sourceIsMesh           = sourceEntity->isKindOf(CC_TYPES::MESH);
-	bool destIsMesh             = destEntity->isKindOf(CC_TYPES::MESH);
+	bool sourceIsMesh = sourceEntity->isKindOf(CC_TYPES::MESH);
+	bool destIsMesh = destEntity->isKindOf(CC_TYPES::MESH);
 	bool sourceAndDestAreMeshes = sourceIsMesh && destIsMesh;
 
 	unsigned numberOfPointOrTriangle = 0;
@@ -363,7 +363,7 @@ bool ccHObjectCaster::CloneChildren(const ccHObject*  sourceEntity,
 	QMap<ccCameraSensor*, ccCameraSensor*> clonedCameraSensors;
 
 	const ccHObject* currentSourceEntity = (sourceEntityProxy ? sourceEntityProxy : sourceEntity);
-	ccHObject*       currentDestEntity   = (destEntityProxy ? destEntityProxy : destEntity);
+	ccHObject* currentDestEntity = (destEntityProxy ? destEntityProxy : destEntity);
 
 	// for each child
 	for (unsigned i = 0; i < currentSourceEntity->getChildrenNumber(); ++i)
@@ -424,7 +424,7 @@ bool ccHObjectCaster::CloneChildren(const ccHObject*  sourceEntity,
 		// Image
 		case CC_TYPES::IMAGE:
 		{
-			ccImage* image       = static_cast<ccImage*>(child);
+			ccImage* image = static_cast<ccImage*>(child);
 			ccImage* clonedImage = new ccImage(*image, false);
 
 			ccCameraSensor* camSensor = image->getAssociatedSensor();
@@ -454,7 +454,7 @@ bool ccHObjectCaster::CloneChildren(const ccHObject*  sourceEntity,
 		// Camera sensor
 		case CC_TYPES::CAMERA_SENSOR:
 		{
-			ccCameraSensor* camSensor       = static_cast<ccCameraSensor*>(child);
+			ccCameraSensor* camSensor = static_cast<ccCameraSensor*>(child);
 			ccCameraSensor* clonedCamSensor = new ccCameraSensor(*camSensor);
 			clonedCameraSensors.insert(camSensor, clonedCamSensor);
 
@@ -465,7 +465,7 @@ bool ccHObjectCaster::CloneChildren(const ccHObject*  sourceEntity,
 		// GBL sensor
 		case CC_TYPES::GBL_SENSOR:
 		{
-			ccGBLSensor* gblSensor       = static_cast<ccGBLSensor*>(child);
+			ccGBLSensor* gblSensor = static_cast<ccGBLSensor*>(child);
 			ccGBLSensor* clonedGBLSensor = new ccGBLSensor(*gblSensor, false);
 
 			currentDestEntity->addChild(clonedGBLSensor);

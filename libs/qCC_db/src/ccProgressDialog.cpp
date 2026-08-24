@@ -50,7 +50,7 @@
 #include <windows.h>
 #endif
 
-ccProgressDialog::ccProgressDialog(bool     showCancelButton,
+ccProgressDialog::ccProgressDialog(bool showCancelButton,
                                    QWidget* parent /*=nullptr*/)
     : QProgressDialog(parent)
     , m_currentValue(0)

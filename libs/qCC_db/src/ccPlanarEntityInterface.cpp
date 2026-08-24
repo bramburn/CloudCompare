@@ -35,7 +35,7 @@ ccPlanarEntityInterface::ccPlanarEntityInterface()
 
 // unit normal representation
 static QSharedPointer<ccCylinder> c_unitNormalSymbol(nullptr);
-static QSharedPointer<ccCone>     c_unitNormalHeadSymbol(nullptr);
+static QSharedPointer<ccCone> c_unitNormalHeadSymbol(nullptr);
 
 void ccPlanarEntityInterface::glDrawNormal(CC_DRAW_CONTEXT& context, const CCVector3& pos, float scale, const ccColor::Rgb* color /*=nullptr*/)
 {

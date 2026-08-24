@@ -170,13 +170,13 @@ void AsciiSaveDlg::initFromPersistentSettings()
 	settings.beginGroup("AsciiSaveDialog");
 
 	// read parameters
-	bool saveColHeader    = settings.value("saveHeader", m_ui->columnsHeaderCheckBox->isChecked()).toBool();
-	bool savePtsHeader    = settings.value("savePtsHeader", m_ui->pointCountHeaderCheckBox->isChecked()).toBool();
-	int  coordsPrecision  = settings.value("coordsPrecision", m_ui->coordsPrecisionSpinBox->value()).toInt();
-	int  sfPrecision      = settings.value("sfPrecision", m_ui->sfPrecisionSpinBox->value()).toInt();
-	int  separatorIndex   = settings.value("separator", m_ui->separatorComboBox->currentIndex()).toInt();
-	int  orderIndex       = settings.value("saveOrder", m_ui->orderComboBox->currentIndex()).toInt();
-	bool saveFloatColors  = settings.value("saveFloatColors", m_ui->saveFloatColorsCheckBox->isChecked()).toBool();
+	bool saveColHeader = settings.value("saveHeader", m_ui->columnsHeaderCheckBox->isChecked()).toBool();
+	bool savePtsHeader = settings.value("savePtsHeader", m_ui->pointCountHeaderCheckBox->isChecked()).toBool();
+	int coordsPrecision = settings.value("coordsPrecision", m_ui->coordsPrecisionSpinBox->value()).toInt();
+	int sfPrecision = settings.value("sfPrecision", m_ui->sfPrecisionSpinBox->value()).toInt();
+	int separatorIndex = settings.value("separator", m_ui->separatorComboBox->currentIndex()).toInt();
+	int orderIndex = settings.value("saveOrder", m_ui->orderComboBox->currentIndex()).toInt();
+	bool saveFloatColors = settings.value("saveFloatColors", m_ui->saveFloatColorsCheckBox->isChecked()).toBool();
 	bool saveAlphaChannel = settings.value("saveAlphaChannel", m_ui->saveAlphaChannelCheckBox->isChecked()).toBool();
 
 	// apply parameters

@@ -183,13 +183,13 @@ void ccDrawableObject::getDrawingParameters(glDrawParams& params) const
 	if (isColorOverridden())
 	{
 		params.showColors = true;
-		params.showNorms  = hasNormals() && normalsShown() /*false*/;
-		params.showSF     = false;
+		params.showNorms = hasNormals() && normalsShown() /*false*/;
+		params.showSF = false;
 	}
 	else
 	{
 		params.showNorms = hasNormals() && normalsShown();
-		params.showSF    = hasDisplayedScalarField() && sfShown();
+		params.showSF = hasDisplayedScalarField() && sfShown();
 		// colors are not displayed if scalar field is displayed
 		params.showColors = !params.showSF && hasColors() && colorsShown();
 	}

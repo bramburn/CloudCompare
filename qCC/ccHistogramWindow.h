@@ -75,9 +75,9 @@ class ccHistogramWindow : public QCustomPlot
 	    \param showNaNValuesInGrey show NaN values (in gray)
 	**/
 	void fromSF(ccScalarField* sf,
-	            unsigned       initialNumberOfClasses      = 0,
-	            bool           numberOfClassesCanBeChanged = true,
-	            bool           showNaNValuesInGrey         = true);
+	            unsigned initialNumberOfClasses = 0,
+	            bool numberOfClassesCanBeChanged = true,
+	            bool showNaNValuesInGrey = true);
 
 	//! Creates histogram from a bin array (each bin = number of elements per class)
 	/** Number of classes can't be modified.
@@ -86,8 +86,8 @@ class ccHistogramWindow : public QCustomPlot
 	    \param maxVal maximum value
 	**/
 	void fromBinArray(const std::vector<unsigned>& histoValues,
-	                  double                       minVal,
-	                  double                       maxVal);
+	                  double minVal,
+	                  double maxVal);
 
 	//! Creates histogram from a bin array (each bin = number of elements per class)
 	/** Number of classes can't be modified.
@@ -95,7 +95,7 @@ class ccHistogramWindow : public QCustomPlot
 	    \param sf associated scalar field
 	**/
 	void fromBinArray(const std::vector<unsigned>& histoValues,
-	                  ccScalarField*               sf);
+	                  ccScalarField* sf);
 
 	//! Sets overlay curve values
 	/** The curve will only appear over an histogram
@@ -164,20 +164,20 @@ class ccHistogramWindow : public QCustomPlot
 	//! Axis display option
 	enum class AxisDisplayOption
 	{
-		None  = 0x0,
+		None = 0x0,
 		XAxis = 0x01,
 		YAxis = 0x02,
-		All   = XAxis | YAxis
+		All = XAxis | YAxis
 	};
 	Q_DECLARE_FLAGS(AxisDisplayOptions, AxisDisplayOption)
 
 	//! SF interactor mode
 	enum class SFInteractionMode
 	{
-		None            = 0x0,
-		DisplayRange    = 0x01,
+		None = 0x0,
+		DisplayRange = 0x01,
 		SaturationRange = 0x02,
-		All             = DisplayRange | SaturationRange
+		All = DisplayRange | SaturationRange
 	};
 	Q_DECLARE_FLAGS(SFInteractionModes, SFInteractionMode)
 
@@ -228,7 +228,7 @@ class ccHistogramWindow : public QCustomPlot
 
   protected: // attributes
 	// Title
-	QString         m_titleStr;
+	QString m_titleStr;
 	QCPTextElement* m_titlePlot;
 
 	//! Color scheme
@@ -248,20 +248,20 @@ class ccHistogramWindow : public QCustomPlot
 	bool m_refreshAfterResize;
 
 	// histogram data
-	QCPColoredBars*       m_histogram;
+	QCPColoredBars* m_histogram;
 	std::vector<unsigned> m_histoValues;
-	double                m_minVal;
-	double                m_maxVal;
-	unsigned              m_maxHistoVal;
+	double m_minVal;
+	double m_maxVal;
+	unsigned m_maxHistoVal;
 
 	//! Overlay curve
-	QCPGraph*           m_overlayCurve;
+	QCPGraph* m_overlayCurve;
 	std::vector<double> m_curveValues;
 
 	// vertical indicator
 	QCPBarsWithText* m_vertBar;
-	bool             m_drawVerticalIndicator;
-	double           m_verticalIndicatorPositionPercent;
+	bool m_drawVerticalIndicator;
+	double m_verticalIndicatorPositionPercent;
 
 	//! Rendering font
 	QFont m_renderingFont;
@@ -289,17 +289,17 @@ class ccHistogramWindow : public QCustomPlot
 
 	//! Left greyed area
 	QCPHiddenArea* m_areaLeft;
-	double         m_areaLeftlastValue;
+	double m_areaLeftlastValue;
 	//! Right greyed area
 	QCPHiddenArea* m_areaRight;
-	double         m_areaRightlastValue;
+	double m_areaRightlastValue;
 
 	//! Left arrow
 	QCPArrow* m_arrowLeft;
-	double    m_arrowLeftlastValue;
+	double m_arrowLeftlastValue;
 	//! Right arrow
 	QCPArrow* m_arrowRight;
-	double    m_arrowRightlastValue;
+	double m_arrowRightlastValue;
 
 	//! Last mouse click
 	QPoint m_lastMouseClick;

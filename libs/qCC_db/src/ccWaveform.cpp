@@ -106,7 +106,7 @@ ccWaveform::ccWaveform(uint8_t descriptorID /*=0*/)
 void ccWaveform::setDataDescription(uint64_t dataOffset, uint32_t byteCount)
 {
 	m_dataOffset = dataOffset;
-	m_byteCount  = byteCount;
+	m_byteCount = byteCount;
 }
 
 uint32_t ccWaveform::getRawSample(uint32_t i, const WaveformDescriptor& descriptor, const uint8_t* dataStorage) const
@@ -140,10 +140,10 @@ uint32_t ccWaveform::getRawSample(uint32_t i, const WaveformDescriptor& descript
 
 	default: // other 'strange' bps values ;)
 	{
-		uint32_t firstBitIndex  = descriptor.bitsPerSample * i;
+		uint32_t firstBitIndex = descriptor.bitsPerSample * i;
 		uint32_t firstByteIndex = (firstBitIndex >> 3); // = divide by 8
 
-		uint32_t lastBitIndex  = firstBitIndex + descriptor.bitsPerSample - 1;
+		uint32_t lastBitIndex = firstBitIndex + descriptor.bitsPerSample - 1;
 		uint32_t lastByteIndex = (lastBitIndex >> 3); // = divide by 8
 		if (lastByteIndex >= m_byteCount)
 		{
@@ -274,8 +274,8 @@ double ccWaveform::getRange(double& minVal, double& maxVal, const WaveformDescri
 	for (uint32_t i = 1; i < descriptor.numberOfSamples; ++i)
 	{
 		double c = getSample(i, descriptor, dataStorage);
-		maxVal   = std::max(maxVal, c);
-		minVal   = std::min(minVal, c);
+		maxVal = std::max(maxVal, c);
+		minVal = std::min(minVal, c);
 	}
 
 	return maxVal - minVal;

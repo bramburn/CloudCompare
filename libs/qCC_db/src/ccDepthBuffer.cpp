@@ -73,9 +73,9 @@ int ccDepthBuffer::fillHoles()
 	}
 
 	// new temp buffer
-	int                              dx            = width + 2;
-	int                              dy            = height + 2;
-	unsigned                         tempZBuffSize = dx * dy;
+	int dx = width + 2;
+	int dy = height + 2;
+	unsigned tempZBuffSize = dx * dy;
 	std::vector<PointCoordinateType> zBuffTemp;
 	try
 	{
@@ -89,8 +89,8 @@ int ccDepthBuffer::fillHoles()
 
 	// copy old zBuffer in temp one (with 1 pixel border)
 	{
-		PointCoordinateType*       _zBuffTemp = zBuffTemp.data() + (dx + 1); // 2nd line, 2nd column
-		const PointCoordinateType* _zBuff     = zBuff.data();                // first line, first column of the true buffer
+		PointCoordinateType* _zBuffTemp = zBuffTemp.data() + (dx + 1); // 2nd line, 2nd column
+		const PointCoordinateType* _zBuff = zBuff.data();              // first line, first column of the true buffer
 		for (unsigned y = 0; y < height; ++y)
 		{
 			memcpy(_zBuffTemp, _zBuff, width * sizeof(PointCoordinateType));
@@ -104,7 +104,7 @@ int ccDepthBuffer::fillHoles()
 		for (unsigned y = 0; y < height; ++y)
 		{
 			const PointCoordinateType* zu = zBuffTemp.data() + y * dx;
-			const PointCoordinateType* z  = zu + dx;
+			const PointCoordinateType* z = zu + dx;
 			const PointCoordinateType* zd = z + dx;
 			for (unsigned x = 0; x < width; ++x, ++zu, ++z, ++zd)
 			{

@@ -28,23 +28,20 @@
  *
  * @see ccStatisticalTestDlg.cpp
  */
-#include <StatisticalTestingTools.h>
 #include <NormalDistribution.h>
-
-#include <QTest>
 #include <QString>
-
+#include <QTest>
+#include <StatisticalTestingTools.h>
 #include <cmath>
 
-using CCCoreLib::StatisticalTestingTools;
 using CCCoreLib::NormalDistribution;
-
+using CCCoreLib::StatisticalTestingTools;
 
 class TestStatisticalTesting : public QObject
 {
 	Q_OBJECT
 
-private slots:
+  private slots:
 
 	void testChi2FractileConf90()
 	{

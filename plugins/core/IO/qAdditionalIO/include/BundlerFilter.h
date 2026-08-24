@@ -44,14 +44,14 @@ class BundlerFilter : public FileIOFilter
 	CC_FILE_ERROR loadFile(const QString& filename, ccHObject& container, LoadParameters& parameters) override;
 
 	//! Specific load method
-	CC_FILE_ERROR loadFileExtended(const QString&  filename,
-	                               ccHObject&      container,
+	CC_FILE_ERROR loadFileExtended(const QString& filename,
+	                               ccHObject& container,
 	                               LoadParameters& parameters,
-	                               const QString&  altKeypointsFilename    = QString(),
-	                               bool            undistortImages         = false,
-	                               bool            generateColoredDTM      = false,
-	                               unsigned        coloredDTMVerticesCount = 1000000,
-	                               float           scaleFactor             = 1.0f);
+	                               const QString& altKeypointsFilename = QString(),
+	                               bool undistortImages = false,
+	                               bool generateColoredDTM = false,
+	                               unsigned coloredDTMVerticesCount = 1000000,
+	                               float scaleFactor = 1.0f);
 };
 
 #endif // CC_BUNDLER_FILTER_HEADER

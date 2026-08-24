@@ -38,12 +38,12 @@ bool CommandCrossSection::process(ccCommandLineInterface& cmd)
 {
 	cmd.print("[CROSS SECTION]");
 
-	static QString s_xmlCloudCompare   = "CloudCompare";
-	static QString s_xmlBoxThickness   = "BoxThickness";
-	static QString s_xmlBoxCenter      = "BoxCenter";
-	static QString s_xmlRepeatDim      = "RepeatDim";
-	static QString s_xmlRepeatGap      = "RepeatGap";
-	static QString s_xmlFilePath       = "FilePath";
+	static QString s_xmlCloudCompare = "CloudCompare";
+	static QString s_xmlBoxThickness = "BoxThickness";
+	static QString s_xmlBoxCenter = "BoxCenter";
+	static QString s_xmlRepeatDim = "RepeatDim";
+	static QString s_xmlRepeatGap = "RepeatGap";
+	static QString s_xmlFilePath = "FilePath";
 	static QString s_outputXmlFilePath = "OutputFilePath";
 
 	// expected argument: XML file
@@ -54,12 +54,12 @@ bool CommandCrossSection::process(ccCommandLineInterface& cmd)
 	// read the XML file
 	CCVector3 boxCenter(0, 0, 0);
 	CCVector3 boxThickness(0, 0, 0);
-	bool      repeatDim[3] = {false, false, false};
-	double    repeatGap    = 0.0;
-	bool      inside       = true;
-	bool      autoCenter   = true;
-	QString   inputFilePath;
-	QString   outputFilePath;
+	bool repeatDim[3] = {false, false, false};
+	double repeatGap = 0.0;
+	bool inside = true;
+	bool autoCenter = true;
+	QString inputFilePath;
+	QString outputFilePath;
 	{
 		QFile file(xmlFilename);
 		if (!file.open(QFile::ReadOnly | QFile::Text))
@@ -99,8 +99,8 @@ bool CommandCrossSection::process(ccCommandLineInterface& cmd)
 			else if (stream.name() == s_xmlRepeatDim)
 			{
 				QString itemValue = stream.readElementText();
-				bool    ok        = false;
-				int     dim       = itemValue.toInt(&ok);
+				bool ok = false;
+				int dim = itemValue.toInt(&ok);
 				if (!ok || dim < 0 || dim > 2)
 				{
 					return cmd.error(QString("Invalid XML file (invalid value for '<%1>')").arg(s_xmlRepeatDim));
@@ -110,8 +110,8 @@ bool CommandCrossSection::process(ccCommandLineInterface& cmd)
 			else if (stream.name() == s_xmlRepeatGap)
 			{
 				QString itemValue = stream.readElementText();
-				bool    ok        = false;
-				repeatGap         = itemValue.toDouble(&ok);
+				bool ok = false;
+				repeatGap = itemValue.toDouble(&ok);
 				if (!ok)
 				{
 					return cmd.error(QString("Invalid XML file (invalid value for '<%1>')").arg(s_xmlRepeatGap));
@@ -173,16 +173,16 @@ bool CommandCrossSection::process(ccCommandLineInterface& cmd)
 
 	// shall we load the entities?
 	QStringList files;
-	QDir        dir;
-	bool        fromFiles = false;
+	QDir dir;
+	bool fromFiles = false;
 	if (!inputFilePath.isEmpty())
 	{
 		// look for all files in the input directory
 		dir = QDir(inputFilePath);
 		assert(dir.exists());
-		files          = dir.entryList(QDir::Files);
+		files = dir.entryList(QDir::Files);
 		iterationCount = files.size();
-		fromFiles      = true;
+		fromFiles = true;
 
 		// remove any cloud or mesh in memory!
 		cmd.removeClouds();
@@ -214,7 +214,7 @@ bool CommandCrossSection::process(ccCommandLineInterface& cmd)
 				QStringList loadArguments;
 				loadArguments << filename;
 				cmd.arguments() = loadArguments;
-				result          = CommandLoad().process(cmd);
+				result = CommandLoad().process(cmd);
 
 				// end of hack: restore the current argument list
 				cmd.arguments() = realArguments;
@@ -249,8 +249,8 @@ bool CommandCrossSection::process(ccCommandLineInterface& cmd)
 			for (size_t i = 0; i < entities.size(); ++i)
 			{
 				// check entity bounding-box
-				ccHObject* ent  = entities[i];
-				ccBBox     bbox = ent->getOwnBB();
+				ccHObject* ent = entities[i];
+				ccBBox bbox = ent->getOwnBB();
 				if (!bbox.isValid())
 				{
 					cmd.warning(QString("Entity '%1' has an invalid bounding-box!").arg(ent->getName()));
@@ -301,23 +301,23 @@ bool CommandCrossSection::process(ccCommandLineInterface& cmd)
 					continue;
 				}
 
-				int toto  = ceil(-0.4);
+				int toto = ceil(-0.4);
 				int toto2 = ceil(-0.6);
 
 				// place the initial box at the beginning of the entity bounding box
-				CCVector3 C0       = autoCenter ? bbox.getCenter() : boxCenter;
-				unsigned  steps[3] = {1, 1, 1};
+				CCVector3 C0 = autoCenter ? bbox.getCenter() : boxCenter;
+				unsigned steps[3] = {1, 1, 1};
 				for (unsigned d = 0; d < 3; ++d)
 				{
 					if (repeatDim[d])
 					{
-						PointCoordinateType boxHalfWidth     = boxThickness.u[d] / 2;
-						PointCoordinateType distToMinBorder  = C0.u[d] - boxHalfWidth - bbox.minCorner().u[d];
-						int                 stepsToMinBorder = static_cast<int>(ceil(distToMinBorder / repeatStep.u[d]));
+						PointCoordinateType boxHalfWidth = boxThickness.u[d] / 2;
+						PointCoordinateType distToMinBorder = C0.u[d] - boxHalfWidth - bbox.minCorner().u[d];
+						int stepsToMinBorder = static_cast<int>(ceil(distToMinBorder / repeatStep.u[d]));
 						C0.u[d] -= stepsToMinBorder * repeatStep.u[d];
 
 						PointCoordinateType distToMaxBorder = bbox.maxCorner().u[d] - C0.u[d] - boxHalfWidth;
-						int                 stepsToMaxBoder = static_cast<int>(ceil(distToMaxBorder / repeatStep.u[d]) + 1);
+						int stepsToMaxBoder = static_cast<int>(ceil(distToMaxBorder / repeatStep.u[d]) + 1);
 						assert(stepsToMaxBoder >= 0);
 						steps[d] = std::max<unsigned>(stepsToMaxBoder, 1);
 					}
@@ -333,7 +333,7 @@ bool CommandCrossSection::process(ccCommandLineInterface& cmd)
 						for (unsigned dz = 0; dz < steps[2]; ++dz)
 						{
 							CCVector3 C = C0 + CCVector3(dx * repeatStep.x, dy * repeatStep.y, dz * repeatStep.z);
-							ccBBox    cropBox(C - boxThickness / 2, C + boxThickness / 2, true);
+							ccBBox cropBox(C - boxThickness / 2, C + boxThickness / 2, true);
 							cmd.print(QString("Box (%1;%2;%3) --> (%4;%5;%6)")
 							              .arg(cropBox.minCorner().x)
 							              .arg(cropBox.minCorner().y)
@@ -397,7 +397,7 @@ bool CommandCrossSection::readVector(const QXmlStreamAttributes& attributes, CCV
 	int count = 0;
 	for (int i = 0; i < attributes.size(); ++i)
 	{
-		QString name  = attributes[i].name().toString().toUpper();
+		QString name = attributes[i].name().toString().toUpper();
 		QString value = attributes[i].value().toString();
 
 		bool ok = false;

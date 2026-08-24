@@ -52,10 +52,10 @@ class ccFilterByValueDlg : public QDialog
 	 * @param[in] maxVal Maximum scalar value
 	 * @param[in] parent Parent widget
 	 */
-	ccFilterByValueDlg(double   minRange,
-	                   double   maxRange,
-	                   double   minVal = -1.0e9,
-	                   double   maxVal = 1.0e9,
+	ccFilterByValueDlg(double minRange,
+	                   double maxRange,
+	                   double minVal = -1.0e9,
+	                   double maxVal = 1.0e9,
 	                   QWidget* parent = nullptr);
 
 	/// Mode
@@ -63,7 +63,7 @@ class ccFilterByValueDlg : public QDialog
 	{
 		EXPORT, //!< Export filtered
 		SPLIT,  //!< Split at boundaries
-		CANCEL   //!< Cancel
+		CANCEL  //!< Cancel
 	};
 
 	/**

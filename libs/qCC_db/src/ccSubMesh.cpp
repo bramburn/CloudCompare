@@ -264,9 +264,9 @@ ccSubMesh* ccSubMesh::createNewSubMeshFromSelection(bool removeSelectedTriangles
 	return createNewSubMeshFromSelection(removeSelectedTriangles, selectedTriangleIndexes, newRemainingTriangleIndexes);
 }
 
-ccSubMesh* ccSubMesh::createNewSubMeshFromSelection(bool                    removeSelectedTriangles,
+ccSubMesh* ccSubMesh::createNewSubMeshFromSelection(bool removeSelectedTriangles,
                                                     const std::vector<int>& selectedTriangleIndexes,
-                                                    IndexMap*               newRemainingTriangleIndexes /*=nullptr*/)
+                                                    IndexMap* newRemainingTriangleIndexes /*=nullptr*/)
 {
 	if (!m_associatedMesh)
 	{
@@ -319,8 +319,8 @@ ccSubMesh* ccSubMesh::createNewSubMeshFromSelection(bool                    remo
 		unsigned lastTriIndex = 0;
 		for (size_t i = 0; i < triCount; ++i)
 		{
-			unsigned                          globalIndex = m_triIndexes[i];
-			const CCCoreLib::VerticesIndexes* tsi         = m_associatedMesh->getTriangleVertIndexes(globalIndex);
+			unsigned globalIndex = m_triIndexes[i];
+			const CCCoreLib::VerticesIndexes* tsi = m_associatedMesh->getTriangleVertIndexes(globalIndex);
 
 			// triangle is selected?
 			if (selectedTriangleIndexes[globalIndex] >= 0)

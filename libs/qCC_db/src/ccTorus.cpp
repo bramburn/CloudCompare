@@ -45,13 +45,13 @@
 
 ccTorus::ccTorus(PointCoordinateType insideRadius,
                  PointCoordinateType outsideRadius,
-                 double              angle_rad /*=2.0*M_PI*/,
-                 bool                rectangularSection /*=false*/,
+                 double angle_rad /*=2.0*M_PI*/,
+                 bool rectangularSection /*=false*/,
                  PointCoordinateType rectSectionHeight /*=0*/,
-                 const ccGLMatrix*   transMat /*=nullptr*/,
-                 QString             name /*=QString("Torus")*/,
-                 unsigned            precision /*=DEFAULT_DRAWING_PRECISION*/,
-                 unsigned            uniqueID /*=ccUniqueIDGenerator::InvalidUniqueID*/)
+                 const ccGLMatrix* transMat /*=nullptr*/,
+                 QString name /*=QString("Torus")*/,
+                 unsigned precision /*=DEFAULT_DRAWING_PRECISION*/,
+                 unsigned uniqueID /*=ccUniqueIDGenerator::InvalidUniqueID*/)
     : ccGenericPrimitive(name, transMat, uniqueID)
     , m_insideRadius(std::abs(insideRadius))
     , m_outsideRadius(std::abs(outsideRadius))
@@ -96,7 +96,7 @@ bool ccTorus::buildUp()
 	const unsigned steps = m_drawPrecision;
 
 	unsigned sweepSteps = 4 * (closed ? steps : static_cast<unsigned>(ceil((m_angle_rad * steps) / (2.0 * M_PI))));
-	unsigned sectSteps  = (m_rectSection ? 4 : steps);
+	unsigned sectSteps = (m_rectSection ? 4 : steps);
 
 	// vertices
 	unsigned vertCount = (sweepSteps + (closed ? 0 : 1)) * sectSteps; // DGM: +1 row for non closed loops
@@ -127,7 +127,7 @@ bool ccTorus::buildUp()
 	}
 
 	double sweepStep_rad = m_angle_rad / sweepSteps;
-	double sectStep_rad  = (2.0 * M_PI) / sectSteps;
+	double sectStep_rad = (2.0 * M_PI) / sectSteps;
 
 	PointCoordinateType sectionRadius = (m_outsideRadius - m_insideRadius) / 2;
 	if (m_rectSection)
@@ -148,8 +148,8 @@ bool ccTorus::buildUp()
 		for (unsigned i = 0; i < sectSteps; ++i)
 		{
 			double sect_angle_rad = i * sectStep_rad;
-			sectPoints[i].x       = static_cast<PointCoordinateType>(cos(sect_angle_rad) * sectionRadius);
-			sectPoints[i].z       = static_cast<PointCoordinateType>(sin(sect_angle_rad) * sectionRadius);
+			sectPoints[i].x = static_cast<PointCoordinateType>(cos(sect_angle_rad) * sectionRadius);
+			sectPoints[i].z = static_cast<PointCoordinateType>(sin(sect_angle_rad) * sectionRadius);
 		}
 	}
 
@@ -187,7 +187,7 @@ bool ccTorus::buildUp()
 		{
 			for (unsigned i = 0; i < sectSteps; ++i)
 			{
-				double    sectAngle_rad = i * sectStep_rad;
+				double sectAngle_rad = i * sectStep_rad;
 				CCVector3 sectU(cos(sectAngle_rad), 0.0, sin(sectAngle_rad));
 				CCVector3 N(sweepU.x * sectU.x,
 				            sweepU.y * sectU.x,

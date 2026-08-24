@@ -60,8 +60,8 @@ class ccVolumeCalcTool : public QDialog
 	~ccVolumeCalcTool();
 
 	// Inherited from cc2Point5DimEditor
-	virtual double                       getGridStep() const override;
-	virtual unsigned char                getProjectionDimension() const override;
+	virtual double getGridStep() const override;
+	virtual unsigned char getProjectionDimension() const override;
 	virtual ccRasterGrid::ProjectionType getTypeOfProjection() const override;
 
 	//! Report info
@@ -85,36 +85,36 @@ class ccVolumeCalcTool : public QDialog
 		double addedVolume;
 		double removedVolume;
 		double surface;
-		float  matchingPrecent;
-		float  ceilNonMatchingPercent;
-		float  groundNonMatchingPercent;
+		float matchingPrecent;
+		float ceilNonMatchingPercent;
+		float groundNonMatchingPercent;
 		double averageNeighborsPerCell;
 	};
 
 	//! Static accessor
-	static bool ComputeVolume(ccRasterGrid&                     grid,
-	                          ccGenericPointCloud*              ground,
-	                          ccGenericPointCloud*              ceil,
-	                          const ccBBox&                     gridBox,
-	                          unsigned char                     vertDim,
-	                          double                            gridStep,
-	                          unsigned                          gridWidth,
-	                          unsigned                          gridHeight,
-	                          ccRasterGrid::ProjectionType      projectionType,
+	static bool ComputeVolume(ccRasterGrid& grid,
+	                          ccGenericPointCloud* ground,
+	                          ccGenericPointCloud* ceil,
+	                          const ccBBox& gridBox,
+	                          unsigned char vertDim,
+	                          double gridStep,
+	                          unsigned gridWidth,
+	                          unsigned gridHeight,
+	                          ccRasterGrid::ProjectionType projectionType,
 	                          ccRasterGrid::EmptyCellFillOption groundEmptyCellFillStrategy,
-	                          double                            groundMaxEdgeLength,
+	                          double groundMaxEdgeLength,
 	                          ccRasterGrid::EmptyCellFillOption ceilEmptyCellFillStrategy,
-	                          double                            ceilMaxEdgeLength,
-	                          ccVolumeCalcTool::ReportInfo&     reportInfo,
-	                          double                            groundHeight,
-	                          double                            ceilHeight,
-	                          QWidget*                          parentWidget = nullptr);
+	                          double ceilMaxEdgeLength,
+	                          ccVolumeCalcTool::ReportInfo& reportInfo,
+	                          double groundHeight,
+	                          double ceilHeight,
+	                          QWidget* parentWidget = nullptr);
 
 	//! Converts a (volume) grid to a point cloud
 	static ccPointCloud* ConvertGridToCloud(ccRasterGrid& grid,
 	                                        const ccBBox& gridBox,
 	                                        unsigned char vertDim,
-	                                        bool          exportToOriginalCS);
+	                                        bool exportToOriginalCS);
 
   protected:
 	//! Accepts the dialog and save settings

@@ -93,10 +93,10 @@ class HIDWorker : public QThread
 	void processMotion(const unsigned char* buf, int n);
 	void processButtons(const unsigned char* buf, int n, unsigned int& prevButtonMask);
 
-	hid_device*      m_handle = nullptr;
+	hid_device* m_handle = nullptr;
 	std::atomic_bool m_running{false};
-	Mouse3DInput*    m_parent;
-	QString          m_devicePath;
+	Mouse3DInput* m_parent;
+	QString m_devicePath;
 
 	//! Last known raw axis values (tx, ty, tz, rx, ry, rz).
 	//! Used to merge separate translation and rotation reports (SpaceMouse

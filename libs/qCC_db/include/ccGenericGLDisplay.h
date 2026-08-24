@@ -178,10 +178,10 @@ class ccGenericGLDisplay
 	//! Text alignment
 	enum TextAlign
 	{
-		ALIGN_HLEFT   = 1,
+		ALIGN_HLEFT = 1,
 		ALIGN_HMIDDLE = 2,
-		ALIGN_HRIGHT  = 4,
-		ALIGN_VTOP    = 8,
+		ALIGN_HRIGHT = 4,
+		ALIGN_VTOP = 8,
 		ALIGN_VMIDDLE = 16,
 		ALIGN_VBOTTOM = 32,
 		ALIGN_DEFAULT = 1 | 8
@@ -198,13 +198,13 @@ class ccGenericGLDisplay
 	    \param color text color (optional)
 	    \param font optional font (otherwise default one will be used)
 	**/
-	virtual void displayText(QString              text,
-	                         int                  x,
-	                         int                  y,
-	                         unsigned char        align    = ALIGN_DEFAULT,
-	                         float                bkgAlpha = 0.0f,
-	                         const ccColor::Rgba* color    = nullptr,
-	                         const QFont*         font     = nullptr) = 0;
+	virtual void displayText(QString text,
+	                         int x,
+	                         int y,
+	                         unsigned char align = ALIGN_DEFAULT,
+	                         float bkgAlpha = 0.0f,
+	                         const ccColor::Rgba* color = nullptr,
+	                         const QFont* font = nullptr) = 0;
 
 	//! Displays a string at a given 3D position
 	/** This method should be called solely during 3D pass rendering (see paintGL).
@@ -213,10 +213,10 @@ class ccGenericGLDisplay
 	    \param color RGBA color (optional: if let to 0, default text rendering color is used)
 	    \param font font (optional)
 	**/
-	virtual void display3DLabel(const QString&       str,
-	                            const CCVector3&     pos3D,
+	virtual void display3DLabel(const QString& str,
+	                            const CCVector3& pos3D,
 	                            const ccColor::Rgba* color = nullptr,
-	                            const QFont&         font  = QFont()) = 0;
+	                            const QFont& font = QFont()) = 0;
 
 	//! Returns the current OpenGL camera parameters
 	virtual void getGLCameraParameters(ccGLCameraParameters& params) = 0;
@@ -236,9 +236,9 @@ class ccGenericGLDisplay
 	    \param bubbleViewMode set whether bubble-view mode should be enabled or not (in which case viewerBasedPerspective is forced by default)
 	**/
 	virtual void setupProjectiveViewport(const ccGLMatrixd& cameraMatrix,
-	                                     float              fov_deg                = 0.0f,
-	                                     bool               viewerBasedPerspective = true,
-	                                     bool               bubbleViewMode         = false) = 0;
+	                                     float fov_deg = 0.0f,
+	                                     bool viewerBasedPerspective = true,
+	                                     bool bubbleViewMode = false) = 0;
 
 	//! Warns the display that the enity is about to be removed
 	virtual void aboutToBeRemoved(ccDrawableObject* entity) = 0;

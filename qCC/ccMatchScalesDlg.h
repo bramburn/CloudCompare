@@ -51,8 +51,8 @@ class ccMatchScalesDlg : public QDialog
 	 * @param[in] parent Parent widget
 	 */
 	ccMatchScalesDlg(const ccHObject::Container& entities,
-	                 int                         defaultSelectedIndex = 0,
-	                 QWidget*                    parent               = nullptr);
+	                 int defaultSelectedIndex = 0,
+	                 QWidget* parent = nullptr);
 
 	/// Get selected index
 	int getSelectedIndex() const;

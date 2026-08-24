@@ -101,189 +101,189 @@
 #include <utility>
 
 // commands
-constexpr char COMMAND_CLOUD_EXPORT_FORMAT[]              = "C_EXPORT_FMT";
-constexpr char COMMAND_EXPORT_EXTENSION[]                 = "EXT";
-constexpr char COMMAND_ASCII_EXPORT_PRECISION[]           = "PREC";
-constexpr char COMMAND_ASCII_EXPORT_SEPARATOR[]           = "SEP";
-constexpr char COMMAND_ASCII_EXPORT_ADD_COL_HEADER[]      = "ADD_HEADER";
-constexpr char COMMAND_ASCII_EXPORT_ADD_PTS_COUNT[]       = "ADD_PTS_COUNT";
-constexpr char COMMAND_MESH_EXPORT_FORMAT[]               = "M_EXPORT_FMT";
-constexpr char COMMAND_HIERARCHY_EXPORT_FORMAT[]          = "H_EXPORT_FMT";
-constexpr char COMMAND_OPEN[]                             = "O";    //+ file name
-constexpr char COMMAND_OPEN_SKIP_LINES[]                  = "SKIP"; //+ number of lines to skip
-constexpr char COMMAND_OPEN_NO_LABEL[]                    = "NO_LABEL";
-constexpr char COMMAND_COMMAND_FILE[]                     = "COMMAND_FILE"; //+ file name
-constexpr char COMMAND_SUBSAMPLE[]                        = "SS";           //+ method (RANDOM/SPATIAL/OCTREE) + parameter (resp. point count / spatial step / octree level)
-constexpr char COMMAND_EXTRACT_CC[]                       = "EXTRACT_CC";
-constexpr char COMMAND_CURVATURE[]                        = "CURV";    //+ curvature type (MEAN/GAUSS)
-constexpr char COMMAND_DENSITY[]                          = "DENSITY"; //+ sphere radius
-constexpr char COMMAND_DENSITY_TYPE[]                     = "TYPE";    //+ density type
-constexpr char COMMAND_APPROX_DENSITY[]                   = "APPROX_DENSITY";
-constexpr char COMMAND_SF_GRADIENT[]                      = "SF_GRAD";
-constexpr char COMMAND_ROUGHNESS[]                        = "ROUGH";
-constexpr char COMMAND_ROUGHNESS_UP_DIR[]                 = "UP_DIR";
-constexpr char COMMAND_APPLY_TRANSFORMATION[]             = "APPLY_TRANS";
-constexpr char COMMAND_APPLY_TRANS_TO_GLOBAL[]            = "APPLY_TO_GLOBAL";
-constexpr char COMMAND_APPLY_TRANS_INVERSE[]              = "INVERSE";
-constexpr char COMMAND_DROP_GLOBAL_SHIFT[]                = "DROP_GLOBAL_SHIFT";
-constexpr char COMMAND_SF_COLOR_SCALE[]                   = "SF_COLOR_SCALE";
-constexpr char COMMAND_SF_CONVERT_TO_RGB[]                = "SF_CONVERT_TO_RGB";
-constexpr char COMMAND_FILTER_SF_BY_VALUE[]               = "FILTER_SF";
-constexpr char COMMAND_MERGE_CLOUDS[]                     = "MERGE_CLOUDS";
-constexpr char COMMAND_MERGE_MESHES[]                     = "MERGE_MESHES";
-constexpr char COMMAND_SET_ACTIVE_SF[]                    = "SET_ACTIVE_SF";
-constexpr char COMMAND_SET_GLOBAL_SHIFT[]                 = "SET_GLOBAL_SHIFT"; // + global shift {x,y,z}
+constexpr char COMMAND_CLOUD_EXPORT_FORMAT[] = "C_EXPORT_FMT";
+constexpr char COMMAND_EXPORT_EXTENSION[] = "EXT";
+constexpr char COMMAND_ASCII_EXPORT_PRECISION[] = "PREC";
+constexpr char COMMAND_ASCII_EXPORT_SEPARATOR[] = "SEP";
+constexpr char COMMAND_ASCII_EXPORT_ADD_COL_HEADER[] = "ADD_HEADER";
+constexpr char COMMAND_ASCII_EXPORT_ADD_PTS_COUNT[] = "ADD_PTS_COUNT";
+constexpr char COMMAND_MESH_EXPORT_FORMAT[] = "M_EXPORT_FMT";
+constexpr char COMMAND_HIERARCHY_EXPORT_FORMAT[] = "H_EXPORT_FMT";
+constexpr char COMMAND_OPEN[] = "O";               //+ file name
+constexpr char COMMAND_OPEN_SKIP_LINES[] = "SKIP"; //+ number of lines to skip
+constexpr char COMMAND_OPEN_NO_LABEL[] = "NO_LABEL";
+constexpr char COMMAND_COMMAND_FILE[] = "COMMAND_FILE"; //+ file name
+constexpr char COMMAND_SUBSAMPLE[] = "SS";              //+ method (RANDOM/SPATIAL/OCTREE) + parameter (resp. point count / spatial step / octree level)
+constexpr char COMMAND_EXTRACT_CC[] = "EXTRACT_CC";
+constexpr char COMMAND_CURVATURE[] = "CURV";    //+ curvature type (MEAN/GAUSS)
+constexpr char COMMAND_DENSITY[] = "DENSITY";   //+ sphere radius
+constexpr char COMMAND_DENSITY_TYPE[] = "TYPE"; //+ density type
+constexpr char COMMAND_APPROX_DENSITY[] = "APPROX_DENSITY";
+constexpr char COMMAND_SF_GRADIENT[] = "SF_GRAD";
+constexpr char COMMAND_ROUGHNESS[] = "ROUGH";
+constexpr char COMMAND_ROUGHNESS_UP_DIR[] = "UP_DIR";
+constexpr char COMMAND_APPLY_TRANSFORMATION[] = "APPLY_TRANS";
+constexpr char COMMAND_APPLY_TRANS_TO_GLOBAL[] = "APPLY_TO_GLOBAL";
+constexpr char COMMAND_APPLY_TRANS_INVERSE[] = "INVERSE";
+constexpr char COMMAND_DROP_GLOBAL_SHIFT[] = "DROP_GLOBAL_SHIFT";
+constexpr char COMMAND_SF_COLOR_SCALE[] = "SF_COLOR_SCALE";
+constexpr char COMMAND_SF_CONVERT_TO_RGB[] = "SF_CONVERT_TO_RGB";
+constexpr char COMMAND_FILTER_SF_BY_VALUE[] = "FILTER_SF";
+constexpr char COMMAND_MERGE_CLOUDS[] = "MERGE_CLOUDS";
+constexpr char COMMAND_MERGE_MESHES[] = "MERGE_MESHES";
+constexpr char COMMAND_SET_ACTIVE_SF[] = "SET_ACTIVE_SF";
+constexpr char COMMAND_SET_GLOBAL_SHIFT[] = "SET_GLOBAL_SHIFT"; // + global shift {x,y,z}
 constexpr char COMMAND_SET_GLOBAL_SHIFT_KEEP_ORIG_FIXED[] = "KEEP_ORIG_FIXED";
-constexpr char COMMAND_REMOVE_ALL_SFS[]                   = "REMOVE_ALL_SFS";
-constexpr char COMMAND_REMOVE_SF[]                        = "REMOVE_SF";
-constexpr char COMMAND_REMOVE_SCAN_GRIDS[]                = "REMOVE_SCAN_GRIDS";
-constexpr char COMMAND_REMOVE_SENSORS[]                   = "REMOVE_SENSORS";
-constexpr char COMMAND_REMOVE_RGB[]                       = "REMOVE_RGB";
-constexpr char COMMAND_REMOVE_NORMALS[]                   = "REMOVE_NORMALS";
-constexpr char COMMAND_MATCH_BB_CENTERS[]                 = "MATCH_CENTERS";
-constexpr char COMMAND_MATCH_SCALES[]                     = "MATCH_SCALES";
-constexpr char COMMAND_MATCH_SCALES_REFERENCE[]           = "REFERENCE";
-constexpr char COMMAND_MATCH_SCALES_RMS_DIFF[]            = "RMS_DIFF";
-constexpr char COMMAND_MATCH_SCALES_OVERLAP[]             = "OVERLAP";
-constexpr char COMMAND_BEST_FIT_PLANE[]                   = "BEST_FIT_PLANE";
-constexpr char COMMAND_BEST_FIT_PLANE_MAKE_HORIZ[]        = "MAKE_HORIZ";
-constexpr char COMMAND_BEST_FIT_PLANE_KEEP_LOADED[]       = "KEEP_LOADED";
-constexpr char COMMAND_BEST_FIT_PLANE_OUTPUT_INFO_FILE[]  = "OUTPUT_INFO_FILE";
-constexpr char COMMAND_ORIENT_NORMALS[]                   = "ORIENT_NORMS_MST";
-constexpr char COMMAND_SOR_FILTER[]                       = "SOR";
-constexpr char COMMAND_NOISE_FILTER[]                     = "NOISE";
-constexpr char COMMAND_NOISE_FILTER_KNN[]                 = "KNN";
-constexpr char COMMAND_NOISE_FILTER_RADIUS[]              = "RADIUS";
-constexpr char COMMAND_NOISE_FILTER_REL[]                 = "REL";
-constexpr char COMMAND_NOISE_FILTER_ABS[]                 = "ABS";
-constexpr char COMMAND_NOISE_FILTER_RIP[]                 = "RIP";
-constexpr char COMMAND_REMOVE_DUPLICATE_POINTS[]          = "RDP";
-constexpr char COMMAND_SAMPLE_MESH[]                      = "SAMPLE_MESH";
-constexpr char COMMAND_COMPRESS_FWF[]                     = "COMPRESS_FWF";
-constexpr char COMMAND_CROP[]                             = "CROP";
-constexpr char COMMAND_CROP_OUTSIDE[]                     = "OUTSIDE";
-constexpr char COMMAND_CROP_2D[]                          = "CROP2D";
-constexpr char COMMAND_COLOR_BANDING[]                    = "CBANDING";
-constexpr char COMMAND_COLOR_LEVELS[]                     = "CLEVELS";
-constexpr char COMMAND_C2M_DIST[]                         = "C2M_DIST";
-constexpr char COMMAND_C2M_DIST_FLIP_NORMALS[]            = "FLIP_NORMS";
-constexpr char COMMAND_C2M_DIST_UNSIGNED[]                = "UNSIGNED";
-constexpr char COMMAND_C2M_DIST_NON_ROBUST[]              = "NON_ROBUST";
-constexpr char COMMAND_C2M_NORMAL_MATCHING[]              = "NORMAL_MATCH";
-constexpr char COMMAND_C2C_DIST[]                         = "C2C_DIST";
-constexpr char COMMAND_CLOSEST_POINT_SET[]                = "CLOSEST_POINT_SET";
-constexpr char COMMAND_C2C_SPLIT_XYZ[]                    = "SPLIT_XYZ";
-constexpr char COMMAND_C2C_SPLIT_XY_Z[]                   = "SPLIT_XY_Z";
-constexpr char COMMAND_C2C_LOCAL_MODEL[]                  = "MODEL";
-constexpr char COMMAND_C2X_MAX_DISTANCE[]                 = "MAX_DIST";
-constexpr char COMMAND_C2X_OCTREE_LEVEL[]                 = "OCTREE_LEVEL";
-constexpr char COMMAND_STAT_TEST[]                        = "STAT_TEST";
-constexpr char COMMAND_STAT_FIT[]                         = "STAT_FIT";
-constexpr char COMMAND_DELAUNAY[]                         = "DELAUNAY";
-constexpr char COMMAND_DELAUNAY_AA[]                      = "AA";
-constexpr char COMMAND_DELAUNAY_BF[]                      = "BEST_FIT";
-constexpr char COMMAND_DELAUNAY_MAX_EDGE_LENGTH[]         = "MAX_EDGE_LENGTH";
-constexpr char COMMAND_SF_ARITHMETIC[]                    = "SF_ARITHMETIC";
-constexpr char COMMAND_SF_ARITHMETIC_IN_PLACE[]           = "IN_PLACE";
-constexpr char COMMAND_SF_OP[]                            = "SF_OP";
-constexpr char COMMAND_SF_OP_NOT_IN_PLACE[]               = "NOT_IN_PLACE";
-constexpr char COMMAND_SF_OP_SF[]                         = "SF_OP_SF";
-constexpr char COMMAND_SF_INTERP[]                        = "SF_INTERP";
-constexpr char COMMAND_SF_INTERP_DEST_IS_FIRST[]          = "DEST_IS_FIRST";
-constexpr char COMMAND_SF_INTERP_NN[]                     = "INTERP_NN";
-constexpr char COMMAND_SF_INTERP_RADIUS[]                 = "INTERP_RADIUS";
-constexpr char COMMAND_COLOR_INTERP[]                     = "COLOR_INTERP";
-constexpr char COMMAND_SF_ADD_CONST[]                     = "SF_ADD_CONST";
-constexpr char COMMAND_SF_ADD_ID[]                        = "SF_ADD_ID";
-constexpr char COMMAND_SF_ADD_ID_AS_INT[]                 = "AS_INT";
-constexpr char COMMAND_RENAME_ENTITIES[]                  = "RENAME_ENTITIES"; //+ base name
-constexpr char COMMAND_RENAME_SF[]                        = "RENAME_SF";
-constexpr char COMMAND_COORD_TO_SF[]                      = "COORD_TO_SF";
-constexpr char COMMAND_NORM_TO_SF[]                       = "NORM_TO_SF";
-constexpr char COMMAND_SF_TO_COORD[]                      = "SF_TO_COORD";
-constexpr char COMMAND_SF_TO_NORM[]                       = "SF_TO_NORM";
-constexpr char COMMAND_EXTRACT_VERTICES[]                 = "EXTRACT_VERTICES";
-constexpr char COMMAND_ICP[]                              = "ICP";
-constexpr char COMMAND_ICP_REFERENCE_IS_FIRST[]           = "REFERENCE_IS_FIRST";
-constexpr char COMMAND_ICP_MIN_ERROR_DIIF[]               = "MIN_ERROR_DIFF";
-constexpr char COMMAND_ICP_ITERATION_COUNT[]              = "ITER";
-constexpr char COMMAND_ICP_OVERLAP[]                      = "OVERLAP";
-constexpr char COMMAND_ICP_ADJUST_SCALE[]                 = "ADJUST_SCALE";
-constexpr char COMMAND_ICP_RANDOM_SAMPLING_LIMIT[]        = "RANDOM_SAMPLING_LIMIT";
-constexpr char COMMAND_ICP_ENABLE_FARTHEST_REMOVAL[]      = "FARTHEST_REMOVAL";
-constexpr char COMMAND_ICP_USE_MODEL_SF_AS_WEIGHT[]       = "MODEL_SF_AS_WEIGHTS";
-constexpr char COMMAND_ICP_USE_DATA_SF_AS_WEIGHT[]        = "DATA_SF_AS_WEIGHTS";
-constexpr char COMMAND_ICP_ROT[]                          = "ROT";
-constexpr char COMMAND_ICP_SKIP_TX[]                      = "SKIP_TX";
-constexpr char COMMAND_ICP_SKIP_TY[]                      = "SKIP_TY";
-constexpr char COMMAND_ICP_SKIP_TZ[]                      = "SKIP_TZ";
-constexpr char COMMAND_ICP_C2M_DIST[]                     = "USE_C2M_DIST";
-constexpr char COMMAND_ICP_OUTPUT_MATRIX_FILE[]           = "OUTPUT_MATRIX_FILE";
-constexpr char COMMAND_PLY_EXPORT_FORMAT[]                = "PLY_EXPORT_FMT";
-constexpr char COMMAND_PLY_NO_SF_PREFIX[]                 = "PLY_NO_SF_PREFIX";
-constexpr char COMMAND_COMPUTE_GRIDDED_NORMALS[]          = "COMPUTE_NORMALS";
-constexpr char COMMAND_INVERT_NORMALS[]                   = "INVERT_NORMALS";
-constexpr char COMMAND_COMPUTE_OCTREE_NORMALS[]           = "OCTREE_NORMALS";
-constexpr char COMMAND_CONVERT_NORMALS_TO_DIP[]           = "NORMALS_TO_DIP";
-constexpr char COMMAND_CONVERT_NORMALS_TO_SFS[]           = "NORMALS_TO_SFS";
-constexpr char COMMAND_CONVERT_NORMALS_TO_HSV[]           = "NORMALS_TO_HSV";
-constexpr char COMMAND_CLEAR_NORMALS[]                    = "CLEAR_NORMALS";
-constexpr char COMMAND_MESH_VOLUME[]                      = "MESH_VOLUME";
-constexpr char COMMAND_VOLUME_TO_FILE[]                   = "TO_FILE";
-constexpr char COMMAND_SAVE_CLOUDS[]                      = "SAVE_CLOUDS";
-constexpr char COMMAND_SAVE_MESHES[]                      = "SAVE_MESHES";
-constexpr char COMMAND_AUTO_SAVE[]                        = "AUTO_SAVE";
-constexpr char COMMAND_LOG_FILE[]                         = "LOG_FILE";
-constexpr char COMMAND_SELECT_ENTITIES[]                  = "SELECT_ENTITIES";
-constexpr char COMMAND_CLEAR[]                            = "CLEAR";
-constexpr char COMMAND_CLEAR_CLOUDS[]                     = "CLEAR_CLOUDS";
-constexpr char COMMAND_POP_CLOUDS[]                       = "POP_CLOUDS";
-constexpr char COMMAND_CLEAR_MESHES[]                     = "CLEAR_MESHES";
-constexpr char COMMAND_POP_MESHES[]                       = "POP_MESHES";
-constexpr char COMMAND_NO_TIMESTAMP[]                     = "NO_TIMESTAMP";
-constexpr char COMMAND_MOMENT[]                           = "MOMENT";
-constexpr char COMMAND_FEATURE[]                          = "FEATURE";
-constexpr char COMMAND_RGB_CONVERT_TO_SF[]                = "RGB_CONVERT_TO_SF";
-constexpr char COMMAND_FLIP_TRIANGLES[]                   = "FLIP_TRI";
-constexpr char COMMAND_DEBUG[]                            = "DEBUG";
-constexpr char COMMAND_VERBOSITY[]                        = "VERBOSITY";
-constexpr char COMMAND_COMPUTE_DISTANCES_FROM_SENSOR[]    = "DISTANCES_FROM_SENSOR";
-constexpr char COMMAND_COMPUTE_SCATTERING_ANGLES[]        = "SCATTERING_ANGLES";
-constexpr char COMMAND_FILTER[]                           = "FILTER";
+constexpr char COMMAND_REMOVE_ALL_SFS[] = "REMOVE_ALL_SFS";
+constexpr char COMMAND_REMOVE_SF[] = "REMOVE_SF";
+constexpr char COMMAND_REMOVE_SCAN_GRIDS[] = "REMOVE_SCAN_GRIDS";
+constexpr char COMMAND_REMOVE_SENSORS[] = "REMOVE_SENSORS";
+constexpr char COMMAND_REMOVE_RGB[] = "REMOVE_RGB";
+constexpr char COMMAND_REMOVE_NORMALS[] = "REMOVE_NORMALS";
+constexpr char COMMAND_MATCH_BB_CENTERS[] = "MATCH_CENTERS";
+constexpr char COMMAND_MATCH_SCALES[] = "MATCH_SCALES";
+constexpr char COMMAND_MATCH_SCALES_REFERENCE[] = "REFERENCE";
+constexpr char COMMAND_MATCH_SCALES_RMS_DIFF[] = "RMS_DIFF";
+constexpr char COMMAND_MATCH_SCALES_OVERLAP[] = "OVERLAP";
+constexpr char COMMAND_BEST_FIT_PLANE[] = "BEST_FIT_PLANE";
+constexpr char COMMAND_BEST_FIT_PLANE_MAKE_HORIZ[] = "MAKE_HORIZ";
+constexpr char COMMAND_BEST_FIT_PLANE_KEEP_LOADED[] = "KEEP_LOADED";
+constexpr char COMMAND_BEST_FIT_PLANE_OUTPUT_INFO_FILE[] = "OUTPUT_INFO_FILE";
+constexpr char COMMAND_ORIENT_NORMALS[] = "ORIENT_NORMS_MST";
+constexpr char COMMAND_SOR_FILTER[] = "SOR";
+constexpr char COMMAND_NOISE_FILTER[] = "NOISE";
+constexpr char COMMAND_NOISE_FILTER_KNN[] = "KNN";
+constexpr char COMMAND_NOISE_FILTER_RADIUS[] = "RADIUS";
+constexpr char COMMAND_NOISE_FILTER_REL[] = "REL";
+constexpr char COMMAND_NOISE_FILTER_ABS[] = "ABS";
+constexpr char COMMAND_NOISE_FILTER_RIP[] = "RIP";
+constexpr char COMMAND_REMOVE_DUPLICATE_POINTS[] = "RDP";
+constexpr char COMMAND_SAMPLE_MESH[] = "SAMPLE_MESH";
+constexpr char COMMAND_COMPRESS_FWF[] = "COMPRESS_FWF";
+constexpr char COMMAND_CROP[] = "CROP";
+constexpr char COMMAND_CROP_OUTSIDE[] = "OUTSIDE";
+constexpr char COMMAND_CROP_2D[] = "CROP2D";
+constexpr char COMMAND_COLOR_BANDING[] = "CBANDING";
+constexpr char COMMAND_COLOR_LEVELS[] = "CLEVELS";
+constexpr char COMMAND_C2M_DIST[] = "C2M_DIST";
+constexpr char COMMAND_C2M_DIST_FLIP_NORMALS[] = "FLIP_NORMS";
+constexpr char COMMAND_C2M_DIST_UNSIGNED[] = "UNSIGNED";
+constexpr char COMMAND_C2M_DIST_NON_ROBUST[] = "NON_ROBUST";
+constexpr char COMMAND_C2M_NORMAL_MATCHING[] = "NORMAL_MATCH";
+constexpr char COMMAND_C2C_DIST[] = "C2C_DIST";
+constexpr char COMMAND_CLOSEST_POINT_SET[] = "CLOSEST_POINT_SET";
+constexpr char COMMAND_C2C_SPLIT_XYZ[] = "SPLIT_XYZ";
+constexpr char COMMAND_C2C_SPLIT_XY_Z[] = "SPLIT_XY_Z";
+constexpr char COMMAND_C2C_LOCAL_MODEL[] = "MODEL";
+constexpr char COMMAND_C2X_MAX_DISTANCE[] = "MAX_DIST";
+constexpr char COMMAND_C2X_OCTREE_LEVEL[] = "OCTREE_LEVEL";
+constexpr char COMMAND_STAT_TEST[] = "STAT_TEST";
+constexpr char COMMAND_STAT_FIT[] = "STAT_FIT";
+constexpr char COMMAND_DELAUNAY[] = "DELAUNAY";
+constexpr char COMMAND_DELAUNAY_AA[] = "AA";
+constexpr char COMMAND_DELAUNAY_BF[] = "BEST_FIT";
+constexpr char COMMAND_DELAUNAY_MAX_EDGE_LENGTH[] = "MAX_EDGE_LENGTH";
+constexpr char COMMAND_SF_ARITHMETIC[] = "SF_ARITHMETIC";
+constexpr char COMMAND_SF_ARITHMETIC_IN_PLACE[] = "IN_PLACE";
+constexpr char COMMAND_SF_OP[] = "SF_OP";
+constexpr char COMMAND_SF_OP_NOT_IN_PLACE[] = "NOT_IN_PLACE";
+constexpr char COMMAND_SF_OP_SF[] = "SF_OP_SF";
+constexpr char COMMAND_SF_INTERP[] = "SF_INTERP";
+constexpr char COMMAND_SF_INTERP_DEST_IS_FIRST[] = "DEST_IS_FIRST";
+constexpr char COMMAND_SF_INTERP_NN[] = "INTERP_NN";
+constexpr char COMMAND_SF_INTERP_RADIUS[] = "INTERP_RADIUS";
+constexpr char COMMAND_COLOR_INTERP[] = "COLOR_INTERP";
+constexpr char COMMAND_SF_ADD_CONST[] = "SF_ADD_CONST";
+constexpr char COMMAND_SF_ADD_ID[] = "SF_ADD_ID";
+constexpr char COMMAND_SF_ADD_ID_AS_INT[] = "AS_INT";
+constexpr char COMMAND_RENAME_ENTITIES[] = "RENAME_ENTITIES"; //+ base name
+constexpr char COMMAND_RENAME_SF[] = "RENAME_SF";
+constexpr char COMMAND_COORD_TO_SF[] = "COORD_TO_SF";
+constexpr char COMMAND_NORM_TO_SF[] = "NORM_TO_SF";
+constexpr char COMMAND_SF_TO_COORD[] = "SF_TO_COORD";
+constexpr char COMMAND_SF_TO_NORM[] = "SF_TO_NORM";
+constexpr char COMMAND_EXTRACT_VERTICES[] = "EXTRACT_VERTICES";
+constexpr char COMMAND_ICP[] = "ICP";
+constexpr char COMMAND_ICP_REFERENCE_IS_FIRST[] = "REFERENCE_IS_FIRST";
+constexpr char COMMAND_ICP_MIN_ERROR_DIIF[] = "MIN_ERROR_DIFF";
+constexpr char COMMAND_ICP_ITERATION_COUNT[] = "ITER";
+constexpr char COMMAND_ICP_OVERLAP[] = "OVERLAP";
+constexpr char COMMAND_ICP_ADJUST_SCALE[] = "ADJUST_SCALE";
+constexpr char COMMAND_ICP_RANDOM_SAMPLING_LIMIT[] = "RANDOM_SAMPLING_LIMIT";
+constexpr char COMMAND_ICP_ENABLE_FARTHEST_REMOVAL[] = "FARTHEST_REMOVAL";
+constexpr char COMMAND_ICP_USE_MODEL_SF_AS_WEIGHT[] = "MODEL_SF_AS_WEIGHTS";
+constexpr char COMMAND_ICP_USE_DATA_SF_AS_WEIGHT[] = "DATA_SF_AS_WEIGHTS";
+constexpr char COMMAND_ICP_ROT[] = "ROT";
+constexpr char COMMAND_ICP_SKIP_TX[] = "SKIP_TX";
+constexpr char COMMAND_ICP_SKIP_TY[] = "SKIP_TY";
+constexpr char COMMAND_ICP_SKIP_TZ[] = "SKIP_TZ";
+constexpr char COMMAND_ICP_C2M_DIST[] = "USE_C2M_DIST";
+constexpr char COMMAND_ICP_OUTPUT_MATRIX_FILE[] = "OUTPUT_MATRIX_FILE";
+constexpr char COMMAND_PLY_EXPORT_FORMAT[] = "PLY_EXPORT_FMT";
+constexpr char COMMAND_PLY_NO_SF_PREFIX[] = "PLY_NO_SF_PREFIX";
+constexpr char COMMAND_COMPUTE_GRIDDED_NORMALS[] = "COMPUTE_NORMALS";
+constexpr char COMMAND_INVERT_NORMALS[] = "INVERT_NORMALS";
+constexpr char COMMAND_COMPUTE_OCTREE_NORMALS[] = "OCTREE_NORMALS";
+constexpr char COMMAND_CONVERT_NORMALS_TO_DIP[] = "NORMALS_TO_DIP";
+constexpr char COMMAND_CONVERT_NORMALS_TO_SFS[] = "NORMALS_TO_SFS";
+constexpr char COMMAND_CONVERT_NORMALS_TO_HSV[] = "NORMALS_TO_HSV";
+constexpr char COMMAND_CLEAR_NORMALS[] = "CLEAR_NORMALS";
+constexpr char COMMAND_MESH_VOLUME[] = "MESH_VOLUME";
+constexpr char COMMAND_VOLUME_TO_FILE[] = "TO_FILE";
+constexpr char COMMAND_SAVE_CLOUDS[] = "SAVE_CLOUDS";
+constexpr char COMMAND_SAVE_MESHES[] = "SAVE_MESHES";
+constexpr char COMMAND_AUTO_SAVE[] = "AUTO_SAVE";
+constexpr char COMMAND_LOG_FILE[] = "LOG_FILE";
+constexpr char COMMAND_SELECT_ENTITIES[] = "SELECT_ENTITIES";
+constexpr char COMMAND_CLEAR[] = "CLEAR";
+constexpr char COMMAND_CLEAR_CLOUDS[] = "CLEAR_CLOUDS";
+constexpr char COMMAND_POP_CLOUDS[] = "POP_CLOUDS";
+constexpr char COMMAND_CLEAR_MESHES[] = "CLEAR_MESHES";
+constexpr char COMMAND_POP_MESHES[] = "POP_MESHES";
+constexpr char COMMAND_NO_TIMESTAMP[] = "NO_TIMESTAMP";
+constexpr char COMMAND_MOMENT[] = "MOMENT";
+constexpr char COMMAND_FEATURE[] = "FEATURE";
+constexpr char COMMAND_RGB_CONVERT_TO_SF[] = "RGB_CONVERT_TO_SF";
+constexpr char COMMAND_FLIP_TRIANGLES[] = "FLIP_TRI";
+constexpr char COMMAND_DEBUG[] = "DEBUG";
+constexpr char COMMAND_VERBOSITY[] = "VERBOSITY";
+constexpr char COMMAND_COMPUTE_DISTANCES_FROM_SENSOR[] = "DISTANCES_FROM_SENSOR";
+constexpr char COMMAND_COMPUTE_SCATTERING_ANGLES[] = "SCATTERING_ANGLES";
+constexpr char COMMAND_FILTER[] = "FILTER";
 
 // options / modifiers
-constexpr char COMMAND_MAX_THREAD_COUNT[]     = "MAX_TCOUNT";
-constexpr char OPTION_ALL_AT_ONCE[]           = "ALL_AT_ONCE";
-constexpr char OPTION_ON[]                    = "ON";
-constexpr char OPTION_OFF[]                   = "OFF";
-constexpr char OPTION_FILE_NAMES[]            = "FILE";
-constexpr char OPTION_ORIENT[]                = "ORIENT";
-constexpr char OPTION_MODEL[]                 = "MODEL";
-constexpr char OPTION_FIRST[]                 = "FIRST";
-constexpr char OPTION_LAST[]                  = "LAST";
-constexpr char OPTION_ALL[]                   = "ALL";
-constexpr char OPTION_REGEX[]                 = "REGEX";
-constexpr char OPTION_NOT[]                   = "NOT";
-constexpr char OPTION_CLOUD[]                 = "CLOUD";
-constexpr char OPTION_MESH[]                  = "MESH";
-constexpr char OPTION_PERCENT[]               = "PERCENT";
-constexpr char OPTION_NUMBER_OF_POINTS[]      = "NUMBER_OF_POINTS";
-constexpr char OPTION_FORCE[]                 = "FORCE";
-constexpr char OPTION_USE_ACTIVE_SF[]         = "USE_ACTIVE_SF";
-constexpr char OPTION_SF[]                    = "SF";
-constexpr char OPTION_RGB[]                   = "RGB";
-constexpr char OPTION_GAUSSIAN[]              = "GAUSSIAN";
-constexpr char OPTION_BILATERAL[]             = "BILATERAL";
-constexpr char OPTION_MEAN[]                  = "MEAN";
-constexpr char OPTION_MEDIAN[]                = "MEDIAN";
-constexpr char OPTION_SIGMA[]                 = "SIGMA";
-constexpr char OPTION_SIGMA_SF[]              = "SIGMA_SF";
+constexpr char COMMAND_MAX_THREAD_COUNT[] = "MAX_TCOUNT";
+constexpr char OPTION_ALL_AT_ONCE[] = "ALL_AT_ONCE";
+constexpr char OPTION_ON[] = "ON";
+constexpr char OPTION_OFF[] = "OFF";
+constexpr char OPTION_FILE_NAMES[] = "FILE";
+constexpr char OPTION_ORIENT[] = "ORIENT";
+constexpr char OPTION_MODEL[] = "MODEL";
+constexpr char OPTION_FIRST[] = "FIRST";
+constexpr char OPTION_LAST[] = "LAST";
+constexpr char OPTION_ALL[] = "ALL";
+constexpr char OPTION_REGEX[] = "REGEX";
+constexpr char OPTION_NOT[] = "NOT";
+constexpr char OPTION_CLOUD[] = "CLOUD";
+constexpr char OPTION_MESH[] = "MESH";
+constexpr char OPTION_PERCENT[] = "PERCENT";
+constexpr char OPTION_NUMBER_OF_POINTS[] = "NUMBER_OF_POINTS";
+constexpr char OPTION_FORCE[] = "FORCE";
+constexpr char OPTION_USE_ACTIVE_SF[] = "USE_ACTIVE_SF";
+constexpr char OPTION_SF[] = "SF";
+constexpr char OPTION_RGB[] = "RGB";
+constexpr char OPTION_GAUSSIAN[] = "GAUSSIAN";
+constexpr char OPTION_BILATERAL[] = "BILATERAL";
+constexpr char OPTION_MEAN[] = "MEAN";
+constexpr char OPTION_MEDIAN[] = "MEDIAN";
+constexpr char OPTION_SIGMA[] = "SIGMA";
+constexpr char OPTION_SIGMA_SF[] = "SIGMA_SF";
 constexpr char OPTION_BURNT_COLOR_THRESHOLD[] = "BURNT_COLOR_THRESHOLD";
-constexpr char OPTION_BLEND_GRAYSCALE[]       = "BLEND_GRAYSCALE";
-constexpr char OPTION_SQUARED[]               = "SQUARED";
-constexpr char OPTION_DEGREES[]               = "DEGREES";
-constexpr char OPTION_WITH_GRIDS[]            = "WITH_GRIDS";
-constexpr char OPTION_WITH_SENSOR[]           = "WITH_SENSOR";
+constexpr char OPTION_BLEND_GRAYSCALE[] = "BLEND_GRAYSCALE";
+constexpr char OPTION_SQUARED[] = "SQUARED";
+constexpr char OPTION_DEGREES[] = "DEGREES";
+constexpr char OPTION_WITH_GRIDS[] = "WITH_GRIDS";
+constexpr char OPTION_WITH_SENSOR[] = "WITH_SENSOR";
 
 static bool GetSFIndexOrName(ccCommandLineInterface& cmd, int& sfIndex, QString& sfName, bool allowMinusOne = false)
 {
@@ -296,7 +296,7 @@ static bool GetSFIndexOrName(ccCommandLineInterface& cmd, int& sfIndex, QString&
 	else
 	{
 		bool validInt = false;
-		sfIndex       = sfName.toInt(&validInt);
+		sfIndex = sfName.toInt(&validInt);
 		if (validInt)
 		{
 			sfName.clear(); // user has provided an index, not a name
@@ -402,7 +402,7 @@ QString CommandChangeOutputFormat::getFileFormatFilter(ccCommandLineInterface& c
 	if (!cmd.arguments().isEmpty())
 	{
 		// test if the specified format corresponds to a known file type
-		QString extension      = cmd.arguments().front();
+		QString extension = cmd.arguments().front();
 		QString upperExtension = extension.toUpper();
 		cmd.arguments().pop_front();
 
@@ -515,7 +515,7 @@ bool CommandChangeCloudOutputFormat::process(ccCommandLineInterface& cmd)
 				return cmd.error(QObject::tr("Missing parameter: precision value after '%1'").arg(COMMAND_ASCII_EXPORT_PRECISION));
 			}
 			bool ok;
-			int  precision = cmd.arguments().takeFirst().toInt(&ok);
+			int precision = cmd.arguments().takeFirst().toInt(&ok);
 			if (!ok || precision < 0)
 			{
 				return cmd.error(QObject::tr("Invalid value for precision! (%1)").arg(COMMAND_ASCII_EXPORT_PRECISION));
@@ -704,9 +704,9 @@ bool CommandLoad::process(ccCommandLineInterface& cmd)
 	ccArgumentParser parser(cmd.arguments());
 
 	// optional parameters
-	int                                        skipLines = 0;
+	int skipLines = 0;
 	ccCommandLineInterface::GlobalShiftOptions globalShiftOptions;
-	bool                                       doNotCreateLabels = false;
+	bool doNotCreateLabels = false;
 
 	while (!parser.isEmpty())
 	{
@@ -780,7 +780,7 @@ bool CommandLoadCommandFile::process(ccCommandLineInterface& cmd)
 	QFile commandFile(commandFilePath);
 	if (commandFile.open(QIODevice::ReadOnly))
 	{
-		int         insertingIndex = 0;
+		int insertingIndex = 0;
 		QTextStream in(&commandFile);
 		while (!in.atEnd())
 		{
@@ -799,8 +799,8 @@ bool CommandLoadCommandFile::process(ccCommandLineInterface& cmd)
 			// 'massage' the arguments to handle single/double quotes
 			// TODO handle escaped quotes/spaces
 			{
-				bool    insideSingleQuoteSection = false;
-				bool    insideDoubleQuoteSection = false;
+				bool insideSingleQuoteSection = false;
+				bool insideDoubleQuoteSection = false;
 				QString buffer;
 
 				static const QChar SingleQuote{'\''};
@@ -822,7 +822,7 @@ bool CommandLoadCommandFile::process(ccCommandLineInterface& cmd)
 							{
 								// we'll collect the next pieces to get the full argument
 								insideSingleQuoteSection = true;
-								buffer                   = arg.mid(1); // remove the single quote
+								buffer = arg.mid(1); // remove the single quote
 							}
 						}
 						else if (insideSingleQuoteSection)
@@ -831,7 +831,7 @@ bool CommandLoadCommandFile::process(ccCommandLineInterface& cmd)
 							if (arg.endsWith(SingleQuote))
 							{
 								insideSingleQuoteSection = false;
-								arg                      = buffer.left(buffer.length() - 1); // remove the single quote
+								arg = buffer.left(buffer.length() - 1); // remove the single quote
 								arg.remove(SingleQuote);
 							}
 						}
@@ -850,7 +850,7 @@ bool CommandLoadCommandFile::process(ccCommandLineInterface& cmd)
 							{
 								// we'll collect the next pieces to get the full argument
 								insideDoubleQuoteSection = true;
-								buffer                   = arg.mid(1); // remove the double quote
+								buffer = arg.mid(1); // remove the double quote
 							}
 						}
 						else if (insideDoubleQuoteSection)
@@ -859,7 +859,7 @@ bool CommandLoadCommandFile::process(ccCommandLineInterface& cmd)
 							if (arg.endsWith(DoubleQuote))
 							{
 								insideDoubleQuoteSection = false;
-								arg                      = buffer.left(buffer.length() - 1); // remove the double quote
+								arg = buffer.left(buffer.length() - 1); // remove the double quote
 								arg.remove(DoubleQuote);
 							}
 						}
@@ -1060,13 +1060,13 @@ bool CommandOctreeNormal::process(ccCommandLineInterface& cmd)
 
 	cmd.print(QObject::tr("\tRadius: %1").arg(radiusArg));
 
-	CCCoreLib::LOCAL_MODEL_TYPES model       = CCCoreLib::QUADRIC;
+	CCCoreLib::LOCAL_MODEL_TYPES model = CCCoreLib::QUADRIC;
 	ccNormalVectors::Orientation orientation = ccNormalVectors::Orientation::UNDEFINED;
 
-	bool  useGridStructure         = false;
-	bool  orientNormalsWithGrids   = false;
-	bool  orientNormalsWithSensors = false;
-	float angle                    = std::numeric_limits<float>::quiet_NaN(); // if this stays
+	bool useGridStructure = false;
+	bool orientNormalsWithGrids = false;
+	bool orientNormalsWithSensors = false;
+	float angle = std::numeric_limits<float>::quiet_NaN(); // if this stays
 	while (!parser.isEmpty())
 	{
 		if (parser.tryConsumeOption(OPTION_ORIENT))
@@ -1081,13 +1081,13 @@ bool CommandOctreeNormal::process(ccCommandLineInterface& cmd)
 			if (upper == OPTION_WITH_GRIDS)
 			{
 				parser.skip();
-				orientation            = ccNormalVectors::Orientation::UNDEFINED;
+				orientation = ccNormalVectors::Orientation::UNDEFINED;
 				orientNormalsWithGrids = true;
 			}
 			else if (upper == OPTION_WITH_SENSOR)
 			{
 				parser.skip();
-				orientation              = ccNormalVectors::Orientation::UNDEFINED;
+				orientation = ccNormalVectors::Orientation::UNDEFINED;
 				orientNormalsWithSensors = true;
 			}
 			else
@@ -1174,9 +1174,9 @@ bool CommandOctreeNormal::process(ccCommandLineInterface& cmd)
 			ccOctree::BestRadiusParams params;
 			{
 				params.aimedPopulationPerCell = 16;
-				params.aimedPopulationRange   = 4;
-				params.minCellPopulation      = 6;
-				params.minAboveMinRatio       = 0.97;
+				params.aimedPopulationRange = 4;
+				params.minCellPopulation = 6;
+				params.minAboveMinRatio = 0.97;
 			}
 			thisCloudRadius = ccOctree::GuessBestRadius(cloud, params, cloud->getOctree().data());
 			if (thisCloudRadius == 0)
@@ -1186,7 +1186,7 @@ bool CommandOctreeNormal::process(ccCommandLineInterface& cmd)
 			cmd.print(QObject::tr("\tCloud %1 radius = %2").arg(cloud->getName()).arg(thisCloudRadius));
 		}
 
-		bool success                = false;
+		bool success = false;
 		bool normalsAlreadyOriented = false;
 		if (useGridStructure)
 		{
@@ -1268,7 +1268,7 @@ bool CommandOctreeNormal::process(ccCommandLineInterface& cmd)
 		if (cmd.autoSaveMode())
 		{
 			CLCloudDesc desc(cloud, thisCloudDesc.basename, thisCloudDesc.path, thisCloudDesc.indexInFile);
-			QString     errorStr = cmd.exportEntity(desc, "OCTREE_NORMALS");
+			QString errorStr = cmd.exportEntity(desc, "OCTREE_NORMALS");
 			if (!errorStr.isEmpty())
 			{
 				return cmd.error(errorStr);
@@ -1435,9 +1435,9 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 		{
 			return cmd.error(QObject::tr("Missing parameter: number of points or option \"%2\" after \"-%1 RANDOM \"").arg(COMMAND_SUBSAMPLE).arg(OPTION_PERCENT));
 		}
-		bool     isPercent = false;
-		double   percent   = 0.0;
-		unsigned count     = 0;
+		bool isPercent = false;
+		double percent = 0.0;
+		unsigned count = 0;
 
 		// handle percent argument
 		if (parser.peek().toUpper() == OPTION_PERCENT)
@@ -1446,7 +1446,7 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 			const auto maybePercent = parser.takeDouble(QObject::tr("percent"), 0.0, 100.0);
 			if (!maybePercent)
 				return false;
-			percent   = *maybePercent;
+			percent = *maybePercent;
 			isPercent = true;
 		}
 		else
@@ -1465,7 +1465,7 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 			if (isPercent)
 			{
 				size_t nrOfPoints = desc.pc->size();
-				count             = static_cast<unsigned>(ceil(nrOfPoints * percent / 100));
+				count = static_cast<unsigned>(ceil(nrOfPoints * percent / 100));
 				cmd.print(QObject::tr("\tOutput points: %1 * %2% = %3").arg(nrOfPoints).arg(percent).arg(count));
 			}
 
@@ -1487,7 +1487,7 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 				if (cmd.autoSaveMode())
 				{
 					CLCloudDesc newDesc(result, desc.basename, desc.path, desc.indexInFile);
-					QString     errorStr = cmd.exportEntity(newDesc, "RANDOM_SUBSAMPLED");
+					QString errorStr = cmd.exportEntity(newDesc, "RANDOM_SUBSAMPLED");
 					if (!errorStr.isEmpty())
 					{
 						delete result;
@@ -1518,7 +1518,7 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 
 		double sfMinSpacing = 0;
 		double sfMaxSpacing = 0;
-		bool   useActiveSF  = false;
+		bool useActiveSF = false;
 		if (!parser.isEmpty() && parser.peek().toUpper() == OPTION_USE_ACTIVE_SF)
 		{
 			parser.skip();
@@ -1623,7 +1623,7 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 				if (cmd.autoSaveMode())
 				{
 					CLCloudDesc newDesc(result, desc.basename, desc.path, desc.indexInFile);
-					QString     errorStr = cmd.exportEntity(newDesc, "SPATIAL_SUBSAMPLED");
+					QString errorStr = cmd.exportEntity(newDesc, "SPATIAL_SUBSAMPLED");
 					if (!errorStr.isEmpty())
 					{
 						delete result;
@@ -1643,14 +1643,14 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 	}
 	else if (method == "OCTREE")
 	{
-		int       octreeLevel         = 1;
-		double    cellSize            = 0.0;
-		bool      byCellSize          = false;
-		bool      byMaxNumberOfPoints = false;
-		unsigned  maxNumberOfPoints   = 0;
-		bool      isPercent           = false;
-		double    percent             = 0.0;
-		const int maxOctreeLevel      = CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL;
+		int octreeLevel = 1;
+		double cellSize = 0.0;
+		bool byCellSize = false;
+		bool byMaxNumberOfPoints = false;
+		unsigned maxNumberOfPoints = 0;
+		bool isPercent = false;
+		double percent = 0.0;
+		const int maxOctreeLevel = CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL;
 
 		if (!parser.isEmpty())
 		{
@@ -1661,7 +1661,7 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 				const auto maybeCellSize = parser.takeDouble(QObject::tr("octree cell size"), std::numeric_limits<double>::min());
 				if (!maybeCellSize)
 					return false;
-				cellSize   = *maybeCellSize;
+				cellSize = *maybeCellSize;
 				byCellSize = true;
 				cmd.print(QObject::tr("\tOctree cell size: %1").arg(cellSize));
 			}
@@ -1683,7 +1683,7 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 					const auto maybePercent = parser.takeDouble(QObject::tr("percent"), 0.0, 100.0);
 					if (!maybePercent)
 						return false;
-					percent   = *maybePercent;
+					percent = *maybePercent;
 					isPercent = true;
 				}
 				else
@@ -1725,9 +1725,9 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 			{
 				return cmd.error("Octree calculation failed, not enough memory?");
 			}
-			CCCoreLib::ReferenceCloud* refCloud         = nullptr;
-			ccPointCloud*              result           = nullptr;
-			unsigned                   sizeOfInputCloud = desc.pc->size();
+			CCCoreLib::ReferenceCloud* refCloud = nullptr;
+			ccPointCloud* result = nullptr;
+			unsigned sizeOfInputCloud = desc.pc->size();
 
 			cmd.print(QObject::tr("\tProcessing cloud %1").arg(!desc.pc->getName().isEmpty() ? desc.pc->getName() : "no name"));
 
@@ -1746,7 +1746,7 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 				}
 
 				// calculate OCTREE level for each cloud based on required number of points
-				octreeLevel             = maxOctreeLevel;
+				octreeLevel = maxOctreeLevel;
 				unsigned numberOfPoints = sizeOfInputCloud;
 				// go through max->min until previous point count and current point count is different then break
 				for (int currentOctreeLevel = maxOctreeLevel; currentOctreeLevel > 0; --currentOctreeLevel)
@@ -1756,7 +1756,7 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 					{
 						break;
 					}
-					octreeLevel    = currentOctreeLevel;
+					octreeLevel = currentOctreeLevel;
 					numberOfPoints = currentNumberOfPoints;
 				}
 			}
@@ -1804,7 +1804,7 @@ bool CommandSubsample::process(ccCommandLineInterface& cmd)
 				if (cmd.autoSaveMode())
 				{
 					CLCloudDesc newDesc(result, desc.basename, desc.path, desc.indexInFile);
-					QString     errorStr = cmd.exportEntity(newDesc, suffix);
+					QString errorStr = cmd.exportEntity(newDesc, suffix);
 					if (!errorStr.isEmpty())
 					{
 						delete result;
@@ -1856,7 +1856,7 @@ bool CommandExtractCCs::process(ccCommandLineInterface& cmd)
 	{
 		return cmd.error(QObject::tr("Missing parameter: octree level after \"-%1\"").arg(COMMAND_EXTRACT_CC));
 	}
-	bool          ok;
+	bool ok;
 	unsigned char octreeLevel = std::min<unsigned char>(cmd.arguments().takeFirst().toUShort(&ok), CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL);
 	if (!ok)
 	{
@@ -1918,7 +1918,7 @@ bool CommandExtractCCs::process(ccCommandLineInterface& cmd)
 
 			desc.pc->getCurrentInScalarField()->computeMinAndMax();
 			CCCoreLib::ReferenceCloudContainer components;
-			bool                               success = CCCoreLib::AutoSegmentationTools::extractConnectedComponents(desc.pc, components);
+			bool success = CCCoreLib::AutoSegmentationTools::extractConnectedComponents(desc.pc, components);
 			desc.pc->deleteScalarField(sfIdx);
 			sfIdx = -1;
 
@@ -2008,7 +2008,7 @@ CommandCurvature::CommandCurvature()
 bool CommandCurvature::process(ccCommandLineInterface& cmd)
 {
 	ccArgumentParser parser(cmd.arguments());
-	const QString    curvTypeStr = parser.takeNext();
+	const QString curvTypeStr = parser.takeNext();
 	if (curvTypeStr.isNull())
 	{
 		return cmd.error(QObject::tr("Missing parameter: curvature type after \"-%1\"").arg(COMMAND_CURVATURE));
@@ -2170,7 +2170,7 @@ bool CommandSFGradient::process(ccCommandLineInterface& cmd)
 	}
 
 	QString euclideanStr = cmd.arguments().takeFirst().toUpper();
-	bool    euclidean    = false;
+	bool euclidean = false;
 	if (euclideanStr == "TRUE")
 	{
 		euclidean = true;
@@ -2186,7 +2186,7 @@ bool CommandSFGradient::process(ccCommandLineInterface& cmd)
 	}
 
 	// Call MainWindow generic method
-	void*                additionalParameters[1] = {&euclidean};
+	void* additionalParameters[1] = {&euclidean};
 	ccHObject::Container entities;
 	entities.reserve(cmd.clouds().size());
 	for (CLCloudDesc& desc : cmd.clouds())
@@ -2235,14 +2235,14 @@ CommandRoughness::CommandRoughness()
 bool CommandRoughness::process(ccCommandLineInterface& cmd)
 {
 	ccArgumentParser parser(cmd.arguments());
-	const auto       maybeKernelSize = parser.takeDouble(QObject::tr("kernel size"));
+	const auto maybeKernelSize = parser.takeDouble(QObject::tr("kernel size"));
 	if (!maybeKernelSize)
 		return false;
 	PointCoordinateType kernelSize = static_cast<PointCoordinateType>(*maybeKernelSize);
 	cmd.print(QObject::tr("\tKernel size: %1").arg(kernelSize));
 
 	// optional argument
-	CCVector3  roughnessUpDir;
+	CCVector3 roughnessUpDir;
 	CCVector3* _roughnessUpDir = nullptr;
 	if (parser.size() >= 4)
 	{
@@ -2292,8 +2292,8 @@ CommandApplyTransformation::CommandApplyTransformation()
 bool CommandApplyTransformation::process(ccCommandLineInterface& cmd)
 {
 	// optional parameters
-	bool inverse            = false;
-	bool applyToGlobal      = false;
+	bool inverse = false;
+	bool applyToGlobal = false;
 	bool forceApplyToGlobal = false;
 	while (!cmd.arguments().empty())
 	{
@@ -2332,7 +2332,7 @@ bool CommandApplyTransformation::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("Missing parameter: transformation file after \"-%1\"").arg(COMMAND_APPLY_TRANSFORMATION));
 	}
 
-	QString     filename = cmd.arguments().takeFirst();
+	QString filename = cmd.arguments().takeFirst();
 	ccGLMatrixd mat;
 	if (!mat.fromAsciiFile(filename))
 	{
@@ -2352,9 +2352,9 @@ bool CommandApplyTransformation::process(ccCommandLineInterface& cmd)
 	}
 
 	// create an entity vector
-	size_t                                                  nrOfClouds   = cmd.clouds().size();
-	size_t                                                  nrOfMeshes   = cmd.meshes().size();
-	size_t                                                  nrOfEntities = nrOfClouds + nrOfMeshes;
+	size_t nrOfClouds = cmd.clouds().size();
+	size_t nrOfMeshes = cmd.meshes().size();
+	size_t nrOfEntities = nrOfClouds + nrOfMeshes;
 	std::vector<std::pair<ccShiftedObject*, CLEntityDesc*>> entities;
 	entities.reserve(nrOfEntities);
 
@@ -2367,8 +2367,8 @@ bool CommandApplyTransformation::process(ccCommandLineInterface& cmd)
 	// add meshes to the vector
 	for (CLMeshDesc& desc : cmd.meshes())
 	{
-		bool             isLocked = false;
-		ccShiftedObject* shifted  = ccHObjectCaster::ToShifted(desc.mesh, &isLocked);
+		bool isLocked = false;
+		ccShiftedObject* shifted = ccHObjectCaster::ToShifted(desc.mesh, &isLocked);
 		if (shifted && !isLocked)
 		{
 			entities.push_back({shifted, &desc});
@@ -2376,14 +2376,14 @@ bool CommandApplyTransformation::process(ccCommandLineInterface& cmd)
 	}
 
 	// if the transformation is partly converted to global shift/scale
-	bool       autoApplyPreviousGlobalShiftAndScale = false;
-	double     previousScale                        = 1.0;
+	bool autoApplyPreviousGlobalShiftAndScale = false;
+	double previousScale = 1.0;
 	CCVector3d previousShift(0, 0, 0);
 
 	// process both clouds and meshes
 	for (size_t i = 0; i < nrOfEntities; i++)
 	{
-		CLEntityDesc&    desc          = *entities[i].second;
+		CLEntityDesc& desc = *entities[i].second;
 		ccShiftedObject* shiftedEntity = entities[i].first;
 
 		ccGLMatrixd transMat(mat);
@@ -2391,7 +2391,7 @@ bool CommandApplyTransformation::process(ccCommandLineInterface& cmd)
 		{
 			// the user wants to apply the transformation to the global coordinates
 			CCVector3d globalShift = shiftedEntity->getGlobalShift();
-			double     globalScale = shiftedEntity->getGlobalScale();
+			double globalScale = shiftedEntity->getGlobalScale();
 
 			// we compute the impact to the local coordinate system without changing the
 			// actual Global Shift & Scale parameters (for now)
@@ -2401,38 +2401,38 @@ bool CommandApplyTransformation::process(ccCommandLineInterface& cmd)
 			transMat.setTranslation(localTranslation);
 
 			// test if the translated cloud coordinates were already "too large"
-			ccBBox     localBBox = shiftedEntity->getOwnBB();
-			CCVector3d Pl        = localBBox.minCorner();
-			double     Dl        = localBBox.getDiagNormd();
+			ccBBox localBBox = shiftedEntity->getOwnBB();
+			CCVector3d Pl = localBBox.minCorner();
+			double Dl = localBBox.getDiagNormd();
 			if (forceApplyToGlobal || (!ccGlobalShiftManager::NeedShift(Pl) && !ccGlobalShiftManager::NeedRescale(Dl)))
 			{
 				// test if the translated (local) cloud coordinates are too large
-				ccBBox     transformedLocalBox = localBBox * transMat;
-				CCVector3d transformedPl       = transformedLocalBox.minCorner();
-				double     transformedDl       = transformedLocalBox.getDiagNormd();
+				ccBBox transformedLocalBox = localBBox * transMat;
+				CCVector3d transformedPl = transformedLocalBox.minCorner();
+				double transformedDl = transformedLocalBox.getDiagNormd();
 
 				bool needShift = ccGlobalShiftManager::NeedShift(transformedPl) || ccGlobalShiftManager::NeedRescale(transformedDl);
 				if (needShift)
 				{
 					// existing shift information
 					CCVector3d globalShift = shiftedEntity->getGlobalShift();
-					double     globalScale = shiftedEntity->getGlobalScale();
+					double globalScale = shiftedEntity->getGlobalScale();
 
 					// we compute the global coordinates and scale of the reference point (= the min corner of the bounding-box)
 					CCVector3d Pg = shiftedEntity->toGlobal3d(transformedPl);
-					double     Dg = transformedDl / globalScale;
+					double Dg = transformedDl / globalScale;
 
 					// let's try to find better Global Shift and Scale values
 					CCVector3d newShift(0.0, 0.0, 0.0);
-					double     newScale = 1.0;
+					double newScale = 1.0;
 
 					// should we try to use the previous Global Shift and Scale values?
 					if (autoApplyPreviousGlobalShiftAndScale)
 					{
 						if (!ccGlobalShiftManager::NeedShift(Pg + previousShift) && !ccGlobalShiftManager::NeedRescale(Dg * previousScale))
 						{
-							newScale  = previousScale;
-							newShift  = previousShift;
+							newScale = previousScale;
+							newShift = previousShift;
 							needShift = false;
 						}
 					}
@@ -2440,17 +2440,17 @@ bool CommandApplyTransformation::process(ccCommandLineInterface& cmd)
 					if (needShift)
 					{
 						// don't bother the user as we are running in command line, use the best possible solution
-						newShift  = ccGlobalShiftManager::BestShift(Pg);
-						newScale  = ccGlobalShiftManager::BestScale(Dg);
+						newShift = ccGlobalShiftManager::BestShift(Pg);
+						newScale = ccGlobalShiftManager::BestScale(Dg);
 						needShift = false;
 						// force this shift for upcoming entities
 						autoApplyPreviousGlobalShiftAndScale = true;
-						previousShift                        = newShift;
-						previousScale                        = newScale;
+						previousShift = newShift;
+						previousScale = newScale;
 					}
 
 					// get the relative modification to existing global shift/scale info
-					double     scaleChange = newScale / globalScale;
+					double scaleChange = newScale / globalScale;
 					CCVector3d shiftChange = newShift - globalShift;
 
 					if (scaleChange != 1.0 || shiftChange.norm2() != 0)
@@ -2478,10 +2478,10 @@ bool CommandApplyTransformation::process(ccCommandLineInterface& cmd)
 		else
 		{
 			// check if the transformed coordinates are too large
-			ccBBox     transformedLocalBox = shiftedEntity->getOwnBB() * transMat;
-			CCVector3d transformedPl       = transformedLocalBox.minCorner();
-			double     transformedDl       = transformedLocalBox.getDiagNormd();
-			bool       needShift           = ccGlobalShiftManager::NeedShift(transformedPl) || ccGlobalShiftManager::NeedRescale(transformedDl);
+			ccBBox transformedLocalBox = shiftedEntity->getOwnBB() * transMat;
+			CCVector3d transformedPl = transformedLocalBox.minCorner();
+			double transformedDl = transformedLocalBox.getDiagNormd();
+			bool needShift = ccGlobalShiftManager::NeedShift(transformedPl) || ccGlobalShiftManager::NeedRescale(transformedDl);
 			if (needShift)
 			{
 				cmd.warning(QObject::tr("Entity '%1' will have very large local coordinates after transformation. Consider using the -%1 option to preserve accuracy.").arg(COMMAND_APPLY_TRANS_TO_GLOBAL));
@@ -2539,8 +2539,8 @@ bool CommandDropGlobalShift::process(ccCommandLineInterface& cmd)
 
 	for (const CLMeshDesc& desc : cmd.meshes())
 	{
-		bool             isLocked = false;
-		ccShiftedObject* shifted  = ccHObjectCaster::ToShifted(desc.mesh, &isLocked);
+		bool isLocked = false;
+		ccShiftedObject* shifted = ccHObjectCaster::ToShifted(desc.mesh, &isLocked);
 		if (shifted && !isLocked)
 		{
 			shifted->setGlobalShift(0, 0, 0);
@@ -2636,7 +2636,7 @@ bool CommandSFConvertToRGB::process(ccCommandLineInterface& cmd)
 	}
 
 	QString mixWithExistingColorsStr = cmd.arguments().takeFirst().toUpper();
-	bool    mixWithExistingColors    = false;
+	bool mixWithExistingColors = false;
 	if (mixWithExistingColorsStr == "TRUE")
 	{
 		mixWithExistingColors = true;
@@ -2653,8 +2653,8 @@ bool CommandSFConvertToRGB::process(ccCommandLineInterface& cmd)
 
 	for (CLCloudDesc& desc : cmd.clouds())
 	{
-		unsigned sfCount       = desc.pc->getNumberOfScalarFields();
-		int      activeSFIndex = desc.pc->getCurrentOutScalarFieldIndex();
+		unsigned sfCount = desc.pc->getNumberOfScalarFields();
+		int activeSFIndex = desc.pc->getCurrentOutScalarFieldIndex();
 
 		if (sfCount == 0)
 		{
@@ -2751,10 +2751,10 @@ enum USE_SPECIAL_SF_VALUE
 };
 
 static std::pair<ScalarType, ScalarType> GetSFRange(const CCCoreLib::ScalarField& sf,
-                                                    ScalarType                    minVal,
-                                                    USE_SPECIAL_SF_VALUE          useValForMin,
-                                                    ScalarType                    maxVal,
-                                                    USE_SPECIAL_SF_VALUE          useValForMax)
+                                                    ScalarType minVal,
+                                                    USE_SPECIAL_SF_VALUE useValForMin,
+                                                    ScalarType maxVal,
+                                                    USE_SPECIAL_SF_VALUE useValForMax)
 {
 	ScalarType thisMinVal = minVal;
 	{
@@ -2873,8 +2873,8 @@ static USE_SPECIAL_SF_VALUE ToSpecialSFValue(QString valString)
 bool CommandFilterBySFValue::process(ccCommandLineInterface& cmd)
 {
 	USE_SPECIAL_SF_VALUE useValForMin = USE_NONE;
-	ScalarType           minVal       = 0;
-	QString              minValStr;
+	ScalarType minVal = 0;
+	QString minValStr;
 	{
 		if (cmd.arguments().empty())
 		{
@@ -2882,7 +2882,7 @@ bool CommandFilterBySFValue::process(ccCommandLineInterface& cmd)
 		}
 
 		bool paramOk = false;
-		minValStr    = cmd.arguments().takeFirst();
+		minValStr = cmd.arguments().takeFirst();
 
 		useValForMin = ToSpecialSFValue(minValStr);
 
@@ -2893,7 +2893,7 @@ bool CommandFilterBySFValue::process(ccCommandLineInterface& cmd)
 				return cmd.error(QObject::tr("Missing parameter: N value (after \"-%1 N_SIGMA_MIN\").").arg(COMMAND_FILTER_SF_BY_VALUE));
 			}
 			minValStr = cmd.arguments().takeFirst();
-			minVal    = static_cast<ScalarType>(minValStr.toDouble(&paramOk));
+			minVal = static_cast<ScalarType>(minValStr.toDouble(&paramOk));
 			if (!paramOk)
 			{
 				return cmd.error(QObject::tr("Failed to read a numerical parameter: N value (after \"N_SIGMA_MIN\"). Got '%2' instead.").arg(minValStr));
@@ -2906,7 +2906,7 @@ bool CommandFilterBySFValue::process(ccCommandLineInterface& cmd)
 				return cmd.error(QObject::tr("Missing parameter: N value (after \"-%1 N_SIGMA_MAX\").").arg(COMMAND_FILTER_SF_BY_VALUE));
 			}
 			minValStr = cmd.arguments().takeFirst();
-			minVal    = static_cast<ScalarType>(minValStr.toDouble(&paramOk));
+			minVal = static_cast<ScalarType>(minValStr.toDouble(&paramOk));
 			if (!paramOk)
 			{
 				return cmd.error(QObject::tr("Failed to read a numerical parameter: N value (after \"N_SIGMA_MAX\"). Got '%2' instead.").arg(minValStr));
@@ -2923,8 +2923,8 @@ bool CommandFilterBySFValue::process(ccCommandLineInterface& cmd)
 	}
 
 	USE_SPECIAL_SF_VALUE useValForMax = USE_NONE;
-	ScalarType           maxVal       = 0;
-	QString              maxValStr;
+	ScalarType maxVal = 0;
+	QString maxValStr;
 	{
 		if (cmd.arguments().empty())
 		{
@@ -2932,7 +2932,7 @@ bool CommandFilterBySFValue::process(ccCommandLineInterface& cmd)
 		}
 
 		bool paramOk = false;
-		maxValStr    = cmd.arguments().takeFirst();
+		maxValStr = cmd.arguments().takeFirst();
 
 		useValForMax = ToSpecialSFValue(maxValStr);
 
@@ -2943,7 +2943,7 @@ bool CommandFilterBySFValue::process(ccCommandLineInterface& cmd)
 				return cmd.error(QObject::tr("Missing parameter: N value (after \"-%1 XXX N_SIGMA_MIN\").").arg(COMMAND_FILTER_SF_BY_VALUE));
 			}
 			maxValStr = cmd.arguments().takeFirst();
-			maxVal    = static_cast<ScalarType>(maxValStr.toDouble(&paramOk));
+			maxVal = static_cast<ScalarType>(maxValStr.toDouble(&paramOk));
 			if (!paramOk)
 			{
 				return cmd.error(QObject::tr("Failed to read a numerical parameter: N value (after \"N_SIGMA_MIN\"). Got '%2' instead.").arg(maxValStr));
@@ -2956,7 +2956,7 @@ bool CommandFilterBySFValue::process(ccCommandLineInterface& cmd)
 				return cmd.error(QObject::tr("Missing parameter: N value (after \"-%1 XXX N_SIGMA_MAX\").").arg(COMMAND_FILTER_SF_BY_VALUE));
 			}
 			maxValStr = cmd.arguments().takeFirst();
-			maxVal    = static_cast<ScalarType>(maxValStr.toDouble(&paramOk));
+			maxVal = static_cast<ScalarType>(maxValStr.toDouble(&paramOk));
 			if (!paramOk)
 			{
 				return cmd.error(QObject::tr("Failed to read a numerical parameter: N value (after \"N_SIGMA_MAX\"). Got '%2' instead.").arg(maxValStr));
@@ -3016,7 +3016,7 @@ bool CommandFilterBySFValue::process(ccCommandLineInterface& cmd)
 	for (CLMeshDesc& desc : cmd.meshes())
 	{
 		ccGenericMesh* mesh = desc.mesh;
-		ccPointCloud*  pc   = ccHObjectCaster::ToPointCloud(mesh);
+		ccPointCloud* pc = ccHObjectCaster::ToPointCloud(mesh);
 		if (!pc)
 		{
 			// strange mesh
@@ -3048,7 +3048,7 @@ bool CommandFilterBySFValue::process(ccCommandLineInterface& cmd)
 				if (filteredMesh != mesh) // it's technically possible to have the same pointer if all triangles were filtered (with 'createNewMeshFromSelection')
 				{
 					delete mesh;
-					mesh      = nullptr;
+					mesh = nullptr;
 					desc.mesh = filteredMesh;
 				}
 				desc.basename += QObject::tr("_FILTERED_[%1_%2]").arg(range.first).arg(range.second);
@@ -3104,7 +3104,7 @@ bool CommandComputeMeshVolume::process(ccCommandLineInterface& cmd)
 		}
 	}
 
-	QFile       outFile;
+	QFile outFile;
 	QTextStream outStream(&outFile);
 	if (!outputFilename.isEmpty())
 	{
@@ -3154,10 +3154,10 @@ bool CommandMergeMeshes::process(ccCommandLineInterface& cmd)
 	}
 
 	CLMeshDesc mergedMeshDesc;
-	bool       firstValidMesh = true;
+	bool firstValidMesh = true;
 
 	// create the destination mesh
-	ccPointCloud*          vertices = new ccPointCloud("vertices");
+	ccPointCloud* vertices = new ccPointCloud("vertices");
 	QScopedPointer<ccMesh> mergedMesh(new ccMesh(vertices));
 	mergedMesh->setName("Merged mesh");
 	mergedMesh->addChild(vertices);
@@ -3178,9 +3178,9 @@ bool CommandMergeMeshes::process(ccCommandLineInterface& cmd)
 			if (firstValidMesh)
 			{
 				// copy the first valid mesh description
-				mergedMeshDesc      = desc;
+				mergedMeshDesc = desc;
 				mergedMeshDesc.mesh = nullptr;
-				firstValidMesh      = false;
+				firstValidMesh = false;
 			}
 		}
 		else
@@ -3255,8 +3255,8 @@ bool CommandMergeClouds::process(ccCommandLineInterface& cmd)
 		{
 			unsigned countBefore = firstCloud->size();
 
-			CLCloudDesc& desc       = cmd.clouds()[i];
-			unsigned     countAdded = desc.pc->size();
+			CLCloudDesc& desc = cmd.clouds()[i];
+			unsigned countAdded = desc.pc->size();
 			firstCloud->append(desc.pc, countBefore, false, false);
 
 			// success?
@@ -3322,9 +3322,9 @@ bool CommandSetGlobalShift::process(ccCommandLineInterface& cmd)
 	}
 
 	// create an entity vector
-	size_t                                                  nrOfClouds   = cmd.clouds().size();
-	size_t                                                  nrOfMeshes   = cmd.meshes().size();
-	size_t                                                  nrOfEntities = nrOfClouds + nrOfMeshes;
+	size_t nrOfClouds = cmd.clouds().size();
+	size_t nrOfMeshes = cmd.meshes().size();
+	size_t nrOfEntities = nrOfClouds + nrOfMeshes;
 	std::vector<std::pair<ccShiftedObject*, CLEntityDesc*>> entities;
 	entities.reserve(nrOfEntities);
 
@@ -3337,8 +3337,8 @@ bool CommandSetGlobalShift::process(ccCommandLineInterface& cmd)
 	// add meshes to the vector
 	for (CLMeshDesc& desc : cmd.meshes())
 	{
-		bool             isLocked = false;
-		ccShiftedObject* shifted  = ccHObjectCaster::ToShifted(desc.mesh, &isLocked);
+		bool isLocked = false;
+		ccShiftedObject* shifted = ccHObjectCaster::ToShifted(desc.mesh, &isLocked);
 		if (shifted && !isLocked)
 		{
 			entities.push_back({shifted, &desc});
@@ -3348,9 +3348,9 @@ bool CommandSetGlobalShift::process(ccCommandLineInterface& cmd)
 	// process both clouds and meshes
 	for (const auto& pair : entities)
 	{
-		CLEntityDesc&    desc          = *pair.second;
+		CLEntityDesc& desc = *pair.second;
 		ccShiftedObject* shiftedObject = pair.first;
-		CCVector3d       originalShift = shiftedObject->getGlobalShift();
+		CCVector3d originalShift = shiftedObject->getGlobalShift();
 		cmd.print(QObject::tr("\t[%4 - %5] Original global shift {%1,%2,%3}")
 		              .arg(originalShift.x)
 		              .arg(originalShift.y)
@@ -3363,7 +3363,7 @@ bool CommandSetGlobalShift::process(ccCommandLineInterface& cmd)
 		{
 			CCVector3d T = newShift - originalShift;
 			ccGLMatrix transMat;
-			double     maxCoordValue = ccGlobalShiftManager::MaxCoordinateAbsValue();
+			double maxCoordValue = ccGlobalShiftManager::MaxCoordinateAbsValue();
 			if (T.x > maxCoordValue || T.y > maxCoordValue || T.z > maxCoordValue)
 			{
 				cmd.warning(QObject::tr("\t[%5 - %6] Applied transformation is bigger {%1,%2,%3} than the threshold {%4}, precision loss may occur.")
@@ -3444,7 +3444,7 @@ bool CommandSetActiveSF::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("Missing parameter: scalar field index after \"-%1\"").arg(COMMAND_SET_ACTIVE_SF));
 	}
 
-	int     sfIndex = -1;
+	int sfIndex = -1;
 	QString sfName;
 	if (!GetSFIndexOrName(cmd, sfIndex, sfName, true))
 	{
@@ -3546,7 +3546,7 @@ bool CommandRemoveSF::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("Missing parameter: SF index after %1").arg(COMMAND_REMOVE_SF));
 	}
 
-	int     sfIndex = -1;
+	int sfIndex = -1;
 	QString sfName;
 	if (!GetSFIndexOrName(cmd, sfIndex, sfName, true))
 	{
@@ -3771,9 +3771,9 @@ bool CommandMatchBBCenters::process(ccCommandLineInterface& cmd)
 	CCVector3 firstCenter = entities.front()->getEntity()->getOwnBB().getCenter();
 	for (size_t i = 1; i < entities.size(); ++i)
 	{
-		ccHObject* ent    = entities[i]->getEntity();
-		CCVector3  center = ent->getOwnBB().getCenter();
-		CCVector3  T      = firstCenter - center;
+		ccHObject* ent = entities[i]->getEntity();
+		CCVector3 center = ent->getOwnBB().getCenter();
+		CCVector3 T = firstCenter - center;
 
 		// transformation (used only for translation)
 		ccGLMatrix glTrans;
@@ -3819,9 +3819,9 @@ bool CommandMatchScales::process(ccCommandLineInterface& cmd)
 	const ccLibAlgorithms::ScaleMatchingAlgorithm algo = *maybeAlgo;
 
 	// optional parameters (defaults match the GUI dialog, see MainWindow::doActionMatchScales)
-	unsigned referenceIndex  = 0;
-	double   icpRmsDiff      = 1.0e-5;
-	int      icpFinalOverlap = 100;
+	unsigned referenceIndex = 0;
+	double icpRmsDiff = 1.0e-5;
+	int icpFinalOverlap = 100;
 
 	while (!parser.isEmpty())
 	{
@@ -3916,8 +3916,8 @@ CommandMatchBestFitPlane::CommandMatchBestFitPlane()
 bool CommandMatchBestFitPlane::process(ccCommandLineInterface& cmd)
 {
 	// look for local options
-	bool    makeCloudsHoriz = false;
-	bool    keepLoaded      = false;
+	bool makeCloudsHoriz = false;
+	bool keepLoaded = false;
 	QString outputInfoFile;
 
 	while (!cmd.arguments().empty())
@@ -3973,7 +3973,7 @@ bool CommandMatchBestFitPlane::process(ccCommandLineInterface& cmd)
 	for (CLCloudDesc& desc : cmd.clouds())
 	{
 		// try to fit plane
-		double   rms    = 0.0;
+		double rms = 0.0;
 		ccPlane* pPlane = ccPlane::Fit(desc.pc, &rms);
 		if (pPlane)
 		{
@@ -3983,9 +3983,9 @@ bool CommandMatchBestFitPlane::process(ccCommandLineInterface& cmd)
 			CCVector3 C = *CCCoreLib::Neighbourhood(desc.pc).getGravityCenter();
 
 			CLMeshDesc planeDesc;
-			planeDesc.mesh     = pPlane;
+			planeDesc.mesh = pPlane;
 			planeDesc.basename = desc.basename;
-			planeDesc.path     = desc.path;
+			planeDesc.path = desc.path;
 
 			// save plane as a BIN file
 			QString outputFilename;
@@ -3997,7 +3997,7 @@ bool CommandMatchBestFitPlane::process(ccCommandLineInterface& cmd)
 
 			// compute the transformation matrix that would make this normal points towards +Z
 			ccGLMatrix makeZPosMatrix = ccGLMatrix::FromToRotation(N, CCVector3(0, 0, CCCoreLib::PC_ONE));
-			CCVector3  Gt             = C;
+			CCVector3 Gt = C;
 			makeZPosMatrix.applyRotation(Gt);
 			makeZPosMatrix.setTranslation(C - Gt);
 
@@ -4034,7 +4034,7 @@ bool CommandMatchBestFitPlane::process(ccCommandLineInterface& cmd)
 
 					// we compute strike & dip by the way
 					{
-						PointCoordinateType dip    = 0;
+						PointCoordinateType dip = 0;
 						PointCoordinateType dipDir = 0;
 						ccNormalVectors::ConvertNormalToDipAndDipDir(N, dip, dipDir);
 						txtStream << ccNormalVectors::ConvertDipAndDipDirToString(dip, dipDir) << Qt::endl;
@@ -4091,7 +4091,7 @@ CommandOrientNormalsMST::CommandOrientNormalsMST()
 bool CommandOrientNormalsMST::process(ccCommandLineInterface& cmd)
 {
 	ccArgumentParser parser(cmd.arguments());
-	const auto       maybeKnn = parser.takeInt(QObject::tr("number of neighbors"), 1);
+	const auto maybeKnn = parser.takeInt(QObject::tr("number of neighbors"), 1);
 	if (!maybeKnn)
 		return false;
 	const int knn = *maybeKnn;
@@ -4196,7 +4196,7 @@ bool CommandSORFilter::process(ccCommandLineInterface& cmd)
 				if (cmd.autoSaveMode())
 				{
 					CLCloudDesc newDesc(cleanCloud, desc.basename, desc.path, desc.indexInFile);
-					QString     errorStr = cmd.exportEntity(newDesc, "SOR");
+					QString errorStr = cmd.exportEntity(newDesc, "SOR");
 					if (!errorStr.isEmpty())
 					{
 						delete cleanCloud;
@@ -4249,8 +4249,8 @@ bool CommandNoiseFilter::process(ccCommandLineInterface& cmd)
 	ccArgumentParser parser(cmd.arguments());
 
 	QString firstOption = parser.takeNext().toUpper();
-	int     knn         = -1;
-	double  radius      = std::numeric_limits<double>::quiet_NaN();
+	int knn = -1;
+	double radius = std::numeric_limits<double>::quiet_NaN();
 
 	if (firstOption == COMMAND_NOISE_FILTER_KNN)
 	{
@@ -4278,7 +4278,7 @@ bool CommandNoiseFilter::process(ccCommandLineInterface& cmd)
 	const auto maybeAbsoluteError = parser.takeEnum<bool>({{COMMAND_NOISE_FILTER_REL, false},
 	                                                       {COMMAND_NOISE_FILTER_ABS, true}},
 	                                                      QObject::tr("error type"));
-	bool       absoluteError;
+	bool absoluteError;
 	if (!maybeAbsoluteError)
 	{
 		return false;
@@ -4336,7 +4336,7 @@ bool CommandNoiseFilter::process(ccCommandLineInterface& cmd)
 				if (cmd.autoSaveMode())
 				{
 					CLCloudDesc newDesc(cleanCloud, desc.basename, desc.path, desc.indexInFile);
-					QString     errorStr = cmd.exportEntity(newDesc, "DENOISED");
+					QString errorStr = cmd.exportEntity(newDesc, "DENOISED");
 					if (!errorStr.isEmpty())
 					{
 						delete cleanCloud;
@@ -4387,7 +4387,7 @@ bool CommandRemoveDuplicatePoints::process(ccCommandLineInterface& cmd)
 
 	if (!parser.isEmpty())
 	{
-		bool   ok  = false;
+		bool ok = false;
 		double arg = parser.peek().toDouble(&ok);
 		if (ok)
 		{
@@ -4453,9 +4453,9 @@ bool CommandExtractVertices::process(ccCommandLineInterface& cmd)
 
 	for (CLMeshDesc& desc : cmd.meshes())
 	{
-		ccGenericMesh*       mesh  = desc.mesh;
+		ccGenericMesh* mesh = desc.mesh;
 		ccGenericPointCloud* cloud = mesh->getAssociatedCloud();
-		ccPointCloud*        pc    = ccHObjectCaster::ToPointCloud(cloud);
+		ccPointCloud* pc = ccHObjectCaster::ToPointCloud(cloud);
 		if (!pc)
 		{
 			assert(false);
@@ -4644,8 +4644,8 @@ bool CommandCrop::process(ccCommandLineInterface& cmd)
 	CCVector3 boxMin;
 	CCVector3 boxMax;
 	{
-		QString     boxBlock = cmd.arguments().takeFirst();
-		QStringList tokens   = boxBlock.split(':');
+		QString boxBlock = cmd.arguments().takeFirst();
+		QStringList tokens = boxBlock.split(':');
 		if (tokens.size() != 6)
 		{
 			return cmd.error(QObject::tr("Invalid parameter: box extents (expected format is 'Xmin:Ymin:Zmin:Xmax:Ymax:Zmax')").arg(COMMAND_CROP));
@@ -4654,8 +4654,8 @@ bool CommandCrop::process(ccCommandLineInterface& cmd)
 		for (int i = 0; i < 6; ++i)
 		{
 			CCVector3* vec = (i < 3 ? &boxMin : &boxMax);
-			bool       ok  = true;
-			vec->u[i % 3]  = static_cast<PointCoordinateType>(tokens[i].toDouble(&ok));
+			bool ok = true;
+			vec->u[i % 3] = static_cast<PointCoordinateType>(tokens[i].toDouble(&ok));
 			if (!ok)
 			{
 				return cmd.error(QObject::tr("Invalid parameter: box extents (component #%1 is not a valid number)").arg(i + 1));
@@ -4786,7 +4786,7 @@ bool CommandSFToCoord::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("No point cloud available. Be sure to open or generate one first!"));
 	}
 
-	int     sfIndex = -1;
+	int sfIndex = -1;
 	QString sfName;
 	if (!GetSFIndexOrName(cmd, sfIndex, sfName))
 	{
@@ -4795,7 +4795,7 @@ bool CommandSFToCoord::process(ccCommandLineInterface& cmd)
 
 	// dimension
 	QString dimStr = cmd.arguments().takeFirst().toUpper();
-	bool    exportDims[3]{dimStr == "X", dimStr == "Y", dimStr == "Z"};
+	bool exportDims[3]{dimStr == "X", dimStr == "Y", dimStr == "Z"};
 	if (!exportDims[0] && !exportDims[1] && !exportDims[2])
 	{
 		return cmd.error(QObject::tr("Invalid parameter: dimension after \"-%1\" (expected: X, Y or Z)").arg(COMMAND_SF_TO_COORD));
@@ -4852,7 +4852,7 @@ bool CommandCoordToSF::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("Missing parameter after \"-%1\" (DIMENSION)").arg(COMMAND_COORD_TO_SF));
 	}
 	QString dimStr = parser.takeNext().toUpper();
-	bool    exportDims[3]{dimStr == "X", dimStr == "Y", dimStr == "Z"};
+	bool exportDims[3]{dimStr == "X", dimStr == "Y", dimStr == "Z"};
 	if (!exportDims[0] && !exportDims[1] && !exportDims[2])
 	{
 		return cmd.error(QObject::tr("Invalid parameter: dimension after \"-%1\" (expected: X, Y or Z)").arg(COMMAND_COORD_TO_SF));
@@ -4898,19 +4898,19 @@ bool CommandSFToNorm::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("No point cloud available. Be sure to open or generate one first!"));
 	}
 
-	int     sfIndexX = -1;
+	int sfIndexX = -1;
 	QString sfNameX;
 	if (!GetSFIndexOrName(cmd, sfIndexX, sfNameX, true))
 	{
 		return false;
 	}
-	int     sfIndexY = -1;
+	int sfIndexY = -1;
 	QString sfNameY;
 	if (!GetSFIndexOrName(cmd, sfIndexY, sfNameY, true))
 	{
 		return false;
 	}
-	int     sfIndexZ = -1;
+	int sfIndexZ = -1;
 	QString sfNameZ;
 	if (!GetSFIndexOrName(cmd, sfIndexZ, sfNameZ, true))
 	{
@@ -4968,7 +4968,7 @@ bool CommandNormToSF::process(ccCommandLineInterface& cmd)
 
 	// dimension
 	QString dimStr = cmd.arguments().takeFirst().toUpper();
-	bool    exportDims[3]{dimStr.contains("X"), dimStr.contains("Y"), dimStr.contains("Z")};
+	bool exportDims[3]{dimStr.contains("X"), dimStr.contains("Y"), dimStr.contains("Z")};
 	if (!exportDims[0] && !exportDims[1] && !exportDims[2])
 	{
 		return cmd.error(QObject::tr("Invalid parameter: dimension after \"-%1\" (expected: X, Y or Z)").arg(COMMAND_NORM_TO_SF));
@@ -5018,17 +5018,17 @@ bool CommandCrop2D::process(ccCommandLineInterface& cmd)
 
 	// decode poyline extents
 	ccPointCloud vertices("polyline.vertices");
-	ccPolyline   poly(&vertices);
+	ccPolyline poly(&vertices);
 
 	// orthogonal dimension
-	unsigned char orthoDim     = 2;
-	bool          orderFlipped = false;
+	unsigned char orthoDim = 2;
+	bool orderFlipped = false;
 	{
 		QString orthoDimStr = parser.takeNext().toUpper();
 		if (orthoDimStr.endsWith("FLIP"))
 		{
 			orderFlipped = true;
-			orthoDimStr  = orthoDimStr.left(orthoDimStr.size() - 4);
+			orthoDimStr = orthoDimStr.left(orthoDimStr.size() - 4);
 		}
 
 		const auto maybeDim = ccArgumentParser::ParseEnum<unsigned>(orthoDimStr, {{"X", 0}, {"Y", 1}, {"Z", 2}}, QObject::tr("orthogonal dimension"));
@@ -5193,15 +5193,15 @@ bool CommandColorBanding::process(ccCommandLineInterface& cmd)
 
 	ccArgumentParser parser(cmd.arguments());
 
-	const QString dimStr   = parser.takeNext();
-	const auto    maybeDim = ccArgumentParser::ParseEnum<unsigned char>(
-        dimStr,
-        {
-            {"X", 0},
-            {"Y", 1},
-            {"Z", 2},
-        },
-        QObject::tr("dimension"));
+	const QString dimStr = parser.takeNext();
+	const auto maybeDim = ccArgumentParser::ParseEnum<unsigned char>(
+	    dimStr,
+	    {
+	        {"X", 0},
+	        {"Y", 1},
+	        {"Z", 2},
+	    },
+	    QObject::tr("dimension"));
 	if (!maybeDim)
 		return false;
 	unsigned char dim = *maybeDim;
@@ -5293,7 +5293,7 @@ bool CommandColorLevels::process(ccCommandLineInterface& cmd)
 	// color bands
 	// the check above guarantees it's not null
 	QString band = parser.takeNext().toUpper();
-	bool    rgb[3]{band.contains('R'), band.contains('G'), band.contains('B')};
+	bool rgb[3]{band.contains('R'), band.contains('G'), band.contains('B')};
 	{
 		QString testBand = band;
 		testBand.remove('R');
@@ -5383,9 +5383,9 @@ CommandDist::CommandDist(bool cloud2meshDist, const QString& name, const QString
 bool CommandDist::process(ccCommandLineInterface& cmd)
 {
 	// compared cloud
-	CLEntityDesc* compEntity    = nullptr;
-	ccHObject*    compCloud     = nullptr;
-	size_t        nextMeshIndex = 0;
+	CLEntityDesc* compEntity = nullptr;
+	ccHObject* compCloud = nullptr;
+	size_t nextMeshIndex = 0;
 	if (cmd.clouds().empty())
 	{
 		// no cloud loaded
@@ -5398,7 +5398,7 @@ bool CommandDist::process(ccCommandLineInterface& cmd)
 		{
 			cmd.warning(QObject::tr("No point cloud available. Will use the first mesh vertices as compared cloud."));
 			compEntity = &(cmd.meshes().front());
-			compCloud  = dynamic_cast<ccPointCloud*>(cmd.meshes()[nextMeshIndex++].mesh->getAssociatedCloud());
+			compCloud = dynamic_cast<ccPointCloud*>(cmd.meshes()[nextMeshIndex++].mesh->getAssociatedCloud());
 			if (!compCloud)
 			{
 				return cmd.error(QObject::tr("Unhandled mesh vertices type"));
@@ -5412,7 +5412,7 @@ bool CommandDist::process(ccCommandLineInterface& cmd)
 			cmd.warning(QObject::tr("[C2M] Multiple point clouds loaded! Will take the first one by default."));
 		}
 		compEntity = &(cmd.clouds().front());
-		compCloud  = cmd.clouds().front().pc;
+		compCloud = cmd.clouds().front().pc;
 	}
 	assert(compEntity && compCloud);
 
@@ -5444,18 +5444,18 @@ bool CommandDist::process(ccCommandLineInterface& cmd)
 	}
 
 	// inner loop for Distance computation options
-	bool     flipNormals       = false;
-	bool     unsignedDistances = false;
-	bool     robust            = true;
-	double   maxDist           = 0.0;
-	unsigned octreeLevel       = 0;
-	int      maxThreadCount    = 0;
+	bool flipNormals = false;
+	bool unsignedDistances = false;
+	bool robust = true;
+	double maxDist = 0.0;
+	unsigned octreeLevel = 0;
+	int maxThreadCount = 0;
 
-	bool   splitXYZ   = false;
-	bool   mergeXY    = false;
-	int    modelIndex = 0;
-	bool   useKNN     = true;
-	double nSize      = 0;
+	bool splitXYZ = false;
+	bool mergeXY = false;
+	int modelIndex = 0;
+	bool useKNN = true;
+	double nSize = 0;
 
 	while (!cmd.arguments().empty())
 	{
@@ -5506,7 +5506,7 @@ bool CommandDist::process(ccCommandLineInterface& cmd)
 				return cmd.error(QObject::tr("Missing parameter: value after \"-%1\"").arg(COMMAND_C2X_MAX_DISTANCE));
 			}
 			bool conversionOk = false;
-			maxDist           = cmd.arguments().takeFirst().toDouble(&conversionOk);
+			maxDist = cmd.arguments().takeFirst().toDouble(&conversionOk);
 			if (!conversionOk)
 			{
 				return cmd.error(QObject::tr("Invalid parameter: value after \"-%1\"").arg(COMMAND_C2X_MAX_DISTANCE));
@@ -5522,7 +5522,7 @@ bool CommandDist::process(ccCommandLineInterface& cmd)
 				return cmd.error(QObject::tr("Missing parameter: value after \"-%1\"").arg(COMMAND_C2X_OCTREE_LEVEL));
 			}
 			bool conversionOk = false;
-			octreeLevel       = cmd.arguments().takeFirst().toUInt(&conversionOk);
+			octreeLevel = cmd.arguments().takeFirst().toUInt(&conversionOk);
 			if (!conversionOk)
 			{
 				return cmd.error(QObject::tr("Invalid parameter: value after \"-%1\"").arg(COMMAND_C2X_OCTREE_LEVEL));
@@ -5546,7 +5546,7 @@ bool CommandDist::process(ccCommandLineInterface& cmd)
 			cmd.arguments().pop_front();
 
 			splitXYZ = true;
-			mergeXY  = true;
+			mergeXY = true;
 
 			if (m_cloud2meshDist)
 			{
@@ -5608,7 +5608,7 @@ bool CommandDist::process(ccCommandLineInterface& cmd)
 			if (!cmd.arguments().empty())
 			{
 				bool conversionOk = false;
-				nSize             = cmd.arguments().takeFirst().toDouble(&conversionOk);
+				nSize = cmd.arguments().takeFirst().toDouble(&conversionOk);
 				if (!conversionOk)
 				{
 					return cmd.error(QObject::tr("Invalid parameter: neighborhood size"));
@@ -5759,16 +5759,16 @@ bool CommandCPS::process(ccCommandLineInterface& cmd)
 	}
 
 	// COMPARED CLOUD / REFERENCE CLOUD
-	CLCloudDesc   compDesc       = cmd.clouds().front();
-	CLCloudDesc   refDesc        = cmd.clouds()[1];
+	CLCloudDesc compDesc = cmd.clouds().front();
+	CLCloudDesc refDesc = cmd.clouds()[1];
 	ccPointCloud* compPointCloud = compDesc.pc;
-	ccPointCloud* refPointCloud  = refDesc.pc;
+	ccPointCloud* refPointCloud = refDesc.pc;
 
 	assert(compPointCloud && refPointCloud);
 
-	ccProgressDialog                                                           pDlg(true, nullptr);
+	ccProgressDialog pDlg(true, nullptr);
 	CCCoreLib::DistanceComputationTools::Cloud2CloudDistancesComputationParams params;
-	CCCoreLib::ReferenceCloud                                                  closestPointSet(refPointCloud);
+	CCCoreLib::ReferenceCloud closestPointSet(refPointCloud);
 	params.CPSet = &closestPointSet;
 
 	// COMPUTE CLOUD 2 CLOUD DISTANCE, THIS INCLUDES THE CLOSEST POINT SET GENERATION
@@ -5818,8 +5818,8 @@ bool CommandStatTest::process(ccCommandLineInterface& cmd)
 			{
 				return cmd.error(QObject::tr("Missing parameter: mean value after \"GAUSS\""));
 			}
-			bool   conversionOk = false;
-			double mu           = cmd.arguments().takeFirst().toDouble(&conversionOk);
+			bool conversionOk = false;
+			double mu = cmd.arguments().takeFirst().toDouble(&conversionOk);
 			if (!conversionOk)
 			{
 				return cmd.error(QObject::tr("Invalid parameter: mean value after \"GAUSS\""));
@@ -5847,8 +5847,8 @@ bool CommandStatTest::process(ccCommandLineInterface& cmd)
 			{
 				return cmd.error(QObject::tr("Missing parameter: a value after \"WEIBULL\""));
 			}
-			bool   conversionOk = false;
-			double a            = cmd.arguments().takeFirst().toDouble(&conversionOk);
+			bool conversionOk = false;
+			double a = cmd.arguments().takeFirst().toDouble(&conversionOk);
 			if (!conversionOk)
 			{
 				return cmd.error(QObject::tr("Invalid parameter: a value after \"WEIBULL\""));
@@ -5859,7 +5859,7 @@ bool CommandStatTest::process(ccCommandLineInterface& cmd)
 				return cmd.error(QObject::tr("Missing parameter: b value after \"WEIBULL\" {a}"));
 			}
 			conversionOk = false;
-			double b     = cmd.arguments().takeFirst().toDouble(&conversionOk);
+			double b = cmd.arguments().takeFirst().toDouble(&conversionOk);
 			if (!conversionOk)
 			{
 				return cmd.error(QObject::tr("Invalid parameter: b value after \"WEIBULL\" {a}"));
@@ -5894,7 +5894,7 @@ bool CommandStatTest::process(ccCommandLineInterface& cmd)
 			return cmd.error(QObject::tr("Missing parameter: p-value after distribution"));
 		}
 		bool conversionOk = false;
-		pValue            = cmd.arguments().takeFirst().toDouble(&conversionOk);
+		pValue = cmd.arguments().takeFirst().toDouble(&conversionOk);
 		if (!conversionOk)
 		{
 			return cmd.error(QObject::tr("Invalid parameter: p-value after distribution"));
@@ -5909,7 +5909,7 @@ bool CommandStatTest::process(ccCommandLineInterface& cmd)
 			return cmd.error(QObject::tr("Missing parameter: neighbors after p-value"));
 		}
 		bool conversionOk = false;
-		kNN               = cmd.arguments().takeFirst().toUInt(&conversionOk);
+		kNN = cmd.arguments().takeFirst().toUInt(&conversionOk);
 		if (!conversionOk)
 		{
 			return cmd.error(QObject::tr("Invalid parameter: neighbors after p-value"));
@@ -6063,13 +6063,13 @@ bool CommandStatFit::process(ccCommandLineInterface& cmd)
 		if (distribStr == "GAUSS")
 		{
 			const CCCoreLib::NormalDistribution* normal = static_cast<const CCCoreLib::NormalDistribution*>(distrib.data());
-			description                                 = QObject::tr("mean = %1 / std.dev. = %2").arg(normal->getMu(), 0, 'f', precision).arg(sqrt(normal->getSigma2()), 0, 'f', precision);
+			description = QObject::tr("mean = %1 / std.dev. = %2").arg(normal->getMu(), 0, 'f', precision).arg(sqrt(normal->getSigma2()), 0, 'f', precision);
 		}
 		else
 		{
 			const CCCoreLib::WeibullDistribution* weibull = static_cast<const CCCoreLib::WeibullDistribution*>(distrib.data());
-			ScalarType                            a       = 0;
-			ScalarType                            b       = 0;
+			ScalarType a = 0;
+			ScalarType b = 0;
 			weibull->getParameters(a, b);
 			description = QString("a = %1 / b = %2 / shift = %3").arg(a, 0, 'f', precision).arg(b, 0, 'f', precision).arg(weibull->getValueShift(), 0, 'f', precision);
 			cmd.print(QObject::tr("[Distribution fitting] Additional Weibull distrib. parameters: mode = %1 / skewness = %2").arg(weibull->computeMode()).arg(weibull->computeSkewness()));
@@ -6092,7 +6092,7 @@ CommandDelaunayTri::CommandDelaunayTri()
 
 bool CommandDelaunayTri::process(ccCommandLineInterface& cmd)
 {
-	bool   axisAligned   = true;
+	bool axisAligned = true;
 	double maxEdgeLength = 0;
 
 	ccArgumentParser parser(cmd.arguments());
@@ -6139,9 +6139,9 @@ bool CommandDelaunayTri::process(ccCommandLineInterface& cmd)
 
 			CLMeshDesc meshDesc;
 			{
-				meshDesc.mesh        = mesh;
-				meshDesc.basename    = desc.basename;
-				meshDesc.path        = desc.path;
+				meshDesc.mesh = mesh;
+				meshDesc.basename = desc.basename;
+				meshDesc.path = desc.path;
 				meshDesc.indexInFile = desc.indexInFile;
 			}
 
@@ -6185,7 +6185,7 @@ bool CommandSFArithmetic::process(ccCommandLineInterface& cmd)
 	}
 
 	// read SF index
-	int     sfIndex = -1;
+	int sfIndex = -1;
 	QString sfName;
 	if (!GetSFIndexOrName(cmd, sfIndex, sfName, true))
 	{
@@ -6196,7 +6196,7 @@ bool CommandSFArithmetic::process(ccCommandLineInterface& cmd)
 	ccScalarFieldArithmeticsDlg::Operation operation = ccScalarFieldArithmeticsDlg::INVALID;
 	{
 		QString opName = cmd.arguments().takeFirst();
-		operation      = ccScalarFieldArithmeticsDlg::GetOperationByName(opName);
+		operation = ccScalarFieldArithmeticsDlg::GetOperationByName(opName);
 		if (operation == ccScalarFieldArithmeticsDlg::INVALID)
 		{
 			return cmd.error(QObject::tr("Unknown operation! (%1)").arg(opName));
@@ -6255,8 +6255,8 @@ bool CommandSFArithmetic::process(ccCommandLineInterface& cmd)
 	{
 		ccGenericMesh* mesh = cmd.meshes()[j].mesh;
 
-		bool          isLocked = false;
-		ccPointCloud* cloud    = ccHObjectCaster::ToPointCloud(mesh, &isLocked);
+		bool isLocked = false;
+		ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(mesh, &isLocked);
 
 		if (cloud && !isLocked)
 		{
@@ -6306,7 +6306,7 @@ bool CommandSFOperation::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("Missing parameter(s): SF index and/or operation and/or scalar value after '%1' (3 values expected)").arg(COMMAND_SF_OP));
 	}
 	// read SF index
-	int     sfIndex = -1;
+	int sfIndex = -1;
 	QString sfName;
 	if (!GetSFIndexOrName(cmd, sfIndex, sfName, true))
 	{
@@ -6317,7 +6317,7 @@ bool CommandSFOperation::process(ccCommandLineInterface& cmd)
 	ccScalarFieldArithmeticsDlg::Operation operation = ccScalarFieldArithmeticsDlg::INVALID;
 	{
 		QString opName = cmd.arguments().takeFirst();
-		operation      = ccScalarFieldArithmeticsDlg::GetOperationByName(opName);
+		operation = ccScalarFieldArithmeticsDlg::GetOperationByName(opName);
 		if (operation == ccScalarFieldArithmeticsDlg::INVALID)
 		{
 			return cmd.error(QObject::tr("Unknown operation! (%1)").arg(opName));
@@ -6329,15 +6329,15 @@ bool CommandSFOperation::process(ccCommandLineInterface& cmd)
 	}
 
 	// read scalar value
-	ScalarType           value        = static_cast<ScalarType>(1.0);
+	ScalarType value = static_cast<ScalarType>(1.0);
 	USE_SPECIAL_SF_VALUE specialValue = USE_SPECIAL_SF_VALUE::USE_NONE;
 	{
 		QString valueStr = cmd.arguments().takeFirst();
-		specialValue     = ToSpecialSFValue(valueStr);
+		specialValue = ToSpecialSFValue(valueStr);
 		if (specialValue == USE_NONE)
 		{
 			bool ok = false;
-			value   = valueStr.toDouble(&ok);
+			value = valueStr.toDouble(&ok);
 			if (!ok)
 			{
 				return cmd.error(QObject::tr("Invalid scalar value! (after %1)").arg(COMMAND_SF_OP));
@@ -6348,7 +6348,7 @@ bool CommandSFOperation::process(ccCommandLineInterface& cmd)
 	ccScalarFieldArithmeticsDlg::SF2 sf2;
 	{
 		sf2.isConstantValue = true;
-		sf2.constantValue   = value;
+		sf2.constantValue = value;
 	}
 
 	// apply operation on clouds
@@ -6382,8 +6382,8 @@ bool CommandSFOperation::process(ccCommandLineInterface& cmd)
 	{
 		ccGenericMesh* mesh = cmd.meshes()[j].mesh;
 
-		bool          isLocked = false;
-		ccPointCloud* cloud    = ccHObjectCaster::ToPointCloud(mesh, &isLocked);
+		bool isLocked = false;
+		ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(mesh, &isLocked);
 
 		if (cloud && !isLocked)
 		{
@@ -6424,7 +6424,7 @@ bool CommandSFOperationSF::process(ccCommandLineInterface& cmd)
 	}
 
 	// read SF index 1
-	int     sfIndex = -1;
+	int sfIndex = -1;
 	QString sfName;
 	if (!GetSFIndexOrName(cmd, sfIndex, sfName))
 	{
@@ -6435,7 +6435,7 @@ bool CommandSFOperationSF::process(ccCommandLineInterface& cmd)
 	ccScalarFieldArithmeticsDlg::Operation operation = ccScalarFieldArithmeticsDlg::INVALID;
 	{
 		QString opName = cmd.arguments().takeFirst();
-		operation      = ccScalarFieldArithmeticsDlg::GetOperationByName(opName);
+		operation = ccScalarFieldArithmeticsDlg::GetOperationByName(opName);
 		if (operation == ccScalarFieldArithmeticsDlg::INVALID)
 		{
 			return cmd.error(QObject::tr("Unknown operation! (%1)").arg(opName));
@@ -6447,7 +6447,7 @@ bool CommandSFOperationSF::process(ccCommandLineInterface& cmd)
 	}
 
 	// read SF index 2
-	int     sfIndex2 = -1;
+	int sfIndex2 = -1;
 	QString sfName2;
 	if (!GetSFIndexOrName(cmd, sfIndex2, sfName2))
 	{
@@ -6459,14 +6459,14 @@ bool CommandSFOperationSF::process(ccCommandLineInterface& cmd)
 	{
 		if (desc.pc)
 		{
-			int thisSFFIndex  = GetScalarFieldIndex(desc.pc, sfIndex, sfName);
+			int thisSFFIndex = GetScalarFieldIndex(desc.pc, sfIndex, sfName);
 			int thisSFFIndex2 = GetScalarFieldIndex(desc.pc, sfIndex2, sfName2);
 			if (thisSFFIndex >= 0 && thisSFFIndex2 >= 0)
 			{
 				ccScalarFieldArithmeticsDlg::SF2 sf2;
 				{
 					sf2.isConstantValue = false;
-					sf2.sfIndex         = thisSFFIndex2;
+					sf2.sfIndex = thisSFFIndex2;
 				}
 
 				if (!ccScalarFieldArithmeticsDlg::Apply(desc.pc, operation, thisSFFIndex, true, &sf2))
@@ -6490,19 +6490,19 @@ bool CommandSFOperationSF::process(ccCommandLineInterface& cmd)
 	{
 		ccGenericMesh* mesh = cmd.meshes()[j].mesh;
 
-		bool          isLocked = false;
-		ccPointCloud* cloud    = ccHObjectCaster::ToPointCloud(mesh, &isLocked);
+		bool isLocked = false;
+		ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(mesh, &isLocked);
 
 		if (cloud && !isLocked)
 		{
-			int thisSFFIndex  = GetScalarFieldIndex(cloud, sfIndex, sfName);
+			int thisSFFIndex = GetScalarFieldIndex(cloud, sfIndex, sfName);
 			int thisSFFIndex2 = GetScalarFieldIndex(cloud, sfIndex2, sfName2);
 			if (thisSFFIndex >= 0 && thisSFFIndex2 >= 0)
 			{
 				ccScalarFieldArithmeticsDlg::SF2 sf2;
 				{
 					sf2.isConstantValue = false;
-					sf2.sfIndex         = thisSFFIndex2;
+					sf2.sfIndex = thisSFFIndex2;
 				}
 
 				if (!ccScalarFieldArithmeticsDlg::Apply(cloud, operation, thisSFFIndex, true, &sf2))
@@ -6538,7 +6538,7 @@ bool CommandSFInterpolation::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("Unexpected number of clouds for '%1' (at least 2 clouds expected: first = source, second = dest)").arg(COMMAND_SF_INTERP));
 
 	// read sf index or name
-	int     sfIndex = -1;
+	int sfIndex = -1;
 	QString sfName;
 	if (!GetSFIndexOrName(cmd, sfIndex, sfName, true))
 	{
@@ -6559,11 +6559,11 @@ bool CommandSFInterpolation::process(ccCommandLineInterface& cmd)
 	}
 
 	ccPointCloud* source = cmd.clouds()[0].pc;
-	ccPointCloud* dest   = cmd.clouds()[1].pc;
+	ccPointCloud* dest = cmd.clouds()[1].pc;
 	if (destIsFirst) // swap source and destination
 	{
 		source = cmd.clouds()[1].pc;
-		dest   = cmd.clouds()[0].pc;
+		dest = cmd.clouds()[0].pc;
 	}
 
 	sfIndex = GetScalarFieldIndex(source, sfIndex, sfName, true);
@@ -6576,10 +6576,10 @@ bool CommandSFInterpolation::process(ccCommandLineInterface& cmd)
 	ccPointCloudInterpolator::Parameters params;
 	{
 		params.method = ccPointCloudInterpolator::Parameters::NEAREST_NEIGHBOR; // nearest neighbor
-		params.algo   = ccPointCloudInterpolator::Parameters::NORMAL_DIST;      // normal distribution
-		params.knn    = 6;
+		params.algo = ccPointCloudInterpolator::Parameters::NORMAL_DIST;        // normal distribution
+		params.knn = 6;
 		params.radius = static_cast<float>(dest->getOwnBB().getDiagNormd() / 100);
-		params.sigma  = params.radius / 2.5; // see ccInterpolationDlg::onRadiusUpdated
+		params.sigma = params.radius / 2.5; // see ccInterpolationDlg::onRadiusUpdated
 	}
 
 	if (!cmd.arguments().empty())
@@ -6652,8 +6652,8 @@ CommandFilter::CommandFilter()
 bool CommandFilter::process(ccCommandLineInterface& cmd)
 {
 	bool applyToRGB = false;
-	bool applyToSF  = false;
-	bool gaussian   = false;
+	bool applyToSF = false;
+	bool gaussian = false;
 	ccPointCloud::RgbFilterOptions(filterParams);
 	filterParams.commandLine = true;
 	while (!cmd.arguments().empty())
@@ -6709,7 +6709,7 @@ bool CommandFilter::process(ccCommandLineInterface& cmd)
 				return cmd.error(QObject::tr("Missing parameter: spatial sigma after '-%1'").arg(OPTION_SIGMA));
 			}
 
-			bool ok                   = false;
+			bool ok = false;
 			filterParams.spatialSigma = cmd.arguments().takeFirst().toDouble(&ok);
 			if (!ok)
 			{
@@ -6724,7 +6724,7 @@ bool CommandFilter::process(ccCommandLineInterface& cmd)
 				return cmd.error(QObject::tr("Missing parameter: spatial sigma after '-%1'").arg(OPTION_SIGMA_SF));
 			}
 
-			bool ok              = false;
+			bool ok = false;
 			filterParams.sigmaSF = cmd.arguments().takeFirst().toDouble(&ok);
 			if (!ok)
 			{
@@ -6739,7 +6739,7 @@ bool CommandFilter::process(ccCommandLineInterface& cmd)
 				return cmd.error(QObject::tr("Missing parameter: burnt color threshold after '-%1'").arg(OPTION_BURNT_COLOR_THRESHOLD));
 			}
 
-			bool ok                     = false;
+			bool ok = false;
 			uint burntOutColorThreshold = cmd.arguments().takeFirst().toUInt(&ok);
 			if (!ok || burntOutColorThreshold > 255)
 			{
@@ -6755,13 +6755,13 @@ bool CommandFilter::process(ccCommandLineInterface& cmd)
 				return cmd.error(QObject::tr("Missing parameter: blend grayscale threshold and grayscale percent after '-%1'").arg(OPTION_BLEND_GRAYSCALE));
 			}
 
-			bool ok             = false;
+			bool ok = false;
 			uint blendGrayscale = cmd.arguments().takeFirst().toUInt(&ok);
 			if (!ok || blendGrayscale > 255)
 			{
 				return cmd.error(QObject::tr("Invalid value for blend grayscale threshold after '%1', must be an integer between 0 and 255!").arg(OPTION_BLEND_GRAYSCALE));
 			}
-			filterParams.blendGrayscale          = true;
+			filterParams.blendGrayscale = true;
 			filterParams.blendGrayscaleThreshold = static_cast<unsigned char>(blendGrayscale);
 
 			uint grayscalePercent = cmd.arguments().takeFirst().toUInt(&ok);
@@ -6801,7 +6801,7 @@ bool CommandFilter::process(ccCommandLineInterface& cmd)
 
 	if (applyToSF && applyToRGB)
 	{
-		applyToSF                       = false;
+		applyToSF = false;
 		filterParams.applyToSFduringRGB = true;
 	}
 	if (applyToSF)
@@ -6830,9 +6830,9 @@ bool CommandRenameEntities::process(ccCommandLineInterface& cmd)
 
 	QString newBaseName = cmd.arguments().takeFirst();
 	// Validate if the given name contains any breaking characters for NTFS filesystem at least
-	QRegularExpression          rx("[^:/\\\\*?\"|<>]*");
+	QRegularExpression rx("[^:/\\\\*?\"|<>]*");
 	QRegularExpressionValidator v(rx, 0);
-	int                         pos = 0;
+	int pos = 0;
 	if (!v.validate(newBaseName, pos))
 	{
 		assert(false);
@@ -6840,7 +6840,7 @@ bool CommandRenameEntities::process(ccCommandLineInterface& cmd)
 	}
 
 	// apply operation on clouds
-	int    index        = 1;
+	int index = 1;
 	size_t nrOfEntities = cmd.clouds().size() + cmd.meshes().size();
 	for (CLCloudDesc& desc : cmd.clouds())
 	{
@@ -6895,7 +6895,7 @@ bool CommandSFRename::process(ccCommandLineInterface& cmd)
 	}
 
 	// read SF index
-	int     sfIndex = -1;
+	int sfIndex = -1;
 	QString sfName;
 	if (!GetSFIndexOrName(cmd, sfIndex, sfName, true))
 	{
@@ -6941,8 +6941,8 @@ bool CommandSFRename::process(ccCommandLineInterface& cmd)
 	// and meshes!
 	for (CLMeshDesc& desc : cmd.meshes())
 	{
-		bool          isLocked = false;
-		ccPointCloud* cloud    = ccHObjectCaster::ToPointCloud(desc.mesh, &isLocked);
+		bool isLocked = false;
+		ccPointCloud* cloud = ccHObjectCaster::ToPointCloud(desc.mesh, &isLocked);
 
 		if (cloud && !isLocked)
 		{
@@ -6995,7 +6995,7 @@ bool CommandSFAddConst::process(ccCommandLineInterface& cmd)
 	QString sfName = cmd.arguments().takeFirst();
 
 	// read constant value
-	bool       ok    = true;
+	bool ok = true;
 	ScalarType value = static_cast<ScalarType>(cmd.arguments().takeFirst().toDouble(&ok));
 	if (!ok)
 	{
@@ -7081,23 +7081,23 @@ CommandICP::CommandICP()
 bool CommandICP::process(ccCommandLineInterface& cmd)
 {
 	// look for local options
-	bool                                              referenceIsFirst           = false;
-	bool                                              adjustScale                = false;
-	bool                                              enableFarthestPointRemoval = false;
-	double                                            minErrorDiff               = 1.0e-6;
-	unsigned                                          iterationCount             = 0;
-	unsigned                                          randomSamplingLimit        = 20000;
-	unsigned                                          overlap                    = 100;
-	int                                               modelWeightsSFIndex        = -1;
-	QString                                           modelWeightsSFIndexName;
-	int                                               dataWeightsSFIndex = -1;
-	QString                                           dataWeightsSFIndexName;
-	int                                               maxThreadCount        = 0;
-	int                                               transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE;
-	bool                                              useC2MDistances       = false;
-	bool                                              robustC2MDistances    = true;
-	CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING normalsMatching       = CCCoreLib::ICPRegistrationTools::NO_NORMAL;
-	QString                                           outputMatrixFile;
+	bool referenceIsFirst = false;
+	bool adjustScale = false;
+	bool enableFarthestPointRemoval = false;
+	double minErrorDiff = 1.0e-6;
+	unsigned iterationCount = 0;
+	unsigned randomSamplingLimit = 20000;
+	unsigned overlap = 100;
+	int modelWeightsSFIndex = -1;
+	QString modelWeightsSFIndexName;
+	int dataWeightsSFIndex = -1;
+	QString dataWeightsSFIndexName;
+	int maxThreadCount = 0;
+	int transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE;
+	bool useC2MDistances = false;
+	bool robustC2MDistances = true;
+	CCCoreLib::ICPRegistrationTools::NORMALS_MATCHING normalsMatching = CCCoreLib::ICPRegistrationTools::NO_NORMAL;
+	QString outputMatrixFile;
 
 	ccArgumentParser parser(cmd.arguments());
 
@@ -7353,24 +7353,24 @@ bool CommandICP::process(ccCommandLineInterface& cmd)
 	}
 
 	ccGLMatrix transMat;
-	double     finalError      = 0.0;
-	double     finalScale      = 1.0;
-	unsigned   finalPointCount = 0;
+	double finalError = 0.0;
+	double finalScale = 1.0;
+	unsigned finalPointCount = 0;
 
 	CCCoreLib::ICPRegistrationTools::Parameters parameters;
 	{
-		parameters.convType                 = (iterationCount != 0 ? CCCoreLib::ICPRegistrationTools::MAX_ITER_CONVERGENCE : CCCoreLib::ICPRegistrationTools::MAX_ERROR_CONVERGENCE);
-		parameters.minRMSDecrease           = minErrorDiff;
-		parameters.nbMaxIterations          = iterationCount;
-		parameters.adjustScale              = adjustScale;
-		parameters.filterOutFarthestPoints  = enableFarthestPointRemoval;
-		parameters.samplingLimit            = randomSamplingLimit;
-		parameters.finalOverlapRatio        = overlap / 100.0;
-		parameters.transformationFilters    = transformationFilters;
-		parameters.maxThreadCount           = maxThreadCount;
-		parameters.useC2MSignedDistances    = useC2MDistances;
+		parameters.convType = (iterationCount != 0 ? CCCoreLib::ICPRegistrationTools::MAX_ITER_CONVERGENCE : CCCoreLib::ICPRegistrationTools::MAX_ERROR_CONVERGENCE);
+		parameters.minRMSDecrease = minErrorDiff;
+		parameters.nbMaxIterations = iterationCount;
+		parameters.adjustScale = adjustScale;
+		parameters.filterOutFarthestPoints = enableFarthestPointRemoval;
+		parameters.samplingLimit = randomSamplingLimit;
+		parameters.finalOverlapRatio = overlap / 100.0;
+		parameters.transformationFilters = transformationFilters;
+		parameters.maxThreadCount = maxThreadCount;
+		parameters.useC2MSignedDistances = useC2MDistances;
 		parameters.robustC2MSignedDistances = robustC2MDistances;
-		parameters.normalsMatching          = normalsMatching;
+		parameters.normalsMatching = normalsMatching;
 	}
 
 	if (ccRegistrationTools::ICP(dataAndModel[0]->getEntity(),
@@ -7546,7 +7546,7 @@ void CommandSave::SetFileDesc(CLEntityDesc& desc, const QString& fileName)
 {
 	QFileInfo fInfo(fileName);
 	desc.basename = fInfo.fileName();
-	desc.path     = fInfo.filePath().left(fInfo.filePath().length() - fInfo.fileName().length());
+	desc.path = fInfo.filePath().left(fInfo.filePath().length() - fInfo.fileName().length());
 }
 
 CommandSaveClouds::CommandSaveClouds()
@@ -7556,8 +7556,8 @@ CommandSaveClouds::CommandSaveClouds()
 
 bool CommandSaveClouds::process(ccCommandLineInterface& cmd)
 {
-	bool        allAtOnce    = false;
-	bool        setFileNames = false;
+	bool allAtOnce = false;
+	bool setFileNames = false;
 	QStringList fileNames;
 
 	// look for additional parameters
@@ -7594,8 +7594,8 @@ bool CommandSaveClouds::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("Invalid parameter: specified %1 file names, but there are %2 clouds").arg(fileNames.size()).arg(cmd.clouds().size()));
 	}
 
-	QString ext              = cmd.cloudExportExt();
-	bool    autoAddTimestamp = cmd.addTimestamp();
+	QString ext = cmd.cloudExportExt();
+	bool autoAddTimestamp = cmd.addTimestamp();
 	if (setFileNames)
 	{
 		cmd.toggleAddTimestamp(false);
@@ -7628,8 +7628,8 @@ CommandSaveMeshes::CommandSaveMeshes()
 
 bool CommandSaveMeshes::process(ccCommandLineInterface& cmd)
 {
-	bool        allAtOnce    = false;
-	bool        setFileNames = false;
+	bool allAtOnce = false;
+	bool setFileNames = false;
 	QStringList fileNames;
 
 	// look for additional parameters
@@ -7666,8 +7666,8 @@ bool CommandSaveMeshes::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("Invalid parameter: specified %1 file names, but there are %2 meshes").arg(fileNames.size()).arg(cmd.meshes().size()));
 	}
 
-	QString ext              = cmd.meshExportExt();
-	bool    autoAddTimestamp = cmd.addTimestamp();
+	QString ext = cmd.meshExportExt();
+	bool autoAddTimestamp = cmd.addTimestamp();
 	if (setFileNames)
 	{
 		cmd.toggleAddTimestamp(false);
@@ -7756,8 +7756,8 @@ bool CommandSelectEntities::process(ccCommandLineInterface& cmd)
 	// option handling
 	// look for additional parameters
 	ccCommandLineInterface::SelectEntitiesOptions options;
-	bool                                          selectMeshes = false;
-	bool                                          selectClouds = false;
+	bool selectMeshes = false;
+	bool selectClouds = false;
 	while (!cmd.arguments().empty())
 	{
 		QString argument = cmd.arguments().front().toUpper();
@@ -7848,7 +7848,7 @@ bool CommandSelectEntities::process(ccCommandLineInterface& cmd)
 	{
 		// overwrite any other mode (first/last/regex)
 		options.selectFirst = false;
-		options.selectLast  = false;
+		options.selectLast = false;
 		options.selectRegex = false;
 		if (options.reverse)
 		{
@@ -8074,7 +8074,7 @@ bool CommandFeature::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("Missing parameter: feature type after \"-%1\"").arg(COMMAND_FEATURE));
 	}
 
-	QString                               featureTypeStr = cmd.arguments().takeFirst().toUpper();
+	QString featureTypeStr = cmd.arguments().takeFirst().toUpper();
 	CCCoreLib::Neighbourhood::GeomFeature featureType;
 
 	if (featureTypeStr == "SUM_OF_EIGENVALUES")
@@ -8168,8 +8168,8 @@ bool CommandFeature::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("Missing parameter: kernel size after feature type"));
 	}
 
-	bool                paramOk    = false;
-	QString             kernelStr  = cmd.arguments().takeFirst();
+	bool paramOk = false;
+	QString kernelStr = cmd.arguments().takeFirst();
 	PointCoordinateType kernelSize = static_cast<PointCoordinateType>(kernelStr.toDouble(&paramOk));
 	if (!paramOk)
 	{
@@ -8267,8 +8267,8 @@ bool CommandSetVerbosity::process(ccCommandLineInterface& cmd)
 		return cmd.error(QObject::tr("Missing parameter: verbosity level after: %1").arg(COMMAND_VERBOSITY));
 	}
 
-	bool ok             = false;
-	int  verbosityLevel = cmd.arguments().takeFirst().toInt(&ok);
+	bool ok = false;
+	int verbosityLevel = cmd.arguments().takeFirst().toInt(&ok);
 	if (!ok)
 	{
 		return cmd.error(QObject::tr("Invalid verbosity level %1").arg(verbosityLevel));
@@ -8327,7 +8327,7 @@ bool CommandComputeDistancesFromSensor::process(ccCommandLineInterface& cmd)
 
 		// set up a new scalar field
 		const char* defaultRangesSFname = squared ? CC_DEFAULT_SQUARED_RANGES_SF_NAME : CC_DEFAULT_RANGES_SF_NAME;
-		int         sfIdx               = cl.pc->getScalarFieldIndexByName(defaultRangesSFname);
+		int sfIdx = cl.pc->getScalarFieldIndexByName(defaultRangesSFname);
 		if (sfIdx < 0)
 		{
 			sfIdx = cl.pc->addScalarField(defaultRangesSFname);
@@ -8343,7 +8343,7 @@ bool CommandComputeDistancesFromSensor::process(ccCommandLineInterface& cmd)
 		for (unsigned i = 0; i < cl.pc->size(); ++i)
 		{
 			const CCVector3* P = cl.pc->getPoint(i);
-			ScalarType       s = static_cast<ScalarType>(squared ? (*P - sensorCenter).norm2() : (*P - sensorCenter).norm());
+			ScalarType s = static_cast<ScalarType>(squared ? (*P - sensorCenter).norm2() : (*P - sensorCenter).norm());
 			distances->setValue(i, s);
 		}
 
@@ -8383,7 +8383,7 @@ bool CommandComputeScatteringAngles::process(ccCommandLineInterface& cmd)
 
 	for (const auto& cl : cmd.clouds())
 	{
-		unsigned  childrenNumber = cl.pc->getChildrenNumber();
+		unsigned childrenNumber = cl.pc->getChildrenNumber();
 		ccSensor* sensor{nullptr};
 		for (unsigned childPos = 0; childPos < childrenNumber; childPos++)
 		{
@@ -8413,7 +8413,7 @@ bool CommandComputeScatteringAngles::process(ccCommandLineInterface& cmd)
 
 		// set up a new scalar field
 		const char* defaultScatAnglesSFname = toDegreeFlag ? CC_DEFAULT_DEG_SCATTERING_ANGLES_SF_NAME : CC_DEFAULT_RAD_SCATTERING_ANGLES_SF_NAME;
-		int         sfIdx                   = cl.pc->getScalarFieldIndexByName(defaultScatAnglesSFname);
+		int sfIdx = cl.pc->getScalarFieldIndexByName(defaultScatAnglesSFname);
 		if (sfIdx < 0)
 		{
 			sfIdx = cl.pc->addScalarField(defaultScatAnglesSFname);
@@ -8441,7 +8441,7 @@ bool CommandComputeScatteringAngles::process(ccCommandLineInterface& cmd)
 
 			// compute the angle
 			PointCoordinateType cosTheta = ray.dot(normal);
-			ScalarType          theta    = std::acos(std::min(std::abs(cosTheta), 1.0f));
+			ScalarType theta = std::acos(std::min(std::abs(cosTheta), 1.0f));
 
 			if (toDegreeFlag)
 			{

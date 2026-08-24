@@ -89,8 +89,8 @@
 
 // Sentry crash reporting
 #ifdef CC_USE_SENTRY
-#include <sentry.h>
 #include <QDir>
+#include <sentry.h>
 #endif
 
 #ifdef USE_VLD
@@ -175,16 +175,15 @@ int main(int argc, char** argv)
 		sentry_options_t* options = sentry_options_new();
 		sentry_options_set_dsn(options, CC_SENTRY_DSN);
 		// Store crash DB next to the executable so it travels with the install
-		sentry_options_set_database_path(options, QDir::toNativeSeparators(
-			QCoreApplication::applicationDirPath() + "/.sentry-native").toUtf8().constData());
+		sentry_options_set_database_path(options, QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + "/.sentry-native").toUtf8().constData());
 		sentry_options_set_release(options, CC_SENTRY_RELEASE);
 #ifdef _DEBUG
 		sentry_options_set_debug(options, 1);
 #endif
 		sentry_init(options);
 		// Ensure Sentry flushes any queued events on normal shutdown
-		QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
-		                [] { sentry_close(); });
+		QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, []
+		                 { sentry_close(); });
 	}
 #endif // CC_USE_SENTRY
 
@@ -237,8 +236,8 @@ int main(int argc, char** argv)
 			// remove verified arguments so that -SILENT will be the first one (if present)...
 			QString verbosityLevelStr = argumentsLocal8Bit.takeAt(lastArgumentIndex);
 
-			bool ok             = false;
-			int  verbosityLevel = verbosityLevelStr.toInt(&ok);
+			bool ok = false;
+			int verbosityLevel = verbosityLevelStr.toInt(&ok);
 			if (!ok || verbosityLevel < 0)
 			{
 				ccLog::Warning(QObject::tr("Invalid verbosity level: %1").arg(verbosityLevelStr));
@@ -339,7 +338,7 @@ int main(int argc, char** argv)
 		QSettings settings;
 		settings.beginGroup(ccPS::GlobalShift());
 		double maxAbsCoord = settings.value(ccPS::MaxAbsCoord(), ccGlobalShiftManager::MaxCoordinateAbsValue()).toDouble();
-		double maxAbsDiag  = settings.value(ccPS::MaxAbsDiag(), ccGlobalShiftManager::MaxBoundgBoxDiagonal()).toDouble();
+		double maxAbsDiag = settings.value(ccPS::MaxAbsDiag(), ccGlobalShiftManager::MaxBoundgBoxDiagonal()).toDouble();
 		settings.endGroup();
 
 		ccLog::Print(QString("[Global Shift] Max abs. coord = %1 / max abs. diag = %2").arg(maxAbsCoord, 0, 'e', 0).arg(maxAbsDiag, 0, 'e', 0));
@@ -421,7 +420,7 @@ int main(int argc, char** argv)
 				// special command: auto start a plugin
 				if (arg.startsWith(":start-plugin:"))
 				{
-					QString pluginName      = arg.mid(14);
+					QString pluginName = arg.mid(14);
 					QString pluginNameUpper = pluginName.toUpper();
 					// look for this plugin
 					bool found = false;
@@ -429,7 +428,7 @@ int main(int argc, char** argv)
 					{
 						if (plugin->getName().replace(' ', '_').toUpper() == pluginNameUpper)
 						{
-							found        = true;
+							found = true;
 							bool success = plugin->start();
 							if (!success)
 							{

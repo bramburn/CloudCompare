@@ -66,7 +66,7 @@ struct CCPLUGIN_LIB_API CLEntityDesc
 {
 	QString basename;
 	QString path;
-	int     indexInFile;
+	int indexInFile;
 
 	CLEntityDesc(const QString& name);
 	CLEntityDesc(const QString& filename, int _indexInFile);
@@ -74,9 +74,9 @@ struct CCPLUGIN_LIB_API CLEntityDesc
 
 	virtual ~CLEntityDesc() = default;
 
-	virtual ccHObject*       getEntity()             = 0;
-	virtual const ccHObject* getEntity() const       = 0;
-	virtual CL_ENTITY_TYPE   getCLEntityType() const = 0;
+	virtual ccHObject* getEntity() = 0;
+	virtual const ccHObject* getEntity() const = 0;
+	virtual CL_ENTITY_TYPE getCLEntityType() const = 0;
 };
 
 /**
@@ -86,15 +86,15 @@ struct CCPLUGIN_LIB_API CLGroupDesc : CLEntityDesc
 {
 	ccHObject* groupEntity;
 
-	CLGroupDesc(ccHObject*     group,
+	CLGroupDesc(ccHObject* group,
 	            const QString& basename,
 	            const QString& path = QString());
 
 	~CLGroupDesc() override = default;
 
-	ccHObject*       getEntity() override;
+	ccHObject* getEntity() override;
 	const ccHObject* getEntity() const override;
-	CL_ENTITY_TYPE   getCLEntityType() const override;
+	CL_ENTITY_TYPE getCLEntityType() const override;
 };
 
 /**
@@ -106,20 +106,20 @@ struct CCPLUGIN_LIB_API CLCloudDesc : CLEntityDesc
 
 	CLCloudDesc();
 
-	CLCloudDesc(ccPointCloud*  cloud,
+	CLCloudDesc(ccPointCloud* cloud,
 	            const QString& filename = QString(),
-	            int            index    = -1);
+	            int index = -1);
 
-	CLCloudDesc(ccPointCloud*  cloud,
+	CLCloudDesc(ccPointCloud* cloud,
 	            const QString& basename,
 	            const QString& path,
-	            int            index = -1);
+	            int index = -1);
 
 	~CLCloudDesc() override = default;
 
-	ccHObject*       getEntity() override;
+	ccHObject* getEntity() override;
 	const ccHObject* getEntity() const override;
-	CL_ENTITY_TYPE   getCLEntityType() const override;
+	CL_ENTITY_TYPE getCLEntityType() const override;
 };
 
 /**
@@ -133,18 +133,18 @@ struct CCPLUGIN_LIB_API CLMeshDesc : CLEntityDesc
 
 	CLMeshDesc(ccGenericMesh* _mesh,
 	           const QString& filename = QString(),
-	           int            index    = -1);
+	           int index = -1);
 
 	CLMeshDesc(ccGenericMesh* _mesh,
 	           const QString& basename,
 	           const QString& path,
-	           int            index = -1);
+	           int index = -1);
 
 	~CLMeshDesc() override = default;
 
-	ccHObject*       getEntity() override;
+	ccHObject* getEntity() override;
 	const ccHObject* getEntity() const override;
-	CL_ENTITY_TYPE   getCLEntityType() const override;
+	CL_ENTITY_TYPE getCLEntityType() const override;
 };
 
 //! Command line interface
@@ -160,23 +160,23 @@ class CCPLUGIN_LIB_API ccCommandLineInterface
 	//! Select Entities options
 	struct SelectEntitiesOptions
 	{
-		bool               reverse     = false;
-		bool               selectRegex = false;
-		bool               selectFirst = false;
-		bool               selectLast  = false;
-		bool               selectAll   = false;
-		unsigned           firstNr     = 0;
-		unsigned           lastNr      = 0;
+		bool reverse = false;
+		bool selectRegex = false;
+		bool selectFirst = false;
+		bool selectLast = false;
+		bool selectAll = false;
+		unsigned firstNr = 0;
+		unsigned lastNr = 0;
 		QRegularExpression regex;
 	};
 
 	//! Export options
 	enum class ExportOption
 	{
-		NoOptions        = 0x0,
-		ForceCloud       = 0x1,
-		ForceMesh        = 0x2,
-		ForceHierarchy   = 0x4,
+		NoOptions = 0x0,
+		ForceCloud = 0x1,
+		ForceMesh = 0x2,
+		ForceHierarchy = 0x4,
 		ForceNoTimestamp = 0x8
 	};
 	Q_DECLARE_FLAGS(ExportOptions, ExportOption)
@@ -213,18 +213,18 @@ class CCPLUGIN_LIB_API ccCommandLineInterface
 
 	//! Returns the name of a to-be-exported entity
 	virtual QString getExportFilename(const CLEntityDesc& entityDesc,
-	                                  QString             extension          = QString(),
-	                                  QString             suffix             = QString(),
-	                                  QString*            baseOutputFilename = nullptr,
-	                                  bool                forceNoTimestamp   = false) const = 0;
+	                                  QString extension = QString(),
+	                                  QString suffix = QString(),
+	                                  QString* baseOutputFilename = nullptr,
+	                                  bool forceNoTimestamp = false) const = 0;
 
 	//! Exports a cloud or a mesh
 	/** \return error string (if any)
 	 **/
-	virtual QString exportEntity(CLEntityDesc&                         entityDesc,
-	                             const QString&                        suffix         = QString(),
-	                             QString*                              outputFilename = nullptr,
-	                             ccCommandLineInterface::ExportOptions options        = ExportOption::NoOptions) = 0;
+	virtual QString exportEntity(CLEntityDesc& entityDesc,
+	                             const QString& suffix = QString(),
+	                             QString* outputFilename = nullptr,
+	                             ccCommandLineInterface::ExportOptions options = ExportOption::NoOptions) = 0;
 
 	//! Saves all clouds
 	/** \param suffix optional suffix
@@ -268,7 +268,7 @@ class CCPLUGIN_LIB_API ccCommandLineInterface
 	{
 		CLLoadParameters();
 
-		bool       coordinatesShiftEnabled;
+		bool coordinatesShiftEnabled;
 		CCVector3d coordinatesShift;
 	};
 
@@ -286,7 +286,7 @@ class CCPLUGIN_LIB_API ccCommandLineInterface
 			CUSTOM_GLOBAL_SHIFT
 		};
 
-		Mode       mode = NO_GLOBAL_SHIFT;
+		Mode mode = NO_GLOBAL_SHIFT;
 		CCVector3d customGlobalShift;
 	};
 
@@ -328,13 +328,13 @@ class CCPLUGIN_LIB_API ccCommandLineInterface
   public: // logging
 	// logging
 	virtual void printVerbose(const QString& message) const = 0;
-	virtual void print(const QString& message) const        = 0;
-	virtual void printHigh(const QString& message) const    = 0;
-	virtual void printDebug(const QString& message) const   = 0;
-	virtual void warning(const QString& message) const      = 0;
+	virtual void print(const QString& message) const = 0;
+	virtual void printHigh(const QString& message) const = 0;
+	virtual void printDebug(const QString& message) const = 0;
+	virtual void warning(const QString& message) const = 0;
 	virtual void warningDebug(const QString& message) const = 0;
-	virtual bool error(const QString& message) const        = 0; // must always return false!
-	virtual bool errorDebug(const QString& message) const   = 0; // must always return false!
+	virtual bool error(const QString& message) const = 0;      // must always return false!
+	virtual bool errorDebug(const QString& message) const = 0; // must always return false!
 
   public: // access to data
 	//! Currently opened point clouds and their filename

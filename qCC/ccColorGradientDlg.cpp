@@ -34,11 +34,11 @@
 #include <assert.h>
 
 // persistent parameters
-static QColor                           s_firstColor(Qt::black);
-static QColor                           s_secondColor(Qt::white);
+static QColor s_firstColor(Qt::black);
+static QColor s_secondColor(Qt::white);
 static ccColorGradientDlg::GradientType s_lastType(ccColorGradientDlg::Default);
-static double                           s_lastFreq     = 5.0;
-static int                              s_lastDimIndex = 2;
+static double s_lastFreq = 5.0;
+static int s_lastDimIndex = 2;
 
 /**
  * @brief Constructor
@@ -120,7 +120,7 @@ ccColorGradientDlg::GradientType ccColorGradientDlg::getType() const
 void ccColorGradientDlg::getColors(QColor& first, QColor& second) const
 {
 	assert(customRampRadioButton->isChecked());
-	first  = s_firstColor;
+	first = s_firstColor;
 	second = s_secondColor;
 }
 

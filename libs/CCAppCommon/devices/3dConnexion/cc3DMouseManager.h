@@ -161,7 +161,7 @@ class CCAPPCOMMON_LIB_API cc3DMouseManager : public QObject
 	Mouse3DInput* m3dMouseInput;
 
 	//! Settings menu shown in the UI
-	QMenu*   m_menu;
+	QMenu* m_menu;
 	//! Enable/disable toggle action
 	QAction* m_actionEnable;
 };

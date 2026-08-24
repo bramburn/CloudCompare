@@ -399,10 +399,10 @@ QStringList FileIOFilter::ImportFilterList()
  * @param[out] result Error code
  * @return Loaded entity container, or nullptr on failure
  */
-ccHObject* FileIOFilter::LoadFromFile(const QString&  filename,
+ccHObject* FileIOFilter::LoadFromFile(const QString& filename,
                                       LoadParameters& loadParameters,
-                                      Shared          filter,
-                                      CC_FILE_ERROR&  result)
+                                      Shared filter,
+                                      CC_FILE_ERROR& result)
 {
 	if (!filter)
 	{
@@ -423,10 +423,10 @@ ccHObject* FileIOFilter::LoadFromFile(const QString&  filename,
 
 	// load file
 	ccHObject* container = new ccHObject();
-	result               = CC_FERR_NO_ERROR;
+	result = CC_FERR_NO_ERROR;
 
 	// we start a new 'action' inside the current sessions
-	unsigned sessionCounter     = IncreaseSesionCounter();
+	unsigned sessionCounter = IncreaseSesionCounter();
 	loadParameters.sessionStart = (sessionCounter == 1);
 
 	try
@@ -471,8 +471,8 @@ ccHObject* FileIOFilter::LoadFromFile(const QString&  filename,
 		container->setName(QString("%1 (%2)").arg(fi.fileName(), fi.absolutePath()));
 		for (unsigned i = 0; i < childCount; ++i)
 		{
-			ccHObject* child   = container->getChild(i);
-			QString    newName = child->getName();
+			ccHObject* child = container->getChild(i);
+			QString newName = child->getName();
 			if (newName.startsWith("unnamed"))
 			{
 				// we automatically replace occurrences of 'unnamed' in entities names by the base filename (no path, no extension)
@@ -495,10 +495,10 @@ ccHObject* FileIOFilter::LoadFromFile(const QString&  filename,
 	return container;
 }
 
-ccHObject* FileIOFilter::LoadFromFile(const QString&  inputFilename,
+ccHObject* FileIOFilter::LoadFromFile(const QString& inputFilename,
                                       LoadParameters& loadParameters,
-                                      CC_FILE_ERROR&  result,
-                                      const QString&  fileFilter)
+                                      CC_FILE_ERROR& result,
+                                      const QString& fileFilter)
 {
 	Shared filter;
 
@@ -555,10 +555,10 @@ ccHObject* FileIOFilter::LoadFromFile(const QString&  inputFilename,
  * @param[in] filter Explicit filter to use
  * @return CC_FILE_ERROR error code
  */
-CC_FILE_ERROR FileIOFilter::SaveToFile(ccHObject*            entities,
-                                       const QString&        inputFilename,
+CC_FILE_ERROR FileIOFilter::SaveToFile(ccHObject* entities,
+                                       const QString& inputFilename,
                                        const SaveParameters& parameters,
-                                       Shared                filter)
+                                       Shared filter)
 {
 	if (!entities || inputFilename.isEmpty() || !filter)
 	{
@@ -598,10 +598,10 @@ CC_FILE_ERROR FileIOFilter::SaveToFile(ccHObject*            entities,
 	return result;
 }
 
-CC_FILE_ERROR FileIOFilter::SaveToFile(ccHObject*            entities,
-                                       const QString&        filename,
+CC_FILE_ERROR FileIOFilter::SaveToFile(ccHObject* entities,
+                                       const QString& filename,
                                        const SaveParameters& parameters,
-                                       const QString&        fileFilter)
+                                       const QString& fileFilter)
 {
 	if (fileFilter.isEmpty())
 	{
@@ -664,7 +664,7 @@ void FileIOFilter::DisplayErrorMessage(CC_FILE_ERROR err, const QString& action,
 		break;
 	case CC_FERR_CANCELED_BY_USER:
 		errorStr = QObject::tr("process canceled by user");
-		warning  = true;
+		warning = true;
 		break;
 	case CC_FERR_NOT_ENOUGH_MEMORY:
 		errorStr = QObject::tr("not enough memory");
@@ -734,17 +734,17 @@ bool FileIOFilter::CheckForSpecialChars(const QString& filename)
  * @return true if a shift should/must be applied
  */
 bool FileIOFilter::HandleGlobalShift(const CCVector3d& P,
-                                     CCVector3d&       Pshift,
-                                     bool&             preserveCoordinateShift,
-                                     LoadParameters&   loadParameters,
-                                     bool              useInputCoordinatesShiftIfPossible /*=false*/)
+                                     CCVector3d& Pshift,
+                                     bool& preserveCoordinateShift,
+                                     LoadParameters& loadParameters,
+                                     bool useInputCoordinatesShiftIfPossible /*=false*/)
 {
 	bool shiftAlreadyEnabled = ((nullptr != loadParameters._coordinatesShiftEnabled)
 	                            && (*loadParameters._coordinatesShiftEnabled)
 	                            && (nullptr != loadParameters._coordinatesShift));
 	if (shiftAlreadyEnabled)
 	{
-		Pshift                  = *loadParameters._coordinatesShift;
+		Pshift = *loadParameters._coordinatesShift;
 		preserveCoordinateShift = loadParameters.preserveShiftOnSave;
 
 		if (nullptr != loadParameters._coordinatesShiftForced && *loadParameters._coordinatesShiftForced)

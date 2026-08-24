@@ -87,35 +87,95 @@ class CCGLWINDOW_LIB_API ccGLWindow : public QOpenGLWidget
 
 	// ccGLWindowInterface — Qt/OpenGL shortcuts
 
-	inline qreal getDevicePixelRatio() const override { return devicePixelRatio(); }
-	inline QFont getFont() const override { return font(); }
-	inline QOpenGLContext* getOpenGLContext() const override { return context(); }
-	inline void setWindowCursor(const QCursor& cursor) override { setCursor(cursor); }
+	inline qreal getDevicePixelRatio() const override
+	{
+		return devicePixelRatio();
+	}
+	inline QFont getFont() const override
+	{
+		return font();
+	}
+	inline QOpenGLContext* getOpenGLContext() const override
+	{
+		return context();
+	}
+	inline void setWindowCursor(const QCursor& cursor) override
+	{
+		setCursor(cursor);
+	}
 	void doMakeCurrent() override;
-	inline QObject* asQObject() override { return this; }
-	inline const QObject* asQObject() const override { return this; }
-	inline QString getWindowTitle() const override { return windowTitle(); }
-	inline void doGrabMouse() override { grabMouse(); }
-	inline void doReleaseMouse() override { releaseMouse(); }
-	inline QPoint doMapFromGlobal(const QPoint& P) const override { return mapFromGlobal(P); }
-	inline void doShowMaximized() override { showMaximized(); }
-	inline void doResize(int w, int h) override { resize(w, h); }
-	inline void doResize(const QSize& size) override { resize(size); }
-	inline QImage doGrabFramebuffer() override { return grabFramebuffer(); }
+	inline QObject* asQObject() override
+	{
+		return this;
+	}
+	inline const QObject* asQObject() const override
+	{
+		return this;
+	}
+	inline QString getWindowTitle() const override
+	{
+		return windowTitle();
+	}
+	inline void doGrabMouse() override
+	{
+		grabMouse();
+	}
+	inline void doReleaseMouse() override
+	{
+		releaseMouse();
+	}
+	inline QPoint doMapFromGlobal(const QPoint& P) const override
+	{
+		return mapFromGlobal(P);
+	}
+	inline void doShowMaximized() override
+	{
+		showMaximized();
+	}
+	inline void doResize(int w, int h) override
+	{
+		resize(w, h);
+	}
+	inline void doResize(const QSize& size) override
+	{
+		resize(size);
+	}
+	inline QImage doGrabFramebuffer() override
+	{
+		return grabFramebuffer();
+	}
 
 	/**
 	 * @brief Check if stereo mode is enabled
 	 * @return false (stereo not supported in this class; see ccGLWindowStereo)
 	 */
-	inline bool isStereo() const override { return false; }
+	inline bool isStereo() const override
+	{
+		return false;
+	}
 
-	inline QWidget* asWidget() override { return this; }
-	inline QSize getScreenSize() const override { return size(); }
+	inline QWidget* asWidget() override
+	{
+		return this;
+	}
+	inline QSize getScreenSize() const override
+	{
+		return size();
+	}
 
 	// ccGLWindowInterface — size wrappers
-	inline int qtWidth() const override { return QOpenGLWidget::width(); }
-	inline int qtHeight() const override { return QOpenGLWidget::height(); }
-	inline QSize qtSize() const override { return QOpenGLWidget::size(); }
+	inline int qtWidth() const override
+	{
+		return QOpenGLWidget::width();
+	}
+	inline int qtHeight() const override
+	{
+		return QOpenGLWidget::height();
+	}
+	inline QSize qtSize() const override
+	{
+		return QOpenGLWidget::size();
+	}
 
 	/**
 	 * @brief Enable stereo mode
@@ -154,7 +214,6 @@ class CCGLWINDOW_LIB_API ccGLWindow : public QOpenGLWidget
 	static ccGLWindow* FromWidget(QWidget* widget);
 
   protected: // OpenGL / Qt wrappers
-
 	// ccGLWindowInterface — OpenGL function access
 	/**
 	 * @brief Get OpenGL 2.1 function table
@@ -169,10 +228,22 @@ class CCGLWINDOW_LIB_API ccGLWindow : public QOpenGLWidget
 		return context() ? QOpenGLVersionFunctionsFactory::get<ccQOpenGLFunctions>(context()) : nullptr;
 	}
 
-	inline QSurfaceFormat getSurfaceFormat() const override { return format(); }
-	inline void doSetMouseTracking(bool) override { setMouseTracking(true); }
-	inline void doShowFullScreen() override { showFullScreen(); }
-	inline void doShowNormal() override { showNormal(); }
+	inline QSurfaceFormat getSurfaceFormat() const override
+	{
+		return format();
+	}
+	inline void doSetMouseTracking(bool) override
+	{
+		setMouseTracking(true);
+	}
+	inline void doShowFullScreen() override
+	{
+		showFullScreen();
+	}
+	inline void doShowNormal() override
+	{
+		showNormal();
+	}
 
 	// makeCurrent deleted to prevent accidental use — use doMakeCurrent() instead
 	void makeCurrent() = delete;
@@ -183,15 +254,25 @@ class CCGLWINDOW_LIB_API ccGLWindow : public QOpenGLWidget
 	 * Connected to ccGLWindowInterface::itemPickedFast signal.
 	 * Forwards to onItemPickedFast().
 	 */
-	protected Q_SLOTS: void onItemPickedFastSlot(ccHObject* pickedEntity, int pickedItemIndex, int x, int y)
+  protected Q_SLOTS:
+	void onItemPickedFastSlot(ccHObject* pickedEntity, int pickedItemIndex, int x, int y)
 	{
 		onItemPickedFast(pickedEntity, pickedItemIndex, x, y);
 	}
 
 	// ccGLWindowInterface — size overrides (HIDPI aware)
-	int width() const override { return QOpenGLWidget::width(); }
-	int height() const override { return QOpenGLWidget::height(); }
-	QSize size() const override { return QOpenGLWidget::size(); }
+	int width() const override
+	{
+		return QOpenGLWidget::width();
+	}
+	int height() const override
+	{
+		return QOpenGLWidget::height();
+	}
+	QSize size() const override
+	{
+		return QOpenGLWidget::size();
+	}
 
 	/**
 	 * @brief Get the default Qt FBO ID
@@ -204,11 +285,26 @@ class CCGLWINDOW_LIB_API ccGLWindow : public QOpenGLWidget
 	GLuint defaultQtFBO() const override;
 
 	// Qt event overrides → ccGLWindowInterface handlers
-	void mousePressEvent(QMouseEvent* event) override { processMousePressEvent(event); }
-	void mouseMoveEvent(QMouseEvent* event) override { processMouseMoveEvent(event); }
-	void mouseDoubleClickEvent(QMouseEvent* event) override { processMouseDoubleClickEvent(event); }
-	void mouseReleaseEvent(QMouseEvent* event) override { processMouseReleaseEvent(event); }
-	void wheelEvent(QWheelEvent* event) override { processWheelEvent(event); }
+	void mousePressEvent(QMouseEvent* event) override
+	{
+		processMousePressEvent(event);
+	}
+	void mouseMoveEvent(QMouseEvent* event) override
+	{
+		processMouseMoveEvent(event);
+	}
+	void mouseDoubleClickEvent(QMouseEvent* event) override
+	{
+		processMouseDoubleClickEvent(event);
+	}
+	void mouseReleaseEvent(QMouseEvent* event) override
+	{
+		processMouseReleaseEvent(event);
+	}
+	void wheelEvent(QWheelEvent* event) override
+	{
+		processWheelEvent(event);
+	}
 
 	/**
 	 * @brief Handle generic Qt events
@@ -221,11 +317,26 @@ class CCGLWINDOW_LIB_API ccGLWindow : public QOpenGLWidget
 	bool event(QEvent* evt) override;
 
 	// QOpenGLWidget lifecycle → ccGLWindowInterface
-	void initializeGL() override { initialize(); }
-	void resizeGL(int w, int h) override { onResizeGL(w, h); }
-	void paintGL() override { doPaintGL(); }
+	void initializeGL() override
+	{
+		initialize();
+	}
+	void resizeGL(int w, int h) override
+	{
+		onResizeGL(w, h);
+	}
+	void paintGL() override
+	{
+		doPaintGL();
+	}
 
 	// Drag-and-drop
-	void dragEnterEvent(QDragEnterEvent* event) override { doDragEnterEvent(event); }
-	void dropEvent(QDropEvent* event) override { doDropEvent(event); }
+	void dragEnterEvent(QDragEnterEvent* event) override
+	{
+		doDragEnterEvent(event);
+	}
+	void dropEvent(QDropEvent* event) override
+	{
+		doDropEvent(event);
+	}
 };

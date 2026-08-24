@@ -264,7 +264,7 @@ bool Mouse3DInput::onSiEvent(void* siGetEventData)
 		    || eventData.mData[SI_RZ] != 0)
 		{
 			std::vector<float> axes(6);
-			double             ds = eventData.period * c_3dmouseAngularVelocity; // period is in ms
+			double ds = eventData.period * c_3dmouseAngularVelocity; // period is in ms
 			// translation data
 			axes[0] = -static_cast<float>(eventData.mData[SI_TX] * ds);
 			axes[1] = static_cast<float>(eventData.mData[SI_TY] * ds);
@@ -370,7 +370,7 @@ void Mouse3DInput::GetMatrix(const std::vector<float>& vec, ccGLMatrixd& mat)
 	// in camera space - exactly like the regular mouse drag does. This makes
 	// the rotation relative to the current view direction automatically.
 	CCVector3d axis(vec[3], vec[4], vec[5]);
-	double     angle = axis.norm();
+	double angle = axis.norm();
 	if (CCCoreLib::GreaterThanEpsilon(angle))
 	{
 		mat.initFromParameters(angle, axis, CCVector3d(0, 0, 0));
@@ -408,8 +408,8 @@ void Mouse3DInput::Apply(const std::vector<float>& motionData, ccGLWindowInterfa
 	std::vector<float> vec = motionData;
 
 	// view parameters
-	const ccViewportParameters& viewParams     = win->getViewportParameters();
-	bool                        bubbleViewMode = win->bubbleViewModeEnabled();
+	const ccViewportParameters& viewParams = win->getViewportParameters();
+	bool bubbleViewMode = win->bubbleViewModeEnabled();
 
 	// panning or zooming
 	if (!bubbleViewMode)
@@ -472,7 +472,7 @@ void Mouse3DInput::Apply(const std::vector<float>& motionData, ccGLWindowInterfa
 
 			// rotation about the sensor Z axis
 			const ccGLMatrixd& viewMat = win->getViewportParameters().viewMat;
-			CCVector3d         axis    = viewMat.getColumnAsVec3D(2);
+			CCVector3d axis = viewMat.getColumnAsVec3D(2);
 			rotMat.initFromParameters(-vec[4], axis, CCVector3d(0, 0, 0));
 
 			// rotation about the local X axis

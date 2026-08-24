@@ -50,7 +50,7 @@ class QCC_DB_LIB_API ccIndexedTransformationBuffer : public ccHObject
 	 * @param[in] name Buffer name
 	 */
 	ccIndexedTransformationBuffer(const QString& name = QString("Trans. buffer"));
-	
+
 	/**
 	 * @brief Copy constructor
 	 * @param[in] buffer Source buffer
@@ -81,11 +81,11 @@ class QCC_DB_LIB_API ccIndexedTransformationBuffer : public ccHObject
 	 * @param[out] trans2IndexInBuffer Index of trans2
 	 * @return true on success
 	 */
-	bool findNearest(double                          index,
+	bool findNearest(double index,
 	                 const ccIndexedTransformation*& trans1,
 	                 const ccIndexedTransformation*& trans2,
-	                 size_t*                         trans1IndexInBuffer = nullptr,
-	                 size_t*                         trans2IndexInBuffer = nullptr) const;
+	                 size_t* trans1IndexInBuffer = nullptr,
+	                 size_t* trans2IndexInBuffer = nullptr) const;
 
 	/**
 	 * @brief Get interpolated transformation
@@ -94,9 +94,9 @@ class QCC_DB_LIB_API ccIndexedTransformationBuffer : public ccHObject
 	 * @param[in] maxIndexDistForInterpolation Max distance for interpolation
 	 * @return true on success
 	 */
-	bool getInterpolatedTransformation(double                   index,
+	bool getInterpolatedTransformation(double index,
 	                                   ccIndexedTransformation& trans,
-	                                   double                   maxIndexDistForInterpolation = DBL_MAX) const;
+	                                   double maxIndexDistForInterpolation = DBL_MAX) const;
 
 	//! [Display option] Returns whether trihedrons should be displayed or not (otherwise only points or a polyline)
 	bool trihedronsShown() const
@@ -141,10 +141,10 @@ class QCC_DB_LIB_API ccIndexedTransformationBuffer : public ccHObject
 
   protected:
 	// inherited from ccHObject
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	void  drawMeOnly(CC_DRAW_CONTEXT& context) override;
+	void drawMeOnly(CC_DRAW_CONTEXT& context) override;
 
 	//! Bounding box
 	ccBBox m_bBox;

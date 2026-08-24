@@ -87,15 +87,15 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	enum PICKING_MODE
 	{
 		NO_PICKING,                         //!< No picking
-		ENTITY_PICKING,                      //!< Pick entire entities
-		ENTITY_RECT_PICKING,                 //!< Pick entities in rectangular region
-		FAST_PICKING,                        //!< Fast entity picking
-		POINT_PICKING,                       //!< Pick individual points
-		TRIANGLE_PICKING,                    //!< Pick mesh triangles
-		POINT_OR_TRIANGLE_PICKING,           //!< Pick points or triangles
-		POINT_OR_TRIANGLE_OR_LABEL_PICKING,  //!< Pick points, triangles, or labels
-		LABEL_PICKING,                       //!< Pick labels
-		DEFAULT_PICKING,                     //!< Default picking mode
+		ENTITY_PICKING,                     //!< Pick entire entities
+		ENTITY_RECT_PICKING,                //!< Pick entities in rectangular region
+		FAST_PICKING,                       //!< Fast entity picking
+		POINT_PICKING,                      //!< Pick individual points
+		TRIANGLE_PICKING,                   //!< Pick mesh triangles
+		POINT_OR_TRIANGLE_PICKING,          //!< Pick points or triangles
+		POINT_OR_TRIANGLE_OR_LABEL_PICKING, //!< Pick points, triangles, or labels
+		LABEL_PICKING,                      //!< Pick labels
+		DEFAULT_PICKING,                    //!< Default picking mode
 	};
 
 	/**
@@ -106,30 +106,30 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	 */
 	enum INTERACTION_FLAG
 	{
-		INTERACT_NONE = 0,                     //!< No interaction
+		INTERACT_NONE = 0, //!< No interaction
 
 		// Camera interactions
-		INTERACT_ROTATE          = 1,          //!< Enable rotation with mouse
-		INTERACT_PAN             = 2,          //!< Enable pan with mouse
-		INTERACT_CTRL_PAN        = 4,          //!< Enable pan with Ctrl+drag
-		INTERACT_ZOOM_CAMERA     = 8,          //!< Enable zoom with mouse wheel
-		INTERACT_2D_ITEMS        = 16,         //!< Enable 2D item manipulation (labels)
-		INTERACT_CLICKABLE_ITEMS = 32,         //!< Enable clickable items (hot zone)
+		INTERACT_ROTATE = 1,           //!< Enable rotation with mouse
+		INTERACT_PAN = 2,              //!< Enable pan with mouse
+		INTERACT_CTRL_PAN = 4,         //!< Enable pan with Ctrl+drag
+		INTERACT_ZOOM_CAMERA = 8,      //!< Enable zoom with mouse wheel
+		INTERACT_2D_ITEMS = 16,        //!< Enable 2D item manipulation (labels)
+		INTERACT_CLICKABLE_ITEMS = 32, //!< Enable clickable items (hot zone)
 
 		// Options / modifiers
-		INTERACT_TRANSFORM_ENTITIES = 64,       //!< Enable entity transformation
+		INTERACT_TRANSFORM_ENTITIES = 64, //!< Enable entity transformation
 
 		// Signals
-		INTERACT_SIG_RB_CLICKED      = 128,    //!< Right button clicked signal
-		INTERACT_SIG_LB_CLICKED      = 256,    //!< Left button clicked signal
-		INTERACT_SIG_MOUSE_MOVED     = 512,    //!< Mouse moved signal
-		INTERACT_SIG_BUTTON_RELEASED = 1024,    //!< Button released signal
-		INTERACT_SIG_MB_CLICKED      = 2048,   //!< Middle button clicked signal
-		INTERACT_SEND_ALL_SIGNALS    = INTERACT_SIG_RB_CLICKED | INTERACT_SIG_LB_CLICKED | INTERACT_SIG_MB_CLICKED | INTERACT_SIG_MOUSE_MOVED | INTERACT_SIG_BUTTON_RELEASED,
+		INTERACT_SIG_RB_CLICKED = 128,       //!< Right button clicked signal
+		INTERACT_SIG_LB_CLICKED = 256,       //!< Left button clicked signal
+		INTERACT_SIG_MOUSE_MOVED = 512,      //!< Mouse moved signal
+		INTERACT_SIG_BUTTON_RELEASED = 1024, //!< Button released signal
+		INTERACT_SIG_MB_CLICKED = 2048,      //!< Middle button clicked signal
+		INTERACT_SEND_ALL_SIGNALS = INTERACT_SIG_RB_CLICKED | INTERACT_SIG_LB_CLICKED | INTERACT_SIG_MB_CLICKED | INTERACT_SIG_MOUSE_MOVED | INTERACT_SIG_BUTTON_RELEASED,
 
 		// default modes
-		MODE_PAN_ONLY           = INTERACT_PAN | INTERACT_ZOOM_CAMERA | INTERACT_2D_ITEMS | INTERACT_CLICKABLE_ITEMS,
-		MODE_TRANSFORM_CAMERA   = INTERACT_ROTATE | MODE_PAN_ONLY,
+		MODE_PAN_ONLY = INTERACT_PAN | INTERACT_ZOOM_CAMERA | INTERACT_2D_ITEMS | INTERACT_CLICKABLE_ITEMS,
+		MODE_TRANSFORM_CAMERA = INTERACT_ROTATE | MODE_PAN_ONLY,
 		MODE_TRANSFORM_ENTITIES = INTERACT_ROTATE | INTERACT_PAN | INTERACT_ZOOM_CAMERA | INTERACT_TRANSFORM_ENTITIES | INTERACT_CLICKABLE_ITEMS,
 	};
 
@@ -175,21 +175,21 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	virtual bool isStereo() const = 0;
 
 	// Qt-equivalent shortcuts
-	virtual qreal           getDevicePixelRatio() const     = 0;
-	virtual QFont           getFont() const                 = 0;
-	virtual QOpenGLContext* getOpenGLContext() const        = 0;
-	virtual void            setWindowCursor(const QCursor&) = 0;
-	virtual void            doMakeCurrent() {};
-	virtual QObject*        asQObject()                          = 0;
-	virtual const QObject*  asQObject() const                    = 0;
-	virtual QString         getWindowTitle() const               = 0;
-	virtual void            doGrabMouse()                        = 0;
-	virtual void            doReleaseMouse()                     = 0;
-	virtual QPoint          doMapFromGlobal(const QPoint&) const = 0;
-	virtual void            doShowMaximized()                    = 0;
-	virtual void            doResize(int w, int h)               = 0;
-	virtual void            doResize(const QSize&)               = 0;
-	virtual QImage          doGrabFramebuffer()                  = 0;
+	virtual qreal getDevicePixelRatio() const = 0;
+	virtual QFont getFont() const = 0;
+	virtual QOpenGLContext* getOpenGLContext() const = 0;
+	virtual void setWindowCursor(const QCursor&) = 0;
+	virtual void doMakeCurrent() {};
+	virtual QObject* asQObject() = 0;
+	virtual const QObject* asQObject() const = 0;
+	virtual QString getWindowTitle() const = 0;
+	virtual void doGrabMouse() = 0;
+	virtual void doReleaseMouse() = 0;
+	virtual QPoint doMapFromGlobal(const QPoint&) const = 0;
+	virtual void doShowMaximized() = 0;
+	virtual void doResize(int w, int h) = 0;
+	virtual void doResize(const QSize&) = 0;
+	virtual QImage doGrabFramebuffer() = 0;
 
 	// inherited from ccGenericGLDisplay
 	void refresh(bool only2D = false) override;
@@ -218,19 +218,19 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	{
 		m_updateFBO = true;
 	}
-	void                        display3DLabel(const QString& str, const CCVector3& pos3D, const ccColor::Rgba* color = nullptr, const QFont& font = QFont()) override;
-	void                        displayText(QString text, int x, int y, unsigned char align = ALIGN_DEFAULT, float bkgAlpha = 0.0f, const ccColor::Rgba* color = nullptr, const QFont* font = nullptr) override;
-	QFont                       getTextDisplayFont() const override;  // takes rendering zoom into account!
-	QFont                       getLabelDisplayFont() const override; // takes rendering zoom into account!
+	void display3DLabel(const QString& str, const CCVector3& pos3D, const ccColor::Rgba* color = nullptr, const QFont& font = QFont()) override;
+	void displayText(QString text, int x, int y, unsigned char align = ALIGN_DEFAULT, float bkgAlpha = 0.0f, const ccColor::Rgba* color = nullptr, const QFont* font = nullptr) override;
+	QFont getTextDisplayFont() const override;  // takes rendering zoom into account!
+	QFont getLabelDisplayFont() const override; // takes rendering zoom into account!
 	const ccViewportParameters& getViewportParameters() const override
 	{
 		return m_viewportParams;
 	}
 	QPointF toCenteredGLCoordinates(int x, int y) const override;
 	QPointF toCornerGLCoordinates(int x, int y) const override;
-	void    setupProjectiveViewport(const ccGLMatrixd& cameraMatrix, float fov_deg = 0.0f, bool viewerBasedPerspective = true, bool bubbleViewMode = false) override;
-	void    aboutToBeRemoved(ccDrawableObject* entity) override;
-	void    getGLCameraParameters(ccGLCameraParameters& params) override;
+	void setupProjectiveViewport(const ccGLMatrixd& cameraMatrix, float fov_deg = 0.0f, bool viewerBasedPerspective = true, bool bubbleViewMode = false) override;
+	void aboutToBeRemoved(ccDrawableObject* entity) override;
+	void getGLCameraParameters(ccGLCameraParameters& params) override;
 
 	//! Displays a status message in the bottom-left corner
 	/** WARNING: currently, 'append' is not supported for SCREEN_CENTER_MESSAGE
@@ -240,11 +240,11 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	    \param displayMaxDelay_sec minimum display duration
 	    \param type message type (if not custom, only one message of this type at a time is accepted)
 	**/
-	void displayNewMessage(const QString&  message,
+	void displayNewMessage(const QString& message,
 	                       MessagePosition pos,
-	                       bool            append              = false,
-	                       int             displayMaxDelay_sec = 2,
-	                       MessageType     type                = CUSTOM_MESSAGE);
+	                       bool append = false,
+	                       int displayMaxDelay_sec = 2,
+	                       MessageType type = CUSTOM_MESSAGE);
 
 	//! Activates sun light
 	void setSunLight(bool state);
@@ -292,8 +292,8 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	/** Emits the 'pivotPointChanged' signal.
 	 **/
 	void setPivotPoint(const CCVector3d& P,
-	                   bool              autoUpdateCameraPos = false,
-	                   bool              verbose             = false);
+	                   bool autoUpdateCameraPos = false,
+	                   bool verbose = false);
 
 	//! Sets camera position
 	/** Emits the 'cameraPosChanged' signal.
@@ -535,22 +535,22 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	}
 
 	//! Renders screen to an image
-	QImage renderToImage(float zoomFactor         = 1.0f,
-	                     bool  dontScaleFeatures  = false,
-	                     bool  renderOverlayItems = false,
-	                     bool  silent             = false);
+	QImage renderToImage(float zoomFactor = 1.0f,
+	                     bool dontScaleFeatures = false,
+	                     bool renderOverlayItems = false,
+	                     bool silent = false);
 
 	//! Renders screen to a file
 	bool renderToFile(QString filename,
-	                  float   zoomFactor         = 1.0f,
-	                  bool    dontScaleFeatures  = false,
-	                  bool    renderOverlayItems = false);
+	                  float zoomFactor = 1.0f,
+	                  bool dontScaleFeatures = false,
+	                  bool renderOverlayItems = false);
 
-	static void    SetShaderPath(const QString& path);
+	static void SetShaderPath(const QString& path);
 	static QString GetShaderPath();
 
-	void               setShader(ccShader* shader);
-	void               setGlFilter(ccGlFilter* filter);
+	void setShader(ccShader* shader);
+	void setGlFilter(ccGlFilter* filter);
 	inline ccGlFilter* getGlFilter()
 	{
 		return m_activeGLFilter;
@@ -620,7 +620,7 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	//! Sets whether overlay entities (scale and trihedron) should be displayed or not
 	inline void displayOverlayEntities(bool showScale, bool showTrihedron)
 	{
-		m_showScale     = showScale;
+		m_showScale = showScale;
 		m_showTrihedron = showTrihedron;
 	}
 
@@ -654,9 +654,9 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	    \return backprojected point
 	**/
 	CCVector3 backprojectPointOnTriangle(const CCVector2i& P2D,
-	                                     const CCVector3&  A3D,
-	                                     const CCVector3&  B3D,
-	                                     const CCVector3&  C3D);
+	                                     const CCVector3& A3D,
+	                                     const CCVector3& B3D,
+	                                     const CCVector3& C3D);
 
 	//! Returns unique ID
 	inline int getUniqueID() const
@@ -734,13 +734,13 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 		//! Glass/HMD type
 		enum GlassType
 		{
-			RED_BLUE               = 1,
-			BLUE_RED               = 2,
-			RED_CYAN               = 3,
-			CYAN_RED               = 4,
-			NVIDIA_VISION          = 5,
+			RED_BLUE = 1,
+			BLUE_RED = 2,
+			RED_CYAN = 3,
+			CYAN_RED = 4,
+			NVIDIA_VISION = 5,
 			GENERIC_STEREO_DISPLAY = 6,
-			SIDE_BY_SIDE           = 7
+			SIDE_BY_SIDE = 7
 		};
 
 		//! Whether stereo-mode is of type 'anaglyph'
@@ -772,10 +772,10 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 			return false;
 		}
 
-		int       screenWidth_mm    = 0;
-		int       screenDistance_mm = 0;
-		int       eyeSeparation_mm  = 0;
-		int       stereoStrength    = 0;
+		int screenWidth_mm = 0;
+		int screenDistance_mm = 0;
+		int eyeSeparation_mm = 0;
+		int stereoStrength = 0;
 		GlassType glassType;
 	};
 
@@ -863,9 +863,9 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	}
 
 	static void Create(ccGLWindowInterface*& window,
-	                   QWidget*&             widget,
-	                   bool                  stereoMode           = false,
-	                   bool                  silentInitialization = false);
+	                   QWidget*& widget,
+	                   bool stereoMode = false,
+	                   bool silentInitialization = false);
 
 	static ccGLWindowInterface* FromWidget(QWidget* widget);
 	static ccGLWindowInterface* FromEmitter(QObject* object);
@@ -984,7 +984,7 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	enum StereoRenderingPass
 	{
 		MONO_OR_LEFT_RENDERING_PASS = 0,
-		RIGHT_RENDERING_PASS        = 1
+		RIGHT_RENDERING_PASS = 1
 	};
 
 	//! Rendering params
@@ -997,13 +997,13 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 		StereoRenderingPass pass = MONO_OR_LEFT_RENDERING_PASS;
 
 		// 2D background
-		bool drawBackground  = true;
+		bool drawBackground = true;
 		bool clearDepthLayer = true;
 		bool clearColorLayer = true;
 
 		// 3D central layer
-		bool draw3DPass  = true;
-		bool useFBO      = false;
+		bool draw3DPass = true;
+		bool useFBO = false;
 		bool draw3DCross = false;
 
 		// 2D foreground
@@ -1012,7 +1012,7 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 		//! Candidate pivot point(s) (will be used when the mouse is released)
 		/** Up to 2 candidates, if stereo mode is enabled **/
 		CCVector3d autoPivotCandidates[2];
-		bool       hasAutoPivotCandidates[2] = {false, false};
+		bool hasAutoPivotCandidates[2] = {false, false};
 	};
 
 	//! Draws the background layer
@@ -1039,10 +1039,10 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 
   protected: // other methods
 	// Qt-equivalent shortcuts
-	virtual QSurfaceFormat getSurfaceFormat() const        = 0;
-	virtual void           doSetMouseTracking(bool enable) = 0;
-	virtual void           doShowFullScreen()              = 0;
-	virtual void           doShowNormal()                  = 0;
+	virtual QSurfaceFormat getSurfaceFormat() const = 0;
+	virtual void doSetMouseTracking(bool enable) = 0;
+	virtual void doShowFullScreen() = 0;
+	virtual void doShowNormal() = 0;
 
 	void processMousePressEvent(QMouseEvent* event);
 	void processMouseDoubleClickEvent(QMouseEvent* event);
@@ -1076,9 +1076,9 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 
 	// these methods are now protected to prevent issues with Retina or other high DPI displays
 	//(see glWidth(), glHeight(), qtWidth(), qtHeight(), qtSize(), glSize()
-	virtual int   width() const  = 0;
-	virtual int   height() const = 0;
-	virtual QSize size() const   = 0;
+	virtual int width() const = 0;
+	virtual int height() const = 0;
+	virtual QSize size() const = 0;
 
 	//! Returns the current (OpenGL) view matrix
 	/** Warning: may be different from the 'view' matrix returned by getBaseViewMat.
@@ -1114,13 +1114,13 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	    \param[out] metrics [optional] output other metrics (Znear and Zfar, etc.)
 	    \param[out] eyeOffset [optional] eye offset (for stereo display)
 	**/
-	ccGLMatrixd computeProjectionMatrix(bool               withGLfeatures,
-	                                    ProjectionMetrics* metrics   = nullptr,
-	                                    double*            eyeOffset = nullptr) const;
-	void        updateModelViewMatrix();
-	void        updateProjectionMatrix();
-	void        setStandardOrthoCenter();
-	void        setStandardOrthoCorner();
+	ccGLMatrixd computeProjectionMatrix(bool withGLfeatures,
+	                                    ProjectionMetrics* metrics = nullptr,
+	                                    double* eyeOffset = nullptr) const;
+	void updateModelViewMatrix();
+	void updateProjectionMatrix();
+	void setStandardOrthoCenter();
+	void setStandardOrthoCorner();
 
 	// Lights controls (OpenGL scripts)
 	void glEnableSunLight();
@@ -1133,13 +1133,13 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	struct PickingParameters
 	{
 		//! Default constructor
-		PickingParameters(PICKING_MODE _mode          = NO_PICKING,
-		                  int          _centerX       = 0,
-		                  int          _centerY       = 0,
-		                  int          _pickWidth     = 5,
-		                  int          _pickHeight    = 5,
-		                  bool         _pickInSceneDB = true,
-		                  bool         _pickInLocalDB = true)
+		PickingParameters(PICKING_MODE _mode = NO_PICKING,
+		                  int _centerX = 0,
+		                  int _centerY = 0,
+		                  int _pickWidth = 5,
+		                  int _pickHeight = 5,
+		                  bool _pickInSceneDB = true,
+		                  bool _pickInLocalDB = true)
 		    : mode(_mode)
 		    , centerX(_centerX)
 		    , centerY(_centerY)
@@ -1151,12 +1151,12 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 		}
 
 		PICKING_MODE mode;
-		int          centerX;
-		int          centerY;
-		int          pickWidth;
-		int          pickHeight;
-		bool         pickInSceneDB;
-		bool         pickInLocalDB;
+		int centerX;
+		int centerY;
+		int pickWidth;
+		int pickHeight;
+		bool pickInSceneDB;
+		bool pickInLocalDB;
 	};
 
 	//! Starts picking process
@@ -1171,12 +1171,12 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	void startCPUBasedPointPicking(const PickingParameters& params);
 
 	//! Processes the picking process result and sends the corresponding signal
-	void processPickingResult(const PickingParameters&       params,
-	                          ccHObject*                     pickedEntity,
-	                          int                            pickedItemIndex,
-	                          const CCVector3*               nearestPoint   = nullptr,
-	                          const CCVector3d*              nearestPointBC = nullptr, // barycentric coordinates
-	                          const std::unordered_set<int>* selectedIDs    = nullptr);
+	void processPickingResult(const PickingParameters& params,
+	                          ccHObject* pickedEntity,
+	                          int pickedItemIndex,
+	                          const CCVector3* nearestPoint = nullptr,
+	                          const CCVector3d* nearestPointBC = nullptr, // barycentric coordinates
+	                          const std::unordered_set<int>* selectedIDs = nullptr);
 
 	//! Updates currently active items list (m_activeItems)
 	/** The items must be currently displayed in this context
@@ -1331,9 +1331,9 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 		{
 		}
 
-		bool  enabled;
+		bool enabled;
 		float zoomFactor;
-		bool  renderOverlayItems;
+		bool renderOverlayItems;
 	};
 
 	//! Display capturing mode options
@@ -1403,7 +1403,7 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 		{
 		}
 
-		Role  role;
+		Role role;
 		QRect area;
 	};
 

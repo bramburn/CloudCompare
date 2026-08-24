@@ -37,14 +37,13 @@
 #include "ccHObject.h"
 #include "ccPointCloud.h"
 
-#include <QtTest/QtTest>
-
 #include <QBuffer>
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QString>
 #include <QTemporaryDir>
 #include <QTextStream>
+#include <QtTest/QtTest>
 
 // ##########################################################################
 // Test-friend wrapper: exposes the protected loadCloudFromFormatedAsciiStream
@@ -63,7 +62,7 @@ class AsciiFilterTestFriend : public AsciiFilter
 static size_t CountNumericColumns(const QString& text, QChar separator)
 {
 	QTextStream ss(&const_cast<QString&>(text), QIODevice::ReadOnly);
-	QString     line = ss.readLine();
+	QString line = ss.readLine();
 	if (line.isNull())
 	{
 		return 0;
@@ -74,7 +73,7 @@ static size_t CountNumericColumns(const QString& text, QChar separator)
 	// simplified() collapses \\t (tab) to a space, making it impossible to
 	// distinguish tab-separated values from space-separated values.
 	QStringList parts = line.split(separator);
-	size_t     validCount = 0;
+	size_t validCount = 0;
 
 	for (const QString& part : parts)
 	{
@@ -97,7 +96,7 @@ static QChar FindBestSeparator(const QString& text)
 	const QList<QChar> separators = {QChar(' '), QChar(','), QChar(';'), QChar('\t')};
 
 	size_t maxValidColumnCount = 0;
-	QChar  bestSep           = separators.front();
+	QChar bestSep = separators.front();
 
 	for (QChar sep : separators)
 	{
@@ -105,7 +104,7 @@ static QChar FindBestSeparator(const QString& text)
 		if (count > maxValidColumnCount)
 		{
 			maxValidColumnCount = count;
-			bestSep            = sep;
+			bestSep = sep;
 		}
 	}
 	return bestSep;
@@ -128,29 +127,29 @@ class TestAsciiFilter : public QObject
 		static char* argv[1] = {nullptr};
 		if (QCoreApplication::instance() == nullptr)
 		{
-			(void) new QCoreApplication(argc, argv);
+			(void)new QCoreApplication(argc, argv);
 		}
 	}
 
   private:
 	// Helper: call loadCloudFromFormatedAsciiStream via test-friend wrapper.
 	// Resets the container before parsing and returns the number of children.
-	int ParseWith(AsciiFilterTestFriend&       af,
-	              const QByteArray&           data,
-	              ccHObject&                  container,
+	int ParseWith(AsciiFilterTestFriend& af,
+	              const QByteArray& data,
+	              ccHObject& container,
 	              const AsciiOpenDlg::Sequence& seq,
-	              char                         separator,
-	              bool                         commaAsDecimal,
-	              unsigned                     maxCloudSize,
-	              unsigned                     skipLines)
+	              char separator,
+	              bool commaAsDecimal,
+	              unsigned maxCloudSize,
+	              unsigned skipLines)
 	{
 		container.removeAllChildren();
 
 		FileIOFilter::LoadParameters params;
 		params.alwaysDisplayLoadDialog = false;
-		params.shiftHandlingMode       = ccGlobalShiftManager::Mode::NO_DIALOG;
+		params.shiftHandlingMode = ccGlobalShiftManager::Mode::NO_DIALOG;
 		params._coordinatesShiftEnabled = nullptr;
-		params._coordinatesShift        = nullptr;
+		params._coordinatesShift = nullptr;
 
 		QTextStream ss(const_cast<QByteArray&>(data));
 		ss.seek(0);
@@ -163,11 +162,11 @@ class TestAsciiFilter : public QObject
 		    seq,
 		    separator,
 		    commaAsDecimal,
-		    0,  // approximateNumberOfLines
+		    0, // approximateNumberOfLines
 		    static_cast<qint64>(data.size()),
 		    maxCloudSize,
 		    skipLines,
-		    1.0,  // quaternionScale
+		    1.0, // quaternionScale
 		    params);
 
 		return container.getChildrenNumber();
@@ -223,8 +222,7 @@ class TestAsciiFilter : public QObject
 		// commaAsDecimal=true activates QLocale::French for number parsing.
 		// Must pass ';' as separator — comma and locale are independent concepts.
 		QByteArray data = "1,5;2,5;3,5\n";
-		int count = ParseWith(af, data, container, MakeXYZSequence(),
-		                     ';', true, 1000000, 0);
+		int count = ParseWith(af, data, container, MakeXYZSequence(), ';', true, 1000000, 0);
 
 		QCOMPARE(count, 1);
 		auto* cloud = static_cast<ccPointCloud*>(container.getChild(0));
@@ -232,9 +230,9 @@ class TestAsciiFilter : public QObject
 		QCOMPARE(cloud->size(), 1u);
 
 		const CCVector3* p = cloud->getPoint(0);
-		QCOMPARE(p->x, 1.5f);   // 1,5 → 1.5
-		QCOMPARE(p->y, 2.5f);   // 2,5 → 2.5
-		QCOMPARE(p->z, 3.5f);   // 3,5 → 3.5
+		QCOMPARE(p->x, 1.5f); // 1,5 → 1.5
+		QCOMPARE(p->y, 2.5f); // 2,5 → 2.5
+		QCOMPARE(p->z, 3.5f); // 3,5 → 3.5
 	}
 
 	void testScientificNotation()
@@ -243,15 +241,14 @@ class TestAsciiFilter : public QObject
 		AsciiFilterTestFriend af;
 
 		QByteArray data = "1.23e-4,2.5,3.0\n";
-		int count = ParseWith(af, data, container, MakeXYZSequence(),
-		                     ',', false, 1000000, 0);
+		int count = ParseWith(af, data, container, MakeXYZSequence(), ',', false, 1000000, 0);
 
 		QCOMPARE(count, 1);
 		auto* cloud = static_cast<ccPointCloud*>(container.getChild(0));
 		QCOMPARE(cloud->size(), 1u);
 
 		const CCVector3* p = cloud->getPoint(0);
-		QCOMPARE(p->x, 0.000123f);  // 1.23e-4
+		QCOMPARE(p->x, 0.000123f); // 1.23e-4
 		QCOMPARE(p->y, 2.5f);
 		QCOMPARE(p->z, 3.0f);
 	}
@@ -263,8 +260,7 @@ class TestAsciiFilter : public QObject
 
 		// First 2 lines are header; data starts at line 3.
 		QByteArray data = "Header line 1\nMeta,unused,data\n10.0,20.0,30.0\n";
-		int count = ParseWith(af, data, container, MakeXYZSequence(),
-		                     ',', false, 1000000, 2);  // skipLines=2
+		int count = ParseWith(af, data, container, MakeXYZSequence(), ',', false, 1000000, 2); // skipLines=2
 
 		QCOMPARE(count, 1);
 		auto* cloud = static_cast<ccPointCloud*>(container.getChild(0));
@@ -294,8 +290,7 @@ class TestAsciiFilter : public QObject
 
 		// 5 data rows with maxCloudSize=2 → should split into multiple chunks
 		QByteArray data = "1,2,3\n4,5,6\n7,8,9\n10,11,12\n13,14,15\n";
-		int count = ParseWith(af, data, container, MakeXYZSequence(),
-		                     ',', false, 2, 0);  // maxCloudSize=2
+		int count = ParseWith(af, data, container, MakeXYZSequence(), ',', false, 2, 0); // maxCloudSize=2
 
 		// At least 2 child clouds from chunk splitting
 		QVERIFY2(count > 1, "Chunk splitting should produce more than one cloud");

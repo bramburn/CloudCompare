@@ -52,8 +52,8 @@
 
 ccCoordinateSystem::ccCoordinateSystem(PointCoordinateType displayScale,
                                        PointCoordinateType axisWidth,
-                                       const ccGLMatrix*   transMat /*=nullptr*/,
-                                       QString             name /*=QString("CoordinateSystem")*/)
+                                       const ccGLMatrix* transMat /*=nullptr*/,
+                                       QString name /*=QString("CoordinateSystem")*/)
     : ccGenericPrimitive(name, transMat)
     , m_DisplayScale(displayScale)
     , m_width(axisWidth)
@@ -65,7 +65,7 @@ ccCoordinateSystem::ccCoordinateSystem(PointCoordinateType displayScale,
 }
 
 ccCoordinateSystem::ccCoordinateSystem(const ccGLMatrix* transMat /*=nullptr*/,
-                                       QString           name /*=QString("CoordinateSystem")*/)
+                                       QString name /*=QString("CoordinateSystem")*/)
     : ccGenericPrimitive(name, transMat)
     , m_DisplayScale(DEFAULT_DISPLAY_SCALE)
     , m_width(AXIS_DEFAULT_WIDTH)
@@ -257,7 +257,7 @@ void ccCoordinateSystem::drawMeOnly(CC_DRAW_CONTEXT& context)
 			return;
 
 		// color-based entity picking
-		bool         entityPickingMode = MACRO_EntityPicking(context);
+		bool entityPickingMode = MACRO_EntityPicking(context);
 		ccColor::Rgb pickingColor;
 		if (entityPickingMode)
 		{

@@ -40,9 +40,9 @@
 
 // System
 #include <array>
-#include <memory>
 #include <cassert>
 #include <cstring>
+#include <memory>
 #if defined(CC_WINDOWS)
 #include <windows.h>
 #else
@@ -73,7 +73,7 @@ bool PlyFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) con
 	if (type == CC_TYPES::MESH
 	    || type == CC_TYPES::POINT_CLOUD)
 	{
-		multiple  = false;
+		multiple = false;
 		exclusive = true;
 		return true;
 	}
@@ -81,7 +81,7 @@ bool PlyFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) con
 }
 
 static e_ply_storage_mode s_defaultOutputFormat = PLY_DEFAULT;
-static bool               s_addSFPrefix         = true;
+static bool s_addSFPrefix = true;
 
 static void errorCallback(p_ply _ply, const char* message)
 {
@@ -123,10 +123,10 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 	}
 
 	ccGenericPointCloud* vertices = nullptr;
-	ccGenericMesh*       mesh     = nullptr;
+	ccGenericMesh* mesh = nullptr;
 	if (entity->isKindOf(CC_TYPES::MESH))
 	{
-		mesh     = ccHObjectCaster::ToGenericMesh(entity);
+		mesh = ccHObjectCaster::ToGenericMesh(entity);
 		vertices = mesh->getAssociatedCloud();
 	}
 	else if (entity->isKindOf(CC_TYPES::POINT_CLOUD))
@@ -152,7 +152,7 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 	// Has the cloud been recentered?
 	e_ply_type coordType = vertices->isShifted() || sizeof(PointCoordinateType) > 4 ? PLY_DOUBLE : PLY_FLOAT; // we use double coordinates for shifted vertices (i.e. >1e6)
 
-	int      result    = 1;
+	int result = 1;
 	unsigned vertCount = vertices->size();
 
 	// 3D points (x,y,z)
@@ -171,8 +171,8 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 		// look for textures/materials in case there's no color
 		// if (!mesh->hasColors())
 		{
-			unsigned             textureCount = 0;
-			const ccMaterialSet* materials    = mesh->getMaterialSet();
+			unsigned textureCount = 0;
+			const ccMaterialSet* materials = mesh->getMaterialSet();
 			assert(materials);
 			if (materials)
 			{
@@ -287,7 +287,7 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 		// }
 	}
 
-	bool          hasUniqueColor = false;
+	bool hasUniqueColor = false;
 	ColorCompType uniqueColor[3]{0, 0, 0};
 	if (material)
 	{
@@ -295,11 +295,11 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 		if (!material->hasTexture())
 		{
 			const ccColor::Rgbaf& diffuse = material->getDiffuseFront();
-			uniqueColor[0]                = static_cast<ColorCompType>(diffuse.r * ccColor::MAX);
-			uniqueColor[1]                = static_cast<ColorCompType>(diffuse.g * ccColor::MAX);
-			uniqueColor[2]                = static_cast<ColorCompType>(diffuse.b * ccColor::MAX);
-			hasUniqueColor                = true;
-			material                      = ccMaterial::CShared(nullptr); // we can forget it!
+			uniqueColor[0] = static_cast<ColorCompType>(diffuse.r * ccColor::MAX);
+			uniqueColor[1] = static_cast<ColorCompType>(diffuse.g * ccColor::MAX);
+			uniqueColor[2] = static_cast<ColorCompType>(diffuse.b * ccColor::MAX);
+			hasUniqueColor = true;
+			material = ccMaterial::CShared(nullptr); // we can forget it!
 		}
 	}
 
@@ -324,9 +324,9 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 		// if (ply_add_element(ply, "normal", vertCount))
 		//{
 		e_ply_type normType = (sizeof(PointCoordinateType) > 4 ? PLY_DOUBLE : PLY_FLOAT);
-		result              = ply_add_scalar_property(ply, "nx", normType);
-		result              = ply_add_scalar_property(ply, "ny", normType);
-		result              = ply_add_scalar_property(ply, "nz", normType);
+		result = ply_add_scalar_property(ply, "nx", normType);
+		result = ply_add_scalar_property(ply, "ny", normType);
+		result = ply_add_scalar_property(ply, "nz", normType);
 		//}
 		// else result = 0;
 	}
@@ -342,7 +342,7 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 		}
 
 		ccPointCloud* ccCloud = static_cast<ccPointCloud*>(vertices);
-		unsigned      sfCount = ccCloud->getNumberOfScalarFields();
+		unsigned sfCount = ccCloud->getNumberOfScalarFields();
 		if (sfCount)
 		{
 			scalarFields.resize(sfCount);
@@ -350,7 +350,7 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 			for (unsigned i = 0; i < sfCount; ++i)
 			{
 				scalarFields[i] = static_cast<ccScalarField*>(ccCloud->getScalarField(i));
-				QString sfName  = QString::fromStdString(scalarFields[i]->getName());
+				QString sfName = QString::fromStdString(scalarFields[i]->getName());
 				QString propName;
 				if (sfName.isEmpty())
 				{
@@ -410,7 +410,7 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 			{
 				assert(material->hasTexture() && mesh->getTexCoordinatesTable());
 				QFileInfo fileInfo(material->getTextureFilename());
-				QString   defaultTextureName = fileInfo.fileName();
+				QString defaultTextureName = fileInfo.fileName();
 				if (fileInfo.suffix().isNull())
 					defaultTextureName += QString(".png");
 				// try to save the texture!
@@ -460,8 +460,8 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 	// save the point cloud (=vertices)
 	for (unsigned i = 0; i < vertCount; ++i)
 	{
-		const CCVector3* P       = vertices->getPoint(i);
-		CCVector3d       Pglobal = vertices->toGlobal3d<PointCoordinateType>(*P);
+		const CCVector3* P = vertices->getPoint(i);
+		CCVector3d Pglobal = vertices->toGlobal3d<PointCoordinateType>(*P);
 		ply_write(ply, Pglobal.x);
 		ply_write(ply, Pglobal.y);
 		ply_write(ply, Pglobal.z);
@@ -541,19 +541,19 @@ CC_FILE_ERROR PlyFilter::saveToFile(ccHObject* entity, QString filename, e_ply_s
 
 #define POS_MASK 0x00000003
 
-static int                          s_PointCount         = 0;
-static int                          s_NormalCount        = 0;
-static int                          s_ColorCount         = 0;
-static int                          s_IntensityCount     = 0;
-static unsigned                     s_totalScalarCount   = 0;
-static unsigned                     s_triCount           = 0;
-static bool                         s_PointDataCorrupted = false;
-static bool                         s_NotEnoughMemory    = false;
+static int s_PointCount = 0;
+static int s_NormalCount = 0;
+static int s_ColorCount = 0;
+static int s_IntensityCount = 0;
+static unsigned s_totalScalarCount = 0;
+static unsigned s_triCount = 0;
+static bool s_PointDataCorrupted = false;
+static bool s_NotEnoughMemory = false;
 static FileIOFilter::LoadParameters s_loadParameters;
-static CCVector3d                   s_Pshift(0, 0, 0);
-bool                                s_hasQuads     = false;
-bool                                s_hasMaterials = false;
-std::vector<bool>                   s_triIsQuad;
+static CCVector3d s_Pshift(0, 0, 0);
+bool s_hasQuads = false;
+bool s_hasMaterials = false;
+std::vector<bool> s_triIsQuad;
 
 static int vertex_cb(p_ply_argument argument)
 {
@@ -562,7 +562,7 @@ static int vertex_cb(p_ply_argument argument)
 		// skip the next pieces of data
 		return 1;
 	}
-	long          flags = 0;
+	long flags = 0;
 	ccPointCloud* cloud = nullptr;
 	ply_get_argument_user_data(argument, (void**)(&cloud), &flags);
 
@@ -579,7 +579,7 @@ static int vertex_cb(p_ply_argument argument)
 	else
 	{
 		// warning: corrupted data!
-		s_PointDataCorrupted        = true;
+		s_PointDataCorrupted = true;
 		s_Point.u[flags & POS_MASK] = 0;
 		// return 0;
 	}
@@ -620,7 +620,7 @@ static int normal_cb(p_ply_argument argument)
 		// skip the next pieces of data
 		return 1;
 	}
-	long          flags = 0;
+	long flags = 0;
 	ccPointCloud* cloud = nullptr;
 	ply_get_argument_user_data(argument, (void**)(&cloud), &flags);
 
@@ -648,7 +648,7 @@ static int rgb_cb(p_ply_argument argument)
 		// skip the next pieces of data
 		return 1;
 	}
-	long          flags = 0;
+	long flags = 0;
 	ccPointCloud* cloud = nullptr;
 	ply_get_argument_user_data(argument, (void**)(&cloud), &flags);
 
@@ -750,7 +750,7 @@ static int scalar_cb(p_ply_argument argument)
 	ply_get_argument_user_data(argument, (void**)(&sf), nullptr);
 
 	p_ply_element element;
-	long          instance_index;
+	long instance_index;
 	ply_get_argument_element(argument, &element, &instance_index);
 
 	ScalarType scal = static_cast<ScalarType>(ply_get_argument_value(argument));
@@ -765,7 +765,7 @@ static int scalar_cb(p_ply_argument argument)
 }
 
 static bool s_unsupportedPolygonType = false;
-static int  face_cb(p_ply_argument argument)
+static int face_cb(p_ply_argument argument)
 {
 	if (s_NotEnoughMemory)
 	{
@@ -780,7 +780,7 @@ static int  face_cb(p_ply_argument argument)
 		return 1;
 	}
 
-	long length      = 0;
+	long length = 0;
 	long value_index = 0;
 	ply_get_argument_property(argument, nullptr, &length, &value_index);
 	// unsupported polygon type!
@@ -853,9 +853,9 @@ static int  face_cb(p_ply_argument argument)
 	return 1;
 }
 
-static unsigned s_texCoordCount         = 0;
-static bool     s_invalidTexCoordinates = false;
-static int      texCoords_cb(p_ply_argument argument)
+static unsigned s_texCoordCount = 0;
+static bool s_invalidTexCoordinates = false;
+static int texCoords_cb(p_ply_argument argument)
 {
 	if (s_NotEnoughMemory)
 	{
@@ -863,7 +863,7 @@ static int      texCoords_cb(p_ply_argument argument)
 		return 1;
 	}
 
-	long length      = 0;
+	long length = 0;
 	long value_index = 0;
 	ply_get_argument_property(argument, nullptr, &length, &value_index);
 	// unsupported/invalid coordinates!
@@ -912,7 +912,7 @@ static int s_maxTextureIndex = -1;
 static int texIndexes_cb(p_ply_argument argument)
 {
 	p_ply_element element;
-	long          instance_index;
+	long instance_index;
 	ply_get_argument_element(argument, &element, &instance_index);
 
 	int index = static_cast<int>(ply_get_argument_value(argument));
@@ -946,21 +946,21 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, ccHObject& container,
 CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputTextureFilename, ccHObject& container, LoadParameters& parameters)
 {
 	// reset statics!
-	s_triCount               = 0;
+	s_triCount = 0;
 	s_unsupportedPolygonType = false;
-	s_texCoordCount          = 0;
-	s_invalidTexCoordinates  = false;
-	s_totalScalarCount       = 0;
-	s_IntensityCount         = 0;
-	s_ColorCount             = 0;
-	s_NormalCount            = 0;
-	s_PointCount             = 0;
-	s_PointDataCorrupted     = false;
-	s_NotEnoughMemory        = false;
-	s_loadParameters         = parameters;
-	s_Pshift                 = CCVector3d(0, 0, 0);
-	s_hasQuads               = false;
-	s_hasMaterials           = false;
+	s_texCoordCount = 0;
+	s_invalidTexCoordinates = false;
+	s_totalScalarCount = 0;
+	s_IntensityCount = 0;
+	s_ColorCount = 0;
+	s_NormalCount = 0;
+	s_PointCount = 0;
+	s_PointDataCorrupted = false;
+	s_NotEnoughMemory = false;
+	s_loadParameters = parameters;
+	s_Pshift = CCVector3d(0, 0, 0);
+	s_hasQuads = false;
+	s_hasMaterials = false;
 	s_triIsQuad.clear();
 
 	/****************/
@@ -1063,12 +1063,12 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 
 			lastElement.properties.clear();
 			lastElement.propertiesCount = 0;
-			lastElement.isFace          = false;
+			lastElement.isFace = false;
 			// printf("Element: %s\n",lastElement.elementName);
 
 			// last read property
 			plyProperty lastProperty;
-			lastProperty.prop      = nullptr;
+			lastProperty.prop = nullptr;
 			lastProperty.elemIndex = 0;
 
 			while ((lastProperty.prop = ply_get_next_property(lastElement.elem, lastProperty.prop)))
@@ -1093,7 +1093,7 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 				for (size_t i = 0; i < lastElement.properties.size(); ++i)
 				{
 					plyProperty& prop = lastElement.properties[i];
-					prop.elemIndex    = static_cast<int>(meshElements.size());
+					prop.elemIndex = static_cast<int>(meshElements.size());
 
 					if (prop.type == PLY_LIST)
 					{
@@ -1114,7 +1114,7 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 				for (size_t i = 0; i < lastElement.properties.size(); ++i)
 				{
 					plyProperty& prop = lastElement.properties[i];
-					prop.elemIndex    = (int)pointElements.size();
+					prop.elemIndex = (int)pointElements.size();
 					stdProperties.push_back(prop);
 				}
 				pointElements.push_back(lastElement);
@@ -1151,28 +1151,28 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 
 	// properties indexes (0 = unassigned)
 	static const unsigned nStdProp = 10;
-	int                   stdPropIndexes[nStdProp]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	int&                  xIndex  = stdPropIndexes[0];
-	int&                  yIndex  = stdPropIndexes[1];
-	int&                  zIndex  = stdPropIndexes[2];
-	int&                  nxIndex = stdPropIndexes[3];
-	int&                  nyIndex = stdPropIndexes[4];
-	int&                  nzIndex = stdPropIndexes[5];
-	int&                  rIndex  = stdPropIndexes[6];
-	int&                  gIndex  = stdPropIndexes[7];
-	int&                  bIndex  = stdPropIndexes[8];
-	int&                  iIndex  = stdPropIndexes[9];
+	int stdPropIndexes[nStdProp]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	int& xIndex = stdPropIndexes[0];
+	int& yIndex = stdPropIndexes[1];
+	int& zIndex = stdPropIndexes[2];
+	int& nxIndex = stdPropIndexes[3];
+	int& nyIndex = stdPropIndexes[4];
+	int& nzIndex = stdPropIndexes[5];
+	int& rIndex = stdPropIndexes[6];
+	int& gIndex = stdPropIndexes[7];
+	int& bIndex = stdPropIndexes[8];
+	int& iIndex = stdPropIndexes[9];
 
 	std::vector<int> sfPropIndexes;
 
-	static const unsigned      nListProp = 2;
+	static const unsigned nListProp = 2;
 	std::array<int, nListProp> listPropIndexes{0, 0};
-	int&                       facesIndex     = listPropIndexes[0];
-	int&                       texCoordsIndex = listPropIndexes[1];
+	int& facesIndex = listPropIndexes[0];
+	int& texCoordsIndex = listPropIndexes[1];
 
-	static const unsigned        nSingleProp = 1;
+	static const unsigned nSingleProp = 1;
 	std::array<int, nSingleProp> singlePropIndexes{0};
-	int&                         texNumberIndex = singlePropIndexes[0];
+	int& texNumberIndex = singlePropIndexes[0];
 
 	// Combo box items for standard properties (coordinates, color components, etc.)
 	QStringList stdPropsText;
@@ -1181,14 +1181,14 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 	{
 		for (int i = 1; i <= static_cast<int>(stdProperties.size()); ++i)
 		{
-			plyProperty& pp       = stdProperties[i - 1];
-			QString      itemText = QString("%1 - %2 [%3]").arg(pointElements[pp.elemIndex].elementName, pp.propName, e_ply_type_names[pp.type]);
+			plyProperty& pp = stdProperties[i - 1];
+			QString itemText = QString("%1 - %2 [%3]").arg(pointElements[pp.elemIndex].elementName, pp.propName, e_ply_type_names[pp.type]);
 			// assert(pp.type != PLY_LIST || pp.value_type == PLY_FLOAT); //we don't want any PLY_LIST here
 			stdPropsText << itemText;
 			stdPropsNames << pp.propName;
 
 			QString elementName = QString(pointElements[pp.elemIndex].elementName).toUpper();
-			QString propName    = QString(pp.propName).toUpper();
+			QString propName = QString(pp.propName).toUpper();
 
 			if (nxIndex == 0 && (propName.contains("NX") || (elementName.contains("NORM") && propName.endsWith("X")) || (propName.contains("NORM") && propName.endsWith("X"))))
 				nxIndex = i;
@@ -1231,14 +1231,14 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 		listPropsText << QString("None");
 		for (int i = 0; i < static_cast<int>(listProperties.size()); ++i)
 		{
-			plyProperty& pp       = listProperties[i];
-			QString      itemText = QString("%1 - %2 [%3]").arg(meshElements[pp.elemIndex].elementName, pp.propName, e_ply_type_names[pp.type]);
+			plyProperty& pp = listProperties[i];
+			QString itemText = QString("%1 - %2 [%3]").arg(meshElements[pp.elemIndex].elementName, pp.propName, e_ply_type_names[pp.type]);
 			assert(pp.type == PLY_LIST); // we only want PLY_LIST here
 			listPropsText << itemText;
 			listPropsNames << pp.propName;
 
 			QString elementName = QString(meshElements[pp.elemIndex].elementName).toUpper();
-			QString propName    = QString(pp.propName).toUpper();
+			QString propName = QString(pp.propName).toUpper();
 
 			if (elementName.contains("FACE") || elementName.contains("TRI"))
 			{
@@ -1257,13 +1257,13 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 		singlePropsText << QString("None");
 		for (int i = 0; i < static_cast<int>(singleProperties.size()); ++i)
 		{
-			plyProperty& pp       = singleProperties[i];
-			QString      itemText = QString("%1 - %2 [%3]").arg(meshElements[pp.elemIndex].elementName, pp.propName, e_ply_type_names[pp.type]);
+			plyProperty& pp = singleProperties[i];
+			QString itemText = QString("%1 - %2 [%3]").arg(meshElements[pp.elemIndex].elementName, pp.propName, e_ply_type_names[pp.type]);
 			singlePropsText << itemText;
 			singlePropsNames << pp.propName;
 
 			QString elementName = QString(meshElements[pp.elemIndex].elementName).toUpper();
-			QString propName    = QString(pp.propName).toUpper();
+			QString propName = QString(pp.propName).toUpper();
 
 			if (elementName.contains("FACE") || elementName.contains("TRI"))
 			{
@@ -1274,8 +1274,8 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 	}
 
 	// combo-box max visible items
-	int stdPropsCount    = stdPropsText.count();
-	int listPropsCount   = listPropsText.count();
+	int stdPropsCount = stdPropsText.count();
+	int listPropsCount = listPropsText.count();
 	int singlePropsCount = singlePropsText.count();
 
 	// we need at least 2 coordinates!
@@ -1288,10 +1288,10 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 	{
 		// brute force heuristic
 		//(the first element is always 'None')
-		xIndex         = 1;
-		yIndex         = 2;
-		zIndex         = (stdPropsCount > 3 ? 3 : 0);
-		facesIndex     = (listPropsCount > 1 ? 1 : 0);
+		xIndex = 1;
+		yIndex = 2;
+		zIndex = (stdPropsCount > 3 ? 3 : 0);
+		facesIndex = (listPropsCount > 1 ? 1 : 0);
 		texNumberIndex = (singlePropsCount > 1 ? 1 : 0);
 	}
 	else
@@ -1388,17 +1388,17 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 			// Force events processing (to hide dialog)
 			QCoreApplication::processEvents();
 
-			xIndex         = pod.xComboBox->currentIndex();
-			yIndex         = pod.yComboBox->currentIndex();
-			zIndex         = pod.zComboBox->currentIndex();
-			nxIndex        = pod.nxComboBox->currentIndex();
-			nyIndex        = pod.nyComboBox->currentIndex();
-			nzIndex        = pod.nzComboBox->currentIndex();
-			rIndex         = pod.rComboBox->currentIndex();
-			gIndex         = pod.gComboBox->currentIndex();
-			bIndex         = pod.bComboBox->currentIndex();
-			iIndex         = pod.iComboBox->currentIndex();
-			facesIndex     = pod.facesComboBox->currentIndex();
+			xIndex = pod.xComboBox->currentIndex();
+			yIndex = pod.yComboBox->currentIndex();
+			zIndex = pod.zComboBox->currentIndex();
+			nxIndex = pod.nxComboBox->currentIndex();
+			nyIndex = pod.nyComboBox->currentIndex();
+			nzIndex = pod.nzComboBox->currentIndex();
+			rIndex = pod.rComboBox->currentIndex();
+			gIndex = pod.gComboBox->currentIndex();
+			bIndex = pod.bComboBox->currentIndex();
+			iIndex = pod.iComboBox->currentIndex();
+			facesIndex = pod.facesComboBox->currentIndex();
 			texCoordsIndex = pod.textCoordsComboBox->currentIndex();
 			texNumberIndex = pod.texIndexComboBox->currentIndex();
 
@@ -1651,8 +1651,8 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 	{
 		for (size_t i = 0; i < sfPropIndexes.size(); ++i)
 		{
-			int          sfIndex = sfPropIndexes[i];
-			plyProperty& pp      = stdProperties[sfIndex - 1];
+			int sfIndex = sfPropIndexes[i];
+			plyProperty& pp = stdProperties[sfIndex - 1];
 
 			unsigned numberOfScalars = pointElements[pp.elemIndex].elementInstances;
 
@@ -1698,7 +1698,7 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 
 	/* MESH FACETS (TRI) */
 
-	ccMesh*  mesh           = nullptr;
+	ccMesh* mesh = nullptr;
 	unsigned numberOfFacets = 0;
 
 	if (facesIndex > 0)
@@ -1715,7 +1715,7 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 			ccLog::Error("Not enough memory to load facets (they will be ignored)!");
 			ccLog::Warning("[PLY] Mesh ignored!");
 			delete mesh;
-			mesh           = nullptr;
+			mesh = nullptr;
 			numberOfFacets = 0;
 		}
 		else
@@ -1958,8 +1958,8 @@ CC_FILE_ERROR PlyFilter::loadFile(const QString& filename, const QString& inputT
 				QString texturePath = QFileInfo(filename).absolutePath() + QString('/');
 				for (int ti = 0; ti < textureFileNames.size(); ++ti)
 				{
-					QString            textureFileName = textureFileNames[ti];
-					QString            textureFilePath = texturePath + textureFileName;
+					QString textureFileName = textureFileNames[ti];
+					QString textureFilePath = texturePath + textureFileName;
 					ccMaterial::Shared material(new ccMaterial(textureFileName));
 					if (material->loadAndSetTexture(textureFilePath))
 					{

@@ -94,25 +94,25 @@ class cc2Point5DimEditor
 
   public:
 	/// Convert raster grid to point cloud
-	ccPointCloud* convertGridToCloud(bool                                               exportHeightStats,
-	                                 bool                                               exportSFStats,
+	ccPointCloud* convertGridToCloud(bool exportHeightStats,
+	                                 bool exportSFStats,
 	                                 const std::vector<ccRasterGrid::ExportableFields>& exportedStatistics,
-	                                 bool                                               projectSFs,
-	                                 bool                                               projectColors,
-	                                 bool                                               resampleInputCloudXY,
-	                                 bool                                               resampleInputCloudZ,
-	                                 ccGenericPointCloud*                               inputCloud,
-	                                 double                                             percentileValue,
-	                                 bool                                               exportToOriginalCS,
-	                                 bool                                               appendGridSizeToSFNames,
-	                                 ccProgressDialog*                                  progressDialog = nullptr) const;
+	                                 bool projectSFs,
+	                                 bool projectColors,
+	                                 bool resampleInputCloudXY,
+	                                 bool resampleInputCloudZ,
+	                                 ccGenericPointCloud* inputCloud,
+	                                 double percentileValue,
+	                                 bool exportToOriginalCS,
+	                                 bool appendGridSizeToSFNames,
+	                                 ccProgressDialog* progressDialog = nullptr) const;
 
   protected:
 	// Members
 	ccBoundingBoxEditorDlg* m_bbEditorDlg = nullptr;
-	ccGLWindowInterface*     m_glWindow    = nullptr;
-	ccPointCloud*            m_rasterCloud = nullptr;
-	ccRasterGrid             m_grid;
+	ccGLWindowInterface* m_glWindow = nullptr;
+	ccPointCloud* m_rasterCloud = nullptr;
+	ccRasterGrid m_grid;
 };
 
 #endif // CC_2_5D_EDITOR_HEADER

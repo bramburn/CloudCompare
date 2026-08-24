@@ -81,7 +81,7 @@ class CCAPPCOMMON_LIB_API ccApplicationBase : public QApplication
 	{
 		return m_isCommandLine;
 	}
-	
+
 	/**
 	 * @brief Get translation path
 	 * @return Path to translations
@@ -90,7 +90,7 @@ class CCAPPCOMMON_LIB_API ccApplicationBase : public QApplication
 	{
 		return m_translationPath;
 	}
-	
+
 	/**
 	 * @brief Get version string
 	 * @return Version
@@ -99,7 +99,7 @@ class CCAPPCOMMON_LIB_API ccApplicationBase : public QApplication
 	{
 		return m_versionStr;
 	}
-	
+
 	/**
 	 * @brief Get full version string for display
 	 *
@@ -124,10 +124,10 @@ class CCAPPCOMMON_LIB_API ccApplicationBase : public QApplication
 
 	/// Shader path
 	QString m_shaderPath;
-	
+
 	/// Translation path
 	QString m_translationPath;
-	
+
 	/// Plugin paths
 	QStringList m_pluginPaths;
 

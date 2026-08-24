@@ -55,13 +55,13 @@ class ccAskTwoDoubleValuesDlg : public QDialog
 	 */
 	ccAskTwoDoubleValuesDlg(const QString& vName1,
 	                        const QString& vName2,
-	                        double         minVal,
-	                        double         maxVal,
-	                        double         defaultVal1,
-	                        double         defaultVal2,
-	                        int            precision   = 6,
-	                        QString        windowTitle = QString(),
-	                        QWidget*       parent      = nullptr);
+	                        double minVal,
+	                        double maxVal,
+	                        double defaultVal1,
+	                        double defaultVal2,
+	                        int precision = 6,
+	                        QString windowTitle = QString(),
+	                        QWidget* parent = nullptr);
 };
 
 #endif // CC_ASK_TWO_DOUBLE_VALUES_DIALOG_HEADER

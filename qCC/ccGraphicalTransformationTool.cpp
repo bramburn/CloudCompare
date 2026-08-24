@@ -202,7 +202,7 @@ void ccGraphicalTransformationTool::populateAdvModeItems()
 	MainWindow* mainWindow = MainWindow::TheInstance();
 	if (mainWindow)
 	{
-		ccHObject*           root = mainWindow->dbRootObject();
+		ccHObject* root = mainWindow->dbRootObject();
 		ccHObject::Container polylines;
 		ccHObject::Container coordinateSystems;
 		if (root)
@@ -274,7 +274,7 @@ ccGLMatrixd ccGraphicalTransformationTool::arbitraryVectorTranslation(const CCVe
 	}
 
 	double phiDenominator = std::sqrt((vec.y * vec.y) + (vec.z * vec.z));
-	double phi            = 0;
+	double phi = 0;
 
 	if (CCCoreLib::LessThanEpsilon(phiDenominator))
 	{
@@ -318,13 +318,13 @@ ccGLMatrixd ccGraphicalTransformationTool::arbitraryVectorRotation(double angle,
 	// advRotationTransform = (cos(theta)*I) + ((1-cos(theta)*u) (X) u) + (sin(theta)*u_skewsym)
 	// (X) represents tensor product
 	// Reference: Ch 4.7.3 in Geometric Tools for Computer Graphics - P. Schneider & D. Eberly
-	double      cosTheta  = std::cos(angle);
-	double      sinTheta  = std::sin(angle);
+	double cosTheta = std::cos(angle);
+	double sinTheta = std::sin(angle);
 	ccGLMatrixd firstTerm = ccGLMatrixd();
 	firstTerm.scaleRotation(cosTheta);
 	ccGLMatrixd secondTerm = ccGLMatrixd();
-	CCVector3d  v          = (1 - cosTheta) * arbitraryVector;
-	CCVector3d  w          = arbitraryVector;
+	CCVector3d v = (1 - cosTheta) * arbitraryVector;
+	CCVector3d w = arbitraryVector;
 	secondTerm.setColumn(0, CCVector3d(v[0] * w[0], v[1] * w[0], v[2] * w[0]));
 	secondTerm.setColumn(1, CCVector3d(v[0] * w[1], v[1] * w[1], v[2] * w[1]));
 	secondTerm.setColumn(2, CCVector3d(v[0] * w[2], v[1] * w[2], v[2] * w[2]));
@@ -354,8 +354,8 @@ bool ccGraphicalTransformationTool::setAdvTranslationTransform(ccHObject* transl
 	}
 	if (translateRef->isA(CC_TYPES::POLY_LINE))
 	{
-		ccPolyline* line          = static_cast<ccPolyline*>(translateRef);
-		CCVector3   arbitraryVec  = *line->getPoint(1) - *line->getPoint(0);
+		ccPolyline* line = static_cast<ccPolyline*>(translateRef);
+		CCVector3 arbitraryVec = *line->getPoint(1) - *line->getPoint(0);
 		m_advTranslationTransform = arbitraryVectorTranslation(arbitraryVec);
 		TxCheckBox->setChecked(false);
 		TyCheckBox->setChecked(false);
@@ -365,7 +365,7 @@ bool ccGraphicalTransformationTool::setAdvTranslationTransform(ccHObject* transl
 	}
 	else if (translateRef->isA(CC_TYPES::PLANE))
 	{
-		ccPlane* plane            = static_cast<ccPlane*>(translateRef);
+		ccPlane* plane = static_cast<ccPlane*>(translateRef);
 		m_advTranslationTransform = ccGLMatrixd(plane->getTransformation().data());
 		TxCheckBox->setEnabled(true);
 		TyCheckBox->setEnabled(true);
@@ -373,7 +373,7 @@ bool ccGraphicalTransformationTool::setAdvTranslationTransform(ccHObject* transl
 	}
 	else if (translateRef->isA(CC_TYPES::COORDINATESYSTEM))
 	{
-		ccCoordinateSystem* cs    = static_cast<ccCoordinateSystem*>(translateRef);
+		ccCoordinateSystem* cs = static_cast<ccCoordinateSystem*>(translateRef);
 		m_advTranslationTransform = ccGLMatrixd(cs->getTransformation().data());
 		TxCheckBox->setEnabled(true);
 		TyCheckBox->setEnabled(true);
@@ -398,10 +398,10 @@ bool ccGraphicalTransformationTool::setAdvRotationAxis(ccHObject* rotateRef, rot
 	CCVector3 arbitraryVec;
 	if (rotateRef->isA(CC_TYPES::POLY_LINE))
 	{
-		ccPolyline*       line  = static_cast<ccPolyline*>(rotateRef);
-		const CCVector3f* end   = line->getPoint(1);
+		ccPolyline* line = static_cast<ccPolyline*>(rotateRef);
+		const CCVector3f* end = line->getPoint(1);
 		const CCVector3f* start = line->getPoint(0);
-		arbitraryVec            = *end - *start;
+		arbitraryVec = *end - *start;
 		arbitraryVec.normalize();
 		rotComboBox->blockSignals(true);
 		rotComboBox->clear();
@@ -414,7 +414,7 @@ bool ccGraphicalTransformationTool::setAdvRotationAxis(ccHObject* rotateRef, rot
 	else if (rotateRef->isA(CC_TYPES::PLANE))
 	{
 		ccPlane* plane = static_cast<ccPlane*>(rotateRef);
-		arbitraryVec   = plane->getNormal();
+		arbitraryVec = plane->getNormal();
 		rotComboBox->blockSignals(true);
 		rotComboBox->clear();
 		rotComboBox->insertItem(0, "Z", rotComboBoxItems::Z);
@@ -539,7 +539,7 @@ void ccGraphicalTransformationTool::advTranslateRefUpdate(int index)
 				{
 					mainWindow->db()->unselectEntity(m_advTranslateRef);
 				}
-				m_advTranslateRef        = m_advancedModeObjectList[i];
+				m_advTranslateRef = m_advancedModeObjectList[i];
 				m_advTranslateRefIsChild = entityInTransformList(m_advTranslateRef);
 				if (m_advTranslateRef != m_advRotateRef) // already selected
 				{
@@ -598,7 +598,7 @@ void ccGraphicalTransformationTool::advRotateRefUpdate(int index)
 		CCVector3d center = m_toTransform.getBB_recursive().getCenter();
 		setRotationCenter(center);
 		m_advRotationRefObjCenter = CCVector3(0, 0, 0);
-		m_advRotationAxis         = CCVector3d(0, 0, 1);
+		m_advRotationAxis = CCVector3d(0, 0, 1);
 		objCenterRadio->setEnabled(true);
 		objCenterRadio->setChecked(true);
 		refAxisRadio->setEnabled(false);
@@ -688,7 +688,7 @@ void ccGraphicalTransformationTool::clear()
 	m_toTransform.detachAllChildren();
 
 	m_rotation.toIdentity();
-	m_translation    = CCVector3d(0, 0, 0);
+	m_translation = CCVector3d(0, 0, 0);
 	m_rotationCenter = CCVector3d(0, 0, 0);
 }
 
@@ -807,7 +807,7 @@ bool ccGraphicalTransformationTool::start()
 		return false;
 
 	m_rotation.toIdentity();
-	m_translation    = CCVector3d(0, 0, 0);
+	m_translation = CCVector3d(0, 0, 0);
 	m_rotationCenter = m_toTransform.getBB_recursive().getCenter(); // m_rotation center == selected entities center
 
 	// activate "moving mode" in associated GL window
@@ -885,7 +885,7 @@ void ccGraphicalTransformationTool::glRotate(const ccGLMatrixd& rotMat)
 	if (m_advMode && m_advRotateRef != nullptr)
 	{
 		rotComboBoxItems rotAxis = static_cast<rotComboBoxItems>(rotComboBox->itemData(rotComboBox->currentIndex()).toInt());
-		double           angle   = 0;
+		double angle = 0;
 		switch (rotAxis)
 		{
 		case rotComboBoxItems::X:
@@ -1011,8 +1011,8 @@ void ccGraphicalTransformationTool::updateAllGLTransformations()
 		}
 		else if (m_advTranslateRef->isA(CC_TYPES::POLY_LINE))
 		{
-			ccPolyline* line          = static_cast<ccPolyline*>(m_advTranslateRef);
-			CCVector3   arbitraryVec  = line->getGLTransformation() * (*line->getPoint(1) - *line->getPoint(0));
+			ccPolyline* line = static_cast<ccPolyline*>(m_advTranslateRef);
+			CCVector3 arbitraryVec = line->getGLTransformation() * (*line->getPoint(1) - *line->getPoint(0));
 			m_advTranslationTransform = m_position * arbitraryVectorTranslation(arbitraryVec);
 		}
 	}
@@ -1057,8 +1057,8 @@ void ccGraphicalTransformationTool::apply()
 			ccGLMatrixd finalRotation = finalTransCorrected;
 			finalRotation.setTranslation(CCVector3(0, 0, 0));
 			ccGLMatrixd finalRotationT = finalRotation.transposed();
-			ccGLMatrixd idTrans        = finalRotation * finalRotationT;
-			double      norm           = idTrans.data()[0] * idTrans.data()[5] * idTrans.data()[10];
+			ccGLMatrixd idTrans = finalRotation * finalRotationT;
+			double norm = idTrans.data()[0] * idTrans.data()[5] * idTrans.data()[10];
 			ccLog::PrintDebug("[GraphicalTransformationTool] T*T-1:");
 			ccLog::PrintDebug(idTrans.toString(12, ' ')); // full precision
 			ccLog::PrintDebug(QString("Rotation norm = %1").arg(norm, 0, 'f', 12));
@@ -1105,9 +1105,9 @@ void ccGraphicalTransformationTool::apply()
 	ccLog::Print(correctedFinalTrans.toString(12, ' ')); // full precision
 #ifdef QT_DEBUG
 	{
-		float      phi_rad   = 0.0f;
-		float      theta_rad = 0.0f;
-		float      psi_rad   = 0.0f;
+		float phi_rad = 0.0f;
+		float theta_rad = 0.0f;
+		float psi_rad = 0.0f;
 		CCVector3f t3D;
 		correctedFinalTrans.getParameters(phi_rad, theta_rad, psi_rad, t3D);
 		ccLog::Print(QString("Angles(%1,%2,%3) T(%5,%6,%7)").arg(phi_rad).arg(theta_rad).arg(psi_rad).arg(t3D.x).arg(t3D.y).arg(t3D.z));

@@ -32,14 +32,14 @@ class TestArgumentParser : public QObject
 	// peek()
 	void peekOnEmptyReturnsNull()
 	{
-		QStringList      args;
+		QStringList args;
 		ccArgumentParser parser(args);
 		QCOMPARE(parser.peek(), QString());
 	}
 
 	void peekReturnsFirstWithoutConsuming()
 	{
-		QStringList      args{"hello", "world"};
+		QStringList args{"hello", "world"};
 		ccArgumentParser parser(args);
 
 		const QString first = parser.peek();
@@ -50,7 +50,7 @@ class TestArgumentParser : public QObject
 
 	void consecutivePeeksReturnSameElement()
 	{
-		QStringList      args{"hello"};
+		QStringList args{"hello"};
 		ccArgumentParser parser(args);
 
 		QCOMPARE(parser.peek(), parser.peek());
@@ -59,7 +59,7 @@ class TestArgumentParser : public QObject
 	// skip()
 	void skipRemovesFirstElement()
 	{
-		QStringList      args{"a", "b", "c"};
+		QStringList args{"a", "b", "c"};
 		ccArgumentParser parser(args);
 
 		parser.skip();
@@ -70,14 +70,14 @@ class TestArgumentParser : public QObject
 	// isEmpty()
 	void isEmptyOnEmptyList()
 	{
-		QStringList      args;
+		QStringList args;
 		ccArgumentParser parser(args);
 		QVERIFY(parser.isEmpty());
 	}
 
 	void isEmptyOnNonEmptyList()
 	{
-		QStringList      args{"a"};
+		QStringList args{"a"};
 		ccArgumentParser parser(args);
 		QVERIFY(!parser.isEmpty());
 	}
@@ -85,7 +85,7 @@ class TestArgumentParser : public QObject
 	// takeNext()
 	void takeNextOnEmptyReturnsNullopt()
 	{
-		QStringList      args;
+		QStringList args;
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeNext();
@@ -94,7 +94,7 @@ class TestArgumentParser : public QObject
 
 	void takeNextReturnsAndConsumes()
 	{
-		QStringList      args{"first", "second"};
+		QStringList args{"first", "second"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeNext();
@@ -105,7 +105,7 @@ class TestArgumentParser : public QObject
 
 	void takeNextSuccessiveCalls()
 	{
-		QStringList      args{"a", "b", "c"};
+		QStringList args{"a", "b", "c"};
 		ccArgumentParser parser(args);
 
 		QCOMPARE(parser.takeNext(), "a");
@@ -117,7 +117,7 @@ class TestArgumentParser : public QObject
 	// takeFloat()
 	void takeFloatParsesValid()
 	{
-		QStringList      args{"3.14"};
+		QStringList args{"3.14"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeFloat("test");
@@ -128,7 +128,7 @@ class TestArgumentParser : public QObject
 
 	void takeFloatOnEmptyReturnsNullopt()
 	{
-		QStringList      args;
+		QStringList args;
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeFloat("test");
@@ -137,7 +137,7 @@ class TestArgumentParser : public QObject
 
 	void takeFloatOnInvalidReturnsNullopt()
 	{
-		QStringList      args{"not_a_number"};
+		QStringList args{"not_a_number"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeFloat("test");
@@ -183,7 +183,7 @@ class TestArgumentParser : public QObject
 	// takeUInt()
 	void takeUIntParsesValid()
 	{
-		QStringList      args{"42"};
+		QStringList args{"42"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeUInt("test");
@@ -194,7 +194,7 @@ class TestArgumentParser : public QObject
 
 	void takeUIntOnEmptyReturnsNullopt()
 	{
-		QStringList      args;
+		QStringList args;
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeUInt("test");
@@ -203,7 +203,7 @@ class TestArgumentParser : public QObject
 
 	void takeUIntOnInvalidReturnsNullopt()
 	{
-		QStringList      args{"abc"};
+		QStringList args{"abc"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeUInt("test");
@@ -212,7 +212,7 @@ class TestArgumentParser : public QObject
 
 	void takeUIntRejectsNegative()
 	{
-		QStringList      args{"-1"};
+		QStringList args{"-1"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeUInt("test");
@@ -221,7 +221,7 @@ class TestArgumentParser : public QObject
 
 	void takeUIntBelowMin()
 	{
-		QStringList      args{"5"};
+		QStringList args{"5"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeUInt("test", 10);
@@ -230,7 +230,7 @@ class TestArgumentParser : public QObject
 
 	void takeUIntAboveMax()
 	{
-		QStringList      args{"200"};
+		QStringList args{"200"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeUInt("test", 0, 100);
@@ -261,7 +261,7 @@ class TestArgumentParser : public QObject
 	// tryConsumeOption()
 	void tryConsumeOptionMatchesCaseInsensitive()
 	{
-		QStringList      args{"-orient"};
+		QStringList args{"-orient"};
 		ccArgumentParser parser(args);
 
 		QVERIFY(parser.tryConsumeOption("ORIENT"));
@@ -270,7 +270,7 @@ class TestArgumentParser : public QObject
 
 	void tryConsumeOptionMatchesUpperCase()
 	{
-		QStringList      args{"-ORIENT"};
+		QStringList args{"-ORIENT"};
 		ccArgumentParser parser(args);
 
 		QVERIFY(parser.tryConsumeOption("ORIENT"));
@@ -279,7 +279,7 @@ class TestArgumentParser : public QObject
 
 	void tryConsumeOptionNoMatchDoesNotConsume()
 	{
-		QStringList      args{"-OTHER"};
+		QStringList args{"-OTHER"};
 		ccArgumentParser parser(args);
 
 		QVERIFY(!parser.tryConsumeOption("ORIENT"));
@@ -288,7 +288,7 @@ class TestArgumentParser : public QObject
 
 	void tryConsumeOptionOnEmptyReturnsFalse()
 	{
-		QStringList      args;
+		QStringList args;
 		ccArgumentParser parser(args);
 
 		QVERIFY(!parser.tryConsumeOption("ORIENT"));
@@ -296,7 +296,7 @@ class TestArgumentParser : public QObject
 
 	void tryConsumeOptionRequiresDashPrefix()
 	{
-		QStringList      args{"ORIENT"};
+		QStringList args{"ORIENT"};
 		ccArgumentParser parser(args);
 
 		QVERIFY(!parser.tryConsumeOption("ORIENT"));
@@ -306,7 +306,7 @@ class TestArgumentParser : public QObject
 	// takeEnum()
 	void takeEnumReturnsCorrectValue()
 	{
-		QStringList      args{"GREEN"};
+		QStringList args{"GREEN"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeEnum<Color>({
@@ -322,7 +322,7 @@ class TestArgumentParser : public QObject
 
 	void takeEnumCaseInsensitive()
 	{
-		QStringList      args{"red"};
+		QStringList args{"red"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeEnum<Color>({
@@ -337,7 +337,7 @@ class TestArgumentParser : public QObject
 
 	void takeEnumOnEmptyReturnsNullopt()
 	{
-		QStringList      args;
+		QStringList args;
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeEnum<Color>({
@@ -349,7 +349,7 @@ class TestArgumentParser : public QObject
 
 	void takeEnumUnrecognizedReturnsNullopt()
 	{
-		QStringList      args{"YELLOW"};
+		QStringList args{"YELLOW"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeEnum<Color>({
@@ -364,7 +364,7 @@ class TestArgumentParser : public QObject
 
 	void takeEnumWithAliases()
 	{
-		QStringList      args{"CRIMSON"};
+		QStringList args{"CRIMSON"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeEnum<Color>({
@@ -380,7 +380,7 @@ class TestArgumentParser : public QObject
 	// takeDouble()
 	void takeDoubleParsesValid()
 	{
-		QStringList      args{"3.141592653589"};
+		QStringList args{"3.141592653589"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeDouble("test");
@@ -391,7 +391,7 @@ class TestArgumentParser : public QObject
 
 	void takeDoubleOnEmptyReturnsNullopt()
 	{
-		QStringList      args;
+		QStringList args;
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeDouble("test");
@@ -400,7 +400,7 @@ class TestArgumentParser : public QObject
 
 	void takeDoubleOnInvalidReturnsNullopt()
 	{
-		QStringList      args{"not_a_number"};
+		QStringList args{"not_a_number"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeDouble("test");
@@ -409,7 +409,7 @@ class TestArgumentParser : public QObject
 
 	void takeDoubleMinMaxAcceptsInRange()
 	{
-		QStringList      args{"50"};
+		QStringList args{"50"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeDouble("test", 0.0, 100.0);
@@ -419,7 +419,7 @@ class TestArgumentParser : public QObject
 
 	void takeDoubleMinMaxRejectsBelowMin()
 	{
-		QStringList      args{"-5"};
+		QStringList args{"-5"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeDouble("test", 0.0, 100.0);
@@ -428,7 +428,7 @@ class TestArgumentParser : public QObject
 
 	void takeDoubleMinMaxRejectsAboveMax()
 	{
-		QStringList      args{"150"};
+		QStringList args{"150"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeDouble("test", 0.0, 100.0);
@@ -438,7 +438,7 @@ class TestArgumentParser : public QObject
 	// takeInt()
 	void takeIntParsesValid()
 	{
-		QStringList      args{"-42"};
+		QStringList args{"-42"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeInt("test");
@@ -449,7 +449,7 @@ class TestArgumentParser : public QObject
 
 	void takeIntOnEmptyReturnsNullopt()
 	{
-		QStringList      args;
+		QStringList args;
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeInt("test");
@@ -458,7 +458,7 @@ class TestArgumentParser : public QObject
 
 	void takeIntOnInvalidReturnsNullopt()
 	{
-		QStringList      args{"abc"};
+		QStringList args{"abc"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeInt("test");
@@ -467,7 +467,7 @@ class TestArgumentParser : public QObject
 
 	void takeIntMinMaxAcceptsInRange()
 	{
-		QStringList      args{"5"};
+		QStringList args{"5"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeInt("test", 0, 10);
@@ -477,7 +477,7 @@ class TestArgumentParser : public QObject
 
 	void takeIntMinMaxRejectsBelowMin()
 	{
-		QStringList      args{"-1"};
+		QStringList args{"-1"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeInt("test", 0, 10);
@@ -486,7 +486,7 @@ class TestArgumentParser : public QObject
 
 	void takeIntMinMaxRejectsAboveMax()
 	{
-		QStringList      args{"20"};
+		QStringList args{"20"};
 		ccArgumentParser parser(args);
 
 		auto result = parser.takeInt("test", 0, 10);
@@ -545,7 +545,7 @@ class TestArgumentParser : public QObject
 	// size()
 	void sizeReturnsRemainingCount()
 	{
-		QStringList      args{"a", "b", "c"};
+		QStringList args{"a", "b", "c"};
 		ccArgumentParser parser(args);
 
 		QCOMPARE(parser.size(), static_cast<size_t>(3));
@@ -557,7 +557,7 @@ class TestArgumentParser : public QObject
 
 	void sizeEmptyList()
 	{
-		QStringList      args;
+		QStringList args;
 		ccArgumentParser parser(args);
 
 		QCOMPARE(parser.size(), static_cast<size_t>(0));
@@ -566,7 +566,7 @@ class TestArgumentParser : public QObject
 	// peek() after skip()
 	void peekAfterSkipReturnsNext()
 	{
-		QStringList      args{"skip", "target", "after"};
+		QStringList args{"skip", "target", "after"};
 		ccArgumentParser parser(args);
 
 		parser.skip();

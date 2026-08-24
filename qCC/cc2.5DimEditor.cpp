@@ -123,12 +123,12 @@ void cc2Point5DimEditor::create2DView(QFrame* parentFrame)
 
 		ccGui::ParamStruct params = m_glWindow->getDisplayParameters();
 		// black (text) & white (background) display by default
-		params.backgroundCol          = ccColor::white;
-		params.textDefaultCol         = ccColor::black;
+		params.backgroundCol = ccColor::white;
+		params.textDefaultCol = ccColor::black;
 		params.drawBackgroundGradient = false;
-		params.decimateMeshOnMove     = false;
-		params.displayCross           = false;
-		params.colorScaleUseShader    = false;
+		params.decimateMeshOnMove = false;
+		params.displayCross = false;
+		params.colorScaleUseShader = false;
 		m_glWindow->setDisplayParameters(params, true);
 		m_glWindow->setPerspectiveState(false, true);
 		m_glWindow->setInteractionMode(ccGLWindowInterface::INTERACT_PAN | ccGLWindowInterface::INTERACT_ZOOM_CAMERA | ccGLWindowInterface::INTERACT_CLICKABLE_ITEMS);
@@ -176,7 +176,7 @@ bool cc2Point5DimEditor::getGridSize(unsigned& gridWidth, unsigned& gridHeight) 
  */
 QString cc2Point5DimEditor::getGridSizeAsString() const
 {
-	unsigned gridWidth  = 0;
+	unsigned gridWidth = 0;
 	unsigned gridHeight = 0;
 	if (!getGridSize(gridWidth, gridHeight))
 	{
@@ -213,12 +213,12 @@ void cc2Point5DimEditor::update2DDisplayZoom(ccBBox& box)
 
 	// we compute the pixel size (in world coordinates)
 	{
-		double realGridWidth  = m_grid.width * m_grid.gridStep;
+		double realGridWidth = m_grid.width * m_grid.gridStep;
 		double realGridHeight = m_grid.height * m_grid.gridStep;
 
-		static const int screnMargin  = 20;
-		int              screenWidth  = std::max(1, m_glWindow->glWidth() - 2 * screnMargin);
-		int              screenHeight = std::max(1, m_glWindow->glHeight() - 2 * screnMargin);
+		static const int screnMargin = 20;
+		int screenWidth = std::max(1, m_glWindow->glWidth() - 2 * screnMargin);
+		int screenHeight = std::max(1, m_glWindow->glHeight() - 2 * screnMargin);
 
 		int pointSize = 1;
 		if (static_cast<int>(m_grid.width) < screenWidth
@@ -226,13 +226,13 @@ void cc2Point5DimEditor::update2DDisplayZoom(ccBBox& box)
 		{
 			int vPointSize = static_cast<int>(ceil(static_cast<float>(screenWidth) / m_grid.width));
 			int hPointSize = static_cast<int>(ceil(static_cast<float>(screenHeight) / m_grid.height));
-			pointSize      = std::min(vPointSize, hPointSize);
+			pointSize = std::min(vPointSize, hPointSize);
 
 			// if the grid is too small (i.e. necessary point size > 10)
 			if (pointSize > 10)
 			{
-				pointSize    = 10;
-				screenWidth  = m_grid.width * pointSize;
+				pointSize = 10;
+				screenWidth = m_grid.width * pointSize;
 				screenHeight = m_grid.height * pointSize;
 			}
 		}
@@ -269,18 +269,18 @@ void cc2Point5DimEditor::update2DDisplayZoom(ccBBox& box)
  * @return Newly created point cloud, or nullptr on failure
  * @see m_grid
  */
-ccPointCloud* cc2Point5DimEditor::convertGridToCloud(bool                                               exportHeightStats,
-                                                     bool                                               exportSFStats,
+ccPointCloud* cc2Point5DimEditor::convertGridToCloud(bool exportHeightStats,
+                                                     bool exportSFStats,
                                                      const std::vector<ccRasterGrid::ExportableFields>& exportedStatistics,
-                                                     bool                                               projectSFs,
-                                                     bool                                               projectColors,
-                                                     bool                                               resampleInputCloudXY,
-                                                     bool                                               resampleInputCloudZ,
-                                                     ccGenericPointCloud*                               inputCloud,
-                                                     double                                             percentileValue,
-                                                     bool                                               exportToOriginalCS,
-                                                     bool                                               appendGridSizeToSFNames,
-                                                     ccProgressDialog*                                  progressDialog /*=nullptr*/) const
+                                                     bool projectSFs,
+                                                     bool projectColors,
+                                                     bool resampleInputCloudXY,
+                                                     bool resampleInputCloudZ,
+                                                     ccGenericPointCloud* inputCloud,
+                                                     double percentileValue,
+                                                     bool exportToOriginalCS,
+                                                     bool appendGridSizeToSFNames,
+                                                     ccProgressDialog* progressDialog /*=nullptr*/) const
 {
 	// projection dimension
 	const unsigned char Z = getProjectionDimension();

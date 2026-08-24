@@ -77,8 +77,8 @@ class QCC_DB_LIB_API ccCameraSensor : public ccSensor
 		float vFOV_rad;           //!< Vertical field of view (radians)
 		float zNear_mm;           //!< Near clipping plane (mm)
 		float zFar_mm;            //!< Far clipping plane (mm)
-		int   arrayWidth;         //!< Image width (pixels)
-		int   arrayHeight;        //!< Image height (pixels)
+		int arrayWidth;           //!< Image width (pixels)
+		int arrayHeight;          //!< Image height (pixels)
 		float principal_point[2]; //!< Principal point (pixels)
 
 		//! Returns the horizontal focal pix
@@ -96,10 +96,10 @@ class QCC_DB_LIB_API ccCameraSensor : public ccSensor
 	 */
 	enum DistortionModel
 	{
-		NO_DISTORTION_MODEL        = 0, //!< No distortion
-		SIMPLE_RADIAL_DISTORTION   = 1, //!< Simple radial (k1, k2)
-		BROWN_DISTORTION           = 2, //!< Brown's model (k1, k2, k3, ...)
-		EXTENDED_RADIAL_DISTORTION = 3  //!< Extended radial (k1, k2, k3)
+		NO_DISTORTION_MODEL = 0,       //!< No distortion
+		SIMPLE_RADIAL_DISTORTION = 1,  //!< Simple radial (k1, k2)
+		BROWN_DISTORTION = 2,          //!< Brown's model (k1, k2, k3, ...)
+		EXTENDED_RADIAL_DISTORTION = 3 //!< Extended radial (k1, k2, k3)
 	};
 
 	//! Lens distortion parameters (interface)
@@ -212,11 +212,11 @@ class QCC_DB_LIB_API ccCameraSensor : public ccSensor
 		**/
 		bool initFrustumHull();
 
-		bool          isComputed;
-		bool          drawFrustum;
-		bool          drawSidePlanes;
+		bool isComputed;
+		bool drawFrustum;
+		bool drawSidePlanes;
 		ccPointCloud* frustumCorners;
-		ccMesh*       frustumHull;
+		ccMesh* frustumHull;
 		//! Center of the circumscribed sphere
 		CCVector3 center;
 	};
@@ -420,9 +420,9 @@ class QCC_DB_LIB_API ccCameraSensor : public ccSensor
 	    \param keypointsImage corresponding keypoints in image
 	    \return ortho-rectified image as a point cloud
 	**/
-	ccPointCloud* orthoRectifyAsCloud(const ccImage*                  image,
+	ccPointCloud* orthoRectifyAsCloud(const ccImage* image,
 	                                  CCCoreLib::GenericIndexedCloud* keypoints3D,
-	                                  std::vector<KeyPoint>&          keypointsImage) const;
+	                                  std::vector<KeyPoint>& keypointsImage) const;
 
 	//! Projective ortho-rectification of an image (as image)
 	/** Requires at least 4 key points!
@@ -435,13 +435,13 @@ class QCC_DB_LIB_API ccCameraSensor : public ccSensor
 	    \param realCorners (optional) image real 3D corners (4*2 values)
 	    \return ortho-rectified image
 	**/
-	ccImage* orthoRectifyAsImage(const ccImage*                  image,
+	ccImage* orthoRectifyAsImage(const ccImage* image,
 	                             CCCoreLib::GenericIndexedCloud* keypoints3D,
-	                             std::vector<KeyPoint>&          keypointsImage,
-	                             double&                         pixelSize,
-	                             double*                         minCorner   = nullptr,
-	                             double*                         maxCorner   = nullptr,
-	                             double*                         realCorners = nullptr) const;
+	                             std::vector<KeyPoint>& keypointsImage,
+	                             double& pixelSize,
+	                             double* minCorner = nullptr,
+	                             double* maxCorner = nullptr,
+	                             double* realCorners = nullptr) const;
 
 	//! Direct ortho-rectification of an image (as image)
 	/** No keypoint is required. The user must specify however the
@@ -455,13 +455,13 @@ class QCC_DB_LIB_API ccCameraSensor : public ccSensor
 	    \param realCorners (optional) image real 3D corners (4*2 values)
 	    \return ortho-rectified image
 	**/
-	ccImage* orthoRectifyAsImageDirect(const ccImage*      image,
+	ccImage* orthoRectifyAsImageDirect(const ccImage* image,
 	                                   PointCoordinateType altitude,
-	                                   double&             pixelSize,
-	                                   bool                undistortImages = true,
-	                                   double*             minCorner       = nullptr,
-	                                   double*             maxCorner       = nullptr,
-	                                   double*             realCorners     = nullptr) const;
+	                                   double& pixelSize,
+	                                   bool undistortImages = true,
+	                                   double* minCorner = nullptr,
+	                                   double* maxCorner = nullptr,
+	                                   double* realCorners = nullptr) const;
 
 	//! Projective ortho-rectification of multiple images (as image files)
 	/** \param images set of N calibrated images (i.e. images with their associated sensor)
@@ -474,14 +474,14 @@ class QCC_DB_LIB_API ccCameraSensor : public ccSensor
 	    \param[out] relativePos relative positions (relatively to first image)
 	    \return true if successful
 	**/
-	static bool OrthoRectifyAsImages(std::vector<ccImage*>                   images,
-	                                 double                                  a[],
-	                                 double                                  b[],
-	                                 double                                  c[],
-	                                 unsigned                                maxSize,
-	                                 QDir*                                   outputDir            = nullptr,
-	                                 std::vector<ccImage*>*                  orthoRectifiedImages = nullptr,
-	                                 std::vector<std::pair<double, double>>* relativePos          = nullptr);
+	static bool OrthoRectifyAsImages(std::vector<ccImage*> images,
+	                                 double a[],
+	                                 double b[],
+	                                 double c[],
+	                                 unsigned maxSize,
+	                                 QDir* outputDir = nullptr,
+	                                 std::vector<ccImage*>* orthoRectifiedImages = nullptr,
+	                                 std::vector<std::pair<double, double>>* relativePos = nullptr);
 
 	//! Computes ortho-rectification parameters for a given image
 	/** Requires at least 4 key points!
@@ -496,12 +496,12 @@ class QCC_DB_LIB_API ccCameraSensor : public ccSensor
 	    \param c c0(=1), c1 & c2 parameters
 	    \return success
 	**/
-	bool computeOrthoRectificationParams(const ccImage*                  image,
+	bool computeOrthoRectificationParams(const ccImage* image,
 	                                     CCCoreLib::GenericIndexedCloud* keypoints3D,
-	                                     std::vector<KeyPoint>&          keypointsImage,
-	                                     double                          a[3],
-	                                     double                          b[3],
-	                                     double                          c[3]) const;
+	                                     std::vector<KeyPoint>& keypointsImage,
+	                                     double a[3],
+	                                     double b[3],
+	                                     double c[3]) const;
 
   public: // misc
 	//! Computes the uncertainty of a point knowing its depth (from the sensor view point) and pixel projection coordinates
@@ -579,10 +579,10 @@ class QCC_DB_LIB_API ccCameraSensor : public ccSensor
 	bool computeFrustumCorners();
 
 	// Inherited from ccHObject
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	void  drawMeOnly(CC_DRAW_CONTEXT& context) override;
+	void drawMeOnly(CC_DRAW_CONTEXT& context) override;
 
 	//! Camera intrinsic parameters
 	IntrinsicParameters m_intrinsicParams;
@@ -611,8 +611,8 @@ class ccOctreeFrustumIntersector
 	**/
 	enum OctreeCellVisibility
 	{
-		CELL_OUTSIDE_FRUSTUM   = 0,
-		CELL_INSIDE_FRUSTUM    = 1,
+		CELL_OUTSIDE_FRUSTUM = 0,
+		CELL_INSIDE_FRUSTUM = 1,
 		CELL_INTERSECT_FRUSTUM = 2,
 	};
 
@@ -651,11 +651,11 @@ class ccOctreeFrustumIntersector
 	    \param center 3D coordinates of the frustum center (global coordinates system) ; this is the center of the circumscribed sphere
 	**/
 	void computeFrustumIntersectionWithOctree(std::vector<std::pair<unsigned, CCVector3>>& pointsToTest,
-	                                          std::vector<unsigned>&                       inCameraFrustum,
-	                                          const float                                  planesCoefficients[6][4],
-	                                          const CCVector3                              ptsFrustum[8],
-	                                          const CCVector3                              edges[6],
-	                                          const CCVector3&                             center);
+	                                          std::vector<unsigned>& inCameraFrustum,
+	                                          const float planesCoefficients[6][4],
+	                                          const CCVector3 ptsFrustum[8],
+	                                          const CCVector3 edges[6],
+	                                          const CCVector3& center);
 
 	//! Compute intersection between the octree and the height children cells of a parent cell.
 	/** \param level current level
@@ -666,13 +666,13 @@ class ccOctreeFrustumIntersector
 	    \param edges 3D coordinates (global coordinates system) of the six director vector of the frustum edges
 	    \param center 3D coordinates of the frustum center (global coordinates system) ; this is the center of the circumscribed sphere
 	**/
-	void computeFrustumIntersectionByLevel(unsigned char                  level,
+	void computeFrustumIntersectionByLevel(unsigned char level,
 	                                       CCCoreLib::DgmOctree::CellCode parentTruncatedCode,
-	                                       OctreeCellVisibility           parentResult,
-	                                       const float                    planesCoefficients[6][4],
-	                                       const CCVector3                ptsFrustum[8],
-	                                       const CCVector3                edges[6],
-	                                       const CCVector3&               center);
+	                                       OctreeCellVisibility parentResult,
+	                                       const float planesCoefficients[6][4],
+	                                       const CCVector3 ptsFrustum[8],
+	                                       const CCVector3 edges[6],
+	                                       const CCVector3& center);
 
 	//! Separating Axis Test
 	/** See "Detecting intersection of a rectangular solid and a convex polyhedron" of Ned Greene
@@ -686,9 +686,9 @@ class ccOctreeFrustumIntersector
 	**/
 	OctreeCellVisibility separatingAxisTest(const CCVector3& bbMin,
 	                                        const CCVector3& bbMax,
-	                                        const float      planesCoefficients[6][4],
-	                                        const CCVector3  frustumCorners[8],
-	                                        const CCVector3  frustumEdges[6],
+	                                        const float planesCoefficients[6][4],
+	                                        const CCVector3 frustumCorners[8],
+	                                        const CCVector3 frustumEdges[6],
 	                                        const CCVector3& frustumCenter);
 
   protected:

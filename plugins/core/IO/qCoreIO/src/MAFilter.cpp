@@ -59,10 +59,10 @@ namespace
 {
 	struct edge
 	{
-		int      edgeIndex;
-		bool     positif;
+		int edgeIndex;
+		bool positif;
 		unsigned theOtherPoint;
-		edge*    nextEdge;
+		edge* nextEdge;
 	};
 
 	static void ReleaseEdgeList(edge**& theEdges, unsigned numberOfVertexes, CCCoreLib::NormalizedProgress* nprogress = nullptr)
@@ -92,7 +92,7 @@ namespace
 
 	struct faceIndexes
 	{
-		int          faceIndex;
+		int faceIndex;
 		faceIndexes* nextFace;
 	};
 } // namespace
@@ -112,7 +112,7 @@ bool MAFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) cons
 {
 	if (type == CC_TYPES::MESH)
 	{
-		multiple  = false;
+		multiple = false;
 		exclusive = true;
 		return true;
 	}
@@ -135,7 +135,7 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 	ccGenericPointCloud* theCloud = theMesh->getAssociatedCloud();
 
 	unsigned numberOfTriangles = theMesh->size();
-	unsigned numberOfVertexes  = theCloud->size();
+	unsigned numberOfVertexes = theCloud->size();
 
 	if (numberOfTriangles == 0 || numberOfVertexes == 0)
 	{
@@ -169,7 +169,7 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 
 	// progress dialog
 	QScopedPointer<ccProgressDialog> pDlg(nullptr);
-	const int                        coloursAdjustment = (hasColors ? 1 : 0);
+	const int coloursAdjustment = (hasColors ? 1 : 0);
 	if (parameters.parentWidget)
 	{
 		pDlg.reset(new ccProgressDialog(true, parameters.parentWidget)); // cancel available
@@ -358,8 +358,8 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 	{
 		for (unsigned i = 0; i < numberOfVertexes; ++i)
 		{
-			const CCVector3* P       = theCloud->getPoint(i);
-			CCVector3d       Pglobal = theCloud->toGlobal3d<PointCoordinateType>(*P);
+			const CCVector3* P = theCloud->getPoint(i);
+			CCVector3d Pglobal = theCloud->toGlobal3d<PointCoordinateType>(*P);
 			if (fprintf(fp, (i + 1 == numberOfVertexes ? "\t\t%f %f %f;\n" : "\t\t%f %f %f\n"), Pglobal.x, Pglobal.y, Pglobal.z) < 0)
 			{
 				fclose(fp);
@@ -377,9 +377,9 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 	edge** theEdges = new edge*[numberOfVertexes];
 	memset(theEdges, 0, sizeof(edge*) * numberOfVertexes);
 	unsigned ind[3]{0, 0, 0};
-	unsigned a                   = 0;
-	unsigned b                   = 0;
-	int      lastEdgeIndexPushed = -1;
+	unsigned a = 0;
+	unsigned b = 0;
+	int lastEdgeIndexPushed = -1;
 
 	int hard = 0; // Maya edges cab be "hard" or "soft" ...
 	{
@@ -395,11 +395,11 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 			for (unsigned char k = 0; k < 3; ++k)
 			{
 				unsigned char l = (k < 2 ? k + 1 : 0);
-				a               = (ind[k] < ind[l] ? ind[k] : ind[l]);
-				b               = (a == ind[k] ? ind[l] : ind[k]);
+				a = (ind[k] < ind[l] ? ind[k] : ind[l]);
+				b = (a == ind[k] ? ind[l] : ind[k]);
 
-				int   currentEdgeIndex = -1;
-				edge* e                = theEdges[a];
+				int currentEdgeIndex = -1;
+				edge* e = theEdges[a];
 				while (e)
 				{
 					if (e->theOtherPoint == b)
@@ -412,10 +412,10 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 
 				if (currentEdgeIndex < 0) // create a new edge
 				{
-					edge* newEdge          = new edge;
-					newEdge->nextEdge      = nullptr;
+					edge* newEdge = new edge;
+					newEdge->nextEdge = nullptr;
 					newEdge->theOtherPoint = b;
-					newEdge->positif       = (a == ind[k]);
+					newEdge->positif = (a == ind[k]);
 					// newEdge->edgeIndex = ++lastEdgeIndexPushed; //don't write the edge right now
 					newEdge->edgeIndex = 0;
 					++lastEdgeIndexPushed;
@@ -506,15 +506,15 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 			}
 
 			CCCoreLib::VerticesIndexes* tsi = theMesh->getNextTriangleVertIndexes(); // DGM: getNextTriangleVertIndexes is faster for mesh groups!
-			ind[0]                          = tsi->i1;
-			ind[1]                          = tsi->i2;
-			ind[2]                          = tsi->i3;
+			ind[0] = tsi->i1;
+			ind[1] = tsi->i2;
+			ind[2] = tsi->i3;
 
 			for (unsigned char k = 0; k < 3; ++k)
 			{
 				unsigned char l = (k < 2 ? k + 1 : 0);
-				a               = (ind[k] < ind[l] ? ind[k] : ind[l]);
-				b               = (a == ind[k] ? ind[l] : ind[k]);
+				a = (ind[k] < ind[l] ? ind[k] : ind[l]);
+				b = (a == ind[k] ? ind[l] : ind[k]);
 
 				edge* e = theEdges[a];
 				while (e->theOtherPoint != b)
@@ -588,17 +588,17 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 			for (unsigned i = 0; i < numberOfTriangles; ++i)
 			{
 				CCCoreLib::VerticesIndexes* tsi = theMesh->getNextTriangleVertIndexes(); // DGM: getNextTriangleVertIndexes is faster for mesh groups!
-				ind[0]                          = tsi->i1;
-				ind[1]                          = tsi->i2;
-				ind[2]                          = tsi->i3;
+				ind[0] = tsi->i1;
+				ind[1] = tsi->i2;
+				ind[2] = tsi->i3;
 
 				for (unsigned char j = 0; j < 3; ++j)
 				{
 					if (!theFacesIndexes[ind[j]])
 					{
-						faceIndexes* f          = new faceIndexes;
-						f->faceIndex            = i;
-						f->nextFace             = nullptr;
+						faceIndexes* f = new faceIndexes;
+						f->faceIndex = i;
+						f->nextFace = nullptr;
 						theFacesIndexes[ind[j]] = f;
 					}
 					else
@@ -606,9 +606,9 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 						faceIndexes* f = theFacesIndexes[ind[j]];
 						while (f->nextFace)
 							f = f->nextFace;
-						f->nextFace            = new faceIndexes;
+						f->nextFace = new faceIndexes;
 						f->nextFace->faceIndex = i;
-						f->nextFace->nextFace  = nullptr;
+						f->nextFace->nextFace = nullptr;
 					}
 				}
 
@@ -624,13 +624,13 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 			for (unsigned i = 0; i < numberOfVertexes; ++i)
 			{
 				const ccColor::Rgb& c = pc->getPointColor(i);
-				ccColor::Rgbf       col(static_cast<float>(c.r) / ccColor::MAX,
-                                  static_cast<float>(c.g) / ccColor::MAX,
-                                  static_cast<float>(c.b) / ccColor::MAX);
+				ccColor::Rgbf col(static_cast<float>(c.r) / ccColor::MAX,
+				                  static_cast<float>(c.g) / ccColor::MAX,
+				                  static_cast<float>(c.b) / ccColor::MAX);
 
 				// on compte le nombre de faces
-				int          nf = 0;
-				faceIndexes* f  = theFacesIndexes[i];
+				int nf = 0;
+				faceIndexes* f = theFacesIndexes[i];
 				while (f)
 				{
 					++nf;
@@ -657,7 +657,7 @@ CC_FILE_ERROR MAFilter::saveToFile(ccHObject* entity, const QString& filename, c
 						}
 
 						faceIndexes* oldf = f;
-						f                 = f->nextFace;
+						f = f->nextFace;
 						delete oldf;
 					}
 					theFacesIndexes[i] = nullptr;

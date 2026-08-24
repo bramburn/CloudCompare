@@ -75,20 +75,20 @@ class ccEDLFilter : public ccGlFilter
 
 	// inherited from ccGlFilter
 	virtual ccGlFilter* clone() const override;
-	virtual bool        init(unsigned width, unsigned height, const QString& shadersPath, QString& error, bool silent) override;
-	virtual void        shade(GLuint texDepth, GLuint texColor, ViewportParameters& parameters) override;
-	virtual GLuint      getTexture() override;
+	virtual bool init(unsigned width, unsigned height, const QString& shadersPath, QString& error, bool silent) override;
+	virtual void shade(GLuint texDepth, GLuint texColor, ViewportParameters& parameters) override;
+	virtual GLuint getTexture() override;
 
 	//! Resets filter
 	void reset();
 
 	//! Inits filter
-	bool init(unsigned       width,
-	          unsigned       height,
-	          GLenum         internalFormat,
-	          GLenum         minMagFilter,
+	bool init(unsigned width,
+	          unsigned height,
+	          GLenum internalFormat,
+	          GLenum minMagFilter,
 	          const QString& shadersPath,
-	          QString&       error);
+	          QString& error);
 
 	//! Sets light direction
 	void setLightDir(float theta_rad, float phi_rad);
@@ -109,10 +109,10 @@ class ccEDLFilter : public ccGlFilter
 	static const unsigned FBO_COUNT = 3;
 
 	ccFrameBufferObject* m_fbos[FBO_COUNT];
-	ccShader*            m_EDLShader;
+	ccShader* m_EDLShader;
 
 	ccFrameBufferObject* m_fboMix;
-	ccShader*            m_mixShader;
+	ccShader* m_mixShader;
 
 	float m_neighbours[8 * 2];
 	float m_expScale;
@@ -121,10 +121,10 @@ class ccEDLFilter : public ccGlFilter
 	struct BilateralFilterDesc
 	{
 		ccBilateralFilter* filter;
-		unsigned           halfSize;
-		float              sigma;
-		float              sigmaZ;
-		bool               enabled;
+		unsigned halfSize;
+		float sigma;
+		float sigmaZ;
+		bool enabled;
 
 		BilateralFilterDesc()
 		    : filter(0)

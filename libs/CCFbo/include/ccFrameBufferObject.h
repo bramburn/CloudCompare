@@ -60,39 +60,54 @@ class CCFBO_LIB_API ccFrameBufferObject
 	}
 
 	/**\brief Initialize color texture\param internalformat GL internal format\param format GL format\param type GL type\param minMagFilter Min/mag filter\param target GL target\return true on success */
-	bool initColor(GLint  internalformat = GL_RGBA,
-	               GLenum format         = GL_RGBA,
-	               GLenum type           = GL_UNSIGNED_BYTE,
-	               GLint  minMagFilter   = GL_NEAREST,
-	               GLenum target         = GL_TEXTURE_2D);
+	bool initColor(GLint internalformat = GL_RGBA,
+	               GLenum format = GL_RGBA,
+	               GLenum type = GL_UNSIGNED_BYTE,
+	               GLint minMagFilter = GL_NEAREST,
+	               GLenum target = GL_TEXTURE_2D);
 
 	/**\brief Attach color texture\param texID Texture ID\param ownTexture Whether FBO owns texture\param target GL target\return true on success */
 	bool attachColor(GLuint texID,
-	                 bool   ownTexture = false,
-	                 GLenum target     = GL_TEXTURE_2D);
+	                 bool ownTexture = false,
+	                 GLenum target = GL_TEXTURE_2D);
 
 	/**\brief Initialize depth texture\param wrapParam Wrap parameter\param internalFormat Internal format\param minMagFilter Min/mag filter\param textureTarget GL target\return true on success */
-	bool initDepth(GLint  wrapParam      = GL_CLAMP_TO_BORDER,
+	bool initDepth(GLint wrapParam = GL_CLAMP_TO_BORDER,
 	               GLenum internalFormat = GL_DEPTH_COMPONENT32F,
-	               GLint  minMagFilter   = GL_NEAREST,
-	               GLenum textureTarget  = GL_TEXTURE_2D);
+	               GLint minMagFilter = GL_NEAREST,
+	               GLenum textureTarget = GL_TEXTURE_2D);
 
 	/**\brief Attach depth texture\param texID Texture ID\param ownTexture Whether FBO owns texture\param target GL target\return true on success */
 	bool attachDepth(GLuint texID,
-	                 bool   ownTexture = false,
-	                 GLenum target     = GL_TEXTURE_2D);
+	                 bool ownTexture = false,
+	                 GLenum target = GL_TEXTURE_2D);
 
 	/// Get FBO ID
-	inline GLuint getID() const { return m_fboId; }
+	inline GLuint getID() const
+	{
+		return m_fboId;
+	}
 	/// Get color texture ID
-	inline GLuint getColorTexture() const { return m_colorTexture; }
+	inline GLuint getColorTexture() const
+	{
+		return m_colorTexture;
+	}
 	/// Get depth texture ID
-	inline GLuint getDepthTexture() const { return m_depthTexture; }
+	inline GLuint getDepthTexture() const
+	{
+		return m_depthTexture;
+	}
 
 	/// Get width
-	inline unsigned width() const { return m_width; }
+	inline unsigned width() const
+	{
+		return m_width;
+	}
 	/// Get height
-	inline unsigned height() const { return m_height; }
+	inline unsigned height() const
+	{
+		return m_height;
+	}
 
   protected: // methods
 	//! Deletes/releases the color texture

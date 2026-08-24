@@ -103,10 +103,10 @@ void ccMaterial::setShininess(float val)
 void ccMaterial::setTransparency(float val)
 {
 	m_diffuseFront.a = val;
-	m_diffuseBack.a  = val;
-	m_ambient.a      = val;
-	m_specular.a     = val;
-	m_emission.a     = val;
+	m_diffuseBack.a = val;
+	m_ambient.a = val;
+	m_specular.a = val;
+	m_emission.a = val;
 }
 
 void ccMaterial::applyGL(QOpenGLContext* context, bool lightEnabled, bool skipDiffuse) const
@@ -410,7 +410,7 @@ void ccMaterial::setTextureMinMagFilters(QOpenGLTexture::Filter minificationFilt
 	if (minificationFilter != m_texMinificationFilter
 	    || magnificationFilter != m_texMagnificationFilter)
 	{
-		m_texMinificationFilter  = minificationFilter;
+		m_texMinificationFilter = minificationFilter;
 		m_texMagnificationFilter = magnificationFilter;
 
 		if (!m_textureFilename.isEmpty() && s_materialDB.openGLTextures.contains(m_textureFilename))

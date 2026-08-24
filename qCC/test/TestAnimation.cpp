@@ -1,19 +1,19 @@
-//##########################################################################
-//#                                                                        #
-//#                          CLOUDCOMPARE                                   #
-//#                                                                        #
-//#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU General Public License as published by  #
-//#  the Free Software Foundation; version 2 of the License.              #
-//#                                                                        #
-//#  This program is distributed in the hope that it will be useful,         #
-//#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          #
-//#  GNU General Public License for more details.                          #
-//#                                                                        #
-//#                   COPYRIGHT: CloudCompare project                      #
-//#                                                                        #
-//##########################################################################
+// ##########################################################################
+// #                                                                        #
+// #                          CLOUDCOMPARE                                   #
+// #                                                                        #
+// #  This program is free software; you can redistribute it and/or modify  #
+// #  it under the terms of the GNU General Public License as published by  #
+// #  the Free Software Foundation; version 2 of the License.              #
+// #                                                                        #
+// #  This program is distributed in the hope that it will be useful,         #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          #
+// #  GNU General Public License for more details.                          #
+// #                                                                        #
+// #                   COPYRIGHT: CloudCompare project                      #
+// #                                                                        #
+// ##########################################################################
 
 // Embedded copies of ExtendedViewportParameters and ViewInterpolate from
 // the qAnimation plugin (PLUGIN_STANDARD_QANIMATION=OFF in this build).
@@ -34,8 +34,8 @@
  *
  * @see ccViewportParameters.h
  */
-#include <ccViewportParameters.h>
 #include <ccGLMatrix.h>
+#include <ccViewportParameters.h>
 
 // CCCoreLib
 #include <CCGeom.h>
@@ -56,16 +56,18 @@
 struct ExtendedViewportParameters
 {
 	ExtendedViewportParameters()
-		: params{}
-		, customLightEnabled(false)
-		, customLightPos{}
-	{}
+	    : params{}
+	    , customLightEnabled(false)
+	    , customLightPos{}
+	{
+	}
 
 	explicit ExtendedViewportParameters(const ccViewportParameters& vpParams)
-		: params(vpParams)
-		, customLightEnabled(false)
-		, customLightPos{}
-	{}
+	    : params(vpParams)
+	    , customLightEnabled(false)
+	    , customLightPos{}
+	{
+	}
 
 	ccViewportParameters params;
 	bool customLightEnabled;
@@ -80,7 +82,7 @@ template <class T>
 static T InterpolateNumber(T start, T end, double interpolationFraction)
 {
 	double dStart = static_cast<double>(start);
-	double dEnd   = static_cast<double>(end);
+	double dEnd = static_cast<double>(end);
 	if (std::isnan(dStart))
 	{
 		if (std::isnan(dEnd))
@@ -102,21 +104,34 @@ static T InterpolateNumber(T start, T end, double interpolationFraction)
 // ---------------------------------------------------------------------------
 class ViewInterpolate
 {
-public:
+  public:
 	ViewInterpolate(const ExtendedViewportParameters& viewParams1,
 	                const ExtendedViewportParameters& viewParams2,
 	                unsigned int stepCount = 0)
-		: m_view1(viewParams1)
-		, m_view2(viewParams2)
-		, m_totalSteps(stepCount)
-		, m_currentStep(0)
-	{}
+	    : m_view1(viewParams1)
+	    , m_view2(viewParams2)
+	    , m_totalSteps(stepCount)
+	    , m_currentStep(0)
+	{
+	}
 
-	const ccViewportParameters& view1() const { return m_view1.params; }
-	const ccViewportParameters& view2() const { return m_view2.params; }
+	const ccViewportParameters& view1() const
+	{
+		return m_view1.params;
+	}
+	const ccViewportParameters& view2() const
+	{
+		return m_view2.params;
+	}
 
-	unsigned int currentStep() const { return m_currentStep; }
-	unsigned int maxStep()    const { return m_totalSteps; }
+	unsigned int currentStep() const
+	{
+		return m_currentStep;
+	}
+	unsigned int maxStep() const
+	{
+		return m_totalSteps;
+	}
 
 	bool interpolate(ExtendedViewportParameters& interpView, double ratio) const
 	{
@@ -129,16 +144,16 @@ public:
 		// ccSerializableObject base class and alignment.  We construct the
 		// result from scratch to ensure cameraCenter is correctly initialised.
 		ccViewportParameters ip = m_view1.params;
-		ip.defaultPointSize  = InterpolateNumber(m_view1.params.defaultPointSize,  m_view2.params.defaultPointSize,  ratio);
-		ip.defaultLineWidth  = InterpolateNumber(m_view1.params.defaultLineWidth,  m_view2.params.defaultLineWidth,  ratio);
-		ip.zNearCoef         = InterpolateNumber(m_view1.params.zNearCoef,         m_view2.params.zNearCoef,         ratio);
-		ip.zNear             = InterpolateNumber(m_view1.params.zNear,             m_view2.params.zNear,             ratio);
-		ip.zFar              = InterpolateNumber(m_view1.params.zFar,              m_view2.params.zFar,              ratio);
+		ip.defaultPointSize = InterpolateNumber(m_view1.params.defaultPointSize, m_view2.params.defaultPointSize, ratio);
+		ip.defaultLineWidth = InterpolateNumber(m_view1.params.defaultLineWidth, m_view2.params.defaultLineWidth, ratio);
+		ip.zNearCoef = InterpolateNumber(m_view1.params.zNearCoef, m_view2.params.zNearCoef, ratio);
+		ip.zNear = InterpolateNumber(m_view1.params.zNear, m_view2.params.zNear, ratio);
+		ip.zFar = InterpolateNumber(m_view1.params.zFar, m_view2.params.zFar, ratio);
 		ip.nearClippingDepth = InterpolateNumber(m_view1.params.nearClippingDepth, m_view2.params.nearClippingDepth, ratio);
-		ip.farClippingDepth  = InterpolateNumber(m_view1.params.farClippingDepth,  m_view2.params.farClippingDepth,  ratio);
-		ip.fov_deg          = InterpolateNumber(m_view1.params.fov_deg,          m_view2.params.fov_deg,          ratio);
-		ip.cameraAspectRatio= InterpolateNumber(m_view1.params.cameraAspectRatio, m_view2.params.cameraAspectRatio, ratio);
-		ip.viewMat          = ccGLMatrixd::Interpolate(ratio, m_view1.params.viewMat, m_view2.params.viewMat);
+		ip.farClippingDepth = InterpolateNumber(m_view1.params.farClippingDepth, m_view2.params.farClippingDepth, ratio);
+		ip.fov_deg = InterpolateNumber(m_view1.params.fov_deg, m_view2.params.fov_deg, ratio);
+		ip.cameraAspectRatio = InterpolateNumber(m_view1.params.cameraAspectRatio, m_view2.params.cameraAspectRatio, ratio);
+		ip.viewMat = ccGLMatrixd::Interpolate(ratio, m_view1.params.viewMat, m_view2.params.viewMat);
 
 		const CCVector3d pivot1 = m_view1.params.getPivotPoint();
 		const CCVector3d pivot2 = m_view2.params.getPivotPoint();
@@ -167,7 +182,8 @@ public:
 		// cameraCenter directly. The focalDistance field is updated from
 		// the interpolated focalDistance to keep the state consistent.
 		ip.focalDistanceDirect() = InterpolateNumber(m_view1.params.getFocalDistance(),
-		                                    m_view2.params.getFocalDistance(), ratio);
+		                                             m_view2.params.getFocalDistance(),
+		                                             ratio);
 
 		// NOTE: direct struct assignment (interpView.params = ip) corrupts
 		// cameraCenter when it contains NaN on MSVC.  We use memcpy to
@@ -195,7 +211,7 @@ public:
 		return interpolate(outViewport, ratio);
 	}
 
-private:
+  private:
 	ExtendedViewportParameters m_view1;
 	ExtendedViewportParameters m_view2;
 	unsigned int m_totalSteps;
@@ -215,9 +231,7 @@ static bool approxEq(double a, double b, double tol = FUZZ)
 // ---------------------------------------------------------------------------
 // Helper: minimal ccViewportParameters initialiser using the public setters
 // ---------------------------------------------------------------------------
-static ccViewportParameters makeMinimalViewport(double cx, double cy, double cz,
-                                                float fovDeg, float aspect,
-                                                double focalDist)
+static ccViewportParameters makeMinimalViewport(double cx, double cy, double cz, float fovDeg, float aspect, double focalDist)
 {
 	ccViewportParameters p;
 	// NOTE: set objectCenteredView=false BEFORE setFocalDistance.
@@ -237,12 +251,11 @@ static ccViewportParameters makeMinimalViewport(double cx, double cy, double cz,
 	return p;
 }
 
-
 class TestAnimation : public QObject
 {
 	Q_OBJECT
 
-private slots:
+  private slots:
 
 	// -----------------------------------------------------------------------
 	// interpolate: camera center at t=0.5 → midpoint of a and b
@@ -383,7 +396,7 @@ private slots:
 		ExtendedViewportParameters r;
 
 		QVERIFY2(!interp.interpolate(r, -0.1), "t=-0.1 should return false");
-		QVERIFY2(!interp.interpolate(r, 1.1),  "t=1.1  should return false");
+		QVERIFY2(!interp.interpolate(r, 1.1), "t=1.1  should return false");
 	}
 
 	// -----------------------------------------------------------------------
@@ -437,11 +450,13 @@ private slots:
 
 			// Expected fraction = step / 5  (pre-increment in nextView)
 			double expectedFrac = static_cast<double>(step) / 5.0;
-			double expectedFov = 0.0 + expectedFrac * 100.0;  // fov lerps 0→100
+			double expectedFov = 0.0 + expectedFrac * 100.0; // fov lerps 0→100
 
 			QVERIFY2(approxEq(static_cast<double>(r.params.fov_deg), expectedFov, 0.01),
 			         qPrintable(QString("step %1: fov expected %2, got %3")
-			                     .arg(step).arg(expectedFov).arg(r.params.fov_deg)));
+			                        .arg(step)
+			                        .arg(expectedFov)
+			                        .arg(r.params.fov_deg)));
 		}
 
 		// Sixth call (step 5) should fail (currentStep >= totalSteps)

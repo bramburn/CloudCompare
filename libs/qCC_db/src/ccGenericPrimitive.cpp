@@ -21,9 +21,9 @@
 #include "ccIncludeGL.h"
 #include "ccPointCloud.h"
 
-ccGenericPrimitive::ccGenericPrimitive(QString           name /*=QString()*/,
+ccGenericPrimitive::ccGenericPrimitive(QString name /*=QString()*/,
                                        const ccGLMatrix* transMat /*=nullptr*/,
-                                       unsigned          uniqueID /*=ccUniqueIDGenerator::InvalidUniqueID*/)
+                                       unsigned uniqueID /*=ccUniqueIDGenerator::InvalidUniqueID*/)
     : ccMesh(new ccPointCloud("vertices"), uniqueID)
     , m_drawPrecision(0)
 {
@@ -58,17 +58,17 @@ ccPointCloud* ccGenericPrimitive::vertices()
 
 const ccGenericPrimitive& ccGenericPrimitive::operator+=(const ccGenericPrimitive& prim)
 {
-	ccPointCloud* verts             = vertices();
-	unsigned      vertCount         = verts->size();
-	unsigned      facesCount        = size();
-	unsigned      triFacesNormCount = (m_triNormals ? m_triNormals->currentSize() : 0);
+	ccPointCloud* verts = vertices();
+	unsigned vertCount = verts->size();
+	unsigned facesCount = size();
+	unsigned triFacesNormCount = (m_triNormals ? m_triNormals->currentSize() : 0);
 
 	// count new number of vertices & faces
-	unsigned newVertCount     = vertCount + prim.getAssociatedCloud()->size();
-	unsigned newFacesCount    = facesCount + prim.size();
-	bool     primHasVertNorms = prim.getAssociatedCloud()->hasNormals();
-	bool     primHasFaceNorms = prim.hasTriNormals();
-	bool     primHasColors    = prim.getAssociatedCloud()->hasColors();
+	unsigned newVertCount = vertCount + prim.getAssociatedCloud()->size();
+	unsigned newFacesCount = facesCount + prim.size();
+	bool primHasVertNorms = prim.getAssociatedCloud()->hasNormals();
+	bool primHasFaceNorms = prim.hasTriNormals();
+	bool primHasColors = prim.getAssociatedCloud()->hasColors();
 
 	if (primHasColors && !verts->hasColors())
 	{

@@ -51,7 +51,6 @@
 
 #include <ccGLMatrix.h>
 #include <ccGLUtils.h>
-
 #include <map>
 
 class QMdiSubWindow;

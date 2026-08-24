@@ -28,10 +28,9 @@
  *
  * @see ccShiftedObject.cpp
  */
-#include <ccPointCloud.h>  // ccPointCloud IS a ccShiftedObject
-
-#include <QTest>
 #include <QString>
+#include <QTest>
+#include <ccPointCloud.h> // ccPointCloud IS a ccShiftedObject
 
 // Helper: compare two CCVector3d components (no operator== on CCVector3d)
 static void CompareVec3d(const CCVector3d& a, const CCVector3d& b, const char* msg)

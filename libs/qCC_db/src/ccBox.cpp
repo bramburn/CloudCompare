@@ -41,9 +41,9 @@
  * @param[in] transMat Optional transformation matrix
  * @param[in] name Display name
  */
-ccBox::ccBox(const CCVector3&  dims,
+ccBox::ccBox(const CCVector3& dims,
              const ccGLMatrix* transMat /*=nullptr*/,
-             QString           name /*=QString("Box")*/)
+             QString name /*=QString("Box")*/)
     : ccGenericPrimitive(name, transMat)
     , m_dims(dims)
 {
@@ -88,14 +88,14 @@ bool ccBox::buildUp()
 	assert(m_triNormals);
 
 	// 8 vertices at cuboid corners (centered at origin)
-	verts->addPoint(CCVector3(-m_dims.x / 2, -m_dims.y / 2,  m_dims.z / 2));
-	verts->addPoint(CCVector3(-m_dims.x / 2,  m_dims.y / 2,  m_dims.z / 2));
-	verts->addPoint(CCVector3( m_dims.x / 2,  m_dims.y / 2,  m_dims.z / 2));
-	verts->addPoint(CCVector3( m_dims.x / 2, -m_dims.y / 2,  m_dims.z / 2));
+	verts->addPoint(CCVector3(-m_dims.x / 2, -m_dims.y / 2, m_dims.z / 2));
+	verts->addPoint(CCVector3(-m_dims.x / 2, m_dims.y / 2, m_dims.z / 2));
+	verts->addPoint(CCVector3(m_dims.x / 2, m_dims.y / 2, m_dims.z / 2));
+	verts->addPoint(CCVector3(m_dims.x / 2, -m_dims.y / 2, m_dims.z / 2));
 	verts->addPoint(CCVector3(-m_dims.x / 2, -m_dims.y / 2, -m_dims.z / 2));
-	verts->addPoint(CCVector3(-m_dims.x / 2,  m_dims.y / 2, -m_dims.z / 2));
-	verts->addPoint(CCVector3( m_dims.x / 2,  m_dims.y / 2, -m_dims.z / 2));
-	verts->addPoint(CCVector3( m_dims.x / 2, -m_dims.y / 2, -m_dims.z / 2));
+	verts->addPoint(CCVector3(-m_dims.x / 2, m_dims.y / 2, -m_dims.z / 2));
+	verts->addPoint(CCVector3(m_dims.x / 2, m_dims.y / 2, -m_dims.z / 2));
+	verts->addPoint(CCVector3(m_dims.x / 2, -m_dims.y / 2, -m_dims.z / 2));
 
 	// front face (+Z): triangles (0,2,1) and (0,3,2)
 	m_triNormals->addElement(ccNormalVectors::GetNormIndex(CCVector3(0, 0, 1)));

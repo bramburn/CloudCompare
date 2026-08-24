@@ -43,14 +43,14 @@
 ccAskThreeDoubleValuesDlg::ccAskThreeDoubleValuesDlg(const QString& vName1,
                                                      const QString& vName2,
                                                      const QString& vName3,
-                                                     double         minVal,
-                                                     double         maxVal,
-                                                     double         defaultVal1,
-                                                     double         defaultVal2,
-                                                     double         defaultVal3,
-                                                     int            precision /*=6*/,
-                                                     const QString  windowTitle /*=QString()*/,
-                                                     QWidget*       parent /*=nullptr*/)
+                                                     double minVal,
+                                                     double maxVal,
+                                                     double defaultVal1,
+                                                     double defaultVal2,
+                                                     double defaultVal3,
+                                                     int precision /*=6*/,
+                                                     const QString windowTitle /*=QString()*/,
+                                                     QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::Tool)
     , Ui::AskThreeDoubleValuesDialog()
 {

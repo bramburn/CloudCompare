@@ -49,7 +49,7 @@
 
 //! Fixed-size buffer for printf-style formatting (4096 bytes)
 static const size_t s_bufferMaxSize = 4096;
-static char         s_buffer[s_bufferMaxSize];
+static char s_buffer[s_bufferMaxSize];
 
 //! Simple message struct for the backup queue
 struct Message
@@ -60,7 +60,7 @@ struct Message
 	{
 	}
 	QString text;
-	int     flags;
+	int flags;
 };
 
 //! Whether the message backup system is enabled

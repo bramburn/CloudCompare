@@ -28,18 +28,15 @@
  *
  * @see DxfFilter.cpp
  */
+#include <DxfFilter.h>
 #include <QCoreApplication>
 #include <QFile>
-#include <QTemporaryDir>
-#include <QTextStream>
-
-#include <ccPointCloud.h>
-#include <ccMesh.h>
-
-#include <DxfFilter.h>
-
-#include <QTest>
 #include <QString>
+#include <QTemporaryDir>
+#include <QTest>
+#include <QTextStream>
+#include <ccMesh.h>
+#include <ccPointCloud.h>
 
 // Minimal DXF file: 3 vertices as POINT entities + HEADER section
 // DXF is complex; this is a simplified test with minimum viable content
@@ -79,12 +76,11 @@ ENDSEC
 EOF
 )";
 
-
 class TestDxfFilter : public QObject
 {
 	Q_OBJECT
 
-private slots:
+  private slots:
 
 	void testCanSavePointCloud()
 	{

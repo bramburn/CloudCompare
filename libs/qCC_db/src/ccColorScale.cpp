@@ -59,7 +59,7 @@ static const QString s_xmlCloudCompare("CloudCompare");
 static const QString s_xmlColorScaleTitle("ColorScale");
 static const QString s_xmlColorScaleProperties("Properties");
 static const QString s_xmlColorScaleData("Data");
-constexpr int        s_xmlColorScaleVer = 1;
+constexpr int s_xmlColorScaleVer = 1;
 
 // These extra definitions are required in C++11.
 // In C++17, "static constexpr" is implicitly inline, so these are not required.
@@ -95,12 +95,12 @@ ccColorScale::Shared ccColorScale::copy(const QString& uuid /*=QString()*/) cons
 	ccColorScale::Shared newCS(new ccColorScale(m_name, uuid));
 	try
 	{
-		newCS->m_relative         = m_relative;
-		newCS->m_readOnly         = m_readOnly;
+		newCS->m_relative = m_relative;
+		newCS->m_readOnly = m_readOnly;
 		newCS->m_absoluteMinValue = m_absoluteMinValue;
-		newCS->m_absoluteRange    = m_absoluteRange;
-		newCS->m_steps            = m_steps;
-		newCS->m_customLabels     = m_customLabels;
+		newCS->m_absoluteRange = m_absoluteRange;
+		newCS->m_steps = m_steps;
+		newCS->m_customLabels = m_customLabels;
 		newCS->update();
 	}
 	catch (const std::bad_alloc&)
@@ -358,7 +358,7 @@ bool ccColorScale::fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap
 		{
 			for (uint32_t i = 0; i < labelCount; ++i)
 			{
-				double  label = 0.0;
+				double label = 0.0;
 				QString text;
 
 				inStream >> label;
@@ -410,7 +410,7 @@ void ccColorScale::setAbsolute(double minVal, double maxVal)
 	m_relative = false;
 
 	m_absoluteMinValue = minVal;
-	m_absoluteRange    = maxVal - minVal;
+	m_absoluteRange = maxVal - minVal;
 
 	// as 'm_absoluteRange' is used for division, we make sure it is not left to 0!
 	m_absoluteRange = std::max(m_absoluteRange, 1e-12);
@@ -466,9 +466,9 @@ bool ccColorScale::saveAsXML(const QString& filename) const
 						{
 							stream.writeStartElement("step");
 							{
-								const ccColorScaleElement& elem        = *it;
-								const QColor&              color       = elem.getColor();
-								double                     relativePos = elem.getRelativePos();
+								const ccColorScaleElement& elem = *it;
+								const QColor& color = elem.getColor();
+								double relativePos = elem.getRelativePos();
 
 								stream.writeAttribute("r", QString::number(color.red()));
 								stream.writeAttribute("g", QString::number(color.green()));
@@ -519,7 +519,7 @@ ccColorScale::Shared ccColorScale::LoadFromXML(const QString& filename)
 
 	// read content
 	QXmlStreamReader stream(&file);
-	bool             error = true;
+	bool error = true;
 	while (true) // fake loop for easy break
 	{
 		// expected: CloudCompare
@@ -542,8 +542,8 @@ ccColorScale::Shared ccColorScale::LoadFromXML(const QString& filename)
 		{
 			break;
 		}
-		bool ok      = false;
-		int  version = attributes[0].value().toString().toInt(&ok);
+		bool ok = false;
+		int version = attributes[0].value().toString().toInt(&ok);
 		if (!ok || version > s_xmlColorScaleVer)
 		{
 			if (ok)
@@ -569,8 +569,8 @@ ccColorScale::Shared ccColorScale::LoadFromXML(const QString& filename)
 			{
 				break;
 			}
-			QStringView itemName  = stream.name();
-			QString     itemValue = stream.readElementText();
+			QStringView itemName = stream.name();
+			QString itemValue = stream.readElementText();
 			ccLog::Print(QString("[XML] Item '%1': '%2'").arg(itemName.toString(), itemValue));
 
 			if (itemName == QStringLiteral("name"))
@@ -633,8 +633,8 @@ ccColorScale::Shared ccColorScale::LoadFromXML(const QString& filename)
 					break;
 				if (stream.name() == QStringLiteral("step"))
 				{
-					QXmlStreamAttributes attributes     = stream.attributes();
-					int                  attributeCount = attributes.size();
+					QXmlStreamAttributes attributes = stream.attributes();
+					int attributeCount = attributes.size();
 					if (attributeCount < 4)
 					{
 						dataError = true;
@@ -644,7 +644,7 @@ ccColorScale::Shared ccColorScale::LoadFromXML(const QString& filename)
 					double pos = 0;
 					for (int i = 0; i < attributes.size(); ++i)
 					{
-						QString name  = attributes[i].name().toString().toUpper();
+						QString name = attributes[i].name().toString().toUpper();
 						QString value = attributes[i].value().toString();
 						if (name == "R")
 							rgb.setRed(value.toInt());
@@ -670,15 +670,15 @@ ccColorScale::Shared ccColorScale::LoadFromXML(const QString& filename)
 				}
 				else if (stream.name() == QStringLiteral("label"))
 				{
-					QXmlStreamAttributes attributes     = stream.attributes();
-					int                  attributeCount = attributes.size();
+					QXmlStreamAttributes attributes = stream.attributes();
+					int attributeCount = attributes.size();
 					if (attributeCount < 1)
 					{
 						dataError = true;
 						break;
 					}
 
-					double  value = std::numeric_limits<double>::quiet_NaN();
+					double value = std::numeric_limits<double>::quiet_NaN();
 					QString text;
 					for (int i = 0; i < attributes.size(); ++i)
 					{
@@ -686,12 +686,12 @@ ccColorScale::Shared ccColorScale::LoadFromXML(const QString& filename)
 						if (name == "VAL")
 						{
 							QString valueStr = attributes[i].value().toString();
-							bool    ok       = false;
-							value            = valueStr.toDouble(&ok);
+							bool ok = false;
+							value = valueStr.toDouble(&ok);
 							if (!ok)
 							{
 								ccLog::Warning(QString("[ccColorScale::LoadFromXML] Invalid value:") + valueStr);
-								value     = std::numeric_limits<double>::quiet_NaN();
+								value = std::numeric_limits<double>::quiet_NaN();
 								dataError = true;
 							}
 						}

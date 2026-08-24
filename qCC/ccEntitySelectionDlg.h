@@ -54,10 +54,10 @@ class ccEntitySelectionDialog : public QDialog
 	 * @param[in] label Dialog label
 	 */
 	ccEntitySelectionDialog(const ccHObject::Container& entities,
-	                        bool                        multiSelectionEnabled,
-	                        int                         defaultSelectedIndex = 0,
-	                        QWidget*                    parent               = nullptr,
-	                        QString                     label                = QString());
+	                        bool multiSelectionEnabled,
+	                        int defaultSelectedIndex = 0,
+	                        QWidget* parent = nullptr,
+	                        QString label = QString());
 
 	/// Destructor
 	virtual ~ccEntitySelectionDialog();
@@ -83,9 +83,9 @@ class ccEntitySelectionDialog : public QDialog
 	 * @return Selected index
 	 */
 	static int SelectEntity(const ccHObject::Container& entities,
-	                        int                         defaultSelectedIndex = 0,
-	                        QWidget*                    parent               = nullptr,
-	                        QString                     label                = QString());
+	                        int defaultSelectedIndex = 0,
+	                        QWidget* parent = nullptr,
+	                        QString label = QString());
 
 	/**
 	 * @brief Select multiple entities
@@ -96,9 +96,9 @@ class ccEntitySelectionDialog : public QDialog
 	 * @return true if selection was made
 	 */
 	static bool SelectEntities(const ccHObject::Container& entities,
-	                           std::vector<int>&           indexes,
-	                           QWidget*                    parent = nullptr,
-	                           QString                     label  = QString());
+	                           std::vector<int>& indexes,
+	                           QWidget* parent = nullptr,
+	                           QString label = QString());
 
   public:
 	/// Select all

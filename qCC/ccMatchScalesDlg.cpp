@@ -48,8 +48,8 @@
 #include <assert.h>
 
 ccMatchScalesDlg::ccMatchScalesDlg(const ccHObject::Container& entities,
-                                   int                         defaultSelectedIndex /*=0*/,
-                                   QWidget*                    parent /*=nullptr*/)
+                                   int defaultSelectedIndex /*=0*/,
+                                   QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::Tool)
     , Ui::MatchScalesDialog()
 {

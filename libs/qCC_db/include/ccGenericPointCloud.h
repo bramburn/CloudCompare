@@ -248,13 +248,19 @@ class QCC_DB_LIB_API ccGenericPointCloud : public ccShiftedObject
 	 * @brief Get the visibility array (mutable)
 	 * @return Reference to the visibility vector
 	 */
-	virtual inline VisibilityTableType& getTheVisibilityArray() { return m_pointsVisibility; }
+	virtual inline VisibilityTableType& getTheVisibilityArray()
+	{
+		return m_pointsVisibility;
+	}
 
 	/**
 	 * @brief Get the visibility array (const)
 	 * @return Const reference to the visibility vector
 	 */
-	virtual inline const VisibilityTableType& getTheVisibilityArray() const { return m_pointsVisibility; }
+	virtual inline const VisibilityTableType& getTheVisibilityArray() const
+	{
+		return m_pointsVisibility;
+	}
 
 	/**
 	 * @brief Get visible points as a ReferenceCloud
@@ -267,8 +273,8 @@ class QCC_DB_LIB_API ccGenericPointCloud : public ccShiftedObject
 	 * @return ReferenceCloud of visible points (nullptr on error or empty)
 	 */
 	virtual CCCoreLib::ReferenceCloud* getTheVisiblePoints(const VisibilityTableType* visTable = nullptr,
-	                                                       bool                       silent     = false,
-	                                                       CCCoreLib::ReferenceCloud* selection  = nullptr) const;
+	                                                       bool silent = false,
+	                                                       CCCoreLib::ReferenceCloud* selection = nullptr) const;
 
 	/**
 	 * @brief Check if the visibility table is allocated
@@ -330,11 +336,11 @@ class QCC_DB_LIB_API ccGenericPointCloud : public ccShiftedObject
 	 * @param[out]    selection                  ReferenceCloud of visible points (nullptr = ignore)
 	 * @return New cloud with visible points, or this cloud if all visible
 	 */
-	virtual ccGenericPointCloud* createNewCloudFromVisibilitySelection(bool                       removeSelectedPoints        = false,
-	                                                                   VisibilityTableType*       visTable                    = nullptr,
-	                                                                   std::vector<int>*          newIndexesOfRemainingPoints = nullptr,
-	                                                                   bool                       silent                      = false,
-	                                                                   CCCoreLib::ReferenceCloud* selection                   = nullptr) = 0;
+	virtual ccGenericPointCloud* createNewCloudFromVisibilitySelection(bool removeSelectedPoints = false,
+	                                                                   VisibilityTableType* visTable = nullptr,
+	                                                                   std::vector<int>* newIndexesOfRemainingPoints = nullptr,
+	                                                                   bool silent = false,
+	                                                                   CCCoreLib::ReferenceCloud* selection = nullptr) = 0;
 
 	/**
 	 * @brief Remove visible points from this cloud
@@ -344,7 +350,7 @@ class QCC_DB_LIB_API ccGenericPointCloud : public ccShiftedObject
 	 * @return true on success
 	 */
 	virtual bool removeVisiblePoints(VisibilityTableType* visTable = nullptr,
-	                                std::vector<int>*     newIndexes = nullptr) = 0;
+	                                 std::vector<int>* newIndexes = nullptr) = 0;
 
 	/**
 	 * @brief Apply a rigid transformation (rotation + translation)
@@ -374,11 +380,13 @@ class QCC_DB_LIB_API ccGenericPointCloud : public ccShiftedObject
 	 *
 	 * @warning Associated octree may be deleted after scaling
 	 */
-	virtual void scale(PointCoordinateType fx, PointCoordinateType fy, PointCoordinateType fz,
-	                   CCVector3 center = CCVector3(0, 0, 0)) = 0;
+	virtual void scale(PointCoordinateType fx, PointCoordinateType fy, PointCoordinateType fz, CCVector3 center = CCVector3(0, 0, 0)) = 0;
 
 	// from ccSerializableObject
-	bool isSerializable() const override { return true; }
+	bool isSerializable() const override
+	{
+		return true;
+	}
 
 	/**
 	 * @brief Set the OpenGL point size for rendering
@@ -397,7 +405,10 @@ class QCC_DB_LIB_API ccGenericPointCloud : public ccShiftedObject
 	 * @brief Get the current point size
 	 * @return Point size (0 = use OpenGL default)
 	 */
-	unsigned char getPointSize() const { return m_pointSize; }
+	unsigned char getPointSize() const
+	{
+		return m_pointSize;
+	}
 
 	/**
 	 * @brief Copy display/feature parameters from another cloud
@@ -426,18 +437,18 @@ class QCC_DB_LIB_API ccGenericPointCloud : public ccShiftedObject
 	 *
 	 * @note Square distance is returned to avoid the sqrt cost
 	 */
-	bool pointPicking(const CCVector2d&           clickPos,
+	bool pointPicking(const CCVector2d& clickPos,
 	                  const ccGLCameraParameters& camera,
-	                  int&                        nearestPointIndex,
-	                  double&                     nearestSquareDist,
-	                  double                      pickWidth         = 2.0,
-	                  double                      pickHeight        = 2.0,
-	                  bool                        autoComputeOctree = false);
+	                  int& nearestPointIndex,
+	                  double& nearestSquareDist,
+	                  double pickWidth = 2.0,
+	                  double pickHeight = 2.0,
+	                  bool autoComputeOctree = false);
 
   protected:
 	// from ccHObject
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
 
 	//! Per-point visibility table (POINT_VISIBLE / POINT_HIDDEN / POINT_OUTDATED)

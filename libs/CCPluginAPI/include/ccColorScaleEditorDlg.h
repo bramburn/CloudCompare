@@ -61,9 +61,9 @@ class CCPLUGIN_LIB_API ccColorScaleEditorDialog : public QDialog
 	 * @param[in] parent Parent widget
 	 */
 	ccColorScaleEditorDialog(ccColorScalesManager* manager,
-	                         ccMainAppInterface*   mainApp,
-	                         ccColorScale::Shared  currentScale = ccColorScale::Shared(nullptr),
-	                         QWidget*              parent       = nullptr);
+	                         ccMainAppInterface* mainApp,
+	                         ccColorScale::Shared currentScale = ccColorScale::Shared(nullptr),
+	                         QWidget* parent = nullptr);
 
 	//! Destructor
 	~ccColorScaleEditorDialog() override;

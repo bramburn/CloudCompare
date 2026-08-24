@@ -49,8 +49,8 @@ class QCC_DB_LIB_API ccCoordinateSystem : public ccGenericPrimitive
 	 */
 	ccCoordinateSystem(PointCoordinateType displayScale,
 	                   PointCoordinateType axisWidth,
-	                   const ccGLMatrix*   transMat = nullptr,
-	                   QString             name     = QString("CoordinateSystem"));
+	                   const ccGLMatrix* transMat = nullptr,
+	                   QString name = QString("CoordinateSystem"));
 
 	/**
 	 * @brief Create a coordinate system
@@ -58,7 +58,7 @@ class QCC_DB_LIB_API ccCoordinateSystem : public ccGenericPrimitive
 	 * @param[in] name System name
 	 */
 	ccCoordinateSystem(const ccGLMatrix* transMat,
-	                   QString           name = QString("CoordinateSystem"));
+	                   QString name = QString("CoordinateSystem"));
 
 	//! Simplified constructor
 	/** For ccHObject factory only!
@@ -133,10 +133,10 @@ class QCC_DB_LIB_API ccCoordinateSystem : public ccGenericPrimitive
 	void drawMeOnly(CC_DRAW_CONTEXT& context) override;
 
 	// inherited from ccGenericPrimitive
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	bool  buildUp() override;
+	bool buildUp() override;
 
 	ccPlane* createXYplane(const ccGLMatrix* transMat = nullptr) const;
 	ccPlane* createYZplane(const ccGLMatrix* transMat = nullptr) const;
@@ -145,6 +145,6 @@ class QCC_DB_LIB_API ccCoordinateSystem : public ccGenericPrimitive
 	//! CoordinateSystem options
 	PointCoordinateType m_DisplayScale;
 	PointCoordinateType m_width;
-	bool                m_showAxisPlanes;
-	bool                m_showAxisLines;
+	bool m_showAxisPlanes;
+	bool m_showAxisLines;
 };

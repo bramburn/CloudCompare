@@ -66,28 +66,28 @@
 // system
 #include <assert.h>
 
-static bool     s_adjustScale                 = false;
-static unsigned s_randomSamplingLimit         = 50000;
-static double   s_rmsDifference               = 1.0e-5;
-static int      s_maxIterationCount           = 20;
-static bool     s_useErrorDifferenceCriterion = true;
-static int      s_finalOverlap                = 100;
-static int      s_rotComboIndex               = 0;
-static bool     s_transCheckboxes[3]          = {true, true, true};
-static int      s_maxThreadCount              = ccQtHelpers::GetMaxThreadCount();
-static bool     s_pointsRemoval               = false;
-static bool     s_useDataSFAsWeights          = false;
-static bool     s_useModelSFAsWeights         = false;
-static bool     s_useC2MSignedDistances       = false;
-static bool     s_robustC2MSignedDistances    = true;
-static int      s_normalsMatchingOption       = CCCoreLib::ICPRegistrationTools::NO_NORMAL;
+static bool s_adjustScale = false;
+static unsigned s_randomSamplingLimit = 50000;
+static double s_rmsDifference = 1.0e-5;
+static int s_maxIterationCount = 20;
+static bool s_useErrorDifferenceCriterion = true;
+static int s_finalOverlap = 100;
+static int s_rotComboIndex = 0;
+static bool s_transCheckboxes[3] = {true, true, true};
+static int s_maxThreadCount = ccQtHelpers::GetMaxThreadCount();
+static bool s_pointsRemoval = false;
+static bool s_useDataSFAsWeights = false;
+static bool s_useModelSFAsWeights = false;
+static bool s_useC2MSignedDistances = false;
+static bool s_robustC2MSignedDistances = true;
+static int s_normalsMatchingOption = CCCoreLib::ICPRegistrationTools::NO_NORMAL;
 
 ccRegistrationDlg::ccRegistrationDlg(ccHObject* data, ccHObject* model, QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::Tool)
     , Ui::RegistrationDialog()
 {
 	assert(data && model);
-	dataEntity  = data;
+	dataEntity = data;
 	modelEntity = model;
 
 	setupUi(this);
@@ -152,23 +152,23 @@ ccRegistrationDlg::~ccRegistrationDlg()
 
 void ccRegistrationDlg::saveParameters() const
 {
-	s_maxThreadCount              = getMaxThreadCount();
-	s_adjustScale                 = adjustScale();
-	s_randomSamplingLimit         = randomSamplingLimit();
-	s_rmsDifference               = getMinRMSDecrease();
-	s_maxIterationCount           = getMaxIterationCount();
+	s_maxThreadCount = getMaxThreadCount();
+	s_adjustScale = adjustScale();
+	s_randomSamplingLimit = randomSamplingLimit();
+	s_rmsDifference = getMinRMSDecrease();
+	s_maxIterationCount = getMaxIterationCount();
 	s_useErrorDifferenceCriterion = errorCriterion->isChecked();
-	s_finalOverlap                = overlapSpinBox->value();
-	s_rotComboIndex               = rotComboBox->currentIndex();
-	s_transCheckboxes[0]          = TxCheckBox->isChecked();
-	s_transCheckboxes[1]          = TyCheckBox->isChecked();
-	s_transCheckboxes[2]          = TzCheckBox->isChecked();
-	s_pointsRemoval               = removeFarthestPoints();
-	s_useDataSFAsWeights          = checkBoxUseDataSFAsWeights->isChecked();
-	s_useModelSFAsWeights         = checkBoxUseModelSFAsWeights->isChecked();
-	s_useC2MSignedDistances       = useC2MSignedDistancesCheckBox->isChecked();
-	s_robustC2MSignedDistances    = robustC2MDistsCheckBox->isChecked();
-	s_normalsMatchingOption       = normalsComboBox->currentIndex();
+	s_finalOverlap = overlapSpinBox->value();
+	s_rotComboIndex = rotComboBox->currentIndex();
+	s_transCheckboxes[0] = TxCheckBox->isChecked();
+	s_transCheckboxes[1] = TyCheckBox->isChecked();
+	s_transCheckboxes[2] = TzCheckBox->isChecked();
+	s_pointsRemoval = removeFarthestPoints();
+	s_useDataSFAsWeights = checkBoxUseDataSFAsWeights->isChecked();
+	s_useModelSFAsWeights = checkBoxUseModelSFAsWeights->isChecked();
+	s_useC2MSignedDistances = useC2MSignedDistancesCheckBox->isChecked();
+	s_robustC2MSignedDistances = robustC2MDistsCheckBox->isChecked();
+	s_normalsMatchingOption = normalsComboBox->currentIndex();
 }
 
 ccHObject* ccRegistrationDlg::getDataEntity()
@@ -247,7 +247,7 @@ double ccRegistrationDlg::GetAbsoluteMinRMSDecrease()
 
 double ccRegistrationDlg::getMinRMSDecrease() const
 {
-	bool   ok  = true;
+	bool ok = true;
 	double val = rmsDifferenceLineEdit->text().toDouble(&ok);
 
 	if (!ok)

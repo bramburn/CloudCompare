@@ -111,15 +111,15 @@ class ccGraphicalSegmentationTool : public ccOverlayDialog
 	void currentScalarFieldUpdated();
 
   protected:
-	void        segmentIn();
-	void        segmentOut();
-	void        exportSelection();
-	void        segment(bool keepPointsInside, ScalarType classificationValue = CCCoreLib::NAN_VALUE, bool exportSelection = false);
-	void        reset();
-	void        options();
-	void        apply();
-	void        applyAndDelete();
-	void        cancel();
+	void segmentIn();
+	void segmentOut();
+	void exportSelection();
+	void segment(bool keepPointsInside, ScalarType classificationValue = CCCoreLib::NAN_VALUE, bool exportSelection = false);
+	void reset();
+	void options();
+	void apply();
+	void applyAndDelete();
+	void cancel();
 	inline void addPointToPolyline(int x, int y)
 	{
 		return addPointToPolylineExt(x, y, false);
@@ -157,12 +157,12 @@ class ccGraphicalSegmentationTool : public ccOverlayDialog
 	//! Process states
 	enum ProcessStates
 	{
-		POLYLINE  = 1,
+		POLYLINE = 1,
 		RECTANGLE = 2,
 		//...			= 4,
 		//...			= 8,
 		//...			= 16,
-		PAUSED  = 32,
+		PAUSED = 32,
 		STARTED = 64,
 		RUNNING = 128,
 	};

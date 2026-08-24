@@ -67,25 +67,25 @@ class QCC_DB_LIB_API ccColorScalesManager
 	 */
 	enum DEFAULT_SCALES
 	{
-		BGYR              = 0,  //!< Blue-Green-Yellow-Red (distances)
-		GREY              = 1,  //!< Grey ramp
-		BWR               = 2,  //!< Blue-White-Red (signed SF)
-		RY                = 3,  //!< Red-Yellow
-		RW                = 4,  //!< Red-White
-		ABS_NORM_GREY     = 5,  //!< Absolute normalized grey
-		HSV_360_DEG       = 6,  //!< HSV 0-360 degrees
-		VERTEX_QUALITY    = 7,  //!< Mesh vertex quality
-		DIP_BRYW          = 8,  //!< Dip 0-90 degrees
-		DIP_DIR_REPEAT    = 9,  //!< Dip direction 0-360 degrees
-		VIRIDIS           = 10, //!< Matplotlib Viridis
-		BROWN_YELLOW      = 11, //!< Brown-Yellow
-		YELLOW_BROWN      = 12, //!< Yellow-Brown
-		TOPO_LANDSERF     = 13, //!< Topo Landserf
-		HIGH_CONTRAST     = 14, //!< High contrast
-		CIVIDIS           = 15, //!< Matplotlib Cividis
-		ASPRS_CLASSES     = 16, //!< ASPRS classes
+		BGYR = 0,               //!< Blue-Green-Yellow-Red (distances)
+		GREY = 1,               //!< Grey ramp
+		BWR = 2,                //!< Blue-White-Red (signed SF)
+		RY = 3,                 //!< Red-Yellow
+		RW = 4,                 //!< Red-White
+		ABS_NORM_GREY = 5,      //!< Absolute normalized grey
+		HSV_360_DEG = 6,        //!< HSV 0-360 degrees
+		VERTEX_QUALITY = 7,     //!< Mesh vertex quality
+		DIP_BRYW = 8,           //!< Dip 0-90 degrees
+		DIP_DIR_REPEAT = 9,     //!< Dip direction 0-360 degrees
+		VIRIDIS = 10,           //!< Matplotlib Viridis
+		BROWN_YELLOW = 11,      //!< Brown-Yellow
+		YELLOW_BROWN = 12,      //!< Yellow-Brown
+		TOPO_LANDSERF = 13,     //!< Topo Landserf
+		HIGH_CONTRAST = 14,     //!< High contrast
+		CIVIDIS = 15,           //!< Matplotlib Cividis
+		ASPRS_CLASSES = 16,     //!< ASPRS classes
 		ASPRS_WITH_LABELS = 17, //!< ASPRS with labels
-		GREY_INV          = 18, //!< Inverted grey
+		GREY_INV = 18,          //!< Inverted grey
 	};
 
 	//! Returns a pre-defined color scale UUID

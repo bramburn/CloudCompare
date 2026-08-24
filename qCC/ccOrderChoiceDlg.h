@@ -53,10 +53,10 @@ class ccOrderChoiceDlg : public QDialog
 	 * @param[in] secondRole Role of second entity
 	 * @param[in] app Application interface
 	 */
-	ccOrderChoiceDlg(ccHObject*          firstEntity,
-	                 QString             firstRole,
-	                 ccHObject*          secondEntity,
-	                 QString             secondRole,
+	ccOrderChoiceDlg(ccHObject* firstEntity,
+	                 QString firstRole,
+	                 ccHObject* secondEntity,
+	                 QString secondRole,
 	                 ccMainAppInterface* app = 0);
 
 	/// Destructor
@@ -76,10 +76,10 @@ class ccOrderChoiceDlg : public QDialog
 	void setColorsAndLabels();
 
 	Ui_RoleChoiceDialog* m_gui;
-	ccMainAppInterface*  m_app;
-	ccHObject*           m_firstEnt;
-	ccHObject*           m_secondEnt;
-	bool                 m_useInputOrder;
+	ccMainAppInterface* m_app;
+	ccHObject* m_firstEnt;
+	ccHObject* m_secondEnt;
+	bool m_useInputOrder;
 };
 
 #endif // CC_ORDER_CHOICE_DIALOG_HEADER

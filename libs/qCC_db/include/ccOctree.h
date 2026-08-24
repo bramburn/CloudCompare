@@ -127,9 +127,9 @@ class QCC_DB_LIB_API ccOctree : public QObject
 	//! Octree displaying methods
 	enum DisplayMode
 	{
-		WIRE        = 0, /**< The octree is displayed as wired boxes (one box per cell) */
+		WIRE = 0,        /**< The octree is displayed as wired boxes (one box per cell) */
 		MEAN_POINTS = 1, /**< The octree is displayed as points (one point per cell = the center of gravity of the points lying in it) */
-		MEAN_CUBES  = 2  /**< The octree is displayed as plain 3D cubes (one cube per cell) */
+		MEAN_CUBES = 2   /**< The octree is displayed as plain 3D cubes (one cube per cell) */
 	};
 	//! Returns the currently display mode
 	DisplayMode getDisplayMode() const
@@ -143,23 +143,23 @@ class QCC_DB_LIB_API ccOctree : public QObject
 	void draw(CC_DRAW_CONTEXT& context, ccColor::Rgb* pickingColor = nullptr);
 
 	//! Intersects octree with a camera sensor
-	bool intersectWithFrustum(ccCameraSensor*        sensor,
+	bool intersectWithFrustum(ccCameraSensor* sensor,
 	                          std::vector<unsigned>& inCameraFrustum);
 
 	//! Octree-driven point picking algorithm
-	bool pointPicking(const CCVector2d&           clickPos,
+	bool pointPicking(const CCVector2d& clickPos,
 	                  const ccGLCameraParameters& camera,
-	                  PointDescriptor&            output,
-	                  double                      pickWidth_pix = 3.0) const;
+	                  PointDescriptor& output,
+	                  double pickWidth_pix = 3.0) const;
 
   public: // HELPERS
 	//! Computes the average color of a set of points
 	static ccColor::Rgb ComputeAverageColor(CCCoreLib::ReferenceCloud* subset,
-	                                        ccGenericPointCloud*       sourceCloud);
+	                                        ccGenericPointCloud* sourceCloud);
 
 	//! Computes the average normal of a set of points
 	static CCVector3 ComputeAverageNorm(CCCoreLib::ReferenceCloud* subset,
-	                                    ccGenericPointCloud*       sourceCloud);
+	                                    ccGenericPointCloud* sourceCloud);
 
 	//! Tries to guess a very naive 'local radius' for octree-based computation
 	/** \param cloud	point cloud on which to process the normals.
@@ -170,10 +170,10 @@ class QCC_DB_LIB_API ccOctree : public QObject
 	//! Parameters for the GuessBestRadius method
 	struct BestRadiusParams
 	{
-		int    aimedPopulationPerCell = 16;   //!< Aimed poulation per octree cell
-		int    aimedPopulationRange   = 4;    //!< Aimed poulation range per octree cell
-		int    minCellPopulation      = 6;    //!< Minimum cell poulation
-		double minAboveMinRatio       = 0.97; //!< Ratio of cells above the 'minCellPopulation' thershold
+		int aimedPopulationPerCell = 16; //!< Aimed poulation per octree cell
+		int aimedPopulationRange = 4;    //!< Aimed poulation range per octree cell
+		int minCellPopulation = 6;       //!< Minimum cell poulation
+		double minAboveMinRatio = 0.97;  //!< Ratio of cells above the 'minCellPopulation' thershold
 	};
 
 	//! Tries to guess the best 'local radius' for octree-based computation
@@ -185,10 +185,10 @@ class QCC_DB_LIB_API ccOctree : public QObject
 	    \param progressCb	progress notification (optional)
 	    \return the best radius (strictly positive value) or 0 if an error occurred
 	**/
-	static PointCoordinateType GuessBestRadius(ccGenericPointCloud*                cloud,
-	                                           const BestRadiusParams&             params,
-	                                           CCCoreLib::DgmOctree*               cloudOctree = nullptr,
-	                                           CCCoreLib::GenericProgressCallback* progressCb  = nullptr);
+	static PointCoordinateType GuessBestRadius(ccGenericPointCloud* cloud,
+	                                           const BestRadiusParams& params,
+	                                           CCCoreLib::DgmOctree* cloudOctree = nullptr,
+	                                           CCCoreLib::GenericProgressCallback* progressCb = nullptr);
 
 	//! Tries to guess the best 'local radius' for octree-based computation (auto-computes the octree if necessary)
 	/**	The ideal radius is determined by randomly sampling up to 200 points and looking at
@@ -198,9 +198,9 @@ class QCC_DB_LIB_API ccOctree : public QObject
 	    \param parentWidget	parent widget (for the progress dialog, if any has to be shown)
 	    \return the best radius (strictly positive value) or 0 if an error occurred
 	**/
-	static PointCoordinateType GuessBestRadiusAutoComputeOctree(ccGenericPointCloud*    cloud,
+	static PointCoordinateType GuessBestRadiusAutoComputeOctree(ccGenericPointCloud* cloud,
 	                                                            const BestRadiusParams& params,
-	                                                            QWidget*                parentWidget = nullptr);
+	                                                            QWidget* parentWidget = nullptr);
 
   Q_SIGNALS:
 
@@ -209,16 +209,16 @@ class QCC_DB_LIB_API ccOctree : public QObject
 
   protected: ////RENDERING
 	static bool DrawCellAsABox(const CCCoreLib::DgmOctree::octreeCell& cell,
-	                           void**                                  additionalParameters,
-	                           CCCoreLib::NormalizedProgress*          nProgress = 0);
+	                           void** additionalParameters,
+	                           CCCoreLib::NormalizedProgress* nProgress = 0);
 
 	static bool DrawCellAsAPoint(const CCCoreLib::DgmOctree::octreeCell& cell,
-	                             void**                                  additionalParameters,
-	                             CCCoreLib::NormalizedProgress*          nProgress = 0);
+	                             void** additionalParameters,
+	                             CCCoreLib::NormalizedProgress* nProgress = 0);
 
 	static bool DrawCellAsAPrimitive(const CCCoreLib::DgmOctree::octreeCell& cell,
-	                                 void**                                  additionalParameters,
-	                                 CCCoreLib::NormalizedProgress*          nProgress = 0);
+	                                 void** additionalParameters,
+	                                 CCCoreLib::NormalizedProgress* nProgress = 0);
 
   protected: // MEMBERS
 	//! Associated cloud (as a ccGenericPointCloud)

@@ -179,9 +179,9 @@ void ccHistogramWindow::setAxisLabels(const QString& xLabel, const QString& yLab
 }
 
 void ccHistogramWindow::fromSF(ccScalarField* sf,
-                               unsigned       initialNumberOfClasses /*=0*/,
-                               bool           numberOfClassesCanBeChanged /*=true*/,
-                               bool           showNaNValuesInGrey /*=true*/)
+                               unsigned initialNumberOfClasses /*=0*/,
+                               bool numberOfClassesCanBeChanged /*=true*/,
+                               bool showNaNValuesInGrey /*=true*/)
 {
 	if (sf && m_associatedSF != sf)
 	{
@@ -194,14 +194,14 @@ void ccHistogramWindow::fromSF(ccScalarField* sf,
 
 	if (m_associatedSF)
 	{
-		m_minVal                      = showNaNValuesInGrey ? m_associatedSF->getMin() : m_associatedSF->displayRange().start();
-		m_maxVal                      = showNaNValuesInGrey ? m_associatedSF->getMax() : m_associatedSF->displayRange().stop();
+		m_minVal = showNaNValuesInGrey ? m_associatedSF->getMin() : m_associatedSF->displayRange().start();
+		m_maxVal = showNaNValuesInGrey ? m_associatedSF->getMax() : m_associatedSF->displayRange().stop();
 		m_numberOfClassesCanBeChanged = numberOfClassesCanBeChanged;
 	}
 	else
 	{
 		assert(false);
-		m_minVal = m_maxVal           = 0;
+		m_minVal = m_maxVal = 0;
 		m_numberOfClassesCanBeChanged = false;
 	}
 
@@ -210,7 +210,7 @@ void ccHistogramWindow::fromSF(ccScalarField* sf,
 };
 
 void ccHistogramWindow::fromBinArray(const std::vector<unsigned>& histoValues,
-                                     ccScalarField*               sf)
+                                     ccScalarField* sf)
 {
 	try
 	{
@@ -231,8 +231,8 @@ void ccHistogramWindow::fromBinArray(const std::vector<unsigned>& histoValues,
 			m_associatedSF->link();
 	}
 
-	m_minVal                      = m_associatedSF ? m_associatedSF->getMin() : 0;
-	m_maxVal                      = m_associatedSF ? m_associatedSF->getMax() : 0;
+	m_minVal = m_associatedSF ? m_associatedSF->getMin() : 0;
+	m_maxVal = m_associatedSF ? m_associatedSF->getMax() : 0;
 	m_numberOfClassesCanBeChanged = false;
 
 	// update max histogram value
@@ -242,8 +242,8 @@ void ccHistogramWindow::fromBinArray(const std::vector<unsigned>& histoValues,
 }
 
 void ccHistogramWindow::fromBinArray(const std::vector<unsigned>& histoValues,
-                                     double                       minVal,
-                                     double                       maxVal)
+                                     double minVal,
+                                     double maxVal)
 {
 	try
 	{
@@ -254,8 +254,8 @@ void ccHistogramWindow::fromBinArray(const std::vector<unsigned>& histoValues,
 		ccLog::Warning("[ccHistogramWindow::fromBinArray] Not enough memory!");
 		return;
 	}
-	m_minVal                      = minVal;
-	m_maxVal                      = maxVal;
+	m_minVal = minVal;
+	m_maxVal = maxVal;
 	m_numberOfClassesCanBeChanged = false;
 
 	// update max histogram value
@@ -323,7 +323,7 @@ bool ccHistogramWindow::computeBinArrayFromSF(size_t binCount)
 	if (range > 0.0)
 	{
 		unsigned count = m_associatedSF->currentSize();
-		double   step  = range / binCount;
+		double step = range / binCount;
 		for (unsigned i = 0; i < count; ++i)
 		{
 			double val = m_associatedSF->getValue(i);
@@ -402,7 +402,7 @@ void ccHistogramWindow::refreshBars()
 			// we take the 'normalized' value at the middle of the class
 			double normVal = (i + 0.5) / histoSize;
 
-			keyData[i]   = m_minVal + normVal * (m_maxVal - m_minVal);
+			keyData[i] = m_minVal + normVal * (m_maxVal - m_minVal);
 			valueData[i] = m_histoValues[i];
 
 			const ccColor::Rgb* col = m_associatedSF->getColor(static_cast<ScalarType>(keyData[i]));
@@ -443,8 +443,8 @@ void ccHistogramWindow::refresh()
 	{
 		double minSat = m_associatedSF->saturationRange().min();
 		double maxSat = m_associatedSF->saturationRange().max();
-		minVal        = std::min(minVal, minSat);
-		maxVal        = std::max(maxVal, maxSat);
+		minVal = std::min(minVal, minSat);
+		maxVal = std::max(maxVal, maxSat);
 	}
 	xAxis->setRange(minVal, std::max(minVal + std::numeric_limits<ScalarType>::epsilon(), maxVal));
 	yAxis->setRange(0, m_maxHistoVal);
@@ -474,13 +474,13 @@ void ccHistogramWindow::refresh()
 	}
 
 	// clear previous display
-	m_histogram    = nullptr;
-	m_vertBar      = nullptr;
+	m_histogram = nullptr;
+	m_vertBar = nullptr;
 	m_overlayCurve = nullptr;
-	m_areaLeft     = nullptr;
-	m_areaRight    = nullptr;
-	m_arrowLeft    = nullptr;
-	m_arrowRight   = nullptr;
+	m_areaLeft = nullptr;
+	m_areaRight = nullptr;
+	m_arrowLeft = nullptr;
+	m_arrowRight = nullptr;
 	this->clearGraphs();
 	this->clearPlottables();
 
@@ -491,8 +491,8 @@ void ccHistogramWindow::refresh()
 	ccColorScale::Shared colorScale = (m_colorScale ? m_colorScale : ccColorScalesManager::GetDefaultScale());
 
 	// histogram
-	int    histoSize  = static_cast<int>(m_histoValues.size());
-	double totalSum   = 0;
+	int histoSize = static_cast<int>(m_histoValues.size());
+	double totalSum = 0;
 	double partialSum = 0;
 	if (histoSize > 0)
 	{
@@ -551,7 +551,7 @@ void ccHistogramWindow::refresh()
 				partialSum += m_histoValues[i];
 			}
 
-			keyData[i]   = m_minVal + normVal * (m_maxVal - m_minVal);
+			keyData[i] = m_minVal + normVal * (m_maxVal - m_minVal);
 			valueData[i] = m_histoValues[i];
 
 			// import color for the current bin
@@ -618,7 +618,7 @@ void ccHistogramWindow::refresh()
 
 		// set pen color
 		const ccColor::Rgb& col = ccColor::darkGrey;
-		QPen                pen(QColor(col.r, col.g, col.b));
+		QPen pen(QColor(col.r, col.g, col.b));
 		m_overlayCurve->setPen(pen);
 
 		// set width
@@ -684,15 +684,15 @@ void ccHistogramWindow::refresh()
 		QVector<double> valueData(1);
 
 		// horizontal position
-		keyData[0]   = m_minVal + (m_maxVal - m_minVal) * m_verticalIndicatorPositionPercent;
+		keyData[0] = m_minVal + (m_maxVal - m_minVal) * m_verticalIndicatorPositionPercent;
 		valueData[0] = m_maxHistoVal;
 
 		m_vertBar->setData(keyData, valueData);
 
 		// precision (same as color scale)
-		int      precision = static_cast<int>(ccGui::Parameters().displayedNumPrecision);
-		unsigned bin       = static_cast<unsigned>(m_verticalIndicatorPositionPercent * m_histoValues.size());
-		QString  valueStr  = QString("bin %0").arg(bin);
+		int precision = static_cast<int>(ccGui::Parameters().displayedNumPrecision);
+		unsigned bin = static_cast<unsigned>(m_verticalIndicatorPositionPercent * m_histoValues.size());
+		QString valueStr = QString("bin %0").arg(bin);
 		m_vertBar->setText(valueStr);
 		valueStr = QString("< %0 %").arg((100.0 * partialSum) / totalSum, 0, 'f', 3);
 		m_vertBar->appendText(valueStr);
@@ -974,7 +974,7 @@ void ccHistogramWindow::mouseMoveEvent(QMouseEvent* event)
 				{
 					m_drawVerticalIndicator = true;
 
-					int verticalIndicatorPosition      = (static_cast<int>(m_histoValues.size()) * (event->x() - roi.x())) / roi.width();
+					int verticalIndicatorPosition = (static_cast<int>(m_histoValues.size()) * (event->x() - roi.x())) / roi.width();
 					m_verticalIndicatorPositionPercent = static_cast<double>(verticalIndicatorPosition) / m_histoValues.size();
 
 					refresh();
@@ -1064,8 +1064,8 @@ bool ccHistogramWindowDlg::exportToCSV(QString filename) const
 	// data
 	{
 		const std::vector<unsigned>& histoValues = m_win->histoValues();
-		int                          histoSize   = static_cast<int>(histoValues.size());
-		double                       step        = (m_win->maxVal() - m_win->minVal()) / histoSize;
+		int histoSize = static_cast<int>(histoValues.size());
+		double step = (m_win->maxVal() - m_win->minVal()) / histoSize;
 		for (int i = 0; i < histoSize; ++i)
 		{
 			double minVal = m_win->minVal() + i * step;

@@ -59,12 +59,12 @@
 #include <string.h>
 
 // semi-persistent parameters
-static QChar  s_separator(',');
-static double s_xSpacing    = 1.0;
-static double s_ySpacing    = 1.0;
-static bool   s_inverseRows = false;
-static bool   s_loadAsMesh  = false;
-static bool   s_useTexture  = false;
+static QChar s_separator(',');
+static double s_xSpacing = 1.0;
+static double s_ySpacing = 1.0;
+static bool s_inverseRows = false;
+static bool s_loadAsMesh = false;
+static bool s_useTexture = false;
 
 CSVMatrixFilter::CSVMatrixFilter()
     : FileIOFilter({"_CSV Matrix Filter",
@@ -77,8 +77,8 @@ CSVMatrixFilter::CSVMatrixFilter()
 {
 }
 
-CC_FILE_ERROR CSVMatrixFilter::loadFile(const QString&  filename,
-                                        ccHObject&      container,
+CC_FILE_ERROR CSVMatrixFilter::loadFile(const QString& filename,
+                                        ccHObject& container,
                                         LoadParameters& parameters)
 {
 	CSVMatrixOpenDialog openDlg(nullptr);
@@ -100,12 +100,12 @@ CC_FILE_ERROR CSVMatrixFilter::loadFile(const QString&  filename,
 		return CC_FERR_BAD_ARGUMENT;
 	}
 
-	s_separator   = openDlg.lineEditSeparator->text().at(0);
-	s_xSpacing    = openDlg.xDoubleSpinBox->value();
-	s_ySpacing    = openDlg.yDoubleSpinBox->value();
+	s_separator = openDlg.lineEditSeparator->text().at(0);
+	s_xSpacing = openDlg.xDoubleSpinBox->value();
+	s_ySpacing = openDlg.yDoubleSpinBox->value();
 	s_inverseRows = openDlg.inverseRowCheckBox->isChecked();
-	s_loadAsMesh  = openDlg.loadAsMeshCheckBox->isChecked();
-	s_useTexture  = openDlg.useTextureCheckBox->isChecked();
+	s_loadAsMesh = openDlg.loadAsMeshCheckBox->isChecked();
+	s_useTexture = openDlg.useTextureCheckBox->isChecked();
 
 	QFile file(filename);
 	if (!file.open(QFile::ReadOnly | QFile::Text))
@@ -113,11 +113,11 @@ CC_FILE_ERROR CSVMatrixFilter::loadFile(const QString&  filename,
 
 	QTextStream stream(&file);
 
-	unsigned      lineIndex = 0;
-	int           width     = -1;
-	int           row       = 0;
-	CC_FILE_ERROR result    = CC_FERR_NO_ERROR;
-	ccPointCloud* cloud     = new ccPointCloud();
+	unsigned lineIndex = 0;
+	int width = -1;
+	int row = 0;
+	CC_FILE_ERROR result = CC_FERR_NO_ERROR;
+	ccPointCloud* cloud = new ccPointCloud();
 	while (file.error() == QFile::NoError && !file.atEnd())
 	{
 		QString line = stream.readLine();
@@ -156,7 +156,7 @@ CC_FILE_ERROR CSVMatrixFilter::loadFile(const QString&  filename,
 			break;
 		}
 
-		bool      ok = true;
+		bool ok = true;
 		CCVector3 P(0, static_cast<PointCoordinateType>((s_inverseRows ? -row : row) * s_ySpacing), 0);
 		for (int i = 0; i < width; ++i)
 		{
@@ -225,7 +225,7 @@ CC_FILE_ERROR CSVMatrixFilter::loadFile(const QString&  filename,
 		if (s_useTexture)
 		{
 			QString filename = openDlg.textureFilenameLineEdit->text();
-			QImage  texture;
+			QImage texture;
 			if (!texture.load(filename))
 			{
 				ccLog::Warning(QString("[CSVMatrixFilter] Failed to load texture from file '%1'").arg(filename));
@@ -306,7 +306,7 @@ CC_FILE_ERROR CSVMatrixFilter::loadFile(const QString&  filename,
 
 		if (s_inverseRows)
 		{
-			CCVector3  T(0, static_cast<PointCoordinateType>((rowCount - 1) * s_ySpacing), 0);
+			CCVector3 T(0, static_cast<PointCoordinateType>((rowCount - 1) * s_ySpacing), 0);
 			ccGLMatrix trans;
 			trans.setTranslation(T);
 			cloud->applyGLTransformation_recursive(&trans);

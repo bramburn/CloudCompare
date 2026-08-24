@@ -68,9 +68,9 @@ class ccTracePolylineTool : public ccOverlayDialog
 	virtual void stop(bool accepted) override;
 
   protected:
-	void        apply();
-	void        cancel();
-	void        exportLine();
+	void apply();
+	void cancel();
+	void exportLine();
 	inline void continueEdition()
 	{
 		restart(false);
@@ -103,7 +103,7 @@ class ccTracePolylineTool : public ccOverlayDialog
 		}
 		SegmentGLParams(ccGenericGLDisplay* display, int x, int y);
 		ccGLCameraParameters params;
-		CCVector2d           clickPos;
+		CCVector2d clickPos;
 	};
 
 	//! Oversamples the active 3D polyline

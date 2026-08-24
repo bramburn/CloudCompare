@@ -45,8 +45,8 @@ namespace ccColor
 
 	Rgb Generator::Random(bool lightOnly)
 	{
-		std::random_device                      rd;           // non-deterministic generator
-		std::mt19937                            gen(rd());    // to seed mersenne twister.
+		std::random_device rd;                                // non-deterministic generator
+		std::mt19937 gen(rd());                               // to seed mersenne twister.
 		std::uniform_int_distribution<uint16_t> dist(0, MAX); // 1-byte types are not allowed
 
 		Rgb col;
@@ -67,7 +67,7 @@ namespace ccColor
 	Rgb Convert::hsv2rgb(float H, float S, float V)
 	{
 		float hi = 0;
-		float f  = std::modf(H / 60.0f, &hi);
+		float f = std::modf(H / 60.0f, &hi);
 
 		float l = V * (1.0f - S);
 		float m = V * (1.0f - f * S);

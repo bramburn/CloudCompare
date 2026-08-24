@@ -95,8 +95,8 @@ void ccGenericMesh::showNormals(bool state)
 }
 
 // stipple mask (for semi-transparent display of meshes)
-static const GLubyte s_byte0               = 1 | 4 | 16 | 64;
-static const GLubyte s_byte1               = 2 | 8 | 32 | 128;
+static const GLubyte s_byte0 = 1 | 4 | 16 | 64;
+static const GLubyte s_byte1 = 2 | 8 | 32 | 128;
 static const GLubyte s_stippleMask[4 * 32] = {s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1, s_byte0, s_byte0, s_byte0, s_byte0, s_byte1, s_byte1, s_byte1, s_byte1};
 
 void ccGenericMesh::EnableGLStippleMask(QOpenGLContext* context, bool state)
@@ -142,8 +142,8 @@ ColorCompType* ccGenericMesh::GetColorsBuffer()
 
 // Vertex indexes buffer (for wired display)
 static unsigned s_vertWireIndexes[ccChunk::SIZE * 6];
-static bool     s_vertIndexesInitialized = false;
-unsigned*       ccGenericMesh::GetWireVertexIndexes()
+static bool s_vertIndexesInitialized = false;
+unsigned* ccGenericMesh::GetWireVertexIndexes()
 {
 	// on first call, we init the array
 	if (!s_vertIndexesInitialized)
@@ -216,8 +216,8 @@ void ccGenericMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 			return;
 
 		// L.O.D.
-		bool     lodEnabled      = (triNum > context.minLODTriangleCount && context.decimateMeshOnMove && MACRO_LODActivated(context));
-		unsigned decimStep       = (lodEnabled ? static_cast<unsigned>(ceil(static_cast<double>(triNum * 3) / context.minLODTriangleCount)) : 1);
+		bool lodEnabled = (triNum > context.minLODTriangleCount && context.decimateMeshOnMove && MACRO_LODActivated(context));
+		unsigned decimStep = (lodEnabled ? static_cast<unsigned>(ceil(static_cast<double>(triNum * 3) / context.minLODTriangleCount)) : 1);
 		unsigned displayedTriNum = triNum / decimStep;
 
 		// display parameters
@@ -227,7 +227,7 @@ void ccGenericMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 
 		// vertices visibility
 		const ccGenericPointCloud::VisibilityTableType& verticesVisibility = vertices->getTheVisibilityArray();
-		bool                                            visFiltering       = (verticesVisibility.size() == vertices->size());
+		bool visFiltering = (verticesVisibility.size() == vertices->size());
 
 		// wireframe ? (not compatible with LOD)
 		bool showWired = isShownAsWire() && !lodEnabled;
@@ -239,10 +239,10 @@ void ccGenericMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 
 		// materials & textures
 		bool applyMaterials = (hasMaterials() && materialsShown());
-		bool showTextures   = (hasTextures() && materialsShown() && !lodEnabled);
+		bool showTextures = (hasTextures() && materialsShown() && !lodEnabled);
 
 		// color-based entity picking
-		bool         entityPickingMode = MACRO_EntityPicking(context);
+		bool entityPickingMode = MACRO_EntityPicking(context);
 		ccColor::Rgb pickingColor;
 		if (entityPickingMode)
 		{
@@ -255,32 +255,32 @@ void ccGenericMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 			pickingColor = context.entityPicking.registerEntity(this);
 
 			// minimal display for picking mode!
-			glParams.showNorms  = false;
+			glParams.showNorms = false;
 			glParams.showColors = false;
 			// glParams.showSF --> we keep it only if SF 'NaN' values are hidden
 			showTriNormals = false;
 			applyMaterials = false;
-			showTextures   = false;
+			showTextures = false;
 		}
 
 		// in the case we need to display scalar field colors
 		ccScalarField* currentDisplayedScalarField = nullptr;
-		bool           sfMayHaveHiddenValues       = false;
+		bool sfMayHaveHiddenValues = false;
 		// unsigned colorRampSteps = 0;
 		ccColorScale::Shared colorScale(nullptr);
 
 		if (glParams.showSF)
 		{
 			assert(vertices->isA(CC_TYPES::POINT_CLOUD));
-			ccPointCloud* cloud         = static_cast<ccPointCloud*>(vertices);
+			ccPointCloud* cloud = static_cast<ccPointCloud*>(vertices);
 			currentDisplayedScalarField = cloud->getCurrentDisplayedScalarField();
-			sfMayHaveHiddenValues       = currentDisplayedScalarField ? currentDisplayedScalarField->mayHaveHiddenValues() : false;
+			sfMayHaveHiddenValues = currentDisplayedScalarField ? currentDisplayedScalarField->mayHaveHiddenValues() : false;
 
 			if (!currentDisplayedScalarField
 			    || (entityPickingMode && !sfMayHaveHiddenValues)) // in picking mode, no need to take SF into account if we don't hide any points!
 			{
 				currentDisplayedScalarField = nullptr;
-				glParams.showSF             = false;
+				glParams.showSF = false;
 			}
 			else
 			{
@@ -301,7 +301,7 @@ void ccGenericMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 		if (glParams.showSF || glParams.showColors)
 		{
 			applyMaterials = false;
-			colorMaterial  = true;
+			colorMaterial = true;
 			glFunc->glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
 			glFunc->glEnable(GL_COLOR_MATERIAL);
 		}
@@ -339,12 +339,12 @@ void ccGenericMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 
 		// in the case we need normals (i.e. lighting)
 		NormsIndexesTableType* normalsIndexesTable = nullptr;
-		ccNormalVectors*       compressedNormals   = nullptr;
+		ccNormalVectors* compressedNormals = nullptr;
 		if (glParams.showNorms)
 		{
 			assert(vertices->isA(CC_TYPES::POINT_CLOUD));
 			normalsIndexesTable = static_cast<ccPointCloud*>(vertices)->normals();
-			compressedNormals   = ccNormalVectors::GetUniqueInstance();
+			compressedNormals = ccNormalVectors::GetUniqueInstance();
 		}
 
 		// stipple mask
@@ -392,9 +392,9 @@ void ccGenericMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 				for (size_t n = 0; n < chunkSize; n += decimStep)
 				{
 					const CCCoreLib::VerticesIndexes* ti = getTriangleVertIndexes(static_cast<unsigned>(chunkStart + n));
-					*_vertices++                         = *vertices->getPoint(ti->i1);
-					*_vertices++                         = *vertices->getPoint(ti->i2);
-					*_vertices++                         = *vertices->getPoint(ti->i3);
+					*_vertices++ = *vertices->getPoint(ti->i1);
+					*_vertices++ = *vertices->getPoint(ti->i2);
+					*_vertices++ = *vertices->getPoint(ti->i3);
 				}
 
 				// scalar field
@@ -405,9 +405,9 @@ void ccGenericMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 					for (unsigned n = 0; n < chunkSize; n += decimStep)
 					{
 						const CCCoreLib::VerticesIndexes* ti = getTriangleVertIndexes(static_cast<unsigned>(chunkStart + n));
-						*_rgbColors++                        = *currentDisplayedScalarField->getValueColor(ti->i1);
-						*_rgbColors++                        = *currentDisplayedScalarField->getValueColor(ti->i2);
-						*_rgbColors++                        = *currentDisplayedScalarField->getValueColor(ti->i3);
+						*_rgbColors++ = *currentDisplayedScalarField->getValueColor(ti->i1);
+						*_rgbColors++ = *currentDisplayedScalarField->getValueColor(ti->i2);
+						*_rgbColors++ = *currentDisplayedScalarField->getValueColor(ti->i3);
 					}
 				}
 				// colors
@@ -418,9 +418,9 @@ void ccGenericMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 					for (unsigned n = 0; n < chunkSize; n += decimStep)
 					{
 						const CCCoreLib::VerticesIndexes* ti = getTriangleVertIndexes(static_cast<unsigned>(chunkStart + n));
-						*_rgbaColors++                       = rgbaColorsTable->at(ti->i1);
-						*_rgbaColors++                       = rgbaColorsTable->at(ti->i2);
-						*_rgbaColors++                       = rgbaColorsTable->at(ti->i3);
+						*_rgbaColors++ = rgbaColorsTable->at(ti->i1);
+						*_rgbaColors++ = rgbaColorsTable->at(ti->i2);
+						*_rgbaColors++ = rgbaColorsTable->at(ti->i3);
 					}
 				}
 
@@ -446,9 +446,9 @@ void ccGenericMesh::drawMeOnly(CC_DRAW_CONTEXT& context)
 						for (unsigned n = 0; n < chunkSize; n += decimStep)
 						{
 							const CCCoreLib::VerticesIndexes* ti = getTriangleVertIndexes(static_cast<unsigned>(chunkStart + n));
-							*_normals++                          = vertices->getPointNormal(ti->i1);
-							*_normals++                          = vertices->getPointNormal(ti->i2);
-							*_normals++                          = vertices->getPointNormal(ti->i3);
+							*_normals++ = vertices->getPointNormal(ti->i1);
+							*_normals++ = vertices->getPointNormal(ti->i2);
+							*_normals++ = vertices->getPointNormal(ti->i3);
 						}
 					}
 				}
@@ -765,11 +765,11 @@ short ccGenericMesh::minimumFileVersion_MeOnly() const
 	return std::max(static_cast<short>(29), ccHObject::minimumFileVersion_MeOnly());
 }
 
-ccPointCloud* ccGenericMesh::samplePoints(bool                                densityBased,
-                                          double                              samplingParameter,
-                                          bool                                withNormals,
-                                          bool                                withRGB,
-                                          bool                                withTexture,
+ccPointCloud* ccGenericMesh::samplePoints(bool densityBased,
+                                          double samplingParameter,
+                                          bool withNormals,
+                                          bool withRGB,
+                                          bool withTexture,
                                           CCCoreLib::GenericProgressCallback* pDlg /*=nullptr*/)
 {
 	if (samplingParameter <= 0)
@@ -836,8 +836,8 @@ ccPointCloud* ccGenericMesh::samplePoints(bool                                de
 			{
 				for (unsigned i = 0; i < cloud->size(); ++i)
 				{
-					unsigned         triIndex = triIndices->at(i);
-					const CCVector3* P        = cloud->getPoint(i);
+					unsigned triIndex = triIndices->at(i);
+					const CCVector3* P = cloud->getPoint(i);
 
 					CCVector3 N(0, 0, 1);
 					interpolateNormals(triIndex, *P, N);
@@ -859,8 +859,8 @@ ccPointCloud* ccGenericMesh::samplePoints(bool                                de
 			{
 				for (unsigned i = 0; i < cloud->size(); ++i)
 				{
-					unsigned         triIndex = triIndices->at(i);
-					const CCVector3* P        = cloud->getPoint(i);
+					unsigned triIndex = triIndices->at(i);
+					const CCVector3* P = cloud->getPoint(i);
 
 					ccColor::Rgba color;
 					getColorFromMaterial(triIndex, *P, color, withRGB);
@@ -880,8 +880,8 @@ ccPointCloud* ccGenericMesh::samplePoints(bool                                de
 			{
 				for (unsigned i = 0; i < cloud->size(); ++i)
 				{
-					unsigned         triIndex = triIndices->at(i);
-					const CCVector3* P        = cloud->getPoint(i);
+					unsigned triIndex = triIndices->at(i);
+					const CCVector3* P = cloud->getPoint(i);
 
 					ccColor::Rgb C;
 					interpolateColors(triIndex, *P, C);
@@ -934,9 +934,9 @@ void ccGenericMesh::importParametersFrom(const ccGenericMesh* mesh)
 void ccGenericMesh::computeInterpolationWeights(unsigned triIndex, const CCVector3& P, CCVector3d& weights) const
 {
 	CCCoreLib::GenericTriangle* tri = const_cast<ccGenericMesh*>(this)->_getTriangle(triIndex);
-	const CCVector3*            A   = tri->_getA();
-	const CCVector3*            B   = tri->_getB();
-	const CCVector3*            C   = tri->_getC();
+	const CCVector3* A = tri->_getA();
+	const CCVector3* B = tri->_getB();
+	const CCVector3* C = tri->_getC();
 
 	// barycentric interpolation weights
 	weights.x = ((P - *B).cross(*C - *B)).normd() /*/2*/;
@@ -948,15 +948,15 @@ void ccGenericMesh::computeInterpolationWeights(unsigned triIndex, const CCVecto
 	weights /= sum;
 }
 
-bool ccGenericMesh::trianglePicking(unsigned                    triIndex,
-                                    const CCVector2d&           clickPos,
-                                    const ccGLMatrix&           trans,
-                                    bool                        noGLTrans,
-                                    const ccGenericPointCloud&  vertices,
+bool ccGenericMesh::trianglePicking(unsigned triIndex,
+                                    const CCVector2d& clickPos,
+                                    const ccGLMatrix& trans,
+                                    bool noGLTrans,
+                                    const ccGenericPointCloud& vertices,
                                     const ccGLCameraParameters& camera,
-                                    bool                        edgeOnly,
-                                    CCVector3d&                 point,
-                                    CCVector3d*                 barycentricCoords /*=nullptr*/) const
+                                    bool edgeOnly,
+                                    CCVector3d& point,
+                                    CCVector3d* barycentricCoords /*=nullptr*/) const
 {
 	assert(triIndex < size());
 
@@ -968,9 +968,9 @@ bool ccGenericMesh::trianglePicking(unsigned                    triIndex,
 	CCVector3d A2D;
 	CCVector3d B2D;
 	CCVector3d C2D;
-	bool       insideA = false;
-	bool       insideB = false;
-	bool       insideC = false;
+	bool insideA = false;
+	bool insideB = false;
+	bool insideC = false;
 
 	if (noGLTrans)
 	{
@@ -1020,23 +1020,23 @@ bool ccGenericMesh::trianglePicking(unsigned                    triIndex,
 	if (edgeOnly)
 	{
 		double espilon = 15 / ((C2D - A2D).norm() + (B2D - A2D).norm() + (C2D - B2D).norm());
-		bool   onEdge  = false;
+		bool onEdge = false;
 
 		if (l1 > -espilon && l1 <= 1.0 && l2 > -espilon && l2 <= 1.0)
 		{
 			if (l1 < espilon)
 			{
-				l1     = 0;
+				l1 = 0;
 				onEdge = true;
 			}
 			if (l2 < espilon)
 			{
-				l2     = 0;
+				l2 = 0;
 				onEdge = true;
 			}
 			if (l3 < espilon)
 			{
-				l3     = 0;
+				l3 = 0;
 				onEdge = true;
 			}
 
@@ -1075,16 +1075,16 @@ bool ccGenericMesh::trianglePicking(unsigned                    triIndex,
 	return true;
 }
 
-bool ccGenericMesh::trianglePicking(const CCVector2d&           clickPos,
+bool ccGenericMesh::trianglePicking(const CCVector2d& clickPos,
                                     const ccGLCameraParameters& camera,
-                                    bool                        edgeOnly,
-                                    int&                        nearestTriIndex,
-                                    double&                     nearestSquareDist,
-                                    CCVector3d&                 nearestPoint,
-                                    CCVector3d*                 barycentricCoords /*=nullptr*/) const
+                                    bool edgeOnly,
+                                    int& nearestTriIndex,
+                                    double& nearestSquareDist,
+                                    CCVector3d& nearestPoint,
+                                    CCVector3d* barycentricCoords /*=nullptr*/) const
 {
 	ccGLMatrix trans;
-	bool       noGLTrans = !getAbsoluteGLTransformation(trans);
+	bool noGLTrans = !getAbsoluteGLTransformation(trans);
 
 	// back project the clicked point in 3D
 	CCVector3d clickPosd(clickPos.x, clickPos.y, 0);
@@ -1094,9 +1094,9 @@ bool ccGenericMesh::trianglePicking(const CCVector2d&           clickPos,
 		return false;
 	}
 
-	nearestTriIndex   = -1;
+	nearestTriIndex = -1;
 	nearestSquareDist = -1.0;
-	nearestPoint      = CCVector3d(0, 0, 0);
+	nearestPoint = CCVector3d(0, 0, 0);
 	if (barycentricCoords)
 	{
 		*barycentricCoords = CCVector3d(0, 0, 0);
@@ -1133,8 +1133,8 @@ bool ccGenericMesh::trianglePicking(const CCVector2d&           clickPos,
 		if (nearestTriIndex < 0 || squareDist < nearestSquareDist)
 		{
 			nearestSquareDist = squareDist;
-			nearestTriIndex   = static_cast<int>(i);
-			nearestPoint      = P;
+			nearestTriIndex = static_cast<int>(i);
+			nearestPoint = P;
 			if (barycentricCoords)
 			{
 				*barycentricCoords = BC;
@@ -1145,12 +1145,12 @@ bool ccGenericMesh::trianglePicking(const CCVector2d&           clickPos,
 	return (nearestTriIndex >= 0);
 }
 
-bool ccGenericMesh::trianglePicking(unsigned                    triIndex,
-                                    const CCVector2d&           clickPos,
+bool ccGenericMesh::trianglePicking(unsigned triIndex,
+                                    const CCVector2d& clickPos,
                                     const ccGLCameraParameters& camera,
-                                    bool                        edgeOnly,
-                                    CCVector3d&                 point,
-                                    CCVector3d*                 barycentricCoords /*=nullptr*/) const
+                                    bool edgeOnly,
+                                    CCVector3d& point,
+                                    CCVector3d* barycentricCoords /*=nullptr*/) const
 {
 	if (triIndex >= size())
 	{
@@ -1159,7 +1159,7 @@ bool ccGenericMesh::trianglePicking(unsigned                    triIndex,
 	}
 
 	ccGLMatrix trans;
-	bool       noGLTrans = !getAbsoluteGLTransformation(trans);
+	bool noGLTrans = !getAbsoluteGLTransformation(trans);
 
 	ccGenericPointCloud* vertices = getAssociatedCloud();
 	if (!vertices)

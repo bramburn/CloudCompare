@@ -54,7 +54,7 @@
 #include <cassert>
 
 ccScalarFieldsManagerDialog::ccScalarFieldsManagerDialog(const ccHObject::Container& selectedEntities,
-                                                         QWidget*                    parent /*=nullptr*/)
+                                                         QWidget* parent /*=nullptr*/)
     : QDialog(parent)
     , m_pointCloud(nullptr)
     , m_sfCount(0)
@@ -144,7 +144,7 @@ void ccScalarFieldsManagerDialog::onEntityChanged(int index)
 void ccScalarFieldsManagerDialog::setActivePointCloud(ccPointCloud* pc)
 {
 	m_pointCloud = pc;
-	m_sfCount    = (m_pointCloud ? m_pointCloud->getNumberOfScalarFields() : 0);
+	m_sfCount = (m_pointCloud ? m_pointCloud->getNumberOfScalarFields() : 0);
 	buildTable();
 }
 
@@ -190,10 +190,10 @@ void ccScalarFieldsManagerDialog::appendSFToTable(int sfIdx)
 	// compute statistics
 	auto name = QString::fromStdString(sf->getName());
 	sf->computeMinAndMax();
-	auto       minVal = sf->getMin();
-	auto       maxVal = sf->getMax();
-	ScalarType mean   = 0;
-	ScalarType var    = 0;
+	auto minVal = sf->getMin();
+	auto maxVal = sf->getMax();
+	ScalarType mean = 0;
+	ScalarType var = 0;
 	sf->computeMeanAndVariance(mean, &var);
 	double stdDev = std::sqrt(static_cast<double>(var));
 
@@ -230,15 +230,15 @@ void ccScalarFieldsManagerDialog::appendSFToTable(int sfIdx)
 
 void ccScalarFieldsManagerDialog::addConstantSF()
 {
-	QString  defaultName = tr("Constant");
-	unsigned trys        = 1;
+	QString defaultName = tr("Constant");
+	unsigned trys = 1;
 	while (m_pointCloud->getScalarFieldIndexByName(defaultName.toStdString()) >= 0 || trys > 99)
 	{
 		defaultName = tr("Constant") + QString(" #%1").arg(++trys);
 	}
 
 	// ask for a name
-	bool    ok     = false;
+	bool ok = false;
 	QString sfName = QInputDialog::getText(this, tr("New SF name"), tr("SF name (must be unique)"), QLineEdit::Normal, defaultName, &ok);
 	if (!ok)
 	{
@@ -280,7 +280,7 @@ void ccScalarFieldsManagerDialog::deleteSF()
 
 		// Get the SF name from the selected row
 		QTableWidgetItem* nameItem = m_ui->sfTableWidget->item(row, SFAttributes::NAME);
-		QString           sfName   = nameItem->text();
+		QString sfName = nameItem->text();
 
 		// delete scalar field
 		int sfIdx = m_pointCloud->getScalarFieldIndexByName(sfName.toStdString());
@@ -317,8 +317,8 @@ void ccScalarFieldsManagerDialog::showHistogram()
 	for (int i = 0; i < selectedRows.count(); ++i)
 	{
 		// Get the SF info and data
-		int            sfIdx = selectedRows[i].row();
-		ccScalarField* sf    = static_cast<ccScalarField*>(m_pointCloud->getScalarField(sfIdx));
+		int sfIdx = selectedRows[i].row();
+		ccScalarField* sf = static_cast<ccScalarField*>(m_pointCloud->getScalarField(sfIdx));
 		if (!sf)
 		{
 			continue;
@@ -333,7 +333,7 @@ void ccScalarFieldsManagerDialog::showHistogram()
 
 			ccHistogramWindow* histogram = hDlg->window();
 			{
-				unsigned numberOfPoints  = m_pointCloud->size();
+				unsigned numberOfPoints = m_pointCloud->size();
 				unsigned numberOfClasses = static_cast<unsigned>(sqrt(static_cast<double>(numberOfPoints)));
 				// we take the 'nearest' multiple of 4
 				numberOfClasses &= (~3);

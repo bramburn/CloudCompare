@@ -66,7 +66,7 @@ class ccShortcutDialog final : public QDialog
 	/// Handle double click
 	void handleDoubleClick(QTableWidgetItem* item);
 
-	Ui_ShortcutDialog*    m_ui;
+	Ui_ShortcutDialog* m_ui;
 	ccShortcutEditDialog* m_editDialog;
 };
 

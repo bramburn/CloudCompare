@@ -95,7 +95,7 @@
 #include <cassert>
 
 constexpr char HILLSHADE_FIELD_NAME[] = "Hillshade";
-constexpr char XRAY_FIELD_NAME[]      = "X-ray";
+constexpr char XRAY_FIELD_NAME[] = "X-ray";
 
 static void MakeComboBoxOptionInaccessible(QComboBox* comboBox, int index)
 {
@@ -106,7 +106,7 @@ static void MakeComboBoxOptionInaccessible(QComboBox* comboBox, int index)
 	}
 
 	const QStandardItemModel* model = qobject_cast<const QStandardItemModel*>(comboBox->model());
-	QStandardItem*            item  = model ? model->item(index) : 0;
+	QStandardItem* item = model ? model->item(index) : 0;
 	if (item)
 	{
 		item->setFlags(item->flags() & ~(Qt::ItemIsSelectable | Qt::ItemIsEnabled));
@@ -548,33 +548,33 @@ void ccRasterizeTool::loadSettings()
 {
 	QSettings settings;
 	settings.beginGroup(ccPS::HeightGridGeneration());
-	int  projType                        = settings.value("ProjectionType", m_UI->heightProjectionComboBox->currentIndex()).toInt();
-	int  projDim                         = settings.value("ProjectionDim", m_UI->dimensionComboBox->currentIndex()).toInt();
-	bool sfProj                          = settings.value("SfProjEnabled", m_UI->projectSFCheckBox->isChecked()).toBool();
-	int  sfProjStrategy                  = settings.value("SfProjStrategy", m_UI->scalarFieldProjection->currentIndex()).toInt();
-	int  fillStrategy                    = settings.value("FillStrategy", m_UI->fillEmptyCellsComboBox->currentIndex()).toInt();
+	int projType = settings.value("ProjectionType", m_UI->heightProjectionComboBox->currentIndex()).toInt();
+	int projDim = settings.value("ProjectionDim", m_UI->dimensionComboBox->currentIndex()).toInt();
+	bool sfProj = settings.value("SfProjEnabled", m_UI->projectSFCheckBox->isChecked()).toBool();
+	int sfProjStrategy = settings.value("SfProjStrategy", m_UI->scalarFieldProjection->currentIndex()).toInt();
+	int fillStrategy = settings.value("FillStrategy", m_UI->fillEmptyCellsComboBox->currentIndex()).toInt();
 	m_delaunayInterpParams.maxEdgeLength = settings.value("MaxEdgeLength", m_delaunayInterpParams.maxEdgeLength).toDouble();
-	m_krigingParams.kNN                  = settings.value("KrigingKNN", m_krigingParams.kNN).toDouble();
-	double step                          = settings.value("GridStep", m_UI->gridStepDoubleSpinBox->value()).toDouble();
-	double emptyHeight                   = settings.value("EmptyCellsHeight", m_UI->emptyValueDoubleSpinBox->value()).toDouble();
-	bool   resampleCloud                 = settings.value("ResampleOrigCloud", m_UI->resampleCloudCheckBox->isChecked()).toBool();
-	int    minVertexCount                = settings.value("MinVertexCount", m_UI->minVertexCountSpinBox->value()).toInt();
-	bool   ignoreBorders                 = settings.value("IgnoreBorders", m_UI->ignoreContourBordersCheckBox->isChecked()).toBool();
-	bool   projectContoursOnAlt          = settings.value("projectContoursOnAlt", m_UI->projectContoursOnAltCheckBox->isChecked()).toBool();
-	bool   xRayAutoSaturation            = settings.value("xRayAutoSaturation", m_UI->xRayAutoSaturationCheckBox->isChecked()).toBool();
+	m_krigingParams.kNN = settings.value("KrigingKNN", m_krigingParams.kNN).toDouble();
+	double step = settings.value("GridStep", m_UI->gridStepDoubleSpinBox->value()).toDouble();
+	double emptyHeight = settings.value("EmptyCellsHeight", m_UI->emptyValueDoubleSpinBox->value()).toDouble();
+	bool resampleCloud = settings.value("ResampleOrigCloud", m_UI->resampleCloudCheckBox->isChecked()).toBool();
+	int minVertexCount = settings.value("MinVertexCount", m_UI->minVertexCountSpinBox->value()).toInt();
+	bool ignoreBorders = settings.value("IgnoreBorders", m_UI->ignoreContourBordersCheckBox->isChecked()).toBool();
+	bool projectContoursOnAlt = settings.value("projectContoursOnAlt", m_UI->projectContoursOnAltCheckBox->isChecked()).toBool();
+	bool xRayAutoSaturation = settings.value("xRayAutoSaturation", m_UI->xRayAutoSaturationCheckBox->isChecked()).toBool();
 
 	// Statistics checkboxes
-	bool   generateHeightStatistics          = settings.value("GenerateHeightStatistics", m_UI->exportHeightStatsCheckBox->isChecked()).toBool();
-	bool   generateSFStatistics              = settings.value("GenerateSFStatistics", m_UI->exportSFStatsCheckBox->isChecked()).toBool();
-	bool   generateStatisticsPopulation      = settings.value("GenerateStatisticsPopulation", m_UI->generateStatisticsPopulationCheckBox->isChecked()).toBool();
-	bool   generateStatisticsMin             = settings.value("GenerateStatisticsMin", m_UI->generateStatisticsMinCheckBox->isChecked()).toBool();
-	bool   generateStatisticsMax             = settings.value("GenerateStatisticsMax", m_UI->generateStatisticsMaxCheckBox->isChecked()).toBool();
-	bool   generateStatisticsAverage         = settings.value("GenerateStatisticsAverage", m_UI->generateStatisticsAverageCheckBox->isChecked()).toBool();
-	bool   generateStatisticsStdDev          = settings.value("GenerateStatisticsStdDev", m_UI->generateStatisticsStdDevCheckBox->isChecked()).toBool();
-	bool   generateStatisticsRange           = settings.value("GenerateStatisticsRange", m_UI->generateStatisticsRangeCheckBox->isChecked()).toBool();
-	bool   generateStatisticsMedian          = settings.value("GenerateStatisticsMedian", m_UI->generateStatisticsMedianCheckBox->isChecked()).toBool();
-	bool   generateStatisticsUnique          = settings.value("GenerateStatisticsUnique", m_UI->generateStatisticsUniqueCheckBox->isChecked()).toBool();
-	bool   generateStatisticsPercentile      = settings.value("GenerateStatisticsPercentile", m_UI->generateStatisticsPercentileCheckBox->isChecked()).toBool();
+	bool generateHeightStatistics = settings.value("GenerateHeightStatistics", m_UI->exportHeightStatsCheckBox->isChecked()).toBool();
+	bool generateSFStatistics = settings.value("GenerateSFStatistics", m_UI->exportSFStatsCheckBox->isChecked()).toBool();
+	bool generateStatisticsPopulation = settings.value("GenerateStatisticsPopulation", m_UI->generateStatisticsPopulationCheckBox->isChecked()).toBool();
+	bool generateStatisticsMin = settings.value("GenerateStatisticsMin", m_UI->generateStatisticsMinCheckBox->isChecked()).toBool();
+	bool generateStatisticsMax = settings.value("GenerateStatisticsMax", m_UI->generateStatisticsMaxCheckBox->isChecked()).toBool();
+	bool generateStatisticsAverage = settings.value("GenerateStatisticsAverage", m_UI->generateStatisticsAverageCheckBox->isChecked()).toBool();
+	bool generateStatisticsStdDev = settings.value("GenerateStatisticsStdDev", m_UI->generateStatisticsStdDevCheckBox->isChecked()).toBool();
+	bool generateStatisticsRange = settings.value("GenerateStatisticsRange", m_UI->generateStatisticsRangeCheckBox->isChecked()).toBool();
+	bool generateStatisticsMedian = settings.value("GenerateStatisticsMedian", m_UI->generateStatisticsMedianCheckBox->isChecked()).toBool();
+	bool generateStatisticsUnique = settings.value("GenerateStatisticsUnique", m_UI->generateStatisticsUniqueCheckBox->isChecked()).toBool();
+	bool generateStatisticsPercentile = settings.value("GenerateStatisticsPercentile", m_UI->generateStatisticsPercentileCheckBox->isChecked()).toBool();
 	double generateStatisticsPercentileValue = settings.value("GenerateStatisticsPercentileValue", m_UI->generateStatisticsPercentileDoubleSpinBox->value()).toDouble();
 
 	settings.endGroup();
@@ -694,18 +694,18 @@ void ccRasterizeTool::gridIsUpToDate(bool state)
 	updateGridInfo(state);
 }
 
-ccPointCloud* ccRasterizeTool::convertGridToCloud(bool                                               exportHeightStats,
-                                                  bool                                               exportSFStats,
+ccPointCloud* ccRasterizeTool::convertGridToCloud(bool exportHeightStats,
+                                                  bool exportSFStats,
                                                   const std::vector<ccRasterGrid::ExportableFields>& exportedStatistics,
-                                                  bool                                               projectSFs,
-                                                  bool                                               projectColors,
-                                                  bool                                               copyHillshadeSF,
-                                                  bool                                               copyXRaySF,
-                                                  const QString&                                     activeSFName,
-                                                  double                                             percentileValue,
-                                                  bool                                               exportToOriginalCS,
-                                                  bool                                               appendGridSizeToSFNames,
-                                                  ccProgressDialog*                                  progressDialog /*=nullptr*/) const
+                                                  bool projectSFs,
+                                                  bool projectColors,
+                                                  bool copyHillshadeSF,
+                                                  bool copyXRaySF,
+                                                  const QString& activeSFName,
+                                                  double percentileValue,
+                                                  bool exportToOriginalCS,
+                                                  bool appendGridSizeToSFNames,
+                                                  ccProgressDialog* progressDialog /*=nullptr*/) const
 {
 	if (!m_cloud || !m_grid.isValid())
 		return nullptr;
@@ -834,9 +834,9 @@ void ccRasterizeTool::updateGridAndDisplay()
 	setEnabled(false);
 
 	bool activeLayerIsSF = (m_UI->activeLayerComboBox->currentData().toInt() == LAYER_SF);
-	bool projectSFs      = (getTypeOfSFProjection() != ccRasterGrid::INVALID_PROJECTION_TYPE) || activeLayerIsSF;
-	bool projectColors   = m_cloud && m_cloud->hasColors();
-	bool success         = updateGrid(projectSFs);
+	bool projectSFs = (getTypeOfSFProjection() != ccRasterGrid::INVALID_PROJECTION_TYPE) || activeLayerIsSF;
+	bool projectColors = m_cloud && m_cloud->hasColors();
+	bool success = updateGrid(projectSFs);
 
 	setEnabled(true);
 
@@ -850,18 +850,18 @@ void ccRasterizeTool::updateGridAndDisplay()
 			exportedStatistics.front() = ccRasterGrid::PER_CELL_VALUE;
 			// but we may also have to compute the 'original SF(s)' layer(s)
 			QString activeLayerName = m_UI->activeLayerComboBox->currentText();
-			m_rasterCloud           = convertGridToCloud(true,
-                                               false,
-                                               exportedStatistics,
-                                               projectSFs,
-                                               projectColors,
-                                               /*copyHillshadeSF=*/false,
-                                               /*copyXRaySF=*/false,
-                                               activeLayerName,
-                                               getStatisticsPercentileValue(),
-                                               false,
-                                               false,
-                                               nullptr);
+			m_rasterCloud = convertGridToCloud(true,
+			                                   false,
+			                                   exportedStatistics,
+			                                   projectSFs,
+			                                   projectColors,
+			                                   /*copyHillshadeSF=*/false,
+			                                   /*copyXRaySF=*/false,
+			                                   activeLayerName,
+			                                   getStatisticsPercentileValue(),
+			                                   false,
+			                                   false,
+			                                   nullptr);
 
 			// Special case: the 'LAYER_HEIGHT' field has now a dynamic name
 			if (m_UI->activeLayerComboBox->currentIndex() == 0
@@ -909,11 +909,11 @@ bool ccRasterizeTool::updateGrid(bool projectSFs /*=false*/)
 	}
 
 	// main parameters
-	ccRasterGrid::ProjectionType projectionType   = getTypeOfProjection();
+	ccRasterGrid::ProjectionType projectionType = getTypeOfProjection();
 	ccRasterGrid::ProjectionType sfProjectionType = projectSFs ? getTypeOfSFProjection() : ccRasterGrid::INVALID_PROJECTION_TYPE;
 
-	ccRasterGrid::InterpolationType interpolationType   = ccRasterGrid::InterpolationTypeFromEmptyCellFillOption(getFillEmptyCellsStrategy(m_UI->fillEmptyCellsComboBox));
-	void*                           interpolationParams = nullptr;
+	ccRasterGrid::InterpolationType interpolationType = ccRasterGrid::InterpolationTypeFromEmptyCellFillOption(getFillEmptyCellsStrategy(m_UI->fillEmptyCellsComboBox));
+	void* interpolationParams = nullptr;
 	switch (interpolationType)
 	{
 	case ccRasterGrid::InterpolationType::DELAUNAY:
@@ -940,7 +940,7 @@ bool ccRasterizeTool::updateGrid(bool projectSFs /*=false*/)
 		m_UI->filledCellsPercentageLabel->setText("0 %");
 	}
 
-	unsigned gridWidth  = 0;
+	unsigned gridWidth = 0;
 	unsigned gridHeight = 0;
 	if (!getGridSize(gridWidth, gridHeight))
 	{
@@ -1006,12 +1006,12 @@ bool ccRasterizeTool::updateGrid(bool projectSFs /*=false*/)
 
 	// fill empty cells (if necessary)
 	ccRasterGrid::EmptyCellFillOption fillEmptyCellsStrategy = getFillEmptyCellsStrategy(m_UI->fillEmptyCellsComboBox);
-	double                            customEmptyCellsHeight = getCustomHeightForEmptyCells();
+	double customEmptyCellsHeight = getCustomHeightForEmptyCells();
 	m_grid.fillEmptyCells(fillEmptyCellsStrategy, customEmptyCellsHeight);
 
 	// update volume estimate
 	{
-		double   hSum            = 0;
+		double hSum = 0;
 		unsigned filledCellCount = 0;
 		for (unsigned j = 0; j < m_grid.height; ++j)
 		{
@@ -1048,8 +1048,8 @@ ccPointCloud* ccRasterizeTool::generateCloud(bool autoExport /*=true*/)
 
 	// look for statistics fields (min,max,median,etc) fields to be exported
 	std::vector<ccRasterGrid::ExportableFields> exportedStatistics;
-	bool                                        exportHeightStats = m_UI->exportHeightStatsCheckBox->isChecked();
-	bool                                        exportSFStats     = m_UI->exportSFStatsCheckBox->isEnabled() && m_UI->exportSFStatsCheckBox->isChecked();
+	bool exportHeightStats = m_UI->exportHeightStatsCheckBox->isChecked();
+	bool exportSFStats = m_UI->exportSFStatsCheckBox->isEnabled() && m_UI->exportSFStatsCheckBox->isChecked();
 	if (exportHeightStats || exportSFStats)
 	{
 		try
@@ -1064,24 +1064,24 @@ ccPointCloud* ccRasterizeTool::generateCloud(bool autoExport /*=true*/)
 	}
 
 	QString activeLayerName = m_UI->activeLayerComboBox->currentText();
-	bool    activeLayerIsSF = (m_UI->activeLayerComboBox->currentData().toInt() == LAYER_SF);
-	bool    projectSFs      = (getTypeOfSFProjection() != ccRasterGrid::INVALID_PROJECTION_TYPE) || activeLayerIsSF;
+	bool activeLayerIsSF = (m_UI->activeLayerComboBox->currentData().toInt() == LAYER_SF);
+	bool projectSFs = (getTypeOfSFProjection() != ccRasterGrid::INVALID_PROJECTION_TYPE) || activeLayerIsSF;
 	// bool activeLayerIsRGB = (activeLayerComboBox->currentData().toInt() == LAYER_RGB);
 	bool projectColors = m_cloud->hasColors();
 
 	ccProgressDialog pDlg(true, this);
-	ccPointCloud*    rasterCloud = convertGridToCloud(exportHeightStats,
-                                                   exportSFStats,
-                                                   exportedStatistics,
-                                                   projectSFs,
-                                                   projectColors,
-                                                   /*copyHillshadeSF=*/true,
-                                                   /*copyXRaySF=*/true,
-                                                   activeLayerName,
-                                                   getStatisticsPercentileValue(),
-                                                   true,
-                                                   true, // we want nicer SF names
-                                                   &pDlg);
+	ccPointCloud* rasterCloud = convertGridToCloud(exportHeightStats,
+	                                               exportSFStats,
+	                                               exportedStatistics,
+	                                               projectSFs,
+	                                               projectColors,
+	                                               /*copyHillshadeSF=*/true,
+	                                               /*copyXRaySF=*/true,
+	                                               activeLayerName,
+	                                               getStatisticsPercentileValue(),
+	                                               true,
+	                                               true, // we want nicer SF names
+	                                               &pDlg);
 
 	if (rasterCloud && autoExport)
 	{
@@ -1124,13 +1124,13 @@ void ccRasterizeTool::generateMesh()
 	ccPointCloud* rasterCloud = generateCloud(false);
 	if (rasterCloud)
 	{
-		std::string                    errorStr;
-		CCCoreLib::GenericIndexedMesh* baseMesh   = CCCoreLib::PointProjectionTools::computeTriangulation(rasterCloud,
-                                                                                                        CCCoreLib::DELAUNAY_2D_AXIS_ALIGNED,
-                                                                                                        CCCoreLib::PointProjectionTools::IGNORE_MAX_EDGE_LENGTH,
-                                                                                                        getProjectionDimension(),
-                                                                                                        errorStr);
-		ccMesh*                        rasterMesh = nullptr;
+		std::string errorStr;
+		CCCoreLib::GenericIndexedMesh* baseMesh = CCCoreLib::PointProjectionTools::computeTriangulation(rasterCloud,
+		                                                                                                CCCoreLib::DELAUNAY_2D_AXIS_ALIGNED,
+		                                                                                                CCCoreLib::PointProjectionTools::IGNORE_MAX_EDGE_LENGTH,
+		                                                                                                getProjectionDimension(),
+		                                                                                                errorStr);
+		ccMesh* rasterMesh = nullptr;
 		if (baseMesh)
 		{
 			rasterMesh = new ccMesh(baseMesh, rasterCloud);
@@ -1188,7 +1188,7 @@ void ccRasterizeTool::generateRaster() const
 	}
 
 	bool hasScalarFields = !m_grid.scalarFields.empty();
-	int  visibleSfIndex  = -1;
+	int visibleSfIndex = -1;
 	if (m_UI->activeLayerComboBox->currentData().toInt() == LAYER_SF && m_cloud->isA(CC_TYPES::POINT_CLOUD))
 	{
 		// the indexes in the 'm_grid.scalarFields' are the same as in the cloud
@@ -1197,8 +1197,8 @@ void ccRasterizeTool::generateRaster() const
 
 	// which (and how many) bands shall we create?
 	ExportBands exportBands;
-	exportBands.height = true;  // height by default
-	exportBands.rgb    = false; // not a good idea to mix RGB and height values!
+	exportBands.height = true; // height by default
+	exportBands.rgb = false;   // not a good idea to mix RGB and height values!
 
 	RasterExportOptionsDlg reoDlg;
 	reoDlg.dimensionsLabel->setText(QString("%1 x %2").arg(m_grid.width).arg(m_grid.height));
@@ -1251,10 +1251,10 @@ void ccRasterizeTool::generateRaster() const
 		QSettings settings;
 		settings.beginGroup(ccPS::HeightGridGeneration());
 		QString imageSavePath = settings.value("savePathImage", ccFileUtils::defaultDocPath()).toString();
-		outputFilename        = QFileDialog::getSaveFileName(const_cast<ccRasterizeTool*>(this),
-                                                      "Save height grid raster",
-                                                      imageSavePath + QString("/raster.tif"),
-                                                      "geotiff (*.tif)");
+		outputFilename = QFileDialog::getSaveFileName(const_cast<ccRasterizeTool*>(this),
+		                                              "Save height grid raster",
+		                                              imageSavePath + QString("/raster.tif"),
+		                                              "geotiff (*.tif)");
 
 		if (outputFilename.isNull())
 		{
@@ -1265,10 +1265,10 @@ void ccRasterizeTool::generateRaster() const
 		settings.setValue("savePathImage", QFileInfo(outputFilename).absolutePath());
 	}
 
-	exportBands.height    = reoDlg.exportHeightsCheckBox->isChecked();
-	exportBands.rgb       = reoDlg.exportRGBCheckBox->isChecked();
-	exportBands.density   = reoDlg.exportDensityCheckBox->isChecked();
-	exportBands.allSFs    = reoDlg.exportAllSFCheckBox->isChecked();
+	exportBands.height = reoDlg.exportHeightsCheckBox->isChecked();
+	exportBands.rgb = reoDlg.exportRGBCheckBox->isChecked();
+	exportBands.density = reoDlg.exportDensityCheckBox->isChecked();
+	exportBands.allSFs = reoDlg.exportAllSFCheckBox->isChecked();
 	exportBands.visibleSF = reoDlg.exportActiveLayerCheckBox->isChecked();
 
 	ExportGeoTiff(
@@ -1290,15 +1290,15 @@ void ccRasterizeTool::generateRaster() const
 #endif
 }
 
-bool ccRasterizeTool::ExportGeoTiff(const QString&                    outputFilename,
-                                    const ExportBands&                exportBands,
+bool ccRasterizeTool::ExportGeoTiff(const QString& outputFilename,
+                                    const ExportBands& exportBands,
                                     ccRasterGrid::EmptyCellFillOption fillEmptyCellsStrategy,
-                                    const ccRasterGrid&               grid,
-                                    const ccBBox&                     gridBBox,
-                                    unsigned char                     Z,
-                                    double                            customHeightForEmptyCells /*=std::numeric_limits<double>::quiet_NaN()*/,
-                                    ccGenericPointCloud*              originCloud /*=nullptr*/,
-                                    int                               visibleSfIndex /*=-1*/)
+                                    const ccRasterGrid& grid,
+                                    const ccBBox& gridBBox,
+                                    unsigned char Z,
+                                    double customHeightForEmptyCells /*=std::numeric_limits<double>::quiet_NaN()*/,
+                                    ccGenericPointCloud* originCloud /*=nullptr*/,
+                                    int visibleSfIndex /*=-1*/)
 {
 #ifdef CC_GDAL_SUPPORT
 
@@ -1335,8 +1335,8 @@ bool ccRasterizeTool::ExportGeoTiff(const QString&                    outputFile
 		stepY /= scale;
 	}
 
-	int  totalBands = 0;
-	bool onlyRGBA   = true;
+	int totalBands = 0;
+	bool onlyRGBA = true;
 
 	if (exportBands.height)
 	{
@@ -1391,8 +1391,8 @@ bool ccRasterizeTool::ExportGeoTiff(const QString&                    outputFile
 	GDALAllRegister();
 	ccLog::PrintDebug("(GDAL drivers: %i)", GetGDALDriverManager()->GetDriverCount());
 
-	const char  pszFormat[] = "GTiff";
-	GDALDriver* poDriver    = GetGDALDriverManager()->GetDriverByName(pszFormat);
+	const char pszFormat[] = "GTiff";
+	GDALDriver* poDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
 	if (!poDriver)
 	{
 		ccLog::Error("[GDAL] Driver %s is not supported", pszFormat);
@@ -1410,13 +1410,13 @@ bool ccRasterizeTool::ExportGeoTiff(const QString&                    outputFile
 		return false;
 	}
 
-	char**       papszOptions = nullptr;
-	GDALDataset* poDstDS      = poDriver->Create(qUtf8Printable(outputFilename),
-                                            static_cast<int>(grid.width),
-                                            static_cast<int>(grid.height),
-                                            totalBands,
-                                            onlyRGBA ? GDT_Byte : GDT_Float64,
-                                            papszOptions);
+	char** papszOptions = nullptr;
+	GDALDataset* poDstDS = poDriver->Create(qUtf8Printable(outputFilename),
+	                                        static_cast<int>(grid.width),
+	                                        static_cast<int>(grid.height),
+	                                        totalBands,
+	                                        onlyRGBA ? GDT_Byte : GDT_Float64,
+	                                        papszOptions);
 
 	if (!poDstDS)
 	{
@@ -1483,7 +1483,7 @@ bool ccRasterizeTool::ExportGeoTiff(const QString&                    outputFile
 				if (rgbBands[k]->RasterIO(GF_Write, 0, static_cast<int>(j), static_cast<int>(grid.width), 1, cLine, static_cast<int>(grid.width), 1, GDT_Byte, 0, 0) != CE_None)
 				{
 					error = true;
-					k     = 3; // early stop
+					k = 3; // early stop
 					break;
 				}
 			}
@@ -1652,7 +1652,7 @@ bool ccRasterizeTool::ExportGeoTiff(const QString&                    outputFile
 			assert(!grid.scalarFields[k].empty());
 			if (exportBands.allSFs || (exportBands.visibleSF && visibleSfIndex == static_cast<int>(k)))
 			{
-				const double*   sfGrid = grid.scalarFields[k].data();
+				const double* sfGrid = grid.scalarFields[k].data();
 				GDALRasterBand* poBand = poDstDS->GetRasterBand(++currentBand);
 
 				double sfNanValue = std::numeric_limits<ccRasterGrid::SF::value_type>::quiet_NaN();
@@ -1662,8 +1662,8 @@ bool ccRasterizeTool::ExportGeoTiff(const QString&                    outputFile
 
 				for (unsigned j = 0; j < grid.height; ++j)
 				{
-					const ccRasterGrid::Row& row   = grid.rows[grid.height - 1 - j];
-					const double*            sfRow = sfGrid + (grid.height - 1 - j) * grid.width;
+					const ccRasterGrid::Row& row = grid.rows[grid.height - 1 - j];
+					const double* sfRow = sfGrid + (grid.height - 1 - j) * grid.width;
 					for (unsigned i = 0; i < grid.width; ++i)
 					{
 						scanline[i] = std::isfinite(sfRow[i]) ? sfRow[i] : sfNanValue;
@@ -1730,7 +1730,7 @@ void ccRasterizeTool::generateXRaySF()
 
 	// get/create layer
 	ccScalarField* xraySF = nullptr;
-	int            sfIdx  = m_rasterCloud->getScalarFieldIndexByName(XRAY_FIELD_NAME);
+	int sfIdx = m_rasterCloud->getScalarFieldIndexByName(XRAY_FIELD_NAME);
 	if (sfIdx >= 0)
 	{
 		xraySF = static_cast<ccScalarField*>(m_rasterCloud->getScalarField(sfIdx));
@@ -1753,7 +1753,7 @@ void ccRasterizeTool::generateXRaySF()
 	assert(xraySF && xraySF->currentSize() == m_rasterCloud->size());
 	xraySF->fill(CCCoreLib::NAN_VALUE);
 
-	bool sparseSF             = (xraySF->currentSize() != m_grid.height * m_grid.width);
+	bool sparseSF = (xraySF->currentSize() != m_grid.height * m_grid.width);
 	bool resampleInputCloudXY = resampleOriginalCloud();
 
 	// vertical dimension
@@ -1763,7 +1763,7 @@ void ccRasterizeTool::generateXRaySF()
 	// number of vertical steps
 	CCVector3 bbMin, bbMax;
 	m_cloud->getBoundingBox(bbMin, bbMax);
-	double   deltaH     = bbMax.u[Z] - bbMin.u[Z];
+	double deltaH = bbMax.u[Z] - bbMin.u[Z];
 	unsigned layerCount = std::max(1u, static_cast<unsigned>(ceil(deltaH / m_grid.gridStep)));
 	ccLog::Print("[Rasterize][X-ray] Number of vertical steps: " + QString::number(layerCount));
 
@@ -1787,7 +1787,7 @@ void ccRasterizeTool::generateXRaySF()
 	CCCoreLib::NormalizedProgress nProgress(&progressDialog, static_cast<unsigned>(m_grid.width * m_grid.height));
 
 	// for all cells
-	unsigned nonEmptyCellIndex      = 0;
+	unsigned nonEmptyCellIndex = 0;
 	unsigned validButEmptyCellIndex = 0;
 	for (unsigned j = 0; j < m_grid.height - 1; ++j)
 	{
@@ -1813,7 +1813,7 @@ void ccRasterizeTool::generateXRaySF()
 				{
 					const CCVector3* P = m_cloud->getPoint(index);
 
-					unsigned heightIndex     = static_cast<unsigned>((P->u[Z] - bbMin.u[Z]) / m_grid.gridStep);
+					unsigned heightIndex = static_cast<unsigned>((P->u[Z] - bbMin.u[Z]) / m_grid.gridStep);
 					layerFilled[heightIndex] = true;
 				}
 
@@ -1915,7 +1915,7 @@ void ccRasterizeTool::generateHillshade()
 
 	// get/create layer
 	ccScalarField* hillshadeLayer = nullptr;
-	int            sfIdx          = m_rasterCloud->getScalarFieldIndexByName(HILLSHADE_FIELD_NAME);
+	int sfIdx = m_rasterCloud->getScalarFieldIndexByName(HILLSHADE_FIELD_NAME);
 	if (sfIdx >= 0)
 	{
 		hillshadeLayer = static_cast<ccScalarField*>(m_rasterCloud->getScalarField(sfIdx));
@@ -1938,22 +1938,22 @@ void ccRasterizeTool::generateHillshade()
 	assert(hillshadeLayer && hillshadeLayer->currentSize() == m_rasterCloud->size());
 	hillshadeLayer->fill(CCCoreLib::NAN_VALUE);
 
-	bool sparseSF             = (hillshadeLayer->currentSize() != m_grid.height * m_grid.width);
+	bool sparseSF = (hillshadeLayer->currentSize() != m_grid.height * m_grid.width);
 	bool resampleInputCloudXY = resampleOriginalCloud();
 
 	// now we can compute the hillshade
-	int    zenith_deg = m_UI->sunZenithSpinBox->value();
+	int zenith_deg = m_UI->sunZenithSpinBox->value();
 	double zenith_rad = CCCoreLib::DegreesToRadians(static_cast<double>(zenith_deg));
 
 	double cos_zenith_rad = cos(zenith_rad);
 	double sin_zenith_rad = sin(zenith_rad);
 
-	int    azimuth_deg  = m_UI->sunAzimuthSpinBox->value();
-	int    azimuth_math = 360 - azimuth_deg + 90;
-	double azimuth_rad  = CCCoreLib::DegreesToRadians(static_cast<double>(azimuth_math));
+	int azimuth_deg = m_UI->sunAzimuthSpinBox->value();
+	int azimuth_math = 360 - azimuth_deg + 90;
+	double azimuth_rad = CCCoreLib::DegreesToRadians(static_cast<double>(azimuth_math));
 
 	// for all cells
-	unsigned nonEmptyCellIndex      = 0;
+	unsigned nonEmptyCellIndex = 0;
 	unsigned validButEmptyCellIndex = 0;
 	for (unsigned j = 0; j < m_grid.height - 1; ++j)
 	{
@@ -1967,10 +1967,10 @@ void ccRasterizeTool::generateHillshade()
 			{
 				if (j != 0 && i != 0 && i + 1 != m_grid.width)
 				{
-					double dz_dx       = 0.0;
-					int    dz_dx_count = 0;
-					double dz_dy       = 0.0;
-					int    dz_dy_count = 0;
+					double dz_dx = 0.0;
+					int dz_dx_count = 0;
+					double dz_dy = 0.0;
+					int dz_dy_count = 0;
 
 					for (int di = -1; di <= 1; ++di)
 					{
@@ -2004,8 +2004,8 @@ void ccRasterizeTool::generateHillshade()
 
 						double slope_rad = atan(/*z_factor **/ sqrt(dz_dx * dz_dx + dz_dy * dz_dy));
 
-						double              aspect_rad = 0;
-						static const double s_Zero     = 1.0e-8;
+						double aspect_rad = 0;
+						static const double s_Zero = 1.0e-8;
 						if (std::abs(dz_dx) > s_Zero)
 						{
 							aspect_rad = atan2(dz_dy, -dz_dx);
@@ -2154,7 +2154,7 @@ void ccRasterizeTool::generateContours()
 
 		// min and max 'altitudes'
 		params.startAltitude = m_UI->contourStartDoubleSpinBox->value();
-		params.maxAltitude   = params.altitudes->getMax();
+		params.maxAltitude = params.altitudes->getMax();
 		assert(params.startAltitude <= params.maxAltitude);
 
 		// gap between levels
@@ -2167,7 +2167,7 @@ void ccRasterizeTool::generateContours()
 
 		// the parameters below are only required if GDAL is not supported (but we can set them anyway)
 		params.ignoreBorders = m_UI->ignoreContourBordersCheckBox->isChecked();
-		params.parentWidget  = this;
+		params.parentWidget = this;
 	}
 
 	removeContourLines();
@@ -2179,7 +2179,7 @@ void ccRasterizeTool::generateContours()
 		assert(Z <= 2);
 		const unsigned char X = Z == 2 ? 0 : Z + 1;
 		const unsigned char Y = X == 2 ? 0 : X + 1;
-		gridMinCorner         = CCVector2d(m_grid.minCorner.u[X], m_grid.minCorner.u[Y]);
+		gridMinCorner = CCVector2d(m_grid.minCorner.u[X], m_grid.minCorner.u[Y]);
 	}
 
 	// generate the contour lines
@@ -2238,10 +2238,10 @@ void ccRasterizeTool::exportContourLines()
 			for (unsigned j = 0; j < vertices->size(); ++j)
 			{
 				CCVector3* P = const_cast<CCVector3*>(vertices->getPoint(j));
-				CCVector3  Q = *P;
-				P->u[X]      = Q.x;
-				P->u[Y]      = Q.y;
-				P->u[Z]      = Q.z;
+				CCVector3 Q = *P;
+				P->u[X] = Q.x;
+				P->u[Y] = Q.y;
+				P->u[Z] = Q.z;
 			}
 			vertices->invalidateBoundingBox();
 			// poly->invalidateBoundingBox(); // should be automatically called by ccPointCloud::invalidateBoundingBox above
@@ -2269,8 +2269,8 @@ ccRasterGrid::EmptyCellFillOption ccRasterizeTool::getFillEmptyCellsStrategyExt(
 	ccRasterGrid::EmptyCellFillOption fillEmptyCellsStrategy = getFillEmptyCellsStrategy(m_UI->fillEmptyCellsComboBox);
 
 	emptyCellsHeight = 0.0;
-	minHeight        = m_grid.minHeight;
-	maxHeight        = m_grid.maxHeight;
+	minHeight = m_grid.minHeight;
+	maxHeight = m_grid.maxHeight;
 
 	switch (fillEmptyCellsStrategy)
 	{
@@ -2301,7 +2301,7 @@ ccRasterGrid::EmptyCellFillOption ccRasterizeTool::getFillEmptyCellsStrategyExt(
 	case ccRasterGrid::FILL_AVERAGE_HEIGHT:
 		//'average height' is a kind of 'custom height' so we can fall back to this mode!
 		fillEmptyCellsStrategy = ccRasterGrid::FILL_CUSTOM_HEIGHT;
-		emptyCellsHeight       = m_grid.meanHeight;
+		emptyCellsHeight = m_grid.meanHeight;
 		break;
 	default:
 		assert(false);
@@ -2318,18 +2318,18 @@ void ccRasterizeTool::generateImage() const
 		return;
 	}
 
-	bool                          exportRGB = (m_UI->activeLayerComboBox->currentData().toInt() == LAYER_RGB);
-	const ccRasterGrid::SF*       gridSF    = nullptr;
-	const CCCoreLib::ScalarField* cloudSF   = nullptr;
+	bool exportRGB = (m_UI->activeLayerComboBox->currentData().toInt() == LAYER_RGB);
+	const ccRasterGrid::SF* gridSF = nullptr;
+	const CCCoreLib::ScalarField* cloudSF = nullptr;
 	if (!exportRGB && m_UI->activeLayerComboBox->currentData().toInt() == LAYER_SF && m_cloud->isA(CC_TYPES::POINT_CLOUD))
 	{
 		// the indexes in the 'm_grid.scalarFields' are the same as in the cloud
-		ccPointCloud* pc             = static_cast<ccPointCloud*>(m_cloud);
-		int           visibleSfIndex = pc->getScalarFieldIndexByName(m_UI->activeLayerComboBox->currentText().toStdString());
+		ccPointCloud* pc = static_cast<ccPointCloud*>(m_cloud);
+		int visibleSfIndex = pc->getScalarFieldIndexByName(m_UI->activeLayerComboBox->currentText().toStdString());
 		if (visibleSfIndex >= 0 && static_cast<size_t>(visibleSfIndex) < m_grid.scalarFields.size())
 		{
 			cloudSF = pc->getScalarField(visibleSfIndex);
-			gridSF  = &(m_grid.scalarFields[visibleSfIndex]);
+			gridSF = &(m_grid.scalarFields[visibleSfIndex]);
 		}
 		else
 		{
@@ -2342,8 +2342,8 @@ void ccRasterizeTool::generateImage() const
 
 	// exported field extreme values
 	double emptyCellsValue = std::numeric_limits<double>::quiet_NaN();
-	double minValue        = 0.0;
-	double maxValue        = 0.0;
+	double minValue = 0.0;
+	double maxValue = 0.0;
 	if (cloudSF)
 	{
 		// override the default min and max values (based on the height values)
@@ -2370,7 +2370,7 @@ void ccRasterizeTool::generateImage() const
 	if (!outputImage.isNull())
 	{
 		unsigned emptyCellColorIndex = 0;
-		double   maxColorComp        = 255.99; //.99 --> to avoid round-off issues later!
+		double maxColorComp = 255.99; //.99 --> to avoid round-off issues later!
 
 		if (!exportRGB)
 		{
@@ -2383,11 +2383,11 @@ void ccRasterizeTool::generateImage() const
 			    && m_rasterCloud->getCurrentDisplayedScalarField()->getColorScale())
 			{
 				const ccColorScale::Shared& colorScale = m_rasterCloud->getCurrentDisplayedScalarField()->getColorScale();
-				unsigned                    steps      = (addTransparentColor ? 255 : 256);
+				unsigned steps = (addTransparentColor ? 255 : 256);
 				for (unsigned i = 0; i < steps; i++)
 				{
 					const ccColor::Rgb* col = colorScale->getColorByRelativePos(i / static_cast<double>(steps - 1), steps, &ccColor::lightGreyRGB);
-					palette[i]              = qRgba(col->r, col->g, col->b, 255);
+					palette[i] = qRgba(col->r, col->g, col->b, 255);
 				}
 			}
 			else
@@ -2441,8 +2441,8 @@ void ccRasterizeTool::generateImage() const
 		// Filling the image with grid values
 		for (unsigned j = 0; j < m_grid.height; ++j)
 		{
-			const ccRasterGrid::Row& row   = m_grid.rows[j];
-			const double*            sfRow = (gridSF ? gridSF->data() + j * m_grid.width : nullptr);
+			const ccRasterGrid::Row& row = m_grid.rows[j];
+			const double* sfRow = (gridSF ? gridSF->data() + j * m_grid.width : nullptr);
 			for (unsigned i = 0; i < m_grid.width; ++i)
 			{
 				if (std::isfinite(row[i].h))
@@ -2456,7 +2456,7 @@ void ccRasterizeTool::generateImage() const
 					}
 					else
 					{
-						double value            = sfRow ? sfRow[i] : row[i].h;
+						double value = sfRow ? sfRow[i] : row[i].h;
 						double normalizedHeight = (value - minValue) / valueRange;
 						assert(normalizedHeight >= 0.0 && normalizedHeight <= 1.0);
 						unsigned char val = static_cast<unsigned char>(normalizedHeight * maxColorComp); // static_cast is equivalent to floor if value >= 0
@@ -2527,8 +2527,8 @@ void ccRasterizeTool::generateASCIIMatrix() const
 
 	// default values
 	double emptyCellsHeight = 0;
-	double minHeight        = m_grid.minHeight;
-	double maxHeight        = m_grid.maxHeight;
+	double minHeight = m_grid.minHeight;
+	double maxHeight = m_grid.maxHeight;
 	// get real values
 	getFillEmptyCellsStrategyExt(emptyCellsHeight, minHeight, maxHeight);
 	QTextStream stream(&fp);
@@ -2561,7 +2561,7 @@ void ccRasterizeTool::showInterpolationParamsDialog()
 	{
 	case ccRasterGrid::EmptyCellFillOption::INTERPOLATE_DELAUNAY:
 	{
-		bool   ok    = false;
+		bool ok = false;
 		double value = QInputDialog::getDouble(this, tr("Delaunay triangulation"), tr("Triangles max edge length (0 = no limit)"), m_delaunayInterpParams.maxEdgeLength, 0, 1.0e6, 6, &ok);
 		if (ok)
 		{

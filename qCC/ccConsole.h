@@ -132,10 +132,10 @@ class ccConsole : public QObject
 	 * @param parentWindow      Main window for console visibility management (optional)
 	 * @param redirectToStdOut Redirect log messages to system stdout/stderr (optional)
 	 */
-	static void Init(QListWidget* textDisplay      = nullptr,
-	                 QWidget*     parentWidget     = nullptr,
-	                 MainWindow*  parentWindow     = nullptr,
-	                 bool         redirectToStdOut = false);
+	static void Init(QListWidget* textDisplay = nullptr,
+	                 QWidget* parentWidget = nullptr,
+	                 MainWindow* parentWindow = nullptr,
+	                 bool redirectToStdOut = false);
 
 	/**
 	 * @brief Get the unique static console instance

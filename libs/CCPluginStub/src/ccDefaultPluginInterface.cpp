@@ -86,7 +86,7 @@ class ccDefaultPluginData
 		return list;
 	}
 
-	QString       m_IID;
+	QString m_IID;
 	QJsonDocument doc;
 };
 

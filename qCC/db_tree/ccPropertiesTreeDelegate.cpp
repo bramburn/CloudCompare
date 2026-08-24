@@ -134,19 +134,19 @@ const char* ccPropertiesTreeDelegate::s_noneString = QT_TR_NOOP("None");
 
 // Default color sources string
 const char* ccPropertiesTreeDelegate::s_rgbColor = "RGB";
-const char* ccPropertiesTreeDelegate::s_sfColor  = QT_TR_NOOP("Scalar field");
+const char* ccPropertiesTreeDelegate::s_sfColor = QT_TR_NOOP("Scalar field");
 
 // Other strings
-const char* ccPropertiesTreeDelegate::s_defaultPointSizeString     = QT_TR_NOOP("Default");
+const char* ccPropertiesTreeDelegate::s_defaultPointSizeString = QT_TR_NOOP("Default");
 const char* ccPropertiesTreeDelegate::s_defaultPolyWidthSizeString = QT_TR_NOOP("Default Width");
 
 // Default separator colors
 constexpr const char* SEPARATOR_STYLESHEET = "QLabel { background-color : darkGray; color : white; }";
 
 // Shortcut to create a delegate item
-static QStandardItem* ITEM(const QString&                             name,
-                           Qt::ItemFlag                               additionalFlags = Qt::NoItemFlags,
-                           ccPropertiesTreeDelegate::CC_PROPERTY_ROLE role            = ccPropertiesTreeDelegate::OBJECT_NO_PROPERTY)
+static QStandardItem* ITEM(const QString& name,
+                           Qt::ItemFlag additionalFlags = Qt::NoItemFlags,
+                           ccPropertiesTreeDelegate::CC_PROPERTY_ROLE role = ccPropertiesTreeDelegate::OBJECT_NO_PROPERTY)
 {
 	QStandardItem* item = new QStandardItem(name);
 	// flags
@@ -184,8 +184,8 @@ static QStandardItem* PERSISTENT_EDITOR(ccPropertiesTreeDelegate::CC_PROPERTY_RO
  * @param[in] parent Parent widget
  */
 ccPropertiesTreeDelegate::ccPropertiesTreeDelegate(QStandardItemModel* model,
-                                                   QAbstractItemView*  view,
-                                                   QObject*            parent)
+                                                   QAbstractItemView* view,
+                                                   QObject* parent)
     : QStyledItemDelegate(parent)
     , m_currentObject(nullptr)
     , m_model(model)
@@ -470,7 +470,7 @@ void ccPropertiesTreeDelegate::fillWithMetaData(const ccObject* _obj)
 	for (QVariantMap::ConstIterator it = metaData.constBegin(); it != metaData.constEnd(); ++it)
 	{
 		QVariant var = it.value();
-		QString  value;
+		QString value;
 
 		if (var.canConvert(QVariant::String))
 		{
@@ -524,7 +524,7 @@ void ccPropertiesTreeDelegate::fillWithHObject(ccHObject* _obj)
 	// Bounding-box
 	{
 		ccBBox box;
-		bool   fitBBox = false;
+		bool fitBBox = false;
 		if (_obj->getSelectionBehavior() == ccHObject::SELECTION_FIT_BBOX)
 		{
 			ccGLMatrix trans;
@@ -827,7 +827,7 @@ void ccPropertiesTreeDelegate::fillWithPrimitive(const ccGenericPrimitive* _obj)
 		}
 
 		const ccCone* cone = static_cast<const ccCone*>(_obj);
-		CCVector3     apex = cone->computeApex();
+		CCVector3 apex = cone->computeApex();
 		appendRow(ITEM(tr("Apex")), ITEM(QStringLiteral("X: %0\nY: %1\nZ: %2").arg(apex.x).arg(apex.y).arg(apex.z)));
 
 		double angle_deg = cone->computeHalfAngle_deg();
@@ -1339,9 +1339,9 @@ bool ccPropertiesTreeDelegate::isWideEditor(int itemData) const
 	return false;
 }
 
-QWidget* ccPropertiesTreeDelegate::createEditor(QWidget*                    parent,
+QWidget* ccPropertiesTreeDelegate::createEditor(QWidget* parent,
                                                 const QStyleOptionViewItem& option,
-                                                const QModelIndex&          index) const
+                                                const QModelIndex& index) const
 {
 	if (!m_model || !m_currentObject)
 		return nullptr;
@@ -1906,7 +1906,7 @@ void ccPropertiesTreeDelegate::setEditorData(QWidget* editor, const QModelIndex&
 		}
 
 		ccGLWindowInterface* win = static_cast<ccGLWindowInterface*>(m_currentObject->getDisplay());
-		int                  pos = (win ? comboBox->findText(win->getWindowTitle()) : 0);
+		int pos = (win ? comboBox->findText(win->getWindowTitle()) : 0);
 
 		comboBox->setCurrentIndex(std::max(pos, 0)); // 0 = "NONE"
 		break;
@@ -2183,7 +2183,7 @@ void ccPropertiesTreeDelegate::setEditorData(QWidget* editor, const QModelIndex&
 	case OBJECT_COLOR_SOURCE:
 	{
 		int currentIndex = 0; // no color
-		int lastIndex    = currentIndex;
+		int lastIndex = currentIndex;
 		if (m_currentObject->hasColors())
 		{
 			++lastIndex;
@@ -2437,7 +2437,7 @@ void ccPropertiesTreeDelegate::updateDisplay()
 			ccHObject* parent = object->getParent();
 			if (parent && parent->isKindOf(CC_TYPES::MESH) && parent->isDisplayed()) // specific case: vertices
 			{
-				object            = parent;
+				object = parent;
 				objectIsDisplayed = true;
 			}
 		}
@@ -2498,7 +2498,7 @@ void ccPropertiesTreeDelegate::spawnColorRampEditor()
 	ccScalarField* sf = (cloud ? static_cast<ccScalarField*>(cloud->getCurrentDisplayedScalarField()) : nullptr);
 	if (sf)
 	{
-		ccGLWindowInterface*      glWindow     = static_cast<ccGLWindowInterface*>(cloud->getDisplay());
+		ccGLWindowInterface* glWindow = static_cast<ccGLWindowInterface*>(cloud->getDisplay());
 		ccColorScaleEditorDialog* editorDialog = new ccColorScaleEditorDialog(ccColorScalesManager::GetUniqueInstance(),
 		                                                                      MainWindow::TheInstance(),
 		                                                                      sf->getColorScale(),
@@ -2928,8 +2928,8 @@ void ccPropertiesTreeDelegate::updateLabelViewport()
 
 	// Update the custom light position as well
 	{
-		bool       customLightEnabled = win->customLightEnabled();
-		CCVector3f customLightPos     = win->getCustomLightPosition();
+		bool customLightEnabled = win->customLightEnabled();
+		CCVector3f customLightPos = win->getCustomLightPosition();
 
 		viewport->setMetaData("CustomLightEnabled", customLightEnabled);
 		viewport->setMetaData("CustomLightPosX", customLightPos.x);

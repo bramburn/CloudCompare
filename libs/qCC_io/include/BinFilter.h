@@ -45,13 +45,13 @@ class QCC_IO_LIB_API BinFilter : public FileIOFilter
 	{
 		return "CloudCompare entities (*.bin)";
 	}
-	
+
 	/// Get default extension
 	static inline QString GetDefaultExtension()
 	{
 		return "bin";
 	}
-	
+
 	/// Get last saved file version
 	static short GetLastSavedFileVersion();
 

@@ -53,7 +53,7 @@ ccAboutDialog::ccAboutDialog(QWidget* parent)
 	compilationInfo += QStringLiteral(" Qt %1").arg(QT_VERSION_STR);
 	compilationInfo += QStringLiteral("</i>");
 
-	QString htmlText         = mUI->labelText->text();
+	QString htmlText = mUI->labelText->text();
 	QString enrichedHtmlText = htmlText.arg(compilationInfo);
 
 	mUI->labelText->setText(enrichedHtmlText);

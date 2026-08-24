@@ -37,10 +37,10 @@
  * @param[in] uniqueID Optional unique ID
  */
 ccSphere::ccSphere(PointCoordinateType radius,
-                   const ccGLMatrix*   transMat /*=nullptr*/,
-                   QString             name /*=QString("Sphere")*/,
-                   unsigned            precision /*=DEFAULT_DRAWING_PRECISION*/,
-                   unsigned            uniqueID /*=ccUniqueIDGenerator::InvalidUniqueID*/)
+                   const ccGLMatrix* transMat /*=nullptr*/,
+                   QString name /*=QString("Sphere")*/,
+                   unsigned precision /*=DEFAULT_DRAWING_PRECISION*/,
+                   unsigned uniqueID /*=ccUniqueIDGenerator::InvalidUniqueID*/)
     : ccGenericPrimitive(name, transMat, uniqueID)
     , m_radius(radius)
 {
@@ -125,13 +125,13 @@ bool ccSphere::buildUp()
 
 	// Generate ring vertices: latitude (theta) and longitude (phi) sweep
 	PointCoordinateType angle_rad_step = static_cast<PointCoordinateType>(M_PI) / static_cast<PointCoordinateType>(steps);
-	CCVector3           N0;
-	CCVector3           N;
-	CCVector3           P;
+	CCVector3 N0;
+	CCVector3 N;
+	CCVector3 P;
 	{
 		for (unsigned j = 1; j < steps; ++j)
 		{
-			PointCoordinateType theta     = static_cast<PointCoordinateType>(j) * angle_rad_step;
+			PointCoordinateType theta = static_cast<PointCoordinateType>(j) * angle_rad_step;
 			PointCoordinateType cos_theta = cos(theta);
 			PointCoordinateType sin_theta = sin(theta);
 
@@ -142,7 +142,7 @@ bool ccSphere::buildUp()
 
 			for (unsigned i = 0; i < steps; ++i)
 			{
-				PointCoordinateType phi     = static_cast<PointCoordinateType>(2 * i) * angle_rad_step;
+				PointCoordinateType phi = static_cast<PointCoordinateType>(2 * i) * angle_rad_step;
 				PointCoordinateType cos_phi = cos(phi);
 				PointCoordinateType sin_phi = sin(phi);
 
@@ -320,17 +320,17 @@ void ccSphere::drawNameIn3D(CC_DRAW_CONTEXT& context)
 	ccGLCameraParameters camera;
 	context.display->getGLCameraParameters(camera);
 
-	CCVector3  C = bBox.getCenter();
+	CCVector3 C = bBox.getCenter();
 	CCVector3d Q2D;
 	trans.apply(C);
 	camera.project(C, Q2D);
 
 	// Offset label horizontally by the sphere's screen radius
 	const ccViewportParameters& params = context.display->getViewportParameters();
-	int                         dPix   = static_cast<int>(ceil(m_radius / camera.pixelSize));
+	int dPix = static_cast<int>(ceil(m_radius / camera.pixelSize));
 
-	int   bkgBorder = QFontMetrics(context.display->getTextDisplayFont()).height() / 4 + 4;
-	QFont font      = context.display->getTextDisplayFont();
+	int bkgBorder = QFontMetrics(context.display->getTextDisplayFont()).height() / 4 + 4;
+	QFont font = context.display->getTextDisplayFont();
 	context.display->displayText(getName(),
 	                             static_cast<int>(Q2D.x) + dPix + bkgBorder,
 	                             static_cast<int>(Q2D.y),

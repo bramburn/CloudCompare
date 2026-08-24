@@ -44,9 +44,9 @@
 
 // semi persistent parameters
 static CCVector3d s_lastScales(1.0, 1.0, 1.0);
-static bool       s_allAtOnce          = true;
-static bool       s_keepInPlace        = false;
-static bool       s_rescaleGlobalShift = true;
+static bool s_allAtOnce = true;
+static bool s_keepInPlace = false;
+static bool s_rescaleGlobalShift = true;
 
 ccScaleDlg::ccScaleDlg(QWidget* parent /*=nullptr*/)
     : QDialog(parent)
@@ -73,9 +73,9 @@ ccScaleDlg::~ccScaleDlg()
 
 void ccScaleDlg::saveState()
 {
-	s_allAtOnce          = m_ui->sameForAllCheckBox->isChecked();
-	s_lastScales         = getScales();
-	s_keepInPlace        = keepInPlace();
+	s_allAtOnce = m_ui->sameForAllCheckBox->isChecked();
+	s_lastScales = getScales();
+	s_keepInPlace = keepInPlace();
 	s_rescaleGlobalShift = rescaleGlobalShift();
 }
 

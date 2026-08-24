@@ -74,7 +74,7 @@ class TestGlobalShift : public QObject
 		// At boundary (exactly 1e4) → |x| = 10000 >= 10000 → shift needed, round 10000 → 10000
 		CCVector3d boundary = CCVector3d(10000.0, 0.0, 0.0);
 		CCVector3d resultBoundary = ccGlobalShiftManager::BestShift(boundary);
-		QCOMPARE(resultBoundary.x, -10000.0);  // -int(10000/1000)*1000 = -10000
+		QCOMPARE(resultBoundary.x, -10000.0); // -int(10000/1000)*1000 = -10000
 
 		// Slightly above boundary → rounds to nearest 1000 multiple
 		CCVector3d above = CCVector3d(14267.0, 0.0, 0.0);
@@ -129,7 +129,7 @@ class TestGlobalShift : public QObject
 	{
 		// Store a known shift/scale pair
 		CCVector3d shift(100.0, -200.0, 50.0);
-		double     scale = 0.001;
+		double scale = 0.001;
 		ccGlobalShiftManager::StoreShift(shift, scale);
 
 		// Retrieve it via GetLast

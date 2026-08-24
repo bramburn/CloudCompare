@@ -281,8 +281,8 @@ QAction* ccPluginUIManager::actionShowGLFilterToolbar()
 
 void ccPluginUIManager::updateMenus()
 {
-	ccGLWindowInterface* active3DView  = m_appInterface->getActiveGLWindow();
-	const bool           hasActiveView = (active3DView != nullptr);
+	ccGLWindowInterface* active3DView = m_appInterface->getActiveGLWindow();
+	const bool hasActiveView = (active3DView != nullptr);
 
 	const QList<QAction*> actionList = m_glFilterActions.actions();
 

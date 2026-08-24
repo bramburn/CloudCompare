@@ -56,7 +56,7 @@ class QCC_IO_LIB_API ImageFileFilter : public FileIOFilter
 	 */
 	static QString GetLoadFilename(const QString& dialogTitle,
 	                               const QString& imageLoadPath,
-	                               QWidget*       parentWidget = nullptr);
+	                               QWidget* parentWidget = nullptr);
 
 	/**
 	 * @brief Get save filename
@@ -69,7 +69,7 @@ class QCC_IO_LIB_API ImageFileFilter : public FileIOFilter
 	static QString GetSaveFilename(const QString& dialogTitle,
 	                               const QString& baseName,
 	                               const QString& imageSavePath,
-	                               QWidget*       parentWidget = nullptr);
+	                               QWidget* parentWidget = nullptr);
 };
 
 #endif // CC_IMAGE_FILE_FILTER_HEADER

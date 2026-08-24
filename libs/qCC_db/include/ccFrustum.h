@@ -74,7 +74,7 @@ class Plane
 
   public: // members
 	CCVector3f normal;
-	float      constCoef;
+	float constCoef;
 };
 
 /**
@@ -139,7 +139,7 @@ class AACube
 
   public: // members
 	CCVector3f O;
-	float      d;
+	float d;
 };
 
 /**
@@ -162,9 +162,9 @@ class Frustum
 
 	enum Intersection
 	{
-		OUTSIDE   = 0,
+		OUTSIDE = 0,
 		INTERSECT = 1,
-		INSIDE    = 2,
+		INSIDE = 2,
 	};
 
   public: // Intersection tests
@@ -231,12 +231,12 @@ class Frustum
   protected: // protected methods
 	enum PLANE
 	{
-		TOP    = 0,
+		TOP = 0,
 		BOTTOM = 1,
-		LEFT   = 2,
-		RIGHT  = 3,
-		NEARP  = 4,
-		FARP   = 5
+		LEFT = 2,
+		RIGHT = 3,
+		NEARP = 4,
+		FARP = 5
 	};
 
 	template <typename T>

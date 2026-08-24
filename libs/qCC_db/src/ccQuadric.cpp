@@ -57,13 +57,13 @@
 // system
 #include <string.h>
 
-ccQuadric::ccQuadric(CCVector2                      minCorner,
-                     CCVector2                      maxCorner,
-                     const PointCoordinateType      eq[6],
+ccQuadric::ccQuadric(CCVector2 minCorner,
+                     CCVector2 maxCorner,
+                     const PointCoordinateType eq[6],
                      const CCCoreLib::SquareMatrix* toLocalOrientation /*=nullptr*/,
-                     const ccGLMatrix*              transMat /*=nullptr*/,
-                     QString                        name /*=QString("Quadric")*/,
-                     unsigned                       precision /*=DEFAULT_DRAWING_PRECISION*/)
+                     const ccGLMatrix* transMat /*=nullptr*/,
+                     QString name /*=QString("Quadric")*/,
+                     unsigned precision /*=DEFAULT_DRAWING_PRECISION*/)
     : ccGenericPrimitive(name, transMat)
     , m_minCorner(minCorner)
     , m_maxCorner(maxCorner)
@@ -95,7 +95,7 @@ bool ccQuadric::buildUp()
 		return false;
 
 	unsigned vertCount = m_drawPrecision * m_drawPrecision;
-	unsigned triCount  = (m_drawPrecision - 1) * (m_drawPrecision - 1) * 2;
+	unsigned triCount = (m_drawPrecision - 1) * (m_drawPrecision - 1) * 2;
 	if (!init(vertCount, true, triCount, 0))
 	{
 		ccLog::Error("[ccQuadric::buildUp] Not enough memory");
@@ -106,9 +106,9 @@ bool ccQuadric::buildUp()
 	assert(verts);
 	assert(verts->hasNormals());
 
-	CCVector2           areaSize = m_maxCorner - m_minCorner;
-	PointCoordinateType stepX    = areaSize.x / static_cast<PointCoordinateType>(m_drawPrecision - 1);
-	PointCoordinateType stepY    = areaSize.y / static_cast<PointCoordinateType>(m_drawPrecision - 1);
+	CCVector2 areaSize = m_maxCorner - m_minCorner;
+	PointCoordinateType stepX = areaSize.x / static_cast<PointCoordinateType>(m_drawPrecision - 1);
+	PointCoordinateType stepY = areaSize.y / static_cast<PointCoordinateType>(m_drawPrecision - 1);
 
 	for (unsigned x = 0; x < m_drawPrecision; ++x)
 	{
@@ -188,7 +188,7 @@ ccQuadric* ccQuadric::Fit(CCCoreLib::GenericIndexedCloudPersist* cloud, double* 
 
 	CCCoreLib::Neighbourhood Zk(cloud);
 
-	CCCoreLib::SquareMatrix    toLocalOrientation;
+	CCCoreLib::SquareMatrix toLocalOrientation;
 	const PointCoordinateType* eq = Zk.getQuadric(&toLocalOrientation);
 	if (!eq)
 	{
@@ -198,17 +198,17 @@ ccQuadric* ccQuadric::Fit(CCCoreLib::GenericIndexedCloudPersist* cloud, double* 
 
 	// we recenter the quadric object
 	CCCoreLib::SquareMatrix globalOrientation = toLocalOrientation.transposed(); // transposed is equivalent to inverse for a 3x3 rotation matrix
-	CCVector3               X(globalOrientation.getValue(0, 0),
-                globalOrientation.getValue(1, 0),
-                globalOrientation.getValue(2, 0));
-	CCVector3               Y(globalOrientation.getValue(0, 1),
-                globalOrientation.getValue(1, 1),
-                globalOrientation.getValue(2, 1));
-	CCVector3               N(globalOrientation.getValue(0, 2),
-                globalOrientation.getValue(1, 2),
-                globalOrientation.getValue(2, 2));
-	const CCVector3*        G = Zk.getGravityCenter();
-	ccGLMatrix              glMat(X, Y, N, *G);
+	CCVector3 X(globalOrientation.getValue(0, 0),
+	            globalOrientation.getValue(1, 0),
+	            globalOrientation.getValue(2, 0));
+	CCVector3 Y(globalOrientation.getValue(0, 1),
+	            globalOrientation.getValue(1, 1),
+	            globalOrientation.getValue(2, 1));
+	CCVector3 N(globalOrientation.getValue(0, 2),
+	            globalOrientation.getValue(1, 2),
+	            globalOrientation.getValue(2, 2));
+	const CCVector3* G = Zk.getGravityCenter();
+	ccGLMatrix glMat(X, Y, N, *G);
 
 	if (rms)
 	{
@@ -270,7 +270,7 @@ PointCoordinateType ccQuadric::projectOnQuadric(const CCVector3& P, CCVector3& Q
 	CCVector3 QLocal = m_toLocalOrientation * Q;
 
 	PointCoordinateType originalZ = QLocal.z;
-	QLocal.z                      = m_eq[0]
+	QLocal.z = m_eq[0]
 	           + m_eq[1] * QLocal.x
 	           + m_eq[2] * QLocal.y
 	           + m_eq[3] * QLocal.x * QLocal.x

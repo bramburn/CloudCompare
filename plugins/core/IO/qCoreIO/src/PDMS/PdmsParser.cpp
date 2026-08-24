@@ -74,14 +74,14 @@ PdmsLexer::PdmsLexer()
     , metaGroupMask(0)
 {
 	tokenBuffer[0] = 0;
-	nextBuffer[0]  = 0;
+	nextBuffer[0] = 0;
 }
 
 bool PdmsLexer::initializeSession()
 {
 	loadedObject = nullptr;
 	currentToken = PDMS_INVALID_TOKEN;
-	stop         = false;
+	stop = false;
 	memset(tokenBuffer, 0, c_max_buff_size);
 	memset(nextBuffer, 0, c_max_buff_size);
 	metaGroupMask = 0;
@@ -271,7 +271,7 @@ void PdmsLexer::parseCurrentToken()
 
 PointCoordinateType PdmsLexer::valueFromBuffer()
 {
-	size_t index  = strlen(tokenBuffer);
+	size_t index = strlen(tokenBuffer);
 	size_t length = 0;
 	while (index > 0) // go back until we meet a number symbol
 	{
@@ -343,8 +343,8 @@ bool PdmsFileSession::initializeSession()
 	}
 
 	m_currentLine = 1;
-	m_eol         = false;
-	m_eof         = false;
+	m_eol = false;
+	m_eof = false;
 
 	return true;
 }
@@ -373,9 +373,9 @@ bool PdmsFileSession::moveForward()
 	if (PdmsLexer::moveForward())
 		return true;
 
-	m_eol                = false;
-	bool     tokenFilled = false;
-	unsigned n           = 0;
+	m_eol = false;
+	bool tokenFilled = false;
+	unsigned n = 0;
 	while (!tokenFilled)
 	{
 		int car = readChar();
@@ -385,7 +385,7 @@ bool PdmsFileSession::moveForward()
 			if (n > 0)
 			{
 				tokenFilled = true;
-				m_eol       = true;
+				m_eol = true;
 			}
 			m_currentLine++;
 			break;
@@ -396,7 +396,7 @@ bool PdmsFileSession::moveForward()
 			break;
 		case EOF:
 			tokenFilled = true;
-			m_eof       = true;
+			m_eof = true;
 			break;
 		default:
 			if (n >= c_max_buff_size)
@@ -423,7 +423,7 @@ void PdmsFileSession::skipComment()
 		// skip line only if the end of line has not been read in current buffer
 		if (!m_eol)
 		{
-			int n   = 0;
+			int n = 0;
 			int car = 0;
 			do
 			{
@@ -444,10 +444,10 @@ void PdmsFileSession::skipComment()
 	{
 		// comment block opening symbol has been met. Search for comment block ending symbol
 		// don't forget that some other comments could be embedded in this comment
-		bool commentSymb       = false;
-		int  commentBlockLevel = 1;
-		int  n                 = 0;
-		int  car               = 0;
+		bool commentSymb = false;
+		int commentBlockLevel = 1;
+		int n = 0;
+		int car = 0;
 		do
 		{
 			car = readChar();
@@ -463,14 +463,14 @@ void PdmsFileSession::skipComment()
 				commentBlockLevel--;
 			else
 			{
-				commentSymb    = false;
+				commentSymb = false;
 				tokenBuffer[n] = car;
 				if (((n + 1) < c_max_buff_size) && ((car != ' ') || (n > 0 && tokenBuffer[n - 1] != ' ')))
 					n++;
 			}
 		} while (car != EOF && commentBlockLevel > 0);
 		tokenBuffer[n - 1] = '\0';
-		m_eol              = false;
+		m_eol = false;
 	}
 	break;
 	default:
@@ -490,19 +490,19 @@ void PdmsFileSession::skipComment()
 		}
 		// Copy the meta group name at the beginning of tokenbuffer
 		tokenBuffer[0] = '/';
-		char* ptr1     = tokenBuffer + 1;
+		char* ptr1 = tokenBuffer + 1;
 		while ((*ptr2) && (*ptr2) != ' ')
 		{
 			*ptr1 = *ptr2;
 			ptr1++;
 			ptr2++;
 		}
-		*ptr1         = '\0';
+		*ptr1 = '\0';
 		metaGroupMask = 0;
 	}
 	else if (strncmp(tokenBuffer, "LEAVING GROUP", 13) == 0)
 	{
-		currentToken  = PDMS_LEAVE_METAGROUP;
+		currentToken = PDMS_LEAVE_METAGROUP;
 		metaGroupMask = 0;
 	}
 }
@@ -510,7 +510,7 @@ void PdmsFileSession::skipComment()
 void PdmsFileSession::skipHandleCommand()
 {
 	int opened = 0;
-	int state  = 0;
+	int state = 0;
 
 	// Search for "HANDLE(...)" and remove this string from tokenBuffer
 	for (unsigned i = 0; i < strlen(tokenBuffer); i++)
@@ -578,10 +578,10 @@ PdmsParser::~PdmsParser()
 
 void PdmsParser::linkWithSession(PdmsLexer* s)
 {
-	session        = s;
+	session = s;
 	currentCommand = nullptr;
-	currentItem    = nullptr;
-	root           = nullptr;
+	currentItem = nullptr;
+	root = nullptr;
 	PdmsCommands::DistanceValue::setWorkingUnit(PDMS_MILLIMETRE);
 }
 
@@ -633,8 +633,8 @@ bool PdmsParser::processCurrentToken()
 				return true;
 
 			// Else, the token must be a new command. We execute the active command and delete it
-			PdmsObjects::GenericItem* item    = currentItem;
-			bool                      success = currentCommand->execute(item);
+			PdmsObjects::GenericItem* item = currentItem;
+			bool success = currentCommand->execute(item);
 			delete currentCommand;
 			currentCommand = nullptr;
 			if (!success)
@@ -652,7 +652,7 @@ bool PdmsParser::processCurrentToken()
 			{
 				if (!root)
 				{
-					root        = currentItem->getRoot();
+					root = currentItem->getRoot();
 					currentItem = nullptr;
 				}
 				else
@@ -725,7 +725,7 @@ PdmsObjects::GenericItem* PdmsParser::getLoadedObject(bool forgetIt)
 	if (forgetIt)
 	{
 		currentItem = nullptr;
-		root        = nullptr;
+		root = nullptr;
 	}
 	return result;
 }

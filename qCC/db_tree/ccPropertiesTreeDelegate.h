@@ -132,62 +132,62 @@ class ccPropertiesTreeDelegate : public QStyledItemDelegate
 	enum CC_PROPERTY_ROLE
 	{
 		OBJECT_NO_PROPERTY = 0,
-		OBJECT_NAME,                 //!< Object display name
-		OBJECT_VISIBILITY,           //!< Visible/hidden
-		OBJECT_CURRENT_DISPLAY,      //!< Active 3D view
-		OBJECT_NORMALS_SHOWN,       //!< Show/hide normals
-		OBJECT_COLOR_SOURCE,         //!< Color source (default, from SF, etc.)
-		OBJECT_POLYLINE_WIDTH,      //!< Polyline display width
-		OBJECT_SENSOR_DRAW_FRUSTUM, //!< Draw sensor frustum
-		OBJECT_SENSOR_DRAW_FRUSTUM_PLANES, //!< Draw frustum clipping planes
-		OBJECT_SF_SHOW_SCALE,       //!< Show scalar field color scale bar
-		OBJECT_OCTREE_LEVEL,        //!< Octree display level
-		OBJECT_OCTREE_TYPE,         //!< Octree display mode
-		OBJECT_MESH_WIRE,           //!< Wireframe mode
-		OBJECT_MESH_STIPPLING,      //!< Stippled rendering
-		OBJECT_CURRENT_SCALAR_FIELD,//!< Active scalar field
-		OBJECT_CURRENT_COLOR_RAMP, //!< Active color ramp
-		OBJECT_IMAGE_ALPHA,         //!< Image transparency
-		OBJECT_APPLY_IMAGE_VIEWPORT,//!< Apply image to viewport
-		OBJECT_APPLY_SENSOR_VIEWPORT,//!< Apply sensor as viewport
-		OBJECT_CLOUD_SF_EDITOR,     //!< Scalar field editor
-		OBJECT_SENSOR_MATRIX_EDITOR,//!< Sensor transformation matrix
-		OBJECT_SENSOR_DISPLAY_SCALE,//!< Sensor display scale
-		OBJECT_SENSOR_UNCERTAINTY,  //!< Sensor uncertainty
-		OBJECT_COLOR_RAMP_STEPS,    //!< Color ramp step count
-		OBJECT_MATERIALS,           //!< Material list
-		OBJECT_APPLY_LABEL_VIEWPORT,//!< Apply label to viewport
-		OBJECT_UPDATE_LABEL_VIEWPORT,//!< Update label viewport
-		OBJECT_LABEL_DISP_2D,       //!< 2D label display
-		OBJECT_LABEL_POINT_LEGEND,  //!< Point legend
-		OBJECT_PRIMITIVE_PRECISION, //!< Primitive tessellation precision
-		OBJECT_CIRCLE_RESOLUTION,  //!< Circle tessellation
-		OBJECT_SPHERE_RADIUS,       //!< Sphere radius
-		OBJECT_CIRCLE_RADIUS,       //!< Circle radius
-		OBJECT_DISC_RADIUS,         //!< Disc radius
-		OBJECT_CONE_HEIGHT,         //!< Cone height
-		OBJECT_CONE_BOTTOM_RADIUS,  //!< Cone bottom radius
-		OBJECT_CONE_TOP_RADIUS,     //!< Cone top radius
-		OBJECT_CLOUD_POINT_SIZE,   //!< Point display size
-		OBJECT_NAME_IN_3D,          //!< 3D name label
-		OBJECT_FACET_CONTOUR,       //!< Facet contour polyline
-		OBJECT_FACET_MESH,          //!< Facet mesh
-		OBJECT_PLANE_NORMAL_VECTOR, //!< Plane normal display
-		OBJECT_SENSOR_INDEX,        //!< Sensor index
-		OBJECT_SHOW_TRANS_BUFFER_PATH,    //!< Transformation buffer path
-		OBJECT_SHOW_TRANS_BUFFER_TRIHDERONS,//!< Show transformation buffer trihedrons
-		OBJECT_TRANS_BUFFER_TRIHDERONS_SCALE,//!< Trihedron scale
-		OBJECT_HISTORY_MATRIX_EDITOR,//!< Transformation history
-		OBJECT_GLTRANS_MATRIX_EDITOR,//!< GL transformation matrix
+		OBJECT_NAME,                          //!< Object display name
+		OBJECT_VISIBILITY,                    //!< Visible/hidden
+		OBJECT_CURRENT_DISPLAY,               //!< Active 3D view
+		OBJECT_NORMALS_SHOWN,                 //!< Show/hide normals
+		OBJECT_COLOR_SOURCE,                  //!< Color source (default, from SF, etc.)
+		OBJECT_POLYLINE_WIDTH,                //!< Polyline display width
+		OBJECT_SENSOR_DRAW_FRUSTUM,           //!< Draw sensor frustum
+		OBJECT_SENSOR_DRAW_FRUSTUM_PLANES,    //!< Draw frustum clipping planes
+		OBJECT_SF_SHOW_SCALE,                 //!< Show scalar field color scale bar
+		OBJECT_OCTREE_LEVEL,                  //!< Octree display level
+		OBJECT_OCTREE_TYPE,                   //!< Octree display mode
+		OBJECT_MESH_WIRE,                     //!< Wireframe mode
+		OBJECT_MESH_STIPPLING,                //!< Stippled rendering
+		OBJECT_CURRENT_SCALAR_FIELD,          //!< Active scalar field
+		OBJECT_CURRENT_COLOR_RAMP,            //!< Active color ramp
+		OBJECT_IMAGE_ALPHA,                   //!< Image transparency
+		OBJECT_APPLY_IMAGE_VIEWPORT,          //!< Apply image to viewport
+		OBJECT_APPLY_SENSOR_VIEWPORT,         //!< Apply sensor as viewport
+		OBJECT_CLOUD_SF_EDITOR,               //!< Scalar field editor
+		OBJECT_SENSOR_MATRIX_EDITOR,          //!< Sensor transformation matrix
+		OBJECT_SENSOR_DISPLAY_SCALE,          //!< Sensor display scale
+		OBJECT_SENSOR_UNCERTAINTY,            //!< Sensor uncertainty
+		OBJECT_COLOR_RAMP_STEPS,              //!< Color ramp step count
+		OBJECT_MATERIALS,                     //!< Material list
+		OBJECT_APPLY_LABEL_VIEWPORT,          //!< Apply label to viewport
+		OBJECT_UPDATE_LABEL_VIEWPORT,         //!< Update label viewport
+		OBJECT_LABEL_DISP_2D,                 //!< 2D label display
+		OBJECT_LABEL_POINT_LEGEND,            //!< Point legend
+		OBJECT_PRIMITIVE_PRECISION,           //!< Primitive tessellation precision
+		OBJECT_CIRCLE_RESOLUTION,             //!< Circle tessellation
+		OBJECT_SPHERE_RADIUS,                 //!< Sphere radius
+		OBJECT_CIRCLE_RADIUS,                 //!< Circle radius
+		OBJECT_DISC_RADIUS,                   //!< Disc radius
+		OBJECT_CONE_HEIGHT,                   //!< Cone height
+		OBJECT_CONE_BOTTOM_RADIUS,            //!< Cone bottom radius
+		OBJECT_CONE_TOP_RADIUS,               //!< Cone top radius
+		OBJECT_CLOUD_POINT_SIZE,              //!< Point display size
+		OBJECT_NAME_IN_3D,                    //!< 3D name label
+		OBJECT_FACET_CONTOUR,                 //!< Facet contour polyline
+		OBJECT_FACET_MESH,                    //!< Facet mesh
+		OBJECT_PLANE_NORMAL_VECTOR,           //!< Plane normal display
+		OBJECT_SENSOR_INDEX,                  //!< Sensor index
+		OBJECT_SHOW_TRANS_BUFFER_PATH,        //!< Transformation buffer path
+		OBJECT_SHOW_TRANS_BUFFER_TRIHDERONS,  //!< Show transformation buffer trihedrons
+		OBJECT_TRANS_BUFFER_TRIHDERONS_SCALE, //!< Trihedron scale
+		OBJECT_HISTORY_MATRIX_EDITOR,         //!< Transformation history
+		OBJECT_GLTRANS_MATRIX_EDITOR,         //!< GL transformation matrix
 		OBJECT_COORDINATE_SYSTEM_DISP_PLANES, //!< Coordinate system display planes
 		OBJECT_COORDINATE_SYSTEM_DISP_AXES,   //!< Coordinate system axes
 		OBJECT_COORDINATE_SYSTEM_AXES_WIDTH,  //!< Axis line width
 		OBJECT_COORDINATE_SYSTEM_DISP_SCALE,  //!< Coordinate system scale
-		TREE_VIEW_HEADER,             //!< Tree view header
-		OBJECT_CLOUD_NORMAL_COLOR,   //!< Normal vector color
-		OBJECT_CLOUD_NORMAL_LENGTH,   //!< Normal vector length
-		OBJECT_CLOUD_DRAW_NORMALS,   //!< Draw point normals
-		OBJECT_CLOUD_USE_LOD,        //!< Use level-of-detail
+		TREE_VIEW_HEADER,                     //!< Tree view header
+		OBJECT_CLOUD_NORMAL_COLOR,            //!< Normal vector color
+		OBJECT_CLOUD_NORMAL_LENGTH,           //!< Normal vector length
+		OBJECT_CLOUD_DRAW_NORMALS,            //!< Draw point normals
+		OBJECT_CLOUD_USE_LOD,                 //!< Use level-of-detail
 	};
 
 	/**
@@ -399,13 +399,13 @@ class ccPropertiesTreeDelegate : public QStyledItemDelegate
 	void updateModel();
 
 	//! Currently displayed object
-	ccHObject*          m_currentObject;
+	ccHObject* m_currentObject;
 	//! Model backing the properties tree
 	QStandardItemModel* m_model;
 	//! The properties tree view
-	QAbstractItemView*  m_view;
+	QAbstractItemView* m_view;
 	//! Last focused property role
-	CC_PROPERTY_ROLE    m_lastFocusItemRole;
+	CC_PROPERTY_ROLE m_lastFocusItemRole;
 };
 
 #endif

@@ -70,7 +70,7 @@ bool DepthMapFileFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclu
 {
 	if (type == CC_TYPES::GBL_SENSOR)
 	{
-		multiple  = true;
+		multiple = true;
 		exclusive = true;
 		return true;
 	}
@@ -96,8 +96,8 @@ CC_FILE_ERROR DepthMapFileFilter::saveToFile(ccHObject* entity, const QString& f
 
 	// multiple filenames handling
 	QFileInfo fi(filename);
-	QString   baseName  = fi.baseName();
-	QString   extension = fi.suffix();
+	QString baseName = fi.baseName();
+	QString extension = fi.suffix();
 
 	CC_FILE_ERROR result = CC_FERR_NO_ERROR;
 
@@ -233,7 +233,7 @@ CC_FILE_ERROR DepthMapFileFilter::saveToFile(const QString& filename, ccGBLSenso
 	}
 
 	const PointCoordinateType* _zBuff = db.zBuff.data();
-	unsigned                   index  = 0;
+	unsigned index = 0;
 	for (unsigned k = 0; k < db.height; ++k)
 	{
 		for (unsigned j = 0; j < db.width; ++j, ++_zBuff, ++index)

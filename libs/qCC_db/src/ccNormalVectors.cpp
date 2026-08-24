@@ -155,17 +155,17 @@ bool ccNormalVectors::init()
 	return true;
 }
 
-bool ccNormalVectors::UpdateNormalOrientations(ccGenericPointCloud*   theCloud,
+bool ccNormalVectors::UpdateNormalOrientations(ccGenericPointCloud* theCloud,
                                                NormsIndexesTableType& theNormsCodes,
-                                               Orientation            preferredOrientation)
+                                               Orientation preferredOrientation)
 {
 	assert(theCloud);
 
 	// preferred orientation
 	CCVector3 prefOrientation(0, 0, 0);
 	CCVector3 originPoint(0, 0, 0);
-	bool      useOriginPoint  = false;
-	bool      fromOriginPoint = true;
+	bool useOriginPoint = false;
+	bool fromOriginPoint = true;
 
 	switch (preferredOrientation)
 	{
@@ -188,7 +188,7 @@ bool ccNormalVectors::UpdateNormalOrientations(ccGenericPointCloud*   theCloud,
 	{
 		originPoint = CCCoreLib::GeometricalAnalysisTools::ComputeGravityCenter(theCloud);
 		ccLog::Print(QString("[UpdateNormalOrientations] Barycenter: (%1;%2;%3)").arg(originPoint.x).arg(originPoint.y).arg(originPoint.z));
-		useOriginPoint  = true;
+		useOriginPoint = true;
 		fromOriginPoint = (preferredOrientation == PLUS_BARYCENTER);
 	}
 	break;
@@ -196,8 +196,8 @@ bool ccNormalVectors::UpdateNormalOrientations(ccGenericPointCloud*   theCloud,
 	case PLUS_ORIGIN:
 	case MINUS_ORIGIN:
 	{
-		originPoint     = CCVector3(0, 0, 0);
-		useOriginPoint  = true;
+		originPoint = CCVector3(0, 0, 0);
+		useOriginPoint = true;
 		fromOriginPoint = (preferredOrientation == PLUS_ORIGIN);
 	}
 	break;
@@ -225,9 +225,9 @@ bool ccNormalVectors::UpdateNormalOrientations(ccGenericPointCloud*   theCloud,
 				ccSensor* sensor = ccHObjectCaster::ToSensor(child);
 				if (sensor->getActiveAbsoluteCenter(originPoint))
 				{
-					useOriginPoint  = true;
+					useOriginPoint = true;
 					fromOriginPoint = (preferredOrientation == PLUS_SENSOR_ORIGIN);
-					sensorFound     = true;
+					sensorFound = true;
 					break;
 				}
 			}
@@ -249,7 +249,7 @@ bool ccNormalVectors::UpdateNormalOrientations(ccGenericPointCloud*   theCloud,
 	for (unsigned i = 0; i < theNormsCodes.currentSize(); i++)
 	{
 		const CompressedNormType& code = theNormsCodes.getValue(i);
-		CCVector3                 N    = GetNormal(code);
+		CCVector3 N = GetNormal(code);
 
 		if (preferredOrientation == PREVIOUS)
 		{
@@ -279,13 +279,13 @@ bool ccNormalVectors::UpdateNormalOrientations(ccGenericPointCloud*   theCloud,
 	return true;
 }
 
-bool ccNormalVectors::ComputeCloudNormals(ccGenericPointCloud*                theCloud,
-                                          NormsIndexesTableType&              theNormsCodes,
-                                          CCCoreLib::LOCAL_MODEL_TYPES        localModel,
-                                          PointCoordinateType                 localRadius,
-                                          Orientation                         preferredOrientation /*=UNDEFINED*/,
+bool ccNormalVectors::ComputeCloudNormals(ccGenericPointCloud* theCloud,
+                                          NormsIndexesTableType& theNormsCodes,
+                                          CCCoreLib::LOCAL_MODEL_TYPES localModel,
+                                          PointCoordinateType localRadius,
+                                          Orientation preferredOrientation /*=UNDEFINED*/,
                                           CCCoreLib::GenericProgressCallback* progressCb /*=nullptr*/,
-                                          CCCoreLib::DgmOctree*               inputOctree /*=nullptr*/)
+                                          CCCoreLib::DgmOctree* inputOctree /*=nullptr*/)
 {
 	assert(theCloud);
 
@@ -320,7 +320,7 @@ bool ccNormalVectors::ComputeCloudNormals(ccGenericPointCloud*                th
 	}
 
 	// we instantiate 3D normal vectors
-	NormsTableType*        theNorms = new NormsTableType;
+	NormsTableType* theNorms = new NormsTableType;
 	static const CCVector3 blankN(0, 0, 0);
 	if (!theNorms->resizeSafe(pointCount, true, &blankN))
 	{
@@ -341,36 +341,36 @@ bool ccNormalVectors::ComputeCloudNormals(ccGenericPointCloud*                th
 	case CCCoreLib::LS:
 	{
 		unsigned char level = theOctree->findBestLevelForAGivenNeighbourhoodSizeExtraction(localRadius);
-		processedCells      = theOctree->executeFunctionForAllCellsAtLevel(level,
-                                                                      &(ComputeNormsAtLevelWithLS),
-                                                                      additionalParameters,
-                                                                      true,
-                                                                      progressCb,
-                                                                      "Normals Computation[LS]");
+		processedCells = theOctree->executeFunctionForAllCellsAtLevel(level,
+		                                                              &(ComputeNormsAtLevelWithLS),
+		                                                              additionalParameters,
+		                                                              true,
+		                                                              progressCb,
+		                                                              "Normals Computation[LS]");
 	}
 	break;
 	case CCCoreLib::TRI:
 	{
 		unsigned char level = theOctree->findBestLevelForAGivenPopulationPerCell(NUMBER_OF_POINTS_FOR_NORM_WITH_TRI);
-		processedCells      = theOctree->executeFunctionForAllCellsStartingAtLevel(level,
-                                                                              &(ComputeNormsAtLevelWithTri),
-                                                                              additionalParameters,
-                                                                              NUMBER_OF_POINTS_FOR_NORM_WITH_TRI / 2,
-                                                                              NUMBER_OF_POINTS_FOR_NORM_WITH_TRI * 3,
-                                                                              true,
-                                                                              progressCb,
-                                                                              "Normals Computation[TRI]");
+		processedCells = theOctree->executeFunctionForAllCellsStartingAtLevel(level,
+		                                                                      &(ComputeNormsAtLevelWithTri),
+		                                                                      additionalParameters,
+		                                                                      NUMBER_OF_POINTS_FOR_NORM_WITH_TRI / 2,
+		                                                                      NUMBER_OF_POINTS_FOR_NORM_WITH_TRI * 3,
+		                                                                      true,
+		                                                                      progressCb,
+		                                                                      "Normals Computation[TRI]");
 	}
 	break;
 	case CCCoreLib::QUADRIC:
 	{
 		unsigned char level = theOctree->findBestLevelForAGivenNeighbourhoodSizeExtraction(localRadius);
-		processedCells      = theOctree->executeFunctionForAllCellsAtLevel(level,
-                                                                      &(ComputeNormsAtLevelWithQuadric),
-                                                                      additionalParameters,
-                                                                      true,
-                                                                      progressCb,
-                                                                      "Normals Computation[QUADRIC]");
+		processedCells = theOctree->executeFunctionForAllCellsAtLevel(level,
+		                                                              &(ComputeNormsAtLevelWithQuadric),
+		                                                              additionalParameters,
+		                                                              true,
+		                                                              progressCb,
+		                                                              "Normals Computation[QUADRIC]");
 	}
 	break;
 
@@ -389,7 +389,7 @@ bool ccNormalVectors::ComputeCloudNormals(ccGenericPointCloud*                th
 	std::fill(theNormsCodes.begin(), theNormsCodes.end(), 0);
 	for (unsigned i = 0; i < pointCount; i++)
 	{
-		const CCVector3&   N     = theNorms->at(i);
+		const CCVector3& N = theNorms->at(i);
 		CompressedNormType nCode = GetNormIndex(N);
 		theNormsCodes.setValue(i, nCode);
 	}
@@ -416,7 +416,7 @@ bool ccNormalVectors::ComputeNormalWithQuadric(CCCoreLib::GenericIndexedCloudPer
 {
 	CCCoreLib::Neighbourhood Z(points);
 
-	CCCoreLib::SquareMatrix    toLocalOrientation;
+	CCCoreLib::SquareMatrix toLocalOrientation;
 	const PointCoordinateType* h = Z.getQuadric(&toLocalOrientation);
 	if (h)
 	{
@@ -458,7 +458,7 @@ bool ccNormalVectors::ComputeNormalWithLS(CCCoreLib::GenericIndexedCloudPersist*
 	}
 
 	CCCoreLib::Neighbourhood Z(pointAndNeighbors);
-	const CCVector3*         _N = Z.getLSPlaneNormal();
+	const CCVector3* _N = Z.getLSPlaneNormal();
 	if (_N)
 	{
 		N = *_N;
@@ -530,12 +530,12 @@ bool ccNormalVectors::ComputeNormalWithTri(CCCoreLib::GenericIndexedCloudPersist
 }
 
 bool ccNormalVectors::ComputeNormsAtLevelWithQuadric(const CCCoreLib::DgmOctree::octreeCell& cell,
-                                                     void**                                  additionalParameters,
-                                                     CCCoreLib::NormalizedProgress*          nProgress /*=nullptr*/)
+                                                     void** additionalParameters,
+                                                     CCCoreLib::NormalizedProgress* nProgress /*=nullptr*/)
 {
 	// additional parameters
-	NormsTableType*     theNorms = static_cast<NormsTableType*>(additionalParameters[0]);
-	PointCoordinateType radius   = *static_cast<PointCoordinateType*>(additionalParameters[1]);
+	NormsTableType* theNorms = static_cast<NormsTableType*>(additionalParameters[0]);
+	PointCoordinateType radius = *static_cast<PointCoordinateType*>(additionalParameters[1]);
 
 	CCCoreLib::DgmOctree::NearestNeighboursSearchStruct nNSS;
 	nNSS.level = cell.level;
@@ -548,7 +548,7 @@ bool ccNormalVectors::ComputeNormsAtLevelWithQuadric(const CCCoreLib::DgmOctree:
 	CCCoreLib::DgmOctree::NeighboursSet::iterator it = nNSS.pointsInNeighbourhood.begin();
 	for (unsigned j = 0; j < pointCount; ++j, ++it)
 	{
-		it->point      = cell.points->getPointPersistentPtr(j);
+		it->point = cell.points->getPointPersistentPtr(j);
 		it->pointIndex = cell.points->getPointGlobalIndex(j);
 	}
 	nNSS.alreadyVisitedNeighbourhoodSize = 1;
@@ -558,8 +558,8 @@ bool ccNormalVectors::ComputeNormsAtLevelWithQuadric(const CCCoreLib::DgmOctree:
 		cell.points->getPoint(i, nNSS.queryPoint);
 
 		// warning: there may be more points at the end of nNSS.pointsInNeighbourhood than the actual nearest neighbors (k)!
-		unsigned k          = cell.parentOctree->findNeighborsInASphereStartingFromCell(nNSS, radius, false);
-		float    cur_radius = radius;
+		unsigned k = cell.parentOctree->findNeighborsInASphereStartingFromCell(nNSS, radius, false);
+		float cur_radius = radius;
 		while (k < NUMBER_OF_POINTS_FOR_NORM_WITH_QUADRIC && cur_radius < 16 * radius)
 		{
 			cur_radius *= 1.189207115f;
@@ -584,12 +584,12 @@ bool ccNormalVectors::ComputeNormsAtLevelWithQuadric(const CCCoreLib::DgmOctree:
 }
 
 bool ccNormalVectors::ComputeNormsAtLevelWithLS(const CCCoreLib::DgmOctree::octreeCell& cell,
-                                                void**                                  additionalParameters,
-                                                CCCoreLib::NormalizedProgress*          nProgress /*=nullptr*/)
+                                                void** additionalParameters,
+                                                CCCoreLib::NormalizedProgress* nProgress /*=nullptr*/)
 {
 	// additional parameters
-	NormsTableType*     theNorms = static_cast<NormsTableType*>(additionalParameters[0]);
-	PointCoordinateType radius   = *static_cast<PointCoordinateType*>(additionalParameters[1]);
+	NormsTableType* theNorms = static_cast<NormsTableType*>(additionalParameters[0]);
+	PointCoordinateType radius = *static_cast<PointCoordinateType*>(additionalParameters[1]);
 
 	CCCoreLib::DgmOctree::NearestNeighboursSearchStruct nNSS;
 	nNSS.level = cell.level;
@@ -603,7 +603,7 @@ bool ccNormalVectors::ComputeNormsAtLevelWithLS(const CCCoreLib::DgmOctree::octr
 		CCCoreLib::DgmOctree::NeighboursSet::iterator it = nNSS.pointsInNeighbourhood.begin();
 		for (unsigned j = 0; j < pointCount; ++j, ++it)
 		{
-			it->point      = cell.points->getPointPersistentPtr(j);
+			it->point = cell.points->getPointPersistentPtr(j);
 			it->pointIndex = cell.points->getPointGlobalIndex(j);
 		}
 	}
@@ -614,8 +614,8 @@ bool ccNormalVectors::ComputeNormsAtLevelWithLS(const CCCoreLib::DgmOctree::octr
 		cell.points->getPoint(i, nNSS.queryPoint);
 
 		// warning: there may be more points at the end of nNSS.pointsInNeighbourhood than the actual nearest neighbors (k)!
-		unsigned k          = cell.parentOctree->findNeighborsInASphereStartingFromCell(nNSS, radius, false);
-		float    cur_radius = radius;
+		unsigned k = cell.parentOctree->findNeighborsInASphereStartingFromCell(nNSS, radius, false);
+		float cur_radius = radius;
 		while (k < NUMBER_OF_POINTS_FOR_NORM_WITH_LS && cur_radius < 16 * radius)
 		{
 			cur_radius *= 1.189207115f;
@@ -642,14 +642,14 @@ bool ccNormalVectors::ComputeNormsAtLevelWithLS(const CCCoreLib::DgmOctree::octr
 }
 
 bool ccNormalVectors::ComputeNormsAtLevelWithTri(const CCCoreLib::DgmOctree::octreeCell& cell,
-                                                 void**                                  additionalParameters,
-                                                 CCCoreLib::NormalizedProgress*          nProgress /*=nullptr*/)
+                                                 void** additionalParameters,
+                                                 CCCoreLib::NormalizedProgress* nProgress /*=nullptr*/)
 {
 	// additional parameters
 	NormsTableType* theNorms = static_cast<NormsTableType*>(additionalParameters[0]);
 
 	CCCoreLib::DgmOctree::NearestNeighboursSearchStruct nNSS;
-	nNSS.level                = cell.level;
+	nNSS.level = cell.level;
 	nNSS.minNumberOfNeighbors = NUMBER_OF_POINTS_FOR_NORM_WITH_TRI;
 	cell.parentOctree->getCellPos(cell.truncatedCode, cell.level, nNSS.cellPos, true);
 	cell.parentOctree->computeCellCenter(nNSS.cellPos, cell.level, nNSS.cellCenter);
@@ -661,7 +661,7 @@ bool ccNormalVectors::ComputeNormsAtLevelWithTri(const CCCoreLib::DgmOctree::oct
 	{
 		for (unsigned j = 0; j < pointCount; ++j, ++it)
 		{
-			it->point      = cell.points->getPointPersistentPtr(j);
+			it->point = cell.points->getPointPersistentPtr(j);
 			it->pointIndex = cell.points->getPointGlobalIndex(j);
 		}
 	}
@@ -695,7 +695,7 @@ bool ccNormalVectors::ComputeNormsAtLevelWithTri(const CCCoreLib::DgmOctree::oct
 QString ccNormalVectors::ConvertStrikeAndDipToString(double& strike_deg, double& dip_deg)
 {
 	int iStrike = static_cast<int>(strike_deg);
-	int iDip    = static_cast<int>(std::round(dip_deg));
+	int iDip = static_cast<int>(std::round(dip_deg));
 
 	return QString("N%1°E - %2°").arg(iStrike, 3, 10, QChar('0')).arg(iDip, 3, 10, QChar('0'));
 }
@@ -703,7 +703,7 @@ QString ccNormalVectors::ConvertStrikeAndDipToString(double& strike_deg, double&
 QString ccNormalVectors::ConvertDipAndDipDirToString(PointCoordinateType dip_deg, PointCoordinateType dipDir_deg)
 {
 	int iDipDir = static_cast<int>(std::round(dipDir_deg));
-	int iDip    = static_cast<int>(std::round(dip_deg));
+	int iDip = static_cast<int>(std::round(dip_deg));
 
 	return QString("Dip: %1 deg. - Dip direction: %2 deg.").arg(iDip, 3, 10, QChar('0')).arg(iDipDir, 3, 10, QChar('0'));
 }
@@ -716,9 +716,9 @@ void ccNormalVectors::ConvertNormalToStrikeAndDip(const CCVector3& N, PointCoord
 	// uses a right hand rule for the dip of the plane
 	if (N.norm2() > std::numeric_limits<PointCoordinateType>::epsilon())
 	{
-		strike_deg            = 180.0 - CCCoreLib::RadiansToDegrees(atan2(N.y, N.x)); // atan2 output is between -180 and 180! So strike is always positive here
-		PointCoordinateType x = sqrt(N.x * N.x + N.y * N.y);                          // x is the horizontal magnitude
-		dip_deg               = CCCoreLib::RadiansToDegrees(atan2(x, N.z));
+		strike_deg = 180.0 - CCCoreLib::RadiansToDegrees(atan2(N.y, N.x)); // atan2 output is between -180 and 180! So strike is always positive here
+		PointCoordinateType x = sqrt(N.x * N.x + N.y * N.y);               // x is the horizontal magnitude
+		dip_deg = CCCoreLib::RadiansToDegrees(atan2(x, N.z));
 	}
 	else
 	{
@@ -757,7 +757,7 @@ void ccNormalVectors::ConvertNormalToDipAndDipDir(const CCVector3f& N, float& di
 		float dip_rad = acos(std::abs(N.z));
 
 		dipDir_deg = CCCoreLib::RadiansToDegrees(dipDir_rad);
-		dip_deg    = CCCoreLib::RadiansToDegrees(dip_rad);
+		dip_deg = CCCoreLib::RadiansToDegrees(dip_rad);
 	}
 	else
 	{
@@ -796,7 +796,7 @@ void ccNormalVectors::ConvertNormalToDipAndDipDir(const CCVector3d& N, double& d
 		double dip_rad = acos(std::abs(N.z));
 
 		dipDir_deg = CCCoreLib::RadiansToDegrees(dipDir_rad);
-		dip_deg    = CCCoreLib::RadiansToDegrees(dip_rad);
+		dip_deg = CCCoreLib::RadiansToDegrees(dip_rad);
 	}
 	else
 	{
@@ -812,9 +812,9 @@ CCVector3f ccNormalVectors::ConvertDipAndDipDirToNormal(float dip_deg, float dip
 		return CCVector3f(0, 0, 0);
 	}
 
-	float      Nz         = cos(CCCoreLib::DegreesToRadians(dip_deg));
-	float      Nxy        = sqrt(1.0f - Nz * Nz);
-	float      dipDir_rad = CCCoreLib::DegreesToRadians(dipDir_deg);
+	float Nz = cos(CCCoreLib::DegreesToRadians(dip_deg));
+	float Nxy = sqrt(1.0f - Nz * Nz);
+	float dipDir_rad = CCCoreLib::DegreesToRadians(dipDir_deg);
 	CCVector3f N(Nxy * sin(dipDir_rad),
 	             Nxy * cos(dipDir_rad),
 	             Nz);
@@ -841,9 +841,9 @@ CCVector3d ccNormalVectors::ConvertDipAndDipDirToNormal(double dip_deg, double d
 		return CCVector3(0, 0, 0);
 	}
 
-	double     Nz         = cos(CCCoreLib::DegreesToRadians(dip_deg));
-	double     Nxy        = sqrt(1.0 - Nz * Nz);
-	double     dipDir_rad = CCCoreLib::DegreesToRadians(dipDir_deg);
+	double Nz = cos(CCCoreLib::DegreesToRadians(dip_deg));
+	double Nxy = sqrt(1.0 - Nz * Nz);
+	double dipDir_rad = CCCoreLib::DegreesToRadians(dipDir_deg);
 	CCVector3d N(Nxy * sin(dipDir_rad),
 	             Nxy * cos(dipDir_rad),
 	             Nz);
@@ -864,7 +864,7 @@ CCVector3d ccNormalVectors::ConvertDipAndDipDirToNormal(double dip_deg, double d
 
 void ccNormalVectors::ConvertNormalToHSV(const CCVector3& N, float& H, float& S, float& V)
 {
-	PointCoordinateType dip    = 0;
+	PointCoordinateType dip = 0;
 	PointCoordinateType dipDir = 0;
 	ConvertNormalToDipAndDipDir(N, dip, dipDir);
 

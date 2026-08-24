@@ -51,13 +51,13 @@ using namespace oneapi;
 enum HullPointFlags
 {
 	POINT_NOT_USED = 0,
-	POINT_USED     = 1,
-	POINT_IGNORED  = 2,
-	POINT_FROZEN   = 3,
+	POINT_USED = 1,
+	POINT_IGNORED = 2,
+	POINT_FROZEN = 3,
 };
 
-using Vertex2D            = CCCoreLib::PointProjectionTools::IndexedCCVector2;
-using VertexIterator      = std::list<Vertex2D*>::iterator;
+using Vertex2D = CCCoreLib::PointProjectionTools::IndexedCCVector2;
+using VertexIterator = std::list<Vertex2D*>::iterator;
 using ConstVertexIterator = std::list<Vertex2D*>::const_iterator;
 
 namespace
@@ -84,28 +84,28 @@ namespace
 		}
 
 		VertexIterator itA;
-		unsigned       nearestPointIndex;
-		float          nearestPointSquareDist;
+		unsigned nearestPointIndex;
+		float nearestPointSquareDist;
 	};
 } // namespace
 
 //! Finds the nearest (available) point to an edge
 /** \return The nearest point distance (or -1 if no point was found!)
  **/
-static PointCoordinateType FindNearestCandidate(unsigned&                          minIndex,
-                                                const VertexIterator&              itA,
-                                                const VertexIterator&              itB,
-                                                const std::vector<Vertex2D>&       points,
+static PointCoordinateType FindNearestCandidate(unsigned& minIndex,
+                                                const VertexIterator& itA,
+                                                const VertexIterator& itB,
+                                                const std::vector<Vertex2D>& points,
                                                 const std::vector<HullPointFlags>& pointFlags,
-                                                PointCoordinateType                minSquareEdgeLength,
-                                                bool                               allowLongerChunks = false,
-                                                double                             minCosAngle       = -1.0)
+                                                PointCoordinateType minSquareEdgeLength,
+                                                bool allowLongerChunks = false,
+                                                double minCosAngle = -1.0)
 {
 	// look for the nearest point in the input set
-	PointCoordinateType       minDist2       = -1;
-	const CCVector2           AB             = **itB - **itA;
+	PointCoordinateType minDist2 = -1;
+	const CCVector2 AB = **itB - **itA;
 	const PointCoordinateType squareLengthAB = AB.norm2();
-	const unsigned            pointCount     = static_cast<unsigned>(points.size());
+	const unsigned pointCount = static_cast<unsigned>(points.size());
 
 #ifdef CC_CORE_LIB_USES_TBB
 	tbb::parallel_for(static_cast<unsigned int>(0), pointCount, [&](unsigned int i)
@@ -184,8 +184,8 @@ static PointCoordinateType FindNearestCandidate(unsigned&                       
 		// check the angle
 		if (minCosAngle > -1.0)
 		{
-			CCVector2           PB         = **itB - P;
-			PointCoordinateType dotProd    = AP.x * PB.x + AP.y * PB.y;
+			CCVector2 PB = **itB - P;
+			PointCoordinateType dotProd = AP.x * PB.x + AP.y * PB.y;
 			PointCoordinateType minDotProd = static_cast<PointCoordinateType>(minCosAngle * std::sqrt(AP.norm2() * PB.norm2()));
 			if (dotProd < minDotProd)
 			{
@@ -196,7 +196,7 @@ static PointCoordinateType FindNearestCandidate(unsigned&                       
 		PointCoordinateType dot = AB.dot(AP); // = cos(PAB) * ||AP|| * ||AB||
 		if (dot >= 0 && dot <= squareLengthAB)
 		{
-			CCVector2           HP    = AP - AB * (dot / squareLengthAB);
+			CCVector2 HP = AP - AB * (dot / squareLengthAB);
 			PointCoordinateType dist2 = HP.norm2();
 			if (minDist2 < 0 || dist2 < minDist2)
 			{
@@ -221,12 +221,12 @@ static PointCoordinateType FindNearestCandidate(unsigned&                       
 }
 
 bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
-                                               std::list<Vertex2D*>&  hullPoints,
-                                               EnvelopeType           envelopeType,
-                                               bool                   allowMultiPass,
-                                               PointCoordinateType    maxSquareEdgeLength /*=0*/,
-                                               bool                   enableVisualDebugMode /*=false*/,
-                                               double                 maxAngleDeg /*=0.0*/)
+                                               std::list<Vertex2D*>& hullPoints,
+                                               EnvelopeType envelopeType,
+                                               bool allowMultiPass,
+                                               PointCoordinateType maxSquareEdgeLength /*=0*/,
+                                               bool enableVisualDebugMode /*=false*/,
+                                               double maxAngleDeg /*=0.0*/)
 {
 	// first compute the Convex hull
 	if (!CCCoreLib::PointProjectionTools::extractConvexHull2D(points, hullPoints))
@@ -293,7 +293,7 @@ bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
 			// we will now try to determine which part of the envelope is the 'upper' one and which one is the 'lower' one
 
 			// search for the min and max vertices
-			VertexIterator itLeft  = hullPoints.begin();
+			VertexIterator itLeft = hullPoints.begin();
 			VertexIterator itRight = hullPoints.begin();
 			{
 				for (VertexIterator it = hullPoints.begin(); it != hullPoints.end(); ++it)
@@ -364,9 +364,9 @@ bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
 
 	// DEBUG MECHANISM
 	ccEnvelopeExtractorDlg debugDialog;
-	ccPointCloud*          debugCloud            = nullptr;
-	ccPolyline*            debugEnvelope         = nullptr;
-	ccPointCloud*          debugEnvelopeVertices = nullptr;
+	ccPointCloud* debugCloud = nullptr;
+	ccPolyline* debugEnvelope = nullptr;
+	ccPointCloud* debugEnvelopeVertices = nullptr;
 
 	if (enableVisualDebugMode)
 	{
@@ -391,7 +391,7 @@ bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
 		// create polyline
 		{
 			debugEnvelopeVertices = new ccPointCloud;
-			debugEnvelope         = new ccPolyline(debugEnvelopeVertices);
+			debugEnvelope = new ccPolyline(debugEnvelopeVertices);
 			debugEnvelope->addChild(debugEnvelopeVertices);
 			unsigned hullSize = static_cast<unsigned>(hullPoints.size());
 			if (debugEnvelope->reserve(hullSize))
@@ -413,7 +413,7 @@ bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
 			{
 				ccLog::Warning("Not enough memory to create the debug envelope polyline");
 				delete debugEnvelope;
-				debugEnvelope         = nullptr;
+				debugEnvelope = nullptr;
 				debugEnvelopeVertices = nullptr;
 			}
 		}
@@ -427,8 +427,8 @@ bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
 	}
 
 	// Warning: high STL containers usage ahead ;)
-	unsigned step                = 0;
-	bool     somethingHasChanged = true;
+	unsigned step = 0;
+	bool somethingHasChanged = true;
 	while (somethingHasChanged)
 	{
 		try
@@ -462,16 +462,16 @@ bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
 				// we will only process the edges that are longer than the maximum specified length
 				if ((**itB - **itA).norm2() > maxSquareEdgeLength)
 				{
-					unsigned            nearestPointIndex = 0;
-					PointCoordinateType minSquareDist     = FindNearestCandidate(
-                        nearestPointIndex,
-                        itA,
-                        itB,
-                        points,
-                        pointFlags,
-                        minSquareEdgeLength,
-                        step > 1,
-                        minCosAngle);
+					unsigned nearestPointIndex = 0;
+					PointCoordinateType minSquareDist = FindNearestCandidate(
+					    nearestPointIndex,
+					    itA,
+					    itB,
+					    points,
+					    pointFlags,
+					    minSquareEdgeLength,
+					    step > 1,
+					    minCosAngle);
 
 					if (minSquareDist >= 0)
 					{
@@ -509,11 +509,11 @@ bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
 
 				// create labels
 				cc2DLabel* edgeLabel = nullptr;
-				cc2DLabel* label     = nullptr;
+				cc2DLabel* label = nullptr;
 
 				if (enableVisualDebugMode && !debugDialog.isSkipped())
 				{
-					edgeLabel       = new cc2DLabel("edge");
+					edgeLabel = new cc2DLabel("edge");
 					unsigned indexA = 0;
 					unsigned indexB = 0;
 					for (size_t i = 0; i < pointCount; ++i)
@@ -609,7 +609,7 @@ bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
 					// update all edges that were having 'P' as their nearest candidate as well
 					if (!edges.empty())
 					{
-						std::vector<VertexIterator>         removed;
+						std::vector<VertexIterator> removed;
 						std::multiset<Edge>::const_iterator lastValidIt = edges.end();
 						for (std::multiset<Edge>::const_iterator it = edges.begin(); it != edges.end(); ++it)
 						{
@@ -641,16 +641,16 @@ bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
 							if (itD == hullPoints.end())
 								itD = hullPoints.begin();
 
-							unsigned            nearestPointIndex = 0;
-							PointCoordinateType minSquareDist     = FindNearestCandidate(
-                                nearestPointIndex,
-                                itC,
-                                itD,
-                                points,
-                                pointFlags,
-                                minSquareEdgeLength,
-                                false,
-                                minCosAngle);
+							unsigned nearestPointIndex = 0;
+							PointCoordinateType minSquareDist = FindNearestCandidate(
+							    nearestPointIndex,
+							    itC,
+							    itD,
+							    points,
+							    pointFlags,
+							    minSquareEdgeLength,
+							    false,
+							    minCosAngle);
 
 							if (minSquareDist >= 0)
 							{
@@ -663,16 +663,16 @@ bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
 					// we'll inspect the two new segments later (if necessary)
 					if ((P - **itA).norm2() > maxSquareEdgeLength)
 					{
-						unsigned            nearestPointIndex = 0;
-						PointCoordinateType minSquareDist     = FindNearestCandidate(
-                            nearestPointIndex,
-                            itA,
-                            itP,
-                            points,
-                            pointFlags,
-                            minSquareEdgeLength,
-                            false,
-                            minCosAngle);
+						unsigned nearestPointIndex = 0;
+						PointCoordinateType minSquareDist = FindNearestCandidate(
+						    nearestPointIndex,
+						    itA,
+						    itP,
+						    points,
+						    pointFlags,
+						    minSquareEdgeLength,
+						    false,
+						    minCosAngle);
 
 						if (minSquareDist >= 0)
 						{
@@ -682,16 +682,16 @@ bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
 					}
 					if ((**itB - P).norm2() > maxSquareEdgeLength)
 					{
-						unsigned            nearestPointIndex = 0;
-						PointCoordinateType minSquareDist     = FindNearestCandidate(
-                            nearestPointIndex,
-                            itP,
-                            itB,
-                            points,
-                            pointFlags,
-                            minSquareEdgeLength,
-                            false,
-                            minCosAngle);
+						unsigned nearestPointIndex = 0;
+						PointCoordinateType minSquareDist = FindNearestCandidate(
+						    nearestPointIndex,
+						    itP,
+						    itB,
+						    points,
+						    pointFlags,
+						    minSquareEdgeLength,
+						    false,
+						    minCosAngle);
 
 						if (minSquareDist >= 0)
 						{
@@ -742,14 +742,14 @@ bool ccEnvelopeExtractor::ExtractConcaveHull2D(std::vector<Vertex2D>& points,
 using Hull2D = std::list<Vertex2D*>;
 
 ccPolyline* ccEnvelopeExtractor::ExtractFlatEnvelope(CCCoreLib::GenericIndexedCloudPersist* points,
-                                                     bool                                   allowMultiPass,
-                                                     PointCoordinateType                    maxEdgeLength /*=0*/,
-                                                     const PointCoordinateType*             preferredNormDim /*=nullptr*/,
-                                                     const PointCoordinateType*             preferredUpDir /*=nullptr*/,
-                                                     EnvelopeType                           envelopeType /*=FULL*/,
-                                                     std::vector<unsigned>*                 originalPointIndexes /*=nullptr*/,
-                                                     bool                                   enableVisualDebugMode /*=false*/,
-                                                     double                                 maxAngleDeg /*=0.0*/)
+                                                     bool allowMultiPass,
+                                                     PointCoordinateType maxEdgeLength /*=0*/,
+                                                     const PointCoordinateType* preferredNormDim /*=nullptr*/,
+                                                     const PointCoordinateType* preferredUpDir /*=nullptr*/,
+                                                     EnvelopeType envelopeType /*=FULL*/,
+                                                     std::vector<unsigned>* originalPointIndexes /*=nullptr*/,
+                                                     bool enableVisualDebugMode /*=false*/,
+                                                     double maxAngleDeg /*=0.0*/)
 {
 	assert(points);
 
@@ -772,11 +772,11 @@ ccPolyline* ccEnvelopeExtractor::ExtractFlatEnvelope(CCCoreLib::GenericIndexedCl
 
 	// we project the input points on a plane
 	std::vector<Vertex2D> points2D;
-	PointCoordinateType*  planeEq = nullptr;
+	PointCoordinateType* planeEq = nullptr;
 
 	if (preferredUpDir != nullptr)
 	{
-		Y            = CCVector3(preferredUpDir);
+		Y = CCVector3(preferredUpDir);
 		vectorsUsage = CCCoreLib::Neighbourhood::UseYAsUpDir;
 	}
 
@@ -785,19 +785,19 @@ ccPolyline* ccEnvelopeExtractor::ExtractFlatEnvelope(CCCoreLib::GenericIndexedCl
 
 	if (preferredNormDim != nullptr)
 	{
-		const CCVector3* G  = points->getPoint(0); // any point through which the plane passes is ok
+		const CCVector3* G = points->getPoint(0); // any point through which the plane passes is ok
 		preferredPlaneEq[0] = preferredNormDim[0];
 		preferredPlaneEq[1] = preferredNormDim[1];
 		preferredPlaneEq[2] = preferredNormDim[2];
 		CCVector3::vnormalize(preferredPlaneEq);
 		preferredPlaneEq[3] = CCVector3::vdot(G->u, preferredPlaneEq);
-		planeEq             = preferredPlaneEq;
+		planeEq = preferredPlaneEq;
 
 		if (preferredUpDir != nullptr)
 		{
 			O = *G;
 			// Y = CCVector3(preferredUpDir); //already done above
-			X            = Y.cross(CCVector3(preferredNormDim));
+			X = Y.cross(CCVector3(preferredNormDim));
 			vectorsUsage = CCCoreLib::Neighbourhood::UseOXYasBase;
 		}
 	}
@@ -894,14 +894,14 @@ ccPolyline* ccEnvelopeExtractor::ExtractFlatEnvelope(CCCoreLib::GenericIndexedCl
 }
 
 bool ccEnvelopeExtractor::ExtractFlatEnvelope(CCCoreLib::GenericIndexedCloudPersist* points,
-                                              bool                                   allowMultiPass,
-                                              PointCoordinateType                    maxEdgeLength,
-                                              std::vector<ccPolyline*>&              parts,
-                                              EnvelopeType                           envelopeType /*=FULL*/,
-                                              bool                                   allowSplitting /*=true*/,
-                                              const PointCoordinateType*             preferredNormDir /*=nullptr*/,
-                                              const PointCoordinateType*             preferredUpDir /*=nullptr*/,
-                                              bool                                   enableVisualDebugMode /*=false*/)
+                                              bool allowMultiPass,
+                                              PointCoordinateType maxEdgeLength,
+                                              std::vector<ccPolyline*>& parts,
+                                              EnvelopeType envelopeType /*=FULL*/,
+                                              bool allowSplitting /*=true*/,
+                                              const PointCoordinateType* preferredNormDir /*=nullptr*/,
+                                              const PointCoordinateType* preferredUpDir /*=nullptr*/,
+                                              bool enableVisualDebugMode /*=false*/)
 {
 	parts.clear();
 

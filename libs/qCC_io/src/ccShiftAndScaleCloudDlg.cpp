@@ -59,8 +59,8 @@
 #include <float.h>
 
 ccShiftAndScaleCloudDlg::ccShiftAndScaleCloudDlg(const CCVector3d& Pg,
-                                                 double            Dg /*=0*/,
-                                                 QWidget*          parent /*=nullptr*/)
+                                                 double Dg /*=0*/,
+                                                 QWidget* parent /*=nullptr*/)
     : QDialog(parent)
     , m_ui(nullptr)
     , m_applyAll(false)
@@ -82,10 +82,10 @@ ccShiftAndScaleCloudDlg::ccShiftAndScaleCloudDlg(const CCVector3d& Pg,
 }
 
 ccShiftAndScaleCloudDlg::ccShiftAndScaleCloudDlg(const CCVector3d& Pl,
-                                                 double            Dl,
+                                                 double Dl,
                                                  const CCVector3d& Pg,
-                                                 double            Dg,
-                                                 QWidget*          parent /*=nullptr*/)
+                                                 double Dg,
+                                                 QWidget* parent /*=nullptr*/)
     : QDialog(parent)
     , m_ui(nullptr)
     , m_applyAll(false)
@@ -157,7 +157,7 @@ void ccShiftAndScaleCloudDlg::init()
 
 void ccShiftAndScaleCloudDlg::displayMoreInfo()
 {
-	QDialog                        dlg(this);
+	QDialog dlg(this);
 	Ui_GlobalShiftAndScaleAboutDlg uiDlg;
 	uiDlg.setupUi(&dlg);
 
@@ -180,11 +180,11 @@ bool AlmostEq(double a, double b)
 
 void ccShiftAndScaleCloudDlg::updateGlobalSystem()
 {
-	CCVector3d P    = m_originalPoint;
-	double     diag = m_originalDiagonal;
+	CCVector3d P = m_originalPoint;
+	double diag = m_originalDiagonal;
 	if (m_reversedMode && !keepGlobalPos())
 	{
-		P    = (m_localPoint - getShift()) / getScale();
+		P = (m_localPoint - getShift()) / getScale();
 		diag = m_localDiagonal / getScale();
 	}
 
@@ -201,19 +201,19 @@ void ccShiftAndScaleCloudDlg::updateGlobalSystem()
 
 void ccShiftAndScaleCloudDlg::updateLocalSystem()
 {
-	CCVector3d localPoint    = m_localPoint;
-	double     localDiagonal = m_localDiagonal;
+	CCVector3d localPoint = m_localPoint;
+	double localDiagonal = m_localDiagonal;
 	if (!m_reversedMode || keepGlobalPos())
 	{
-		localPoint    = (m_originalPoint + getShift()) * getScale();
+		localPoint = (m_originalPoint + getShift()) * getScale();
 		localDiagonal = m_originalDiagonal * getScale();
 	}
 
 	// adaptive precision
-	double maxCoord     = std::max(std::abs(localPoint.x), std::abs(localPoint.y));
-	maxCoord            = std::max(std::abs(localPoint.z), maxCoord);
+	double maxCoord = std::max(std::abs(localPoint.x), std::abs(localPoint.y));
+	maxCoord = std::max(std::abs(localPoint.z), maxCoord);
 	int digitsBeforeDec = static_cast<int>(floor(log10(maxCoord))) + 1;
-	int prec            = std::max(0, 8 - digitsBeforeDec);
+	int prec = std::max(0, 8 - digitsBeforeDec);
 
 	m_ui->xDestLabel->setText(QString("x = %1").arg(localPoint.x, 0, 'f', prec));
 	m_ui->xDestLabel->setStyleSheet(ccGlobalShiftManager::NeedShift(localPoint.x) ? QString("color: red;") : QString());
@@ -332,7 +332,7 @@ void ccShiftAndScaleCloudDlg::onGlobalPosCheckBoxToggled(bool state)
 void ccShiftAndScaleCloudDlg::onClick(QAbstractButton* button)
 {
 	m_applyAll = (button == m_ui->buttonBox->button(QDialogButtonBox::YesToAll));
-	m_cancel   = (button == m_ui->buttonBox->button(QDialogButtonBox::Cancel));
+	m_cancel = (button == m_ui->buttonBox->button(QDialogButtonBox::Cancel));
 }
 
 void ccShiftAndScaleCloudDlg::onLoadIndexChanged(int index)

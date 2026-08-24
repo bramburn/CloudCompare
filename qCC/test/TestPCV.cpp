@@ -1,19 +1,19 @@
-//##########################################################################
-//#                                                                        #
-//#                          CLOUDCOMPARE                                   #
-//#                                                                        #
-//#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU General Public License as published by  #
-//#  the Free Software Foundation; version 2 of the License.               #
-//#                                                                        #
-//#  This program is distributed in the hope that it will be useful,       #
-//#  it under the terms of the implied warranty of                        #
-//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
-//#  GNU General Public License for more details.                          #
-//#                                                                        #
-//#                   COPYRIGHT: CloudCompare project                      #
-//#                                                                        #
-//##########################################################################
+// ##########################################################################
+// #                                                                        #
+// #                          CLOUDCOMPARE                                   #
+// #                                                                        #
+// #  This program is free software; you can redistribute it and/or modify  #
+// #  it under the terms of the GNU General Public License as published by  #
+// #  the Free Software Foundation; version 2 of the License.               #
+// #                                                                        #
+// #  This program is distributed in the hope that it will be useful,       #
+// #  it under the terms of the implied warranty of                        #
+// #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+// #  GNU General Public License for more details.                          #
+// #                                                                        #
+// #                   COPYRIGHT: CloudCompare project                      #
+// #                                                                        #
+// ##########################################################################
 
 // qPCV plugin
 /**
@@ -34,13 +34,13 @@
 #include <CCGeom.h>
 
 // qCC_db
-#include <ccPointCloud.h>
 #include <ccBBox.h>
+#include <ccPointCloud.h>
 
 // Qt Test
-#include <QTest>
 #include <QObject>
 #include <QString>
+#include <QTest>
 
 // System
 #include <cmath>
@@ -90,17 +90,18 @@ static void zRange(const std::vector<CCVector3d>& pts, double& zMin, double& zMa
 	zMax = -1.0;
 	for (const CCVector3d& p : pts)
 	{
-		if (p.z < zMin) zMin = p.z;
-		if (p.z > zMax) zMax = p.z;
+		if (p.z < zMin)
+			zMin = p.z;
+		if (p.z > zMax)
+			zMax = p.z;
 	}
 }
-
 
 class TestPCV : public QObject
 {
 	Q_OBJECT
 
-private slots:
+  private slots:
 
 	// -----------------------------------------------------------------------
 	// gcd: standard positive cases
@@ -112,7 +113,7 @@ private slots:
 	{
 		QCOMPARE(LocalGCD(12, 8), 4);
 		QCOMPARE(LocalGCD(17, 13), 1);
-		QCOMPARE(LocalGCD(8, 12), 4);   // symmetric: gcd(a,b) = gcd(b,a)
+		QCOMPARE(LocalGCD(8, 12), 4);    // symmetric: gcd(a,b) = gcd(b,a)
 		QCOMPARE(LocalGCD(100, 25), 25); // exact division
 	}
 

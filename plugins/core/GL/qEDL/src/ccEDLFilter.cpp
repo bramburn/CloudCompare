@@ -79,29 +79,29 @@ ccEDLFilter::ccEDLFilter()
 	}
 
 	// smoothing filter for full resolution
-	m_bilateralFilters[0].enabled  = false;
+	m_bilateralFilters[0].enabled = false;
 	m_bilateralFilters[0].halfSize = 1;
-	m_bilateralFilters[0].sigma    = 1.0f;
-	m_bilateralFilters[0].sigmaZ   = 0.2f;
+	m_bilateralFilters[0].sigma = 1.0f;
+	m_bilateralFilters[0].sigmaZ = 0.2f;
 
 	// smoothing filter for half resolution
-	m_bilateralFilters[1].enabled  = true;
+	m_bilateralFilters[1].enabled = true;
 	m_bilateralFilters[1].halfSize = 2;
-	m_bilateralFilters[1].sigma    = 2.0f;
-	m_bilateralFilters[1].sigmaZ   = 0.4f;
+	m_bilateralFilters[1].sigma = 2.0f;
+	m_bilateralFilters[1].sigmaZ = 0.4f;
 
 	// smoothing filter for quarter resolution
-	m_bilateralFilters[2].enabled  = true;
+	m_bilateralFilters[2].enabled = true;
 	m_bilateralFilters[2].halfSize = 2;
-	m_bilateralFilters[2].sigma    = 2.0f;
-	m_bilateralFilters[2].sigmaZ   = 0.4f;
+	m_bilateralFilters[2].sigma = 2.0f;
+	m_bilateralFilters[2].sigmaZ = 0.4f;
 
 	setLightDir(static_cast<float>(M_PI / 2.0), static_cast<float>(M_PI / 2.0));
 
 	memset(m_neighbours, 0, sizeof(float) * 8 * 2);
 	for (unsigned c = 0; c < 8; c++)
 	{
-		m_neighbours[2 * c]     = static_cast<float>(std::cos(c * M_PI / 4.0));
+		m_neighbours[2 * c] = static_cast<float>(std::cos(c * M_PI / 4.0));
 		m_neighbours[2 * c + 1] = static_cast<float>(std::sin(c * M_PI / 4.0));
 	}
 }
@@ -179,8 +179,8 @@ bool ccEDLFilter::init(unsigned width, unsigned height, GLenum internalFormat, G
 	for (unsigned i = 0; i < FBO_COUNT; ++i)
 	{
 		unsigned scale = (1 << i);
-		unsigned w     = width / scale;
-		unsigned h     = height / scale;
+		unsigned w = width / scale;
+		unsigned h = height / scale;
 
 		ccFrameBufferObject*& fbo = m_fbos[i];
 		if (!fbo)
@@ -208,7 +208,7 @@ bool ccEDLFilter::init(unsigned width, unsigned height, GLenum internalFormat, G
 			else
 			{
 				delete m_bilateralFilters[i].filter;
-				m_bilateralFilters[i].filter  = nullptr;
+				m_bilateralFilters[i].filter = nullptr;
 				m_bilateralFilters[i].enabled = false;
 			}
 		}
@@ -251,7 +251,7 @@ bool ccEDLFilter::init(unsigned width, unsigned height, GLenum internalFormat, G
 		}
 	}
 
-	m_screenWidth  = width;
+	m_screenWidth = width;
 	m_screenHeight = height;
 
 	setValid(true);
@@ -289,8 +289,8 @@ void ccEDLFilter::shade(GLuint texDepth, GLuint texColor, ViewportParameters& pa
 
 	for (unsigned i = 0; i < FBO_COUNT; ++i)
 	{
-		ccFrameBufferObject* fbo   = m_fbos[i];
-		unsigned             scale = (1 << i); // 1, 2, 4
+		ccFrameBufferObject* fbo = m_fbos[i];
+		unsigned scale = (1 << i); // 1, 2, 4
 
 		fbo->start();
 

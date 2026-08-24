@@ -56,10 +56,10 @@ ccRecentFiles::ccRecentFiles(QWidget* parent)
 
 	m_actionClearMenu = new QAction(tr("Clear Menu"), this);
 
-	connect(m_actionClearMenu, &QAction::triggered, this, [this]() {
+	connect(m_actionClearMenu, &QAction::triggered, this, [this]()
+	        {
 		m_settings.remove(s_settingKey);
-		updateMenu();
-	});
+		updateMenu(); });
 
 	updateMenu();
 }
@@ -205,7 +205,7 @@ QStringList ccRecentFiles::listRecent()
 QString ccRecentFiles::contractFilePath(const QString& filePath)
 {
 	QString homePath = QDir::toNativeSeparators(QDir::homePath());
-	QString newPath  = QDir::toNativeSeparators(filePath);
+	QString newPath = QDir::toNativeSeparators(filePath);
 
 	if (newPath.startsWith(homePath))
 	{

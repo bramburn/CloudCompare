@@ -245,11 +245,11 @@ class QCC_DB_LIB_API ccGenericMesh : public CCCoreLib::GenericIndexedMesh
 	}
 
 	//! Samples points on a mesh
-	ccPointCloud* samplePoints(bool                                densityBased,
-	                           double                              samplingParameter,
-	                           bool                                withNormals,
-	                           bool                                withRGB,
-	                           bool                                withTexture,
+	ccPointCloud* samplePoints(bool densityBased,
+	                           double samplingParameter,
+	                           bool withNormals,
+	                           bool withRGB,
+	                           bool withTexture,
 	                           CCCoreLib::GenericProgressCallback* pDlg = nullptr);
 
 	//! Imports the parameters from another mesh
@@ -258,21 +258,21 @@ class QCC_DB_LIB_API ccGenericMesh : public CCCoreLib::GenericIndexedMesh
 	void importParametersFrom(const ccGenericMesh* mesh);
 
 	//! Brute force triangle picking
-	virtual bool trianglePicking(const CCVector2d&           clickPos,
+	virtual bool trianglePicking(const CCVector2d& clickPos,
 	                             const ccGLCameraParameters& camera,
-	                             bool                        edgeOnly,
-	                             int&                        nearestTriIndex,
-	                             double&                     nearestSquareDist,
-	                             CCVector3d&                 nearestPoint,
-	                             CCVector3d*                 barycentricCoords = nullptr) const;
+	                             bool edgeOnly,
+	                             int& nearestTriIndex,
+	                             double& nearestSquareDist,
+	                             CCVector3d& nearestPoint,
+	                             CCVector3d* barycentricCoords = nullptr) const;
 
 	//! Triangle picking (specific triangle)
-	virtual bool trianglePicking(unsigned                    triIndex,
-	                             const CCVector2d&           clickPos,
+	virtual bool trianglePicking(unsigned triIndex,
+	                             const CCVector2d& clickPos,
 	                             const ccGLCameraParameters& camera,
-	                             bool                        edgeOnly,
-	                             CCVector3d&                 point,
-	                             CCVector3d*                 barycentricCoords = nullptr) const;
+	                             bool edgeOnly,
+	                             CCVector3d& point,
+	                             CCVector3d* barycentricCoords = nullptr) const;
 
 	//! Computes the point that corresponds to the given uv (barycentric) coordinates
 	bool computePointPosition(unsigned triIndex, const CCVector2d& uv, CCVector3& P, bool warningIfOutside = true) const;
@@ -281,10 +281,10 @@ class QCC_DB_LIB_API ccGenericMesh : public CCCoreLib::GenericIndexedMesh
 	static bool IsCloudVerticesOfMesh(ccGenericPointCloud* cloud, ccGenericMesh** mesh = nullptr);
 
 	// inherited methods (ccShiftedObject)
-	void              setGlobalShift(const CCVector3d& shift) override;
-	void              setGlobalScale(double scale) override;
+	void setGlobalShift(const CCVector3d& shift) override;
+	void setGlobalScale(double scale) override;
 	const CCVector3d& getGlobalShift() const override;
-	double            getGlobalScale() const override;
+	double getGlobalScale() const override;
 
 	// inherited methods (GenericIndexedMesh)
 	bool normalsAvailable() const override
@@ -294,25 +294,25 @@ class QCC_DB_LIB_API ccGenericMesh : public CCCoreLib::GenericIndexedMesh
 
   protected:
 	// inherited from ccHObject
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
 
 	// Static arrays for OpenGL drawing
-	static CCVector3*     GetVertexBuffer();
-	static CCVector3*     GetNormalsBuffer();
+	static CCVector3* GetVertexBuffer();
+	static CCVector3* GetNormalsBuffer();
 	static ColorCompType* GetColorsBuffer();
 
 	//! Triangle picking (single triangle)
-	virtual bool trianglePicking(unsigned                    triIndex,
-	                             const CCVector2d&           clickPos,
-	                             const ccGLMatrix&           trans,
-	                             bool                        noGLTrans,
-	                             const ccGenericPointCloud&  vertices,
+	virtual bool trianglePicking(unsigned triIndex,
+	                             const CCVector2d& clickPos,
+	                             const ccGLMatrix& trans,
+	                             bool noGLTrans,
+	                             const ccGenericPointCloud& vertices,
 	                             const ccGLCameraParameters& camera,
-	                             bool                        edgeOnly,
-	                             CCVector3d&                 point,
-	                             CCVector3d*                 barycentricCoords = nullptr) const;
+	                             bool edgeOnly,
+	                             CCVector3d& point,
+	                             CCVector3d* barycentricCoords = nullptr) const;
 
 	//! Returns a pre-initialized array of vertex indexes for wired display
 	/** Array size is MAX_NUMBER_OF_ELEMENTS_PER_CHUNK*6 by default

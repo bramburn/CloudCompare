@@ -106,7 +106,7 @@ class QCC_DB_LIB_API ccFacet : public ccHObject
 	 * @param[in] name Facet name.
 	 */
 	ccFacet(PointCoordinateType maxEdgeLength = 0,
-	        const QString&      name          = QString("Facet"));
+	        const QString& name = QString("Facet"));
 
 	/**
 	 * @brief Destructor.
@@ -127,9 +127,9 @@ class QCC_DB_LIB_API ccFacet : public ccHObject
 	 * @return New facet, or nullptr on failure.
 	 */
 	static ccFacet* Create(CCCoreLib::GenericIndexedCloudPersist* cloud,
-	                       PointCoordinateType                    maxEdgeLength     = 0,
-	                       bool                                   transferOwnership = false,
-	                       const PointCoordinateType*             planeEquation     = nullptr);
+	                       PointCoordinateType maxEdgeLength = 0,
+	                       bool transferOwnership = false,
+	                       const PointCoordinateType* planeEquation = nullptr);
 
 	/**
 	 * @brief Get class type.
@@ -326,7 +326,7 @@ class QCC_DB_LIB_API ccFacet : public ccHObject
 	 * @return true if successful.
 	 */
 	bool createInternalRepresentation(CCCoreLib::GenericIndexedCloudPersist* points,
-	                                  const PointCoordinateType*             planeEquation = nullptr);
+	                                  const PointCoordinateType* planeEquation = nullptr);
 
   private:
 	//! Polygon mesh.
@@ -357,8 +357,8 @@ class QCC_DB_LIB_API ccFacet : public ccHObject
 	PointCoordinateType m_maxEdgeLength;
 
 	// Serialization
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
 
 	// GL transformation

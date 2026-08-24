@@ -57,11 +57,11 @@
 #include <QDoubleValidator>
 
 // semi-persistent parameters
-static double     s_dip    = 0;
-static double     s_dipDir = 0;
-static double     s_width  = 10.0;
-static double     s_height = 10.0;
-static bool       s_upward = true;
+static double s_dip = 0;
+static double s_dipDir = 0;
+static double s_width = 10.0;
+static double s_height = 10.0;
+static bool s_upward = true;
 static CCVector3d s_center(0, 0, 0);
 
 ccPlaneEditDlg::ccPlaneEditDlg(ccPickingHub* pickingHub, QWidget* parent)
@@ -114,11 +114,11 @@ void ccPlaneEditDlg::saveParamsAndAccept()
 	// save semi-persistent parameters
 	if (!m_associatedPlane)
 	{
-		s_dip      = dipDoubleSpinBox->value();
-		s_dipDir   = dipDirDoubleSpinBox->value();
-		s_upward   = upwardCheckBox->isChecked();
-		s_width    = wDoubleSpinBox->value();
-		s_height   = hDoubleSpinBox->value();
+		s_dip = dipDoubleSpinBox->value();
+		s_dipDir = dipDirDoubleSpinBox->value();
+		s_upward = upwardCheckBox->isChecked();
+		s_width = wDoubleSpinBox->value();
+		s_height = hDoubleSpinBox->value();
 		s_center.x = cxAxisDoubleSpinBox->value();
 		s_center.y = cyAxisDoubleSpinBox->value();
 		s_center.z = czAxisDoubleSpinBox->value();
@@ -134,7 +134,7 @@ void ccPlaneEditDlg::saveParamsAndAccept()
 	}
 	else // creation
 	{
-		PointCoordinateType width  = static_cast<PointCoordinateType>(wDoubleSpinBox->value());
+		PointCoordinateType width = static_cast<PointCoordinateType>(wDoubleSpinBox->value());
 		PointCoordinateType height = static_cast<PointCoordinateType>(hDoubleSpinBox->value());
 
 		ccPlane* plane = new ccPlane(width, height);
@@ -166,10 +166,10 @@ void ccPlaneEditDlg::onDipDirModified(bool)
 
 void ccPlaneEditDlg::onDipDirChanged(double)
 {
-	double    dip    = dipDoubleSpinBox->value();
-	double    dipDir = dipDirDoubleSpinBox->value();
-	bool      upward = upwardCheckBox->isChecked();
-	CCVector3 Nd     = ccNormalVectors::ConvertDipAndDipDirToNormal(static_cast<PointCoordinateType>(dip), static_cast<PointCoordinateType>(dipDir), upward);
+	double dip = dipDoubleSpinBox->value();
+	double dipDir = dipDirDoubleSpinBox->value();
+	bool upward = upwardCheckBox->isChecked();
+	CCVector3 Nd = ccNormalVectors::ConvertDipAndDipDirToNormal(static_cast<PointCoordinateType>(dip), static_cast<PointCoordinateType>(dipDir), upward);
 
 	nxDoubleSpinBox->blockSignals(true);
 	nyDoubleSpinBox->blockSignals(true);
@@ -192,7 +192,7 @@ void ccPlaneEditDlg::onNormalChanged(double)
 	Nd.z = nzDoubleSpinBox->value();
 	Nd.normalize();
 
-	PointCoordinateType dip    = 0;
+	PointCoordinateType dip = 0;
 	PointCoordinateType dipDir = 0;
 	ccNormalVectors::ConvertNormalToDipAndDipDir(Nd, dip, dipDir);
 
@@ -298,23 +298,23 @@ void ccPlaneEditDlg::updatePlane(ccPlane* plane)
 		return;
 	}
 
-	double              dip    = dipDoubleSpinBox->value();
-	double              dipDir = dipDirDoubleSpinBox->value();
-	bool                upward = upwardCheckBox->isChecked();
-	PointCoordinateType width  = static_cast<PointCoordinateType>(wDoubleSpinBox->value());
+	double dip = dipDoubleSpinBox->value();
+	double dipDir = dipDirDoubleSpinBox->value();
+	bool upward = upwardCheckBox->isChecked();
+	PointCoordinateType width = static_cast<PointCoordinateType>(wDoubleSpinBox->value());
 	PointCoordinateType height = static_cast<PointCoordinateType>(hDoubleSpinBox->value());
-	CCVector3           Nd     = ccNormalVectors::ConvertDipAndDipDirToNormal(static_cast<PointCoordinateType>(dip), static_cast<PointCoordinateType>(dipDir), upward);
-	CCVector3           Cd{static_cast<PointCoordinateType>(cxAxisDoubleSpinBox->value()),
-                 static_cast<PointCoordinateType>(cyAxisDoubleSpinBox->value()),
-                 static_cast<PointCoordinateType>(czAxisDoubleSpinBox->value())};
+	CCVector3 Nd = ccNormalVectors::ConvertDipAndDipDirToNormal(static_cast<PointCoordinateType>(dip), static_cast<PointCoordinateType>(dipDir), upward);
+	CCVector3 Cd{static_cast<PointCoordinateType>(cxAxisDoubleSpinBox->value()),
+	             static_cast<PointCoordinateType>(cyAxisDoubleSpinBox->value()),
+	             static_cast<PointCoordinateType>(czAxisDoubleSpinBox->value())};
 
 	CCVector3 N = plane->getNormal();
 	CCVector3 C = plane->getCenter();
 
 	// shall we transform (translate and / or rotate) the plane?
 	ccGLMatrix trans;
-	bool       needToApplyRot   = (std::abs(N.dot(Nd) - CCCoreLib::PC_ONE) > std::numeric_limits<PointCoordinateType>::epsilon());
-	bool       needToApplyTrans = (needToApplyRot || ((C - Cd).norm2d() != 0));
+	bool needToApplyRot = (std::abs(N.dot(Nd) - CCCoreLib::PC_ONE) > std::numeric_limits<PointCoordinateType>::epsilon());
+	bool needToApplyTrans = (needToApplyRot || ((C - Cd).norm2d() != 0));
 
 	if (needToApplyTrans)
 	{

@@ -249,7 +249,7 @@ namespace PdmsTools
 			{
 				return strcmp(name, str) == 0 ? this : nullptr;
 			}
-			virtual bool                scan(Token t, std::vector<GenericItem*>& array);
+			virtual bool scan(Token t, std::vector<GenericItem*>& array);
 			virtual std::pair<int, int> write(std::ostream& output, int nbtabs = 0) const = 0;
 
 		  protected:
@@ -270,7 +270,7 @@ namespace PdmsTools
 		class DesignElement : public GenericItem
 		{
 		  public:
-			bool                      negative;
+			bool negative;
 			std::list<DesignElement*> nelements;
 
 			DesignElement()
@@ -298,9 +298,9 @@ namespace PdmsTools
 		class GroupElement : public GenericItem
 		{
 		  public:
-			Token                     level;
+			Token level;
 			std::list<DesignElement*> elements;
-			std::list<GroupElement*>  subhierarchy;
+			std::list<GroupElement*> subhierarchy;
 
 			explicit GroupElement(Token l);
 			~GroupElement() override;
@@ -317,10 +317,10 @@ namespace PdmsTools
 			{
 				return true;
 			}
-			bool         convertCoordinateSystem() override;
+			bool convertCoordinateSystem() override;
 			GenericItem* scan(const char* str) override;
-			bool         scan(Token t, std::vector<GenericItem*>& array) override;
-			Token        getType() const override
+			bool scan(Token t, std::vector<GenericItem*>& array) override;
+			Token getType() const override
 			{
 				return level;
 			}
@@ -351,7 +351,7 @@ namespace PdmsTools
 			// virtual Shape* toShape();
 
 			// reimplemented from GenericItem
-			bool  setValue(Token t, PointCoordinateType value) override;
+			bool setValue(Token t, PointCoordinateType value) override;
 			Token getType() const override
 			{
 				return PDMS_SCYLINDER;
@@ -378,7 +378,7 @@ namespace PdmsTools
 			// virtual Shape* toShape();
 
 			// reimplemented from GenericItem
-			bool  setValue(Token t, PointCoordinateType value) override;
+			bool setValue(Token t, PointCoordinateType value) override;
 			Token getType() const override
 			{
 				return PDMS_CTORUS;
@@ -400,7 +400,7 @@ namespace PdmsTools
 			}
 
 			// reimplemented from GenericItem
-			bool  setValue(Token t, PointCoordinateType value) override;
+			bool setValue(Token t, PointCoordinateType value) override;
 			Token getType() const override
 			{
 				return PDMS_RTORUS;
@@ -420,7 +420,7 @@ namespace PdmsTools
 			Dish();
 
 			// reimplemented from GenericItem
-			bool  setValue(Token t, PointCoordinateType value) override;
+			bool setValue(Token t, PointCoordinateType value) override;
 			Token getType() const override
 			{
 				return PDMS_DISH;
@@ -445,7 +445,7 @@ namespace PdmsTools
 			}
 
 			// reimplemented from GenericItem
-			bool  setValue(Token t, PointCoordinateType value) override;
+			bool setValue(Token t, PointCoordinateType value) override;
 			Token getType() const override
 			{
 				return PDMS_CONE;
@@ -463,7 +463,7 @@ namespace PdmsTools
 			Pyramid() = default;
 
 			// reimplemented from GenericItem
-			bool  setValue(Token t, PointCoordinateType value) override;
+			bool setValue(Token t, PointCoordinateType value) override;
 			Token getType() const override
 			{
 				return PDMS_PYRAMID;
@@ -486,7 +486,7 @@ namespace PdmsTools
 			}
 
 			// reimplemented from GenericItem
-			bool  setValue(Token t, PointCoordinateType value) override;
+			bool setValue(Token t, PointCoordinateType value) override;
 			Token getType() const override
 			{
 				return PDMS_SNOUT;
@@ -504,7 +504,7 @@ namespace PdmsTools
 			Box();
 
 			// reimplemented from GenericItem
-			bool  setValue(Token t, PointCoordinateType value) override;
+			bool setValue(Token t, PointCoordinateType value) override;
 			Token getType() const override
 			{
 				return negative ? PDMS_NBOX : PDMS_BOX;
@@ -556,8 +556,8 @@ namespace PdmsTools
 			}
 
 			// reimplemented from GenericItem
-			bool  push(GenericItem* i) override;
-			void  remove(GenericItem* i) override;
+			bool push(GenericItem* i) override;
+			void remove(GenericItem* i) override;
 			Token getType() const override
 			{
 				return PDMS_LOOP;
@@ -569,7 +569,7 @@ namespace PdmsTools
 		class Extrusion : public DesignElement
 		{
 		  public:
-			Loop*               loop;
+			Loop* loop;
 			PointCoordinateType height;
 
 			Extrusion()
@@ -658,7 +658,7 @@ namespace PdmsTools
 		{
 		  public:
 			PointCoordinateType value;
-			int                 valueChanges;
+			int valueChanges;
 
 			explicit NumericalValue(Token t)
 			    : Command(t)
@@ -666,16 +666,16 @@ namespace PdmsTools
 			    , valueChanges(0)
 			{
 			}
-			bool                        handle(PointCoordinateType numvalue) override;
-			bool                        isValid() const override;
+			bool handle(PointCoordinateType numvalue) override;
+			bool isValid() const override;
 			virtual PointCoordinateType getValue() const;
-			bool                        execute(PdmsObjects::GenericItem*& item) const override;
+			bool execute(PdmsObjects::GenericItem*& item) const override;
 		};
 
 		class DistanceValue : public NumericalValue
 		{
 		  public:
-			Token        unit;
+			Token unit;
 			static Token workingUnit;
 
 			explicit DistanceValue(Token t = PDMS_INVALID_TOKEN)
@@ -693,14 +693,14 @@ namespace PdmsTools
 				return NumericalValue::handle(numvalue);
 			}
 			PointCoordinateType getValueInWorkingUnit() const;
-			bool                execute(PdmsObjects::GenericItem*& item) const override;
+			bool execute(PdmsObjects::GenericItem*& item) const override;
 		};
 
 		class Reference : public Command
 		{
 		  public:
 			Token token;
-			char  refname[c_max_str_length];
+			char refname[c_max_str_length];
 
 			explicit Reference(Token t = PDMS_INVALID_TOKEN)
 			    : Command(t)
@@ -714,13 +714,13 @@ namespace PdmsTools
 			{
 				strcpy(refname, ref.refname);
 			}
-			Reference&   operator=(const Reference& ref);
-			bool         handle(Token t) override;
-			bool         handle(const char* str) override;
-			bool         isValid() const override;
+			Reference& operator=(const Reference& ref);
+			bool handle(Token t) override;
+			bool handle(const char* str) override;
+			bool isValid() const override;
 			virtual bool isNameReference() const;
 			virtual bool isTokenReference() const;
-			bool         execute(PdmsObjects::GenericItem*& item) const override;
+			bool execute(PdmsObjects::GenericItem*& item) const override;
 
 		  protected:
 			int isSet() const;
@@ -730,7 +730,7 @@ namespace PdmsTools
 		{
 		  public:
 			DistanceValue coords[3];
-			int           current;
+			int current;
 
 			explicit Coordinates(Token t = PDMS_INVALID_TOKEN)
 			    : Command(t)
@@ -741,15 +741,15 @@ namespace PdmsTools
 			bool handle(PointCoordinateType numvalue) override;
 			bool isValid() const override;
 			bool getVector(CCVector3& u) const;
-			int  getNbComponents(bool onlyset = false) const;
+			int getNbComponents(bool onlyset = false) const;
 		};
 
 		class Position : public Command
 		{
 		  public:
 			Coordinates position;
-			Reference   ref;
-			Command*    current;
+			Reference ref;
+			Command* current;
 
 			Position()
 			    : Command(PDMS_POSITION)
@@ -767,14 +767,14 @@ namespace PdmsTools
 		{
 		  public:
 			Coordinates orientation[3];
-			Reference   refs[3];
-			Command*    current;
-			int         component;
+			Reference refs[3];
+			Command* current;
+			int component;
 
 			Orientation()
 			    : Command(PDMS_ORIENTATION)
 			{
-				current   = nullptr;
+				current = nullptr;
 				component = -1;
 			}
 			bool handle(Token t) override;
@@ -785,7 +785,7 @@ namespace PdmsTools
 			bool execute(PdmsObjects::GenericItem*& item) const override;
 
 		  protected:
-			int         getNbComponents() const;
+			int getNbComponents() const;
 			static bool axisFromCoords(const Coordinates& coords, CCVector3& u);
 		};
 
@@ -819,7 +819,7 @@ namespace PdmsTools
 		class ElementCreation : public Command
 		{
 		  public:
-			Token                    elementType;
+			Token elementType;
 			std::vector<std::string> path;
 
 			ElementCreation()

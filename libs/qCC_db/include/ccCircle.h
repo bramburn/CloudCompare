@@ -95,9 +95,9 @@ class QCC_DB_LIB_API ccCircle : public ccPolyline
 	 * @param[in] resolution Number of segments.
 	 * @param[in] uniqueID Unique ID.
 	 */
-	explicit ccCircle(double   radius     = 0.0,
+	explicit ccCircle(double radius = 0.0,
 	                  unsigned resolution = 48,
-	                  unsigned uniqueID   = ccUniqueIDGenerator::InvalidUniqueID);
+	                  unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
 	/**
 	 * @brief Copy constructor.

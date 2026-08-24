@@ -40,7 +40,7 @@ class BundlerCommand : public ccCommandLineInterface::Command
   public:
 	/// Constructor
 	BundlerCommand();
-	
+
 	/// Destructor
 	virtual ~BundlerCommand()
 	{

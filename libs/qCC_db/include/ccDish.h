@@ -77,10 +77,10 @@ class QCC_DB_LIB_API ccDish : public ccGenericPrimitive
 	 */
 	ccDish(PointCoordinateType radius,
 	       PointCoordinateType height,
-	       PointCoordinateType radius2   = 0,
-	       const ccGLMatrix*   transMat  = nullptr,
-	       QString             name      = QString("Dish"),
-	       unsigned            precision = DEFAULT_DRAWING_PRECISION);
+	       PointCoordinateType radius2 = 0,
+	       const ccGLMatrix* transMat = nullptr,
+	       QString name = QString("Dish"),
+	       unsigned precision = DEFAULT_DRAWING_PRECISION);
 
 	/**
 	 * @brief Simplified constructor for ccHObject factory
@@ -108,10 +108,10 @@ class QCC_DB_LIB_API ccDish : public ccGenericPrimitive
 
   protected:
 	// ccGenericPrimitive
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	bool  buildUp() override;
+	bool buildUp() override;
 
 	//! Circular opening radius
 	PointCoordinateType m_baseRadius;

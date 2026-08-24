@@ -158,7 +158,7 @@ class LasIOFilter : public FileIOFilter
 		bool operator==(const FileInfo& other)
 		{
 			bool versionIsSame = version.minorVersion == other.version.minorVersion
-				&& version.pointFormat == other.version.pointFormat;
+			                     && version.pointFormat == other.version.pointFormat;
 			if (!versionIsSame)
 			{
 				return false;
@@ -196,5 +196,5 @@ class LasIOFilter : public FileIOFilter
 	//! Metadata for the last opened file (for round-trip)
 	std::unique_ptr<FileInfo> m_infoOfLastOpened;
 	//! Per-file open dialog
-	LasOpenDialog             m_openDialog{};
+	LasOpenDialog m_openDialog{};
 };

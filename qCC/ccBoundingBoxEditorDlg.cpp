@@ -35,7 +35,7 @@ static ccBBox s_lastBBox;
 
 // Left 'point type' combo box indexes
 static const int MinCornerIndex = 0;
-static const int CenterIndex    = 1;
+static const int CenterIndex = 1;
 static const int MaxCornerIndex = 2;
 
 // Helper
@@ -69,19 +69,19 @@ static void MakeSquare(ccBBox& box, int pivotType, int defaultDim = -1)
 		case 0: // min corner
 		{
 			CCVector3 A = box.minCorner();
-			box         = ccBBox(A, A + newW, box.isValid());
+			box = ccBBox(A, A + newW, box.isValid());
 		}
 		break;
 		case 1: // center
 		{
 			CCVector3 C = box.getCenter();
-			box         = ccBBox(C - newW / 2.0, C + newW / 2.0, box.isValid());
+			box = ccBBox(C - newW / 2.0, C + newW / 2.0, box.isValid());
 		}
 		break;
 		case 2: // max corner
 		{
 			CCVector3 B = box.maxCorner();
-			box         = ccBBox(B - newW, B, box.isValid());
+			box = ccBBox(B - newW, B, box.isValid());
 		}
 		break;
 		}
@@ -235,7 +235,7 @@ void ccBoundingBoxEditorDlg::setBaseBBox(const ccBBox& box, bool isMinimal /*=tr
 {
 	// set new default one
 	m_initBBox = m_baseBBox = box;
-	m_baseBoxIsMinimal      = isMinimal;
+	m_baseBoxIsMinimal = isMinimal;
 
 	defaultPushButton->setVisible(m_baseBBox.isValid());
 
@@ -510,7 +510,7 @@ void ccBoundingBoxEditorDlg::reflectChanges(int dummy)
 int ccBoundingBoxEditorDlg::computeBestDialogHeight(bool showBoxAxes, bool showRasterGridImage) const
 {
 	// we always keep space to display the grid
-	int height     = gridFrame->height();
+	int height = gridFrame->height();
 	int blockCount = 1;
 
 	// we always keep space to display the warning label
@@ -608,24 +608,24 @@ void ccBoundingBoxEditorDlg::onAxisValueChanged(double)
 	getBoxAxes(X, Y, Z);
 
 	QDoubleSpinBox* vecSpinBoxes[3] = {nullptr, nullptr, nullptr};
-	CCVector3d      N(0, 0, 0);
+	CCVector3d N(0, 0, 0);
 	if (oriXCheckBox->isChecked())
 	{
-		N               = Y.cross(Z);
+		N = Y.cross(Z);
 		vecSpinBoxes[0] = xOriXDoubleSpinBox;
 		vecSpinBoxes[1] = xOriYDoubleSpinBox;
 		vecSpinBoxes[2] = xOriZDoubleSpinBox;
 	}
 	else if (oriYCheckBox->isChecked())
 	{
-		N               = Z.cross(X);
+		N = Z.cross(X);
 		vecSpinBoxes[0] = yOriXDoubleSpinBox;
 		vecSpinBoxes[1] = yOriYDoubleSpinBox;
 		vecSpinBoxes[2] = yOriZDoubleSpinBox;
 	}
 	else if (oriZCheckBox->isChecked())
 	{
-		N               = X.cross(Y);
+		N = X.cross(Y);
 		vecSpinBoxes[0] = zOriXDoubleSpinBox;
 		vecSpinBoxes[1] = zOriYDoubleSpinBox;
 		vecSpinBoxes[2] = zOriZDoubleSpinBox;
@@ -654,12 +654,12 @@ void ccBoundingBoxEditorDlg::fromClipboardClicked()
 		QString clipText = clipboard->text();
 		if (!clipText.isEmpty())
 		{
-			bool       success = false;
-			ccGLMatrix matrix  = ccGLMatrix::FromString(clipText, success);
+			bool success = false;
+			ccGLMatrix matrix = ccGLMatrix::FromString(clipText, success);
 			if (success)
 			{
 				// set center
-				CCVector3 C     = m_currentBBox.getCenter();
+				CCVector3 C = m_currentBBox.getCenter();
 				CCVector3 delta = matrix.getTranslationAsVec3D() - C;
 				m_currentBBox += delta;
 				reflectChanges();

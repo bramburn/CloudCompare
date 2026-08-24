@@ -46,6 +46,7 @@
  */
 
 #include "qCC_glWindow.h"
+
 #include <QString>
 #include <ccColorTypes.h>
 #include <ccLog.h>
@@ -150,9 +151,9 @@ class CCGLWINDOW_LIB_API ccGui
 		//! Octree auto-compute for picking behavior
 		enum ComputeOctreeForPicking
 		{
-			ALWAYS    = 0,  //!< Always compute octree before picking
+			ALWAYS = 0,   //!< Always compute octree before picking
 			ASK_USER = 1, //!< Prompt user if octree is missing
-			NEVER     = 2  //!< Never compute (use brute force)
+			NEVER = 2     //!< Never compute (use brute force)
 		};
 		//! Auto-compute octree when picking (for large clouds)
 		ComputeOctreeForPicking autoComputeOctree;

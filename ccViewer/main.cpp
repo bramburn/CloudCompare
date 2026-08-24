@@ -147,10 +147,10 @@ int main(int argc, char* argv[])
 	{
 		// parse arguments
 		QStringList filenames;
-		int         i = 1;
+		int i = 1;
 		while (i < argc)
 		{
-			QString argument      = argumentsLocal8Bit[i++];
+			QString argument = argumentsLocal8Bit[i++];
 			QString upperArgument = argument.toUpper();
 
 			// Argument '-WIN X Y W H' (to set window size and position)
@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
 				if (i + 3 < argc)
 				{
 					bool converionOk;
-					int  x = argumentsLocal8Bit[i].toInt(&converionOk);
+					int x = argumentsLocal8Bit[i].toInt(&converionOk);
 					ok &= converionOk;
 					int y = argumentsLocal8Bit[i + 1].toInt(&converionOk);
 					ok &= converionOk;

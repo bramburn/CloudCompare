@@ -87,7 +87,10 @@ class QCC_DB_LIB_API ccViewportParameters : public ccSerializableObject
 	ccViewportParameters(const ccViewportParameters& params);
 
 	// from ccSerializableObject
-	bool isSerializable() const override { return true; }
+	bool isSerializable() const override
+	{
+		return true;
+	}
 
 	/**
 	 * @brief Serialize to binary file
@@ -144,7 +147,10 @@ class QCC_DB_LIB_API ccViewportParameters : public ccSerializableObject
 	 * @brief Get the pivot point
 	 * @return Current pivot point in world coordinates
 	 */
-	const CCVector3d& getPivotPoint() const { return pivotPoint; }
+	const CCVector3d& getPivotPoint() const
+	{
+		return pivotPoint;
+	}
 
 	/**
 	 * @brief Set the camera center position
@@ -161,7 +167,10 @@ class QCC_DB_LIB_API ccViewportParameters : public ccSerializableObject
 	 * @brief Get the camera center
 	 * @return Current camera center in world coordinates
 	 */
-	const CCVector3d& getCameraCenter() const { return cameraCenter; }
+	const CCVector3d& getCameraCenter() const
+	{
+		return cameraCenter;
+	}
 
 	/**
 	 * @brief Set the focal distance
@@ -177,7 +186,10 @@ class QCC_DB_LIB_API ccViewportParameters : public ccSerializableObject
 	 * @brief Get the focal distance
 	 * @return Current focal distance
 	 */
-	double getFocalDistance() const { return focalDistance; }
+	double getFocalDistance() const
+	{
+		return focalDistance;
+	}
 
 	/**
 	 * @brief Compute the OpenGL view matrix
@@ -332,7 +344,10 @@ class QCC_DB_LIB_API ccViewportParameters : public ccSerializableObject
 	 *
 	 * @return Reference to cameraCenter
 	 */
-	CCVector3d& cameraCenterDirect() { return cameraCenter; }
+	CCVector3d& cameraCenterDirect()
+	{
+		return cameraCenter;
+	}
 
 	/**
 	 * @brief Direct write access to focalDistance (for tests)
@@ -342,5 +357,8 @@ class QCC_DB_LIB_API ccViewportParameters : public ccSerializableObject
 	 *
 	 * @return Reference to focalDistance
 	 */
-	double& focalDistanceDirect() { return focalDistance; }
+	double& focalDistanceDirect()
+	{
+		return focalDistance;
+	}
 };

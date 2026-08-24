@@ -150,7 +150,7 @@ ccTranslationManager::LanguageList ccTranslationManager::availableLanguages(cons
 {
 	QDir dir(pathToTranslationFiles);
 
-	const QString     filter    = QStringLiteral("%1_*.qm").arg(appName);
+	const QString filter = QStringLiteral("%1_*.qm").arg(appName);
 	const QStringList fileNames = dir.entryList({filter});
 
 	// e.g. File name is "CloudCompare_es_AR.qm"

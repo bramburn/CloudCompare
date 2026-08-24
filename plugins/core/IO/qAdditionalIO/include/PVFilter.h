@@ -46,7 +46,7 @@ class PVFilter : public FileIOFilter
 
 	/// Check if can save
 	bool canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) const override;
-	
+
 	/// Save file
 	CC_FILE_ERROR saveToFile(ccHObject* entity, const QString& filename, const SaveParameters& parameters) override;
 };

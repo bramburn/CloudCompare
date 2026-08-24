@@ -61,7 +61,7 @@ bool ObjFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) con
 {
 	if (type == CC_TYPES::MESH || type == CC_TYPES::POINT_CLOUD)
 	{
-		multiple  = false;
+		multiple = false;
 		exclusive = true;
 		return true;
 	}
@@ -153,8 +153,8 @@ CC_FILE_ERROR ObjFilter::saveToFile(ccHObject* entity, const QString& filename, 
 
 	for (unsigned i = 0; i < nbPoints; ++i)
 	{
-		const CCVector3* P       = vertices->getPoint(i);
-		CCVector3d       Pglobal = vertices->toGlobal3d<PointCoordinateType>(*P);
+		const CCVector3* P = vertices->getPoint(i);
+		CCVector3d Pglobal = vertices->toGlobal3d<PointCoordinateType>(*P);
 		stream << "v " << Pglobal.x << " " << Pglobal.y << " " << Pglobal.z << Qt::endl;
 		if (file.error() != QFile::NoError)
 			return CC_FERR_WRITING;
@@ -163,9 +163,9 @@ CC_FILE_ERROR ObjFilter::saveToFile(ccHObject* entity, const QString& filename, 
 	}
 
 	// normals
-	bool withTriNormals  = (mesh ? mesh->hasTriNormals() : false);
+	bool withTriNormals = (mesh ? mesh->hasTriNormals() : false);
 	bool withVertNormals = vertices->hasNormals();
-	bool withNormals     = withTriNormals || withVertNormals;
+	bool withNormals = withTriNormals || withVertNormals;
 	if (withNormals)
 	{
 		// per-triangle normals
@@ -239,8 +239,8 @@ CC_FILE_ERROR ObjFilter::saveToFile(ccHObject* entity, const QString& filename, 
 	// materials
 	if (mesh)
 	{
-		const ccMaterialSet* materials     = mesh->getMaterialSet();
-		bool                 withMaterials = (materials && mesh->hasMaterials());
+		const ccMaterialSet* materials = mesh->getMaterialSet();
+		bool withMaterials = (materials && mesh->hasMaterials());
 		if (withMaterials)
 		{
 			// reset save dialog
@@ -253,7 +253,7 @@ CC_FILE_ERROR ObjFilter::saveToFile(ccHObject* entity, const QString& filename, 
 
 			// save mtl file
 			QStringList errors;
-			QString     baseName = QFileInfo(filename).baseName();
+			QString baseName = QFileInfo(filename).baseName();
 			if (materials->saveAsMTL(QFileInfo(filename).absolutePath(), baseName, errors))
 			{
 				stream << "mtllib " << baseName << ".mtl" << Qt::endl;
@@ -264,7 +264,7 @@ CC_FILE_ERROR ObjFilter::saveToFile(ccHObject* entity, const QString& filename, 
 			}
 			else
 			{
-				materials     = nullptr;
+				materials = nullptr;
 				withMaterials = false;
 			}
 
@@ -360,9 +360,9 @@ CC_FILE_ERROR ObjFilter::saveToFile(ccHObject* entity, const QString& filename, 
 			st->placeIteratorAtBeginning();
 
 			int lastMtlIndex = -1;
-			int t1           = -1;
-			int t2           = -1;
-			int t3           = -1;
+			int t1 = -1;
+			int t2 = -1;
+			int t3 = -1;
 
 			for (unsigned i = 0; i < triNum; ++i)
 			{
@@ -554,13 +554,13 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 	CCVector3d Pshift(0, 0, 0);
 
 	// vertices
-	ccPointCloud* vertices   = new ccPointCloud("vertices");
-	int           pointsRead = 0;
+	ccPointCloud* vertices = new ccPointCloud("vertices");
+	int pointsRead = 0;
 
 	// facets
-	unsigned int facesRead      = 0;
+	unsigned int facesRead = 0;
 	unsigned int totalFacesRead = 0;
-	int          maxVertexIndex = -1;
+	int maxVertexIndex = -1;
 
 	// base mesh
 	ccMesh* baseMesh = new ccMesh(vertices);
@@ -576,23 +576,23 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 	std::vector<std::pair<unsigned, QString>> groups;
 
 	// materials
-	ccMaterialSet* materials              = nullptr;
-	bool           hasMaterial            = false;
-	int            currentMaterial        = -1;
-	bool           currentMaterialDefined = false;
-	bool           materialsLoadFailed    = true;
+	ccMaterialSet* materials = nullptr;
+	bool hasMaterial = false;
+	int currentMaterial = -1;
+	bool currentMaterialDefined = false;
+	bool materialsLoadFailed = true;
 
 	// texture coordinates
-	TextureCoordsContainer* texCoords        = nullptr;
-	bool                    hasTexCoords     = false;
-	int                     texCoordsRead    = 0;
-	int                     maxTexCoordIndex = -1;
+	TextureCoordsContainer* texCoords = nullptr;
+	bool hasTexCoords = false;
+	int texCoordsRead = 0;
+	int maxTexCoordIndex = -1;
 
 	// normals
-	NormsIndexesTableType* normals         = nullptr;
-	int                    normsRead       = 0;
-	bool                   normalsPerFacet = false;
-	int                    maxTriNormIndex = -1;
+	NormsIndexesTableType* normals = nullptr;
+	int normsRead = 0;
+	bool normalsPerFacet = false;
+	int maxTriNormIndex = -1;
 
 	// progress dialog
 	QScopedPointer<ccProgressDialog> pDlg(nullptr);
@@ -609,10 +609,10 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 	// common warnings that can appear multiple time (we avoid to send too many messages to the console!)
 	enum OBJ_WARNINGS
 	{
-		INVALID_NORMALS   = 0,
-		INVALID_INDEX     = 1,
+		INVALID_NORMALS = 0,
+		INVALID_INDEX = 1,
 		NOT_ENOUGH_MEMORY = 2,
-		INVALID_LINE      = 3,
+		INVALID_LINE = 3,
 		CANCELLED_BY_USER = 4,
 	};
 	bool objWarnings[5]{false, false, false, false, false};
@@ -620,9 +620,9 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 
 	try
 	{
-		unsigned lineCount   = 0;
-		unsigned polyCount   = 0;
-		QString  currentLine = stream.readLine();
+		unsigned lineCount = 0;
+		unsigned polyCount = 0;
+		QString currentLine = stream.readLine();
 
 		while (!currentLine.isNull())
 		{
@@ -631,7 +631,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 			{
 				if (pDlg->wasCanceled())
 				{
-					error                          = true;
+					error = true;
 					objWarnings[CANCELLED_BY_USER] = true;
 					break;
 				}
@@ -649,7 +649,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 				{
 					if (pDlg->wasCanceled())
 					{
-						error                          = true;
+						error = true;
 						objWarnings[CANCELLED_BY_USER] = true;
 						break;
 					}
@@ -676,7 +676,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 					if (!vertices->reserve(vertices->capacity() + ccChunk::SIZE))
 					{
 						objWarnings[NOT_ENOUGH_MEMORY] = true;
-						error                          = true;
+						error = true;
 						break;
 					}
 				}
@@ -685,7 +685,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 				if (tokens.size() < 4)
 				{
 					objWarnings[INVALID_LINE] = true;
-					error                     = true;
+					error = true;
 					break;
 				}
 
@@ -724,7 +724,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 					if (!texCoords->reserveSafe(texCoords->capacity() + ccChunk::SIZE))
 					{
 						objWarnings[NOT_ENOUGH_MEMORY] = true;
-						error                          = true;
+						error = true;
 						break;
 					}
 				}
@@ -733,7 +733,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 				if (tokens.size() < 2)
 				{
 					objWarnings[INVALID_LINE] = true;
-					error                     = true;
+					error = true;
 					break;
 				}
 
@@ -761,7 +761,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 					if (!normals->reserveSafe(normals->capacity() + ccChunk::SIZE))
 					{
 						objWarnings[NOT_ENOUGH_MEMORY] = true;
-						error                          = true;
+						error = true;
 						break;
 					}
 				}
@@ -770,7 +770,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 				if (tokens.size() < 4)
 				{
 					objWarnings[INVALID_LINE] = true;
-					error                     = true;
+					error = true;
 					break;
 				}
 
@@ -814,7 +814,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 				if (tokens.size() < 4)
 				{
 					objWarnings[INVALID_LINE] = true;
-					currentLine               = stream.readLine();
+					currentLine = stream.readLine();
 					continue;
 					// error = true;
 					// break;
@@ -830,7 +830,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 						if (vertexTokens.empty() || vertexTokens[0].isEmpty())
 						{
 							objWarnings[INVALID_LINE] = true;
-							error                     = true;
+							error = true;
 							break;
 						}
 						else
@@ -871,7 +871,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 						if (!baseMesh->reservePerTriangleTexCoordIndexes())
 						{
 							objWarnings[NOT_ENOUGH_MEMORY] = true;
-							error                          = true;
+							error = true;
 							break;
 						}
 						for (unsigned int i = 0; i < totalFacesRead; ++i)
@@ -887,7 +887,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 						if (!baseMesh->reservePerTriangleNormalIndexes())
 						{
 							objWarnings[NOT_ENOUGH_MEMORY] = true;
-							error                          = true;
+							error = true;
 							break;
 						}
 						for (unsigned int i = 0; i < totalFacesRead; ++i)
@@ -904,7 +904,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 						if (!vertex.updatePointIndex(pointsRead))
 						{
 							objWarnings[INVALID_INDEX] = true;
-							error                      = true;
+							error = true;
 							break;
 						}
 						if (vertex.vIndex > maxVertexIndex)
@@ -916,7 +916,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 						if (!vertex.updateTexCoordIndex(texCoordsRead))
 						{
 							objWarnings[INVALID_INDEX] = true;
-							error                      = true;
+							error = true;
 							break;
 						}
 						if (vertex.tcIndex > maxTexCoordIndex)
@@ -929,7 +929,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 						if (!vertex.updateNormalIndex(normsRead))
 						{
 							objWarnings[INVALID_INDEX] = true;
-							error                      = true;
+							error = true;
 							break;
 						}
 						if (vertex.nIndex > maxTriNormIndex)
@@ -945,7 +945,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 						if (!baseMesh->reservePerTriangleMtlIndexes())
 						{
 							objWarnings[NOT_ENOUGH_MEMORY] = true;
-							error                          = true;
+							error = true;
 							break;
 						}
 						for (unsigned int i = 0; i < totalFacesRead; ++i)
@@ -994,7 +994,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 								if (!baseMesh->reserve(baseMesh->size() + std::max(triCount, 4096u)))
 								{
 									objWarnings[NOT_ENOUGH_MEMORY] = true;
-									error                          = true;
+									error = true;
 									break;
 								}
 							}
@@ -1029,8 +1029,8 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 							for (unsigned i = 0; i < triCount; ++i, _triIndexes += 3)
 							{
 								const facetElement& f1 = currentFace[_triIndexes[0]];
-								facetElement        f2 = currentFace[_triIndexes[1]];
-								facetElement        f3 = currentFace[_triIndexes[2]];
+								facetElement f2 = currentFace[_triIndexes[1]];
+								facetElement f3 = currentFace[_triIndexes[2]];
 
 								if (flip)
 									std::swap(f2, f3);
@@ -1078,7 +1078,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 							if (!baseMesh->reserve(baseMesh->size() + 4096))
 							{
 								objWarnings[NOT_ENOUGH_MEMORY] = true;
-								error                          = true;
+								error = true;
 								break;
 							}
 						}
@@ -1106,7 +1106,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 				if (tokens.size() < 3)
 				{
 					objWarnings[INVALID_LINE] = true;
-					currentLine               = stream.readLine();
+					currentLine = stream.readLine();
 					continue;
 				}
 
@@ -1117,7 +1117,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 					// not enough memory
 					objWarnings[NOT_ENOUGH_MEMORY] = true;
 					delete polyline;
-					polyline    = nullptr;
+					polyline = nullptr;
 					currentLine = stream.readLine();
 					continue;
 				}
@@ -1129,7 +1129,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 					if (vertexTokens.empty() || vertexTokens[0].isEmpty())
 					{
 						objWarnings[INVALID_LINE] = true;
-						error                     = true;
+						error = true;
 						break;
 					}
 					else
@@ -1138,7 +1138,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 						if (!UpdatePointIndex(index, pointsRead))
 						{
 							objWarnings[INVALID_INDEX] = true;
-							error                      = true;
+							error = true;
 							break;
 						}
 
@@ -1166,7 +1166,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 					QString mtlName = currentLine.mid(7).trimmed();
 					// DGM: in case there's space characters in the material name, we must read it again from the original line buffer
 					// QString mtlName = (tokens.size() > 1 && !tokens[1].isEmpty() ? tokens[1] : "");
-					currentMaterial        = (!mtlName.isEmpty() ? materials->findMaterialByName(mtlName) : -1);
+					currentMaterial = (!mtlName.isEmpty() ? materials->findMaterialByName(mtlName) : -1);
 					currentMaterialDefined = true;
 				}
 			}
@@ -1204,7 +1204,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 					size_t oldSize = materials->size();
 
 					QStringList errors;
-					QString     mtlPath = QFileInfo(filename).absolutePath();
+					QString mtlPath = QFileInfo(filename).absolutePath();
 					if (ccMaterialSet::ParseMTL(mtlPath, mtlFilename, *materials, errors))
 					{
 						ccLog::Print("[OBJ] %zu materials loaded", materials->size() - oldSize);
@@ -1224,7 +1224,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 					if (materials->empty())
 					{
 						materials->release();
-						materials           = nullptr;
+						materials = nullptr;
 						materialsLoadFailed = true;
 					}
 				}
@@ -1245,7 +1245,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 	{
 		// not enough memory
 		objWarnings[NOT_ENOUGH_MEMORY] = true;
-		error                          = true;
+		error = true;
 	}
 
 	file.close();
@@ -1357,9 +1357,9 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 			{
 				for (size_t i = 0; i < groups.size(); ++i)
 				{
-					const QString& groupName  = groups[i].second;
-					unsigned       startIndex = groups[i].first;
-					unsigned       endIndex   = (i + 1 == groups.size() ? baseMesh->size() : groups[i + 1].first);
+					const QString& groupName = groups[i].second;
+					unsigned startIndex = groups[i].first;
+					unsigned endIndex = (i + 1 == groups.size() ? baseMesh->size() : groups[i + 1].first);
 
 					if (startIndex == endIndex)
 					{
@@ -1382,7 +1382,7 @@ CC_FILE_ERROR ObjFilter::loadFile(const QString& filename, ccHObject& container,
 					else
 					{
 						delete subTri;
-						subTri                         = nullptr;
+						subTri = nullptr;
 						objWarnings[NOT_ENOUGH_MEMORY] = true;
 					}
 				}

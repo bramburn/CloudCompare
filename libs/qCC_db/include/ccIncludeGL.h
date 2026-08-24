@@ -174,8 +174,8 @@ class ccGL
 			matrix[6] = 0.0;
 			matrix[7] = 0.0;
 
-			matrix[8]  = (right + left) / dX;
-			matrix[9]  = (top + bottom) / dY;
+			matrix[8] = (right + left) / dX;
+			matrix[9] = (top + bottom) / dY;
 			matrix[10] = -(zfar + znear) / dZ;
 			matrix[11] = -1.0;
 
@@ -191,9 +191,9 @@ class ccGL
 	static ccGLMatrixd Ortho(double left, double right, double bottom, double top, double nearVal, double farVal)
 	{
 		ccGLMatrixd matrix;
-		double      dx = (right - left);
-		double      dy = (top - bottom);
-		double      dz = (farVal - nearVal);
+		double dx = (right - left);
+		double dy = (top - bottom);
+		double dz = (farVal - nearVal);
 		if (dx != 0 && dy != 0 && dz != 0)
 		{
 			double* mat = matrix.data();
@@ -208,8 +208,8 @@ class ccGL
 			mat[6] = 0;
 			mat[7] = 0;
 
-			mat[8]  = 0;
-			mat[9]  = 0;
+			mat[8] = 0;
+			mat[9] = 0;
 			mat[10] = -2.0 / dz;
 			mat[11] = 0;
 
@@ -233,18 +233,18 @@ class ccGL
 		if (w != 0 && h != 0 && d != 0)
 		{
 			double* mat = matrix.data();
-			mat[0]      = 1.0 / w;
-			mat[1]      = 0.0;
-			mat[2]      = 0.0;
-			mat[3]      = 0.0;
+			mat[0] = 1.0 / w;
+			mat[1] = 0.0;
+			mat[2] = 0.0;
+			mat[3] = 0.0;
 
 			mat[4] = 0.0;
 			mat[5] = 1.0 / h;
 			mat[6] = 0.0;
 			mat[7] = 0.0;
 
-			mat[8]  = 0.0;
-			mat[9]  = 0.0;
+			mat[8] = 0.0;
+			mat[9] = 0.0;
 			mat[10] = -1.0 / d;
 			mat[11] = 0.0;
 
@@ -263,13 +263,13 @@ class ccGL
 
 	template <typename iType, typename oType>
 	static bool Project(const Vector3Tpl<iType>& input3D,
-	                    const oType*             modelview,
-	                    const oType*             projection,
-	                    const int*               viewport,
-	                    Vector3Tpl<oType>&       output2D,
-	                    bool*                    inFrustum         = nullptr,
-	                    const double*            nearClippingDepth = nullptr,
-	                    const double*            farClippingDepth  = nullptr)
+	                    const oType* modelview,
+	                    const oType* projection,
+	                    const int* viewport,
+	                    Vector3Tpl<oType>& output2D,
+	                    bool* inFrustum = nullptr,
+	                    const double* nearClippingDepth = nullptr,
+	                    const double* farClippingDepth = nullptr)
 	{
 		// Modelview transform
 		Tuple4Tpl<oType> Pm;
@@ -337,14 +337,14 @@ class ccGL
 
 		// set inverse of rotation matrix: Mr
 		ccGLMatrixd mr;
-		mr.data()[0]  = left.x;
-		mr.data()[4]  = left.y;
-		mr.data()[8]  = left.z;
-		mr.data()[1]  = upFixed.x;
-		mr.data()[5]  = upFixed.y;
-		mr.data()[9]  = upFixed.z;
-		mr.data()[2]  = forward.x;
-		mr.data()[6]  = forward.y;
+		mr.data()[0] = left.x;
+		mr.data()[4] = left.y;
+		mr.data()[8] = left.z;
+		mr.data()[1] = upFixed.x;
+		mr.data()[5] = upFixed.y;
+		mr.data()[9] = upFixed.z;
+		mr.data()[2] = forward.x;
+		mr.data()[6] = forward.y;
 		mr.data()[10] = forward.z;
 		mr.data()[15] = 1.0f;
 
@@ -378,8 +378,8 @@ class ccGL
 	template <typename Type>
 	static bool InvertMatrix(const Type* m, Type* out)
 	{
-		Type  wtmp[4][8];
-		Type  m0, m1, m2, m3, s;
+		Type wtmp[4][8];
+		Type m0, m1, m2, m3, s;
 		Type *r0, *r1, *r2, *r3;
 		r0 = wtmp[0], r1 = wtmp[1], r2 = wtmp[2], r3 = wtmp[3];
 
@@ -389,23 +389,23 @@ class ccGL
 		r0[3] = MAT(m, 0, 3);
 		r0[4] = 1.0;
 		r0[5] = r0[6] = r0[7] = 0.0;
-		r1[0]                 = MAT(m, 1, 0);
-		r1[1]                 = MAT(m, 1, 1);
-		r1[2]                 = MAT(m, 1, 2);
-		r1[3]                 = MAT(m, 1, 3);
-		r1[5]                 = 1.0;
+		r1[0] = MAT(m, 1, 0);
+		r1[1] = MAT(m, 1, 1);
+		r1[2] = MAT(m, 1, 2);
+		r1[3] = MAT(m, 1, 3);
+		r1[5] = 1.0;
 		r1[4] = r1[6] = r1[7] = 0.0;
-		r2[0]                 = MAT(m, 2, 0);
-		r2[1]                 = MAT(m, 2, 1);
-		r2[2]                 = MAT(m, 2, 2);
-		r2[3]                 = MAT(m, 2, 3);
-		r2[6]                 = 1.0;
+		r2[0] = MAT(m, 2, 0);
+		r2[1] = MAT(m, 2, 1);
+		r2[2] = MAT(m, 2, 2);
+		r2[3] = MAT(m, 2, 3);
+		r2[6] = 1.0;
 		r2[4] = r2[5] = r2[7] = 0.0;
-		r3[0]                 = MAT(m, 3, 0);
-		r3[1]                 = MAT(m, 3, 1);
-		r3[2]                 = MAT(m, 3, 2);
-		r3[3]                 = MAT(m, 3, 3);
-		r3[7]                 = 1.0;
+		r3[0] = MAT(m, 3, 0);
+		r3[1] = MAT(m, 3, 1);
+		r3[2] = MAT(m, 3, 2);
+		r3[3] = MAT(m, 3, 3);
+		r3[7] = 1.0;
 		r3[4] = r3[5] = r3[6] = 0.0;
 
 		// choose pivot - or die
@@ -422,7 +422,7 @@ class ccGL
 		m1 = r1[0] / r0[0];
 		m2 = r2[0] / r0[0];
 		m3 = r3[0] / r0[0];
-		s  = r0[1];
+		s = r0[1];
 		r1[1] -= m1 * s;
 		r2[1] -= m2 * s;
 		r3[1] -= m3 * s;
@@ -526,13 +526,13 @@ class ccGL
 		r3[5] *= s;
 		r3[6] *= s;
 		r3[7] *= s;
-		m2    = r2[3]; // now back substitute row 2
-		s     = 1.0 / r2[2];
+		m2 = r2[3]; // now back substitute row 2
+		s = 1.0 / r2[2];
 		r2[4] = s * (r2[4] - r3[4] * m2);
 		r2[5] = s * (r2[5] - r3[5] * m2);
 		r2[6] = s * (r2[6] - r3[6] * m2);
 		r2[7] = s * (r2[7] - r3[7] * m2);
-		m1    = r1[3];
+		m1 = r1[3];
 		r1[4] -= r3[4] * m1;
 		r1[5] -= r3[5] * m1;
 		r1[6] -= r3[6] * m1;
@@ -542,19 +542,19 @@ class ccGL
 		r0[5] -= r3[5] * m0;
 		r0[6] -= r3[6] * m0;
 		r0[7] -= r3[7] * m0;
-		m1    = r1[2]; // now back substitute row 1
-		s     = 1.0 / r1[1];
+		m1 = r1[2]; // now back substitute row 1
+		s = 1.0 / r1[1];
 		r1[4] = s * (r1[4] - r2[4] * m1);
 		r1[5] = s * (r1[5] - r2[5] * m1);
 		r1[6] = s * (r1[6] - r2[6] * m1);
 		r1[7] = s * (r1[7] - r2[7] * m1);
-		m0    = r0[2];
+		m0 = r0[2];
 		r0[4] -= r2[4] * m0;
 		r0[5] -= r2[5] * m0;
 		r0[6] -= r2[6] * m0;
 		r0[7] -= r2[7] * m0;
-		m0    = r0[1]; // now back substitute row 0
-		s     = 1.0 / r0[0];
+		m0 = r0[1]; // now back substitute row 0
+		s = 1.0 / r0[0];
 		r0[4] = s * (r0[4] - r1[4] * m0);
 		r0[5] = s * (r0[5] - r1[5] * m0);
 		r0[6] = s * (r0[6] - r1[6] * m0);

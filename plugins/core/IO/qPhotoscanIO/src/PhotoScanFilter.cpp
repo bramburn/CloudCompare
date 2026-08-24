@@ -78,8 +78,8 @@ struct CameraDesc
 	}
 
 	ccGLMatrix trans;
-	QString    imageFilename;
-	int        id, sensorId;
+	QString imageFilename;
+	int id, sensorId;
 };
 
 struct CloudDesc
@@ -145,9 +145,9 @@ bool DecodeRotation(const QString& rotationValues, ccGLMatrixTpl<T>& output)
 	T* m = output.data();
 	for (int i = 0; i < 9; ++i)
 	{
-		int  col         = (i / 3);
-		int  row         = (i % 3);
-		bool ok          = true;
+		int col = (i / 3);
+		int row = (i % 3);
+		bool ok = true;
 		m[col * 4 + row] = static_cast<T>(tokens[i].toDouble(&ok));
 		if (!ok)
 		{
@@ -173,7 +173,7 @@ bool DecodeTransformation(const QString& transformationValues, ccGLMatrixTpl<T>&
 	for (int i = 0; i < 16; ++i)
 	{
 		bool ok = true;
-		m[i]    = static_cast<T>(tokens[i].toDouble(&ok));
+		m[i] = static_cast<T>(tokens[i].toDouble(&ok));
 		if (!ok)
 		{
 			// invalid input string
@@ -213,9 +213,9 @@ static ccCameraSensor* DecodeSensor(QXmlStreamReader& stream, int& sensorId)
 	}
 	sensorId = sensorAttributes.value("id").toInt();
 
-	ccCameraSensor*                     sensor = nullptr;
+	ccCameraSensor* sensor = nullptr;
 	ccCameraSensor::IntrinsicParameters params;
-	bool                                hasPixelSize = false;
+	bool hasPixelSize = false;
 
 	while (stream.readNextStartElement())
 	{
@@ -233,17 +233,17 @@ static ccCameraSensor* DecodeSensor(QXmlStreamReader& stream, int& sensorId)
 			else if (stream.attributes().value("name") == QStringLiteral("pixel_height"))
 			{
 				params.pixelSize_mm[1] = stream.attributes().value("value").toDouble();
-				hasPixelSize           = true;
+				hasPixelSize = true;
 			}
 			stream.skipCurrentElement();
 		}
 		else if (stream.name() == QStringLiteral("calibration") && stream.attributes().value("type") == QStringLiteral("frame"))
 		{
 			ccCameraSensor::ExtendedRadialDistortionParameters distParams;
-			bool                                               hasDistortion   = false;
-			bool                                               hasResolution   = false;
-			bool                                               hasVertFocal    = false;
-			bool                                               hasCentralPoint = false;
+			bool hasDistortion = false;
+			bool hasResolution = false;
+			bool hasVertFocal = false;
+			bool hasCentralPoint = false;
 			while (stream.readNextStartElement())
 			{
 #ifdef _DEBUG
@@ -252,13 +252,13 @@ static ccCameraSensor* DecodeSensor(QXmlStreamReader& stream, int& sensorId)
 
 				if (stream.name() == QStringLiteral("resolution"))
 				{
-					int width  = stream.attributes().value("width").toInt();
+					int width = stream.attributes().value("width").toInt();
 					int height = stream.attributes().value("height").toInt();
 					if (width > 0 && height > 0)
 					{
-						params.arrayWidth  = width;
+						params.arrayWidth = width;
 						params.arrayHeight = height;
-						hasResolution      = true;
+						hasResolution = true;
 					}
 					stream.skipCurrentElement();
 				}
@@ -270,17 +270,17 @@ static ccCameraSensor* DecodeSensor(QXmlStreamReader& stream, int& sensorId)
 				else if (stream.name() == QStringLiteral("fy"))
 				{
 					params.vertFocal_pix = stream.readElementText().toDouble();
-					hasVertFocal         = true;
+					hasVertFocal = true;
 				}
 				else if (stream.name() == QStringLiteral("cx"))
 				{
 					params.principal_point[0] = stream.readElementText().toDouble();
-					hasCentralPoint           = true;
+					hasCentralPoint = true;
 				}
 				else if (stream.name() == QStringLiteral("cy"))
 				{
 					params.principal_point[1] = stream.readElementText().toDouble();
-					hasCentralPoint           = true;
+					hasCentralPoint = true;
 				}
 				else if (stream.name() == QStringLiteral("k1"))
 				{
@@ -353,8 +353,8 @@ static bool DecodeCamera(QXmlStreamReader& stream, CameraDesc& camera)
 		return false;
 	}
 
-	camera.id            = cameraAttributes.value("id").toInt();
-	camera.sensorId      = cameraAttributes.value("sensor_id").toInt();
+	camera.id = cameraAttributes.value("id").toInt();
+	camera.sensorId = cameraAttributes.value("sensor_id").toInt();
 	camera.imageFilename = cameraAttributes.value("label").toString();
 
 	while (stream.readNextStartElement())
@@ -406,9 +406,9 @@ static QString CreateTempFile(QuaZip& zip, QString zipFilename)
 		return QString();
 	}
 
-	QDir    tempDir      = QDir::temp();
+	QDir tempDir = QDir::temp();
 	QString tempFilename = tempDir.absoluteFilePath(zipFilename);
-	QFile   tempFile(tempFilename);
+	QFile tempFile(tempFilename);
 	if (!tempFile.open(QFile::WriteOnly))
 	{
 		ccLog::Warning(QString("[Photoscan] Failed to create temp file '%1'").arg(tempFilename));
@@ -431,8 +431,8 @@ PhotoScanFilter::PhotoScanFilter()
 {
 }
 
-CC_FILE_ERROR PhotoScanFilter::loadFile(const QString&  filename,
-                                        ccHObject&      container,
+CC_FILE_ERROR PhotoScanFilter::loadFile(const QString& filename,
+                                        ccHObject& container,
                                         LoadParameters& parameters)
 {
 	QuaZip zip(filename);
@@ -486,11 +486,11 @@ CC_FILE_ERROR PhotoScanFilter::loadFile(const QString&  filename,
 	sections.push_back(DOCUMENT);
 
 	QMap<int, ccCameraSensor*> sensors;
-	QMap<int, CameraDesc>      cameras;
-	QList<CloudDesc>           clouds;
-	QList<MeshDesc>            meshes;
-	ccGLMatrixd                globalTransform;
-	bool                       hasGlobalTransform = false;
+	QMap<int, CameraDesc> cameras;
+	QList<CloudDesc> clouds;
+	QList<MeshDesc> meshes;
+	ccGLMatrixd globalTransform;
+	bool hasGlobalTransform = false;
 
 	while (true)
 	{
@@ -581,8 +581,8 @@ CC_FILE_ERROR PhotoScanFilter::loadFile(const QString&  filename,
 		case SENSORS:
 			if (stream.name() == QStringLiteral("sensor"))
 			{
-				int             sensorId = -1;
-				ccCameraSensor* sensor   = DecodeSensor(stream, sensorId);
+				int sensorId = -1;
+				ccCameraSensor* sensor = DecodeSensor(stream, sensorId);
 				if (sensor)
 				{
 					assert(!sensors.contains(sensorId));
@@ -641,7 +641,7 @@ CC_FILE_ERROR PhotoScanFilter::loadFile(const QString&  filename,
 						{
 							CloudDesc desc;
 							desc.filename = stream.attributes().value("path").toString();
-							desc.type     = (denseCloud ? "dense cloud" : "keypoints");
+							desc.type = (denseCloud ? "dense cloud" : "keypoints");
 							clouds.push_back(desc);
 						}
 						else
@@ -713,11 +713,11 @@ CC_FILE_ERROR PhotoScanFilter::loadFile(const QString&  filename,
 		progressDialog->setWindowTitle("Loading data");
 		progressDialog->start();
 	}
-	bool wasCanceled     = false;
-	int  currentProgress = 0;
+	bool wasCanceled = false;
+	int currentProgress = 0;
 
 	// end of file: now we can sort the various extracted components
-	QDir       dir        = QFileInfo(filename).dir();
+	QDir dir = QFileInfo(filename).dir();
 	ccHObject* imageGroup = new ccHObject("Images");
 	if (progressDialog && !cameras.empty())
 	{
@@ -756,7 +756,7 @@ CC_FILE_ERROR PhotoScanFilter::loadFile(const QString&  filename,
 		//	continue;
 		// }
 
-		QImage  qImage;
+		QImage qImage;
 		QString absoluteImageFilename = dir.absoluteFilePath(camera.imageFilename);
 		// if (!qImage.load(&zipImage, qUtf8Printable(QFileInfo(camera.imageFilename).suffix())))
 		if (!qImage.load(absoluteImageFilename))
@@ -856,13 +856,13 @@ CC_FILE_ERROR PhotoScanFilter::loadFile(const QString&  filename,
 				continue;
 			}
 
-			ccHObject                    tempContainer;
+			ccHObject tempContainer;
 			FileIOFilter::LoadParameters params;
 			params.alwaysDisplayLoadDialog = false;
-			params.autoComputeNormals      = false;
-			params.parentWidget            = nullptr;
-			CC_FILE_ERROR result           = CC_FERR_NO_ERROR;
-			ccHObject*    newGroup         = FileIOFilter::LoadFromFile(tempFilename, params, result);
+			params.autoComputeNormals = false;
+			params.parentWidget = nullptr;
+			CC_FILE_ERROR result = CC_FERR_NO_ERROR;
+			ccHObject* newGroup = FileIOFilter::LoadFromFile(tempFilename, params, result);
 			if (newGroup)
 			{
 				newGroup->setName(desc.type);
@@ -914,8 +914,8 @@ CC_FILE_ERROR PhotoScanFilter::loadFile(const QString&  filename,
 
 			FileIOFilter::LoadParameters params;
 			params.alwaysDisplayLoadDialog = false;
-			params.autoComputeNormals      = false;
-			params.parentWidget            = nullptr;
+			params.autoComputeNormals = false;
+			params.parentWidget = nullptr;
 
 			bool success = false;
 			if (!desc.texture.isEmpty() && desc.filename.endsWith("ply", Qt::CaseInsensitive))
@@ -941,8 +941,8 @@ CC_FILE_ERROR PhotoScanFilter::loadFile(const QString&  filename,
 			}
 			else
 			{
-				CC_FILE_ERROR result   = CC_FERR_NO_ERROR;
-				ccHObject*    newGroup = FileIOFilter::LoadFromFile(tempFilename, params, result);
+				CC_FILE_ERROR result = CC_FERR_NO_ERROR;
+				ccHObject* newGroup = FileIOFilter::LoadFromFile(tempFilename, params, result);
 				if (newGroup)
 				{
 					success = true;

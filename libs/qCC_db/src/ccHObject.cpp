@@ -463,10 +463,10 @@ ccHObject* ccHObject::find(unsigned uniqueID) const
 	return nullptr;
 }
 
-unsigned ccHObject::filterChildren(Container&          filteredChildren,
-                                   bool                recursive /*=false*/,
-                                   CC_CLASS_ENUM       filter /*=CC_TYPES::OBJECT*/,
-                                   bool                strict /*=false*/,
+unsigned ccHObject::filterChildren(Container& filteredChildren,
+                                   bool recursive /*=false*/,
+                                   CC_CLASS_ENUM filter /*=CC_TYPES::OBJECT*/,
+                                   bool strict /*=false*/,
                                    ccGenericGLDisplay* inDisplay /*=nullptr*/) const
 {
 	for (auto child : m_children)
@@ -507,7 +507,7 @@ void ccHObject::transferChild(ccHObject* child, ccHObject& newParent)
 	assert(child);
 
 	// remove link from old parent
-	int childDependencyFlags  = child->getDependencyFlagsWith(this);
+	int childDependencyFlags = child->getDependencyFlagsWith(this);
 	int parentDependencyFlags = getDependencyFlagsWith(child);
 
 	detachChild(child); // automatically removes any dependency with this object
@@ -524,7 +524,7 @@ void ccHObject::transferChildren(ccHObject& newParent, bool forceFatherDependent
 	for (auto child : m_children)
 	{
 		// remove link from old parent
-		int childDependencyFlags  = child->getDependencyFlagsWith(this);
+		int childDependencyFlags = child->getDependencyFlagsWith(this);
 		int fatherDependencyFlags = getDependencyFlagsWith(child);
 
 		// we must explicitly remove any dependency with the child as we don't call 'detachChild'
@@ -577,7 +577,7 @@ bool ccHObject::getAbsoluteGLTransformation(ccGLMatrix& trans) const
 	{
 		if (obj->isGLTransEnabled())
 		{
-			trans      = trans * obj->getGLTransformation();
+			trans = trans * obj->getGLTransformation();
 			hasGLTrans = true;
 		}
 		obj = obj->getParent();
@@ -602,8 +602,8 @@ bool ccHObject::getOwnGlobalBB(CCVector3d& minCorner, CCVector3d& maxCorner)
 {
 	// by default this method returns the local bounding-box!
 	ccBBox box = getOwnBB(false);
-	minCorner  = box.minCorner();
-	maxCorner  = box.maxCorner();
+	minCorner = box.minCorner();
+	maxCorner = box.maxCorner();
 	return box.isValid();
 }
 
@@ -710,7 +710,7 @@ void ccHObject::drawBB(CC_DRAW_CONTEXT& context, const ccColor::Rgb& col)
 	{
 		// get the set of OpenGL functions (version 2.1)
 		ccGLMatrix trans;
-		ccBBox     box = getOwnFitBB(trans);
+		ccBBox box = getOwnFitBB(trans);
 		if (box.isValid())
 		{
 			glFunc->glMatrixMode(GL_MODELVIEW);
@@ -823,7 +823,7 @@ void ccHObject::draw(CC_DRAW_CONTEXT& context)
 				glFunc->glGetDoublev(GL_PROJECTION_MATRIX, camera.projectionMat.data());
 				glFunc->glGetDoublev(GL_MODELVIEW_MATRIX, camera.modelViewMat.data());
 
-				CCVector3 C          = bBox.getCenter();
+				CCVector3 C = bBox.getCenter();
 				m_nameIn3DPosIsValid = camera.project(C, m_nameIn3DPos);
 			}
 			else
@@ -861,7 +861,7 @@ void ccHObject::applyGLTransformation(const ccGLMatrix& trans)
 
 void ccHObject::applyGLTransformation_recursive(const ccGLMatrix* transInput /*=nullptr*/)
 {
-	ccGLMatrix        transTemp;
+	ccGLMatrix transTemp;
 	const ccGLMatrix* transToApply = transInput;
 
 	if (m_glTransEnabled)
@@ -874,7 +874,7 @@ void ccHObject::applyGLTransformation_recursive(const ccGLMatrix* transInput /*=
 		}
 		else
 		{
-			transTemp    = *transInput * m_glTrans;
+			transTemp = *transInput * m_glTrans;
 			transToApply = &transTemp;
 		}
 	}
@@ -1138,8 +1138,8 @@ bool ccHObject::fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& o
 			in.seek(originalFilePos);
 			// get custom object name and plugin name
 			QString childName = child->getName();
-			QString classId   = child->getMetaData(ccCustomHObject::DefaultMetaDataClassName()).toString();
-			QString pluginId  = child->getMetaData(ccCustomHObject::DefaultMetaDataPluginName()).toString();
+			QString classId = child->getMetaData(ccCustomHObject::DefaultMetaDataClassName()).toString();
+			QString pluginId = child->getMetaData(ccCustomHObject::DefaultMetaDataPluginName()).toString();
 			// dont' need this instance anymore
 			delete child;
 			child = nullptr;
@@ -1205,8 +1205,8 @@ bool ccHObject::fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& o
 short ccHObject::minimumFileVersion() const
 {
 	short minVersion = m_glTransHistory.isIdentity() ? 23 : 45;
-	minVersion       = std::max(minVersion, ccObject::minimumFileVersion());
-	minVersion       = std::max(minVersion, minimumFileVersion_MeOnly());
+	minVersion = std::max(minVersion, ccObject::minimumFileVersion());
+	minVersion = std::max(minVersion, minimumFileVersion_MeOnly());
 
 	// write serializable children (if any)
 	for (auto child : m_children)

@@ -29,14 +29,11 @@
  *
  * @see DgmOctree.h
  */
-#include <ccPointCloud.h>
-
 #include <DgmOctree.h>
 #include <GenericCloud.h>
-
-#include <QTest>
 #include <QString>
-
+#include <QTest>
+#include <ccPointCloud.h>
 #include <cmath>
 
 using CCCoreLib::DgmOctree;
@@ -56,12 +53,11 @@ static DgmOctree* buildOctree(ccPointCloud* cloud)
 	return octree;
 }
 
-
 class TestOctree : public QObject
 {
 	Q_OBJECT
 
-private slots:
+  private slots:
 
 	void testBuildEmpty()
 	{

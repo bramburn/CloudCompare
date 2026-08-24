@@ -175,8 +175,8 @@ bool ccViewportParameters::fromFile(QFile& in, short dataVersion, int flags, Loa
 	}
 
 	QDataStream inStream(&in);
-	float       zoom      = 1.0f;
-	float       pixelSize = 0.0f;
+	float zoom = 1.0f;
+	float pixelSize = 0.0f;
 
 	// focalDistance replaced pixelSize+zoom in version 51
 	if (dataVersion < 51)
@@ -259,7 +259,7 @@ bool ccViewportParameters::fromFile(QFile& in, short dataVersion, int flags, Loa
 		{
 			static int DefaultScreenSize_pix = 2048; // Average screen size
 			focalDistance = pixelSize * static_cast<double>(DefaultScreenSize_pix)
-			               / computeDistanceToWidthRatio(DefaultScreenSize_pix, DefaultScreenSize_pix);
+			                / computeDistanceToWidthRatio(DefaultScreenSize_pix, DefaultScreenSize_pix);
 		}
 		setFocalDistance(focalDistance / zoom);
 		ccLog::Warning("[ccViewportParameters] Approximate focal distance (sorry, the parameters of viewport objects have changed!)");
@@ -362,7 +362,7 @@ ccGLMatrixd ccViewportParameters::computeScaleMatrix(const QRect& glViewport) co
 CCVector3d ccViewportParameters::getViewDir() const
 {
 	const double* M = viewMat.data();
-	CCVector3d    axis(-M[2], -M[6], -M[10]);
+	CCVector3d axis(-M[2], -M[6], -M[10]);
 	axis.normalize();
 	return axis;
 }
@@ -377,7 +377,7 @@ CCVector3d ccViewportParameters::getViewDir() const
 CCVector3d ccViewportParameters::getUpDir() const
 {
 	const double* M = viewMat.data();
-	CCVector3d    axis(M[1], M[5], M[9]);
+	CCVector3d axis(M[1], M[5], M[9]);
 	axis.normalize();
 	return axis;
 }

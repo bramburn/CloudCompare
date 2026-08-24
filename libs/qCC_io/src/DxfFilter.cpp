@@ -76,7 +76,7 @@ bool DxfFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) con
 	    || type == CC_TYPES::MESH
 	    || type == CC_TYPES::POINT_CLOUD)
 	{
-		multiple  = true;
+		multiple = true;
 		exclusive = false;
 		return true;
 	}
@@ -195,14 +195,14 @@ class DxfImporter : public DL_CreationAdapter
 			delete m_poly;
 		}
 		m_polyVertices = new ccPointCloud("vertices");
-		m_poly         = new ccPolyline(m_polyVertices);
+		m_poly = new ccPolyline(m_polyVertices);
 		m_poly->addChild(m_polyVertices);
 		if (!m_polyVertices->reserve(poly.number) || !m_poly->reserve(poly.number))
 		{
 			ccLog::Error("[DxfImporter] Not enough memory!");
 			delete m_poly;
 			m_polyVertices = nullptr;
-			m_poly         = nullptr;
+			m_poly = nullptr;
 			return;
 		}
 		m_polyVertices->setEnabled(false);
@@ -223,7 +223,7 @@ class DxfImporter : public DL_CreationAdapter
 
 		// some entities can have small coordinates (drawings, origin, etc.)
 		// hiding the fact that other polylines have large coordinates!
-		m_firstPoint    = true;
+		m_firstPoint = true;
 		m_polyElevation = poly.elevation;
 	}
 
@@ -273,7 +273,7 @@ class DxfImporter : public DL_CreationAdapter
 		if (!m_faces)
 		{
 			ccPointCloud* vertices = new ccPointCloud("vertices");
-			m_faces                = new ccMesh(vertices);
+			m_faces = new ccMesh(vertices);
 			m_faces->setName("Faces");
 			m_faces->addChild(vertices);
 			m_faces->setVisible(true);
@@ -294,7 +294,7 @@ class DxfImporter : public DL_CreationAdapter
 			return;
 		}
 
-		int      vertIndexes[4]{-1, -1, -1, -1};
+		int vertIndexes[4]{-1, -1, -1, -1};
 		unsigned addedVertCount = 4;
 		// check if the two last vertices are the same
 		if (P[2].x == P[3].x && P[2].y == P[3].y && P[2].z == P[3].z)
@@ -303,7 +303,7 @@ class DxfImporter : public DL_CreationAdapter
 		}
 
 		// current face color
-		ccColor::Rgb  col;
+		ccColor::Rgb col;
 		ccColor::Rgb* faceCol = nullptr;
 		if (getCurrentColour(col))
 		{
@@ -327,9 +327,9 @@ class DxfImporter : public DL_CreationAdapter
 						// We must also check that the color is the same (if any)
 						if (faceCol || vertices->hasColors())
 						{
-							const ccColor::Rgb*  _faceCol = faceCol ? faceCol : &ccColor::whiteRGB;
+							const ccColor::Rgb* _faceCol = faceCol ? faceCol : &ccColor::whiteRGB;
 							const ccColor::Rgba* _vertCol = vertices->hasColors() ? &vertices->getPointColor(j) : &ccColor::white;
-							useCurrentVertex              = (_faceCol->r == _vertCol->r && _faceCol->g == _vertCol->g && _faceCol->b == _vertCol->b);
+							useCurrentVertex = (_faceCol->r == _vertCol->r && _faceCol->g == _vertCol->g && _faceCol->b == _vertCol->b);
 						}
 
 						if (useCurrentVertex)
@@ -392,7 +392,7 @@ class DxfImporter : public DL_CreationAdapter
 		{
 			// normals table
 			NormsIndexesTableType* triNormsTable = m_faces->getTriNormsTable();
-			bool                   firstTime     = false;
+			bool firstTime = false;
 			if (!triNormsTable)
 			{
 				triNormsTable = new NormsIndexesTableType();
@@ -478,12 +478,12 @@ class DxfImporter : public DL_CreationAdapter
 	{
 		// we load arc as simple polylines!
 		ccPointCloud* polyVertices = new ccPointCloud("vertices");
-		ccPolyline*   poly         = new ccPolyline(polyVertices);
+		ccPolyline* poly = new ccPolyline(polyVertices);
 		poly->addChild(polyVertices);
 
-		double   arcLength_deg = data.angle2 - data.angle1;
-		unsigned vertexCount   = 1 + static_cast<unsigned>(std::max(1.0, arcLength_deg)); // we use a 1 degree resolution by default for now
-		double   step_deg      = 1.0;
+		double arcLength_deg = data.angle2 - data.angle1;
+		unsigned vertexCount = 1 + static_cast<unsigned>(std::max(1.0, arcLength_deg)); // we use a 1 degree resolution by default for now
+		double step_deg = 1.0;
 		if (arcLength_deg < 360.0)
 		{
 			assert(vertexCount >= 2);
@@ -492,7 +492,7 @@ class DxfImporter : public DL_CreationAdapter
 		else
 		{
 			vertexCount = 360;
-			step_deg    = 1.0;
+			step_deg = 1.0;
 		}
 
 		if (!polyVertices->reserve(vertexCount) || !poly->reserve(vertexCount))
@@ -509,7 +509,7 @@ class DxfImporter : public DL_CreationAdapter
 
 		// some entities can have small coordinates (drawings, origin, etc.)
 		// hiding the fact that other polylines have large coordinates!
-		m_firstPoint    = true;
+		m_firstPoint = true;
 		m_polyElevation = 0.0;
 
 		CCVector3 Clocal = convertPoint(data.cx, data.cy, data.cz);
@@ -522,9 +522,9 @@ class DxfImporter : public DL_CreationAdapter
 
 		for (unsigned i = 0; i < vertexCount; ++i)
 		{
-			double    angle_deg = data.angle1 + i * step_deg;
-			double    angle_rad = CCCoreLib::DegreesToRadians(angle_deg);
-			CCVector3 P         = Clocal + CCVector3(static_cast<PointCoordinateType>(data.radius * cos(angle_rad)), static_cast<PointCoordinateType>(data.radius * sin(angle_rad)), 0);
+			double angle_deg = data.angle1 + i * step_deg;
+			double angle_rad = CCCoreLib::DegreesToRadians(angle_deg);
+			CCVector3 P = Clocal + CCVector3(static_cast<PointCoordinateType>(data.radius * cos(angle_rad)), static_cast<PointCoordinateType>(data.radius * sin(angle_rad)), 0);
 			polyVertices->addPoint(P);
 		}
 
@@ -591,7 +591,7 @@ class DxfImporter : public DL_CreationAdapter
 	{
 		// we open lines as simple polylines!
 		ccPointCloud* polyVertices = new ccPointCloud("vertices");
-		ccPolyline*   poly         = new ccPolyline(polyVertices);
+		ccPolyline* poly = new ccPolyline(polyVertices);
 		poly->addChild(polyVertices);
 		if (!polyVertices->reserve(2) || !poly->reserve(2))
 		{
@@ -606,7 +606,7 @@ class DxfImporter : public DL_CreationAdapter
 
 		// some entities can have small coordinates (drawings, origin, etc.)
 		// hiding the fact that other polylines have large coordinates!
-		m_firstPoint    = true;
+		m_firstPoint = true;
 		m_polyElevation = 0.0;
 
 		// add first point
@@ -662,7 +662,7 @@ class DxfImporter : public DL_CreationAdapter
 		{
 			// an attribute of 256 means the colours are BYLAYER, so grab it from our map instead
 			const int defaultIndex = -1;
-			colourIndex            = m_layerColourMap.value(attributes.getLayer().c_str(), defaultIndex);
+			colourIndex = m_layerColourMap.value(attributes.getLayer().c_str(), defaultIndex);
 
 			// if we don't have any information on the current layer
 			if (colourIndex == defaultIndex)
@@ -776,8 +776,8 @@ CC_FILE_ERROR DxfFilter::saveToFile(ccHObject* root, const QString& filename, co
 	}
 
 	// only polylines and meshes are handled for now
-	size_t polyCount  = polylines.size();
-	size_t meshCount  = meshes.size();
+	size_t polyCount = polylines.size();
+	size_t meshCount = meshes.size();
 	size_t cloudCount = clouds.size();
 	if (polyCount + meshCount + cloudCount == 0)
 	{
@@ -802,10 +802,10 @@ CC_FILE_ERROR DxfFilter::saveToFile(ccHObject* root, const QString& filename, co
 		}
 	}
 
-	CCVector3d diag       = globalBB.getDiagVec();
-	double     baseSize   = std::max(diag.x, diag.y);
-	double     lineWidth  = baseSize / 40.0;
-	double     pageMargin = baseSize / 20.0;
+	CCVector3d diag = globalBB.getDiagVec();
+	double baseSize = std::max(diag.x, diag.y);
+	double lineWidth = baseSize / 40.0;
+	double pageMargin = baseSize / 20.0;
 
 	DL_Dxf dxf;
 #ifdef _WIN32
@@ -1000,9 +1000,9 @@ CC_FILE_ERROR DxfFilter::saveToFile(ccHObject* root, const QString& filename, co
 			// write polylines
 			for (unsigned i = 0; i < polyCount; ++i)
 			{
-				const ccPolyline* poly        = static_cast<ccPolyline*>(polylines[i]);
-				unsigned          vertexCount = poly->size();
-				int               flags       = poly->isClosed() ? 1 : 0;
+				const ccPolyline* poly = static_cast<ccPolyline*>(polylines[i]);
+				unsigned vertexCount = poly->size();
+				int flags = poly->isClosed() ? 1 : 0;
 				if (!poly->is2DMode())
 				{
 					flags |= 8; // 3D polyline
@@ -1025,7 +1025,7 @@ CC_FILE_ERROR DxfFilter::saveToFile(ccHObject* root, const QString& filename, co
 			// write meshes
 			for (unsigned j = 0; j < meshCount; ++j)
 			{
-				ccGenericMesh*       mesh     = static_cast<ccGenericMesh*>(meshes[j]);
+				ccGenericMesh* mesh = static_cast<ccGenericMesh*>(meshes[j]);
 				ccGenericPointCloud* vertices = mesh->getAssociatedCloud();
 				assert(vertices);
 
@@ -1034,9 +1034,9 @@ CC_FILE_ERROR DxfFilter::saveToFile(ccHObject* root, const QString& filename, co
 				for (unsigned f = 0; f < triCount; ++f)
 				{
 					const CCCoreLib::GenericTriangle* tri = mesh->_getNextTriangle();
-					CCVector3d                        A   = vertices->toGlobal3d(*tri->_getA());
-					CCVector3d                        B   = vertices->toGlobal3d(*tri->_getB());
-					CCVector3d                        C   = vertices->toGlobal3d(*tri->_getC());
+					CCVector3d A = vertices->toGlobal3d(*tri->_getA());
+					CCVector3d B = vertices->toGlobal3d(*tri->_getB());
+					CCVector3d C = vertices->toGlobal3d(*tri->_getC());
 					dxf.write3dFace(*dw,
 					                DL_3dFaceData(A.x, A.y, A.z, B.x, B.y, B.z, C.x, C.y, C.z, C.x, C.y, C.z, lineWidth),
 					                DL_Attributes(qPrintable(meshLayerNames[j]), DL_Codes::bylayer, -1, "BYLAYER", 1.0)); // DGM: warning, toStdString doesn't preserve "local" characters
@@ -1046,13 +1046,13 @@ CC_FILE_ERROR DxfFilter::saveToFile(ccHObject* root, const QString& filename, co
 			// write points
 			for (unsigned i = 0; i < cloudCount; ++i)
 			{
-				const ccPointCloud* cloud      = static_cast<ccPointCloud*>(clouds[i]);
-				unsigned            pointCount = cloud->size();
+				const ccPointCloud* cloud = static_cast<ccPointCloud*>(clouds[i]);
+				unsigned pointCount = cloud->size();
 
 				for (unsigned j = 0; j < pointCount; ++j)
 				{
-					const CCVector3* P  = cloud->getPoint(j);
-					CCVector3d       Pg = cloud->toGlobal3d(*P);
+					const CCVector3* P = cloud->getPoint(j);
+					CCVector3d Pg = cloud->toGlobal3d(*P);
 					dxf.writePoint(*dw,
 					               DL_PointData(Pg.x, Pg.y, Pg.z),
 					               DL_Attributes(qPrintable(pointLayerNames[i]), DL_Codes::bylayer, -1, "BYLAYER", 1.0)); // DGM: warning, toStdString doesn't preserve "local" characters

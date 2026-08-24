@@ -48,9 +48,9 @@
 
 namespace
 {
-	constexpr char COMMAND_OPEN_SHIFT_ON_LOAD[]       = "GLOBAL_SHIFT"; //!< Global shift
-	constexpr char COMMAND_OPEN_SHIFT_ON_LOAD_AUTO[]  = "AUTO";         //!< "AUTO" keyword
-	constexpr char COMMAND_OPEN_SHIFT_ON_LOAD_FIRST[] = "FIRST";        //!< "FIRST" keyword
+	constexpr char COMMAND_OPEN_SHIFT_ON_LOAD[] = "GLOBAL_SHIFT"; //!< Global shift
+	constexpr char COMMAND_OPEN_SHIFT_ON_LOAD_AUTO[] = "AUTO";    //!< "AUTO" keyword
+	constexpr char COMMAND_OPEN_SHIFT_ON_LOAD_FIRST[] = "FIRST";  //!< "FIRST" keyword
 } // namespace
 
 //////
@@ -69,13 +69,13 @@ CLEntityDesc::CLEntityDesc(const QString& filename, int _indexInFile)
 	if (filename.isNull())
 	{
 		basename = "unknown";
-		path     = QDir::currentPath();
+		path = QDir::currentPath();
 	}
 	else
 	{
 		QFileInfo fi(filename);
 		basename = fi.completeBaseName();
-		path     = fi.path();
+		path = fi.path();
 	}
 }
 
@@ -323,7 +323,7 @@ ccCommandLineInterface::ParseGlobalShiftOptions(ccArgumentParser& parser)
 	if (!z)
 		return std::nullopt;
 
-	options.mode              = GlobalShiftOptions::CUSTOM_GLOBAL_SHIFT;
+	options.mode = GlobalShiftOptions::CUSTOM_GLOBAL_SHIFT;
 	options.customGlobalShift = CCVector3d(*x, *y, *z);
 	return options;
 }
@@ -331,11 +331,11 @@ ccCommandLineInterface::ParseGlobalShiftOptions(ccArgumentParser& parser)
 bool ccCommandLineInterface::processGlobalShiftCommand(GlobalShiftOptions& options)
 {
 	// defaults in case of an early exit (preserved for API compatibility)
-	options.mode              = GlobalShiftOptions::NO_GLOBAL_SHIFT;
+	options.mode = GlobalShiftOptions::NO_GLOBAL_SHIFT;
 	options.customGlobalShift = CCVector3d(0, 0, 0);
 
 	ccArgumentParser parser(arguments());
-	auto             result = ParseGlobalShiftOptions(parser);
+	auto result = ParseGlobalShiftOptions(parser);
 	if (!result)
 	{
 		return false; // error already logged
@@ -361,9 +361,9 @@ ccCommandLineInterface::CLLoadParameters::CLLoadParameters()
     , coordinatesShiftEnabled(false)
     , coordinatesShift(0, 0, 0)
 {
-	shiftHandlingMode        = ccGlobalShiftManager::NO_DIALOG;
-	alwaysDisplayLoadDialog  = false;
-	autoComputeNormals       = false;
+	shiftHandlingMode = ccGlobalShiftManager::NO_DIALOG;
+	alwaysDisplayLoadDialog = false;
+	autoComputeNormals = false;
 	_coordinatesShiftEnabled = &coordinatesShiftEnabled;
-	_coordinatesShift        = &coordinatesShift;
+	_coordinatesShift = &coordinatesShift;
 }

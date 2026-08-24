@@ -42,7 +42,7 @@
 
 ccPickOneElementDlg::ccPickOneElementDlg(const QString& label,
                                          const QString& windowTitle /*=QString()*/,
-                                         QWidget*       parent /*=nullptr*/)
+                                         QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::Tool)
     , m_ui(new Ui_PickOneElementDialog)
 {

@@ -78,10 +78,10 @@ void ccKrigingParamsDialog::getParameters(ccRasterGrid::KrigingParams& krigingPa
 {
 	krigingParams.autoGuess = !m_ui->krigeParamsGroupBox->isChecked();
 	{
-		krigingParams.params.model  = static_cast<Kriging::Model>(m_ui->modelComboBox->currentIndex());
+		krigingParams.params.model = static_cast<Kriging::Model>(m_ui->modelComboBox->currentIndex());
 		krigingParams.params.nugget = m_ui->nuggetDoubleSpinBox->value();
-		krigingParams.params.sill   = m_ui->sillDoubleSpinBox->value();
-		krigingParams.params.range  = m_ui->rangeDoubleSpinBox->value();
+		krigingParams.params.sill = m_ui->sillDoubleSpinBox->value();
+		krigingParams.params.range = m_ui->rangeDoubleSpinBox->value();
 	}
 
 	krigingParams.kNN = m_ui->knnSpinBox->value();

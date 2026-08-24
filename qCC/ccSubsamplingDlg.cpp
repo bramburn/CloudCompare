@@ -83,10 +83,10 @@ ccSubsamplingDlg::ccSubsamplingDlg(unsigned maxPointCount, double maxCloudRadius
 	sliderMoved(m_ui->slider->sliderPosition());
 
 	// Init the 'last used values' (used when switching from one method to another)
-	m_lastUsedValues[RANDOM]         = static_cast<double>(maxPointCount);
+	m_lastUsedValues[RANDOM] = static_cast<double>(maxPointCount);
 	m_lastUsedValues[RANDOM_PERCENT] = 100.0;
-	m_lastUsedValues[SPATIAL]        = maxCloudRadius;
-	m_lastUsedValues[OCTREE]         = static_cast<double>(CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL);
+	m_lastUsedValues[SPATIAL] = maxCloudRadius;
+	m_lastUsedValues[OCTREE] = static_cast<double>(CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL);
 }
 
 ccSubsamplingDlg::~ccSubsamplingDlg()
@@ -118,7 +118,7 @@ CCCoreLib::ReferenceCloud* ccSubsamplingDlg::getSampledCloud(ccGenericPointCloud
 	{
 		assert(m_ui->valueDoubleSpinBox->value() >= 0);
 		unsigned count = cloud->size();
-		count          = static_cast<unsigned>(count * (m_ui->valueDoubleSpinBox->value() / 100.0));
+		count = static_cast<unsigned>(count * (m_ui->valueDoubleSpinBox->value() / 100.0));
 		return CCCoreLib::CloudSamplingTools::subsampleCloudRandomly(cloud,
 		                                                             count,
 		                                                             progressCb);
@@ -134,7 +134,7 @@ CCCoreLib::ReferenceCloud* ccSubsamplingDlg::getSampledCloud(ccGenericPointCloud
 		}
 		if (octree)
 		{
-			PointCoordinateType                               minDist = static_cast<PointCoordinateType>(m_ui->valueDoubleSpinBox->value());
+			PointCoordinateType minDist = static_cast<PointCoordinateType>(m_ui->valueDoubleSpinBox->value());
 			CCCoreLib::CloudSamplingTools::SFModulationParams modParams;
 			{
 				modParams.enabled = m_ui->sfGroupBox->isEnabled() && m_ui->sfGroupBox->isChecked();
@@ -147,8 +147,8 @@ CCCoreLib::ReferenceCloud* ccSubsamplingDlg::getSampledCloud(ccGenericPointCloud
 				{
 					double sfMinSpacing = m_ui->minSFSpacingDoubleSpinBox->value();
 					double sfMaxSpacing = m_ui->maxSFSpacingDoubleSpinBox->value();
-					modParams.a         = (sfMaxSpacing - sfMinSpacing) / deltaSF;
-					modParams.b         = sfMinSpacing - modParams.a * m_sfMin;
+					modParams.a = (sfMaxSpacing - sfMinSpacing) / deltaSF;
+					modParams.b = sfMinSpacing - modParams.a * m_sfMin;
 				}
 				else
 				{
@@ -229,7 +229,7 @@ void ccSubsamplingDlg::updateLabels()
 void ccSubsamplingDlg::sliderMoved(int sliderPos)
 {
 	double sliderRange = static_cast<double>(m_ui->slider->maximum() - m_ui->slider->minimum());
-	double rate        = (sliderPos - m_ui->slider->minimum()) / sliderRange;
+	double rate = (sliderPos - m_ui->slider->minimum()) / sliderRange;
 	if (m_ui->samplingMethodComboBox->currentIndex() == SPATIAL)
 	{
 		rate = pow(rate, SPACE_RANGE_EXPONENT);
@@ -237,14 +237,14 @@ void ccSubsamplingDlg::sliderMoved(int sliderPos)
 	}
 
 	double valueRange = static_cast<double>(m_ui->valueDoubleSpinBox->maximum() - m_ui->valueDoubleSpinBox->minimum());
-	double newValue   = m_ui->valueDoubleSpinBox->minimum() + rate * valueRange;
+	double newValue = m_ui->valueDoubleSpinBox->minimum() + rate * valueRange;
 	m_ui->valueDoubleSpinBox->setValue(newValue);
 }
 
 void ccSubsamplingDlg::valueChanged(double value)
 {
 	double valueRange = static_cast<double>(m_ui->valueDoubleSpinBox->maximum() - m_ui->valueDoubleSpinBox->minimum());
-	double rate       = (value - m_ui->valueDoubleSpinBox->minimum()) / valueRange;
+	double rate = (value - m_ui->valueDoubleSpinBox->minimum()) / valueRange;
 
 	if (m_ui->samplingMethodComboBox->currentIndex() == SPATIAL)
 	{
@@ -258,8 +258,8 @@ void ccSubsamplingDlg::valueChanged(double value)
 		}
 	}
 
-	double sliderRange  = static_cast<double>(m_ui->slider->maximum() - m_ui->slider->minimum());
-	int    newSliderPos = m_ui->slider->minimum() + static_cast<int>(rate * sliderRange);
+	double sliderRange = static_cast<double>(m_ui->slider->maximum() - m_ui->slider->minimum());
+	int newSliderPos = m_ui->slider->minimum() + static_cast<int>(rate * sliderRange);
 
 	// remember the last used value
 	m_lastUsedValues[m_ui->samplingMethodComboBox->currentIndex()] = value;
@@ -379,11 +379,11 @@ void ccSubsamplingDlg::loadFromPersistentSettings()
 	QSettings settings;
 	settings.beginGroup("SubsamplingDialog");
 	{
-		int    methodIndex = settings.value("method", m_ui->samplingMethodComboBox->currentIndex()).toInt();
-		double value       = settings.value("value", m_ui->valueDoubleSpinBox->value()).toDouble();
-		bool   useActiveSF = settings.value("useActiveSF", m_ui->sfGroupBox->isChecked()).toBool();
-		double minSFRatio  = settings.value("minSFRatio", m_ui->minSFSpacingDoubleSpinBox->value()).toDouble();
-		double maxSFRatio  = settings.value("maxSFRatio", m_ui->maxSFSpacingDoubleSpinBox->value()).toDouble();
+		int methodIndex = settings.value("method", m_ui->samplingMethodComboBox->currentIndex()).toInt();
+		double value = settings.value("value", m_ui->valueDoubleSpinBox->value()).toDouble();
+		bool useActiveSF = settings.value("useActiveSF", m_ui->sfGroupBox->isChecked()).toBool();
+		double minSFRatio = settings.value("minSFRatio", m_ui->minSFSpacingDoubleSpinBox->value()).toDouble();
+		double maxSFRatio = settings.value("maxSFRatio", m_ui->maxSFSpacingDoubleSpinBox->value()).toDouble();
 
 		// force the update of the dialog
 		m_ui->samplingMethodComboBox->blockSignals(true);

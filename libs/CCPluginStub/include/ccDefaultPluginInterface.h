@@ -52,7 +52,7 @@ class ccDefaultPluginInterface : public ccPluginInterface
 
 	/// Get plugin name
 	QString getName() const override;
-	
+
 	/// Get plugin description
 	QString getDescription() const override;
 
@@ -61,10 +61,10 @@ class ccDefaultPluginInterface : public ccPluginInterface
 
 	/// Get references
 	ReferenceList getReferences() const override;
-	
+
 	/// Get authors
 	ContactList getAuthors() const override;
-	
+
 	/// Get maintainers
 	ContactList getMaintainers() const override;
 
@@ -73,7 +73,7 @@ class ccDefaultPluginInterface : public ccPluginInterface
 	{
 		return true;
 	}
-	
+
 	/// Stop the plugin
 	void stop() override
 	{
@@ -101,7 +101,7 @@ class ccDefaultPluginInterface : public ccPluginInterface
   private:
 	/// Set plugin IID
 	void setIID(const QString& iid) override;
-	
+
 	/// Get plugin IID
 	const QString& IID() const override;
 

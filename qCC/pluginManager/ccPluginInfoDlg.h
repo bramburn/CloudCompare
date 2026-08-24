@@ -57,7 +57,7 @@ class ccPluginInfoDlg : public QDialog
 	 * @param[in] parent Parent widget
 	 */
 	explicit ccPluginInfoDlg(QWidget* parent = nullptr);
-	
+
 	/// Destructor
 	~ccPluginInfoDlg() override;
 
@@ -87,7 +87,7 @@ class ccPluginInfoDlg : public QDialog
 	Ui::ccPluginInfoDlg* m_UI;
 
 	QSortFilterProxyModel* m_ProxyModel;
-	QStandardItemModel*    m_ItemModel;
+	QStandardItemModel* m_ItemModel;
 };
 
 #endif

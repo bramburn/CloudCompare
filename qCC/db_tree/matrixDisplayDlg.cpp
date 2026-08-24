@@ -80,8 +80,8 @@ void MatrixDisplayDlg::fillDialogWith(const ccGLMatrix& mat)
 	// display as rotation vector/angle
 	{
 		PointCoordinateType angle_rad;
-		CCVector3           axis3D;
-		CCVector3           t3D;
+		CCVector3 axis3D;
+		CCVector3 t3D;
 		mat.getParameters(angle_rad, axis3D, t3D);
 
 		fillDialogWith(axis3D, angle_rad, t3D, precision);
@@ -99,7 +99,7 @@ void MatrixDisplayDlg::fillDialogWith(const ccGLMatrixd& mat)
 
 	// display as rotation vector/angle
 	{
-		double     angle_rad;
+		double angle_rad;
 		CCVector3d axis3D;
 		CCVector3d t3D;
 		mat.getParameters(angle_rad, axis3D, t3D);

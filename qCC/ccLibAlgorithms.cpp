@@ -113,10 +113,10 @@ namespace ccLibAlgorithms
 			// PointCoordinateType radius = box.getDiagNorm() * static_cast<PointCoordinateType>(0.01/std::max(1.0,1.0e-7*static_cast<double>(cloud->size())));
 
 			// new way
-			CCVector3 d               = box.getDiagVec();
-			double    volume          = (static_cast<double>(d[0]) * d[1]) * d[2];
-			double    surface         = pow(volume, 2.0 / 3.0);
-			double    surfacePerPoint = surface / cloud->size();
+			CCVector3 d = box.getDiagVec();
+			double volume = (static_cast<double>(d[0]) * d[1]) * d[2];
+			double surface = pow(volume, 2.0 / 3.0);
+			double surfacePerPoint = surface / cloud->size();
 			return sqrt(surfacePerPoint * knn);
 		}
 
@@ -129,8 +129,8 @@ namespace ccLibAlgorithms
 
 		for (ccHObject* entity : entities)
 		{
-			ccPointCloud* pc         = ccHObjectCaster::ToPointCloud(entity);
-			double        sigmaCloud = GetDefaultCloudKernelSize(pc);
+			ccPointCloud* pc = ccHObjectCaster::ToPointCloud(entity);
+			double sigmaCloud = GetDefaultCloudKernelSize(pc);
 
 			// we keep the smallest value
 			if (sigmaCloud < sigma)
@@ -143,10 +143,10 @@ namespace ccLibAlgorithms
 	}
 
 	bool ComputeGeomCharacteristics(const GeomCharacteristicSet& characteristics,
-	                                PointCoordinateType          radius,
-	                                ccHObject::Container&        entities,
-	                                const CCVector3*             roughnessUpDir /*=nullptr*/,
-	                                QWidget*                     parent /*=nullptr*/)
+	                                PointCoordinateType radius,
+	                                ccHObject::Container& entities,
+	                                const CCVector3* roughnessUpDir /*=nullptr*/,
+	                                QWidget* parent /*=nullptr*/)
 	{
 		// no feature case
 		if (characteristics.empty())
@@ -193,12 +193,12 @@ namespace ccLibAlgorithms
 	}
 
 	bool ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic c,
-	                               int                                                     subOption,
-	                               PointCoordinateType                                     radius,
-	                               ccHObject::Container&                                   entities,
-	                               const CCVector3*                                        roughnessUpDir /*=nullptr*/,
-	                               QWidget*                                                parent /*= nullptr*/,
-	                               ccProgressDialog*                                       progressDialog /*=nullptr*/)
+	                               int subOption,
+	                               PointCoordinateType radius,
+	                               ccHObject::Container& entities,
+	                               const CCVector3* roughnessUpDir /*=nullptr*/,
+	                               QWidget* parent /*= nullptr*/,
+	                               ccProgressDialog* progressDialog /*=nullptr*/)
 	{
 		size_t selNum = entities.size();
 		if (selNum < 1)
@@ -329,8 +329,8 @@ namespace ccLibAlgorithms
 				ccGenericPointCloud* cloud = ccHObjectCaster::ToGenericPointCloud(entities[i]);
 				assert(nullptr != cloud);
 
-				ccPointCloud* pc    = nullptr;
-				int           sfIdx = -1;
+				ccPointCloud* pc = nullptr;
+				int sfIdx = -1;
 				if (cloud->isA(CC_TYPES::POINT_CLOUD))
 				{
 					pc = static_cast<ccPointCloud*>(cloud);
@@ -503,7 +503,7 @@ namespace ccLibAlgorithms
 			{
 				// for scalar field gradient, we can apply it directly on meshes
 				bool lockedVertices = false;
-				cloud               = ccHObjectCaster::ToGenericPointCloud(entities[i], &lockedVertices);
+				cloud = ccHObjectCaster::ToGenericPointCloud(entities[i], &lockedVertices);
 				if (lockedVertices)
 				{
 					ccUtils::DisplayLockedVerticesWarning(entities[i]->getName(), selNum == 1);
@@ -514,8 +514,8 @@ namespace ccLibAlgorithms
 					// but we need an already displayed SF!
 					if (cloud->isA(CC_TYPES::POINT_CLOUD))
 					{
-						ccPointCloud* pc       = static_cast<ccPointCloud*>(cloud);
-						int           outSfIdx = pc->getCurrentDisplayedScalarFieldIndex();
+						ccPointCloud* pc = static_cast<ccPointCloud*>(cloud);
+						int outSfIdx = pc->getCurrentDisplayedScalarFieldIndex();
 						if (outSfIdx < 0)
 						{
 							cloud = nullptr;
@@ -546,8 +546,8 @@ namespace ccLibAlgorithms
 
 			if (cloud)
 			{
-				ccPointCloud* pc    = nullptr;
-				int           sfIdx = -1;
+				ccPointCloud* pc = nullptr;
+				int sfIdx = -1;
 				if (cloud->isA(CC_TYPES::POINT_CLOUD))
 				{
 					pc = static_cast<ccPointCloud*>(cloud);
@@ -585,7 +585,7 @@ namespace ccLibAlgorithms
 					}
 				}
 
-				int           result = 0;
+				int result = 0;
 				QElapsedTimer eTimer;
 				eTimer.start();
 				switch (algo)
@@ -632,11 +632,11 @@ namespace ccLibAlgorithms
 	}
 
 	bool ApplyScaleMatchingAlgorithm(ScaleMatchingAlgorithm algo,
-	                                 ccHObject::Container&  entities,
-	                                 double                 icpRmsDiff,
-	                                 int                    icpFinalOverlap,
-	                                 unsigned               refEntityIndex /*=0*/,
-	                                 QWidget*               parent /*=nullptr*/)
+	                                 ccHObject::Container& entities,
+	                                 double icpRmsDiff,
+	                                 int icpFinalOverlap,
+	                                 unsigned refEntityIndex /*=0*/,
+	                                 QWidget* parent /*=nullptr*/)
 	{
 		if (entities.size() < 2
 		    || refEntityIndex >= entities.size())
@@ -686,8 +686,8 @@ namespace ccLibAlgorithms
 		{
 			ccHObject* ent = entities[i];
 			// try to get the underlying cloud (or the vertices set for a mesh)
-			bool                 lockedVertices = false;
-			ccGenericPointCloud* cloud          = ccHObjectCaster::ToGenericPointCloud(ent, &lockedVertices);
+			bool lockedVertices = false;
+			ccGenericPointCloud* cloud = ccHObjectCaster::ToGenericPointCloud(ent, &lockedVertices);
 
 			if (nullptr == cloud)
 			{
@@ -724,10 +724,10 @@ namespace ccLibAlgorithms
 					}
 					// deduce the scale
 					{
-						const CCVector3* X    = Yk.getLSPlaneX();
-						const CCVector3* O    = Yk.getGravityCenter();
-						double           minX = 0;
-						double           maxX = 0;
+						const CCVector3* X = Yk.getLSPlaneX();
+						const CCVector3* O = Yk.getGravityCenter();
+						double minX = 0;
+						double maxX = 0;
 						for (unsigned j = 0; j < cloud->size(); ++j)
 						{
 							double x = (*cloud->getPoint(j) - *O).dot(*X);
@@ -749,24 +749,24 @@ namespace ccLibAlgorithms
 				case ICP_SCALE:
 				{
 					ccGLMatrix transMat;
-					double     finalError      = 0.0;
-					double     finalScale      = 1.0;
-					unsigned   finalPointCount = 0;
+					double finalError = 0.0;
+					double finalScale = 1.0;
+					unsigned finalPointCount = 0;
 
 					CCCoreLib::ICPRegistrationTools::Parameters parameters;
 					{
-						parameters.convType                 = CCCoreLib::ICPRegistrationTools::MAX_ERROR_CONVERGENCE;
-						parameters.minRMSDecrease           = icpRmsDiff;
-						parameters.nbMaxIterations          = 0;
-						parameters.adjustScale              = true;
-						parameters.filterOutFarthestPoints  = false;
-						parameters.samplingLimit            = 50000;
-						parameters.finalOverlapRatio        = icpFinalOverlap / 100.0;
-						parameters.transformationFilters    = CCCoreLib::RegistrationTools::SKIP_NONE;
-						parameters.maxThreadCount           = 0;
-						parameters.useC2MSignedDistances    = false;
+						parameters.convType = CCCoreLib::ICPRegistrationTools::MAX_ERROR_CONVERGENCE;
+						parameters.minRMSDecrease = icpRmsDiff;
+						parameters.nbMaxIterations = 0;
+						parameters.adjustScale = true;
+						parameters.filterOutFarthestPoints = false;
+						parameters.samplingLimit = 50000;
+						parameters.finalOverlapRatio = icpFinalOverlap / 100.0;
+						parameters.transformationFilters = CCCoreLib::RegistrationTools::SKIP_NONE;
+						parameters.maxThreadCount = 0;
+						parameters.useC2MSignedDistances = false;
 						parameters.robustC2MSignedDistances = true;
-						parameters.normalsMatching          = CCCoreLib::ICPRegistrationTools::NO_NORMAL;
+						parameters.normalsMatching = CCCoreLib::ICPRegistrationTools::NO_NORMAL;
 					}
 
 					if (ccRegistrationTools::ICP(
@@ -832,8 +832,8 @@ namespace ccLibAlgorithms
 
 				ccHObject* ent = entities[i];
 
-				bool                 lockedVertices = false;
-				ccGenericPointCloud* cloud          = ccHObjectCaster::ToGenericPointCloud(ent, &lockedVertices);
+				bool lockedVertices = false;
+				ccGenericPointCloud* cloud = ccHObjectCaster::ToGenericPointCloud(ent, &lockedVertices);
 				if (nullptr == cloud || lockedVertices)
 				{
 					continue;
@@ -845,7 +845,7 @@ namespace ccLibAlgorithms
 
 				// we temporarily detach entity, as it may undergo
 				//"severe" modifications (octree deletion, etc.) --> see ccPointCloud::scale
-				MainWindow*                  instance = dynamic_cast<MainWindow*>(parent);
+				MainWindow* instance = dynamic_cast<MainWindow*>(parent);
 				MainWindow::ccHObjectContext objContext;
 				if (instance)
 				{

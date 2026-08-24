@@ -87,8 +87,8 @@ static void CleanMatrix(ccGLMatrixd& mat)
 		CCVector3d Y(mat.getColumn(1));
 		CCVector3d Z(mat.getColumn(2));
 		CCVector3d T = mat.getTranslationAsVec3D();
-		Z            = X.cross(Y);
-		Y            = Z.cross(X);
+		Z = X.cross(Y);
+		Y = Z.cross(X);
 		X.normalize();
 		Y.normalize();
 		Z.normalize();
@@ -109,8 +109,8 @@ static void CleanMatrix(ccGLMatrixd& mat)
 	}
 }
 
-CC_FILE_ERROR PTXFilter::loadFile(const QString&  filename,
-                                  ccHObject&      container,
+CC_FILE_ERROR PTXFilter::loadFile(const QString& filename,
+                                  ccHObject& container,
                                   LoadParameters& parameters)
 {
 	// open ASCII file for reading
@@ -124,11 +124,11 @@ CC_FILE_ERROR PTXFilter::loadFile(const QString&  filename,
 
 	CCVector3d PshiftTrans(0, 0, 0);
 	CCVector3d PshiftCloud(0, 0, 0);
-	bool       preserveCoordinateShift = true;
+	bool preserveCoordinateShift = true;
 
-	CC_FILE_ERROR result       = CC_FERR_NO_LOAD;
-	ScalarType    minIntensity = 0;
-	ScalarType    maxIntensity = 0;
+	CC_FILE_ERROR result = CC_FERR_NO_LOAD;
+	ScalarType minIntensity = 0;
+	ScalarType maxIntensity = 0;
 
 	// progress dialog
 	QScopedPointer<ccProgressDialog> pDlg(nullptr);
@@ -150,8 +150,8 @@ CC_FILE_ERROR PTXFilter::loadFile(const QString&  filename,
 
 	for (unsigned cloudIndex = 0; result == CC_FERR_NO_ERROR || result == CC_FERR_NO_LOAD; cloudIndex++)
 	{
-		unsigned    width  = 0;
-		unsigned    height = 0;
+		unsigned width = 0;
+		unsigned height = 0;
 		ccGLMatrixd sensorTransD;
 		ccGLMatrixd cloudTransD;
 
@@ -167,7 +167,7 @@ CC_FILE_ERROR PTXFilter::loadFile(const QString&  filename,
 			height = line.toUInt(&ok);
 			if (!ok)
 				return CC_FERR_MALFORMED_FILE;
-			line  = inFile.readLine();
+			line = inFile.readLine();
 			width = line.toUInt(&ok);
 			if (!ok)
 				return CC_FERR_MALFORMED_FILE;
@@ -177,7 +177,7 @@ CC_FILE_ERROR PTXFilter::loadFile(const QString&  filename,
 			// read sensor transformation matrix
 			for (int i = 0; i < 4; ++i)
 			{
-				line               = inFile.readLine();
+				line = inFile.readLine();
 				QStringList tokens = line.split(" ", Qt::SkipEmptyParts);
 				if (tokens.size() != 3)
 					return CC_FERR_MALFORMED_FILE;
@@ -208,7 +208,7 @@ CC_FILE_ERROR PTXFilter::loadFile(const QString&  filename,
 			// read cloud transformation matrix
 			for (int i = 0; i < 4; ++i)
 			{
-				line               = inFile.readLine();
+				line = inFile.readLine();
 				QStringList tokens = line.split(" ", Qt::SkipEmptyParts);
 				if (tokens.size() != 4)
 					return CC_FERR_MALFORMED_FILE;
@@ -279,8 +279,8 @@ CC_FILE_ERROR PTXFilter::loadFile(const QString&  filename,
 
 		// grid structure
 		ccPointCloud::Grid::Shared grid(new ccPointCloud::Grid);
-		grid->w           = width;
-		grid->h           = height;
+		grid->w = width;
+		grid->h = height;
 		bool hasIndexGrid = true;
 		try
 		{
@@ -301,25 +301,25 @@ CC_FILE_ERROR PTXFilter::loadFile(const QString&  filename,
 				pDlg->start();
 			}
 
-			bool   firstPoint     = true;
-			bool   hasColors      = false;
-			bool   loadColors     = false;
-			bool   hasNormals     = false;
-			bool   loadNormals    = false;
-			bool   loadGridColors = false;
-			size_t gridIndex      = 0;
+			bool firstPoint = true;
+			bool hasColors = false;
+			bool loadColors = false;
+			bool hasNormals = false;
+			bool loadNormals = false;
+			bool loadGridColors = false;
+			size_t gridIndex = 0;
 
 			for (unsigned j = 0; j < height; ++j)
 			{
 				for (unsigned i = 0; i < width; ++i, ++gridIndex)
 				{
-					QString     line   = inFile.readLine();
+					QString line = inFile.readLine();
 					QStringList tokens = line.split(" ", Qt::SkipEmptyParts);
 
 					if (firstPoint)
 					{
 						hasNormals = (tokens.size() == 10);
-						hasColors  = (hasNormals || (tokens.size() == 7));
+						hasColors = (hasNormals || (tokens.size() == 7));
 						if (hasColors)
 						{
 							loadColors = cloud->reserveTheRGBTable();
@@ -421,7 +421,7 @@ CC_FILE_ERROR PTXFilter::loadFile(const QString&  filename,
 						ccColor::Rgb color;
 						for (int c = 0; c < 3; ++c)
 						{
-							bool     ok;
+							bool ok;
 							unsigned temp = tokens[4 + c].toUInt(&ok);
 							ok &= (temp <= 255);
 							if (ok)
@@ -454,7 +454,7 @@ CC_FILE_ERROR PTXFilter::loadFile(const QString&  filename,
 						CCVector3d normal;
 						for (int d = 0; d < 3; ++d)
 						{
-							bool ok     = false;
+							bool ok = false;
 							normal.u[d] = tokens[7 + d].toDouble(&ok);
 							if (!ok)
 							{
@@ -545,9 +545,9 @@ CC_FILE_ERROR PTXFilter::loadFile(const QString&  filename,
 			// scan grid
 			if (hasIndexGrid)
 			{
-				grid->validCount     = static_cast<unsigned>(cloud->size());
-				grid->minValidIndex  = 0;
-				grid->maxValidIndex  = grid->validCount - 1;
+				grid->validCount = static_cast<unsigned>(cloud->size());
+				grid->minValidIndex = 0;
+				grid->maxValidIndex = grid->validCount - 1;
 				grid->sensorPosition = sensorTransD;
 				cloud->addGrid(grid);
 

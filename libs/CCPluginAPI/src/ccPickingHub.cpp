@@ -132,10 +132,10 @@ void ccPickingHub::processPickedItem(ccHObject* entity, unsigned itemIndex, int 
 	ccPickingListener::PickedItem item;
 	{
 		item.clickPoint = QPoint(x, y);
-		item.entity     = entity;
-		item.itemIndex  = itemIndex;
-		item.P3D        = P3D;
-		item.uvw        = uvw;
+		item.entity = entity;
+		item.itemIndex = itemIndex;
+		item.P3D = P3D;
+		item.uvw = uvw;
 
 		if (entity && entity->isA(CC_TYPES::SPHERE))
 		{
@@ -149,7 +149,7 @@ void ccPickingHub::processPickedItem(ccHObject* entity, unsigned itemIndex, int 
 			if (s_pickSphereCenter == QMessageBox::Yes || s_pickSphereCenter == QMessageBox::YesToAll)
 			{
 				// replace the input point by the sphere center
-				item.P3D          = static_cast<ccSphere*>(entity)->getOwnBB().getCenter();
+				item.P3D = static_cast<ccSphere*>(entity)->getOwnBB().getCenter();
 				item.entityCenter = true;
 			}
 		}
@@ -166,9 +166,9 @@ void ccPickingHub::processPickedItem(ccHObject* entity, unsigned itemIndex, int 
 	}
 }
 
-bool ccPickingHub::addListener(ccPickingListener*                listener,
-                               bool                              exclusive /*=false*/,
-                               bool                              autoStartPicking /*=true*/,
+bool ccPickingHub::addListener(ccPickingListener* listener,
+                               bool exclusive /*=false*/,
+                               bool autoStartPicking /*=true*/,
                                ccGLWindowInterface::PICKING_MODE mode /*=ccGLWindowInterface::POINT_OR_TRIANGLE_PICKING*/)
 {
 	if (!listener)
@@ -218,7 +218,7 @@ bool ccPickingHub::addListener(ccPickingListener*                listener,
 		return false;
 	}
 
-	m_exclusive   = exclusive;
+	m_exclusive = exclusive;
 	m_pickingMode = mode;
 
 	if (autoStartPicking)

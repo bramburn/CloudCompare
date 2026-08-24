@@ -59,7 +59,7 @@ bool SalomeHydroFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclus
 {
 	if (type == CC_TYPES::POLY_LINE)
 	{
-		multiple  = true;
+		multiple = true;
 		exclusive = true;
 		return true;
 	}
@@ -102,15 +102,15 @@ CC_FILE_ERROR SalomeHydroFilter::saveToFile(ccHObject* entity, const QString& fi
 		return CC_FERR_WRITING;
 
 	QTextStream outFile(&file);
-	const int   c_precision = 12;
+	const int c_precision = 12;
 
 	CC_FILE_ERROR result = CC_FERR_NO_SAVE;
 
 	// for each polyline
 	for (size_t i = 0; i < candidates.size(); ++i)
 	{
-		ccPolyline* poly      = candidates[i];
-		unsigned    vertCount = poly ? poly->size() : 0;
+		ccPolyline* poly = candidates[i];
+		unsigned vertCount = poly ? poly->size() : 0;
 		if (vertCount < 2)
 		{
 			// invalid size
@@ -153,12 +153,12 @@ CC_FILE_ERROR SalomeHydroFilter::loadFile(const QString& filename, ccHObject& co
 	QTextStream stream(&file);
 
 	CC_FILE_ERROR result = CC_FERR_NO_ERROR;
-	CCVector3d    Pshift(0, 0, 0);
-	bool          preserveCoordinateShift = true;
-	bool          firstPoint              = true;
+	CCVector3d Pshift(0, 0, 0);
+	bool preserveCoordinateShift = true;
+	bool firstPoint = true;
 
 	ccPointCloud* currentVertices = nullptr;
-	unsigned      index           = 0;
+	unsigned index = 0;
 	while (true)
 	{
 		QString currentLine = stream.readLine().trimmed();
@@ -179,7 +179,7 @@ CC_FILE_ERROR SalomeHydroFilter::loadFile(const QString& filename, ccHObject& co
 					if (currentVertices->size() > 2)
 					{
 						const CCVector3* firstVertex = currentVertices->getPoint(0);
-						const CCVector3* lastVertex  = currentVertices->getPoint(currentVertices->size() - 1);
+						const CCVector3* lastVertex = currentVertices->getPoint(currentVertices->size() - 1);
 
 						// close the polyline
 						if (CCCoreLib::LessThanEpsilon((*lastVertex - *firstVertex).norm2()))
@@ -257,7 +257,7 @@ CC_FILE_ERROR SalomeHydroFilter::loadFile(const QString& filename, ccHObject& co
 					{
 						delete currentVertices;
 						currentVertices = nullptr;
-						result          = CC_FERR_NOT_ENOUGH_MEMORY;
+						result = CC_FERR_NOT_ENOUGH_MEMORY;
 						break;
 					}
 				}

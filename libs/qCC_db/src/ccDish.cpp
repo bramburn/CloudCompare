@@ -35,9 +35,9 @@
 ccDish::ccDish(PointCoordinateType radius,
                PointCoordinateType height,
                PointCoordinateType radius2 /*=0*/,
-               const ccGLMatrix*   transMat /*=nullptr*/,
-               QString             name /*="Dish"*/,
-               unsigned            precision /*=DEFAULT_DRAWING_PRECISION*/)
+               const ccGLMatrix* transMat /*=nullptr*/,
+               QString name /*="Dish"*/,
+               unsigned precision /*=DEFAULT_DRAWING_PRECISION*/)
     : ccGenericPrimitive(name, transMat)
     , m_baseRadius(radius)
     , m_secondRadius(radius2)
@@ -111,8 +111,8 @@ bool ccDish::buildUp()
 		return false;
 
 	// Angular span: from north pole (0) to equator (π/2)
-	double       startAngle_rad = 0.0;
-	const double endAngle_rad   = M_PI / 2.0;
+	double startAngle_rad = 0.0;
+	const double endAngle_rad = M_PI / 2.0;
 
 	PointCoordinateType realRadius = m_baseRadius;
 	if (m_secondRadius == 0 && m_height < m_baseRadius)
@@ -120,16 +120,16 @@ bool ccDish::buildUp()
 		// Partial spherical cap: sphere origin is displaced so the cap has height h
 		// realRadius = (h² + r²) / 2h
 		// startAngle = acos(r / realRadius)
-		realRadius     = (m_height * m_height + m_baseRadius * m_baseRadius) / (2 * m_height);
+		realRadius = (m_height * m_height + m_baseRadius * m_baseRadius) / (2 * m_height);
 		startAngle_rad = acos(m_baseRadius / realRadius);
 		assert(startAngle_rad < endAngle_rad);
 	}
 
-	const unsigned steps                = m_drawPrecision;
-	double         angleStep_rad        = 2.0 * M_PI / steps;
+	const unsigned steps = m_drawPrecision;
+	double angleStep_rad = 2.0 * M_PI / steps;
 	// sectionSteps: number of angular steps in the theta direction (0 to π/2)
-	unsigned       sectionSteps         = static_cast<unsigned>(ceil((endAngle_rad - startAngle_rad) * m_drawPrecision / (2.0 * M_PI)));
-	double         sectionAngleStep_rad = (endAngle_rad - startAngle_rad) / sectionSteps;
+	unsigned sectionSteps = static_cast<unsigned>(ceil((endAngle_rad - startAngle_rad) * m_drawPrecision / (2.0 * M_PI)));
+	double sectionAngleStep_rad = (endAngle_rad - startAngle_rad) / sectionSteps;
 
 	// Pre-compute counts: 1 north pole + sectionSteps * steps ring vertices
 	unsigned vertCount = steps * sectionSteps + 1;
@@ -153,7 +153,7 @@ bool ccDish::buildUp()
 		for (unsigned j = 1; j <= sectionSteps; ++j)
 		{
 			// theta: angle from north pole, increasing toward equator
-			PointCoordinateType theta     = static_cast<PointCoordinateType>(endAngle_rad - j * sectionAngleStep_rad);
+			PointCoordinateType theta = static_cast<PointCoordinateType>(endAngle_rad - j * sectionAngleStep_rad);
 			PointCoordinateType cos_theta = cos(theta);
 			PointCoordinateType sin_theta = sin(theta);
 
@@ -163,7 +163,7 @@ bool ccDish::buildUp()
 			for (unsigned i = 0; i < steps; ++i)
 			{
 				// phi: azimuthal angle (full revolution around Z)
-				PointCoordinateType phi     = static_cast<PointCoordinateType>(i * angleStep_rad);
+				PointCoordinateType phi = static_cast<PointCoordinateType>(i * angleStep_rad);
 				PointCoordinateType cos_phi = cos(phi);
 				PointCoordinateType sin_phi = sin(phi);
 

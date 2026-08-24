@@ -29,21 +29,18 @@
  *
  * @see GenericDistribution.h
  */
+#include <NormalDistribution.h>
+#include <QString>
+#include <QTest>
+#include <ScalarField.h>
+#include <WeibullDistribution.h>
 #include <ccPointCloud.h>
 #include <ccScalarField.h>
-
-#include <ScalarField.h>
-#include <NormalDistribution.h>
-#include <WeibullDistribution.h>
-
-#include <QTest>
-#include <QString>
-
 #include <cmath>
 
 using CCCoreLib::NormalDistribution;
-using CCCoreLib::WeibullDistribution;
 using CCCoreLib::ScalarField;
+using CCCoreLib::WeibullDistribution;
 using ScalarContainer = CCCoreLib::GenericDistribution::ScalarContainer;
 using CCCoreLib::GenericCloud;
 using CCCoreLib::NAN_VALUE;
@@ -71,12 +68,11 @@ static ccPointCloud* makeCloudWithSF(const std::vector<ScalarType>& values)
 	return cloud;
 }
 
-
 class TestDistributions : public QObject
 {
 	Q_OBJECT
 
-private slots:
+  private slots:
 
 	// === NormalDistribution tests ===
 
@@ -84,8 +80,8 @@ private slots:
 	{
 		// Gaussian PDF is maximal at x = mu
 		NormalDistribution dist(5.0f, 2.0f); // mu=5, sigma2=2
-		double p_at_mu   = dist.computeP(5.0);
-		double p_offset  = dist.computeP(5.5);
+		double p_at_mu = dist.computeP(5.0);
+		double p_offset = dist.computeP(5.5);
 		QVERIFY(p_at_mu > p_offset);
 		QVERIFY(p_at_mu > 0.0);
 	}
@@ -119,8 +115,8 @@ private slots:
 	{
 		// computeP(x1, x2) should be P(x1 <= X <= x2)
 		NormalDistribution dist(0.0f, 1.0f);
-		double p_positive = dist.computePfromZero(2.0);       // P(X <= 2)
-		double p_range    = dist.computeP(-2.0, 2.0);          // P(-2 <= X <= 2)
+		double p_positive = dist.computePfromZero(2.0); // P(X <= 2)
+		double p_range = dist.computeP(-2.0, 2.0);      // P(-2 <= X <= 2)
 		// Symmetric: P(-inf to 2) - P(-inf to -2) ≈ P(-2 to 2)
 		QVERIFY(p_range > 0.90); // very close to 0.9545
 		QCOMPARE(p_positive, 0.5 + 0.5 * dist.computeP(-2.0, 2.0));
@@ -285,7 +281,7 @@ private slots:
 		// Weibull mode for a > 1: b * ((a-1)/a)^(1/a)
 		WeibullDistribution dist(2.0f, 1.0f);
 		double mode = dist.computeMode();
-		QVERIFY(mode >= 0.0); // mode should be non-negative
+		QVERIFY(mode >= 0.0);               // mode should be non-negative
 		QCOMPARE(mode, dist.computeMode()); // deterministic
 	}
 

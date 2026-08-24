@@ -159,15 +159,15 @@ class ccPointCloudLOD
 	struct Node
 	{
 		// Warning: put the non aligned members (< 4 bytes) at the end to avoid too much alignment padding!
-		uint32_t               pointCount;          //  4 bytes
-		float                  radius;              //  4 bytes
-		CCVector3f             center;              // 12 bytes
-		std::array<int32_t, 8> childIndexes;        // 32 bytes
-		uint32_t               firstCodeIndex;      //  4 bytes
-		uint32_t               displayedPointCount; //  4 bytes
-		uint8_t                level;               //  1 byte
-		uint8_t                childCount;          //  1 byte
-		uint8_t                intersection;        //  1 byte
+		uint32_t pointCount;                 //  4 bytes
+		float radius;                        //  4 bytes
+		CCVector3f center;                   // 12 bytes
+		std::array<int32_t, 8> childIndexes; // 32 bytes
+		uint32_t firstCodeIndex;             //  4 bytes
+		uint32_t displayedPointCount;        //  4 bytes
+		uint8_t level;                       //  1 byte
+		uint8_t childCount;                  //  1 byte
+		uint8_t intersection;                //  1 byte
 
 		// Total												// 63 bytes (64 with alignment)
 

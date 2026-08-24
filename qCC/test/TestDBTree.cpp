@@ -28,12 +28,11 @@
  *
  * @see ccDBRoot.cpp
  */
+#include <QString>
+#include <QTest>
+#include <ccBBox.h>
 #include <ccHObject.h>
 #include <ccPointCloud.h>
-#include <ccBBox.h>
-
-#include <QTest>
-#include <QString>
 
 class TestDBTree : public QObject
 {
@@ -61,7 +60,7 @@ class TestDBTree : public QObject
 		ccHObject* a2 = new ccHObject("a2");
 		ccHObject* b1 = new ccHObject("b1");
 
-		root->addChild(a);  // DP_PARENT_OF_OTHER default → child deleted on remove
+		root->addChild(a); // DP_PARENT_OF_OTHER default → child deleted on remove
 		root->addChild(b);
 		a->addChild(a1);
 		a->addChild(a2);
@@ -133,7 +132,7 @@ class TestDBTree : public QObject
 		parent.addChild(&child, ccHObject::DP_NONE); // avoid delete
 
 		QCOMPARE(parent.getChild(0), &child);
-		QCOMPARE(parent.getChild(99), nullptr);      // out of range
+		QCOMPARE(parent.getChild(99), nullptr); // out of range
 		QCOMPARE(parent.getChildrenNumber(), 1u);
 	}
 
@@ -258,7 +257,7 @@ class TestDBTree : public QObject
 		ccHObject child("child");
 
 		parent.addChild(&child, ccHObject::DP_PARENT_OF_OTHER); // normally deletes
-		parent.detachChild(&child);                               // but detach skips delete
+		parent.detachChild(&child);                             // but detach skips delete
 
 		QCOMPARE(parent.getChildrenNumber(), 0u);
 		QCOMPARE(child.getParent(), nullptr);

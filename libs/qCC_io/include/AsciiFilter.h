@@ -43,9 +43,10 @@
  * @see AsciiSaveDlg for the export configuration dialog
  */
 
-#include "FileIOFilter.h"
 #include "AsciiOpenDlg.h"
 #include "AsciiSaveDlg.h"
+#include "FileIOFilter.h"
+
 #include <QByteArray>
 #include <QTextStream>
 
@@ -136,11 +137,9 @@ class QCC_IO_LIB_API AsciiFilter : public FileIOFilter
 	 * @param[in] parameters Load parameters
 	 * @return CC_FILE_ERROR
 	 */
-	CC_FILE_ERROR loadAsciiData(const QByteArray& data, QString sourceName,
-	                            ccHObject& container, LoadParameters& parameters);
+	CC_FILE_ERROR loadAsciiData(const QByteArray& data, QString sourceName, ccHObject& container, LoadParameters& parameters);
 
   public: // Persistent default settings (for dialog pre-filling)
-
 	/**
 	 * @brief Set default number of header lines to skip
 	 *
@@ -212,10 +211,10 @@ class QCC_IO_LIB_API AsciiFilter : public FileIOFilter
 	 * @param[in] parameters Load parameters
 	 * @return CC_FILE_ERROR
 	 */
-	CC_FILE_ERROR loadStream(QTextStream&    stream,
-	                         QString         filenameOrTitle,
-	                         qint64          dataSize,
-	                         ccHObject&      container,
+	CC_FILE_ERROR loadStream(QTextStream& stream,
+	                         QString filenameOrTitle,
+	                         qint64 dataSize,
+	                         ccHObject& container,
 	                         LoadParameters& parameters);
 
 	/**
@@ -239,17 +238,17 @@ class QCC_IO_LIB_API AsciiFilter : public FileIOFilter
 	 * @param[in] showLabelsIn2D Whether to create 2D labels\n
 	 * @return CC_FILE_ERROR
 	 */
-	CC_FILE_ERROR loadCloudFromFormatedAsciiStream(QTextStream&                  stream,
-	                                               QString                       filenameOrTitle,
-	                                               ccHObject&                    container,
+	CC_FILE_ERROR loadCloudFromFormatedAsciiStream(QTextStream& stream,
+	                                               QString filenameOrTitle,
+	                                               ccHObject& container,
 	                                               const AsciiOpenDlg::Sequence& openSequence,
-	                                               char                          separator,
-	                                               bool                          commaAsDecimal,
-	                                               unsigned                      approximateNumberOfLines,
-	                                               qint64                        fileSize,
-	                                               unsigned                      maxCloudSize,
-	                                               unsigned                      skipLines,
-	                                               double                        quaternionScale,
-	                                               LoadParameters&               parameters,
-	                                               bool                          showLabelsIn2D = false);
+	                                               char separator,
+	                                               bool commaAsDecimal,
+	                                               unsigned approximateNumberOfLines,
+	                                               qint64 fileSize,
+	                                               unsigned maxCloudSize,
+	                                               unsigned skipLines,
+	                                               double quaternionScale,
+	                                               LoadParameters& parameters,
+	                                               bool showLabelsIn2D = false);
 };

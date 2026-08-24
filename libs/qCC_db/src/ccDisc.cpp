@@ -25,10 +25,10 @@
 #include <ccPointCloud.h>
 
 ccDisc::ccDisc(PointCoordinateType radius,
-               const ccGLMatrix*   transMat /*= nullptr*/,
-               QString             name /*= QString("Disc")*/,
-               unsigned            precision /*= DEFAULT_DRAWING_PRECISION*/,
-               unsigned            uniqueID /*= ccUniqueIDGenerator::InvalidUniqueID*/)
+               const ccGLMatrix* transMat /*= nullptr*/,
+               QString name /*= QString("Disc")*/,
+               unsigned precision /*= DEFAULT_DRAWING_PRECISION*/,
+               unsigned uniqueID /*= ccUniqueIDGenerator::InvalidUniqueID*/)
     : ccGenericPrimitive(name, transMat, uniqueID)
     , m_radius(std::abs(radius))
 {

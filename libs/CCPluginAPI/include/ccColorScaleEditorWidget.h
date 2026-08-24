@@ -46,9 +46,9 @@ class CCPLUGIN_LIB_API ColorScaleElementSlider : public QWidget
 
   public:
 	//! Default constructor
-	ColorScaleElementSlider(double          relativePos = 0.0,
-	                        QColor          color       = Qt::black,
-	                        QWidget*        parent      = nullptr,
+	ColorScaleElementSlider(double relativePos = 0.0,
+	                        QColor color = Qt::black,
+	                        QWidget* parent = nullptr,
 	                        Qt::Orientation orientation = Qt::Horizontal);
 
 	//! Sets selection state
@@ -153,9 +153,9 @@ class CCPLUGIN_LIB_API ColorScaleEditorBaseWidget : public QWidget
   public:
 	//! Defautl constructor
 	ColorScaleEditorBaseWidget(SharedColorScaleElementSliders sliders,
-	                           Qt::Orientation                orientation,
-	                           int                            margin,
-	                           QWidget*                       parent = nullptr)
+	                           Qt::Orientation orientation,
+	                           int margin,
+	                           QWidget* parent = nullptr)
 	    : QWidget(parent)
 	    , m_sliders(sliders)
 	    , m_orientation(orientation)

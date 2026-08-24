@@ -84,10 +84,10 @@ ccColorFromScalarDlg::ccColorFromScalarDlg(QWidget* parent, ccPointCloud* pointC
 	m_labels_max[1] = m_ui->MaxLabelG;
 	m_labels_max[2] = m_ui->MaxLabelB;
 	m_labels_max[3] = m_ui->MaxLabelA;
-	m_reverse[0]    = m_ui->reverseR;
-	m_reverse[1]    = m_ui->reverseG;
-	m_reverse[2]    = m_ui->reverseB;
-	m_reverse[3]    = m_ui->reverseA;
+	m_reverse[0] = m_ui->reverseR;
+	m_reverse[1] = m_ui->reverseG;
+	m_reverse[2] = m_ui->reverseB;
+	m_reverse[3] = m_ui->reverseA;
 
 	m_ui->fixA->setChecked(true); // set alpha fixed to checked
 
@@ -126,13 +126,13 @@ ccColorFromScalarDlg::ccColorFromScalarDlg(QWidget* parent, ccPointCloud* pointC
 		}
 		else
 		{
-			m_storedOrigColorScale   = sf->getColorScale();
-			m_storedOrigSatRange     = sf->saturationRange();
+			m_storedOrigColorScale = sf->getColorScale();
+			m_storedOrigSatRange = sf->saturationRange();
 			m_storedOrigDisplayRange = sf->displayRange();
 
 			for (unsigned i = 0; i < c_channelCount; i++)
 			{
-				m_scalars[i]   = nullptr;
+				m_scalars[i] = nullptr;
 				m_prevFixed[i] = true;
 				m_combos[i]->clear();
 				for (unsigned int s = 0; s < m_cloud->getNumberOfScalarFields(); s++)
@@ -255,7 +255,7 @@ void ccColorFromScalarDlg::updateColormaps()
 
 			// populate colour ramps
 			Qt::GlobalColor start_colors[c_channelCount] = {Qt::black, Qt::black, Qt::black, Qt::black};
-			Qt::GlobalColor end_colors[c_channelCount]   = {Qt::red, Qt::green, Qt::blue, Qt::white};
+			Qt::GlobalColor end_colors[c_channelCount] = {Qt::red, Qt::green, Qt::blue, Qt::white};
 
 			for (unsigned i = 0; i < c_channelCount; i++)
 			{
@@ -284,7 +284,7 @@ void ccColorFromScalarDlg::updateColormaps()
 
 			// populate colour ramps
 			Qt::GlobalColor start_colors[c_channelCount] = {Qt::black, Qt::gray, Qt::black, Qt::black};
-			Qt::GlobalColor end_colors[c_channelCount]   = {Qt::red, Qt::green, Qt::white, Qt::white};
+			Qt::GlobalColor end_colors[c_channelCount] = {Qt::red, Qt::green, Qt::white, Qt::white};
 
 			for (unsigned i = 0; i < c_channelCount; i++)
 			{
@@ -470,8 +470,8 @@ void ccColorFromScalarDlg::updateSpinBoxLimits(int n)
 		ccScalarField* sf = static_cast<ccScalarField*>(m_cloud->getScalarField(m_combos[n]->currentIndex()));
 		if (sf)
 		{
-			m_minSat[n]           = sf->getMin();
-			m_maxSat[n]           = sf->getMax();
+			m_minSat[n] = sf->getMin();
+			m_maxSat[n] = sf->getMax();
 			double singleStepSize = (m_maxSat[n] - m_minSat[n]) / 100.0;
 			if (singleStepSize < 0.01)
 			{

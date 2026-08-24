@@ -30,17 +30,15 @@
  */
 #include <QCoreApplication>
 #include <QListWidget>
-
-#include <ccConsole.h>
-
-#include <QTest>
 #include <QString>
+#include <QTest>
+#include <ccConsole.h>
 
 class TestConsole : public QObject
 {
 	Q_OBJECT
 
-private slots:
+  private slots:
 
 	void testInitAndInstance()
 	{

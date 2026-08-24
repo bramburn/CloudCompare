@@ -172,7 +172,7 @@ void cc2DViewportLabel::drawMeOnly(CC_DRAW_CONTEXT& context)
 		QFont titleFont(context.display->getTextDisplayFont()); // takes rendering zoom into account!
 		titleFont.setBold(true);
 		QFontMetrics titleFontMetrics(titleFont);
-		int          titleHeight = titleFontMetrics.height();
+		int titleHeight = titleFontMetrics.height();
 
 		int xStart = static_cast<int>(dC.x + 0.5 * context.glW + std::min<float>(m_roi[0], m_roi[2]) * relativeZoom);
 		int yStart = static_cast<int>(dC.y + 0.5 * context.glH + std::min<float>(m_roi[1], m_roi[3]) * relativeZoom);

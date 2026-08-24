@@ -195,10 +195,10 @@ void cc3DMouseManager::on3DMouseKeyDown(int key)
 		ccGLWindowInterface* activeWin = m_appInterface->getActiveGLWindow();
 		if (activeWin != nullptr)
 		{
-			CCVector3d  axis(0, 0, -1);
-			CCVector3d  trans(0, 0, 0);
+			CCVector3d axis(0, 0, -1);
+			CCVector3d trans(0, 0, 0);
 			ccGLMatrixd mat;
-			double      angle = M_PI / 2;
+			double angle = M_PI / 2;
 			if (key == Mouse3DInput::V3DK_CCW)
 			{
 				angle = -angle;
@@ -267,10 +267,10 @@ void cc3DMouseManager::on3DMouseCMDKeyDown(int cmd)
 		ccGLWindowInterface* activeWin = m_appInterface->getActiveGLWindow();
 		if (activeWin != nullptr)
 		{
-			CCVector3d  axis(0, 0, -1);
-			CCVector3d  trans(0, 0, 0);
+			CCVector3d axis(0, 0, -1);
+			CCVector3d trans(0, 0, 0);
 			ccGLMatrixd mat;
-			double      angle = M_PI / 2;
+			double angle = M_PI / 2;
 			if (cmd == Mouse3DInput::V3DCMD_VIEW_ROLLCCW)
 			{
 				angle = -angle;
@@ -287,10 +287,10 @@ void cc3DMouseManager::on3DMouseCMDKeyDown(int cmd)
 		ccGLWindowInterface* activeWin = m_appInterface->getActiveGLWindow();
 		if (activeWin != nullptr)
 		{
-			CCVector3d  axis(0, 1, 0);
-			CCVector3d  trans(0, 0, 0);
+			CCVector3d axis(0, 1, 0);
+			CCVector3d trans(0, 0, 0);
 			ccGLMatrixd mat;
-			double      angle = M_PI / 2;
+			double angle = M_PI / 2;
 			if (cmd == Mouse3DInput::V3DCMD_VIEW_SPINCCW)
 			{
 				angle = -angle;
@@ -306,10 +306,10 @@ void cc3DMouseManager::on3DMouseCMDKeyDown(int cmd)
 		ccGLWindowInterface* activeWin = m_appInterface->getActiveGLWindow();
 		if (activeWin != nullptr)
 		{
-			CCVector3d  axis(1, 0, 0);
-			CCVector3d  trans(0, 0, 0);
+			CCVector3d axis(1, 0, 0);
+			CCVector3d trans(0, 0, 0);
 			ccGLMatrixd mat;
-			double      angle = M_PI / 2;
+			double angle = M_PI / 2;
 			if (cmd == Mouse3DInput::V3DCMD_VIEW_TILTCCW)
 			{
 				angle = -angle;

@@ -64,7 +64,7 @@ class ccMesh;
 class QCC_DB_LIB_API ccSubMesh : public ccGenericMesh
 {
   public:
-		/**
+	/**
 	 * @brief Construct a sub-mesh referencing a parent mesh
 	 *
 	 * @param[in] parentMesh The owning mesh
@@ -81,35 +81,35 @@ class QCC_DB_LIB_API ccSubMesh : public ccGenericMesh
 
 	// inherited methods (ccHObject)
 	ccBBox getOwnBB(bool withGLFeatures = false) override;
-	bool   isSerializable() const override
+	bool isSerializable() const override
 	{
 		return true;
 	}
 
 	// inherited methods (ccGenericMesh)
-	ccGenericPointCloud*    getAssociatedCloud() const override;
-	void                    refreshBB() override;
-	bool                    interpolateNormalsBC(unsigned triIndex, const CCVector3d& w, CCVector3& N) override;
-	bool                    interpolateColors(unsigned triIndex, const CCVector3& P, ccColor::Rgb& color) override;
-	bool                    interpolateColorsBC(unsigned triIndex, const CCVector3d& w, ccColor::Rgb& color) override;
-	bool                    interpolateColors(unsigned triIndex, const CCVector3& P, ccColor::Rgba& color) override;
-	bool                    interpolateColorsBC(unsigned triIndex, const CCVector3d& w, ccColor::Rgba& color) override;
-	bool                    getColorFromMaterial(unsigned triIndex, const CCVector3& P, ccColor::Rgba& color, bool interpolateColorIfNoTexture) override;
-	bool                    getVertexColorFromMaterial(unsigned triIndex, unsigned char vertIndex, ccColor::Rgba& color, bool returnColorIfNoTexture) override;
-	bool                    hasMaterials() const override;
-	const ccMaterialSet*    getMaterialSet() const override;
-	int                     getTriangleMtlIndex(unsigned triangleIndex) const override;
-	bool                    hasTextures() const override;
+	ccGenericPointCloud* getAssociatedCloud() const override;
+	void refreshBB() override;
+	bool interpolateNormalsBC(unsigned triIndex, const CCVector3d& w, CCVector3& N) override;
+	bool interpolateColors(unsigned triIndex, const CCVector3& P, ccColor::Rgb& color) override;
+	bool interpolateColorsBC(unsigned triIndex, const CCVector3d& w, ccColor::Rgb& color) override;
+	bool interpolateColors(unsigned triIndex, const CCVector3& P, ccColor::Rgba& color) override;
+	bool interpolateColorsBC(unsigned triIndex, const CCVector3d& w, ccColor::Rgba& color) override;
+	bool getColorFromMaterial(unsigned triIndex, const CCVector3& P, ccColor::Rgba& color, bool interpolateColorIfNoTexture) override;
+	bool getVertexColorFromMaterial(unsigned triIndex, unsigned char vertIndex, ccColor::Rgba& color, bool returnColorIfNoTexture) override;
+	bool hasMaterials() const override;
+	const ccMaterialSet* getMaterialSet() const override;
+	int getTriangleMtlIndex(unsigned triangleIndex) const override;
+	bool hasTextures() const override;
 	TextureCoordsContainer* getTexCoordinatesTable() const override;
-	void                    getTriangleTexCoordinates(unsigned triIndex, TexCoords2D*& tx1, TexCoords2D*& tx2, TexCoords2D*& tx3) const override;
-	bool                    hasPerTriangleTexCoordIndexes() const override;
-	void                    getTriangleTexCoordinatesIndexes(unsigned triangleIndex, int& i1, int& i2, int& i3) const override;
-	bool                    hasTriNormals() const override;
-	void                    getTriangleNormalIndexes(unsigned triangleIndex, int& i1, int& i2, int& i3) const override;
-	bool                    getTriangleNormals(unsigned triangleIndex, CCVector3& Na, CCVector3& Nb, CCVector3& Nc) const override;
-	NormsIndexesTableType*  getTriNormsTable() const override;
-	unsigned                capacity() const override;
-	void                    setGlobalShift(const CCVector3d& shift) override
+	void getTriangleTexCoordinates(unsigned triIndex, TexCoords2D*& tx1, TexCoords2D*& tx2, TexCoords2D*& tx3) const override;
+	bool hasPerTriangleTexCoordIndexes() const override;
+	void getTriangleTexCoordinatesIndexes(unsigned triangleIndex, int& i1, int& i2, int& i3) const override;
+	bool hasTriNormals() const override;
+	void getTriangleNormalIndexes(unsigned triangleIndex, int& i1, int& i2, int& i3) const override;
+	bool getTriangleNormals(unsigned triangleIndex, CCVector3& Na, CCVector3& Nb, CCVector3& Nc) const override;
+	NormsIndexesTableType* getTriNormsTable() const override;
+	unsigned capacity() const override;
+	void setGlobalShift(const CCVector3d& shift) override
 	{ /* this method shouldn't be called on ccSubMesh instances */
 		assert(false);
 	}
@@ -138,9 +138,9 @@ class QCC_DB_LIB_API ccSubMesh : public ccGenericMesh
 	CCCoreLib::GenericTriangle* _getTriangle(unsigned index) override; // temporary object
 	CCCoreLib::VerticesIndexes* getNextTriangleVertIndexes() override;
 	CCCoreLib::VerticesIndexes* getTriangleVertIndexes(unsigned triangleIndex) override;
-	void                        getTriangleVertices(unsigned triangleIndex, CCVector3& A, CCVector3& B, CCVector3& C) const override;
-	void                        getBoundingBox(CCVector3& bbMin, CCVector3& bbMax) override;
-	bool                        interpolateNormals(unsigned triIndex, const CCVector3& P, CCVector3& N) override;
+	void getTriangleVertices(unsigned triangleIndex, CCVector3& A, CCVector3& B, CCVector3& C) const override;
+	void getBoundingBox(CCVector3& bbMin, CCVector3& bbMax) override;
+	bool interpolateNormals(unsigned triIndex, const CCVector3& P, CCVector3& N) override;
 
 	//! Returns global index (i.e. relative to the associated mesh) of a given element
 	/** \param localIndex local index (i.e. relative to the internal index container)
@@ -222,9 +222,9 @@ class QCC_DB_LIB_API ccSubMesh : public ccGenericMesh
 	    \param newRemainingTriangleIndexes if an index map is provided, it will be used to 'translate' global indexes of triangles remaining in the source sub-mesh
 	    \return the new sub-mesh if successful
 	**/
-	ccSubMesh* createNewSubMeshFromSelection(bool                    removeSelectedTriangles,
+	ccSubMesh* createNewSubMeshFromSelection(bool removeSelectedTriangles,
 	                                         const std::vector<int>& selectedTriangleIndexes,
-	                                         IndexMap*               newRemainingTriangleIndexes = nullptr);
+	                                         IndexMap* newRemainingTriangleIndexes = nullptr);
 
 	//! Creates a new sub mesh with the selected vertices only
 	/** Creates a new sub-mesh structure with the vertices that are tagged as "visible" (see ccGenericPointCloud::visibilityArray).
@@ -237,10 +237,10 @@ class QCC_DB_LIB_API ccSubMesh : public ccGenericMesh
 
   protected:
 	// inherited from ccHObject
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	void  onUpdateOf(ccHObject* obj) override;
+	void onUpdateOf(ccHObject* obj) override;
 
 	//! Associated mesh
 	ccMesh* m_associatedMesh;

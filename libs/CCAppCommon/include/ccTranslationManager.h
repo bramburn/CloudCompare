@@ -95,12 +95,12 @@ class CCAPPCOMMON_LIB_API ccTranslationManager : public QObject
 	struct CCAPPCOMMON_LIB_API TranslatorFile
 	{
 		QString prefix; //!< File prefix
-		QString path;    //!< Path
+		QString path;   //!< Path
 	};
 	using TranslatorFileList = QVector<TranslatorFile>;
 
 	using TranslationInfo = QPair<QString, QString>;
-	using LanguageList    = QVector<TranslationInfo>;
+	using LanguageList = QVector<TranslationInfo>;
 
 	/// Get language preference
 	QString languagePref() const;
@@ -115,4 +115,3 @@ class CCAPPCOMMON_LIB_API ccTranslationManager : public QObject
 	/// Registered translator files
 	TranslatorFileList mTranslatorFileInfo;
 };
-

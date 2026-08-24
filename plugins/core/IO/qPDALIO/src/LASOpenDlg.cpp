@@ -184,8 +184,8 @@ void LASOpenDlg::clearEVLRs()
 	extraFieldGroupBox->setChecked(false);
 }
 
-void LASOpenDlg::setInfos(QString           filename,
-                          unsigned          pointCount,
+void LASOpenDlg::setInfos(QString filename,
+                          unsigned pointCount,
                           const CCVector3d& bbMin,
                           const CCVector3d& bbMax)
 {

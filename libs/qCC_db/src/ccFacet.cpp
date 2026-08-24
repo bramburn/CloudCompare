@@ -54,13 +54,13 @@
 #include <MeshSamplingTools.h>
 #include <Neighbourhood.h>
 
-constexpr const char* DEFAULT_POLYGON_MESH_NAME   = "2D polygon";
-constexpr const char* DEFAULT_CONTOUR_NAME        = "Contour";
+constexpr const char* DEFAULT_POLYGON_MESH_NAME = "2D polygon";
+constexpr const char* DEFAULT_CONTOUR_NAME = "Contour";
 constexpr const char* DEFAULT_CONTOUR_POINTS_NAME = "Contour points";
-constexpr const char* DEFAULT_ORIGIN_POINTS_NAME  = "Origin points";
+constexpr const char* DEFAULT_ORIGIN_POINTS_NAME = "Origin points";
 
 ccFacet::ccFacet(PointCoordinateType maxEdgeLength /*=0*/,
-                 const QString&      name /*=QString("Facet")*/)
+                 const QString& name /*=QString("Facet")*/)
     : ccHObject(name)
     , m_polygonMesh(nullptr)
     , m_contourPolyline(nullptr)
@@ -149,9 +149,9 @@ ccFacet* ccFacet::clone() const
 		}
 	}
 
-	facet->m_center           = m_center;
-	facet->m_rms              = m_rms;
-	facet->m_surface          = m_surface;
+	facet->m_center = m_center;
+	facet->m_rms = m_rms;
+	facet->m_surface = m_surface;
 	facet->m_showNormalVector = m_showNormalVector;
 	memcpy(facet->m_planeEquation, m_planeEquation, sizeof(PointCoordinateType) * 4);
 	facet->setVisible(isVisible());
@@ -162,9 +162,9 @@ ccFacet* ccFacet::clone() const
 }
 
 ccFacet* ccFacet::Create(CCCoreLib::GenericIndexedCloudPersist* cloud,
-                         PointCoordinateType                    maxEdgeLength /*=0*/,
-                         bool                                   transferOwnership /*=false*/,
-                         const PointCoordinateType*             planeEquation /*=nullptr*/)
+                         PointCoordinateType maxEdgeLength /*=0*/,
+                         bool transferOwnership /*=false*/,
+                         const PointCoordinateType* planeEquation /*=nullptr*/)
 {
 	assert(cloud);
 
@@ -204,7 +204,7 @@ ccFacet* ccFacet::Create(CCCoreLib::GenericIndexedCloudPersist* cloud,
 }
 
 bool ccFacet::createInternalRepresentation(CCCoreLib::GenericIndexedCloudPersist* points,
-                                           const PointCoordinateType*             planeEquation /*=nullptr*/)
+                                           const PointCoordinateType* planeEquation /*=nullptr*/)
 {
 	assert(points);
 	if (!points)
@@ -340,7 +340,7 @@ bool ccFacet::createInternalRepresentation(CCCoreLib::GenericIndexedCloudPersist
 		{
 			// compute the facet surface
 			CCCoreLib::Delaunay2dMesh dm;
-			std::string               errorStr;
+			std::string errorStr;
 			if (dm.buildMesh(hullPointsVector, CCCoreLib::Delaunay2dMesh::USE_ALL_POINTS, errorStr))
 			{
 				if (removePointsOutsideHull)

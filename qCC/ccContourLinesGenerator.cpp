@@ -73,16 +73,16 @@ static QString GetPolylineName(double value, unsigned mainIndex, unsigned partNu
 struct ContourGenerationParameters
 {
 	QMultiMap<double, ccPolyline*> contourLines;
-	QMap<double, unsigned>         contourLinesMainCount;
-	const ccRasterGrid*            grid                      = nullptr;
-	bool                           projectContourOnAltitudes = false;
+	QMap<double, unsigned> contourLinesMainCount;
+	const ccRasterGrid* grid = nullptr;
+	bool projectContourOnAltitudes = false;
 };
 
-static CPLErr ContourWriter(double  dfLevel,
-                            int     nPoints,
+static CPLErr ContourWriter(double dfLevel,
+                            int nPoints,
                             double* padfX,
                             double* padfY,
-                            void*   userData)
+                            void* userData)
 {
 	if (nPoints < 2)
 	{
@@ -98,8 +98,8 @@ static CPLErr ContourWriter(double  dfLevel,
 		return CE_Failure;
 	}
 
-	ccPointCloud*            vertices = nullptr;
-	ccPolyline*              poly     = nullptr;
+	ccPointCloud* vertices = nullptr;
+	ccPolyline* poly = nullptr;
 	std::vector<ccPolyline*> previousPolylines;
 
 	unsigned contourIndex = 1;
@@ -128,9 +128,9 @@ static CPLErr ContourWriter(double  dfLevel,
 
 		if (params->projectContourOnAltitudes)
 		{
-			int    xi = std::min(std::max(static_cast<int>(padfX[i]), 0), static_cast<int>(params->grid->width) - 1);
-			int    yi = std::min(std::max(static_cast<int>(padfY[i]), 0), static_cast<int>(params->grid->height) - 1);
-			double h  = params->grid->rows[yi][xi].h;
+			int xi = std::min(std::max(static_cast<int>(padfX[i]), 0), static_cast<int>(params->grid->width) - 1);
+			int yi = std::min(std::max(static_cast<int>(padfY[i]), 0), static_cast<int>(params->grid->height) - 1);
+			double h = params->grid->rows[yi][xi].h;
 			if (std::isfinite(h))
 			{
 				P.z = static_cast<PointCoordinateType>(h);
@@ -161,7 +161,7 @@ static CPLErr ContourWriter(double  dfLevel,
 							return CE_Failure;
 						}
 					}
-					poly     = nullptr;
+					poly = nullptr;
 					vertices = nullptr;
 				}
 				continue;
@@ -226,9 +226,9 @@ static CPLErr ContourWriter(double  dfLevel,
  * @param[out] contourLines Output vector of contour polylines
  * @return true on success
  */
-bool ccContourLinesGenerator::GenerateContourLines(ccRasterGrid*             rasterGrid,
-                                                   const CCVector2d&         gridMinCornerXY,
-                                                   const Parameters&         params,
+bool ccContourLinesGenerator::GenerateContourLines(ccRasterGrid* rasterGrid,
+                                                   const CCVector2d& gridMinCornerXY,
+                                                   const Parameters& params,
                                                    std::vector<ccPolyline*>& contourLines)
 {
 	if (!rasterGrid || !rasterGrid->isValid())
@@ -276,16 +276,16 @@ bool ccContourLinesGenerator::GenerateContourLines(ccRasterGrid*             ras
 
 		// invoke the GDAL 'Contour Generator'
 		ContourGenerationParameters gdalParams;
-		gdalParams.grid                      = rasterGrid;
+		gdalParams.grid = rasterGrid;
 		gdalParams.projectContourOnAltitudes = params.projectContourOnAltitudes;
-		GDALContourGeneratorH hCG            = GDAL_CG_Create(rasterGrid->width,
-                                                   rasterGrid->height,
-                                                   std::isnan(params.emptyCellsValue) ? FALSE : TRUE,
-                                                   params.emptyCellsValue,
-                                                   params.step,
-                                                   params.startAltitude,
-                                                   ContourWriter,
-                                                   &gdalParams);
+		GDALContourGeneratorH hCG = GDAL_CG_Create(rasterGrid->width,
+		                                           rasterGrid->height,
+		                                           std::isnan(params.emptyCellsValue) ? FALSE : TRUE,
+		                                           params.emptyCellsValue,
+		                                           params.step,
+		                                           params.startAltitude,
+		                                           ContourWriter,
+		                                           &gdalParams);
 		if (!hCG)
 		{
 			ccLog::Error("[GDAL] Failed to create contour generator");
@@ -313,7 +313,7 @@ bool ccContourLinesGenerator::GenerateContourLines(ccRasterGrid*             ras
 						if (params.altitudes)
 						{
 							ScalarType value = params.altitudes->getValue(layerIndex++);
-							scanline[i]      = ccScalarField::ValidValue(value) ? value : params.emptyCellsValue;
+							scanline[i] = ccScalarField::ValidValue(value) ? value : params.emptyCellsValue;
 						}
 						else
 						{
@@ -393,7 +393,7 @@ bool ccContourLinesGenerator::GenerateContourLines(ccRasterGrid*             ras
 			for (unsigned j = 0; j < rasterGrid->height; ++j)
 			{
 				const ccRasterGrid::Row& cellRow = rasterGrid->rows[j];
-				double*                  row     = &(grid[(j + margin) * xDim + margin]);
+				double* row = &(grid[(j + margin) * xDim + margin]);
 				for (unsigned i = 0; i < rasterGrid->width; ++i)
 				{
 					if (cellRow[i].nbPoints || !sparseLayer)
@@ -401,7 +401,7 @@ bool ccContourLinesGenerator::GenerateContourLines(ccRasterGrid*             ras
 						if (params.altitudes)
 						{
 							ScalarType value = params.altitudes->getValue(layerIndex++);
-							row[i]           = ccScalarField::ValidValue(value) ? value : params.emptyCellsValue;
+							row[i] = ccScalarField::ValidValue(value) ? value : params.emptyCellsValue;
 						}
 						else
 						{
@@ -443,7 +443,7 @@ bool ccContourLinesGenerator::GenerateContourLines(ccRasterGrid*             ras
 				// convert them to poylines
 				for (int i = 0; i < lineCount; ++i)
 				{
-					int      vertCount    = iso.getContourLength(i);
+					int vertCount = iso.getContourLength(i);
 					unsigned subPartCount = 0;
 					if (vertCount >= params.minVertexCount)
 					{
@@ -451,7 +451,7 @@ bool ccContourLinesGenerator::GenerateContourLines(ccRasterGrid*             ras
 						while (startVi < vertCount)
 						{
 							ccPointCloud* vertices = new ccPointCloud("vertices");
-							ccPolyline*   poly     = new ccPolyline(vertices);
+							ccPolyline* poly = new ccPolyline(vertices);
 							poly->addChild(vertices);
 							bool isClosed = (startVi == 0 ? iso.isContourClosed(i) : false);
 							if (poly->reserve(vertCount - startVi) && vertices->reserve(vertCount - startVi))
@@ -472,9 +472,9 @@ bool ccContourLinesGenerator::GenerateContourLines(ccRasterGrid*             ras
 									/*P.u[Y] = */ P.y = static_cast<PointCoordinateType>((y + 0.5) * rasterGrid->gridStep + gridMinCornerXY.y);
 									if (params.projectContourOnAltitudes)
 									{
-										int    xi = std::min(std::max(static_cast<int>(x), 0), static_cast<int>(rasterGrid->width) - 1);
-										int    yi = std::min(std::max(static_cast<int>(y), 0), static_cast<int>(rasterGrid->height) - 1);
-										double h  = rasterGrid->rows[yi][xi].h;
+										int xi = std::min(std::max(static_cast<int>(x), 0), static_cast<int>(rasterGrid->width) - 1);
+										int yi = std::min(std::max(static_cast<int>(y), 0), static_cast<int>(rasterGrid->height) - 1);
+										double h = rasterGrid->rows[yi][xi].h;
 										if (std::isfinite(h))
 										{
 											/*P.u[Z] = */ P.z = static_cast<PointCoordinateType>(h);

@@ -153,7 +153,7 @@ bool ccMaterialSet::ParseMTL(const QString& path, const QString& filename, ccMat
 {
 	// open mtl file
 	QString fullPathFilename = path + '/' + filename;
-	QFile   file(fullPathFilename);
+	QFile file(fullPathFilename);
 	if (!file.open(QFile::ReadOnly))
 	{
 		errors << QString("Error reading file: %1").arg(filename);
@@ -165,8 +165,8 @@ bool ccMaterialSet::ParseMTL(const QString& path, const QString& filename, ccMat
 
 	QTextStream stream(&file);
 
-	QString            currentLine      = stream.readLine();
-	unsigned           currentLineIndex = 0;
+	QString currentLine = stream.readLine();
+	unsigned currentLineIndex = 0;
 	ccMaterial::Shared currentMaterial(nullptr);
 
 	while (!currentLine.isNull())
@@ -329,7 +329,7 @@ bool ccMaterialSet::ParseMTL(const QString& path, const QString& filename, ccMat
 			         || tokens.front() == "map_Ks")
 			{
 				// DGM: in case there's hidden or space characters at the beginning of the line...
-				int     shift           = currentLine.indexOf("map_K", 0);
+				int shift = currentLine.indexOf("map_K", 0);
 				QString textureFilename = (shift + 7 < currentLine.size() ? currentLine.mid(shift + 7).trimmed() : QString());
 				// remove any quotes around the filename (Photoscan 1.4 bug)
 				if (textureFilename.startsWith("\""))
@@ -369,7 +369,7 @@ bool ccMaterialSet::saveAsMTL(const QString& path, const QString& baseFilename, 
 {
 	// open mtl file
 	QString filename = path + '/' + baseFilename + ".mtl";
-	QFile   file(filename);
+	QFile file(filename);
 	if (!file.open(QFile::WriteOnly))
 	{
 		errors << QString("Error writing file: %1").arg(filename);
@@ -381,7 +381,7 @@ bool ccMaterialSet::saveAsMTL(const QString& path, const QString& baseFilename, 
 
 	// texture filenames already used
 	QMap<QString, QString> absFilenamesSaved;
-	QSet<QString>          filenamesUsed;
+	QSet<QString> filenamesUsed;
 
 	size_t matIndex = 0;
 	for (ccMaterialSet::const_iterator it = begin(); it != end(); ++it, ++matIndex)

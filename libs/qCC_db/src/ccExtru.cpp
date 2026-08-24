@@ -49,9 +49,9 @@
 #include <Delaunay2dMesh.h>
 
 ccExtru::ccExtru(const std::vector<CCVector2>& profile,
-                 PointCoordinateType           height,
-                 const ccGLMatrix*             transMat /*= 0*/,
-                 QString                       name /*="Extrusion"*/)
+                 PointCoordinateType height,
+                 const ccGLMatrix* transMat /*= 0*/,
+                 QString name /*="Extrusion"*/)
     : ccGenericPrimitive(name, transMat)
     , m_height(height)
     , m_profile(profile)
@@ -94,7 +94,7 @@ bool ccExtru::buildUp()
 	}
 
 	unsigned numberOfTriangles = mesh.size();
-	int*     triIndexes        = mesh.getTriangleVertIndexesArray();
+	int* triIndexes = mesh.getTriangleVertIndexesArray();
 
 	if (numberOfTriangles == 0)
 		return false;
@@ -128,7 +128,7 @@ bool ccExtru::buildUp()
 		verts->addPoint(CCVector3(P.x, P.y, m_height));
 
 		const CCVector2& PNext = m_profile[(i + 1) % count];
-		CCVector2        N(-(PNext.y - P.y), PNext.x - P.x);
+		CCVector2 N(-(PNext.y - P.y), PNext.x - P.x);
 		N.normalize();
 		m_triNormals->addElement(ccNormalVectors::GetNormIndex(CCVector3(N.x, N.y, 0.0).u));
 	}

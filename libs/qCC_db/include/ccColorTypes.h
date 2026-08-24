@@ -94,10 +94,10 @@ using ColorCompType = unsigned char;
 namespace ccColor
 {
 	//! Maximum color component value.
-	constexpr ColorCompType MAX  = 255;
+	constexpr ColorCompType MAX = 255;
 
 	//! Maximum color component value (int).
-	constexpr int           MAXi = 255;
+	constexpr int MAXi = 255;
 
 	/**
 	 * @brief RGB color template.
@@ -112,7 +112,10 @@ namespace ccColor
 		union
 		{
 			//! Named components.
-			struct { Type r, g, b; };
+			struct
+			{
+				Type r, g, b;
+			};
 			//! Array access.
 			Type rgb[3];
 		};
@@ -367,11 +370,11 @@ namespace ccColor
 	//! Default background color (dark blue).
 	constexpr Rgbub defaultBkgColor(10, 102, 151);
 	//! Default foreground color (white).
-	constexpr Rgba  defaultColor(MAX, MAX, MAX, MAX);
+	constexpr Rgba defaultColor(MAX, MAX, MAX, MAX);
 	//! Default label background color.
-	constexpr Rgba  defaultLabelBkgColor(MAX, MAX, MAX, MAX);
+	constexpr Rgba defaultLabelBkgColor(MAX, MAX, MAX, MAX);
 	//! Default label marker color (magenta).
-	constexpr Rgba  defaultLabelMarkerColor(MAX, 0, MAX, MAX);
+	constexpr Rgba defaultLabelMarkerColor(MAX, 0, MAX, MAX);
 
 	/**
 	 * @brief Colors generator.

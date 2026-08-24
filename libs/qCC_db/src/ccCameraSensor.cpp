@@ -53,33 +53,33 @@ void ccCameraSensor::IntrinsicParameters::GetKinectDefaults(IntrinsicParameters&
 	// default Kinect parameters from:
 	//  "Accuracy and Resolution of Kinect Depth Data for Indoor Mapping Applications"
 	//  Kourosh Khoshelham and Sander Oude Elberink
-	constexpr float focal_mm     = static_cast<float>(5.45e-3); // focal length (real distance in meter)
-	constexpr float pixelSize_mm = static_cast<float>(9.3e-6);  // pixel size (real distance in meter)
+	constexpr float focal_mm = static_cast<float>(5.45e-3);    // focal length (real distance in meter)
+	constexpr float pixelSize_mm = static_cast<float>(9.3e-6); // pixel size (real distance in meter)
 
-	params.vertFocal_pix      = ConvertFocalMMToPix(focal_mm, pixelSize_mm);
-	params.pixelSize_mm[0]    = pixelSize_mm;
-	params.pixelSize_mm[1]    = pixelSize_mm;
-	params.skew               = static_cast<float>(0.0);                 // skew in image
-	params.vFOV_rad           = static_cast<float>(43.0 * M_PI / 180.0); // vertical field of view (in rad)
-	params.zNear_mm           = static_cast<float>(0.5);                 // distance to the closest recordable depth
-	params.zFar_mm            = static_cast<float>(5.0);                 // distance to the furthest recordable depth
-	params.arrayWidth         = 640;                                     // image width
-	params.arrayHeight        = 480;                                     // image height
+	params.vertFocal_pix = ConvertFocalMMToPix(focal_mm, pixelSize_mm);
+	params.pixelSize_mm[0] = pixelSize_mm;
+	params.pixelSize_mm[1] = pixelSize_mm;
+	params.skew = static_cast<float>(0.0);                     // skew in image
+	params.vFOV_rad = static_cast<float>(43.0 * M_PI / 180.0); // vertical field of view (in rad)
+	params.zNear_mm = static_cast<float>(0.5);                 // distance to the closest recordable depth
+	params.zFar_mm = static_cast<float>(5.0);                  // distance to the furthest recordable depth
+	params.arrayWidth = 640;                                   // image width
+	params.arrayHeight = 480;                                  // image height
 	params.principal_point[0] = params.arrayWidth / 2.0f;
 	params.principal_point[1] = params.arrayHeight / 2.0f;
 }
 
 ccCameraSensor::BrownDistortionParameters::BrownDistortionParameters()
 {
-	principalPointOffset[0]  = 0;
-	principalPointOffset[1]  = 0;
+	principalPointOffset[0] = 0;
+	principalPointOffset[1] = 0;
 	linearDisparityParams[0] = 0;
 	linearDisparityParams[1] = 0;
-	K_BrownParams[0]         = 0;
-	K_BrownParams[1]         = 0;
-	K_BrownParams[2]         = 0;
-	P_BrownParams[0]         = 0;
-	P_BrownParams[1]         = 0;
+	K_BrownParams[0] = 0;
+	K_BrownParams[1] = 0;
+	K_BrownParams[2] = 0;
+	P_BrownParams[0] = 0;
+	P_BrownParams[1] = 0;
 }
 
 void ccCameraSensor::BrownDistortionParameters::GetKinectDefaults(BrownDistortionParameters& params)
@@ -87,15 +87,15 @@ void ccCameraSensor::BrownDistortionParameters::GetKinectDefaults(BrownDistortio
 	// default Kinect parameters from:
 	//  "Accuracy and Resolution of Kinect Depth Data for Indoor Mapping Applications"
 	//  Kourosh Khoshelham and Sander Oude Elberink
-	params.principalPointOffset[0]  = static_cast<float>(-0.063 * 1.0e-3);
-	params.principalPointOffset[1]  = static_cast<float>(-0.039 * 1.0e-3);
+	params.principalPointOffset[0] = static_cast<float>(-0.063 * 1.0e-3);
+	params.principalPointOffset[1] = static_cast<float>(-0.039 * 1.0e-3);
 	params.linearDisparityParams[0] = static_cast<float>(-2.85 * 1.0e-3);
 	params.linearDisparityParams[1] = static_cast<float>(3.0);
-	params.K_BrownParams[0]         = static_cast<float>(2.42 * 1.0e-3);
-	params.K_BrownParams[1]         = static_cast<float>(-1.7 * 1.0e-4);
-	params.K_BrownParams[2]         = static_cast<float>(0.0);
-	params.P_BrownParams[0]         = static_cast<float>(-3.3 * 1.0e-4);
-	params.P_BrownParams[1]         = static_cast<float>(5.25 * 1.0e-4);
+	params.K_BrownParams[0] = static_cast<float>(2.42 * 1.0e-3);
+	params.K_BrownParams[1] = static_cast<float>(-1.7 * 1.0e-4);
+	params.K_BrownParams[2] = static_cast<float>(0.0);
+	params.P_BrownParams[0] = static_cast<float>(-3.3 * 1.0e-4);
+	params.P_BrownParams[1] = static_cast<float>(5.25 * 1.0e-4);
 }
 
 ccCameraSensor::FrustumInformation::FrustumInformation()
@@ -225,8 +225,8 @@ ccCameraSensor::ccCameraSensor(const ccCameraSensor& sensor)
 		{
 			// simply duplicate the struct
 			RadialDistortionParameters* clone = new RadialDistortionParameters;
-			*clone                            = *static_cast<const RadialDistortionParameters*>(sensor.m_distortionParams.data());
-			clonedDistParams                  = LensDistortionParameters::Shared(clone);
+			*clone = *static_cast<const RadialDistortionParameters*>(sensor.m_distortionParams.data());
+			clonedDistParams = LensDistortionParameters::Shared(clone);
 		}
 		break;
 
@@ -234,8 +234,8 @@ ccCameraSensor::ccCameraSensor(const ccCameraSensor& sensor)
 		{
 			// simply duplicate the struct
 			ExtendedRadialDistortionParameters* clone = new ExtendedRadialDistortionParameters;
-			*clone                                    = *static_cast<const ExtendedRadialDistortionParameters*>(sensor.m_distortionParams.data());
-			clonedDistParams                          = LensDistortionParameters::Shared(clone);
+			*clone = *static_cast<const ExtendedRadialDistortionParameters*>(sensor.m_distortionParams.data());
+			clonedDistParams = LensDistortionParameters::Shared(clone);
 		}
 		break;
 
@@ -243,8 +243,8 @@ ccCameraSensor::ccCameraSensor(const ccCameraSensor& sensor)
 		{
 			// simply duplicate the struct
 			BrownDistortionParameters* clone = new BrownDistortionParameters;
-			*clone                           = *static_cast<const BrownDistortionParameters*>(sensor.m_distortionParams.data());
-			clonedDistParams                 = LensDistortionParameters::Shared(clone);
+			*clone = *static_cast<const BrownDistortionParameters*>(sensor.m_distortionParams.data());
+			clonedDistParams = LensDistortionParameters::Shared(clone);
 		}
 		break;
 
@@ -371,10 +371,10 @@ bool ccCameraSensor::applyViewport(ccGenericGLDisplay* win /*=nullptr*/) const
 	// aspect ratio
 	double sensorAR = static_cast<double>(m_intrinsicParams.arrayWidth) / m_intrinsicParams.arrayHeight;
 	// the sensor width (fully) fits the 3D view width
-	QSize  screenSize = win->getScreenSize();
-	double screenAR   = static_cast<double>(screenSize.width()) / screenSize.height();
-	double fOV_rad    = 2 * atan(tan(m_intrinsicParams.vFOV_rad / 2) * screenAR * (screenAR >= sensorAR ? 1.0 : sensorAR));
-	double fov_deg    = CCCoreLib::RadiansToDegrees(fOV_rad);
+	QSize screenSize = win->getScreenSize();
+	double screenAR = static_cast<double>(screenSize.width()) / screenSize.height();
+	double fOV_rad = 2 * atan(tan(m_intrinsicParams.vFOV_rad / 2) * screenAR * (screenAR >= sensorAR ? 1.0 : sensorAR));
+	double fov_deg = CCCoreLib::RadiansToDegrees(fOV_rad);
 	ccLog::Print(QString("[ccCameraSensor::applyViewport] Horizontal FOV = %1 deg").arg(fov_deg));
 
 	// camera position/orientation
@@ -418,10 +418,10 @@ bool ccCameraSensor::applyImageViewport(ccImage* image, ccGenericGLDisplay* win 
 	double imageAR = static_cast<double>(m_intrinsicParams.arrayWidth) / m_intrinsicParams.arrayHeight;
 
 	// the image width (fully) fits the 3D view width
-	QSize  screenSize = win->getScreenSize();
-	double screenAR   = static_cast<double>(screenSize.width()) / screenSize.height();
-	double fOV_rad    = 2 * atan((m_intrinsicParams.arrayHeight / (2 * m_intrinsicParams.vertFocal_pix)) * screenAR * (screenAR >= imageAR ? 1.0 : imageAR));
-	double fov_deg    = CCCoreLib::RadiansToDegrees(fOV_rad);
+	QSize screenSize = win->getScreenSize();
+	double screenAR = static_cast<double>(screenSize.width()) / screenSize.height();
+	double fOV_rad = 2 * atan((m_intrinsicParams.arrayHeight / (2 * m_intrinsicParams.vertFocal_pix)) * screenAR * (screenAR >= imageAR ? 1.0 : imageAR));
+	double fov_deg = CCCoreLib::RadiansToDegrees(fOV_rad);
 	ccLog::Print(QString("[ccCameraSensor::applyImageViewport] Horizontal FOV = %1 deg").arg(fov_deg));
 
 	// camera position/orientation
@@ -453,8 +453,8 @@ void ccCameraSensor::computeProjectionMatrix()
 	float* mat = m_projectionMatrix.data();
 
 	// diagonal
-	mat[0]  = getHorizFocal_pix();
-	mat[5]  = getVertFocal_pix();
+	mat[0] = getHorizFocal_pix();
+	mat[5] = getVertFocal_pix();
 	mat[10] = 1.0f;
 	mat[15] = 1.0f;
 
@@ -733,8 +733,8 @@ bool ccCameraSensor::fromLocalCoordToImageCoord(const CCVector3& localCoord, CCV
 	ccGLMatrix mat;
 	if (!getProjectionMatrix(mat))
 		return false;
-	CCVector3 projCoord = mat * imageCoordSystem;  // at this stage, coordinates are homogeneous
-	projCoord           = projCoord / projCoord.z; // coordinates are now in pixels
+	CCVector3 projCoord = mat * imageCoordSystem; // at this stage, coordinates are homogeneous
+	projCoord = projCoord / projCoord.z;          // coordinates are now in pixels
 	CCVector2 initial(projCoord.x, projCoord.y);
 	CCVector2 coord = initial;
 
@@ -774,15 +774,15 @@ bool ccCameraSensor::fromLocalCoordToImageCoord(const CCVector3& localCoord, CCV
 		if (m_distortionParams->getModel() == SIMPLE_RADIAL_DISTORTION)
 		{
 			const RadialDistortionParameters* params = static_cast<RadialDistortionParameters*>(m_distortionParams.data());
-			double                            norm2  = p.norm2();
-			double                            rp     = 1.0 + norm2 * (params->k1 + norm2 * params->k2); // scaling factor to undo the radial distortion
+			double norm2 = p.norm2();
+			double rp = 1.0 + norm2 * (params->k1 + norm2 * params->k2); // scaling factor to undo the radial distortion
 			factor *= rp;
 		}
 		else if (m_distortionParams->getModel() == EXTENDED_RADIAL_DISTORTION)
 		{
 			const ExtendedRadialDistortionParameters* params = static_cast<ExtendedRadialDistortionParameters*>(m_distortionParams.data());
-			double                                    norm2  = p.norm2();
-			double                                    rp     = 1.0 + norm2 * (params->k1 + norm2 * (params->k2 + norm2 * params->k3)); // scaling factor to undo the radial distortion
+			double norm2 = p.norm2();
+			double rp = 1.0 + norm2 * (params->k1 + norm2 * (params->k2 + norm2 * params->k3)); // scaling factor to undo the radial distortion
 			factor *= rp;
 		}
 	}
@@ -811,8 +811,8 @@ bool ccCameraSensor::fromImageCoordToLocalCoord(const CCVector2& imageCoord, CCV
 	// apply inverse radial distortion (if any)
 	// TODO
 
-	double     factor = static_cast<double>(m_intrinsicParams.vertFocal_pix);
-	CCVector3d p      = p2 / factor;
+	double factor = static_cast<double>(m_intrinsicParams.vertFocal_pix);
+	CCVector3d p = p2 / factor;
 
 	// perspective
 	localCoord = CCVector3(static_cast<PointCoordinateType>(p.x * depth),
@@ -853,8 +853,8 @@ bool ccCameraSensor::fromImageCoordToGlobalCoord(const CCVector2& imageCoord, CC
 		return false;
 	}
 
-	CCVector3           camC = trans.getTranslationAsVec3D();
-	PointCoordinateType dZ   = z0 - camC.z;
+	CCVector3 camC = trans.getTranslationAsVec3D();
+	PointCoordinateType dZ = z0 - camC.z;
 
 	PointCoordinateType u = dZ / viewDir.z;
 #ifdef BACK_POINTS_CULLING
@@ -888,33 +888,33 @@ bool ccCameraSensor::fromRealImCoordToIdealImCoord(const CCVector2& real, CCVect
 	case BROWN_DISTORTION:
 	{
 		const BrownDistortionParameters* distParams = static_cast<BrownDistortionParameters*>(m_distortionParams.data());
-		const float&                     sX         = m_intrinsicParams.pixelSize_mm[0];
-		const float&                     sY         = m_intrinsicParams.pixelSize_mm[1];
+		const float& sX = m_intrinsicParams.pixelSize_mm[0];
+		const float& sY = m_intrinsicParams.pixelSize_mm[1];
 
 		// 1st correction : principal point correction
 		float cx = m_intrinsicParams.principal_point[0] + distParams->principalPointOffset[0] / sX; // in pixels
 		float cy = m_intrinsicParams.principal_point[1] + distParams->principalPointOffset[1] / sY; // in pixels
 
 		// 2nd correction : Brown's lens distortion correction
-		float        dx  = (static_cast<float>(real.x) - cx) * m_intrinsicParams.pixelSize_mm[0]; // real distance
-		float        dy  = (static_cast<float>(real.y) - cy) * m_intrinsicParams.pixelSize_mm[1]; // real distance
-		float        dx2 = dx * dx;
-		float        dy2 = dy * dy;
-		float        r   = sqrt(dx2 + dy2);
-		float        r2  = r * r;
-		float        r4  = r2 * r2;
-		float        r6  = r4 * r2;
-		const float& K1  = distParams->K_BrownParams[0];
-		const float& K2  = distParams->K_BrownParams[1];
-		const float& K3  = distParams->K_BrownParams[2];
-		const float& P1  = distParams->P_BrownParams[0];
-		const float& P2  = distParams->P_BrownParams[1];
+		float dx = (static_cast<float>(real.x) - cx) * m_intrinsicParams.pixelSize_mm[0]; // real distance
+		float dy = (static_cast<float>(real.y) - cy) * m_intrinsicParams.pixelSize_mm[1]; // real distance
+		float dx2 = dx * dx;
+		float dy2 = dy * dy;
+		float r = sqrt(dx2 + dy2);
+		float r2 = r * r;
+		float r4 = r2 * r2;
+		float r6 = r4 * r2;
+		const float& K1 = distParams->K_BrownParams[0];
+		const float& K2 = distParams->K_BrownParams[1];
+		const float& K3 = distParams->K_BrownParams[2];
+		const float& P1 = distParams->P_BrownParams[0];
+		const float& P2 = distParams->P_BrownParams[1];
 
 		// compute new value
 		float correctedX = (dx * (1 + K1 * r2 + K2 * r4 + K3 * r6) + P1 * (r2 + 2 * dx2) + 2 * P2 * dx * dy);
 		float correctedY = (dy * (1 + K1 * r2 + K2 * r4 + K3 * r6) + P2 * (r2 + 2 * dy2) + 2 * P1 * dx * dy);
-		ideal.x          = static_cast<PointCoordinateType>(correctedX / sX);
-		ideal.y          = static_cast<PointCoordinateType>(correctedY / sY);
+		ideal.x = static_cast<PointCoordinateType>(correctedX / sX);
+		ideal.y = static_cast<PointCoordinateType>(correctedY / sY);
 
 		// We test if the new pixel falls inside the image boundaries
 		// return (	ideal.x >= 0 && ideal.x < m_intrinsicParams.arrayWidth
@@ -960,9 +960,9 @@ bool ccCameraSensor::computeUncertainty(const CCVector2& pixel, const float dept
 		const BrownDistortionParameters* distParams = static_cast<BrownDistortionParameters*>(m_distortionParams.data());
 		// TODO ==> check if the input pixel coordinate must be the real or ideal projection
 
-		const int&   width  = m_intrinsicParams.arrayWidth;
-		const int&   height = m_intrinsicParams.arrayHeight;
-		const float* c      = m_intrinsicParams.principal_point;
+		const int& width = m_intrinsicParams.arrayWidth;
+		const int& height = m_intrinsicParams.arrayHeight;
+		const float* c = m_intrinsicParams.principal_point;
 
 		// check validity
 		if (pixel.x < 0 || pixel.x > width
@@ -971,14 +971,14 @@ bool ccCameraSensor::computeUncertainty(const CCVector2& pixel, const float dept
 			return false;
 
 		// init parameters
-		const float& A         = distParams->linearDisparityParams[0];
-		float        z2        = depth * depth;
-		float        invSigmaD = 8.0f;
-		float        factor    = A * z2 / invSigmaD;
+		const float& A = distParams->linearDisparityParams[0];
+		float z2 = depth * depth;
+		float invSigmaD = 8.0f;
+		float factor = A * z2 / invSigmaD;
 
-		const float& mu             = m_intrinsicParams.pixelSize_mm[0];
-		const float  verFocal_pix   = getVertFocal_pix();
-		const float  horizFocal_pix = getHorizFocal_pix();
+		const float& mu = m_intrinsicParams.pixelSize_mm[0];
+		const float verFocal_pix = getVertFocal_pix();
+		const float horizFocal_pix = getHorizFocal_pix();
 
 		// computes uncertainty
 		sigma.x = static_cast<ScalarType>(std::abs(factor * (pixel.x - c[0]) / horizFocal_pix));
@@ -1028,8 +1028,8 @@ bool ccCameraSensor::computeUncertainty(CCCoreLib::ReferenceCloud* points, std::
 	for (unsigned i = 0; i < count; i++)
 	{
 		const CCVector3* coordGlobal = points->getPoint(i);
-		CCVector3        coordLocal;
-		CCVector2        coordImage;
+		CCVector3 coordLocal;
+		CCVector2 coordImage;
 
 		if (fromGlobalCoordToLocalCoord(*coordGlobal, coordLocal)
 		    && fromLocalCoordToImageCoord(coordLocal, coordImage))
@@ -1068,8 +1068,8 @@ QImage ccCameraSensor::undistort(const QImage& image) const
 	case EXTENDED_RADIAL_DISTORTION:
 	{
 		const RadialDistortionParameters* params = static_cast<RadialDistortionParameters*>(m_distortionParams.data());
-		float                             k1     = params->k1;
-		float                             k2     = params->k2;
+		float k1 = params->k1;
+		float k2 = params->k2;
 		if (k1 == 0 && k2 == 0)
 		{
 			ccLog::Warning("[ccCameraSensor::undistort] Invalid radial distortion coefficients!");
@@ -1081,7 +1081,7 @@ QImage ccCameraSensor::undistort(const QImage& image) const
 			k3 = static_cast<ExtendedRadialDistortionParameters*>(m_distortionParams.data())->k3;
 		}
 
-		int width  = image.width();
+		int width = image.width();
 		int height = image.height();
 
 		float xScale = image.width() / static_cast<float>(m_intrinsicParams.arrayWidth);
@@ -1097,35 +1097,35 @@ QImage ccCameraSensor::undistort(const QImage& image) const
 		}
 		newImage.fill(0);
 
-		float vertFocal_pix  = getVertFocal_pix() * xScale;
+		float vertFocal_pix = getVertFocal_pix() * xScale;
 		float horizFocal_pix = getHorizFocal_pix() * yScale;
-		float vf2            = vertFocal_pix * vertFocal_pix;
-		float hf2            = horizFocal_pix * horizFocal_pix;
-		float cx             = m_intrinsicParams.principal_point[0] * xScale;
-		float cy             = m_intrinsicParams.principal_point[1] * yScale;
+		float vf2 = vertFocal_pix * vertFocal_pix;
+		float hf2 = horizFocal_pix * horizFocal_pix;
+		float cx = m_intrinsicParams.principal_point[0] * xScale;
+		float cy = m_intrinsicParams.principal_point[1] * yScale;
 		k1 *= rScale;
 		k2 *= rScale;
 		k3 *= rScale;
 
 		assert((image.depth() % 8) == 0);
-		int          depth        = image.depth() / 8;
-		int          bytesPerLine = image.bytesPerLine();
-		const uchar* iImageBits   = image.bits();
-		uchar*       oImageBits   = newImage.bits();
+		int depth = image.depth() / 8;
+		int bytesPerLine = image.bytesPerLine();
+		const uchar* iImageBits = image.bits();
+		uchar* oImageBits = newImage.bits();
 
 		// image undistortion
 		{
 			for (int i = 0; i < width; ++i)
 			{
-				float x  = i - cx;
+				float x = i - cx;
 				float x2 = x * x;
 				for (int j = 0; j < height; ++j)
 				{
-					float y  = j - cy;
+					float y = j - cy;
 					float y2 = y * y;
 
-					float p2  = x2 / hf2 + y2 / vf2;                    // p = pix/f
-					float rp  = 1.0f + p2 * (k1 + p2 * (k2 + p2 * k3)); // r(p) = 1.0 + k1 * ||p||^2 + k2 * ||p||^4 + k3 * ||p||^6
+					float p2 = x2 / hf2 + y2 / vf2;                    // p = pix/f
+					float rp = 1.0f + p2 * (k1 + p2 * (k2 + p2 * k3)); // r(p) = 1.0 + k1 * ||p||^2 + k2 * ||p||^4 + k3 * ||p||^6
 					float eqx = rp * x + cx;
 					float eqy = rp * y + cy;
 
@@ -1137,7 +1137,7 @@ QImage ccCameraSensor::undistort(const QImage& image) const
 					    && pixy < height)
 					{
 						const uchar* iPixel = iImageBits + j * bytesPerLine + i * depth;
-						uchar*       oPixel = oImageBits + pixy * bytesPerLine + pixx * depth;
+						uchar* oPixel = oImageBits + pixy * bytesPerLine + pixx * depth;
 						memcpy(oPixel, iPixel, depth);
 						// newImage.setPixel(i, j, image.pixel(pixx, pixy));
 					}
@@ -1209,7 +1209,7 @@ CCVector3 ccCameraSensor::computeUpperLeftPoint() const
 	if (m_intrinsicParams.arrayHeight == 0)
 		return CCVector3(0, 0, 0);
 
-	float ar      = m_intrinsicParams.arrayHeight != 0 ? static_cast<float>(m_intrinsicParams.arrayWidth) / m_intrinsicParams.arrayHeight : 1.0f;
+	float ar = m_intrinsicParams.arrayHeight != 0 ? static_cast<float>(m_intrinsicParams.arrayWidth) / m_intrinsicParams.arrayHeight : 1.0f;
 	float halfFov = m_intrinsicParams.vFOV_rad / 2;
 
 	CCVector3 upperLeftPoint;
@@ -1228,13 +1228,13 @@ bool ccCameraSensor::computeFrustumCorners()
 		return false;
 	}
 
-	float ar      = static_cast<float>(m_intrinsicParams.arrayWidth) / m_intrinsicParams.arrayHeight;
+	float ar = static_cast<float>(m_intrinsicParams.arrayWidth) / m_intrinsicParams.arrayHeight;
 	float halfFov = m_intrinsicParams.vFOV_rad / 2;
 
-	float        xIn   = std::abs(tan(halfFov * ar));
-	float        yIn   = std::abs(tan(halfFov));
+	float xIn = std::abs(tan(halfFov * ar));
+	float yIn = std::abs(tan(halfFov));
 	const float& zNear = m_intrinsicParams.zNear_mm;
-	const float& zFar  = m_intrinsicParams.zFar_mm;
+	const float& zFar = m_intrinsicParams.zFar_mm;
 
 	// compute points of frustum in image coordinate system (warning: in the system, z=-z)
 	if (!m_frustumInfos.initFrustumCorners())
@@ -1258,7 +1258,7 @@ bool ccCameraSensor::computeFrustumCorners()
 	const CCVector3* P5 = m_frustumInfos.frustumCorners->getPoint(5);
 
 	float dz = P0->z - P5->z;
-	float z  = (std::abs(dz) < FLT_EPSILON ? P0->z : (P0->norm2() - P5->norm2()) / (2 * dz));
+	float z = (std::abs(dz) < FLT_EPSILON ? P0->z : (P0->norm2() - P5->norm2()) / (2 * dz));
 
 	m_frustumInfos.center = CCVector3(0, 0, z);
 
@@ -1353,7 +1353,7 @@ bool ccCameraSensor::computeGlobalPlaneCoefficients(float planeCoefficients[6][4
 	{
 		CCVector3 v1 = frustumCorners[i * 2 + 1] - frustumCorners[i * 2];
 		CCVector3 v2 = frustumCorners[((i + 1) * 2) % 8] - frustumCorners[i * 2];
-		CCVector3 n  = v1.cross(v2);
+		CCVector3 n = v1.cross(v2);
 		n.normalize();
 		planeCoefficients[i][0] = n.x;
 		planeCoefficients[i][1] = n.y;
@@ -1364,7 +1364,7 @@ bool ccCameraSensor::computeGlobalPlaneCoefficients(float planeCoefficients[6][4
 	{
 		CCVector3 v1 = frustumCorners[0] - frustumCorners[6];
 		CCVector3 v2 = frustumCorners[4] - frustumCorners[6];
-		CCVector3 n  = v1.cross(v2);
+		CCVector3 n = v1.cross(v2);
 		n.normalize();
 		planeCoefficients[4][0] = n.x;
 		planeCoefficients[4][1] = n.y;
@@ -1416,7 +1416,7 @@ void ccCameraSensor::drawMeOnly(CC_DRAW_CONTEXT& context)
 		return;
 
 	// color-based entity picking
-	bool         entityPickingMode = MACRO_EntityPicking(context);
+	bool entityPickingMode = MACRO_EntityPicking(context);
 	ccColor::Rgb pickingColor;
 	if (entityPickingMode)
 	{
@@ -1433,10 +1433,10 @@ void ccCameraSensor::drawMeOnly(CC_DRAW_CONTEXT& context)
 	CCVector3 upperLeftPoint = computeUpperLeftPoint();
 
 	// up arrow
-	const PointCoordinateType arrowHeight    = 3 * upperLeftPoint.y / 2;
-	const PointCoordinateType baseHeight     = 6 * upperLeftPoint.y / 5;
+	const PointCoordinateType arrowHeight = 3 * upperLeftPoint.y / 2;
+	const PointCoordinateType baseHeight = 6 * upperLeftPoint.y / 5;
 	const PointCoordinateType arrowHalfWidth = 2 * upperLeftPoint.x / 5;
-	const PointCoordinateType baseHalfWidth  = 1 * upperLeftPoint.x / 5;
+	const PointCoordinateType baseHalfWidth = 1 * upperLeftPoint.x / 5;
 
 	glFunc->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	ccGL::Color(glFunc, entityPickingMode ? pickingColor : m_color);
@@ -1644,12 +1644,12 @@ float ccCameraSensor::ComputeFovRadFromFocalMm(float focal_mm, float ccdSize_mm)
 	return 2 * atan(ccdSize_mm / (2 * focal_mm));
 }
 
-bool ccCameraSensor::computeOrthoRectificationParams(const ccImage*                  image,
+bool ccCameraSensor::computeOrthoRectificationParams(const ccImage* image,
                                                      CCCoreLib::GenericIndexedCloud* keypoints3D,
-                                                     std::vector<KeyPoint>&          keypointsImage,
-                                                     double                          a_out[3],
-                                                     double                          b_out[3],
-                                                     double                          c_out[3]) const
+                                                     std::vector<KeyPoint>& keypointsImage,
+                                                     double a_out[3],
+                                                     double b_out[3],
+                                                     double c_out[3]) const
 {
 	if (!image || !keypoints3D)
 		return false;
@@ -1659,7 +1659,7 @@ bool ccCameraSensor::computeOrthoRectificationParams(const ccImage*             
 		return false;
 
 	// first guess for X (a0 a1 a2 b0 b1 b2 c1 c2)
-	double norm  = static_cast<double>(std::max(image->getW(), image->getH()));
+	double norm = static_cast<double>(std::max(image->getW(), image->getH()));
 	double X0[8] = {1.0 / sqrt(norm),
 	                1.0 / norm,
 	                1.0 / norm,
@@ -1670,9 +1670,9 @@ bool ccCameraSensor::computeOrthoRectificationParams(const ccImage*             
 	                1.0 / norm};
 
 	// compute the A matrix and b vector
-	unsigned Neq = 2 * count;           // number of equations
-	double*  A   = new double[8 * Neq]; // 8 coefficients: a0 a1 a2 b0 b1 b2 c1 c2
-	double*  b   = new double[Neq];
+	unsigned Neq = 2 * count;        // number of equations
+	double* A = new double[8 * Neq]; // 8 coefficients: a0 a1 a2 b0 b1 b2 c1 c2
+	double* b = new double[Neq];
 	if (!A || !b)
 	{
 		// not enough memory
@@ -1687,10 +1687,10 @@ bool ccCameraSensor::computeOrthoRectificationParams(const ccImage*             
 		double* _b = b;
 		for (unsigned i = 0; i < count; ++i)
 		{
-			const KeyPoint&  kp  = keypointsImage[i];
-			double           kpx = static_cast<double>(kp.x);
-			double           kpy = static_cast<double>(kp.y);
-			const CCVector3* P   = keypoints3D->getPoint(kp.index);
+			const KeyPoint& kp = keypointsImage[i];
+			double kpx = static_cast<double>(kp.x);
+			double kpy = static_cast<double>(kp.y);
+			const CCVector3* P = keypoints3D->getPoint(kp.index);
 
 			*_A++ = 1.0;
 			*_A++ = kpx;
@@ -1717,8 +1717,8 @@ bool ccCameraSensor::computeOrthoRectificationParams(const ccImage*             
 	// conjugate gradient initialization
 	// we solve tA.A.X = tA.b
 	CCCoreLib::ConjugateGradient<8, double> cg;
-	CCCoreLib::SquareMatrixd&               tAA = cg.A();
-	double*                                 tAb = cg.b();
+	CCCoreLib::SquareMatrixd& tAA = cg.A();
+	double* tAb = cg.b();
 
 	// compute tA.A and tA.b
 	{
@@ -1727,9 +1727,9 @@ bool ccCameraSensor::computeOrthoRectificationParams(const ccImage*             
 			// tA.A part
 			for (unsigned j = i; j < 8; ++j)
 			{
-				double        sum_prod = 0;
-				const double* _Ai      = A + i;
-				const double* _Aj      = A + j;
+				double sum_prod = 0;
+				const double* _Ai = A + i;
+				const double* _Aj = A + j;
 				for (unsigned k = 0; k < Neq; ++k)
 				{
 					// sum_prod += A[(8*2*k)+i]*A[(8*2*k)+j];
@@ -1742,9 +1742,9 @@ bool ccCameraSensor::computeOrthoRectificationParams(const ccImage*             
 
 			// tA.b part
 			{
-				double        sum_prod = 0;
-				const double* _Ai      = A + i;
-				const double* _b       = b;
+				double sum_prod = 0;
+				const double* _Ai = A + i;
+				const double* _b = b;
 				for (unsigned k = 0; k < Neq; ++k)
 				{
 					// sum_prod += A[(8*2*k)+i]*b[k];
@@ -1791,18 +1791,18 @@ bool ccCameraSensor::computeOrthoRectificationParams(const ccImage*             
 	return true;
 }
 
-ccImage* ccCameraSensor::orthoRectifyAsImageDirect(const ccImage*      image,
+ccImage* ccCameraSensor::orthoRectifyAsImageDirect(const ccImage* image,
                                                    PointCoordinateType Z0,
-                                                   double&             pixelSize,
-                                                   bool                undistortImages /*=true*/,
-                                                   double*             minCorner /*=nullptr*/,
-                                                   double*             maxCorner /*=nullptr*/,
-                                                   double*             realCorners /*=nullptr*/) const
+                                                   double& pixelSize,
+                                                   bool undistortImages /*=true*/,
+                                                   double* minCorner /*=nullptr*/,
+                                                   double* maxCorner /*=nullptr*/,
+                                                   double* realCorners /*=nullptr*/) const
 {
 	// first, we compute the ortho-rectified image corners
 	double corners[8];
 
-	int width  = static_cast<int>(image->getW());
+	int width = static_cast<int>(image->getW());
 	int height = static_cast<int>(image->getH());
 
 	// top-left
@@ -1909,7 +1909,7 @@ ccImage* ccCameraSensor::orthoRectifyAsImageDirect(const ccImage*      image,
 	if (_pixelSize <= 0)
 	{
 		int maxSize = std::max(width, height);
-		_pixelSize  = std::max(dx, dy) / maxSize;
+		_pixelSize = std::max(dx, dy) / maxSize;
 	}
 	unsigned w = static_cast<unsigned>(dx / _pixelSize);
 	unsigned h = static_cast<unsigned>(dy / _pixelSize);
@@ -1918,7 +1918,7 @@ ccImage* ccCameraSensor::orthoRectifyAsImageDirect(const ccImage*      image,
 	if (orthoImage.isNull()) // not enough memory!
 		return nullptr;
 
-	const QRgb blackValue     = qRgb(0, 0, 0);
+	const QRgb blackValue = qRgb(0, 0, 0);
 	const QRgb blackAlphaZero = qRgba(0, 0, 0, 0);
 
 	for (unsigned i = 0; i < w; ++i)
@@ -1953,13 +1953,13 @@ ccImage* ccCameraSensor::orthoRectifyAsImageDirect(const ccImage*      image,
 	return new ccImage(orthoImage, getName());
 }
 
-ccImage* ccCameraSensor::orthoRectifyAsImage(const ccImage*                  image,
+ccImage* ccCameraSensor::orthoRectifyAsImage(const ccImage* image,
                                              CCCoreLib::GenericIndexedCloud* keypoints3D,
-                                             std::vector<KeyPoint>&          keypointsImage,
-                                             double&                         pixelSize,
-                                             double*                         minCorner /*=nullptr*/,
-                                             double*                         maxCorner /*=nullptr*/,
-                                             double*                         realCorners /*=nullptr*/) const
+                                             std::vector<KeyPoint>& keypointsImage,
+                                             double& pixelSize,
+                                             double* minCorner /*=nullptr*/,
+                                             double* maxCorner /*=nullptr*/,
+                                             double* realCorners /*=nullptr*/) const
 {
 	double a[3]{0.0, 0.0, 0.0};
 	double b[3]{0.0, 0.0, 0.0};
@@ -1986,36 +1986,36 @@ ccImage* ccCameraSensor::orthoRectifyAsImage(const ccImage*                  ima
 	double yi;
 	double qi;
 
-	int    width      = static_cast<int>(image->getW());
-	int    height     = static_cast<int>(image->getH());
-	double halfWidth  = width / 2.0;
+	int width = static_cast<int>(image->getW());
+	int height = static_cast<int>(image->getH());
+	double halfWidth = width / 2.0;
 	double halfHeight = height / 2.0;
 
 	// top-left
-	xi         = -halfWidth;
-	yi         = -halfHeight;
-	qi         = 1.0 + c1 * xi + c2 * yi;
+	xi = -halfWidth;
+	yi = -halfHeight;
+	qi = 1.0 + c1 * xi + c2 * yi;
 	corners[0] = (a0 + a1 * xi + a2 * yi) / qi;
 	corners[1] = (b0 + b1 * xi + b2 * yi) / qi;
 
 	// top-right
-	xi         = halfWidth;
-	yi         = -halfHeight;
-	qi         = 1.0 + c1 * xi + c2 * yi;
+	xi = halfWidth;
+	yi = -halfHeight;
+	qi = 1.0 + c1 * xi + c2 * yi;
 	corners[2] = (a0 + a1 * xi + a2 * yi) / qi;
 	corners[3] = (b0 + b1 * xi + b2 * yi) / qi;
 
 	// bottom-right
-	xi         = halfWidth;
-	yi         = halfHeight;
-	qi         = 1.0 + c1 * xi + c2 * yi;
+	xi = halfWidth;
+	yi = halfHeight;
+	qi = 1.0 + c1 * xi + c2 * yi;
 	corners[4] = (a0 + a1 * xi + a2 * yi) / qi;
 	corners[5] = (b0 + b1 * xi + b2 * yi) / qi;
 
 	// bottom-left
-	xi         = -halfWidth;
-	yi         = halfHeight;
-	qi         = 1.0 + c1 * xi + c2 * yi;
+	xi = -halfWidth;
+	yi = halfHeight;
+	qi = 1.0 + c1 * xi + c2 * yi;
 	corners[6] = (a0 + a1 * xi + a2 * yi) / qi;
 	corners[7] = (b0 + b1 * xi + b2 * yi) / qi;
 
@@ -2061,7 +2061,7 @@ ccImage* ccCameraSensor::orthoRectifyAsImage(const ccImage*                  ima
 	if (_pixelSize <= 0)
 	{
 		int maxSize = std::max(width, height);
-		_pixelSize  = std::max(dx, dy) / maxSize;
+		_pixelSize = std::max(dx, dy) / maxSize;
 	}
 	unsigned w = static_cast<unsigned>(dx / _pixelSize);
 	unsigned h = static_cast<unsigned>(dy / _pixelSize);
@@ -2070,7 +2070,7 @@ ccImage* ccCameraSensor::orthoRectifyAsImage(const ccImage*                  ima
 	if (orthoImage.isNull()) // not enough memory!
 		return nullptr;
 
-	const QRgb blackValue     = qRgb(0, 0, 0);
+	const QRgb blackValue = qRgb(0, 0, 0);
 	const QRgb blackAlphaZero = qRgba(0, 0, 0, 0);
 
 	for (unsigned i = 0; i < w; ++i)
@@ -2081,16 +2081,16 @@ ccImage* ccCameraSensor::orthoRectifyAsImage(const ccImage*                  ima
 			QRgb rgb = blackValue; // output pixel is (transparent) black by default
 
 			double yip = minC[1] + static_cast<double>(j) * _pixelSize;
-			double q   = (c2 * xip - a2) * (c1 * yip - b1) - (c2 * yip - b2) * (c1 * xip - a1);
-			double p   = (a0 - xip) * (c1 * yip - b1) - (b0 - yip) * (c1 * xip - a1);
-			double yi  = p / q;
+			double q = (c2 * xip - a2) * (c1 * yip - b1) - (c2 * yip - b2) * (c1 * xip - a1);
+			double p = (a0 - xip) * (c1 * yip - b1) - (b0 - yip) * (c1 * xip - a1);
+			double yi = p / q;
 			yi += halfHeight;
 			int y = static_cast<int>(yi);
 
 			if (y >= 0 && y < height)
 			{
-				q         = (c1 * xip - a1) * (c2 * yip - b2) - (c1 * yip - b1) * (c2 * xip - a2);
-				p         = (a0 - xip) * (c2 * yip - b2) - (b0 - yip) * (c2 * xip - a2);
+				q = (c1 * xip - a1) * (c2 * yip - b2) - (c1 * yip - b1) * (c2 * xip - a2);
+				p = (a0 - xip) * (c2 * yip - b2) - (b0 - yip) * (c2 * xip - a2);
 				double xi = p / q;
 				xi += halfWidth;
 				int x = static_cast<int>(xi);
@@ -2112,13 +2112,13 @@ ccImage* ccCameraSensor::orthoRectifyAsImage(const ccImage*                  ima
 	return new ccImage(orthoImage, getName());
 }
 
-bool ccCameraSensor::OrthoRectifyAsImages(std::vector<ccImage*>                   images,
-                                          double                                  a[],
-                                          double                                  b[],
-                                          double                                  c[],
-                                          unsigned                                maxSize,
-                                          QDir*                                   outputDir /*=nullptr*/,
-                                          std::vector<ccImage*>*                  result /*=nullptr*/,
+bool ccCameraSensor::OrthoRectifyAsImages(std::vector<ccImage*> images,
+                                          double a[],
+                                          double b[],
+                                          double c[],
+                                          unsigned maxSize,
+                                          QDir* outputDir /*=nullptr*/,
+                                          std::vector<ccImage*>* result /*=nullptr*/,
                                           std::vector<std::pair<double, double>>* relativePos /*=nullptr*/)
 {
 	size_t count = images.size();
@@ -2166,34 +2166,34 @@ bool ccCameraSensor::OrthoRectifyAsImages(std::vector<ccImage*>                 
 		double yi;
 		double qi;
 
-		unsigned width  = images[k]->getW();
+		unsigned width = images[k]->getW();
 		unsigned height = images[k]->getH();
 
 		// top-left
-		xi         = -0.5 * width;
-		yi         = -0.5 * height;
-		qi         = 1.0 + c1 * xi + c2 * yi;
+		xi = -0.5 * width;
+		yi = -0.5 * height;
+		qi = 1.0 + c1 * xi + c2 * yi;
 		corners[0] = (a0 + a1 * xi + a2 * yi) / qi;
 		corners[1] = (b0 + b1 * xi + b2 * yi) / qi;
 
 		// top-right
 		xi = 0.5 * width;
 		// yi = -0.5*height;
-		qi         = 1.0 + c1 * xi + c2 * yi;
+		qi = 1.0 + c1 * xi + c2 * yi;
 		corners[2] = (a0 + a1 * xi + a2 * yi) / qi;
 		corners[3] = (b0 + b1 * xi + b2 * yi) / qi;
 
 		// bottom-right
 		// xi =  0.5*width;
-		yi         = 0.5 * height;
-		qi         = 1.0 + c1 * xi + c2 * yi;
+		yi = 0.5 * height;
+		qi = 1.0 + c1 * xi + c2 * yi;
 		corners[4] = (a0 + a1 * xi + a2 * yi) / qi;
 		corners[5] = (b0 + b1 * xi + b2 * yi) / qi;
 
 		// bottom-left
 		xi = -0.5 * width;
 		// yi = 0.5*height;
-		qi         = 1.0 + c1 * xi + c2 * yi;
+		qi = 1.0 + c1 * xi + c2 * yi;
 		corners[6] = (a0 + a1 * xi + a2 * yi) / qi;
 		corners[7] = (b0 + b1 * xi + b2 * yi) / qi;
 
@@ -2228,8 +2228,8 @@ bool ccCameraSensor::OrthoRectifyAsImages(std::vector<ccImage*>                 
 				globalCorners[3] = maxC[1];
 		}
 
-		double dx   = maxC[0] - minC[0];
-		double dy   = maxC[1] - minC[1];
+		double dx = maxC[0] - minC[0];
+		double dy = maxC[1] - minC[1];
 		double maxd = std::max(dx, dy);
 		if (maxd > maxDimAllImages)
 			maxDimAllImages = maxd;
@@ -2249,7 +2249,7 @@ bool ccCameraSensor::OrthoRectifyAsImages(std::vector<ccImage*>                 
 			stream.setRealNumberPrecision(6);
 			stream << "PixelSize" << ' ' << pixelSize << Qt::endl;
 			stream << "Global3DBBox" << ' ' << globalCorners[0] << ' ' << globalCorners[1] << ' ' << globalCorners[2] << ' ' << globalCorners[3] << Qt::endl;
-			int globalWidth  = static_cast<int>(ceil((globalCorners[2] - globalCorners[0]) / pixelSize));
+			int globalWidth = static_cast<int>(ceil((globalCorners[2] - globalCorners[0]) / pixelSize));
 			int globalHeight = static_cast<int>(ceil((globalCorners[3] - globalCorners[1]) / pixelSize));
 			stream << "Global2DBBox" << ' ' << 0 << ' ' << 0 << ' ' << globalWidth - 1 << ' ' << globalHeight - 1 << Qt::endl;
 		}
@@ -2260,14 +2260,14 @@ bool ccCameraSensor::OrthoRectifyAsImages(std::vector<ccImage*>                 
 	{
 		double* minC = &minCorners[2 * k];
 		double* maxC = &maxCorners[2 * k];
-		double  dx   = maxC[0] - minC[0];
-		double  dy   = maxC[1] - minC[1];
+		double dx = maxC[0] - minC[0];
+		double dy = maxC[1] - minC[1];
 
-		ccImage* image  = images[k];
-		unsigned width  = images[k]->getW();
+		ccImage* image = images[k];
+		unsigned width = images[k]->getW();
 		unsigned height = images[k]->getH();
-		unsigned w      = static_cast<unsigned>(ceil(dx / pixelSize));
-		unsigned h      = static_cast<unsigned>(ceil(dy / pixelSize));
+		unsigned w = static_cast<unsigned>(ceil(dx / pixelSize));
+		unsigned h = static_cast<unsigned>(ceil(dy / pixelSize));
 
 		QImage orthoImage(w, h, QImage::Format_ARGB32);
 		if (orthoImage.isNull()) // not enough memory!
@@ -2302,12 +2302,12 @@ bool ccCameraSensor::OrthoRectifyAsImages(std::vector<ccImage*>                 
 			for (unsigned j = 0; j < h; ++j)
 			{
 				double yip = minC[1] + static_cast<double>(j) * pixelSize;
-				double q   = (c2 * xip - a2) * (c1 * yip - b1) - (c2 * yip - b2) * (c1 * xip - a1);
-				double p   = (a0 - xip) * (c1 * yip - b1) - (b0 - yip) * (c1 * xip - a1);
-				double yi  = p / q;
+				double q = (c2 * xip - a2) * (c1 * yip - b1) - (c2 * yip - b2) * (c1 * xip - a1);
+				double p = (a0 - xip) * (c1 * yip - b1) - (b0 - yip) * (c1 * xip - a1);
+				double yi = p / q;
 
-				q         = (c1 * xip - a1) * (c2 * yip - b2) - (c1 * yip - b1) * (c2 * xip - a2);
-				p         = (a0 - xip) * (c2 * yip - b2) - (b0 - yip) * (c2 * xip - a2);
+				q = (c1 * xip - a1) * (c2 * yip - b2) - (c1 * yip - b1) * (c2 * xip - a2);
+				p = (a0 - xip) * (c2 * yip - b2) - (b0 - yip) * (c2 * xip - a2);
 				double xi = p / q;
 
 				xi += 0.5 * width;
@@ -2347,8 +2347,8 @@ bool ccCameraSensor::OrthoRectifyAsImages(std::vector<ccImage*>                 
 			QFile f(outputDir->absoluteFilePath("ortho_rectification_log.txt"));
 			if (f.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) // always append
 			{
-				double      xShiftGlobal = (minC[0] - globalCorners[0]) / pixelSize;
-				double      yShiftGlobal = (minC[1] - globalCorners[1]) / pixelSize;
+				double xShiftGlobal = (minC[0] - globalCorners[0]) / pixelSize;
+				double yShiftGlobal = (minC[1] - globalCorners[1]) / pixelSize;
 				QTextStream stream(&f);
 				stream.setRealNumberNotation(QTextStream::FixedNotation);
 				stream.setRealNumberPrecision(6);
@@ -2366,9 +2366,9 @@ bool ccCameraSensor::OrthoRectifyAsImages(std::vector<ccImage*>                 
 	return true;
 }
 
-ccPointCloud* ccCameraSensor::orthoRectifyAsCloud(const ccImage*                  image,
+ccPointCloud* ccCameraSensor::orthoRectifyAsCloud(const ccImage* image,
                                                   CCCoreLib::GenericIndexedCloud* keypoints3D,
-                                                  std::vector<KeyPoint>&          keypointsImage) const
+                                                  std::vector<KeyPoint>& keypointsImage) const
 {
 	double a[3]{0.0, 0.0, 0.0};
 	double b[3]{0.0, 0.0, 0.0};
@@ -2389,7 +2389,7 @@ ccPointCloud* ccCameraSensor::orthoRectifyAsCloud(const ccImage*                
 
 	PointCoordinateType defaultZ = 0;
 
-	unsigned width  = image->getW();
+	unsigned width = image->getW();
 	unsigned height = image->getH();
 
 	ccPointCloud* proj = new ccPointCloud(getName() + QString(".ortho-rectified"));
@@ -2410,23 +2410,23 @@ ccPointCloud* ccCameraSensor::orthoRectifyAsCloud(const ccImage*                
 			double xi = static_cast<double>(pi) - 0.5 * width;
 			for (unsigned pj = 0; pj < height; ++pj)
 			{
-				double    yi = static_cast<double>(pj) - 0.5 * height;
-				double    qi = 1.0 + c1 * xi + c2 * yi;
+				double yi = static_cast<double>(pj) - 0.5 * height;
+				double qi = 1.0 + c1 * xi + c2 * yi;
 				CCVector3 P(static_cast<PointCoordinateType>((a0 + a1 * xi + a2 * yi) / qi),
 				            static_cast<PointCoordinateType>((b0 + b1 * xi + b2 * yi) / qi),
 				            defaultZ);
 
 				// and color?
 				QRgb rgb = image->data().pixel(pi, pj);
-				int  r   = qRed(rgb);
-				int  g   = qGreen(rgb);
-				int  b   = qBlue(rgb);
+				int r = qRed(rgb);
+				int g = qGreen(rgb);
+				int b = qBlue(rgb);
 				if (r + g + b > 0)
 				{
 					// add point
 					proj->addPoint(P);
 					// and color
-					int           a = qAlpha(rgb);
+					int a = qAlpha(rgb);
 					ccColor::Rgba color(static_cast<ColorCompType>(r),
 					                    static_cast<ColorCompType>(g),
 					                    static_cast<ColorCompType>(b),
@@ -2468,8 +2468,8 @@ bool ccOctreeFrustumIntersector::build(CCCoreLib::DgmOctree* octree)
 		cell.clear();
 	}
 
-	const CCCoreLib::DgmOctree::cellsContainer&          thePointsAndTheirCellCodes = octree->pointsAndTheirCellCodes();
-	CCCoreLib::DgmOctree::cellsContainer::const_iterator it                         = thePointsAndTheirCellCodes.begin();
+	const CCCoreLib::DgmOctree::cellsContainer& thePointsAndTheirCellCodes = octree->pointsAndTheirCellCodes();
+	CCCoreLib::DgmOctree::cellsContainer::const_iterator it = thePointsAndTheirCellCodes.begin();
 
 	try
 	{
@@ -2545,15 +2545,15 @@ bool ccOctreeFrustumIntersector::build(CCCoreLib::DgmOctree* octree)
 ccOctreeFrustumIntersector::OctreeCellVisibility
 ccOctreeFrustumIntersector::separatingAxisTest(const CCVector3& bbMin,
                                                const CCVector3& bbMax,
-                                               const float      planesCoefficients[6][4],
-                                               const CCVector3  frustumCorners[8],
-                                               const CCVector3  frustumEdges[6],
+                                               const float planesCoefficients[6][4],
+                                               const CCVector3 frustumCorners[8],
+                                               const CCVector3 frustumEdges[6],
                                                const CCVector3& frustumCenter)
 {
 	// first test : if the box is too far from the frustum, there is no intersection
-	CCVector3           boxCenter     = (bbMax + bbMin) / 2;
-	PointCoordinateType dCenter       = (boxCenter - frustumCenter).norm();
-	PointCoordinateType boxRadius     = (bbMax - bbMin).norm();
+	CCVector3 boxCenter = (bbMax + bbMin) / 2;
+	PointCoordinateType dCenter = (boxCenter - frustumCenter).norm();
+	PointCoordinateType boxRadius = (bbMax - bbMin).norm();
 	PointCoordinateType frustumRadius = (frustumCorners[0] - frustumCenter).norm();
 	if (dCenter > boxRadius + frustumRadius)
 		return CELL_OUTSIDE_FRUSTUM;
@@ -2578,7 +2578,7 @@ ccOctreeFrustumIntersector::separatingAxisTest(const CCVector3& bbMin,
 	//	nbOtherFrustumCombinations = n5 = 2
 	//	nbVecToTest = n1 + n2 + n3*n4 = 3 + 5 + 3*6 + n5 = 28;
 	static const unsigned nbVecToTest = 28;
-	CCVector3             VecToTest[nbVecToTest];
+	CCVector3 VecToTest[nbVecToTest];
 	// vectors orthogonals to box planes
 	VecToTest[0] = CCVector3(1, 0, 0);
 	VecToTest[1] = CCVector3(0, 1, 0);
@@ -2590,8 +2590,8 @@ ccOctreeFrustumIntersector::separatingAxisTest(const CCVector3& bbMin,
 	VecToTest[6] = CCVector3(planesCoefficients[3][0], planesCoefficients[3][1], planesCoefficients[3][2]);
 	VecToTest[7] = CCVector3(planesCoefficients[4][0], planesCoefficients[4][1], planesCoefficients[4][2]);
 	// combinations box and frustum
-	VecToTest[8]  = VecToTest[0].cross(frustumEdges[0]);
-	VecToTest[9]  = VecToTest[0].cross(frustumEdges[1]);
+	VecToTest[8] = VecToTest[0].cross(frustumEdges[0]);
+	VecToTest[9] = VecToTest[0].cross(frustumEdges[1]);
 	VecToTest[10] = VecToTest[0].cross(frustumEdges[2]);
 	VecToTest[11] = VecToTest[0].cross(frustumEdges[3]);
 	VecToTest[12] = VecToTest[0].cross(frustumEdges[4]);
@@ -2671,13 +2671,13 @@ ccOctreeFrustumIntersector::separatingAxisTest(const CCVector3& bbMin,
 	return boxInside ? CELL_INSIDE_FRUSTUM : CELL_INTERSECT_FRUSTUM;
 }
 
-void ccOctreeFrustumIntersector::computeFrustumIntersectionByLevel(unsigned char                  level,
+void ccOctreeFrustumIntersector::computeFrustumIntersectionByLevel(unsigned char level,
                                                                    CCCoreLib::DgmOctree::CellCode parentTruncatedCode,
-                                                                   OctreeCellVisibility           parentResult,
-                                                                   const float                    planesCoefficients[6][4],
-                                                                   const CCVector3                ptsFrustum[8],
-                                                                   const CCVector3                edges[6],
-                                                                   const CCVector3&               center)
+                                                                   OctreeCellVisibility parentResult,
+                                                                   const float planesCoefficients[6][4],
+                                                                   const CCVector3 ptsFrustum[8],
+                                                                   const CCVector3 edges[6],
+                                                                   const CCVector3& center)
 {
 	if (parentResult == CELL_OUTSIDE_FRUSTUM)
 		return;
@@ -2720,11 +2720,11 @@ void ccOctreeFrustumIntersector::computeFrustumIntersectionByLevel(unsigned char
 }
 
 void ccOctreeFrustumIntersector::computeFrustumIntersectionWithOctree(std::vector<std::pair<unsigned, CCVector3>>& pointsToTest,
-                                                                      std::vector<unsigned>&                       inCameraFrustum,
-                                                                      const float                                  planesCoefficients[6][4],
-                                                                      const CCVector3                              ptsFrustum[8],
-                                                                      const CCVector3                              edges[6],
-                                                                      const CCVector3&                             center)
+                                                                      std::vector<unsigned>& inCameraFrustum,
+                                                                      const float planesCoefficients[6][4],
+                                                                      const CCVector3 ptsFrustum[8],
+                                                                      const CCVector3 edges[6],
+                                                                      const CCVector3& center)
 {
 	// clear old result
 	{
@@ -2743,7 +2743,7 @@ void ccOctreeFrustumIntersector::computeFrustumIntersectionWithOctree(std::vecto
 
 	// dealing with cells completely inside the frustum
 	std::unordered_set<CCCoreLib::DgmOctree::CellCode>::const_iterator it;
-	CCCoreLib::ReferenceCloud                                          pointsInCell(m_associatedOctree->associatedCloud());
+	CCCoreLib::ReferenceCloud pointsInCell(m_associatedOctree->associatedCloud());
 	for (it = m_cellsInFrustum[level].begin(); it != m_cellsInFrustum[level].end(); ++it)
 	{
 		// get all points in cell
@@ -2767,9 +2767,9 @@ void ccOctreeFrustumIntersector::computeFrustumIntersectionWithOctree(std::vecto
 			pointsToTest.resize(pointCount + sizeBefore);
 			for (size_t i = 0; i < pointCount; i++)
 			{
-				unsigned         currentIndice = pointsInCell.getPointGlobalIndex(static_cast<unsigned>(i));
-				const CCVector3* vec           = pointsInCell.getPoint(static_cast<unsigned>(i));
-				pointsToTest[sizeBefore + i]   = std::pair<unsigned, CCVector3>(currentIndice, *vec);
+				unsigned currentIndice = pointsInCell.getPointGlobalIndex(static_cast<unsigned>(i));
+				const CCVector3* vec = pointsInCell.getPoint(static_cast<unsigned>(i));
+				pointsToTest[sizeBefore + i] = std::pair<unsigned, CCVector3>(currentIndice, *vec);
 			}
 		}
 	}

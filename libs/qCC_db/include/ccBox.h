@@ -69,9 +69,9 @@ class QCC_DB_LIB_API ccBox : public ccGenericPrimitive
 	 * @param[in] transMat Optional initial transformation matrix
 	 * @param[in] name Display name in the DB tree
 	 */
-	ccBox(const CCVector3&  dims,
+	ccBox(const CCVector3& dims,
 	      const ccGLMatrix* transMat = nullptr,
-	      QString           name     = QString("Box"));
+	      QString name = QString("Box"));
 
 	/**
 	 * @brief Simplified constructor for the ccHObject factory

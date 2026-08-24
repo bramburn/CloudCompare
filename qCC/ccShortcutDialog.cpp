@@ -28,7 +28,7 @@
 #include <QMessageBox>
 #include <QSettings>
 
-constexpr int ACTION_NAME_COLUMN  = 0;
+constexpr int ACTION_NAME_COLUMN = 0;
 constexpr int KEY_SEQUENCE_COLUMN = 1;
 
 ccShortcutEditDialog::ccShortcutEditDialog(QWidget* parent)
@@ -89,13 +89,13 @@ void ccShortcutDialog::restoreShortcutsFromQSettings() const
 
 	for (int i = 0; i < m_ui->tableWidget->rowCount(); i++)
 	{
-		QTableWidgetItem* item   = m_ui->tableWidget->item(i, KEY_SEQUENCE_COLUMN);
-		auto*             action = item->data(Qt::UserRole).value<QAction*>();
+		QTableWidgetItem* item = m_ui->tableWidget->item(i, KEY_SEQUENCE_COLUMN);
+		auto* action = item->data(Qt::UserRole).value<QAction*>();
 
 		if (settings.contains(action->text()))
 		{
 			const QKeySequence defaultValue;
-			const auto         sequence = settings.value(action->text(), defaultValue).value<QKeySequence>();
+			const auto sequence = settings.value(action->text(), defaultValue).value<QKeySequence>();
 
 			item->setText(sequence.toString());
 			action->setShortcut(sequence);
@@ -108,8 +108,8 @@ const QAction* ccShortcutDialog::checkConflict(const QKeySequence& sequence) con
 {
 	for (int i = 0; i < m_ui->tableWidget->rowCount(); i++)
 	{
-		const QTableWidgetItem* item   = m_ui->tableWidget->item(i, 1);
-		const auto*             action = item->data(Qt::UserRole).value<QAction*>();
+		const QTableWidgetItem* item = m_ui->tableWidget->item(i, 1);
+		const auto* action = item->data(Qt::UserRole).value<QAction*>();
 		if (action->shortcut() == sequence)
 		{
 			return action;

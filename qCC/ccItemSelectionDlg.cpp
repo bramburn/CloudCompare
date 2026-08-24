@@ -43,10 +43,10 @@
 #include <QDialog>
 #include <QListWidgetItem>
 
-ccItemSelectionDlg::ccItemSelectionDlg(bool     multiSelectionEnabled,
+ccItemSelectionDlg::ccItemSelectionDlg(bool multiSelectionEnabled,
                                        QWidget* parent /*=nullptr*/,
-                                       QString  itemName /*="entities"*/,
-                                       QString  labelStr /*=QString()*/)
+                                       QString itemName /*="entities"*/,
+                                       QString labelStr /*=QString()*/)
     : QDialog(parent, Qt::Tool)
     , Ui::ItemSelectionDlg()
 {
@@ -113,9 +113,9 @@ void ccItemSelectionDlg::getSelectedIndexes(std::vector<int>& indexes) const
 }
 
 int ccItemSelectionDlg::SelectEntity(const ccHObject::Container& entities,
-                                     int                         selectedIndex /*=0*/,
-                                     QWidget*                    parent /*=nullptr*/,
-                                     QString                     label /*=QString()*/)
+                                     int selectedIndex /*=0*/,
+                                     QWidget* parent /*=nullptr*/,
+                                     QString label /*=QString()*/)
 {
 	ccItemSelectionDlg epDlg(false, parent, tr("entity"), label);
 
@@ -137,9 +137,9 @@ int ccItemSelectionDlg::SelectEntity(const ccHObject::Container& entities,
 }
 
 bool ccItemSelectionDlg::SelectEntities(const ccHObject::Container& entities,
-                                        std::vector<int>&           selectedIndexes,
-                                        QWidget*                    parent /*=nullptr*/,
-                                        QString                     label /*=QString()*/)
+                                        std::vector<int>& selectedIndexes,
+                                        QWidget* parent /*=nullptr*/,
+                                        QString label /*=QString()*/)
 {
 	selectedIndexes.clear();
 

@@ -23,38 +23,38 @@
 #include <ccVolumeCalcTool.h>
 
 // shared commands
-constexpr char COMMAND_GRID_VERT_DIR[]               = "VERT_DIR";
-constexpr char COMMAND_GRID_STEP[]                   = "GRID_STEP";
-constexpr char COMMAND_GRID_OUTPUT_CLOUD[]           = "OUTPUT_CLOUD";
-constexpr char COMMAND_GRID_OUTPUT_MESH[]            = "OUTPUT_MESH";
-constexpr char COMMAND_GRID_OUTPUT_RASTER_Z[]        = "OUTPUT_RASTER_Z";
+constexpr char COMMAND_GRID_VERT_DIR[] = "VERT_DIR";
+constexpr char COMMAND_GRID_STEP[] = "GRID_STEP";
+constexpr char COMMAND_GRID_OUTPUT_CLOUD[] = "OUTPUT_CLOUD";
+constexpr char COMMAND_GRID_OUTPUT_MESH[] = "OUTPUT_MESH";
+constexpr char COMMAND_GRID_OUTPUT_RASTER_Z[] = "OUTPUT_RASTER_Z";
 constexpr char COMMAND_GRID_OUTPUT_RASTER_Z_AND_SF[] = "OUTPUT_RASTER_Z_AND_SF";
-constexpr char COMMAND_GRID_OUTPUT_RASTER_RGB[]      = "OUTPUT_RASTER_RGB";
+constexpr char COMMAND_GRID_OUTPUT_RASTER_RGB[] = "OUTPUT_RASTER_RGB";
 
 // Rasterize specific commands
-constexpr char COMMAND_RASTERIZE[]                     = "RASTERIZE";
-constexpr char COMMAND_RASTER_CUSTOM_HEIGHT[]          = "CUSTOM_HEIGHT";
-constexpr char COMMAND_RASTER_FILL_EMPTY_CELLS[]       = "EMPTY_FILL";
-constexpr char COMMAND_RASTER_FILL_MIN_HEIGHT[]        = "MIN_H";
-constexpr char COMMAND_RASTER_FILL_MAX_HEIGHT[]        = "MAX_H";
-constexpr char COMMAND_RASTER_FILL_CUSTOM_HEIGHT[]     = "CUSTOM_H";
-constexpr char COMMAND_RASTER_FILL_INTERPOLATE[]       = "INTERP";
-constexpr char COMMAND_RASTER_FILL_KRIGING[]           = "KRIGING";
-constexpr char COMMAND_RASTER_FILL_KRIGING_KNN[]       = "KRIGING_KNN";
-constexpr char COMMAND_RASTER_PROJ_TYPE[]              = "PROJ";
-constexpr char COMMAND_RASTER_SF_PROJ_TYPE[]           = "SF_PROJ";
+constexpr char COMMAND_RASTERIZE[] = "RASTERIZE";
+constexpr char COMMAND_RASTER_CUSTOM_HEIGHT[] = "CUSTOM_HEIGHT";
+constexpr char COMMAND_RASTER_FILL_EMPTY_CELLS[] = "EMPTY_FILL";
+constexpr char COMMAND_RASTER_FILL_MIN_HEIGHT[] = "MIN_H";
+constexpr char COMMAND_RASTER_FILL_MAX_HEIGHT[] = "MAX_H";
+constexpr char COMMAND_RASTER_FILL_CUSTOM_HEIGHT[] = "CUSTOM_H";
+constexpr char COMMAND_RASTER_FILL_INTERPOLATE[] = "INTERP";
+constexpr char COMMAND_RASTER_FILL_KRIGING[] = "KRIGING";
+constexpr char COMMAND_RASTER_FILL_KRIGING_KNN[] = "KRIGING_KNN";
+constexpr char COMMAND_RASTER_PROJ_TYPE[] = "PROJ";
+constexpr char COMMAND_RASTER_SF_PROJ_TYPE[] = "SF_PROJ";
 constexpr char COMMAND_RASTER_INTERP_MAX_EDGE_LENGTH[] = "MAX_EDGE_LENGTH";
-constexpr char COMMAND_RASTER_PROJ_MIN[]               = "MIN";
-constexpr char COMMAND_RASTER_PROJ_MAX[]               = "MAX";
-constexpr char COMMAND_RASTER_PROJ_AVG[]               = "AVG";
-constexpr char COMMAND_RASTER_PROJ_MED[]               = "MED";
-constexpr char COMMAND_RASTER_PROJ_INVERSE_VAR[]       = "INV_VAR";
-constexpr char COMMAND_RASTER_RESAMPLE[]               = "RESAMPLE";
+constexpr char COMMAND_RASTER_PROJ_MIN[] = "MIN";
+constexpr char COMMAND_RASTER_PROJ_MAX[] = "MAX";
+constexpr char COMMAND_RASTER_PROJ_AVG[] = "AVG";
+constexpr char COMMAND_RASTER_PROJ_MED[] = "MED";
+constexpr char COMMAND_RASTER_PROJ_INVERSE_VAR[] = "INV_VAR";
+constexpr char COMMAND_RASTER_RESAMPLE[] = "RESAMPLE";
 
 // 2.5D Volume calculation specific commands
-constexpr char COMMAND_VOLUME[]                 = "VOLUME";
+constexpr char COMMAND_VOLUME[] = "VOLUME";
 constexpr char COMMAND_VOLUME_GROUND_IS_FIRST[] = "GROUND_IS_FIRST";
-constexpr char COMMAND_VOLUME_CONST_HEIGHT[]    = "CONST_HEIGHT";
+constexpr char COMMAND_VOLUME_CONST_HEIGHT[] = "CONST_HEIGHT";
 
 /**
  * @brief Reads projection type from command arguments
@@ -155,20 +155,20 @@ CommandRasterize::CommandRasterize()
 bool CommandRasterize::process(ccCommandLineInterface& cmd)
 {
 	// look for local options
-	double                                    gridStep              = 0;
-	bool                                      outputCloud           = false;
-	bool                                      outputRasterZ         = false;
-	bool                                      outputRasterSFs       = false;
-	bool                                      outputRasterRGB       = false;
-	bool                                      outputMesh            = false;
-	bool                                      resample              = false;
-	double                                    customHeight          = std::numeric_limits<double>::quiet_NaN();
-	int                                       vertDir               = 2;
-	ccRasterGrid::ProjectionType              projectionType        = ccRasterGrid::PROJ_AVERAGE_VALUE;
-	ccRasterGrid::ProjectionType              sfProjectionType      = ccRasterGrid::PROJ_AVERAGE_VALUE;
-	ccRasterGrid::EmptyCellFillOption         emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY;
+	double gridStep = 0;
+	bool outputCloud = false;
+	bool outputRasterZ = false;
+	bool outputRasterSFs = false;
+	bool outputRasterRGB = false;
+	bool outputMesh = false;
+	bool resample = false;
+	double customHeight = std::numeric_limits<double>::quiet_NaN();
+	int vertDir = 2;
+	ccRasterGrid::ProjectionType projectionType = ccRasterGrid::PROJ_AVERAGE_VALUE;
+	ccRasterGrid::ProjectionType sfProjectionType = ccRasterGrid::PROJ_AVERAGE_VALUE;
+	ccRasterGrid::EmptyCellFillOption emptyCellFillStrategy = ccRasterGrid::LEAVE_EMPTY;
 	ccRasterGrid::DelaunayInterpolationParams dInterpParams;
-	ccRasterGrid::KrigingParams               krigingParams;
+	ccRasterGrid::KrigingParams krigingParams;
 	{
 		// force auto-guess
 		krigingParams.autoGuess = true;
@@ -211,7 +211,7 @@ bool CommandRasterize::process(ccCommandLineInterface& cmd)
 			// local option confirmed, we can move on
 			cmd.arguments().pop_front();
 
-			outputRasterZ   = true;
+			outputRasterZ = true;
 			outputRasterSFs = false;
 		}
 		else if (ccCommandLineInterface::IsCommand(argument, COMMAND_GRID_OUTPUT_RASTER_Z_AND_SF))
@@ -219,7 +219,7 @@ bool CommandRasterize::process(ccCommandLineInterface& cmd)
 			// local option confirmed, we can move on
 			cmd.arguments().pop_front();
 
-			outputRasterZ   = true;
+			outputRasterZ = true;
 			outputRasterSFs = true;
 		}
 		else if (ccCommandLineInterface::IsCommand(argument, COMMAND_GRID_OUTPUT_RASTER_RGB))
@@ -297,7 +297,7 @@ bool CommandRasterize::process(ccCommandLineInterface& cmd)
 			// local option confirmed, we can move on
 			cmd.arguments().pop_front();
 
-			bool ok                     = false;
+			bool ok = false;
 			dInterpParams.maxEdgeLength = cmd.arguments().takeFirst().toDouble(&ok);
 			if (!ok || dInterpParams.maxEdgeLength < 0.0)
 			{
@@ -309,7 +309,7 @@ bool CommandRasterize::process(ccCommandLineInterface& cmd)
 			// local option confirmed, we can move on
 			cmd.arguments().pop_front();
 
-			bool ok           = false;
+			bool ok = false;
 			krigingParams.kNN = cmd.arguments().takeFirst().toInt(&ok);
 			if (!ok || krigingParams.kNN <= 0)
 			{
@@ -390,7 +390,7 @@ bool CommandRasterize::process(ccCommandLineInterface& cmd)
 			if (invVarProjSFIndex < 0)
 			{
 				// let's check if it's a (valid) index then
-				bool validValue   = false;
+				bool validValue = false;
 				invVarProjSFIndex = stdDevSFDesc.toInt(&validValue);
 				if (!validValue)
 				{
@@ -406,7 +406,7 @@ bool CommandRasterize::process(ccCommandLineInterface& cmd)
 		ccBBox gridBBox = cloudDesc.pc->getOwnBB();
 
 		// compute the grid size
-		unsigned gridWidth  = 0;
+		unsigned gridWidth = 0;
 		unsigned gridHeight = 0;
 		if (!ccRasterGrid::ComputeGridSize(vertDir, gridBBox, gridStep, gridWidth, gridHeight))
 		{
@@ -449,8 +449,8 @@ bool CommandRasterize::process(ccCommandLineInterface& cmd)
 				pDlg.reset(new ccProgressDialog(true, cmd.widgetParent()));
 			}
 
-			ccRasterGrid::InterpolationType interpolationType   = ccRasterGrid::InterpolationTypeFromEmptyCellFillOption(emptyCellFillStrategy);
-			void*                           interpolationParams = nullptr;
+			ccRasterGrid::InterpolationType interpolationType = ccRasterGrid::InterpolationTypeFromEmptyCellFillOption(emptyCellFillStrategy);
+			void* interpolationParams = nullptr;
 			switch (interpolationType)
 			{
 			case ccRasterGrid::InterpolationType::DELAUNAY:
@@ -547,7 +547,7 @@ bool CommandRasterize::process(ccCommandLineInterface& cmd)
 			}
 			else if (outputMesh)
 			{
-				std::string                    errorStr;
+				std::string errorStr;
 				CCCoreLib::GenericIndexedMesh* baseMesh = CCCoreLib::PointProjectionTools::computeTriangulation(
 				    rasterCloud,
 				    CCCoreLib::DELAUNAY_2D_AXIS_ALIGNED,
@@ -573,9 +573,9 @@ bool CommandRasterize::process(ccCommandLineInterface& cmd)
 					cmd.print(QString("[Rasterize] Mesh '%1' successfully generated").arg(rasterMesh->getName()));
 
 					CLMeshDesc meshDesc;
-					meshDesc.mesh     = rasterMesh;
+					meshDesc.mesh = rasterMesh;
 					meshDesc.basename = cloudDesc.basename + QString("_RASTER_MESH");
-					meshDesc.path     = cloudDesc.path;
+					meshDesc.path = cloudDesc.path;
 
 					QString errorStr = cmd.exportEntity(meshDesc);
 					if (!errorStr.isEmpty())
@@ -608,7 +608,7 @@ bool CommandRasterize::process(ccCommandLineInterface& cmd)
 			ccRasterizeTool::ExportBands bands;
 			{
 				bands.height = true;
-				bands.rgb    = false; // not a good idea to mix RGB and height values!
+				bands.rgb = false; // not a good idea to mix RGB and height values!
 				bands.allSFs = outputRasterSFs;
 			}
 			QString exportFilename = cmd.getExportFilename(cloudDesc, "tif", outputRasterSFs ? "RASTER_Z_AND_SF" : "RASTER_Z", nullptr, !cmd.addTimestamp());
@@ -624,7 +624,7 @@ bool CommandRasterize::process(ccCommandLineInterface& cmd)
 		{
 			ccRasterizeTool::ExportBands bands;
 			{
-				bands.rgb    = true;
+				bands.rgb = true;
 				bands.height = false; // not a good idea to mix RGB and height values!
 				bands.allSFs = outputRasterSFs;
 			}
@@ -660,11 +660,11 @@ bool CommandVolume25D::process(ccCommandLineInterface& cmd)
 	cmd.print("[2.5D VOLUME]");
 
 	// look for local options
-	bool   groundIsFirst = false;
-	double gridStep      = 0;
-	double constHeight   = std::numeric_limits<double>::quiet_NaN();
-	bool   outputMesh    = false;
-	int    vertDir       = 2;
+	bool groundIsFirst = false;
+	double gridStep = 0;
+	double constHeight = std::numeric_limits<double>::quiet_NaN();
+	bool outputMesh = false;
+	int vertDir = 2;
 
 	while (!cmd.arguments().empty())
 	{
@@ -733,10 +733,10 @@ bool CommandVolume25D::process(ccCommandLineInterface& cmd)
 
 	// we'll get the first two clouds
 	CLCloudDesc* ground = nullptr;
-	CLCloudDesc* ceil   = nullptr;
+	CLCloudDesc* ceil = nullptr;
 	{
 		CLCloudDesc* clouds[2] = {nullptr, nullptr};
-		int          index     = 0;
+		int index = 0;
 		if (!cmd.clouds().empty())
 		{
 			clouds[index++] = &cmd.clouds()[0];
@@ -758,7 +758,7 @@ bool CommandVolume25D::process(ccCommandLineInterface& cmd)
 			std::swap(clouds[0], clouds[1]);
 		}
 
-		ceil   = clouds[0];
+		ceil = clouds[0];
 		ground = clouds[1];
 	}
 
@@ -769,7 +769,7 @@ bool CommandVolume25D::process(ccCommandLineInterface& cmd)
 	}
 
 	// compute the grid size
-	unsigned gridWidth  = 0;
+	unsigned gridWidth = 0;
 	unsigned gridHeight = 0;
 	if (!ccRasterGrid::ComputeGridSize(vertDir, gridBBox, gridStep, gridWidth, gridHeight))
 	{
@@ -795,7 +795,7 @@ bool CommandVolume25D::process(ccCommandLineInterface& cmd)
 		}
 	}
 
-	ccRasterGrid                 grid;
+	ccRasterGrid grid;
 	ccVolumeCalcTool::ReportInfo reportInfo;
 	if (ccVolumeCalcTool::ComputeVolume(
 	        grid,
@@ -851,7 +851,7 @@ bool CommandVolume25D::process(ccCommandLineInterface& cmd)
 			ccMesh* rasterMesh = nullptr;
 			if (outputMesh)
 			{
-				std::string                    errorStr;
+				std::string errorStr;
 				CCCoreLib::GenericIndexedMesh* baseMesh = CCCoreLib::PointProjectionTools::computeTriangulation(rasterCloud,
 				                                                                                                CCCoreLib::DELAUNAY_2D_AXIS_ALIGNED,
 				                                                                                                CCCoreLib::PointProjectionTools::IGNORE_MAX_EDGE_LENGTH,
@@ -889,18 +889,18 @@ bool CommandVolume25D::process(ccCommandLineInterface& cmd)
 			if (rasterMesh)
 			{
 				CLMeshDesc meshDesc;
-				meshDesc.mesh     = rasterMesh;
+				meshDesc.mesh = rasterMesh;
 				meshDesc.basename = desc->basename;
-				meshDesc.path     = desc->path;
+				meshDesc.path = desc->path;
 				cmd.meshes().push_back(meshDesc);
 				outputDesc = &cmd.meshes().back();
 			}
 			else
 			{
 				CLCloudDesc cloudDesc;
-				cloudDesc.pc       = rasterCloud;
+				cloudDesc.pc = rasterCloud;
 				cloudDesc.basename = desc->basename;
-				cloudDesc.path     = desc->path;
+				cloudDesc.path = desc->path;
 				cmd.clouds().push_back(cloudDesc);
 				outputDesc = &cmd.clouds().back();
 			}

@@ -591,7 +591,7 @@ void ccCameraParamEditDlg::reflectParamChange()
 	m_associatedWin->signalEmitter()->blockSignals(true);
 	if (m_associatedWin->isRotationAxisLocked())
 	{
-		double lockedRotationAngle_rad      = CCCoreLib::DegreesToRadians(m_ui->phiSpinBox->value());
+		double lockedRotationAngle_rad = CCCoreLib::DegreesToRadians(m_ui->phiSpinBox->value());
 		double lockedRotationOrthoAngle_rad = CCCoreLib::DegreesToRadians(m_ui->psiSpinBox->value());
 		m_associatedWin->setLockedRotationAngles(lockedRotationAngle_rad, lockedRotationOrthoAngle_rad);
 	}
@@ -635,9 +635,9 @@ void ccCameraParamEditDlg::updateViewMode()
 
 void ccCameraParamEditDlg::initWithMatrix(const ccGLMatrixd& mat)
 {
-	double psi   = 0;
+	double psi = 0;
 	double theta = 0;
-	double phi   = 0;
+	double phi = 0;
 
 	if (m_associatedWin->isRotationAxisLocked())
 	{
@@ -651,7 +651,7 @@ void ccCameraParamEditDlg::initWithMatrix(const ccGLMatrixd& mat)
 
 	// to avoid retro-action
 	ccGLWindowInterface* win = m_associatedWin;
-	m_associatedWin          = nullptr;
+	m_associatedWin = nullptr;
 
 	m_ui->psiSpinBox->blockSignals(true);
 	m_ui->psiSpinBox->setValue(CCCoreLib::RadiansToDegrees(psi));
@@ -751,12 +751,12 @@ void ccCameraParamEditDlg::updateFarClippingDepth(double depth)
 
 ccGLMatrixd ccCameraParamEditDlg::getMatrix()
 {
-	const double phi   = CCCoreLib::DegreesToRadians(m_ui->phiSpinBox->value());
-	const double psi   = CCCoreLib::DegreesToRadians(m_ui->psiSpinBox->value());
+	const double phi = CCCoreLib::DegreesToRadians(m_ui->phiSpinBox->value());
+	const double psi = CCCoreLib::DegreesToRadians(m_ui->psiSpinBox->value());
 	const double theta = CCCoreLib::DegreesToRadians(m_ui->thetaSpinBox->value());
 
 	ccGLMatrixd mat;
-	CCVector3d  T(0, 0, 0);
+	CCVector3d T(0, 0, 0);
 	mat.initFromParameters(phi, theta, psi, T);
 
 	return mat;

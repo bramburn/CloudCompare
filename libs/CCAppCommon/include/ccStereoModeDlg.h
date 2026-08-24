@@ -54,7 +54,7 @@ class CCAPPCOMMON_LIB_API ccStereoModeDlg : public QDialog
 	 * @param[in] parent Parent widget
 	 */
 	explicit ccStereoModeDlg(QWidget* parent);
-	
+
 	/**
 	 * @brief Destructor
 	 */

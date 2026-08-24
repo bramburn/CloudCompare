@@ -29,11 +29,10 @@
  *
  * @see ccMaterial.cpp
  */
-#include <ccMaterial.h>
-#include <ccColorTypes.h>
-
-#include <QTest>
 #include <QString>
+#include <QTest>
+#include <ccColorTypes.h>
+#include <ccMaterial.h>
 
 class TestMaterial : public QObject
 {

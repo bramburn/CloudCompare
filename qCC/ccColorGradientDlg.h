@@ -62,7 +62,7 @@ class ccColorGradientDlg : public QDialog
 	 * @return Gradient type
 	 */
 	GradientType getType() const;
-	
+
 	/**
 	 * @brief Set gradient type
 	 * @param[in] type Gradient type

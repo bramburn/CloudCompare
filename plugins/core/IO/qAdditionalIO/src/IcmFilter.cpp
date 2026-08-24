@@ -132,8 +132,8 @@ CC_FILE_ERROR IcmFilter::loadFile(const QString& filename, ccHObject& container,
 	}
 
 	// load the corresponding file (potentially containing several clouds)
-	CC_FILE_ERROR result   = CC_FERR_NO_ERROR;
-	ccHObject*    entities = FileIOFilter::LoadFromFile(QString("%1/%2").arg(path, cloudFileName), parameters, filter, result);
+	CC_FILE_ERROR result = CC_FERR_NO_ERROR;
+	ccHObject* entities = FileIOFilter::LoadFromFile(QString("%1/%2").arg(path, cloudFileName), parameters, filter, result);
 	if (!entities)
 	{
 		fclose(fp);
@@ -207,7 +207,7 @@ int IcmFilter::LoadCalibratedImages(ccHObject* entities, const QString& path, co
 
 			// add absolute path
 			ccImage* CI = new ccImage();
-			QString  errorStr;
+			QString errorStr;
 			if (!CI->load(QString("%1/%2").arg(path, imageFileName), errorStr))
 			{
 				ccLog::Warning(QString("[IcmFilter] Failed to load image %1 (%2)! Process stopped...").arg(imageFileName, errorStr));
@@ -279,14 +279,14 @@ int IcmFilter::LoadCalibratedImages(ccHObject* entities, const QString& path, co
 			ccLog::Print("\t Camera orientation=(%f,%f,%f)+[%f]", axis[0], axis[1], axis[2], angle_rad);
 
 			ccCameraSensor::IntrinsicParameters params;
-			params.vFOV_rad           = fov_rad;
-			params.arrayWidth         = CI->getW();
-			params.arrayHeight        = CI->getH();
+			params.vFOV_rad = fov_rad;
+			params.arrayWidth = CI->getW();
+			params.arrayHeight = CI->getH();
 			params.principal_point[0] = params.arrayWidth / 2.0f;
 			params.principal_point[1] = params.arrayHeight / 2.0f;
-			params.vertFocal_pix      = params.arrayHeight / (2 * tan(params.vFOV_rad / 2));
+			params.vertFocal_pix = params.arrayHeight / (2 * tan(params.vFOV_rad / 2));
 			params.pixelSize_mm[0] = params.pixelSize_mm[1] = 1.0f;
-			ccCameraSensor* sensor                          = new ccCameraSensor(params);
+			ccCameraSensor* sensor = new ccCameraSensor(params);
 
 			ccGLMatrix mat;
 			mat.initFromParameters(angle_rad, CCVector3::fromArray(axis), CCVector3::fromArray(t));

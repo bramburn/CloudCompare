@@ -53,9 +53,9 @@ class ccItemSelectionDlg : public QDialog
 	 * @return Selected index
 	 */
 	static int SelectEntity(const ccHObject::Container& entities,
-	                        int                         defaultSelectedIndex = 0,
-	                        QWidget*                    parent               = nullptr,
-	                        QString                     label                = QString());
+	                        int defaultSelectedIndex = 0,
+	                        QWidget* parent = nullptr,
+	                        QString label = QString());
 
 	/**
 	 * @brief Select multiple entities
@@ -66,9 +66,9 @@ class ccItemSelectionDlg : public QDialog
 	 * @return true if selection was made
 	 */
 	static bool SelectEntities(const ccHObject::Container& entities,
-	                           std::vector<int>&           indexes,
-	                           QWidget*                    parent = nullptr,
-	                           QString                     label  = QString());
+	                           std::vector<int>& indexes,
+	                           QWidget* parent = nullptr,
+	                           QString label = QString());
 
   public:
 	/**
@@ -78,10 +78,10 @@ class ccItemSelectionDlg : public QDialog
 	 * @param[in] itemName Item name
 	 * @param[in] label Dialog label
 	 */
-	ccItemSelectionDlg(bool     multiSelectionEnabled,
-	                   QWidget* parent   = nullptr,
-	                   QString  itemName = "entities",
-	                   QString  label    = QString());
+	ccItemSelectionDlg(bool multiSelectionEnabled,
+	                   QWidget* parent = nullptr,
+	                   QString itemName = "entities",
+	                   QString label = QString());
 
 	/**
 	 * @brief Set items

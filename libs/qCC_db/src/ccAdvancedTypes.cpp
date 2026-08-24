@@ -76,7 +76,7 @@ bool NormsIndexesTableType::fromFile_MeOnly(QFile& in, short dataVersion, int fl
 			}
 			// and recompress
 			CompressedNormType index = static_cast<CompressedNormType>(ccNormalCompressor::Compress(N.u));
-			at(i)                    = index;
+			at(i) = index;
 		}
 
 		oldNormals->release();

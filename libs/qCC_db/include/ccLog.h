@@ -87,7 +87,9 @@ class QCC_DB_LIB_API ccLog
 	/**
 	 * @brief Destructor
 	 */
-	virtual ~ccLog() {}
+	virtual ~ccLog()
+	{
+	}
 
 	/**
 	 * @brief Get the current logging sink
@@ -128,11 +130,11 @@ class QCC_DB_LIB_API ccLog
 	 */
 	enum MessageLevelFlags
 	{
-		LOG_VERBOSE   = 0, //!< Debug/trace messages
-		LOG_STANDARD  = 1, //!< Normal informational messages
+		LOG_VERBOSE = 0,   //!< Debug/trace messages
+		LOG_STANDARD = 1,  //!< Normal informational messages
 		LOG_IMPORTANT = 2, //!< Highlighted messages
-		LOG_WARNING   = 3, //!< Warning messages
-		LOG_ERROR     = 4, //!< Error messages (never suppressed)
+		LOG_WARNING = 3,   //!< Warning messages
+		LOG_ERROR = 4,     //!< Error messages (never suppressed)
 
 		DEBUG_FLAG = 8 //!< Debug-only message flag (stripped in release)
 	};

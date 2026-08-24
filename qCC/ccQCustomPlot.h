@@ -77,7 +77,7 @@ class QCPBarsWithText : public QCPBars
 
   protected:
 	QStringList m_text;
-	bool        m_textOnTheLeft;
+	bool m_textOnTheLeft;
 
 	// reimplemented virtual draw method
 	virtual void draw(QCPPainter* painter)
@@ -95,9 +95,9 @@ class QCPBarsWithText : public QCPBars
 
 		if (!data()->isEmpty())
 		{
-			double& key   = data()->begin()->key;
+			double& key = data()->begin()->key;
 			double& value = data()->begin()->value;
-			QPointF P     = coordsToPixels(key, value);
+			QPointF P = coordsToPixels(key, value);
 			// apply a small shift
 			int margin = 5; // in pixels
 			if (m_textOnTheLeft)
@@ -159,7 +159,7 @@ class QCPColoredBars : public QCPBars
 		for (int i = 0; i < n; ++i)
 		{
 			QCPColoredBarData newData;
-			newData.key   = key[i];
+			newData.key = key[i];
 			newData.value = value[i];
 			if (colors.size() > i)
 				newData.color = colors[i];
@@ -329,7 +329,7 @@ class QCPSelectableCursor : public QCPAbstractPlottable
 	double mCurrentVal;
 	double mMinVal, mMaxVal;
 	QPoint mLastPos;
-	int    mLastRadius;
+	int mLastRadius;
 };
 
 //! QCustomPlot: greyed areas
@@ -394,7 +394,7 @@ class QCPHiddenArea : public QCPSelectableCursor
 		{
 			// circle
 			QPoint C(mLeftSide ? rect.x() + rect.width() : rect.x(), rect.y() + rect.height() / 2);
-			int    r = rect.height() / 10;
+			int r = rect.height() / 10;
 
 			painter->setPen(pen());
 			painter->setBrush(brush());
@@ -404,13 +404,13 @@ class QCPHiddenArea : public QCPSelectableCursor
 			painter->drawLine(C + QPoint(0, r), C - QPoint(0, r));
 
 			// save last circle position
-			mLastPos    = C;
+			mLastPos = C;
 			mLastRadius = r;
 		}
 		else
 		{
 			// no circle
-			mLastPos    = QPoint(-1, -1);
+			mLastPos = QPoint(-1, -1);
 			mLastRadius = 0;
 		}
 	}
@@ -480,13 +480,13 @@ class QCPArrow : public QCPSelectableCursor
 			painter->drawPolygon(T, 3);
 
 			// save last circle position
-			mLastPos    = O;
+			mLastPos = O;
 			mLastRadius = r;
 		}
 		else
 		{
 			// no circle
-			mLastPos    = QPoint(-1, -1);
+			mLastPos = QPoint(-1, -1);
 			mLastRadius = 0;
 		}
 	}

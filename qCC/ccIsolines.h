@@ -62,13 +62,13 @@ class Isolines
 	std::vector<double> m_maxx;
 	std::vector<double> m_maxy;
 
-	std::vector<int>    m_cd;
+	std::vector<int> m_cd;
 	std::vector<double> m_contourX;
 	std::vector<double> m_contourY;
-	std::vector<int>    m_contourLength;
-	std::vector<int>    m_contourOrigin;
-	std::vector<int>    m_contourIndexes;
-	std::vector<bool>   m_contourClosed;
+	std::vector<int> m_contourLength;
+	std::vector<int> m_contourOrigin;
+	std::vector<int> m_contourIndexes;
+	std::vector<bool> m_contourClosed;
 
 	int m_w;
 	int m_h;
@@ -192,33 +192,33 @@ class Isolines
 	//! 2x2 cell configuration codes
 	enum ConfigurationCodes
 	{
-		CASE0   = 0,
-		CASE1   = 1,
-		CASE2   = 2,
-		CASE3   = 3,
-		CASE4   = 4,
-		CASE5   = 5,
-		CASE6   = 6,
-		CASE7   = 7,
-		CASE8   = 8,
-		CASE9   = 9,
-		CASE10  = 10,
-		CASE11  = 11,
-		CASE12  = 12,
-		CASE13  = 13,
-		CASE14  = 14,
-		CASE15  = 15,
+		CASE0 = 0,
+		CASE1 = 1,
+		CASE2 = 2,
+		CASE3 = 3,
+		CASE4 = 4,
+		CASE5 = 5,
+		CASE6 = 6,
+		CASE7 = 7,
+		CASE8 = 8,
+		CASE9 = 9,
+		CASE10 = 10,
+		CASE11 = 11,
+		CASE12 = 12,
+		CASE13 = 13,
+		CASE14 = 14,
+		CASE15 = 15,
 		VISITED = 16
 	};
 
 	//! Entry/exit edges
 	enum Edges
 	{
-		NONE   = -1,
-		TOP    = 0,
-		RIGHT  = 1,
+		NONE = -1,
+		TOP = 0,
+		RIGHT = 1,
 		BOTTOM = 2,
-		LEFT   = 3
+		LEFT = 3
 	};
 
 	void endContour(bool closed, bool alternatePath)
@@ -228,7 +228,7 @@ class Isolines
 			// we have to merge this path with the previous one!
 			// try //will be taken care of by 'findIsolines'
 			//{
-			size_t length     = m_contourLength.back();
+			size_t length = m_contourLength.back();
 			size_t firstIndex = m_contourOrigin.back();
 			m_contourLength.pop_back();
 			m_contourOrigin.pop_back();
@@ -236,26 +236,26 @@ class Isolines
 
 			// backup the alternate part of the contour
 			std::vector<double> subContourX(length), subContourY(length);
-			std::vector<int>    subContourIndexes(length);
+			std::vector<int> subContourIndexes(length);
 			{
 				for (size_t i = 0; i < length; ++i)
 				{
-					subContourX[i]       = m_contourX[firstIndex + i];
-					subContourY[i]       = m_contourY[firstIndex + i];
+					subContourX[i] = m_contourX[firstIndex + i];
+					subContourY[i] = m_contourY[firstIndex + i];
 					subContourIndexes[i] = m_contourIndexes[firstIndex + i];
 				}
 			}
 
 			assert(!m_contourLength.empty() && !m_contourOrigin.empty());
-			size_t length0     = m_contourLength.back();
+			size_t length0 = m_contourLength.back();
 			size_t firstIndex0 = m_contourOrigin.back();
 
 			// shift the first part values
 			{
 				for (int i = static_cast<int>(length0); i >= 0; --i) // we start by end so as to not overwrite values!
 				{
-					m_contourX[firstIndex0 + length + i]       = m_contourX[firstIndex0 + i];
-					m_contourX[firstIndex0 + length + i]       = m_contourY[firstIndex0 + i];
+					m_contourX[firstIndex0 + length + i] = m_contourX[firstIndex0 + i];
+					m_contourX[firstIndex0 + length + i] = m_contourY[firstIndex0 + i];
 					m_contourIndexes[firstIndex0 + length + i] = m_contourIndexes[firstIndex0 + i];
 				}
 			}
@@ -264,8 +264,8 @@ class Isolines
 			{
 				for (size_t i = 0; i < length; ++i)
 				{
-					m_contourX[firstIndex0 + i]       = subContourX[i];
-					m_contourY[firstIndex0 + i]       = subContourY[i];
+					m_contourX[firstIndex0 + i] = subContourX[i];
+					m_contourY[firstIndex0 + i] = subContourY[i];
 					m_contourIndexes[firstIndex0 + i] = subContourIndexes[i];
 				}
 			}
@@ -296,7 +296,7 @@ class Isolines
 		// traversal case
 		static const int TRAVERSAL[4] = {/*TOP=*/BOTTOM, /*RIGHT=*/LEFT, /*BOTTOM=*/TOP, /*LEFT=*/RIGHT};
 		// disambiguation cases (CASES 5 and 10)
-		static const int DISAMBIGUATION_UP[4]   = {/*TOP=*/LEFT, /*RIGHT=*/BOTTOM, /*BOTTOM=*/RIGHT, /*LEFT=*/TOP};
+		static const int DISAMBIGUATION_UP[4] = {/*TOP=*/LEFT, /*RIGHT=*/BOTTOM, /*BOTTOM=*/RIGHT, /*LEFT=*/TOP};
 		static const int DISAMBIGUATION_DOWN[4] = {/*TOP=*/RIGHT, /*RIGHT=*/TOP, /*BOTTOM=*/LEFT, /*LEFT=*/BOTTOM};
 
 		m_contourX.clear();
@@ -308,13 +308,13 @@ class Isolines
 
 		try
 		{
-			int toEdge    = NONE;
+			int toEdge = NONE;
 			int cellIndex = -1;
 			int x = 0, y = 0;
 
 			// mechanism for merging two parts of a non-closed contour
-			int  altToEdge     = NONE;
-			int  altStartIndex = 0;
+			int altToEdge = NONE;
+			int altStartIndex = 0;
 			bool alternatePath = false;
 
 			const int maxCellIndex = m_w * (m_h - 1); // DGM: last line is only 0!
@@ -337,9 +337,9 @@ class Isolines
 					if (altToEdge != NONE && !alternatePath)
 					{
 						// we know that we are coming from the TOP (case 2 or 13)
-						fromEdge         = TOP;
+						fromEdge = TOP;
 						currentCellIndex = altStartIndex + m_w; // same coumn, next row
-						alternatePath    = true;
+						alternatePath = true;
 						// we start a new (temporary) contour
 						m_contourLength.push_back(0);
 						m_contourClosed.push_back(false);
@@ -349,7 +349,7 @@ class Isolines
 					{
 						// we have to look for a new starting point
 						alternatePath = false;
-						altToEdge     = NONE;
+						altToEdge = NONE;
 						// skip empty cells
 						while (++cellIndex < maxCellIndex
 						       && (m_cd[cellIndex] == CASE0 || m_cd[cellIndex] == CASE15))
@@ -425,7 +425,7 @@ class Isolines
 							if (y < m_h - 2)
 							{
 								// if we can go lower, rembemr this as an alternate rout
-								altToEdge     = BOTTOM;
+								altToEdge = BOTTOM;
 								altStartIndex = currentCellIndex;
 							}
 						}
@@ -672,13 +672,13 @@ class Isolines
 
 	inline void setContourX(int contour, int v, double x)
 	{
-		int o                                                    = m_contourOrigin[contour];
+		int o = m_contourOrigin[contour];
 		m_contourX[wrap(o + v, o, o + m_contourLength[contour])] = x;
 	}
 
 	inline void setContourY(int contour, int v, double y)
 	{
-		int o                                                    = m_contourOrigin[contour];
+		int o = m_contourOrigin[contour];
 		m_contourY[wrap(o + v, o, o + m_contourLength[contour])] = y;
 	}
 
@@ -711,7 +711,7 @@ class Isolines
 	double measureMeanX(int contour) const
 	{
 		double mean = 0.0;
-		int    l    = getContourLength(contour);
+		int l = getContourLength(contour);
 		for (int i = 0; i < l; i++)
 			mean += getContourX(contour, i);
 		return (l == 0 ? 0 : mean / l);
@@ -720,7 +720,7 @@ class Isolines
 	double measureMeanY(int contour) const
 	{
 		double mean = 0.0;
-		int    l    = getContourLength(contour);
+		int l = getContourLength(contour);
 		for (int i = 0; i < l; i++)
 			mean += getContourY(contour, i);
 		return (l == 0 ? 0 : mean / l);
@@ -742,14 +742,14 @@ class Isolines
 	double measureNormalX(int contour, int i) const
 	{
 		double ret = getContourY(contour, i) - getContourY(contour, i + 1);
-		ret        = ret / measureLength(contour, i);
+		ret = ret / measureLength(contour, i);
 		return ret;
 	}
 
 	double measureNormalY(int contour, int i) const
 	{
 		double ret = getContourX(contour, i + 1) - getContourX(contour, i);
-		ret        = ret / measureLength(contour, i);
+		ret = ret / measureLength(contour, i);
 		return ret;
 	}
 
@@ -820,7 +820,7 @@ class Isolines
 	double measureLength(int contour, int i) const
 	{
 		int lo = m_contourOrigin[contour];
-		int n  = m_contourLength[contour];
+		int n = m_contourLength[contour];
 		int hi = lo + n;
 
 		int v1 = wrap(lo + i + 0, lo, hi);
@@ -889,8 +889,8 @@ class Isolines
 			int l = getContourLength(k);
 			for (int i = 0; i < l; i++)
 			{
-				int lo                    = i - window;
-				int hi                    = i + window;
+				int lo = i - window;
+				int hi = i + window;
 				tips[getValidIndex(k, i)] = measureArea(k, lo, hi);
 			}
 		}
@@ -905,8 +905,8 @@ class Isolines
 			int l = getContourLength(k);
 			for (int i = 0; i < l; i++)
 			{
-				int lo                    = i - window;
-				int hi                    = i + window;
+				int lo = i - window;
+				int hi = i + window;
 				tips[getValidIndex(k, i)] = measureArea(k, lo, hi) / measurePerimeter(k, lo, hi);
 			}
 		}
@@ -915,14 +915,14 @@ class Isolines
 	int getMaxContour() const
 	{
 		int maxlength = 0;
-		int idx       = 0;
+		int idx = 0;
 		for (int k = 0; k < m_numContours; k++)
 		{
 			int l = getContourLength(k);
 			if (l > maxlength)
 			{
 				maxlength = l;
-				idx       = k;
+				idx = k;
 			}
 		}
 		return idx;
@@ -957,7 +957,7 @@ class Isolines
 
 		for (int k = 0; k < numContours; k++)
 		{
-			int o     = m_contourOrigin[k];
+			int o = m_contourOrigin[k];
 			m_minx[k] = m_contourX[o];
 			m_miny[k] = m_contourY[o];
 			m_maxx[k] = m_contourX[o];
@@ -999,7 +999,7 @@ class Isolines
 	bool contains(int k, double x, double y) const
 	{
 		bool inside = false;
-		int  l      = getContourLength(k);
+		int l = getContourLength(k);
 		for (int i = 0, j = -1; i < l; j = i++)
 		{
 			double yi = getContourY(k, i);
@@ -1048,8 +1048,8 @@ class Isolines
 
 	bool contains(const std::vector<double>& polyx, const std::vector<double>& polyy, double x, double y) const
 	{
-		bool   inside = false;
-		size_t l      = polyx.size();
+		bool inside = false;
+		size_t l = polyx.size();
 		if (l < 1)
 			return false;
 		for (size_t i = 0, j = l - 1; i < l; j = i++)

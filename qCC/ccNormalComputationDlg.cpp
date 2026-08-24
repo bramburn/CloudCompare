@@ -236,9 +236,9 @@ void ccNormalComputationDlg::autoEstimateRadius()
 	ccOctree::BestRadiusParams params;
 	{
 		params.aimedPopulationPerCell = 16;
-		params.aimedPopulationRange   = 4;
-		params.minCellPopulation      = 6;
-		params.minAboveMinRatio       = 0.97;
+		params.aimedPopulationRange = 4;
+		params.minCellPopulation = 6;
+		params.minAboveMinRatio = 0.97;
 	}
 
 	PointCoordinateType radius = ccOctree::GuessBestRadiusAutoComputeOctree(m_cloud, params, this);

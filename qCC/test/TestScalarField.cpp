@@ -30,21 +30,18 @@
  *
  * @see ccScalarField.h
  */
+#include <QString>
+#include <QTest>
+#include <ScalarField.h>
+#include <ScalarFieldTools.h>
 #include <ccPointCloud.h>
 #include <ccScalarField.h>
-
-#include <ScalarFieldTools.h>
-#include <ScalarField.h>
-
-#include <QTest>
-#include <QString>
-
 #include <cmath>
 
-using CCCoreLib::ScalarFieldTools;
 using CCCoreLib::GenericCloud;
 using CCCoreLib::GenericIndexedCloudPersist;
 using CCCoreLib::NAN_VALUE;
+using CCCoreLib::ScalarFieldTools;
 
 // Helper: create a cloud with N points and one activated SF containing the given values
 static ccPointCloud* makeCloudWithSF(const std::vector<ScalarType>& values)
@@ -62,7 +59,8 @@ static ccPointCloud* makeCloudWithSF(const std::vector<ScalarType>& values)
 		sf->addElement(v);
 	}
 	int sfIdx = cloud->addScalarField(sf);
-	if (sfIdx < 0) return nullptr;
+	if (sfIdx < 0)
+		return nullptr;
 	cloud->setCurrentOutScalarField(sfIdx);
 	cloud->enableScalarField();
 	return cloud;
@@ -199,8 +197,7 @@ class TestScalarField : public QObject
 
 		// sigma=1.0 (spatial), sigmaSF=-1.0 (disable bilateral)
 		bool ok = ScalarFieldTools::applyScalarFieldGaussianFilter(
-		    static_cast<PointCoordinateType>(1.0), cloud,
-		    static_cast<PointCoordinateType>(-1.0));
+		    static_cast<PointCoordinateType>(1.0), cloud, static_cast<PointCoordinateType>(-1.0));
 
 		QVERIFY(ok);
 

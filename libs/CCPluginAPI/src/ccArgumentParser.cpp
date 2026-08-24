@@ -93,7 +93,7 @@ namespace
 	template <typename T>
 	std::optional<T> ParseString(const QString& arg, const QString& name, const T min, const T max)
 	{
-		bool    ok    = false;
+		bool ok = false;
 		const T value = QStringParseTraits<T>::Parse(arg, &ok);
 
 		if (!ok)

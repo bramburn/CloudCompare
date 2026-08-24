@@ -67,7 +67,7 @@ ccTracePolylineTool::SegmentGLParams::SegmentGLParams(ccGenericGLDisplay* displa
 	{
 		display->getGLCameraParameters(params);
 		QPointF pos2D = display->toCornerGLCoordinates(x, y);
-		clickPos      = CCVector2d(pos2D.x(), pos2D.y());
+		clickPos = CCVector2d(pos2D.x(), pos2D.y());
 	}
 }
 
@@ -179,12 +179,12 @@ ccPolyline* ccTracePolylineTool::polylineOverSampling(unsigned steps) const
 		return nullptr;
 	}
 
-	unsigned vertexCount  = m_poly3DVertices->size();
+	unsigned vertexCount = m_poly3DVertices->size();
 	unsigned segmentCount = m_poly3D->size() - (m_poly3D->isClosed() ? 0 : 1);
-	unsigned endSize      = segmentCount * steps + (m_poly3D->isClosed() ? 0 : 1);
+	unsigned endSize = segmentCount * steps + (m_poly3D->isClosed() ? 0 : 1);
 
 	ccPointCloud* newVertices = new ccPointCloud();
-	ccPolyline*   newPoly     = new ccPolyline(newVertices);
+	ccPolyline* newPoly = new ccPolyline(newVertices);
 	newPoly->addChild(newVertices);
 
 	if (!newVertices->reserve(endSize)
@@ -212,7 +212,7 @@ ccPolyline* ccTracePolylineTool::polylineOverSampling(unsigned steps) const
 		const CCVector3* p1 = m_poly3DVertices->getPoint(i);
 		newVertices->addPoint(*p1);
 
-		unsigned   i2 = (i + 1) % vertexCount;
+		unsigned i2 = (i + 1) % vertexCount;
 		CCVector2d clickPos1 /* = m_segmentParams[i].clickPos*/;
 		{
 			// we actually retro-project the 3D point in the second vertex camera frame so as to get a proper behavior
@@ -229,7 +229,7 @@ ccPolyline* ccTracePolylineTool::polylineOverSampling(unsigned steps) const
 			CCVector2d vj = clickPos1 + v * j;
 
 			CCVector3 nearestPoint;
-			double    nearestElementSquareDist = -1.0;
+			double nearestElementSquareDist = -1.0;
 
 			// for each cloud
 			for (size_t c = 0; c < clouds.size(); ++c)
@@ -240,7 +240,7 @@ ccPolyline* ccTracePolylineTool::polylineOverSampling(unsigned steps) const
 					continue;
 				}
 
-				int    nearestPointIndex = -1;
+				int nearestPointIndex = -1;
 				double nearestSquareDist = 0;
 				if (cloud->pointPicking(vj,
 				                        m_segmentParams[i2].params,
@@ -253,7 +253,7 @@ ccPolyline* ccTracePolylineTool::polylineOverSampling(unsigned steps) const
 					if (nearestElementSquareDist < 0 || nearestSquareDist < nearestElementSquareDist)
 					{
 						nearestElementSquareDist = nearestSquareDist;
-						nearestPoint             = *cloud->getPoint(nearestPointIndex);
+						nearestPoint = *cloud->getPoint(nearestPointIndex);
 					}
 				}
 			}
@@ -267,8 +267,8 @@ ccPolyline* ccTracePolylineTool::polylineOverSampling(unsigned steps) const
 					continue;
 				}
 
-				int        nearestTriIndex   = -1;
-				double     nearestSquareDist = 0;
+				int nearestTriIndex = -1;
+				double nearestSquareDist = 0;
 				CCVector3d _nearestPoint;
 
 				if (mesh->trianglePicking(vj,
@@ -281,7 +281,7 @@ ccPolyline* ccTracePolylineTool::polylineOverSampling(unsigned steps) const
 					if (nearestElementSquareDist < 0 || nearestSquareDist < nearestElementSquareDist)
 					{
 						nearestElementSquareDist = nearestSquareDist;
-						nearestPoint             = _nearestPoint.toPC();
+						nearestPoint = _nearestPoint.toPC();
 					}
 				}
 			}
@@ -343,8 +343,8 @@ bool ccTracePolylineTool::linkWith(ccGLWindowInterface* win)
 }
 
 static int s_defaultPickingRadius = 1;
-static int s_overSamplingCount    = 1;
-bool       ccTracePolylineTool::start()
+static int s_overSamplingCount = 1;
+bool ccTracePolylineTool::start()
 {
 	assert(m_polyTip);
 	assert(!m_poly3D);
@@ -405,7 +405,7 @@ void ccTracePolylineTool::stop(bool accepted)
 	}
 
 	s_defaultPickingRadius = m_ui->snapSizeSpinBox->value();
-	s_overSamplingCount    = m_ui->oversampleSpinBox->value();
+	s_overSamplingCount = m_ui->oversampleSpinBox->value();
 
 	ccOverlayDialog::stop(accepted);
 }
@@ -445,13 +445,13 @@ void ccTracePolylineTool::updatePolyLineTip(int x, int y, Qt::MouseButtons butto
 
 	// we replace the last point by the new one
 	{
-		QPointF   pos2D = m_associatedWin->toCenteredGLCoordinates(x, y);
+		QPointF pos2D = m_associatedWin->toCenteredGLCoordinates(x, y);
 		CCVector3 P2D(static_cast<PointCoordinateType>(pos2D.x()),
 		              static_cast<PointCoordinateType>(pos2D.y()),
 		              0);
 
 		CCVector3* lastP = const_cast<CCVector3*>(m_polyTipVertices->getPointPersistentPtr(1));
-		*lastP           = P2D;
+		*lastP = P2D;
 	}
 
 	// just in case (e.g. if the view has been rotated or zoomed)
@@ -466,9 +466,9 @@ void ccTracePolylineTool::updatePolyLineTip(int x, int y, Qt::MouseButtons butto
 		camera.project(*P3D, A2D);
 
 		CCVector3* firstP = const_cast<CCVector3*>(m_polyTipVertices->getPointPersistentPtr(0));
-		*firstP           = CCVector3(static_cast<PointCoordinateType>(A2D.x - camera.viewport[2] / 2), // we convert A2D to centered coordinates (no need to apply high DPI scale or anything!)
-                            static_cast<PointCoordinateType>(A2D.y - camera.viewport[3] / 2),
-                            0);
+		*firstP = CCVector3(static_cast<PointCoordinateType>(A2D.x - camera.viewport[2] / 2), // we convert A2D to centered coordinates (no need to apply high DPI scale or anything!)
+		                    static_cast<PointCoordinateType>(A2D.y - camera.viewport[3] / 2),
+		                    0);
 	}
 
 	m_polyTip->setEnabled(true);
@@ -539,13 +539,13 @@ void ccTracePolylineTool::onItemPicked(const PickedItem& pi)
 
 	// we replace the first point of the tip by this new point
 	{
-		QPointF   pos2D = m_associatedWin->toCenteredGLCoordinates(pi.clickPoint.x(), pi.clickPoint.y());
+		QPointF pos2D = m_associatedWin->toCenteredGLCoordinates(pi.clickPoint.x(), pi.clickPoint.y());
 		CCVector3 P2D(static_cast<PointCoordinateType>(pos2D.x()),
 		              static_cast<PointCoordinateType>(pos2D.y()),
 		              0);
 
 		CCVector3* firstTipPoint = const_cast<CCVector3*>(m_polyTipVertices->getPointPersistentPtr(0));
-		*firstTipPoint           = P2D;
+		*firstTipPoint = P2D;
 		m_polyTip->setEnabled(false); // don't need to display it for now
 	}
 
@@ -610,7 +610,7 @@ void ccTracePolylineTool::restart(bool reset)
 			delete m_poly3D;
 			m_segmentParams.resize(0);
 			// delete m_poly3DVertices;
-			m_poly3D         = nullptr;
+			m_poly3D = nullptr;
 			m_poly3DVertices = nullptr;
 		}
 		else
@@ -662,7 +662,7 @@ void ccTracePolylineTool::exportLine()
 			delete m_poly3D;
 			m_segmentParams.resize(0);
 			m_poly3DVertices = nullptr;
-			m_poly3D         = poly;
+			m_poly3D = poly;
 		}
 		else
 		{

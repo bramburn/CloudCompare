@@ -51,10 +51,10 @@ class ccFitSphereDlg : public QDialog
 	 * @param[in] sphereRadius Sphere radius
 	 * @param[in] parent Parent widget
 	 */
-	ccFitSphereDlg(double   maxOutliersRatio,
-	               double   confidence,
-	               bool     autoDetectSphereRadius,
-	               double   sphereRadius,
+	ccFitSphereDlg(double maxOutliersRatio,
+	               double confidence,
+	               bool autoDetectSphereRadius,
+	               double sphereRadius,
 	               QWidget* parent = nullptr);
 
 	/// Get max outliers ratio

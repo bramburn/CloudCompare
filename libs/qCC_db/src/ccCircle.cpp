@@ -40,7 +40,7 @@
 // qCC_db
 #include <ccPointCloud.h>
 
-ccCircle::ccCircle(double   radius /*=0.0*/,
+ccCircle::ccCircle(double radius /*=0.0*/,
                    unsigned resolution /*=48*/,
                    unsigned uniqueID /*=ccUniqueIDGenerator::InvalidUniqueID*/)
     : ccPolyline(new ccPointCloud("vertices"), uniqueID)

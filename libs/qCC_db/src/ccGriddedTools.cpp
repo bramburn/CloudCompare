@@ -47,11 +47,11 @@
 //! Association of an angle and the corresponding number of rows/columns
 using AngleAndSpan = std::pair<PointCoordinateType, unsigned>;
 
-bool ccGriddedTools::DetectParameters(const ccPointCloud*              cloud,
+bool ccGriddedTools::DetectParameters(const ccPointCloud* cloud,
                                       const ccPointCloud::Grid::Shared grid,
-                                      GridParameters&                  parameters,
-                                      bool                             verbose /*=false*/,
-                                      ccGLMatrix*                      cloudToSensorTrans /*=nullptr*/)
+                                      GridParameters& parameters,
+                                      bool verbose /*=false*/,
+                                      ccGLMatrix* cloudToSensorTrans /*=nullptr*/)
 {
 	if (!cloud || !grid)
 	{
@@ -59,18 +59,18 @@ bool ccGriddedTools::DetectParameters(const ccPointCloud*              cloud,
 		return false;
 	}
 
-	parameters.minPhi        = static_cast<PointCoordinateType>(M_PI);
-	parameters.maxPhi        = -parameters.minPhi;
-	parameters.minTheta      = static_cast<PointCoordinateType>(M_PI);
-	parameters.maxTheta      = -parameters.minTheta;
-	parameters.deltaPhiRad   = 0;
+	parameters.minPhi = static_cast<PointCoordinateType>(M_PI);
+	parameters.maxPhi = -parameters.minPhi;
+	parameters.minTheta = static_cast<PointCoordinateType>(M_PI);
+	parameters.maxTheta = -parameters.minTheta;
+	parameters.deltaPhiRad = 0;
 	parameters.deltaThetaRad = 0;
-	parameters.maxRange      = 0;
+	parameters.maxRange = 0;
 
 	// we must test if the angles are shifted (i.e the scan spans above theta = pi)
 	// we'll compute all parameters for both cases, and choose the best one at the end!
-	PointCoordinateType minPhiShifted   = parameters.minPhi;
-	PointCoordinateType maxPhiShifted   = parameters.maxPhi;
+	PointCoordinateType minPhiShifted = parameters.minPhi;
+	PointCoordinateType maxPhiShifted = parameters.maxPhi;
 	PointCoordinateType minThetaShifted = parameters.minTheta;
 	PointCoordinateType maxThetaShifted = parameters.maxTheta;
 
@@ -100,8 +100,8 @@ bool ccGriddedTools::DetectParameters(const ccPointCloud*              cloud,
 
 				if (maxIndex > minIndex)
 				{
-					PointCoordinateType minPhiCurrentLine        = 0;
-					PointCoordinateType maxPhiCurrentLine        = 0;
+					PointCoordinateType minPhiCurrentLine = 0;
+					PointCoordinateType maxPhiCurrentLine = 0;
 					PointCoordinateType minPhiCurrentLineShifted = 0;
 					PointCoordinateType maxPhiCurrentLineShifted = 0;
 					for (unsigned k = minIndex; k <= maxIndex; ++k)
@@ -112,7 +112,7 @@ bool ccGriddedTools::DetectParameters(const ccPointCloud*              cloud,
 							CCVector3 P = *(cloud->getPoint(static_cast<unsigned>(index)));
 							if (cloudToSensorTrans)
 								cloudToSensorTrans->apply(P);
-							PointCoordinateType p        = atan2(P.z, sqrt(P.x * P.x + P.y * P.y)); // see ccGBLSensor::projectPoint
+							PointCoordinateType p = atan2(P.z, sqrt(P.x * P.x + P.y * P.y)); // see ccGBLSensor::projectPoint
 							PointCoordinateType pShifted = (p < 0 ? p + static_cast<PointCoordinateType>(2.0 * M_PI) : p);
 							if (k != minIndex)
 							{
@@ -149,7 +149,7 @@ bool ccGriddedTools::DetectParameters(const ccPointCloud*              cloud,
 					if (maxPhiShifted < maxPhiCurrentLineShifted)
 						maxPhiShifted = maxPhiCurrentLineShifted;
 
-					unsigned   span      = maxIndex - minIndex + 1;
+					unsigned span = maxIndex - minIndex + 1;
 					ScalarType angle_rad = static_cast<ScalarType>((maxPhiCurrentLine - minPhiCurrentLine) / span);
 					angles.emplace_back(angle_rad, span);
 
@@ -164,11 +164,11 @@ bool ccGriddedTools::DetectParameters(const ccPointCloud*              cloud,
 			{
 				// check the 'shifted' hypothesis
 				PointCoordinateType spanShifted = maxPhiShifted - minPhiShifted;
-				PointCoordinateType span        = parameters.maxPhi - parameters.minPhi;
+				PointCoordinateType span = parameters.maxPhi - parameters.minPhi;
 				if (spanShifted < 0.99 * span)
 				{
 					// we prefer the shifted version!
-					angles            = anglesShifted;
+					angles = anglesShifted;
 					parameters.minPhi = minPhiShifted;
 					parameters.maxPhi = maxPhiShifted;
 				}
@@ -225,8 +225,8 @@ bool ccGriddedTools::DetectParameters(const ccPointCloud*              cloud,
 
 				if (maxIndex > minIndex)
 				{
-					PointCoordinateType minThetaCurrentCol        = 0;
-					PointCoordinateType maxThetaCurrentCol        = 0;
+					PointCoordinateType minThetaCurrentCol = 0;
+					PointCoordinateType maxThetaCurrentCol = 0;
 					PointCoordinateType minThetaCurrentColShifted = 0;
 					PointCoordinateType maxThetaCurrentColShifted = 0;
 					for (unsigned k = minIndex; k <= maxIndex; ++k)
@@ -238,7 +238,7 @@ bool ccGriddedTools::DetectParameters(const ccPointCloud*              cloud,
 							CCVector3 P = *(cloud->getPoint(static_cast<unsigned>(index)));
 							if (cloudToSensorTrans)
 								cloudToSensorTrans->apply(P);
-							PointCoordinateType t        = atan2(P.y, P.x); // see ccGBLSensor::projectPoint
+							PointCoordinateType t = atan2(P.y, P.x); // see ccGBLSensor::projectPoint
 							PointCoordinateType tShifted = (t < 0 ? t + static_cast<PointCoordinateType>(2.0 * M_PI) : t);
 							if (k != minIndex)
 							{
@@ -270,7 +270,7 @@ bool ccGriddedTools::DetectParameters(const ccPointCloud*              cloud,
 					if (maxThetaShifted < maxThetaCurrentColShifted)
 						maxThetaShifted = maxThetaCurrentColShifted;
 
-					unsigned   span      = maxIndex - minIndex;
+					unsigned span = maxIndex - minIndex;
 					ScalarType angle_rad = static_cast<ScalarType>((maxThetaCurrentCol - minThetaCurrentCol) / span);
 					angles.emplace_back(angle_rad, span);
 
@@ -283,11 +283,11 @@ bool ccGriddedTools::DetectParameters(const ccPointCloud*              cloud,
 			{
 				// check the 'shifted' hypothesis
 				PointCoordinateType spanShifted = maxThetaShifted - minThetaShifted;
-				PointCoordinateType span        = parameters.maxTheta - parameters.minTheta;
+				PointCoordinateType span = parameters.maxTheta - parameters.minTheta;
 				if (spanShifted < 0.99 * span)
 				{
 					// we prefer the shifted version!
-					angles              = anglesShifted;
+					angles = anglesShifted;
 					parameters.minTheta = minThetaShifted;
 					parameters.maxTheta = maxThetaShifted;
 				}

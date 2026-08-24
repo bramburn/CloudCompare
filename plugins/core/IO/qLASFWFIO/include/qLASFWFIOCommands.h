@@ -31,10 +31,10 @@
 #include "LASFWFFilter.h"
 
 /// Load FWF command identifier
-static const char COMMAND_LOAD_FWF[]        = "FWF_O";
+static const char COMMAND_LOAD_FWF[] = "FWF_O";
 static const char COMMAND_SAVE_CLOUDS_FWF[] = "FWF_SAVE_CLOUDS";
-static const char OPTION_ALL_AT_ONCE[]      = "ALL_AT_ONCE";
-static const char OPTION_COMPRESSED[]       = "COMPRESSED";
+static const char OPTION_ALL_AT_ONCE[] = "ALL_AT_ONCE";
+static const char OPTION_COMPRESSED[] = "COMPRESSED";
 
 /**
  * @struct CommandLoadLASFWF
@@ -75,7 +75,7 @@ struct CommandLoadLASFWF : public ccCommandLineInterface::Command
 		QString filename(cmd.arguments().takeFirst());
 		cmd.print(QString("Opening file: '%1'").arg(filename));
 
-		CC_FILE_ERROR        result = CC_FERR_NO_ERROR;
+		CC_FILE_ERROR result = CC_FERR_NO_ERROR;
 		FileIOFilter::Shared filter = FileIOFilter::GetFilter(LASFWFFilter::GetFileFilter(), true);
 		if (!filter)
 		{
@@ -100,8 +100,8 @@ struct CommandSaveLASFWF : public ccCommandLineInterface::Command
 
 	virtual bool process(ccCommandLineInterface& cmd) override
 	{
-		bool    allAtOnce = false;
-		QString ext       = "las";
+		bool allAtOnce = false;
+		QString ext = "las";
 
 		// look for additional parameters
 		while (!cmd.arguments().empty())
@@ -128,7 +128,7 @@ struct CommandSaveLASFWF : public ccCommandLineInterface::Command
 
 		// backup the existing cloud export format first
 		QString previousCloudExportFormat = cmd.cloudExportFormat();
-		QString previousCloudExportExt    = cmd.cloudExportExt();
+		QString previousCloudExportExt = cmd.cloudExportExt();
 
 		// force the export format to LAS FWF
 		cmd.setCloudExportFormat(LASFWFFilter::GetFileFilter(), ext);

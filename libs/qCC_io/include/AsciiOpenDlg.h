@@ -40,29 +40,29 @@
 /// ASCII column types
 enum CC_ASCII_OPEN_DLG_TYPES
 {
-	ASCII_OPEN_DLG_None   = 0,
-	ASCII_OPEN_DLG_X      = 1,
-	ASCII_OPEN_DLG_Y      = 2,
-	ASCII_OPEN_DLG_Z      = 3,
-	ASCII_OPEN_DLG_NX     = 4,
-	ASCII_OPEN_DLG_NY     = 5,
-	ASCII_OPEN_DLG_NZ     = 6,
-	ASCII_OPEN_DLG_R      = 7,
-	ASCII_OPEN_DLG_G      = 8,
-	ASCII_OPEN_DLG_B      = 9,
-	ASCII_OPEN_DLG_A      = 10,
-	ASCII_OPEN_DLG_Rf     = 11,
-	ASCII_OPEN_DLG_Gf     = 12,
-	ASCII_OPEN_DLG_Bf     = 13,
-	ASCII_OPEN_DLG_Af     = 14,
-	ASCII_OPEN_DLG_Grey   = 15,
+	ASCII_OPEN_DLG_None = 0,
+	ASCII_OPEN_DLG_X = 1,
+	ASCII_OPEN_DLG_Y = 2,
+	ASCII_OPEN_DLG_Z = 3,
+	ASCII_OPEN_DLG_NX = 4,
+	ASCII_OPEN_DLG_NY = 5,
+	ASCII_OPEN_DLG_NZ = 6,
+	ASCII_OPEN_DLG_R = 7,
+	ASCII_OPEN_DLG_G = 8,
+	ASCII_OPEN_DLG_B = 9,
+	ASCII_OPEN_DLG_A = 10,
+	ASCII_OPEN_DLG_Rf = 11,
+	ASCII_OPEN_DLG_Gf = 12,
+	ASCII_OPEN_DLG_Bf = 13,
+	ASCII_OPEN_DLG_Af = 14,
+	ASCII_OPEN_DLG_Grey = 15,
 	ASCII_OPEN_DLG_RGB32i = 16, // RGBA as a single 32 bits integer (PCL style)
 	ASCII_OPEN_DLG_RGB32f = 17, // RGBA as a single 32 bits float (PCL style)
-	ASCII_OPEN_DLG_Label  = 18,
-	ASCII_OPEN_DLG_QuatW  = 19,
-	ASCII_OPEN_DLG_QuatX  = 20,
-	ASCII_OPEN_DLG_QuatY  = 21,
-	ASCII_OPEN_DLG_QuatZ  = 22,
+	ASCII_OPEN_DLG_Label = 18,
+	ASCII_OPEN_DLG_QuatW = 19,
+	ASCII_OPEN_DLG_QuatX = 20,
+	ASCII_OPEN_DLG_QuatY = 21,
+	ASCII_OPEN_DLG_QuatZ = 22,
 	ASCII_OPEN_DLG_Scalar = 23, // should always be the last one! (see AsciiOpenDlg::CheckOpenSequence)
 };
 
@@ -222,7 +222,7 @@ class QCC_IO_LIB_API AsciiOpenDlg : public QDialog
 	struct SequenceItem
 	{
 		CC_ASCII_OPEN_DLG_TYPES type;
-		QString                 header;
+		QString header;
 
 		//! Default constructor
 		SequenceItem()
@@ -330,18 +330,18 @@ class QCC_IO_LIB_API AsciiOpenDlg : public QDialog
 	// associated UI
 	Ui_AsciiOpenDialog* m_ui;
 
-	QChar        m_separator;
-	double       m_averageLineSize;
-	QString      m_filename;
+	QChar m_separator;
+	double m_averageLineSize;
+	QString m_filename;
 	QTextStream* m_stream;
-	QString      m_headerLine;
+	QString m_headerLine;
 
 	enum ColumnType
 	{
-		TEXT    = 0,
+		TEXT = 0,
 		UNKNOWN = 1,
 		IGNORED = 2,
-		VALID   = 3
+		VALID = 3
 	};
 
 	//! Identifies columns with numbers only [mandatory]

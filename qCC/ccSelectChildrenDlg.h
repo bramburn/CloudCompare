@@ -54,7 +54,7 @@ class ccSelectChildrenDlg : public QDialog
 	 * @param[in] parent Parent widget
 	 */
 	explicit ccSelectChildrenDlg(QWidget* parent = nullptr);
-	
+
 	/// Destructor
 	~ccSelectChildrenDlg() override;
 
@@ -67,10 +67,10 @@ class ccSelectChildrenDlg : public QDialog
 
 	/// Get selected type
 	CC_CLASS_ENUM getSelectedType();
-	
+
 	/// Get selected name
 	QString getSelectedName();
-	
+
 	/// Get strict match state
 	bool getStrictMatchState() const;
 

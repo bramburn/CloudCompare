@@ -36,11 +36,11 @@
 
 #include "BundlerFilter.h"
 
-static const char COMMAND_BUNDLER[]               = "BUNDLER_IMPORT"; // Import Bundler file + orthorectification
+static const char COMMAND_BUNDLER[] = "BUNDLER_IMPORT"; // Import Bundler file + orthorectification
 static const char COMMAND_BUNDLER_ALT_KEYPOINTS[] = "ALT_KEYPOINTS";
-static const char COMMAND_BUNDLER_SCALE_FACTOR[]  = "SCALE_FACTOR";
-static const char COMMAND_BUNDLER_UNDISTORT[]     = "UNDISTORT";
-static const char COMMAND_BUNDLER_COLOR_DTM[]     = "COLOR_DTM";
+static const char COMMAND_BUNDLER_SCALE_FACTOR[] = "SCALE_FACTOR";
+static const char COMMAND_BUNDLER_UNDISTORT[] = "UNDISTORT";
+static const char COMMAND_BUNDLER_COLOR_DTM[] = "COLOR_DTM";
 
 BundlerCommand::BundlerCommand()
     : ccCommandLineInterface::Command("Bundler", COMMAND_BUNDLER)
@@ -57,11 +57,11 @@ bool BundlerCommand::process(ccCommandLineInterface& cmd)
 	QString bundlerFilename(cmd.arguments().takeFirst());
 	cmd.print(QObject::tr("Importing Bundler file: '%1'").arg(bundlerFilename));
 
-	QString  altKeypointsFilename;
-	bool     undistortImages         = false;
-	bool     generateColoredDTM      = false;
+	QString altKeypointsFilename;
+	bool undistortImages = false;
+	bool generateColoredDTM = false;
 	unsigned coloredDTMVerticesCount = 0;
-	float    scaleFactor             = 1.0f;
+	float scaleFactor = 1.0f;
 
 	// inner loop for Bundler import options
 	while (!cmd.arguments().empty())
@@ -84,7 +84,7 @@ bool BundlerCommand::process(ccCommandLineInterface& cmd)
 			if (cmd.arguments().empty())
 				return cmd.error(QObject::tr("Missing parameter: value after \"-%1\"").arg(COMMAND_BUNDLER_SCALE_FACTOR));
 			bool conversionOk = false;
-			scaleFactor       = cmd.arguments().takeFirst().toFloat(&conversionOk);
+			scaleFactor = cmd.arguments().takeFirst().toFloat(&conversionOk);
 			if (!conversionOk)
 				return cmd.error(QObject::tr("Invalid parameter: value after \"-%1\"").arg(COMMAND_BUNDLER_SCALE_FACTOR));
 		}
@@ -102,7 +102,7 @@ bool BundlerCommand::process(ccCommandLineInterface& cmd)
 
 			if (cmd.arguments().empty())
 				return cmd.error(QObject::tr("Missing parameter: vertices count after \"-%1\"").arg(COMMAND_BUNDLER_COLOR_DTM));
-			bool conversionOk       = false;
+			bool conversionOk = false;
 			coloredDTMVerticesCount = cmd.arguments().takeFirst().toUInt(&conversionOk);
 			if (!conversionOk)
 				return cmd.error(QObject::tr("Invalid parameter: vertices count after \"-%1\"").arg(COMMAND_BUNDLER_COLOR_DTM));
@@ -114,7 +114,7 @@ bool BundlerCommand::process(ccCommandLineInterface& cmd)
 		}
 	}
 
-	ccHObject                    tempContainer;
+	ccHObject tempContainer;
 	FileIOFilter::LoadParameters parameters;
 	parameters.alwaysDisplayLoadDialog = false;
 	BundlerFilter().loadFileExtended(qUtf8Printable(bundlerFilename),

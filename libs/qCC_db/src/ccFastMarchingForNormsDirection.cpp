@@ -64,7 +64,7 @@ ccFastMarchingForNormsDirection::ccFastMarchingForNormsDirection()
 }
 
 static CCVector3 ComputeRobustAverageNorm(CCCoreLib::ReferenceCloud* subset,
-                                          ccGenericPointCloud*       sourceCloud)
+                                          ccGenericPointCloud* sourceCloud)
 {
 	if (!subset || subset->size() == 0 || !sourceCloud)
 		return CCVector3(0, 0, 1);
@@ -77,7 +77,7 @@ static CCVector3 ComputeRobustAverageNorm(CCCoreLib::ReferenceCloud* subset,
 
 	// now we can compute the mean normal, using the first normal as reference for the sign
 	CCVector3 Nout(0, 0, 0);
-	unsigned  n = subset->size();
+	unsigned n = subset->size();
 	for (unsigned i = 0; i < n; ++i)
 	{
 		const CCVector3& Ni = sourceCloud->getPointNormal(subset->getPointGlobalIndex(i));
@@ -94,10 +94,10 @@ static CCVector3 ComputeRobustAverageNorm(CCCoreLib::ReferenceCloud* subset,
 	return Nout;
 }
 
-int ccFastMarchingForNormsDirection::init(ccGenericPointCloud*   cloud,
+int ccFastMarchingForNormsDirection::init(ccGenericPointCloud* cloud,
                                           NormsIndexesTableType* theNorms,
-                                          ccOctree*              theOctree,
-                                          unsigned char          level)
+                                          ccOctree* theOctree,
+                                          unsigned char level)
 {
 	int result = initGridWithOctree(theOctree, level);
 	if (result < 0)
@@ -129,8 +129,8 @@ int ccFastMarchingForNormsDirection::init(ccGenericPointCloud*   cloud,
 		{
 			// aCell->signConfidence = 1;
 			aCell->cellCode = cellCodes.back();
-			aCell->N        = ComputeRobustAverageNorm(&Yk, cloud);
-			aCell->C        = *CCCoreLib::Neighbourhood(&Yk).getGravityCenter();
+			aCell->N = ComputeRobustAverageNorm(&Yk, cloud);
+			aCell->C = *CCCoreLib::Neighbourhood(&Yk).getGravityCenter();
 		}
 
 		m_theGrid[gridPos] = aCell;
@@ -152,9 +152,9 @@ float ccFastMarchingForNormsDirection::computePropagationConfidence(DirectionCel
 	CCVector3 AB = destCell->C - originCell->C;
 	AB.normalize();
 
-	float psOri         = std::abs(static_cast<float>(AB.dot(originCell->N))); // ideal: 90 degrees
-	float psDest        = std::abs(static_cast<float>(AB.dot(destCell->N)));   // ideal: 90 degrees
-	float oriConfidence = (psOri + psDest) / 2;                                // between 0 and 1 (ideal: 0)
+	float psOri = std::abs(static_cast<float>(AB.dot(originCell->N))); // ideal: 90 degrees
+	float psDest = std::abs(static_cast<float>(AB.dot(destCell->N)));  // ideal: 90 degrees
+	float oriConfidence = (psOri + psDest) / 2;                        // between 0 and 1 (ideal: 0)
 
 	return 1.0f - oriConfidence;
 }
@@ -162,17 +162,17 @@ float ccFastMarchingForNormsDirection::computePropagationConfidence(DirectionCel
 void ccFastMarchingForNormsDirection::resolveCellOrientation(unsigned index)
 {
 	DirectionCell* theCell = static_cast<DirectionCell*>(m_theGrid[index]);
-	CCVector3&     N       = theCell->N;
+	CCVector3& N = theCell->N;
 
 	// we resolve the normal direction by looking at the (already processed) neighbors
-	bool  inverseNormal = false;
-	float bestConf      = 0;
+	bool inverseNormal = false;
+	float bestConf = 0;
 // #define USE_BEST_NEIGHBOR_ONLY
 #ifndef USE_BEST_NEIGHBOR_ONLY
-	unsigned nPos    = 0;
-	float    confPos = 0;
-	unsigned nNeg    = 0;
-	float    confNeg = 0;
+	unsigned nPos = 0;
+	float confPos = 0;
+	unsigned nNeg = 0;
+	float confNeg = 0;
 #endif
 	for (unsigned i = 0; i < m_numberOfNeighbours; ++i)
 	{
@@ -184,8 +184,8 @@ void ccFastMarchingForNormsDirection::resolveCellOrientation(unsigned index)
 #ifdef USE_BEST_NEIGHBOR_ONLY
 			if (confidence > bestConf)
 			{
-				bestConf      = confidence;
-				float ps      = static_cast<float>(nCell->N.dot(N));
+				bestConf = confidence;
+				float ps = static_cast<float>(nCell->N.dot(N));
 				inverseNormal = (ps < 0);
 			}
 #else
@@ -207,8 +207,8 @@ void ccFastMarchingForNormsDirection::resolveCellOrientation(unsigned index)
 
 #ifndef USE_BEST_NEIGHBOR_ONLY
 	inverseNormal = (nNeg == nPos ? confNeg > confPos : nNeg > nPos);
-	bestConf      = inverseNormal ? confNeg : confPos; // DGM: absolute confidence seems to work better...
-	                                                   // bestConf = inverseNormal ? confNeg/static_cast<float>(nNeg) : confPos/static_cast<float>(nPos);
+	bestConf = inverseNormal ? confNeg : confPos; // DGM: absolute confidence seems to work better...
+	                                              // bestConf = inverseNormal ? confNeg/static_cast<float>(nNeg) : confPos/static_cast<float>(nPos);
 #endif
 	if (inverseNormal)
 	{
@@ -257,8 +257,8 @@ int ccFastMarchingForNormsDirection::step()
 		for (unsigned i = 0; i < m_numberOfNeighbours; ++i)
 		{
 			// get neighbor cell
-			unsigned                       nIndex = minTCellIndex + m_neighboursIndexShift[i];
-			CCCoreLib::FastMarching::Cell* nCell  = m_theGrid[nIndex];
+			unsigned nIndex = minTCellIndex + m_neighboursIndexShift[i];
+			CCCoreLib::FastMarching::Cell* nCell = m_theGrid[nIndex];
 			if (nCell)
 			{
 				// if it' not yet a TRIAL cell
@@ -271,7 +271,7 @@ int ccFastMarchingForNormsDirection::step()
 				else if (nCell->state == DirectionCell::TRIAL_CELL)
 				{
 					const float& t_old = nCell->T;
-					float        t_new = computeT(nIndex);
+					float t_new = computeT(nIndex);
 
 					if (t_new < t_old)
 						nCell->T = t_new;
@@ -289,9 +289,9 @@ int ccFastMarchingForNormsDirection::step()
 
 float ccFastMarchingForNormsDirection::computeTCoefApprox(CCCoreLib::FastMarching::Cell* originCell, CCCoreLib::FastMarching::Cell* destCell) const
 {
-	DirectionCell* oCell                 = static_cast<DirectionCell*>(originCell);
-	DirectionCell* dCell                 = static_cast<DirectionCell*>(destCell);
-	float          orientationConfidence = computePropagationConfidence(oCell, dCell); // between 0 and 1 (ideal: 1)
+	DirectionCell* oCell = static_cast<DirectionCell*>(originCell);
+	DirectionCell* dCell = static_cast<DirectionCell*>(destCell);
+	float orientationConfidence = computePropagationConfidence(oCell, dCell); // between 0 and 1 (ideal: 1)
 
 	return (1.0f - orientationConfidence) * oCell->signConfidence;
 }
@@ -310,9 +310,9 @@ int ccFastMarchingForNormsDirection::propagate()
 	return result;
 }
 
-unsigned ccFastMarchingForNormsDirection::updateResolvedTable(ccGenericPointCloud*        cloud,
+unsigned ccFastMarchingForNormsDirection::updateResolvedTable(ccGenericPointCloud* cloud,
                                                               std::vector<unsigned char>& resolved,
-                                                              NormsIndexesTableType*      theNorms)
+                                                              NormsIndexesTableType* theNorms)
 {
 	if (!m_initialized || !m_octree || m_gridLevel > CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL)
 		return 0;
@@ -331,11 +331,11 @@ unsigned ccFastMarchingForNormsDirection::updateResolvedTable(ccGenericPointClou
 
 		for (unsigned k = 0; k < Yk.size(); ++k)
 		{
-			unsigned index  = Yk.getPointGlobalIndex(k);
+			unsigned index = Yk.getPointGlobalIndex(k);
 			resolved[index] = 1;
 
 			const CompressedNormType& norm = theNorms->getValue(index);
-			const CCVector3&          N    = ccNormalVectors::GetNormal(norm);
+			const CCVector3& N = ccNormalVectors::GetNormal(norm);
 
 			// inverse point normal if necessary
 			if (N.dot(aCell->N) < 0)
@@ -364,7 +364,7 @@ void ccFastMarchingForNormsDirection::initTrialCells()
 
 	if (seedCount == 1)
 	{
-		unsigned       index    = m_activeCells.front();
+		unsigned index = m_activeCells.front();
 		DirectionCell* seedCell = static_cast<DirectionCell*>(m_theGrid[index]);
 
 		assert(seedCell != nullptr);
@@ -374,8 +374,8 @@ void ccFastMarchingForNormsDirection::initTrialCells()
 		// add all its neighbour cells to the TRIAL set
 		for (unsigned i = 0; i < m_numberOfNeighbours; ++i)
 		{
-			unsigned       nIndex = index + m_neighboursIndexShift[i];
-			DirectionCell* nCell  = static_cast<DirectionCell*>(m_theGrid[nIndex]);
+			unsigned nIndex = index + m_neighboursIndexShift[i];
+			DirectionCell* nCell = static_cast<DirectionCell*>(m_theGrid[nIndex]);
 			// if the neighbor exists (it shouldn't be in the TRIAL or ACTIVE sets)
 			if (nCell /* && nCell->state == DirectionCell::FAR_CELL*/)
 			{
@@ -389,8 +389,8 @@ void ccFastMarchingForNormsDirection::initTrialCells()
 	}
 }
 
-int ccFastMarchingForNormsDirection::OrientNormals(ccPointCloud*     cloud,
-                                                   unsigned char     octreeLevel,
+int ccFastMarchingForNormsDirection::OrientNormals(ccPointCloud* cloud,
+                                                   unsigned char octreeLevel,
                                                    ccProgressDialog* progressCb)
 {
 	if (!cloud || !cloud->normals())
@@ -424,7 +424,7 @@ int ccFastMarchingForNormsDirection::OrientNormals(ccPointCloud*     cloud,
 	bool sfWasDisplayed = cloud->sfShown();
 #endif
 	int oldSfIdx = cloud->getCurrentDisplayedScalarFieldIndex();
-	int sfIdx    = cloud->getScalarFieldIndexByName("FM_Propagation");
+	int sfIdx = cloud->getScalarFieldIndexByName("FM_Propagation");
 	if (sfIdx < 0)
 		sfIdx = cloud->addScalarField("FM_Propagation");
 	if (sfIdx >= 0)
@@ -489,9 +489,9 @@ int ccFastMarchingForNormsDirection::OrientNormals(ccPointCloud*     cloud,
 	// fm.setExtendedConnectivity(true);
 
 	// while non-processed points remain...
-	unsigned resolvedPoints     = 0;
-	int      lastProcessedPoint = -1;
-	bool     success            = true;
+	unsigned resolvedPoints = 0;
+	int lastProcessedPoint = -1;
+	bool success = true;
 	while (success)
 	{
 		// find the next non-processed point
@@ -507,7 +507,7 @@ int ccFastMarchingForNormsDirection::OrientNormals(ccPointCloud*     cloud,
 		// we start the propagation from this point
 		// its corresponding cell in fact ;)
 		const CCVector3* thePoint = cloud->getPoint(lastProcessedPoint);
-		Tuple3i          cellPos;
+		Tuple3i cellPos;
 		octree->getTheCellPosWhichIncludesThePoint(thePoint, cellPos, octreeLevel);
 
 		// clipping (in case the octree is not 'complete')

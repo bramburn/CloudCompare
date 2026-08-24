@@ -90,20 +90,20 @@ class ccWaveWidget : public QCustomPlot
 
   protected: // attributes
 	// Title
-	QString         m_titleStr;
+	QString m_titleStr;
 	QCPTextElement* m_titlePlot;
 
 	//! Wave curve
-	QCPGraph*           m_curve;
+	QCPGraph* m_curve;
 	std::vector<double> m_curveValues;
-	double              m_dt;
-	double              m_minA, m_maxA;
-	double              m_echoPos;
+	double m_dt;
+	double m_minA, m_maxA;
+	double m_echoPos;
 
 	// vertical indicator
 	QCPBarsWithText* m_vertBar;
-	bool             m_drawVerticalIndicator;
-	double           m_verticalIndicatorPositionPercent;
+	bool m_drawVerticalIndicator;
+	double m_verticalIndicatorPositionPercent;
 
 	// Peak marker
 	QCPBarsWithText* m_peakBar;

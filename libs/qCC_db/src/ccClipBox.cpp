@@ -63,9 +63,9 @@
 
 // Components geometry
 static QSharedPointer<ccCylinder> c_arrowShaft(nullptr);
-static QSharedPointer<ccCone>     c_arrowHead(nullptr);
-static QSharedPointer<ccSphere>   c_centralSphere(nullptr);
-static QSharedPointer<ccTorus>    c_torus(nullptr);
+static QSharedPointer<ccCone> c_arrowHead(nullptr);
+static QSharedPointer<ccSphere> c_centralSphere(nullptr);
+static QSharedPointer<ccTorus> c_torus(nullptr);
 
 void DrawUnitArrow(bool entityPickingMode, const CCVector3& start, const CCVector3& direction, PointCoordinateType scale, const ccColor::Rgb& col, CC_DRAW_CONTEXT& context)
 {
@@ -83,12 +83,12 @@ void DrawUnitArrow(bool entityPickingMode, const CCVector3& start, const CCVecto
 	ccGL::Scale(glFunc, scale, scale, scale);
 
 	// we compute scalar prod between the two vectors
-	CCVector3           Z(0.0, 0.0, 1.0);
+	CCVector3 Z(0.0, 0.0, 1.0);
 	PointCoordinateType ps = Z.dot(direction);
 
 	if (ps < 1)
 	{
-		CCVector3           axis(1, 0, 0);
+		CCVector3 axis(1, 0, 0);
 		PointCoordinateType angle_deg = static_cast<PointCoordinateType>(180.0);
 
 		if (ps > -1)
@@ -136,12 +136,12 @@ static void DrawUnitTorus(bool entityPickingMode, const CCVector3& center, const
 	ccGL::Scale(glFunc, scale, scale, scale);
 
 	// we compute scalar prod between the two vectors
-	CCVector3           Z(0, 0, 1);
+	CCVector3 Z(0, 0, 1);
 	PointCoordinateType ps = Z.dot(direction);
 
 	if (ps < 1)
 	{
-		CCVector3           axis(1, 0, 0);
+		CCVector3 axis(1, 0, 0);
 		PointCoordinateType angle_deg = 180;
 
 		if (ps > -1)
@@ -237,11 +237,11 @@ void ccClipBox::update()
 	}
 
 	// now add the 6 box clipping planes
-	ccBBox     extents;
+	ccBBox extents;
 	ccGLMatrix transformation;
 	get(extents, transformation);
 
-	CCVector3 C       = transformation * extents.getCenter();
+	CCVector3 C = transformation * extents.getCenter();
 	CCVector3 halfDim = extents.getDiagVec() / 2;
 
 	// for each dimension
@@ -288,9 +288,9 @@ void ccClipBox::reset()
 
 	if (m_entityContainer.getChildrenNumber())
 	{
-		m_box                       = m_entityContainer.getBB_recursive();
+		m_box = m_entityContainer.getBB_recursive();
 		PointCoordinateType epsilon = m_box.getDiagNorm() / 500;
-		CCVector3           epsilonVec(epsilon, epsilon, epsilon);
+		CCVector3 epsilonVec(epsilon, epsilon, epsilon);
 		m_box.add(m_box.minCorner() - epsilonVec);
 		m_box.add(m_box.maxCorner() + epsilonVec);
 	}
@@ -412,7 +412,7 @@ bool ccClipBox::move2D(int x, int y, int dx, int dy, int screenWidth, int screen
 void ccClipBox::setClickedPoint(int x, int y, int screenWidth, int screenHeight, const ccGLMatrixd& viewMatrix)
 {
 	m_lastOrientation = PointToVector(x, y, screenWidth, screenHeight);
-	m_viewMatrix      = viewMatrix;
+	m_viewMatrix = viewMatrix;
 }
 
 bool ccClipBox::move3D(const CCVector3d& uInput)
@@ -533,7 +533,7 @@ bool ccClipBox::move3D(const CCVector3d& uInput)
 		ccGLMatrixd rotMat;
 		rotMat.initFromParameters(angle_rad, Rb, CCVector3d(0, 0, 0));
 
-		CCVector3   C = m_box.getCenter();
+		CCVector3 C = m_box.getCenter();
 		ccGLMatrixd transMat;
 		transMat.setTranslation(-C);
 		transMat = rotMat * transMat;
@@ -574,9 +574,9 @@ void ccClipBox::shift(const CCVector3& v)
 	boxModified(&m_box);
 }
 
-void ccClipBox::flagPointsInside(ccGenericPointCloud*                      cloud,
+void ccClipBox::flagPointsInside(ccGenericPointCloud* cloud,
                                  ccGenericPointCloud::VisibilityTableType* visTable,
-                                 bool                                      shrink /*=false*/) const
+                                 bool shrink /*=false*/) const
 {
 	if (!cloud || !visTable)
 	{
@@ -620,7 +620,7 @@ void ccClipBox::flagPointsInside(ccGenericPointCloud*                      cloud
 			if (!shrink || visTable->at(i) == CCCoreLib::POINT_VISIBLE)
 			{
 				const CCVector3* P = cloud->getPoint(static_cast<unsigned>(i));
-				visTable->at(i)    = (m_box.contains(*P) ? CCCoreLib::POINT_VISIBLE : CCCoreLib::POINT_HIDDEN);
+				visTable->at(i) = (m_box.contains(*P) ? CCCoreLib::POINT_VISIBLE : CCCoreLib::POINT_HIDDEN);
 			}
 		}
 	}
@@ -653,9 +653,9 @@ PointCoordinateType ccClipBox::computeArrowsScale() const
 }
 
 const ColorCompType c_lightComp = ccColor::MAX / 2;
-const ccColor::Rgb  c_lightRed(ccColor::MAX, c_lightComp, c_lightComp);
-const ccColor::Rgb  c_lightGreen(c_lightComp, ccColor::MAX, c_lightComp);
-const ccColor::Rgb  c_lightBlue(c_lightComp, c_lightComp, ccColor::MAX);
+const ccColor::Rgb c_lightRed(ccColor::MAX, c_lightComp, c_lightComp);
+const ccColor::Rgb c_lightGreen(c_lightComp, ccColor::MAX, c_lightComp);
+const ccColor::Rgb c_lightBlue(c_lightComp, c_lightComp, ccColor::MAX);
 
 void ccClipBox::drawMeOnly(CC_DRAW_CONTEXT& context)
 {
@@ -689,9 +689,9 @@ void ccClipBox::drawMeOnly(CC_DRAW_CONTEXT& context)
 
 	// draw the interactors
 	{
-		const CCVector3& minC   = m_box.minCorner();
-		const CCVector3& maxC   = m_box.maxCorner();
-		const CCVector3  center = m_box.getCenter();
+		const CCVector3& minC = m_box.minCorner();
+		const CCVector3& maxC = m_box.maxCorner();
+		const CCVector3 center = m_box.getCenter();
 
 		PointCoordinateType scale = computeArrowsScale();
 

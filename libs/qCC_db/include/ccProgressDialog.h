@@ -59,8 +59,8 @@ class QCC_DB_LIB_API ccProgressDialog : public QProgressDialog
 	 *
 	 * @note Cancel button can be enabled but operation may not support cancellation
 	 */
-	ccProgressDialog(bool     cancelButton = false,
-	                 QWidget* parent       = nullptr);
+	ccProgressDialog(bool cancelButton = false,
+	                 QWidget* parent = nullptr);
 
 	//! Destructor (virtual)
 	virtual ~ccProgressDialog()
@@ -68,7 +68,7 @@ class QCC_DB_LIB_API ccProgressDialog : public QProgressDialog
 	}
 
 	// inherited method
-	virtual void        update(float percent) override;
+	virtual void update(float percent) override;
 	inline virtual void setMethodTitle(const char* methodTitle) override
 	{
 		setMethodTitle(QString(methodTitle));

@@ -30,12 +30,11 @@
  * @see BinFilter.cpp
  */
 #include "BinFilter.h"
-#include "ccPointCloud.h"
 #include "ccOctree.h"
-
-#include <QtTest/QtTest>
+#include "ccPointCloud.h"
 
 #include <QTemporaryFile>
+#include <QtTest/QtTest>
 
 class TestBinFilter : public QObject
 {
@@ -49,9 +48,9 @@ class TestBinFilter : public QObject
 
 		// ccPointCloud is on the whitelist (not in the blacklist) → true
 		ccPointCloud cloud("test");
-		bool         multiple  = false;
-		bool         exclusive = false;
-		QString      error;
+		bool multiple = false;
+		bool exclusive = false;
+		QString error;
 		QVERIFY(filter.canSave(cloud.getClassID(), multiple, exclusive));
 		QCOMPARE(multiple, true);
 		QCOMPARE(exclusive, false);
@@ -62,7 +61,7 @@ class TestBinFilter : public QObject
 		BinFilter filter;
 
 		// POINT_OCTREE is explicitly blacklisted → false
-		bool multiple  = true;
+		bool multiple = true;
 		bool exclusive = false;
 		QVERIFY(!filter.canSave(CC_TYPES::POINT_OCTREE, multiple, exclusive));
 	}

@@ -103,7 +103,7 @@ namespace // local helper
 		{
 			const std::string name;
 			const std::string comboBoxEntry;
-			const QIcon&      icon;
+			const QIcon& icon;
 			SpecialAttribute(const std::string& arg_name, const std::string& arg_comboBoxEntry, const QIcon& arg_icon)
 			    : name(arg_name)
 			    , comboBoxEntry(arg_comboBoxEntry)
@@ -131,12 +131,12 @@ namespace // local helper
 			openDlg.rdbTableWidget->setHorizontalHeaderLabels(headerLabels);
 
 			// check for existance of attribute and add it to qList
-			auto list_known_attribute = [](RDBOpenDialog&            openDlg,
-			                               int&                      idx,
+			auto list_known_attribute = [](RDBOpenDialog& openDlg,
+			                               int& idx,
 			                               std::vector<std::string>& attributes,
-			                               const std::string&        att,
-			                               const std::string&        comboBoxEntry,
-			                               const QIcon&              icon)
+			                               const std::string& att,
+			                               const std::string& comboBoxEntry,
+			                               const QIcon& icon)
 			{
 				if (std::find(attributes.begin(), attributes.end(), att) != attributes.end())
 				{
@@ -152,10 +152,10 @@ namespace // local helper
 					idx++;
 				}
 			};
-			auto add_qcombobox_scalar = [](RDBOpenDialog&     openDlg,
-			                               int&               idx,
+			auto add_qcombobox_scalar = [](RDBOpenDialog& openDlg,
+			                               int& idx,
 			                               const std::string& att,
-			                               bool               active)
+			                               bool active)
 			{
 				openDlg.rdbTableWidget->setItem(idx, 0, new QTableWidgetItem(att.c_str()));
 				// openDlg.rdbTableWidget->cellWidget(idx,0)->setEnabled(false);
@@ -173,11 +173,11 @@ namespace // local helper
 				openDlg.rdbTableWidget->setCellWidget(idx, 1, columnHeaderWidget);
 				idx++;
 			};
-			auto add_qcombobox_known_scalar = [add_qcombobox_scalar](RDBOpenDialog&            openDlg,
-			                                                         int&                      idx,
+			auto add_qcombobox_known_scalar = [add_qcombobox_scalar](RDBOpenDialog& openDlg,
+			                                                         int& idx,
 			                                                         std::vector<std::string>& attributes,
-			                                                         const std::string&        att,
-			                                                         bool                      active)
+			                                                         const std::string& att,
+			                                                         bool active)
 			{
 				if (std::find(attributes.begin(), attributes.end(), att) != attributes.end())
 				{
@@ -212,8 +212,8 @@ namespace // local helper
 			// openDlg.rdbAttributesList->insertItem(idx, "--- unknown attributes ---");
 			for (const std::string& att : attributes)
 			{
-				const riegl::rdb::pointcloud::PointAttribute rdb_attribute    = rdb.pointAttribute().get(att);
-				const uint32_t                               attribute_length = rdb_attribute.length;
+				const riegl::rdb::pointcloud::PointAttribute rdb_attribute = rdb.pointAttribute().get(att);
+				const uint32_t attribute_length = rdb_attribute.length;
 				if (attribute_length == 1)
 				{
 					add_qcombobox_scalar(openDlg, idx, att, false);
@@ -240,19 +240,19 @@ CC_FILE_ERROR RDBFilter::loadFile(const QString& filename, ccHObject& container,
 	riegl::rdb::Context context;
 
 	// check for known rdb vector attributes
-	bool rdb_hasRGBA          = false;
-	bool rdb_hasNormals       = false;
+	bool rdb_hasRGBA = false;
+	bool rdb_hasNormals = false;
 	bool rdb_has_pca_axis_min = false;
 
 	// needed for plane patch
 	// bool rdb_hasNormals = false;
-	bool rdb_has_plane_up     = false;
-	bool rdb_has_plane_width  = false;
+	bool rdb_has_plane_up = false;
+	bool rdb_has_plane_width = false;
 	bool rdb_has_plane_height = false;
 
 	{
 		// Access existing database
-		riegl::rdb::Pointcloud               rdb(context);
+		riegl::rdb::Pointcloud rdb(context);
 		riegl::rdb::pointcloud::OpenSettings settings(context);
 		rdb.open(filename.toStdString(), settings);
 
@@ -274,11 +274,11 @@ CC_FILE_ERROR RDBFilter::loadFile(const QString& filename, ccHObject& container,
 				return std::find(attributes.begin(), attributes.end(), att) != attributes.end();
 			};
 
-			rdb_hasRGBA          = listContains(attributes, "riegl.rgba");
-			rdb_hasNormals       = listContains(attributes, "riegl.surface_normal");
+			rdb_hasRGBA = listContains(attributes, "riegl.rgba");
+			rdb_hasNormals = listContains(attributes, "riegl.surface_normal");
 			rdb_has_pca_axis_min = listContains(attributes, "riegl.pca_axis_min");
-			rdb_has_plane_up     = listContains(attributes, "riegl.plane_up");
-			rdb_has_plane_width  = listContains(attributes, "riegl.plane_width");
+			rdb_has_plane_up = listContains(attributes, "riegl.plane_up");
+			rdb_has_plane_width = listContains(attributes, "riegl.plane_width");
 			rdb_has_plane_height = listContains(attributes, "riegl.plane_height");
 
 			if (rdb_hasNormals && rdb_has_pca_axis_min)
@@ -308,14 +308,14 @@ CC_FILE_ERROR RDBFilter::loadFile(const QString& filename, ccHObject& container,
 
 	// Load the file
 	const size_t BUFFER_SIZE = 100000;
-	size_t       total       = 0;
+	size_t total = 0;
 
 	// point cloud from CC to fill with points from rdb file
-	ccPointCloud* cloud  = new ccPointCloud();
+	ccPointCloud* cloud = new ccPointCloud();
 	CC_FILE_ERROR result = CC_FERR_NO_ERROR;
 	// if plane patch attributes are present create plane patch objects
-	bool       create_planes = false;
-	ccHObject* plane_set     = nullptr;
+	bool create_planes = false;
+	ccHObject* plane_set = nullptr;
 	if (rdb_hasNormals && rdb_has_plane_up && rdb_has_plane_width && rdb_has_plane_height)
 	{
 		create_planes = true;
@@ -342,7 +342,7 @@ CC_FILE_ERROR RDBFilter::loadFile(const QString& filename, ccHObject& container,
 	{
 		Conversion conv;
 		conv.att = att;
-		conv.sf  = new ccScalarField(att.c_str());
+		conv.sf = new ccScalarField(att.c_str());
 		conv.sf->link();
 		conv.buffer.resize(BUFFER_SIZE);
 		cloud->addScalarField(conv.sf);
@@ -366,7 +366,7 @@ CC_FILE_ERROR RDBFilter::loadFile(const QString& filename, ccHObject& container,
 	}
 	{
 		// Access existing database
-		riegl::rdb::Pointcloud               rdb(context);
+		riegl::rdb::Pointcloud rdb(context);
 		riegl::rdb::pointcloud::OpenSettings settings(context);
 		rdb.open(filename.toStdString(), settings);
 		// Get index graph root node
@@ -374,7 +374,7 @@ CC_FILE_ERROR RDBFilter::loadFile(const QString& filename, ccHObject& container,
 		riegl::rdb::pointcloud::GraphNode root = stat.index();
 
 		// progress dialog
-		ccProgressDialog              pdlg(true, parameters.parentWidget);
+		ccProgressDialog pdlg(true, parameters.parentWidget);
 		CCCoreLib::NormalizedProgress nprogress(&pdlg, root.pointCountTotal / BUFFER_SIZE);
 		{
 			std::stringstream ss;
@@ -385,12 +385,12 @@ CC_FILE_ERROR RDBFilter::loadFile(const QString& filename, ccHObject& container,
 		}
 
 		// prepare point attribute buffers
-		std::vector<std::array<float, 3>>   buffer_xyz(BUFFER_SIZE);
-		std::vector<std::array<float, 3>>   buffer_normals;
+		std::vector<std::array<float, 3>> buffer_xyz(BUFFER_SIZE);
+		std::vector<std::array<float, 3>> buffer_normals;
 		std::vector<std::array<uint8_t, 4>> buffer_rgba;
-		std::vector<std::array<float, 3>>   buffer_plane_up;
-		std::vector<float>                  buffer_plane_width;
-		std::vector<float>                  buffer_plane_height;
+		std::vector<std::array<float, 3>> buffer_plane_up;
+		std::vector<float> buffer_plane_width;
+		std::vector<float> buffer_plane_height;
 		// reserve memory for optional entries
 		if (rdb_hasNormals)
 			buffer_normals.resize(BUFFER_SIZE);
@@ -509,9 +509,9 @@ CC_FILE_ERROR RDBFilter::loadFile(const QString& filename, ccHObject& container,
 				{
 					// calculate tranformation matrix from norm and up vector
 					// to define the position and orientation of the plane patch
-					CCVector3         plane_norm = CCVector3::fromArray(buffer_normals[i].data());
-					CCVector3         plane_up   = CCVector3::fromArray(buffer_plane_up[i].data());
-					CCVector3         plane_side = plane_norm.cross(-plane_up);
+					CCVector3 plane_norm = CCVector3::fromArray(buffer_normals[i].data());
+					CCVector3 plane_up = CCVector3::fromArray(buffer_plane_up[i].data());
+					CCVector3 plane_side = plane_norm.cross(-plane_up);
 					Vector3Tpl<float> X(plane_side);
 					Vector3Tpl<float> Y(plane_up);
 					Vector3Tpl<float> Z(plane_norm);

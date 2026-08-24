@@ -70,9 +70,9 @@ class CCFBO_LIB_API ccBilateralFilter : public ccGlFilter
 	void reset();
 
 	// inherited from ccGlFilter
-	virtual ccGlFilter*   clone() const override;
-	virtual bool          init(unsigned width, unsigned height, const QString& shadersPath, QString& error, bool silent) override;
-	virtual void          shade(GLuint texDepth, GLuint texColor, ViewportParameters& parameters) override;
+	virtual ccGlFilter* clone() const override;
+	virtual bool init(unsigned width, unsigned height, const QString& shadersPath, QString& error, bool silent) override;
+	virtual void shade(GLuint texDepth, GLuint texColor, ViewportParameters& parameters) override;
 	inline virtual GLuint getTexture() override
 	{
 		return m_fbo.getColorTexture();
@@ -84,8 +84,8 @@ class CCFBO_LIB_API ccBilateralFilter : public ccGlFilter
 	    \param depthSigma variance of the 'depth' distribution (depth difference of pixels)
 	**/
 	void setParams(unsigned halfSpatialSize,
-	               float    spatialSigma,
-	               float    depthSigma);
+	               float spatialSigma,
+	               float depthSigma);
 
 	//! Sets whether to use the current context (OpenGL) viewport or not
 	void useExistingViewport(bool state);
@@ -98,7 +98,7 @@ class CCFBO_LIB_API ccBilateralFilter : public ccGlFilter
 	unsigned m_height;
 
 	ccFrameBufferObject m_fbo;
-	ccShader            m_shader;
+	ccShader m_shader;
 
 	//! Half spatial size (kernel width will be 2*h+1)
 	unsigned m_halfSpatialSize;

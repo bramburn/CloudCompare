@@ -110,7 +110,7 @@ class ccMaterialDB : public QObject
 		}
 		else
 		{
-			m_textures[filename].image   = image;
+			m_textures[filename].image = image;
 			m_textures[filename].counter = 1;
 			m_watcher.addPath(filename);
 		}
@@ -158,11 +158,11 @@ class ccMaterialDB : public QObject
   protected:
 	struct TextureInfo
 	{
-		QImage   image;
+		QImage image;
 		unsigned counter = 0;
 	};
 
-	bool                       m_initialized;
-	QFileSystemWatcher         m_watcher;
+	bool m_initialized;
+	QFileSystemWatcher m_watcher;
 	QMap<QString, TextureInfo> m_textures;
 };

@@ -35,7 +35,7 @@
 
 #include "FBXFilter.h"
 
-constexpr char COMMAND_FBX[]               = "FBX";
+constexpr char COMMAND_FBX[] = "FBX";
 constexpr char COMMAND_FBX_EXPORT_FORMAT[] = "EXPORT_FMT";
 
 FBXCommand::FBXCommand()

@@ -88,11 +88,11 @@ class ccCommandLineParser : public ccCommandLineInterface
 	 * @param[in] forceNoTimestamp Don't add timestamp to filename
 	 * @return Generated filename
 	 */
-	QString      getExportFilename(const CLEntityDesc& entityDesc,
-	                               QString             extension          = QString(),
-	                               QString             suffix             = QString(),
-	                               QString*            baseOutputFilename = nullptr,
-	                               bool                forceNoTimestamp   = false) const override;
+	QString getExportFilename(const CLEntityDesc& entityDesc,
+	                          QString extension = QString(),
+	                          QString suffix = QString(),
+	                          QString* baseOutputFilename = nullptr,
+	                          bool forceNoTimestamp = false) const override;
 	/**
 	 * @brief Export an entity to file
 	 * @param[in,out] entityDesc Entity to export
@@ -101,32 +101,32 @@ class ccCommandLineParser : public ccCommandLineInterface
 	 * @param[in] options Export options
 	 * @return Export filename, or empty string on error
 	 */
-	QString      exportEntity(CLEntityDesc&                         entityDesc,
-	                          const QString&                        suffix             = QString(),
-	                          QString*                              baseOutputFilename = nullptr,
-	                          ccCommandLineInterface::ExportOptions options            = ExportOption::NoOptions) override;
+	QString exportEntity(CLEntityDesc& entityDesc,
+	                     const QString& suffix = QString(),
+	                     QString* baseOutputFilename = nullptr,
+	                     ccCommandLineInterface::ExportOptions options = ExportOption::NoOptions) override;
 	/**
 	 * @brief Remove clouds from the working list
 	 * @param[in] onlyLast If true, remove only the most recently added cloud
 	 */
-	void         removeClouds(bool onlyLast = false) override;
+	void removeClouds(bool onlyLast = false) override;
 	/**
 	 * @brief Remove meshes from the working list
 	 * @param[in] onlyLast If true, remove only the most recently added mesh
 	 */
-	void         removeMeshes(bool onlyLast = false) override;
+	void removeMeshes(bool onlyLast = false) override;
 	/**
 	 * @brief Select clouds based on criteria
 	 * @param[in] options Selection criteria
 	 * @return true if selection was successful
 	 */
-	bool         selectClouds(const SelectEntitiesOptions& options) override;
+	bool selectClouds(const SelectEntitiesOptions& options) override;
 	/**
 	 * @brief Select meshes based on criteria
 	 * @param[in] options Selection criteria
 	 * @return true if selection was successful
 	 */
-	bool         selectMeshes(const SelectEntitiesOptions& options) override;
+	bool selectMeshes(const SelectEntitiesOptions& options) override;
 	QStringList& arguments() override
 	{
 		return m_arguments;
@@ -144,7 +144,7 @@ class ccCommandLineParser : public ccCommandLineInterface
 	 * @param[in] command Command to register
 	 * @return true if registration succeeded
 	 */
-	bool     registerCommand(Command::Shared command) override;
+	bool registerCommand(Command::Shared command) override;
 	QDialog* widgetParent() override
 	{
 		return m_parentWidget;
@@ -153,49 +153,49 @@ class ccCommandLineParser : public ccCommandLineInterface
 	 * @brief Print verbose message
 	 * @param[in] message Message to print
 	 */
-	void    printVerbose(const QString& message) const override;
+	void printVerbose(const QString& message) const override;
 	/**
 	 * @brief Print info message
 	 * @param[in] message Message to print
 	 */
-	void    print(const QString& message) const override;
+	void print(const QString& message) const override;
 	/**
 	 * @brief Print highlighted message
 	 * @param[in] message Message to print
 	 */
-	void    printHigh(const QString& message) const override;
+	void printHigh(const QString& message) const override;
 	/**
 	 * @brief Print debug message
 	 * @param[in] message Message to print
 	 */
-	void    printDebug(const QString& message) const override;
+	void printDebug(const QString& message) const override;
 	/**
 	 * @brief Print warning message
 	 * @param[in] message Warning message
 	 */
-	void    warning(const QString& message) const override;
+	void warning(const QString& message) const override;
 	/**
 	 * @brief Print debug warning message
 	 * @param[in] message Warning message
 	 */
-	void    warningDebug(const QString& message) const override;
+	void warningDebug(const QString& message) const override;
 	/**
 	 * @brief Print error message (always returns false)
 	 * @param[in] message Error message
 	 * @return Always false (for chaining in conditional expressions)
 	 */
-	bool    error(const QString& message) const override;
+	bool error(const QString& message) const override;
 	/**
 	 * @brief Print debug error message (always returns false)
 	 * @param[in] message Error message
 	 * @return Always false (for chaining in conditional expressions)
 	 */
-	bool    errorDebug(const QString& message) const override;
-	bool    saveClouds(QString suffix = QString(), bool allAtOnce = false, const QString* allAtOnceFileName = nullptr) override;
-	bool    saveMeshes(QString suffix = QString(), bool allAtOnce = false, const QString* allAtOnceFileName = nullptr) override;
-	bool    importFile(QString filename, const GlobalShiftOptions& globalShiftOptions, FileIOFilter::Shared filter = FileIOFilter::Shared(nullptr)) override;
-	void    setGlobalShiftOptions(const GlobalShiftOptions& globalShiftOptions) override;
-	void    updateInteralGlobalShift(const GlobalShiftOptions& globalShiftOptions) override;
+	bool errorDebug(const QString& message) const override;
+	bool saveClouds(QString suffix = QString(), bool allAtOnce = false, const QString* allAtOnceFileName = nullptr) override;
+	bool saveMeshes(QString suffix = QString(), bool allAtOnce = false, const QString* allAtOnceFileName = nullptr) override;
+	bool importFile(QString filename, const GlobalShiftOptions& globalShiftOptions, FileIOFilter::Shared filter = FileIOFilter::Shared(nullptr)) override;
+	void setGlobalShiftOptions(const GlobalShiftOptions& globalShiftOptions) override;
+	void updateInteralGlobalShift(const GlobalShiftOptions& globalShiftOptions) override;
 	QString cloudExportFormat() const override
 	{
 		return m_cloudExportFormat;
@@ -223,17 +223,17 @@ class ccCommandLineParser : public ccCommandLineInterface
 	void setCloudExportFormat(QString format, QString ext) override
 	{
 		m_cloudExportFormat = format;
-		m_cloudExportExt    = ext;
+		m_cloudExportExt = ext;
 	}
 	void setMeshExportFormat(QString format, QString ext) override
 	{
 		m_meshExportFormat = format;
-		m_meshExportExt    = ext;
+		m_meshExportExt = ext;
 	}
 	void setHierarchyExportFormat(QString format, QString ext) override
 	{
 		m_hierarchyExportFormat = format;
-		m_hierarchyExportExt    = ext;
+		m_hierarchyExportExt = ext;
 	}
 
   protected: // other methods

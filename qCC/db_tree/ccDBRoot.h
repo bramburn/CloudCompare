@@ -63,24 +63,24 @@ class ccHObject;
  */
 struct dbTreeSelectionInfo
 {
-	size_t selCount          = 0; //!< Total selected entities
-	size_t sfCount           = 0; //!< Entities with scalar fields
-	size_t colorCount        = 0; //!< Entities with colors
-	size_t normalsCount      = 0; //!< Entities with normals
-	size_t octreeCount       = 0; //!< Octree entities
-	size_t cloudCount        = 0; //!< Point clouds
-	size_t gridCound         = 0; //!< Grid/sensor entities
-	size_t groupCount        = 0; //!< Group containers
-	size_t polylineCount     = 0; //!< Polyline entities
-	size_t planeCount        = 0; //!< Plane primitives
-	size_t circleCount       = 0; //!< Circle/primitive entities
-	size_t meshCount         = 0; //!< Mesh entities
-	size_t primitiveCount    = 0; //!< Generic primitives
-	size_t imageCount        = 0; //!< Image entities
-	size_t sensorCount       = 0; //!< Sensor entities
-	size_t gblSensorCount    = 0; //!< GBLSensor entities
+	size_t selCount = 0;          //!< Total selected entities
+	size_t sfCount = 0;           //!< Entities with scalar fields
+	size_t colorCount = 0;        //!< Entities with colors
+	size_t normalsCount = 0;      //!< Entities with normals
+	size_t octreeCount = 0;       //!< Octree entities
+	size_t cloudCount = 0;        //!< Point clouds
+	size_t gridCound = 0;         //!< Grid/sensor entities
+	size_t groupCount = 0;        //!< Group containers
+	size_t polylineCount = 0;     //!< Polyline entities
+	size_t planeCount = 0;        //!< Plane primitives
+	size_t circleCount = 0;       //!< Circle/primitive entities
+	size_t meshCount = 0;         //!< Mesh entities
+	size_t primitiveCount = 0;    //!< Generic primitives
+	size_t imageCount = 0;        //!< Image entities
+	size_t sensorCount = 0;       //!< Sensor entities
+	size_t gblSensorCount = 0;    //!< GBLSensor entities
 	size_t cameraSensorCount = 0; //!< Camera sensor entities
-	size_t kdTreeCount       = 0; //!< KD-tree entities
+	size_t kdTreeCount = 0;       //!< KD-tree entities
 };
 
 //! Custom QTreeView with advanced selection behavior
@@ -235,8 +235,8 @@ class ccDBRoot : public QAbstractItemModel
 	 * @return Number of entities added to selectedEntities
 	 */
 	size_t getSelectedEntities(ccHObject::Container& selectedEntities,
-	                          CC_CLASS_ENUM         filter = CC_TYPES::OBJECT,
-	                          dbTreeSelectionInfo* info   = nullptr);
+	                           CC_CLASS_ENUM filter = CC_TYPES::OBJECT,
+	                           dbTreeSelectionInfo* info = nullptr);
 
 	/**
 	 * @brief Expand or collapse a tree node
@@ -369,7 +369,10 @@ class ccDBRoot : public QAbstractItemModel
 	 * @brief Supported drag actions
 	 * @return Qt::MoveAction
 	 */
-	Qt::DropActions supportedDragActions() const override { return Qt::MoveAction; }
+	Qt::DropActions supportedDragActions() const override
+	{
+		return Qt::MoveAction;
+	}
 
 	/**
 	 * @brief Handle selection change events
@@ -451,13 +454,13 @@ class ccDBRoot : public QAbstractItemModel
 	 */
 	enum TOGGLE_PROPERTY
 	{
-		TG_ENABLE,    //!< Enable/disable entity
-		TG_VISIBLE,   //!< Show/hide entity
-		TG_COLOR,     //!< Show/hide entity color
-		TG_SF,        //!< Show/hide scalar field
-		TG_NORMAL,     //!< Show/hide normals
-		TG_MATERIAL,   //!< Show/hide materials/textures
-		TG_3D_NAME    //!< Show/hide 3D name labels
+		TG_ENABLE,   //!< Enable/disable entity
+		TG_VISIBLE,  //!< Show/hide entity
+		TG_COLOR,    //!< Show/hide entity color
+		TG_SF,       //!< Show/hide scalar field
+		TG_NORMAL,   //!< Show/hide normals
+		TG_MATERIAL, //!< Show/hide materials/textures
+		TG_3D_NAME   //!< Show/hide 3D name labels
 	};
 
 	/**
@@ -548,12 +551,18 @@ class ccDBRoot : public QAbstractItemModel
 	/**
 	 * @brief Align camera with entity using entity normals
 	 */
-	void alignCameraWithEntityDirect() { alignCameraWithEntity(false); }
+	void alignCameraWithEntityDirect()
+	{
+		alignCameraWithEntity(false);
+	}
 
 	/**
 	 * @brief Align camera with entity using inverted normals
 	 */
-	void alignCameraWithEntityIndirect() { alignCameraWithEntity(true); }
+	void alignCameraWithEntityIndirect()
+	{
+		alignCameraWithEntity(true);
+	}
 
 	/**
 	 * @brief Enable bubble-view mode for a sensor entity
@@ -607,9 +616,9 @@ class ccDBRoot : public QAbstractItemModel
 	 */
 	enum SortRules
 	{
-		SORT_A2Z,     //!< Alphabetical ascending
-		SORT_Z2A,     //!< Alphabetical descending
-		SORT_BY_TYPE  //!< Grouped by entity type
+		SORT_A2Z,    //!< Alphabetical ascending
+		SORT_Z2A,    //!< Alphabetical descending
+		SORT_BY_TYPE //!< Grouped by entity type
 	};
 
 	/**
@@ -633,9 +642,9 @@ class ccDBRoot : public QAbstractItemModel
 	 * @param[in] nameIsRegex     If true, match name as a regex
 	 */
 	void selectChildrenByTypeAndName(CC_CLASS_ENUM type,
-	                                bool          typeIsExclusive = true,
-	                                QString       name           = QString(),
-	                                bool          nameIsRegex     = false);
+	                                 bool typeIsExclusive = true,
+	                                 QString name = QString(),
+	                                 bool nameIsRegex = false);
 
 	//! Underlying scene graph root
 	ccHObject* m_treeRoot;

@@ -41,6 +41,7 @@
  */
 
 #include "CCAppCommon.h"
+
 #include <QString>
 
 /**

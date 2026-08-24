@@ -44,7 +44,7 @@ sfEditDlg::sfEditDlg(QWidget* parent /*=nullptr*/)
 
 	// histogram window
 	{
-		m_associatedSFHisto     = new ccHistogramWindow;
+		m_associatedSFHisto = new ccHistogramWindow;
 		QHBoxLayout* hboxLayout = new QHBoxLayout(m_ui->histoFrame);
 		hboxLayout->addWidget(m_associatedSFHisto);
 		hboxLayout->setContentsMargins(0, 0, 0, 0);
@@ -92,11 +92,11 @@ void sfEditDlg::fillDialogWith(ccScalarField* sf)
 
 	// options (checkboxes)
 	{
-		bool nanValuesInGrey  = sf->areNaNValuesShownInGrey();
-		bool alwaysShowZero   = sf->isZeroAlwaysShown();
+		bool nanValuesInGrey = sf->areNaNValuesShownInGrey();
+		bool alwaysShowZero = sf->isZeroAlwaysShown();
 		bool symmetricalScale = sf->symmetricalScale();
-		bool logScale         = sf->logScale();
-		bool absoluteScale    = sf->getColorScale() && !sf->getColorScale()->isRelative();
+		bool logScale = sf->logScale();
+		bool absoluteScale = sf->getColorScale() && !sf->getColorScale()->isRelative();
 
 		m_ui->nanInGreyCheckBox->blockSignals(true);
 		m_ui->nanInGreyCheckBox->setChecked(nanValuesInGrey);
@@ -126,7 +126,7 @@ void sfEditDlg::fillDialogWith(ccScalarField* sf)
 
 	// displayed and saturation values
 	{
-		const ccScalarField::Range& displayRange    = sf->displayRange();
+		const ccScalarField::Range& displayRange = sf->displayRange();
 		const ccScalarField::Range& saturationRange = sf->saturationRange();
 
 		// special case: no need to actiate this widget for flat scalar field
@@ -137,8 +137,8 @@ void sfEditDlg::fillDialogWith(ccScalarField* sf)
 		// show histogram
 		m_ui->histoFrame->setVisible(true);
 		{
-			const ccScalarField::Histogram& histogram   = m_associatedSF->getHistogram();
-			unsigned                        classNumber = static_cast<unsigned>(histogram.size());
+			const ccScalarField::Histogram& histogram = m_associatedSF->getHistogram();
+			unsigned classNumber = static_cast<unsigned>(histogram.size());
 			if (classNumber == 0)
 				classNumber = 128;
 			m_associatedSFHisto->fromSF(m_associatedSF, classNumber, false);

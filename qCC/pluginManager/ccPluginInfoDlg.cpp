@@ -44,8 +44,8 @@
 static QString sFormatReferenceList(const ccPluginInterface::ReferenceList& list)
 {
 	const QString linkFormat(" <a href=\"%1\" style=\"text-decoration:none\">&#x1F517;</a>");
-	QString       formattedText;
-	int           referenceNum = 1;
+	QString formattedText;
+	int referenceNum = 1;
 
 	for (const ccPluginInterface::Reference& reference : list)
 	{
@@ -67,7 +67,7 @@ static QString sFormatReferenceList(const ccPluginInterface::ReferenceList& list
 static QString sFormatContactList(const ccPluginInterface::ContactList& list, const QString& pluginName)
 {
 	const QString emailFormat("&lt;<a href=\"mailto:%1?Subject=CloudCompare %2\">%1</a>&gt;");
-	QString       formattedText;
+	QString formattedText;
 
 	for (const ccPluginInterface::Contact& contact : list)
 	{
@@ -107,7 +107,7 @@ namespace
 				return;
 			}
 
-			sIconMap[CC_STD_PLUGIN]       = QIcon(":/CC/pluginManager/images/std_plugin.png");
+			sIconMap[CC_STD_PLUGIN] = QIcon(":/CC/pluginManager/images/std_plugin.png");
 			sIconMap[CC_GL_FILTER_PLUGIN] = QIcon(":/CC/pluginManager/images/gl_plugin.png");
 			sIconMap[CC_IO_FILTER_PLUGIN] = QIcon(":/CC/pluginManager/images/io_plugin.png");
 		}
@@ -174,7 +174,7 @@ void ccPluginInfoDlg::setPluginList(const QList<ccPluginInterface*>& pluginList)
 
 	for (const ccPluginInterface* plugin : pluginList)
 	{
-		auto name    = plugin->getName();
+		auto name = plugin->getName();
 		auto tooltip = tr("%1 Plugin").arg(plugin->getName());
 
 		if (plugin->isCore())
@@ -228,7 +228,7 @@ void ccPluginInfoDlg::selectionChanged(const QModelIndex& current, const QModelI
 	Q_UNUSED(previous);
 
 	auto sourceItem = m_ProxyModel->mapToSource(current);
-	auto item       = m_ItemModel->itemFromIndex(sourceItem);
+	auto item = m_ItemModel->itemFromIndex(sourceItem);
 
 	if (item == nullptr)
 	{
@@ -245,7 +245,7 @@ void ccPluginInfoDlg::selectionChanged(const QModelIndex& current, const QModelI
 void ccPluginInfoDlg::itemChanged(QStandardItem* item)
 {
 	bool checked = item->checkState() == Qt::Checked;
-	auto plugin  = pluginFromItemData(item);
+	auto plugin = pluginFromItemData(item);
 
 	if (plugin != nullptr)
 	{

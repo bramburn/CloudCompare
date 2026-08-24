@@ -112,7 +112,7 @@ class ccBoundingBoxEditorDlg : public QDialog
 	void resetToLast();
 	void cancel();
 	void saveBoxAndAccept();
-	int  computeBestDialogHeight(bool showBoxAxes, bool showRasterGridImage) const;
+	int computeBestDialogHeight(bool showBoxAxes, bool showRasterGridImage) const;
 
 	void updateXWidth(double);
 	void updateYWidth(double);

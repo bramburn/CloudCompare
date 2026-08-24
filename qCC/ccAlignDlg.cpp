@@ -61,7 +61,7 @@ ccAlignDlg::ccAlignDlg(ccGenericPointCloud* data, ccGenericPointCloud* model, QW
 	ccQtHelpers::SetButtonColor(m_ui->dataColorButton, Qt::red);
 	ccQtHelpers::SetButtonColor(m_ui->modelColorButton, Qt::yellow);
 
-	dataObject  = data;
+	dataObject = data;
 	modelObject = model;
 	setColorsAndLabels();
 
@@ -344,7 +344,7 @@ void ccAlignDlg::modelSamplingRateChanged(double value)
 	QString message("An error occurred");
 
 	CC_SAMPLING_METHOD method = getSamplingMethod();
-	float              rate   = static_cast<float>(m_ui->modelSamplingRate->value()) / m_ui->modelSamplingRate->maximum();
+	float rate = static_cast<float>(m_ui->modelSamplingRate->value()) / m_ui->modelSamplingRate->maximum();
 	if (method == SPACE)
 		rate = 1.0f - rate;
 	m_ui->modelSample->setSliderPosition(static_cast<int>(rate * m_ui->modelSample->maximum()));
@@ -379,7 +379,7 @@ void ccAlignDlg::modelSamplingRateChanged(double value)
 	default:
 	{
 		unsigned remaining = static_cast<unsigned>(rate * modelObject->size());
-		message            = QString("%1 remaining points").arg(remaining);
+		message = QString("%1 remaining points").arg(remaining);
 	}
 	break;
 	}
@@ -397,7 +397,7 @@ void ccAlignDlg::dataSamplingRateChanged(double value)
 	QString message("An error occurred");
 
 	CC_SAMPLING_METHOD method = getSamplingMethod();
-	double             rate   = static_cast<float>(m_ui->dataSamplingRate->value() / m_ui->dataSamplingRate->maximum());
+	double rate = static_cast<float>(m_ui->dataSamplingRate->value() / m_ui->dataSamplingRate->maximum());
 	if (method == SPACE)
 		rate = 1.0 - rate;
 	m_ui->dataSample->setSliderPosition(static_cast<int>(rate * m_ui->dataSample->maximum()));
@@ -432,7 +432,7 @@ void ccAlignDlg::dataSamplingRateChanged(double value)
 	default:
 	{
 		unsigned remaining = static_cast<unsigned>(rate * dataObject->size());
-		message            = QString("%1 remaining points").arg(remaining);
+		message = QString("%1 remaining points").arg(remaining);
 	}
 	break;
 	}
@@ -475,9 +475,9 @@ void ccAlignDlg::estimateDelta()
 		ccLog::Error("Failed to compute approx. density");
 		return;
 	}
-	unsigned count          = 0;
-	double   meanDensity    = 0;
-	double   meanSqrDensity = 0;
+	unsigned count = 0;
+	double meanDensity = 0;
+	double meanSqrDensity = 0;
 	for (unsigned i = 0; i < cloud.size(); i++)
 	{
 		ScalarType value = cloud.getPointScalarValue(i);
@@ -516,7 +516,7 @@ void ccAlignDlg::changeSamplingMethod(int index)
 		// model
 		{
 			m_ui->modelSamplingRate->setDecimals(4);
-			int       oldSliderPos = m_ui->modelSample->sliderPosition();
+			int oldSliderPos = m_ui->modelSample->sliderPosition();
 			CCVector3 bbMin;
 			CCVector3 bbMax;
 			modelObject->getBoundingBox(bbMin, bbMax);
@@ -529,7 +529,7 @@ void ccAlignDlg::changeSamplingMethod(int index)
 		// data
 		{
 			m_ui->dataSamplingRate->setDecimals(4);
-			int       oldSliderPos = m_ui->dataSample->sliderPosition();
+			int oldSliderPos = m_ui->dataSample->sliderPosition();
 			CCVector3 bbMin;
 			CCVector3 bbMax;
 			dataObject->getBoundingBox(bbMin, bbMax);

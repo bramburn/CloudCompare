@@ -50,8 +50,8 @@
 #include <QResizeEvent>
 
 ccGLWindowStereo::ccGLWindowStereo(QSurfaceFormat* format /*=nullptr*/,
-                                   QWidget*        parent /*=nullptr*/,
-                                   bool            silentInitialization /*=false*/)
+                                   QWidget* parent /*=nullptr*/,
+                                   bool silentInitialization /*=false*/)
     : QOpenGLWidget(parent)
     , ccGLWindowInterface(this, silentInitialization)
     , m_parentWidget(nullptr)
@@ -72,9 +72,12 @@ ccGLWindowStereo::ccGLWindowStereo(QSurfaceFormat* format /*=nullptr*/,
 
 	// signal/slot connections
 	connect(m_signalEmitter, &ccGLWindowSignalEmitter::itemPickedFast, this, &ccGLWindowStereo::onItemPickedFastSlot, Qt::DirectConnection);
-	connect(&m_scheduleTimer, &QTimer::timeout, [&]() { checkScheduledRedraw(); });
-	connect(&m_autoRefreshTimer, &QTimer::timeout, this, [&]() { update(); });
-	connect(&m_deferredPickingTimer, &QTimer::timeout, this, [&]() { doPicking(); });
+	connect(&m_scheduleTimer, &QTimer::timeout, [&]()
+	        { checkScheduledRedraw(); });
+	connect(&m_autoRefreshTimer, &QTimer::timeout, this, [&]()
+	        { update(); });
+	connect(&m_deferredPickingTimer, &QTimer::timeout, this, [&]()
+	        { doPicking(); });
 
 	QString windowTitle = QString("3D View Stereo %1").arg(m_uniqueID);
 	setWindowTitle(windowTitle);

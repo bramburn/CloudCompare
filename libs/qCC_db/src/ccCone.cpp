@@ -40,10 +40,10 @@ ccCone::ccCone(PointCoordinateType bottomRadius,
                PointCoordinateType height,
                PointCoordinateType xOff /*=0*/,
                PointCoordinateType yOff /*=0*/,
-               const ccGLMatrix*   transMat /*=nullptr*/,
-               QString             name /*="Cylinder"*/,
-               unsigned            precision /*=DEFAULT_DRAWING_PRECISION*/,
-               unsigned            uniqueID /*=ccUniqueIDGenerator::InvalidUniqueID*/)
+               const ccGLMatrix* transMat /*=nullptr*/,
+               QString name /*="Cylinder"*/,
+               unsigned precision /*=DEFAULT_DRAWING_PRECISION*/,
+               unsigned uniqueID /*=ccUniqueIDGenerator::InvalidUniqueID*/)
 
     : ccGenericPrimitive(name, transMat, uniqueID)
     , m_bottomRadius(std::abs(bottomRadius))
@@ -125,7 +125,7 @@ bool ccCone::buildUp()
 
 	// Degenerate cases: one radius is zero (pointed cone)
 	bool singlePointBottom = CCCoreLib::LessThanEpsilon(m_bottomRadius);
-	bool singlePointTop    = CCCoreLib::LessThanEpsilon(m_topRadius);
+	bool singlePointTop = CCCoreLib::LessThanEpsilon(m_topRadius);
 	assert(!singlePointBottom || !singlePointTop); // both can't be zero
 
 	unsigned steps = m_drawPrecision;
@@ -137,7 +137,7 @@ bool ccCone::buildUp()
 	if (!singlePointTop)
 		vertCount += steps;
 	unsigned faceNormCounts = steps + 2; // side normals + 2 disk normals
-	unsigned facesCount = steps; // lateral surface
+	unsigned facesCount = steps;         // lateral surface
 	if (!singlePointBottom)
 		facesCount += steps;
 	if (!singlePointTop)
@@ -158,7 +158,7 @@ bool ccCone::buildUp()
 	// 2 first vertices: centers of the top & bottom disks
 	// In local space: bottom at z=-height/2, top at z=+height/2
 	CCVector3 bottomCenter = CCVector3(m_xOff, m_yOff, -m_height) / 2;
-	CCVector3 topCenter    = CCVector3(-m_xOff, -m_yOff, m_height) / 2;
+	CCVector3 topCenter = CCVector3(-m_xOff, -m_yOff, m_height) / 2;
 	{
 		verts->addPoint(bottomCenter);
 		m_triNormals->addElement(ccNormalVectors::GetNormIndex(CCVector3(0, 0, -1).u));
@@ -221,7 +221,7 @@ bool ccCone::buildUp()
 		assert(m_triVertIndexes);
 
 		unsigned bottomIndex = 2;
-		unsigned topIndex    = 2 + (singlePointBottom ? 0 : steps);
+		unsigned topIndex = 2 + (singlePointBottom ? 0 : steps);
 
 		// Bottom disk fan
 		if (!singlePointBottom)
@@ -340,8 +340,8 @@ void ccCone::setTopRadius(PointCoordinateType radius)
  */
 CCVector3 ccCone::getBottomCenter() const
 {
-	CCVector3  bottomCenter = CCVector3(m_xOff, m_yOff, -m_height) / 2;
-	ccGLMatrix trans        = getGLTransformationHistory();
+	CCVector3 bottomCenter = CCVector3(m_xOff, m_yOff, -m_height) / 2;
+	ccGLMatrix trans = getGLTransformationHistory();
 	trans.apply(bottomCenter);
 	return bottomCenter;
 }
@@ -354,8 +354,8 @@ CCVector3 ccCone::getBottomCenter() const
  */
 CCVector3 ccCone::getTopCenter() const
 {
-	CCVector3  topCenter = CCVector3(-m_xOff, -m_yOff, m_height) / 2;
-	ccGLMatrix trans     = getGLTransformationHistory();
+	CCVector3 topCenter = CCVector3(-m_xOff, -m_yOff, m_height) / 2;
+	ccGLMatrix trans = getGLTransformationHistory();
 	trans.apply(topCenter);
 	return topCenter;
 }
@@ -486,7 +486,7 @@ CCVector3 ccCone::computeApex() const
 	}
 
 	PointCoordinateType deltaRadius = getLargeRadius() - smallRadius;
-	CCVector3           slope       = (smallCenter - largeCenter) / std::max(deltaRadius, std::numeric_limits<PointCoordinateType>::quiet_NaN());
+	CCVector3 slope = (smallCenter - largeCenter) / std::max(deltaRadius, std::numeric_limits<PointCoordinateType>::quiet_NaN());
 
 	return smallCenter + smallRadius * slope;
 }
@@ -502,7 +502,7 @@ CCVector3 ccCone::computeApex() const
  */
 double ccCone::computeHalfAngle_deg() const
 {
-	double height      = (getTopCenter() - getBottomCenter()).normd();
+	double height = (getTopCenter() - getBottomCenter()).normd();
 	double deltaRadius = getLargeRadius() - getSmallRadius();
 
 	return CCCoreLib::RadiansToDegrees(atan2(deltaRadius, height));

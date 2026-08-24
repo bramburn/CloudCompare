@@ -38,10 +38,10 @@
 
 #include "ccFitSphereDlg.h"
 
-ccFitSphereDlg::ccFitSphereDlg(double   maxOutliersRatio,
-                               double   confidence,
-                               bool     autoDetectSphereRadius,
-                               double   sphereRadius,
+ccFitSphereDlg::ccFitSphereDlg(double maxOutliersRatio,
+                               double confidence,
+                               bool autoDetectSphereRadius,
+                               double sphereRadius,
                                QWidget* parent /*=nullptr*/)
     : QDialog(parent)
     , Ui::FitSphereDialog()

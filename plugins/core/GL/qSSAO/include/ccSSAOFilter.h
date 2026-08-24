@@ -74,9 +74,9 @@ class ccSSAOFilter : public ccGlFilter
 
 	// inherited from ccGlFilter
 	ccGlFilter* clone() const override;
-	bool        init(unsigned width, unsigned height, const QString& shadersPath, QString& error, bool silent) override;
-	void        shade(GLuint texDepth, GLuint texColor, ViewportParameters& parameters) override;
-	GLuint      getTexture() override;
+	bool init(unsigned width, unsigned height, const QString& shadersPath, QString& error, bool silent) override;
+	void shade(GLuint texDepth, GLuint texColor, ViewportParameters& parameters) override;
+	GLuint getTexture() override;
 
 	void setParameters(float Kz, float R, float F);
 
@@ -88,8 +88,8 @@ class ccSSAOFilter : public ccGlFilter
 	unsigned m_h;
 
 	ccFrameBufferObject* m_fbo;
-	ccShader*            m_shader;
-	GLuint               m_texReflect;
+	ccShader* m_shader;
+	GLuint m_texReflect;
 
 	float m_Kz; // attenuation with distance
 	float m_R;  // radius in image of neighbour sphere
@@ -102,10 +102,10 @@ class ccSSAOFilter : public ccGlFilter
 	unsigned m_randSeed;
 
 	ccBilateralFilter* m_bilateralFilter;
-	bool               m_bilateralFilterEnabled;
-	unsigned           m_bilateralGHalfSize;
-	float              m_bilateralGSigma;
-	float              m_bilateralGSigmaZ;
+	bool m_bilateralFilterEnabled;
+	unsigned m_bilateralGHalfSize;
+	float m_bilateralGSigma;
+	float m_bilateralGSigmaZ;
 
   private:
 	//! Get OpenGL 2.1 functions for the current context (Qt 6 compatible)

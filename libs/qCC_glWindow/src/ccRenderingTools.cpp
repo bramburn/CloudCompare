@@ -70,10 +70,10 @@ void ccRenderingTools::ShowDepthBuffer(ccGBLSensor* sensor, QWidget* parent /*=n
 	PointCoordinateType minDist = 0.0f;
 	PointCoordinateType maxDist = 0.0f;
 	{
-		const PointCoordinateType* _zBuff   = depthBuffer.zBuff.data();
-		double                     sumDist  = 0.0;
-		double                     sumDist2 = 0.0;
-		unsigned                   count    = 0;
+		const PointCoordinateType* _zBuff = depthBuffer.zBuff.data();
+		double sumDist = 0.0;
+		double sumDist2 = 0.0;
+		unsigned count = 0;
 		for (unsigned x = 0; x < depthBuffer.height * depthBuffer.width; ++x, ++_zBuff)
 		{
 			if (x == 0)
@@ -96,7 +96,7 @@ void ccRenderingTools::ShowDepthBuffer(ccGBLSensor* sensor, QWidget* parent /*=n
 
 		if (count)
 		{
-			double avg    = sumDist / count;
+			double avg = sumDist / count;
 			double stdDev = sqrt(std::abs(sumDist2 / count - avg * avg));
 			// for better dynamics
 			maxDist = std::min(maxDist, static_cast<PointCoordinateType>(avg + 1.0 * stdDev));
@@ -124,7 +124,7 @@ void ccRenderingTools::ShowDepthBuffer(ccGBLSensor* sensor, QWidget* parent /*=n
 	dlg->setWindowTitle(QString("%0 depth buffer [%1 x %2]").arg(sensor->getParent()->getName()).arg(depthBuffer.width).arg(depthBuffer.height));
 
 	unsigned maxDBDim = std::max<unsigned>(depthBuffer.width, depthBuffer.height);
-	unsigned scale    = 1;
+	unsigned scale = 1;
 	while (maxDBDim > maxDim)
 	{
 		maxDBDim >>= 1;
@@ -164,10 +164,10 @@ struct ScaleElement
 // structure for recursive display of labels
 struct VLabel
 {
-	int                 yPos = 0; /**< label center pos **/
-	int                 yMin = 0; /**< label 'ROI' min **/
-	int                 yMax = 0; /**< label 'ROI' max **/
-	ccColorScale::Label label;    /**< label value **/
+	int yPos = 0;              /**< label center pos **/
+	int yMin = 0;              /**< label 'ROI' min **/
+	int yMax = 0;              /**< label 'ROI' max **/
+	ccColorScale::Label label; /**< label value **/
 
 	// default constructor
 	VLabel(int y, int y1, int y2, const ccColorScale::Label& l)
@@ -220,13 +220,13 @@ void ConvertToLogScale(ScalarType& dispMin, ScalarType& dispMax)
 {
 	ScalarType absDispMin = (dispMax < 0 ? std::min(-dispMax, -dispMin) : std::max<ScalarType>(dispMin, 0));
 	ScalarType absDispMax = std::max(std::abs(dispMin), std::abs(dispMax));
-	dispMin               = std::log10(std::max(absDispMin, std::numeric_limits<ScalarType>::epsilon()));
-	dispMax               = std::log10(std::max(absDispMax, std::numeric_limits<ScalarType>::epsilon()));
+	dispMin = std::log10(std::max(absDispMin, std::numeric_limits<ScalarType>::epsilon()));
+	dispMax = std::log10(std::max(absDispMax, std::numeric_limits<ScalarType>::epsilon()));
 }
 
 void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context)
 {
-	const ccScalarField* sf      = context.sfColorScaleToDisplay;
+	const ccScalarField* sf = context.sfColorScaleToDisplay;
 	ccGLWindowInterface* display = static_cast<ccGLWindowInterface*>(context.display);
 
 	DrawColorRamp(context, sf, display, context.glW, context.glH, context.renderZoom);
@@ -265,8 +265,8 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 	int yStart = 0, yStop = 0;
 	win->computeColorRampAreaLimits(yStart, yStop);
 
-	const int scaleWidth     = static_cast<int>(displayParams.colorScaleRampWidth * renderZoom);
-	int       scaleMaxHeight = yStop - yStart;
+	const int scaleWidth = static_cast<int>(displayParams.colorScaleRampWidth * renderZoom);
+	int scaleMaxHeight = yStop - yStart;
 
 	if (scaleMaxHeight < scaleWidth)
 	{
@@ -274,14 +274,14 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 		return;
 	}
 
-	bool logScale         = sf->logScale();
+	bool logScale = sf->logScale();
 	bool symmetricalScale = sf->symmetricalScale();
-	bool alwaysShowZero   = sf->isZeroAlwaysShown();
+	bool alwaysShowZero = sf->isZeroAlwaysShown();
 
 	// set of particular values
 	// DGM: we work with doubles for maximum accuracy
 	ccColorScale::LabelSet keyValues;
-	bool                   customLabels = false;
+	bool customLabels = false;
 	try
 	{
 		ccColorScale::Shared colorScale = sf->getColorScale();
@@ -322,7 +322,7 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 			keyValues.insert(maxDisp);
 
 			ScalarType startDisp = sf->displayRange().start();
-			ScalarType stopDisp  = sf->displayRange().stop();
+			ScalarType stopDisp = sf->displayRange().stop();
 			ConvertToLogScale(startDisp, stopDisp);
 			keyValues.insert(startDisp);
 			keyValues.insert(stopDisp);
@@ -406,35 +406,35 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 	const ccColor::Rgbub& textColor = displayParams.textDefaultCol;
 
 	// histogram?
-	const ccScalarField::Histogram histogram     = sf->getHistogram();
-	bool                           showHistogram = (displayParams.colorScaleShowHistogram && !logScale && histogram.maxValue != 0 && histogram.size() > 1);
+	const ccScalarField::Histogram histogram = sf->getHistogram();
+	bool showHistogram = (displayParams.colorScaleShowHistogram && !logScale && histogram.maxValue != 0 && histogram.size() > 1);
 
 	// Scalar field title (= name)
-	const std::string& sfName  = sf->getName();
-	QString            sfTitle = (sfName.empty() ? "Unnamed" : QString::fromStdString(sfName));
+	const std::string& sfName = sf->getName();
+	QString sfTitle = (sfName.empty() ? "Unnamed" : QString::fromStdString(sfName));
 	if (logScale)
 	{
 		sfTitle += QString("[Log scale]");
 	}
 
 	// display font
-	QFont        font = win->getTextDisplayFont(); // takes rendering zoom into account!
+	QFont font = win->getTextDisplayFont(); // takes rendering zoom into account!
 	QFontMetrics fm(font);
-	const int    strHeight = fm.boundingRect("1").height(); // we assume that all chararcter will have the same height
+	const int strHeight = fm.boundingRect("1").height(); // we assume that all chararcter will have the same height
 
 	// histogram is 50% of the scale width by default (if displayed)
 	int histogramWidth = (showHistogram ? scaleWidth / 2 : 0);
 
 	// right border of the scale ramp rectangle
 	const int rightMargin = static_cast<int>(20 * renderZoom);
-	int       xStart      = glW - 1 - (scaleWidth + histogramWidth + rightMargin);
+	int xStart = glW - 1 - (scaleWidth + histogramWidth + rightMargin);
 
 	// do we have room for the scalar field name
-	bool        showSFTitle          = false;
+	bool showSFTitle = false;
 	const float spaceBelowTitleRatio = 0.75f; // we add a margin below the title, proportional to the font size
-	const QRect titleRect            = fm.boundingRect(sfTitle);
-	int         titleMargin          = static_cast<int>(titleRect.height() * spaceBelowTitleRatio);
-	int         titleHeight          = titleRect.height() + titleMargin;
+	const QRect titleRect = fm.boundingRect(sfTitle);
+	int titleMargin = static_cast<int>(titleRect.height() * spaceBelowTitleRatio);
+	int titleHeight = titleRect.height() + titleMargin;
 	if (scaleMaxHeight >= titleHeight + scaleWidth)
 	{
 		showSFTitle = true;
@@ -463,7 +463,7 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 	glFunc->glDisable(GL_DEPTH_TEST);
 
 	std::vector<ccColorScale::Label> sortedKeyValues(keyValues.begin(), keyValues.end());
-	double                           maxRange = sortedKeyValues.back().value - sortedKeyValues.front().value;
+	double maxRange = sortedKeyValues.back().value - sortedKeyValues.front().value;
 
 	const int borderWidth = 2 * renderZoom;
 
@@ -490,7 +490,7 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 			for (int j = 0; j <= scaleMaxHeight; ++j)
 			{
 				double baseValue = sortedKeyValues.front().value + (j * maxRange) / scaleMaxHeight;
-				double value     = baseValue;
+				double value = baseValue;
 				if (logScale)
 				{
 					value = exp(value * c_log10);
@@ -518,7 +518,7 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 				if (showHistogram)
 				{
 					double bind = (value - sf->displayRange().min()) * (histogram.size() - 1) / sf->displayRange().maxRange();
-					int    bin  = static_cast<int>(floor(bind));
+					int bin = static_cast<int>(floor(bind));
 
 					double hVal = 0.0;
 					if (bin >= 0 && bin < static_cast<int>(histogram.size())) // in symmetrical case we can get values outside of the real SF range
@@ -528,7 +528,7 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 						{
 							// linear interpolation
 							double alpha = bind - static_cast<double>(bin);
-							hVal         = (1.0 - alpha) * hVal + alpha * histogram[bin + 1];
+							hVal = (1.0 - alpha) * hVal + alpha * histogram[bin + 1];
 						}
 					}
 
@@ -561,10 +561,10 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 	if (showSFTitle)
 	{
 		// we try to center the title
-		int           xMiddle    = xStart + scaleWidth / 2;
-		int           xText      = xMiddle;
-		unsigned char align      = ccGLWindowInterface::ALIGN_HMIDDLE;
-		int           leftMargin = static_cast<int>(5 * renderZoom);
+		int xMiddle = xStart + scaleWidth / 2;
+		int xText = xMiddle;
+		unsigned char align = ccGLWindowInterface::ALIGN_HMIDDLE;
+		int leftMargin = static_cast<int>(5 * renderZoom);
 		if (xMiddle + titleRect.width() / 2 + leftMargin >= glW)
 		{
 			// we will have to align to the right most position
@@ -597,7 +597,7 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 			const int minGap = strHeight;
 			for (size_t i = 1; i < keyValues.size() - 1; ++i)
 			{
-				int        yScale  = static_cast<int>((sortedKeyValues[i].value - sortedKeyValues[0].value) * scaleMaxHeight / maxRange);
+				int yScale = static_cast<int>((sortedKeyValues[i].value - sortedKeyValues[0].value) * scaleMaxHeight / maxRange);
 				VLabelPair nLabels = GetVLabelsAround(yScale, drawnLabels);
 
 				assert(nLabels.first != drawnLabels.end() && nLabels.second != drawnLabels.end());
@@ -616,7 +616,7 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 			const int minGap = strHeight * 2;
 
 			size_t drawnLabelsBefore = 0; // just to init the loop
-			size_t drawnLabelsAfter  = drawnLabels.size();
+			size_t drawnLabelsAfter = drawnLabels.size();
 
 			// proceed until no more label can be inserted
 			while (drawnLabelsAfter > drawnLabelsBefore)
@@ -631,8 +631,8 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 					if (it1->yMax + 2 * minGap < it2->yMin)
 					{
 						// insert label
-						double val    = (it1->label.value + it2->label.value) / 2;
-						int    yScale = static_cast<int>((val - sortedKeyValues[0].value) * scaleMaxHeight / maxRange);
+						double val = (it1->label.value + it2->label.value) / 2;
+						int yScale = static_cast<int>((val - sortedKeyValues[0].value) * scaleMaxHeight / maxRange);
 
 						// insert it at the right place (so as to keep a sorted list!)
 						drawnLabels.insert(it2, VLabel(yScale, yScale - strHeight / 2, yScale + strHeight / 2, val));
@@ -646,7 +646,7 @@ void ccRenderingTools::DrawColorRamp(const CC_DRAW_CONTEXT& context, const ccSca
 
 		// format
 		const char numberFormat = (sf->logScale() ? 'E' : 'f');
-		const int  tickSize     = static_cast<int>(4 * renderZoom);
+		const int tickSize = static_cast<int>(4 * renderZoom);
 
 		// for labels
 		const int xText = xStart - 2 * tickSize - borderWidth;

@@ -176,7 +176,7 @@ bool ccSSAOFilter::init(unsigned width, unsigned height, const QString& shadersP
 
 	// init parameters
 	bool enableBilateralFilter = false;
-	bool useReflectTexture     = false;
+	bool useReflectTexture = false;
 
 	if (!silent)
 	{
@@ -190,15 +190,15 @@ bool ccSSAOFilter::init(unsigned width, unsigned height, const QString& shadersP
 		}
 		ssaoDlg.toPersistentSettings();
 		{
-			m_R               = ssaoDlg.radiusDoubleSpinBox->value() / 100;
-			m_F               = ssaoDlg.amplificationDoubleSpinBox->value();
-			m_Kz              = ssaoDlg.attenuationDoubleSpinBox->value();
+			m_R = ssaoDlg.radiusDoubleSpinBox->value() / 100;
+			m_F = ssaoDlg.amplificationDoubleSpinBox->value();
+			m_Kz = ssaoDlg.attenuationDoubleSpinBox->value();
 			useReflectTexture = ssaoDlg.reflectCheckBox->isChecked();
 			{
 				enableBilateralFilter = ssaoDlg.bfGroupBox->isChecked();
-				m_bilateralGHalfSize  = ssaoDlg.bfRadiusSpinBox->value();
-				m_bilateralGSigma     = ssaoDlg.bfSigmaXYDoubleSpinBox->value();
-				m_bilateralGSigmaZ    = ssaoDlg.bfSigmaZDoubleSpinBox->value();
+				m_bilateralGHalfSize = ssaoDlg.bfRadiusSpinBox->value();
+				m_bilateralGSigma = ssaoDlg.bfSigmaXYDoubleSpinBox->value();
+				m_bilateralGSigmaZ = ssaoDlg.bfSigmaZDoubleSpinBox->value();
 			}
 			m_randSeed = static_cast<unsigned>(std::max(0, ssaoDlg.seedSpinBox->value()));
 		}
@@ -206,7 +206,7 @@ bool ccSSAOFilter::init(unsigned width, unsigned height, const QString& shadersP
 	else
 	{
 		enableBilateralFilter = m_bilateralFilterEnabled;
-		useReflectTexture     = (glFunc21() && glFunc21()->glIsTexture(m_texReflect));
+		useReflectTexture = (glFunc21() && glFunc21()->glIsTexture(m_texReflect));
 	}
 
 	sampleSphere();
@@ -253,7 +253,7 @@ bool ccSSAOFilter::init(unsigned width, unsigned height, const QString& shadersP
 		if (!m_bilateralFilter->init(width, height, shadersPath, error, silent))
 		{
 			delete m_bilateralFilter;
-			m_bilateralFilter        = nullptr;
+			m_bilateralFilter = nullptr;
 			m_bilateralFilterEnabled = false;
 		}
 		else
@@ -292,7 +292,7 @@ void ccSSAOFilter::sampleSphere()
 	m_ssaoNeighbours.resize(3 * MAX_N);
 
 	// Initialize the random number generator
-	std::mt19937                          mt(m_randSeed);
+	std::mt19937 mt(m_randSeed);
 	std::uniform_real_distribution<float> dist(-1.0, 1.0);
 
 	// Draw in sphere
@@ -304,7 +304,7 @@ void ccSSAOFilter::sampleSphere()
 
 		if (px * px + py * py + pz * pz <= 1.0f)
 		{
-			m_ssaoNeighbours[3 * nInsideSphere]     = px;
+			m_ssaoNeighbours[3 * nInsideSphere] = px;
 			m_ssaoNeighbours[3 * nInsideSphere + 1] = py;
 			m_ssaoNeighbours[3 * nInsideSphere + 2] = pz;
 
@@ -405,15 +405,15 @@ GLuint ccSSAOFilter::getTexture()
 void ccSSAOFilter::setParameters(float Kz, float R, float F)
 {
 	m_Kz = Kz;
-	m_R  = R;
-	m_F  = F;
+	m_R = R;
+	m_F = F;
 }
 
 void ccSSAOFilter::initReflectTexture()
 {
 	/*** INIT TEXTURE OF RELFECT VECTORS ***/
 	/***       Fully random texture      ***/
-	unsigned           texSize = m_w * m_h;
+	unsigned texSize = m_w * m_h;
 	std::vector<float> reflectTexture;
 	try
 	{
@@ -425,7 +425,7 @@ void ccSSAOFilter::initReflectTexture()
 		return;
 	}
 
-	std::mt19937                          mt(m_randSeed);
+	std::mt19937 mt(m_randSeed);
 	std::uniform_real_distribution<float> dist(-1.0, 1.0);
 
 	for (unsigned i = 0; i < texSize; i++)
@@ -446,7 +446,7 @@ void ccSSAOFilter::initReflectTexture()
 		}
 
 		// map the point coordinates in [0;1]
-		reflectTexture[i * 3]     = static_cast<float>((1.0 + P.x) / 2);
+		reflectTexture[i * 3] = static_cast<float>((1.0 + P.x) / 2);
 		reflectTexture[i * 3 + 1] = static_cast<float>((1.0 + P.y) / 2);
 		reflectTexture[i * 3 + 2] = static_cast<float>((1.0 + P.z) / 2);
 	}

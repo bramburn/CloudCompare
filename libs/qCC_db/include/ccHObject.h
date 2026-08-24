@@ -150,11 +150,11 @@ class QCC_DB_LIB_API ccHObject : public ccObject
 	//! Dependency flags
 	enum DEPENDENCY_FLAGS
 	{
-		DP_NONE                   = 0, /**< no dependency **/
+		DP_NONE = 0,                   /**< no dependency **/
 		DP_NOTIFY_OTHER_ON_DELETE = 1, /**< notify 'other' when deleted (will call ccHObject::onDeletionOf) **/
 		DP_NOTIFY_OTHER_ON_UPDATE = 2, /**< notify 'other' when its geometry is modified (will call ccHObject::onUpdateOf) **/
 		// DP_NOTIFY_XXX				= 4,
-		DP_DELETE_OTHER    = 8,  /**< delete 'other' before deleting itself **/
+		DP_DELETE_OTHER = 8,     /**< delete 'other' before deleting itself **/
 		DP_PARENT_OF_OTHER = 24, /**< same as DP_DELETE_OTHER + declares itself as parent of 'other' **/
 	};
 
@@ -243,10 +243,10 @@ class QCC_DB_LIB_API ccHObject : public ccObject
 	    \param inDisplay [optional] display in which the children are displayed
 	    \return number of collected children
 	**/
-	unsigned filterChildren(Container&          filteredChildren,
-	                        bool                recursive = false,
-	                        CC_CLASS_ENUM       filter    = CC_TYPES::OBJECT,
-	                        bool                strict    = false,
+	unsigned filterChildren(Container& filteredChildren,
+	                        bool recursive = false,
+	                        CC_CLASS_ENUM filter = CC_TYPES::OBJECT,
+	                        bool strict = false,
 	                        ccGenericGLDisplay* inDisplay = nullptr) const;
 
 	//! Detaches a specific child
@@ -455,9 +455,9 @@ class QCC_DB_LIB_API ccHObject : public ccObject
 	virtual void notifyGeometryUpdate();
 
 	// inherited from ccSerializableObject
-	bool  isSerializable() const override;
-	bool  toFile(QFile& out, short dataVersion) const override;
-	bool  fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool isSerializable() const override;
+	bool toFile(QFile& out, short dataVersion) const override;
+	bool fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion() const override;
 
 	//! Custom version of ccSerializableObject::fromFile

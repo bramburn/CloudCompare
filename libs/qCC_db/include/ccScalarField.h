@@ -124,37 +124,55 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 		 * @brief Get the absolute minimum bound
 		 * @return Minimum bound value
 		 */
-		inline ScalarType min() const { return m_min; }
+		inline ScalarType min() const
+		{
+			return m_min;
+		}
 
 		/**
 		 * @brief Get the display window start
 		 * @return Start of display window
 		 */
-		inline ScalarType start() const { return m_start; }
+		inline ScalarType start() const
+		{
+			return m_start;
+		}
 
 		/**
 		 * @brief Get the display window end
 		 * @return End of display window
 		 */
-		inline ScalarType stop() const { return m_stop; }
+		inline ScalarType stop() const
+		{
+			return m_stop;
+		}
 
 		/**
 		 * @brief Get the absolute maximum bound
 		 * @return Maximum bound value
 		 */
-		inline ScalarType max() const { return m_max; }
+		inline ScalarType max() const
+		{
+			return m_max;
+		}
 
 		/**
 		 * @brief Get the display window size
 		 * @return stop - start (clamped to >= ZERO_TOLERANCE_SCALAR)
 		 */
-		inline ScalarType range() const { return m_range; }
+		inline ScalarType range() const
+		{
+			return m_range;
+		}
 
 		/**
 		 * @brief Get the total data range
 		 * @return max - min
 		 */
-		inline ScalarType maxRange() const { return m_max - m_min; }
+		inline ScalarType maxRange() const
+		{
+			return m_max - m_min;
+		}
 
 		// Setters
 
@@ -174,12 +192,12 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 			if (resetStartStop)
 			{
 				m_start = m_min;
-				m_stop  = m_max;
+				m_stop = m_max;
 			}
 			else
 			{
 				m_start = inbound(m_start);
-				m_stop  = inbound(m_stop);
+				m_stop = inbound(m_stop);
 			}
 			updateRange();
 		}
@@ -223,14 +241,20 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 		 * @param[in] val Value to check
 		 * @return true if min ≤ val ≤ max
 		 */
-		inline bool isInbound(ScalarType val) const { return (val >= m_min && val <= m_max); }
+		inline bool isInbound(ScalarType val) const
+		{
+			return (val >= m_min && val <= m_max);
+		}
 
 		/**
 		 * @brief Check if a value is within the display window [start, stop]
 		 * @param[in] val Value to check
 		 * @return true if start ≤ val ≤ stop
 		 */
-		inline bool isInRange(ScalarType val) const { return (val >= m_start && val <= m_stop); }
+		inline bool isInRange(ScalarType val) const
+		{
+			return (val >= m_start && val <= m_stop);
+		}
 
 	  protected:
 		/**
@@ -259,7 +283,10 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 	 *
 	 * @return Reference to the display range
 	 */
-	inline const Range& displayRange() const { return m_displayRange; }
+	inline const Range& displayRange() const
+	{
+		return m_displayRange;
+	}
 
 	/**
 	 * @brief Get the saturation range (linear or log, depending on logScale())
@@ -269,13 +296,19 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 	 *
 	 * @return Reference to the saturation range
 	 */
-	inline const Range& saturationRange() const { return m_logScale ? m_logSaturationRange : m_saturationRange; }
+	inline const Range& saturationRange() const
+	{
+		return m_logScale ? m_logSaturationRange : m_saturationRange;
+	}
 
 	/**
 	 * @brief Get the log-scale saturation range
 	 * @return Reference to the log saturation range
 	 */
-	inline const Range& logSaturationRange() const { return m_logSaturationRange; }
+	inline const Range& logSaturationRange() const
+	{
+		return m_logSaturationRange;
+	}
 
 	/**
 	 * @brief Set the minimum displayed value
@@ -357,7 +390,10 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 	 * @brief Check how out-of-range / NaN values are displayed
 	 * @return true if shown in grey, false if hidden
 	 */
-	inline bool areNaNValuesShownInGrey() const { return m_showNaNValuesInGrey; }
+	inline bool areNaNValuesShownInGrey() const
+	{
+		return m_showNaNValuesInGrey;
+	}
 
 	/**
 	 * @brief Force the color scale to always show zero
@@ -373,7 +409,10 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 	 * @brief Check if zero is forced visible
 	 * @return true if zero is always shown
 	 */
-	inline bool isZeroAlwaysShown() const { return m_alwaysShowZero; }
+	inline bool isZeroAlwaysShown() const
+	{
+		return m_alwaysShowZero;
+	}
 
 	/**
 	/**
@@ -390,7 +429,10 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 	 * @brief Check if the scale is symmetric
 	 * @return true if symmetric, false otherwise
 	 */
-	inline bool symmetricalScale() const { return m_symmetricalScale; }
+	inline bool symmetricalScale() const
+	{
+		return m_symmetricalScale;
+	}
 
 	/**
 	 * @brief Enable or disable logarithmic display
@@ -406,7 +448,10 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 	 * @brief Check if log scale is enabled
 	 * @return true if log scale is active
 	 */
-	inline bool logScale() const { return m_logScale; }
+	inline bool logScale() const
+	{
+		return m_logScale;
+	}
 
 	// inherited from ScalarField
 	/**
@@ -421,7 +466,10 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 	 * @brief Get the active color scale
 	 * @return Shared pointer to the current color scale
 	 */
-	inline const ccColorScale::Shared& getColorScale() const { return m_colorScale; }
+	inline const ccColorScale::Shared& getColorScale() const
+	{
+		return m_colorScale;
+	}
 
 	/**
 	 * @brief Set the active color scale
@@ -433,7 +481,10 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 	 * @brief Get the number of color ramp steps
 	 * @return Number of discrete color steps in the ramp
 	 */
-	inline unsigned getColorRampSteps() const { return m_colorRampSteps; }
+	inline unsigned getColorRampSteps() const
+	{
+		return m_colorRampSteps;
+	}
 
 	/**
 	 * @brief Set the number of color ramp steps
@@ -461,7 +512,10 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 	 * @brief Get the histogram for display in the scalar field dialog
 	 * @return Reference to the histogram vector
 	 */
-	inline const Histogram& getHistogram() const { return m_histogram; }
+	inline const Histogram& getHistogram() const
+	{
+		return m_histogram;
+	}
 
 	/**
 	 * @brief Check if any values may be hidden by the current display settings
@@ -481,13 +535,19 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 	 *
 	 * @param[in] state New modification state
 	 */
-	inline void setModificationFlag(bool state) { m_modified = state; }
+	inline void setModificationFlag(bool state)
+	{
+		m_modified = state;
+	}
 
 	/**
 	 * @brief Get the modification flag
 	 * @return true if the scalar field has been modified
 	 */
-	inline bool getModificationFlag() const { return m_modified; }
+	inline bool getModificationFlag() const
+	{
+		return m_modified;
+	}
 
 	/**
 	 * @brief Copy display parameters from another scalar field
@@ -501,7 +561,10 @@ class QCC_DB_LIB_API ccScalarField : public CCCoreLib::ScalarField
 	void importParametersFrom(const ccScalarField* sf);
 
 	// from ccSerializableObject
-	inline bool isSerializable() const override { return true; }
+	inline bool isSerializable() const override
+	{
+		return true;
+	}
 
 	/**
 	 * @brief Serialize to binary file

@@ -61,11 +61,11 @@ class ccSubsamplingDlg : public QDialog
 	//! Sub-sampling method
 	enum CC_SUBSAMPLING_METHOD
 	{
-		RANDOM         = 0,
+		RANDOM = 0,
 		RANDOM_PERCENT = 1,
-		SPATIAL        = 2,
-		OCTREE         = 3,
-		COUNT          = 4 // Should always be the last one
+		SPATIAL = 2,
+		OCTREE = 3,
+		COUNT = 4 // Should always be the last one
 	};
 
 	//! Default constructor

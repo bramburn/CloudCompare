@@ -81,11 +81,11 @@ class CCFBO_LIB_API ccGlFilter
 	 * @param[in] silent Suppress dialogs
 	 * @return true on success
 	 */
-	virtual bool init(unsigned       width,
-	                  unsigned       height,
+	virtual bool init(unsigned width,
+	                  unsigned height,
 	                  const QString& shadersPath,
-	                  QString&       error,
-	                  bool           silent) = 0;
+	                  QString& error,
+	                  bool silent) = 0;
 
 	//! Minimal set of 3D viewport parameters that can be used by shaders
 	struct CCFBO_LIB_API ViewportParameters
@@ -110,8 +110,8 @@ class CCFBO_LIB_API ccGlFilter
 	};
 
 	//! Applies filter to texture (depth + color)
-	virtual void shade(unsigned            texDepth,
-	                   unsigned            texColor,
+	virtual void shade(unsigned texDepth,
+	                   unsigned texColor,
 	                   ViewportParameters& parameters) = 0;
 
 	//! Returns resulting texture

@@ -256,8 +256,8 @@ class QCC_DB_LIB_API ccMaterial : public ccSerializableObject
 	}
 	/** \warning Doesn't save the texture image!
 	 **/
-	bool  toFile(QFile& out, short dataVersion) const override;
-	bool  fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile(QFile& out, short dataVersion) const override;
+	bool fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion() const override;
 
 	//! Returns unique identifier (UUID)
@@ -279,8 +279,8 @@ class QCC_DB_LIB_API ccMaterial : public ccSerializableObject
 	ccColor::Rgbaf m_ambient;
 	ccColor::Rgbaf m_specular;
 	ccColor::Rgbaf m_emission;
-	float          m_shininessFront;
-	float          m_shininessBack;
+	float m_shininessFront;
+	float m_shininessBack;
 
 	QOpenGLTexture::Filter m_texMinificationFilter;
 	QOpenGLTexture::Filter m_texMagnificationFilter;

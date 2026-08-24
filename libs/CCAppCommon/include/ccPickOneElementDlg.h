@@ -68,7 +68,7 @@ class CCAPPCOMMON_LIB_API ccPickOneElementDlg : public QDialog
 	 */
 	ccPickOneElementDlg(const QString& label,
 	                    const QString& windowTitle = QString(),
-	                    QWidget*       parent      = nullptr);
+	                    QWidget* parent = nullptr);
 
 	/**
 	 * @brief Destructor
@@ -80,13 +80,13 @@ class CCAPPCOMMON_LIB_API ccPickOneElementDlg : public QDialog
 	 * @param[in] elementName Element name
 	 */
 	void addElement(const QString& elementName);
-	
+
 	/**
 	 * @brief Set default selection
 	 * @param[in] index Default index
 	 */
 	void setDefaultIndex(int index);
-	
+
 	/**
 	 * @brief Get selected index
 	 * @return Selected index

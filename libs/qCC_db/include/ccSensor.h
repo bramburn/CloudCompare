@@ -57,8 +57,8 @@
  */
 enum CC_SENSOR_TYPE
 {
-	UNKNOWN_SENSOR,       //!< Unknown or generic sensor
-	GROUND_BASED_LIDAR,   //!< Ground-based LiDAR scanner
+	UNKNOWN_SENSOR,     //!< Unknown or generic sensor
+	GROUND_BASED_LIDAR, //!< Ground-based LiDAR scanner
 };
 
 /**
@@ -225,8 +225,8 @@ class QCC_DB_LIB_API ccSensor : public ccHObject
 
   protected:
 	// inherited from ccHObject
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
 
 	//! Positions buffer (optional)

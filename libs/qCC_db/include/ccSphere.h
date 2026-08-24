@@ -66,10 +66,10 @@ class QCC_DB_LIB_API ccSphere : public ccGenericPrimitive
 	 * @param[in] uniqueID Optional unique ID
 	 */
 	ccSphere(PointCoordinateType radius,
-	         const ccGLMatrix*   transMat  = nullptr,
-	         QString             name      = QString("Sphere"),
-	         unsigned            precision = 24,
-	         unsigned            uniqueID  = ccUniqueIDGenerator::InvalidUniqueID);
+	         const ccGLMatrix* transMat = nullptr,
+	         QString name = QString("Sphere"),
+	         unsigned precision = 24,
+	         unsigned uniqueID = ccUniqueIDGenerator::InvalidUniqueID);
 
 	/**
 	 * @brief Simplified constructor for ccHObject factory
@@ -91,7 +91,7 @@ class QCC_DB_LIB_API ccSphere : public ccGenericPrimitive
 	}
 	virtual bool hasDrawingPrecision() const override
 	{
-		return true;  // Precision affects the mesh tessellation
+		return true; // Precision affects the mesh tessellation
 	}
 	virtual ccGenericPrimitive* clone() const override;
 
@@ -114,10 +114,10 @@ class QCC_DB_LIB_API ccSphere : public ccGenericPrimitive
 
   protected:
 	// ccGenericPrimitive
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	bool  buildUp() override;
+	bool buildUp() override;
 
 	// ccHObject
 	virtual void drawNameIn3D(CC_DRAW_CONTEXT& context) override;

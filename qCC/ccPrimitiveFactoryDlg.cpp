@@ -162,8 +162,8 @@ void ccPrimitiveFactoryDlg::createPrimitive()
 	break;
 	case 7:
 	{
-		bool       valid = false;
-		ccGLMatrix mat   = getCSMatrix(valid);
+		bool valid = false;
+		ccGLMatrix mat = getCSMatrix(valid);
 		if (!valid)
 		{
 			mat.toIdentity();

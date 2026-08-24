@@ -6,8 +6,6 @@
 
 // Uses Qt Test — run via Python subprocess with explicit PATH (see BUILD-LOCAL.md §9).
 
-
-
 /**
  * @file TestRegistration.cpp
  *
@@ -22,37 +20,21 @@
  *
  * @see ccRegistrationTools.cpp
  */
-#include <QtTest/QtTest>
-
-#include <ccPointCloud.h>
-
-
-
 #include "GeometricalAnalysisTools.h"
-
+#include "PointProjectionTools.h"
 #include "RegistrationTools.h"
-
 #include "SquareMatrix.h"
 
-#include "PointProjectionTools.h"
-
-
-
-#include <cmath>
-
-#include <memory>
-
-#include <vector>
-
+#include <QtTest/QtTest>
 #include <array>
-
-
+#include <ccPointCloud.h>
+#include <cmath>
+#include <memory>
+#include <vector>
 
 // 3×3 matrix as flat array (avoids nested template >> parsing issue in Qt Test macros)
 
 using Mat3 = std::array<double, 9>;
-
-
 
 // M_SQRT2_2 = sqrt(2)/2 — not defined on MSVC by default
 
@@ -62,11 +44,7 @@ using Mat3 = std::array<double, 9>;
 
 #endif
 
-
-
 using namespace CCCoreLib;
-
-
 
 // Helper: build a test cloud from a vector of CCVector3.
 
@@ -78,19 +56,16 @@ static ccPointCloud* MakeCloud(const std::vector<CCVector3>& pts)
 
 {
 
-    ccPointCloud* cloud = new ccPointCloud("test");
+	ccPointCloud* cloud = new ccPointCloud("test");
 
-    cloud->reserve(static_cast<unsigned>(pts.size()));
+	cloud->reserve(static_cast<unsigned>(pts.size()));
 
-    for (const auto& p : pts)
+	for (const auto& p : pts)
 
-        cloud->addPoint(p);
+		cloud->addPoint(p);
 
-    return cloud;
-
+	return cloud;
 }
-
-
 
 // Helper: compare two CCVector3d with epsilon tolerance
 
@@ -98,15 +73,12 @@ static bool Vec3dEqual(const CCVector3d& a, const CCVector3d& b, double eps = 1e
 
 {
 
-    return std::abs(a.x - b.x) < eps
+	return std::abs(a.x - b.x) < eps
 
-        && std::abs(a.y - b.y) < eps
+	       && std::abs(a.y - b.y) < eps
 
-        && std::abs(a.z - b.z) < eps;
-
+	       && std::abs(a.z - b.z) < eps;
 }
-
-
 
 // Helper: compare two SquareMatrixd with epsilon tolerance (3×3 only)
 
@@ -114,19 +86,16 @@ static bool MatrixEqual(const SquareMatrixd& A, const SquareMatrixd& B, double e
 
 {
 
-    for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 3; ++i)
 
-        for (int j = 0; j < 3; ++j)
+		for (int j = 0; j < 3; ++j)
 
-            if (std::abs(A.m_values[i][j] - B.m_values[i][j]) > eps)
+			if (std::abs(A.m_values[i][j] - B.m_values[i][j]) > eps)
 
-                return false;
+				return false;
 
-    return true;
-
+	return true;
 }
-
-
 
 // Helper: create a 3×3 identity matrix
 
@@ -136,1227 +105,975 @@ static SquareMatrixd MakeIdentity3()
 
 {
 
-    SquareMatrixd I(3);
+	SquareMatrixd I(3);
 
-    I.toIdentity();
+	I.toIdentity();
 
-    return I;
-
+	return I;
 }
-
-
 
 class TestRegistration : public QObject
 
 {
 
-    Q_OBJECT
+	Q_OBJECT
 
+  private slots:
 
+	// --- HornRegistrationTools ---
 
-private slots:
+	void testHornIdentity_data()
 
-    // --- HornRegistrationTools ---
+	{
 
+		QTest::addColumn<std::vector<CCVector3>>("moving");
 
+		QTest::addColumn<std::vector<CCVector3>>("reference");
 
-    void testHornIdentity_data()
+		std::vector<CCVector3> cloud = {
 
-    {
+		    CCVector3(0, 0, 0),
 
-        QTest::addColumn<std::vector<CCVector3>>("moving");
+		    CCVector3(1, 0, 0),
 
-        QTest::addColumn<std::vector<CCVector3>>("reference");
+		    CCVector3(0, 1, 0),
 
+		    CCVector3(0, 0, 1),
 
+		};
 
-        std::vector<CCVector3> cloud = {
+		QTest::newRow("identical_4pts") << cloud << cloud;
+	}
 
-            CCVector3(0, 0, 0),
+	void testHornIdentity()
 
-            CCVector3(1, 0, 0),
+	{
 
-            CCVector3(0, 1, 0),
+		QFETCH(std::vector<CCVector3>, moving);
 
-            CCVector3(0, 0, 1),
+		QFETCH(std::vector<CCVector3>, reference);
 
-        };
+		std::unique_ptr<ccPointCloud> movingCloud(MakeCloud(moving));
 
-        QTest::newRow("identical_4pts") << cloud << cloud;
+		std::unique_ptr<ccPointCloud> refCloud(MakeCloud(reference));
 
-    }
+		PointProjectionTools::Transformation trans;
 
+		bool ok = HornRegistrationTools::FindAbsoluteOrientation(movingCloud.get(), refCloud.get(), trans, false);
 
+		QVERIFY(ok);
 
-    void testHornIdentity()
+		// Scale should be 1.0
 
-    {
+		QVERIFY(std::abs(trans.s - 1.0) < 1e-6);
 
-        QFETCH(std::vector<CCVector3>, moving);
+		// Translation should be near zero
 
-        QFETCH(std::vector<CCVector3>, reference);
+		QVERIFY(Vec3dEqual(trans.T, CCVector3d(0, 0, 0), 1e-6));
 
+		// Rotation should be identity
 
+		SquareMatrixd I(3);
 
-        std::unique_ptr<ccPointCloud> movingCloud(MakeCloud(moving));
+		I.toIdentity();
 
-        std::unique_ptr<ccPointCloud> refCloud(MakeCloud(reference));
+		QVERIFY(MatrixEqual(trans.R, I, 1e-6));
+	}
 
+	void testHornKnownRotation90Z_data()
 
+	{
 
-        PointProjectionTools::Transformation trans;
+		QTest::addColumn<std::vector<CCVector3>>("moving");
 
-        bool ok = HornRegistrationTools::FindAbsoluteOrientation(movingCloud.get(), refCloud.get(), trans, false);
+		QTest::addColumn<std::vector<CCVector3>>("reference");
 
-        QVERIFY(ok);
+		QTest::addColumn<double>("expectedScale");
 
+		QTest::addColumn<CCVector3d>("expectedT");
 
+		// Points rotated 90° CCW around Z: (x,y) → (-y, x)
 
-        // Scale should be 1.0
+		std::vector<CCVector3> moving = {
 
-        QVERIFY(std::abs(trans.s - 1.0) < 1e-6);
+		    CCVector3(1, 0, 0),
 
+		    CCVector3(0, 1, 0),
 
+		    CCVector3(0, 0, 1),
 
-        // Translation should be near zero
+		};
 
-        QVERIFY(Vec3dEqual(trans.T, CCVector3d(0, 0, 0), 1e-6));
+		std::vector<CCVector3> ref = {
 
+		    CCVector3(0, 1, 0),
 
+		    CCVector3(-1, 0, 0),
 
-        // Rotation should be identity
+		    CCVector3(0, 0, 1),
 
-        SquareMatrixd I(3);
+		};
 
-        I.toIdentity();
+		QTest::newRow("90deg_z") << moving << ref << 1.0 << CCVector3d(0, 0, 0);
+	}
 
-        QVERIFY(MatrixEqual(trans.R, I, 1e-6));
+	void testHornKnownRotation90Z()
 
-    }
+	{
 
+		QFETCH(std::vector<CCVector3>, moving);
 
+		QFETCH(std::vector<CCVector3>, reference);
 
-    void testHornKnownRotation90Z_data()
+		QFETCH(double, expectedScale);
 
-    {
+		QFETCH(CCVector3d, expectedT);
 
-        QTest::addColumn<std::vector<CCVector3>>("moving");
+		std::unique_ptr<ccPointCloud> movingCloud(MakeCloud(moving));
 
-        QTest::addColumn<std::vector<CCVector3>>("reference");
+		std::unique_ptr<ccPointCloud> refCloud(MakeCloud(reference));
 
-        QTest::addColumn<double>("expectedScale");
+		PointProjectionTools::Transformation trans;
 
-        QTest::addColumn<CCVector3d>("expectedT");
+		bool ok = HornRegistrationTools::FindAbsoluteOrientation(movingCloud.get(), refCloud.get(), trans, false);
 
+		QVERIFY(ok);
 
+		QVERIFY(std::abs(trans.s - expectedScale) < 1e-6);
 
-        // Points rotated 90° CCW around Z: (x,y) → (-y, x)
+		QVERIFY(Vec3dEqual(trans.T, expectedT, 1e-6));
+	}
 
-        std::vector<CCVector3> moving = {
+	void testHornFixedScale_data()
 
-            CCVector3(1, 0, 0),
+	{
 
-            CCVector3(0, 1, 0),
+		QTest::addColumn<std::vector<CCVector3>>("moving");
 
-            CCVector3(0, 0, 1),
+		QTest::addColumn<std::vector<CCVector3>>("reference");
 
-        };
+		QTest::addColumn<bool>("fixedScale");
 
-        std::vector<CCVector3> ref = {
+		std::vector<CCVector3> cloud = {
 
-            CCVector3(0, 1, 0),
+		    CCVector3(0, 0, 0),
 
-            CCVector3(-1, 0, 0),
+		    CCVector3(2, 0, 0),
 
-            CCVector3(0, 0, 1),
+		    CCVector3(0, 2, 0),
 
-        };
+		    CCVector3(2, 2, 0),
 
-        QTest::newRow("90deg_z") << moving << ref << 1.0 << CCVector3d(0, 0, 0);
+		};
 
-    }
+		QTest::newRow("scale_fixed") << cloud << cloud << true;
 
+		QTest::newRow("scale_free") << cloud << cloud << false;
+	}
 
+	void testHornFixedScale()
 
-    void testHornKnownRotation90Z()
+	{
 
-    {
+		QFETCH(std::vector<CCVector3>, moving);
 
-        QFETCH(std::vector<CCVector3>, moving);
+		QFETCH(std::vector<CCVector3>, reference);
 
-        QFETCH(std::vector<CCVector3>, reference);
+		QFETCH(bool, fixedScale);
 
-        QFETCH(double, expectedScale);
+		std::unique_ptr<ccPointCloud> movingCloud(MakeCloud(moving));
 
-        QFETCH(CCVector3d, expectedT);
+		std::unique_ptr<ccPointCloud> refCloud(MakeCloud(reference));
 
+		PointProjectionTools::Transformation trans;
 
+		bool ok = HornRegistrationTools::FindAbsoluteOrientation(movingCloud.get(), refCloud.get(), trans, fixedScale);
 
-        std::unique_ptr<ccPointCloud> movingCloud(MakeCloud(moving));
+		QVERIFY(ok);
 
-        std::unique_ptr<ccPointCloud> refCloud(MakeCloud(reference));
+		QVERIFY(std::abs(trans.s - 1.0) < 1e-6);
+	}
 
+	void testHornTranslationOnly_data()
 
+	{
 
-        PointProjectionTools::Transformation trans;
+		QTest::addColumn<std::vector<CCVector3>>("moving");
 
-        bool ok = HornRegistrationTools::FindAbsoluteOrientation(movingCloud.get(), refCloud.get(), trans, false);
+		QTest::addColumn<std::vector<CCVector3>>("reference");
 
-        QVERIFY(ok);
+		QTest::addColumn<CCVector3d>("expectedT");
 
+		// Non-degenerate tetrahedron — avoids planar degeneracy that can cause scale failures
 
+		std::vector<CCVector3> ref = {
 
-        QVERIFY(std::abs(trans.s - expectedScale) < 1e-6);
+		    CCVector3(0, 0, 0),
 
-        QVERIFY(Vec3dEqual(trans.T, expectedT, 1e-6));
+		    CCVector3(1, 0, 0),
 
-    }
+		    CCVector3(0, 1, 0),
 
+		    CCVector3(0, 0, 1),
 
+		};
 
-    void testHornFixedScale_data()
+		// Same geometry, translated by (10, -5, 3)
 
-    {
+		std::vector<CCVector3> moving = {
 
-        QTest::addColumn<std::vector<CCVector3>>("moving");
+		    CCVector3(10, -5, 3),
 
-        QTest::addColumn<std::vector<CCVector3>>("reference");
+		    CCVector3(11, -5, 3),
 
-        QTest::addColumn<bool>("fixedScale");
+		    CCVector3(10, -4, 3),
 
+		    CCVector3(10, -5, 4),
 
+		};
 
-        std::vector<CCVector3> cloud = {
+		// Horn: T = centroid_P - centroid_Q = -(10,-5,3)
+		QTest::newRow("translate") << moving << ref << CCVector3d(-10, 5, -3);
+	}
 
-            CCVector3(0, 0, 0),
+	void testHornTranslationOnly()
 
-            CCVector3(2, 0, 0),
+	{
 
-            CCVector3(0, 2, 0),
+		QFETCH(std::vector<CCVector3>, moving);
 
-            CCVector3(2, 2, 0),
+		QFETCH(std::vector<CCVector3>, reference);
 
-        };
+		QFETCH(CCVector3d, expectedT);
 
-        QTest::newRow("scale_fixed") << cloud << cloud << true;
+		std::unique_ptr<ccPointCloud> movingCloud(MakeCloud(moving));
 
-        QTest::newRow("scale_free") << cloud << cloud << false;
+		std::unique_ptr<ccPointCloud> refCloud(MakeCloud(reference));
 
-    }
+		PointProjectionTools::Transformation trans;
 
+		bool ok = HornRegistrationTools::FindAbsoluteOrientation(movingCloud.get(), refCloud.get(), trans, true);
 
+		QVERIFY(ok);
 
-    void testHornFixedScale()
+		// Horn returns T = centroid_P - centroid_Q (maps REFERENCE → MOVING).
+		// For Q = P + (10,-5,3), T returned = -(10,-5,3) = (-10,5,-3).
+		QVERIFY2(Vec3dEqual(trans.T, expectedT, 1e-3),
+		         qPrintable(QString("T=(%1,%2,%3) expected=(%4,%5,%6)")
+		                        .arg(trans.T.x)
+		                        .arg(trans.T.y)
+		                        .arg(trans.T.z)
+		                        .arg(expectedT.x)
+		                        .arg(expectedT.y)
+		                        .arg(expectedT.z)));
 
-    {
+		QVERIFY(std::abs(trans.s - 1.0) < 1e-6);
+	}
 
-        QFETCH(std::vector<CCVector3>, moving);
+	// --- Geometric helpers ---
 
-        QFETCH(std::vector<CCVector3>, reference);
+	void testGravityCenterSimple_data()
 
-        QFETCH(bool, fixedScale);
+	{
 
+		QTest::addColumn<std::vector<CCVector3>>("pts");
 
+		QTest::addColumn<CCVector3d>("expected");
 
-        std::unique_ptr<ccPointCloud> movingCloud(MakeCloud(moving));
+		// Centroid of unit cube corners = (0.5, 0.5, 0.5)
 
-        std::unique_ptr<ccPointCloud> refCloud(MakeCloud(reference));
+		std::vector<CCVector3> pts = {
 
+		    CCVector3(0, 0, 0),
 
+		    CCVector3(1, 0, 0),
 
-        PointProjectionTools::Transformation trans;
+		    CCVector3(0, 1, 0),
 
-        bool ok = HornRegistrationTools::FindAbsoluteOrientation(movingCloud.get(), refCloud.get(), trans, fixedScale);
+		    CCVector3(1, 1, 0),
 
-        QVERIFY(ok);
+		    CCVector3(0, 0, 1),
 
-        QVERIFY(std::abs(trans.s - 1.0) < 1e-6);
+		    CCVector3(1, 0, 1),
 
-    }
+		    CCVector3(0, 1, 1),
 
+		    CCVector3(1, 1, 1),
 
+		};
 
-    void testHornTranslationOnly_data()
+		QTest::newRow("unit_cube") << pts << CCVector3d(0.5, 0.5, 0.5);
 
-    {
+		std::vector<CCVector3> single = {CCVector3(3, -1, 2)};
 
-        QTest::addColumn<std::vector<CCVector3>>("moving");
+		QTest::newRow("single") << single << CCVector3d(3, -1, 2);
 
-        QTest::addColumn<std::vector<CCVector3>>("reference");
+		std::vector<CCVector3> two = {
 
-        QTest::addColumn<CCVector3d>("expectedT");
+		    CCVector3(0, 0, 0),
 
+		    CCVector3(2, 4, 6),
 
+		};
 
-        // Non-degenerate tetrahedron — avoids planar degeneracy that can cause scale failures
+		QTest::newRow("two") << two << CCVector3d(1, 2, 3);
+	}
 
-        std::vector<CCVector3> ref = {
+	void testGravityCenterSimple()
 
-            CCVector3(0, 0, 0),
+	{
 
-            CCVector3(1, 0, 0),
+		QFETCH(std::vector<CCVector3>, pts);
 
-            CCVector3(0, 1, 0),
+		QFETCH(CCVector3d, expected);
 
-            CCVector3(0, 0, 1),
+		std::unique_ptr<ccPointCloud> cloud(MakeCloud(pts));
 
-        };
+		CCVector3 g = GeometricalAnalysisTools::ComputeGravityCenter(cloud.get());
 
-        // Same geometry, translated by (10, -5, 3)
+		CCVector3d gd(g.x, g.y, g.z);
 
-        std::vector<CCVector3> moving = {
+		QVERIFY(Vec3dEqual(gd, expected, 1e-9));
+	}
 
-            CCVector3(10, -5, 3),
+	void testCrossCovarianceMatrixIsSymmetric_data()
 
-            CCVector3(11, -5, 3),
+	{
 
-            CCVector3(10, -4, 3),
+		QTest::addColumn<std::vector<CCVector3>>("P");
 
-            CCVector3(10, -5, 4),
+		QTest::addColumn<std::vector<CCVector3>>("X");
 
-        };
+		std::vector<CCVector3> P = {
 
-        // Horn: T = centroid_P - centroid_Q = -(10,-5,3)
-        QTest::newRow("translate") << moving << ref << CCVector3d(-10, 5, -3);
+		    CCVector3(0, 0, 0),
 
-    }
+		    CCVector3(1, 0, 0),
 
+		    CCVector3(0, 1, 0),
 
+		    CCVector3(0, 0, 1),
 
-    void testHornTranslationOnly()
+		};
 
-    {
+		QTest::newRow("same_cloud") << P << P;
+	}
 
-        QFETCH(std::vector<CCVector3>, moving);
+	void testCrossCovarianceMatrixIsSymmetric()
 
-        QFETCH(std::vector<CCVector3>, reference);
+	{
 
-        QFETCH(CCVector3d, expectedT);
+		QFETCH(std::vector<CCVector3>, P);
 
+		QFETCH(std::vector<CCVector3>, X);
 
+		std::unique_ptr<ccPointCloud> cloudP(MakeCloud(P));
 
-        std::unique_ptr<ccPointCloud> movingCloud(MakeCloud(moving));
+		std::unique_ptr<ccPointCloud> cloudX(MakeCloud(X));
 
-        std::unique_ptr<ccPointCloud> refCloud(MakeCloud(reference));
+		CCVector3 Gp = GeometricalAnalysisTools::ComputeGravityCenter(cloudP.get());
 
+		CCVector3 Gx = GeometricalAnalysisTools::ComputeGravityCenter(cloudX.get());
 
+		SquareMatrixd cov = GeometricalAnalysisTools::ComputeCrossCovarianceMatrix(cloudP.get(), cloudX.get(), Gp, Gx);
 
-        PointProjectionTools::Transformation trans;
+		QVERIFY(cov.isValid());
 
-        bool ok = HornRegistrationTools::FindAbsoluteOrientation(movingCloud.get(), refCloud.get(), trans, true);
+		// Covariance matrix must be symmetric
 
-        QVERIFY(ok);
+		for (int i = 0; i < 3; ++i)
 
+			for (int j = i + 1; j < 3; ++j)
 
+				QVERIFY2(std::abs(cov.m_values[i][j] - cov.m_values[j][i]) < 1e-12,
 
-        // Horn returns T = centroid_P - centroid_Q (maps REFERENCE → MOVING).
-        // For Q = P + (10,-5,3), T returned = -(10,-5,3) = (-10,5,-3).
-        QVERIFY2(Vec3dEqual(trans.T, expectedT, 1e-3),
-                 qPrintable(QString("T=(%1,%2,%3) expected=(%4,%5,%6)")
-                            .arg(trans.T.x).arg(trans.T.y).arg(trans.T.z)
-                            .arg(expectedT.x).arg(expectedT.y).arg(expectedT.z)));
+				         "Covariance matrix is not symmetric");
+	}
 
-        QVERIFY(std::abs(trans.s - 1.0) < 1e-6);
+	void testCrossCovarianceAgainstKnownValues_data()
 
-    }
+	{
 
+		QTest::addColumn<std::vector<CCVector3>>("P");
 
+		QTest::addColumn<std::vector<CCVector3>>("X");
 
-    // --- Geometric helpers ---
+		QTest::addColumn<double>("expectedXX");
 
+		// Unit square corners, centroid at (0.5, 0.5, 0)
 
+		// deviations = {-0.5,+0.5,-0.5,+0.5}, sum of squares = 0.5 per axis
 
-    void testGravityCenterSimple_data()
+		// CCCoreLib normalises by sqrt(N) = sqrt(4) = 2
 
-    {
+		// cov(x,x) = 0.5 / 2 = 0.25
 
-        QTest::addColumn<std::vector<CCVector3>>("pts");
+		std::vector<CCVector3> P = {
 
-        QTest::addColumn<CCVector3d>("expected");
+		    CCVector3(0, 0, 0),
 
+		    CCVector3(1, 0, 0),
 
+		    CCVector3(0, 1, 0),
 
-        // Centroid of unit cube corners = (0.5, 0.5, 0.5)
+		    CCVector3(1, 1, 0),
 
-        std::vector<CCVector3> pts = {
+		};
 
-            CCVector3(0, 0, 0),
+		QTest::newRow("unit_square") << P << P << 0.25;
+	}
 
-            CCVector3(1, 0, 0),
+	void testCrossCovarianceAgainstKnownValues()
 
-            CCVector3(0, 1, 0),
+	{
 
-            CCVector3(1, 1, 0),
+		QFETCH(std::vector<CCVector3>, P);
 
-            CCVector3(0, 0, 1),
+		QFETCH(std::vector<CCVector3>, X);
 
-            CCVector3(1, 0, 1),
+		QFETCH(double, expectedXX);
 
-            CCVector3(0, 1, 1),
+		std::unique_ptr<ccPointCloud> cloudP(MakeCloud(P));
 
-            CCVector3(1, 1, 1),
+		std::unique_ptr<ccPointCloud> cloudX(MakeCloud(X));
 
-        };
+		CCVector3 Gp = GeometricalAnalysisTools::ComputeGravityCenter(cloudP.get());
 
-        QTest::newRow("unit_cube") << pts << CCVector3d(0.5, 0.5, 0.5);
+		CCVector3 Gx = GeometricalAnalysisTools::ComputeGravityCenter(cloudX.get());
 
+		SquareMatrixd cov = GeometricalAnalysisTools::ComputeCrossCovarianceMatrix(cloudP.get(), cloudX.get(), Gp, Gx);
 
+		double relErr = std::abs(cov.m_values[0][0] - expectedXX) / expectedXX;
 
-        std::vector<CCVector3> single = { CCVector3(3, -1, 2) };
+		QVERIFY2(relErr < 0.01,
 
-        QTest::newRow("single") << single << CCVector3d(3, -1, 2);
+		         qPrintable(QString("cov[0][0]=%1 expected ~%2").arg(cov.m_values[0][0]).arg(expectedXX)));
+	}
 
+	// --- SquareMatrix quaternion ---
 
+	void testQuatToMatrixRoundtrip_data()
 
-        std::vector<CCVector3> two = {
+	{
 
-            CCVector3(0, 0, 0),
+		QTest::addColumn<double>("qw");
 
-            CCVector3(2, 4, 6),
+		QTest::addColumn<double>("qx");
 
-        };
+		QTest::addColumn<double>("qy");
 
-        QTest::newRow("two") << two << CCVector3d(1, 2, 3);
+		QTest::addColumn<double>("qz");
 
-    }
+		QTest::newRow("identity") << 1.0 << 0.0 << 0.0 << 0.0;
 
+		QTest::newRow("90deg_z") << M_SQRT2_2 << 0.0 << 0.0 << M_SQRT2_2;
 
+		QTest::newRow("180deg_x") << 0.0 << 1.0 << 0.0 << 0.0;
+	}
 
-    void testGravityCenterSimple()
+	void testQuatToMatrixRoundtrip()
 
-    {
+	{
 
-        QFETCH(std::vector<CCVector3>, pts);
+		QFETCH(double, qw);
 
-        QFETCH(CCVector3d, expected);
+		QFETCH(double, qx);
 
+		QFETCH(double, qy);
 
+		QFETCH(double, qz);
 
-        std::unique_ptr<ccPointCloud> cloud(MakeCloud(pts));
+		double q[4] = {qw, qx, qy, qz};
 
-        CCVector3 g = GeometricalAnalysisTools::ComputeGravityCenter(cloud.get());
+		SquareMatrixd R(3);
 
-        CCVector3d gd(g.x, g.y, g.z);
+		R.initFromQuaternion(q);
 
-        QVERIFY(Vec3dEqual(gd, expected, 1e-9));
+		QVERIFY(R.isValid());
 
-    }
+		// 1. Orthogonal: R^T · R ≈ I
 
+		SquareMatrixd Rt = R.transposed();
 
+		SquareMatrixd I = MakeIdentity3();
 
-    void testCrossCovarianceMatrixIsSymmetric_data()
+		QVERIFY(MatrixEqual(Rt * R, I, 1e-8));
 
-    {
+		// 2. det(R) ≈ 1
 
-        QTest::addColumn<std::vector<CCVector3>>("P");
+		QVERIFY(std::abs(R.computeDet() - 1.0) < 1e-8);
 
-        QTest::addColumn<std::vector<CCVector3>>("X");
+		// Roundtrip: R → q' → R'
 
+		double q2[4];
 
+		bool ok = R.toQuaternion(q2, true);
 
-        std::vector<CCVector3> P = {
+		QVERIFY(ok);
 
-            CCVector3(0, 0, 0),
+		// q and q2 may differ by sign (q and -q represent same rotation)
 
-            CCVector3(1, 0, 0),
+		double dot = std::abs(qw * q2[0] + qx * q2[1] + qy * q2[2] + qz * q2[3]);
 
-            CCVector3(0, 1, 0),
+		QVERIFY2(dot > 0.999, qPrintable(QString("q·q2=%1 (should be ≈1)").arg(dot)));
+	}
 
-            CCVector3(0, 0, 1),
+	void testMatrixToQuaternionIdentity_data()
 
-        };
+	{
 
-        QTest::newRow("same_cloud") << P << P;
+		QTest::addColumn<Mat3>("Rdata");
 
-    }
+		QTest::addColumn<double>("expectedQw");
 
+		// row-major flat array: row0col0, row0col1, row0col2, row1col0, ...
 
+		QTest::newRow("identity") << Mat3{1, 0, 0, 0, 1, 0, 0, 0, 1} << 1.0;
+	}
 
-    void testCrossCovarianceMatrixIsSymmetric()
+	void testMatrixToQuaternionIdentity()
 
-    {
+	{
 
-        QFETCH(std::vector<CCVector3>, P);
+		QFETCH(Mat3, Rdata);
 
-        QFETCH(std::vector<CCVector3>, X);
+		QFETCH(double, expectedQw);
 
+		SquareMatrixd R(3);
 
+		for (int i = 0; i < 3; ++i)
 
-        std::unique_ptr<ccPointCloud> cloudP(MakeCloud(P));
+			for (int j = 0; j < 3; ++j)
 
-        std::unique_ptr<ccPointCloud> cloudX(MakeCloud(X));
+				R.m_values[i][j] = static_cast<ScalarType>(Rdata[i * 3 + j]);
 
-        CCVector3 Gp = GeometricalAnalysisTools::ComputeGravityCenter(cloudP.get());
+		double q[4];
 
-        CCVector3 Gx = GeometricalAnalysisTools::ComputeGravityCenter(cloudX.get());
+		bool ok = R.toQuaternion(q, true);
 
+		QVERIFY(ok);
 
+		QVERIFY2(std::abs(q[0] - expectedQw) < 1e-6,
 
-        SquareMatrixd cov = GeometricalAnalysisTools::ComputeCrossCovarianceMatrix(cloudP.get(), cloudX.get(), Gp, Gx);
+		         qPrintable(QString("q[0]=%1 expected ~%2").arg(q[0]).arg(expectedQw)));
 
+		QVERIFY2(std::abs(q[1]) < 1e-6 && std::abs(q[2]) < 1e-6 && std::abs(q[3]) < 1e-6,
 
+		         "Identity matrix should give pure real quaternion");
+	}
 
-        QVERIFY(cov.isValid());
+	// --- SquareMatrix basic operations ---
 
+	void testMatrixIdentity()
 
+	{
 
-        // Covariance matrix must be symmetric
+		SquareMatrixd I = MakeIdentity3();
 
-        for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < 3; ++i)
 
-            for (int j = i + 1; j < 3; ++j)
+			for (int j = 0; j < 3; ++j)
 
-                QVERIFY2(std::abs(cov.m_values[i][j] - cov.m_values[j][i]) < 1e-12,
+				QVERIFY2(std::abs(I.m_values[i][j] - (i == j ? 1.0 : 0.0)) < 1e-12,
 
-                         "Covariance matrix is not symmetric");
+				         qPrintable(QString("I[%1][%2]=%3 expected %4")
 
-    }
+				                        .arg(i)
+				                        .arg(j)
+				                        .arg(I.m_values[i][j])
+				                        .arg(i == j ? 1.0 : 0.0)));
+	}
 
+	void testMatrixMultiplication_data()
 
+	{
 
-    void testCrossCovarianceAgainstKnownValues_data()
+		QTest::addColumn<Mat3>("A");
 
-    {
+		QTest::addColumn<Mat3>("B");
 
-        QTest::addColumn<std::vector<CCVector3>>("P");
+		QTest::addColumn<Mat3>("expected");
 
-        QTest::addColumn<std::vector<CCVector3>>("X");
+		// R_z(90°) · I = R_z(90°)
 
-        QTest::addColumn<double>("expectedXX");
+		QTest::newRow("90deg_z_times_I") <<
 
+		    Mat3{0, -1, 0, 1, 0, 0, 0, 0, 1} <<
 
+		    Mat3{1, 0, 0, 0, 1, 0, 0, 0, 1} <<
 
-        // Unit square corners, centroid at (0.5, 0.5, 0)
+		    Mat3{0, -1, 0, 1, 0, 0, 0, 0, 1};
 
-        // deviations = {-0.5,+0.5,-0.5,+0.5}, sum of squares = 0.5 per axis
+		// I · R_z(90°) = R_z(90°)
 
-        // CCCoreLib normalises by sqrt(N) = sqrt(4) = 2
+		QTest::newRow("I_times_90deg_z") <<
 
-        // cov(x,x) = 0.5 / 2 = 0.25
+		    Mat3{1, 0, 0, 0, 1, 0, 0, 0, 1} <<
 
-        std::vector<CCVector3> P = {
+		    Mat3{0, -1, 0, 1, 0, 0, 0, 0, 1} <<
 
-            CCVector3(0, 0, 0),
+		    Mat3{0, -1, 0, 1, 0, 0, 0, 0, 1};
+	}
 
-            CCVector3(1, 0, 0),
+	void testMatrixMultiplication()
 
-            CCVector3(0, 1, 0),
+	{
 
-            CCVector3(1, 1, 0),
+		QFETCH(Mat3, A);
 
-        };
+		QFETCH(Mat3, B);
 
-        QTest::newRow("unit_square") << P << P << 0.25;
+		QFETCH(Mat3, expected);
 
-    }
+		SquareMatrixd MA(3);
 
+		SquareMatrixd MB(3);
 
+		for (int i = 0; i < 3; ++i)
+		{
 
-    void testCrossCovarianceAgainstKnownValues()
+			for (int j = 0; j < 3; ++j)
+			{
 
-    {
+				MA.m_values[i][j] = static_cast<ScalarType>(A[i * 3 + j]);
 
-        QFETCH(std::vector<CCVector3>, P);
+				MB.m_values[i][j] = static_cast<ScalarType>(B[i * 3 + j]);
+			}
+		}
 
-        QFETCH(std::vector<CCVector3>, X);
+		SquareMatrixd MC = MA * MB;
 
-        QFETCH(double, expectedXX);
+		for (int i = 0; i < 3; ++i)
 
+			for (int j = 0; j < 3; ++j)
 
+				QVERIFY2(std::abs(MC.m_values[i][j] - expected[i * 3 + j]) < 1e-8,
 
-        std::unique_ptr<ccPointCloud> cloudP(MakeCloud(P));
+				         qPrintable(QString("C[%1][%2]=%3 expected %4")
 
-        std::unique_ptr<ccPointCloud> cloudX(MakeCloud(X));
+				                        .arg(i)
+				                        .arg(j)
+				                        .arg(MC.m_values[i][j])
+				                        .arg(expected[i * 3 + j])));
+	}
 
-        CCVector3 Gp = GeometricalAnalysisTools::ComputeGravityCenter(cloudP.get());
+	void testMatrixInverse_data()
 
-        CCVector3 Gx = GeometricalAnalysisTools::ComputeGravityCenter(cloudX.get());
+	{
 
+		QTest::addColumn<Mat3>("A");
 
+		// [[1,2,3],[0,1,4],[5,6,0]] — det = 1 (row-major)
 
-        SquareMatrixd cov = GeometricalAnalysisTools::ComputeCrossCovarianceMatrix(cloudP.get(), cloudX.get(), Gp, Gx);
+		QTest::newRow("simple_3x3") << Mat3{1, 2, 3, 0, 1, 4, 5, 6, 0};
+	}
 
+	void testMatrixInverse()
 
+	{
 
-        double relErr = std::abs(cov.m_values[0][0] - expectedXX) / expectedXX;
+		QFETCH(Mat3, A);
 
-        QVERIFY2(relErr < 0.01,
+		SquareMatrixd MA(3);
 
-                 qPrintable(QString("cov[0][0]=%1 expected ~%2").arg(cov.m_values[0][0]).arg(expectedXX)));
+		for (int i = 0; i < 3; ++i)
 
-    }
+			for (int j = 0; j < 3; ++j)
 
+				MA.m_values[i][j] = static_cast<ScalarType>(A[i * 3 + j]);
 
+		SquareMatrixd MAinv = MA.inv();
 
-    // --- SquareMatrix quaternion ---
+		QVERIFY(MAinv.isValid());
 
+		SquareMatrixd I = MakeIdentity3();
 
+		SquareMatrixd product = MA * MAinv;
 
-    void testQuatToMatrixRoundtrip_data()
+		QVERIFY2(MatrixEqual(product, I, 1e-8),
 
-    {
+		         "A * A^-1 should equal identity");
+	}
 
-        QTest::addColumn<double>("qw");
+	void testMatrixDeterminant_data()
 
-        QTest::addColumn<double>("qx");
+	{
 
-        QTest::addColumn<double>("qy");
+		QTest::addColumn<Mat3>("M");
 
-        QTest::addColumn<double>("qz");
+		QTest::addColumn<double>("expectedDet");
 
+		QTest::newRow("identity") << Mat3{1, 0, 0, 0, 1, 0, 0, 0, 1} << 1.0;
 
+		QTest::newRow("scalar_2") << Mat3{2, 0, 0, 0, 2, 0, 0, 0, 2} << 8.0;
 
-        QTest::newRow("identity") << 1.0 << 0.0 << 0.0 << 0.0;
+		// [[1,2,3],[0,1,4],[5,6,0]] — det = 1
 
-        QTest::newRow("90deg_z") << M_SQRT2_2 << 0.0 << 0.0 << M_SQRT2_2;
+		QTest::newRow("simple") << Mat3{1, 2, 3, 0, 1, 4, 5, 6, 0} << 1.0;
+	}
 
-        QTest::newRow("180deg_x") << 0.0 << 1.0 << 0.0 << 0.0;
+	void testMatrixDeterminant()
 
-    }
+	{
 
+		QFETCH(Mat3, M);
 
+		QFETCH(double, expectedDet);
 
-    void testQuatToMatrixRoundtrip()
+		SquareMatrixd mat(3);
 
-    {
+		for (int i = 0; i < 3; ++i)
 
-        QFETCH(double, qw);
+			for (int j = 0; j < 3; ++j)
 
-        QFETCH(double, qx);
+				mat.m_values[i][j] = static_cast<ScalarType>(M[i * 3 + j]);
 
-        QFETCH(double, qy);
+		double det = mat.computeDet();
 
-        QFETCH(double, qz);
+		QVERIFY2(std::abs(det - expectedDet) < 1e-9,
 
+		         qPrintable(QString("det=%1 expected %2").arg(det).arg(expectedDet)));
+	}
 
+	void testMatrixTranspose()
 
-        double q[4] = { qw, qx, qy, qz };
+	{
 
-        SquareMatrixd R(3);
+		SquareMatrixd A(3);
 
-        R.initFromQuaternion(q);
+		A.m_values[0][0] = 1;
+		A.m_values[0][1] = 2;
+		A.m_values[0][2] = 3;
 
+		A.m_values[1][0] = 4;
+		A.m_values[1][1] = 5;
+		A.m_values[1][2] = 6;
 
+		A.m_values[2][0] = 7;
+		A.m_values[2][1] = 8;
+		A.m_values[2][2] = 9;
 
-        QVERIFY(R.isValid());
+		SquareMatrixd At = A.transposed();
 
+		for (int i = 0; i < 3; ++i)
 
+			for (int j = 0; j < 3; ++j)
 
-        // 1. Orthogonal: R^T · R ≈ I
+				QVERIFY2(At.m_values[i][j] == A.m_values[j][i],
 
-        SquareMatrixd Rt = R.transposed();
+				         "Transpose: At[i][j] should equal A[j][i]");
 
-        SquareMatrixd I = MakeIdentity3();
+		SquareMatrixd Att = At.transposed();
 
-        QVERIFY(MatrixEqual(Rt * R, I, 1e-8));
+		QVERIFY(MatrixEqual(Att, A, 0));
+	}
 
+	void testMatrixTrace_data()
 
+	{
 
-        // 2. det(R) ≈ 1
+		QTest::addColumn<Mat3>("M");
 
-        QVERIFY(std::abs(R.computeDet() - 1.0) < 1e-8);
+		QTest::addColumn<double>("expectedTrace");
 
+		QTest::newRow("identity") << Mat3{1, 0, 0, 0, 1, 0, 0, 0, 1} << 3.0;
 
+		QTest::newRow("custom") << Mat3{1, 2, 3, 4, 5, 6, 7, 8, 9} << 15.0;
+	}
 
-        // Roundtrip: R → q' → R'
+	void testMatrixTrace()
 
-        double q2[4];
+	{
 
-        bool ok = R.toQuaternion(q2, true);
+		QFETCH(Mat3, M);
 
-        QVERIFY(ok);
+		QFETCH(double, expectedTrace);
 
+		SquareMatrixd mat(3);
 
+		for (int i = 0; i < 3; ++i)
 
-        // q and q2 may differ by sign (q and -q represent same rotation)
+			for (int j = 0; j < 3; ++j)
 
-        double dot = std::abs(qw * q2[0] + qx * q2[1] + qy * q2[2] + qz * q2[3]);
+				mat.m_values[i][j] = static_cast<ScalarType>(M[i * 3 + j]);
 
-        QVERIFY2(dot > 0.999, qPrintable(QString("q·q2=%1 (should be ≈1)").arg(dot)));
+		double trace = mat.trace();
 
-    }
+		QVERIFY2(std::abs(trace - expectedTrace) < 1e-9,
 
+		         qPrintable(QString("trace=%1 expected %2").arg(trace).arg(expectedTrace)));
+	}
 
+	// --- ScaledTransformation ---
 
-    void testMatrixToQuaternionIdentity_data()
+	void testTransformationApply_data()
 
-    {
+	{
 
-        QTest::addColumn<Mat3>("Rdata");
+		QTest::addColumn<PointProjectionTools::Transformation>("trans");
 
-        QTest::addColumn<double>("expectedQw");
+		QTest::addColumn<CCVector3>("input");
 
+		QTest::addColumn<CCVector3d>("expected");
 
+		PointProjectionTools::Transformation t;
 
-        // row-major flat array: row0col0, row0col1, row0col2, row1col0, ...
+		t.s = 2.0;
 
-        QTest::newRow("identity") << Mat3{1,0,0, 0,1,0, 0,0,1} << 1.0;
+		t.T = CCVector3d(1, 0, -1);
 
-    }
+		t.R.toIdentity();
 
+		QTest::newRow("scale_translate") << t << CCVector3(1, 1, 1) << CCVector3d(3, 2, 1);
+	}
 
+	void testTransformationApply()
 
-    void testMatrixToQuaternionIdentity()
+	{
 
-    {
+		QFETCH(PointProjectionTools::Transformation, trans);
 
-        QFETCH(Mat3, Rdata);
+		QFETCH(CCVector3, input);
 
-        QFETCH(double, expectedQw);
+		QFETCH(CCVector3d, expected);
 
+		CCVector3d result = trans.apply(input);
 
+		QVERIFY(Vec3dEqual(result, expected, 1e-9));
+	}
 
-        SquareMatrixd R(3);
+	void testTransformationIdentity()
 
-        for (int i = 0; i < 3; ++i)
+	{
 
-            for (int j = 0; j < 3; ++j)
+		PointProjectionTools::Transformation t;
 
-                R.m_values[i][j] = static_cast<ScalarType>(Rdata[i * 3 + j]);
+		t.s = 1.0;
 
+		t.T = CCVector3d(0, 0, 0);
 
+		t.R.toIdentity();
 
-        double q[4];
+		CCVector3 P(3, 4, 5);
 
-        bool ok = R.toQuaternion(q, true);
+		CCVector3d result = t.apply(P);
 
-        QVERIFY(ok);
+		CCVector3d expected(3, 4, 5);
 
+		QVERIFY(Vec3dEqual(result, expected, 1e-12));
+	}
 
+	void testTransformationScaleOnly_data()
 
-        QVERIFY2(std::abs(q[0] - expectedQw) < 1e-6,
+	{
 
-                 qPrintable(QString("q[0]=%1 expected ~%2").arg(q[0]).arg(expectedQw)));
+		QTest::addColumn<double>("scale");
 
-        QVERIFY2(std::abs(q[1]) < 1e-6 && std::abs(q[2]) < 1e-6 && std::abs(q[3]) < 1e-6,
+		QTest::addColumn<CCVector3>("input");
 
-                 "Identity matrix should give pure real quaternion");
+		QTest::addColumn<CCVector3d>("expected");
 
-    }
+		QTest::newRow("scale_2") << 2.0 << CCVector3(1, 2, 3) << CCVector3d(2, 4, 6);
 
+		QTest::newRow("scale_0p5") << 0.5 << CCVector3(2, 4, 6) << CCVector3d(1, 2, 3);
+	}
 
+	void testTransformationScaleOnly()
 
-    // --- SquareMatrix basic operations ---
+	{
 
+		QFETCH(double, scale);
 
+		QFETCH(CCVector3, input);
 
-    void testMatrixIdentity()
+		QFETCH(CCVector3d, expected);
 
-    {
+		PointProjectionTools::Transformation t;
 
-        SquareMatrixd I = MakeIdentity3();
+		t.s = scale;
 
-        for (int i = 0; i < 3; ++i)
+		t.R.toIdentity();
 
-            for (int j = 0; j < 3; ++j)
+		t.T = CCVector3d(0, 0, 0);
 
-                QVERIFY2(std::abs(I.m_values[i][j] - (i == j ? 1.0 : 0.0)) < 1e-12,
+		CCVector3d result = t.apply(input);
 
-                         qPrintable(QString("I[%1][%2]=%3 expected %4")
+		QVERIFY(Vec3dEqual(result, expected, 1e-9));
+	}
 
-                                    .arg(i).arg(j).arg(I.m_values[i][j]).arg(i==j ? 1.0 : 0.0)));
+	// --- HornRegistrationTools: scale estimation (fixedScale=false) ---
 
-    }
+	void testHornScaleEstimation_data()
 
+	{
 
+		QTest::addColumn<std::vector<CCVector3>>("moving");
 
-    void testMatrixMultiplication_data()
+		QTest::addColumn<std::vector<CCVector3>>("reference");
 
-    {
+		QTest::addColumn<double>("expectedScale");
 
-        QTest::addColumn<Mat3>("A");
+		// Reference: tetrahedron
 
-        QTest::addColumn<Mat3>("B");
+		std::vector<CCVector3> ref = {
 
-        QTest::addColumn<Mat3>("expected");
+		    CCVector3(0, 0, 0),
 
+		    CCVector3(1, 0, 0),
 
+		    CCVector3(0, 1, 0),
 
-        // R_z(90°) · I = R_z(90°)
+		    CCVector3(0, 0, 1),
 
-        QTest::newRow("90deg_z_times_I") <<
+		};
 
-            Mat3{0,-1,0, 1,0,0, 0,0,1} <<
+		// Moving: same geometry scaled by 2
 
-            Mat3{1,0,0, 0,1,0, 0,0,1} <<
+		std::vector<CCVector3> moving = {
 
-            Mat3{0,-1,0, 1,0,0, 0,0,1};
+		    CCVector3(0, 0, 0),
 
+		    CCVector3(2, 0, 0),
 
+		    CCVector3(0, 2, 0),
 
-        // I · R_z(90°) = R_z(90°)
+		    CCVector3(0, 0, 2),
 
-        QTest::newRow("I_times_90deg_z") <<
+		};
 
-            Mat3{1,0,0, 0,1,0, 0,0,1} <<
+		// Horn scale = s_aligned / sqrt(s_ref) ~= 0.5 for 2x scaled cloud
+		// (not 2.0 — the scale factor is RMS_aligned / sqrt(RMS_ref))
+		QTest::newRow("scale_2x") << moving << ref << 0.5;
+	}
 
-            Mat3{0,-1,0, 1,0,0, 0,0,1} <<
+	void testHornScaleEstimation()
 
-            Mat3{0,-1,0, 1,0,0, 0,0,1};
+	{
 
-    }
+		QFETCH(std::vector<CCVector3>, moving);
 
+		QFETCH(std::vector<CCVector3>, reference);
 
+		QFETCH(double, expectedScale);
 
-    void testMatrixMultiplication()
+		std::unique_ptr<ccPointCloud> movingCloud(MakeCloud(moving));
 
-    {
+		std::unique_ptr<ccPointCloud> refCloud(MakeCloud(reference));
 
-        QFETCH(Mat3, A);
+		PointProjectionTools::Transformation trans;
 
-        QFETCH(Mat3, B);
+		// fixedScale=false → scale is estimated by Horn's algorithm
 
-        QFETCH(Mat3, expected);
+		bool ok = HornRegistrationTools::FindAbsoluteOrientation(movingCloud.get(), refCloud.get(), trans, false);
 
+		QVERIFY(ok);
 
+		QVERIFY2(std::abs(trans.s - expectedScale) < 0.05,
 
-        SquareMatrixd MA(3);
-
-        SquareMatrixd MB(3);
-
-        for (int i = 0; i < 3; ++i) {
-
-            for (int j = 0; j < 3; ++j) {
-
-                MA.m_values[i][j] = static_cast<ScalarType>(A[i * 3 + j]);
-
-                MB.m_values[i][j] = static_cast<ScalarType>(B[i * 3 + j]);
-
-            }
-
-        }
-
-
-
-        SquareMatrixd MC = MA * MB;
-
-
-
-        for (int i = 0; i < 3; ++i)
-
-            for (int j = 0; j < 3; ++j)
-
-                QVERIFY2(std::abs(MC.m_values[i][j] - expected[i * 3 + j]) < 1e-8,
-
-                         qPrintable(QString("C[%1][%2]=%3 expected %4")
-
-                                    .arg(i).arg(j).arg(MC.m_values[i][j]).arg(expected[i * 3 + j])));
-
-    }
-
-
-
-    void testMatrixInverse_data()
-
-    {
-
-        QTest::addColumn<Mat3>("A");
-
-
-
-        // [[1,2,3],[0,1,4],[5,6,0]] — det = 1 (row-major)
-
-        QTest::newRow("simple_3x3") << Mat3{1,2,3, 0,1,4, 5,6,0};
-
-    }
-
-
-
-    void testMatrixInverse()
-
-    {
-
-        QFETCH(Mat3, A);
-
-
-
-        SquareMatrixd MA(3);
-
-        for (int i = 0; i < 3; ++i)
-
-            for (int j = 0; j < 3; ++j)
-
-                MA.m_values[i][j] = static_cast<ScalarType>(A[i * 3 + j]);
-
-
-
-        SquareMatrixd MAinv = MA.inv();
-
-        QVERIFY(MAinv.isValid());
-
-
-
-        SquareMatrixd I = MakeIdentity3();
-
-        SquareMatrixd product = MA * MAinv;
-
-        QVERIFY2(MatrixEqual(product, I, 1e-8),
-
-                 "A * A^-1 should equal identity");
-
-    }
-
-
-
-    void testMatrixDeterminant_data()
-
-    {
-
-        QTest::addColumn<Mat3>("M");
-
-        QTest::addColumn<double>("expectedDet");
-
-
-
-        QTest::newRow("identity") << Mat3{1,0,0, 0,1,0, 0,0,1} << 1.0;
-
-
-
-        QTest::newRow("scalar_2") << Mat3{2,0,0, 0,2,0, 0,0,2} << 8.0;
-
-
-
-        // [[1,2,3],[0,1,4],[5,6,0]] — det = 1
-
-        QTest::newRow("simple") << Mat3{1,2,3, 0,1,4, 5,6,0} << 1.0;
-
-    }
-
-
-
-    void testMatrixDeterminant()
-
-    {
-
-        QFETCH(Mat3, M);
-
-        QFETCH(double, expectedDet);
-
-
-
-        SquareMatrixd mat(3);
-
-        for (int i = 0; i < 3; ++i)
-
-            for (int j = 0; j < 3; ++j)
-
-                mat.m_values[i][j] = static_cast<ScalarType>(M[i * 3 + j]);
-
-
-
-        double det = mat.computeDet();
-
-        QVERIFY2(std::abs(det - expectedDet) < 1e-9,
-
-                 qPrintable(QString("det=%1 expected %2").arg(det).arg(expectedDet)));
-
-    }
-
-
-
-    void testMatrixTranspose()
-
-    {
-
-        SquareMatrixd A(3);
-
-        A.m_values[0][0] = 1; A.m_values[0][1] = 2; A.m_values[0][2] = 3;
-
-        A.m_values[1][0] = 4; A.m_values[1][1] = 5; A.m_values[1][2] = 6;
-
-        A.m_values[2][0] = 7; A.m_values[2][1] = 8; A.m_values[2][2] = 9;
-
-
-
-        SquareMatrixd At = A.transposed();
-
-
-
-        for (int i = 0; i < 3; ++i)
-
-            for (int j = 0; j < 3; ++j)
-
-                QVERIFY2(At.m_values[i][j] == A.m_values[j][i],
-
-                         "Transpose: At[i][j] should equal A[j][i]");
-
-
-
-        SquareMatrixd Att = At.transposed();
-
-        QVERIFY(MatrixEqual(Att, A, 0));
-
-    }
-
-
-
-    void testMatrixTrace_data()
-
-    {
-
-        QTest::addColumn<Mat3>("M");
-
-        QTest::addColumn<double>("expectedTrace");
-
-
-
-        QTest::newRow("identity") << Mat3{1,0,0, 0,1,0, 0,0,1} << 3.0;
-
-
-
-        QTest::newRow("custom") << Mat3{1,2,3, 4,5,6, 7,8,9} << 15.0;
-
-    }
-
-
-
-    void testMatrixTrace()
-
-    {
-
-        QFETCH(Mat3, M);
-
-        QFETCH(double, expectedTrace);
-
-
-
-        SquareMatrixd mat(3);
-
-        for (int i = 0; i < 3; ++i)
-
-            for (int j = 0; j < 3; ++j)
-
-                mat.m_values[i][j] = static_cast<ScalarType>(M[i * 3 + j]);
-
-
-
-        double trace = mat.trace();
-
-        QVERIFY2(std::abs(trace - expectedTrace) < 1e-9,
-
-                 qPrintable(QString("trace=%1 expected %2").arg(trace).arg(expectedTrace)));
-
-    }
-
-
-
-    // --- ScaledTransformation ---
-
-
-
-    void testTransformationApply_data()
-
-    {
-
-        QTest::addColumn<PointProjectionTools::Transformation>("trans");
-
-        QTest::addColumn<CCVector3>("input");
-
-        QTest::addColumn<CCVector3d>("expected");
-
-
-
-        PointProjectionTools::Transformation t;
-
-        t.s = 2.0;
-
-        t.T = CCVector3d(1, 0, -1);
-
-        t.R.toIdentity();
-
-        QTest::newRow("scale_translate") << t << CCVector3(1, 1, 1) << CCVector3d(3, 2, 1);
-
-    }
-
-
-
-    void testTransformationApply()
-
-    {
-
-        QFETCH(PointProjectionTools::Transformation, trans);
-
-        QFETCH(CCVector3, input);
-
-        QFETCH(CCVector3d, expected);
-
-
-
-        CCVector3d result = trans.apply(input);
-
-        QVERIFY(Vec3dEqual(result, expected, 1e-9));
-
-    }
-
-
-
-    void testTransformationIdentity()
-
-    {
-
-        PointProjectionTools::Transformation t;
-
-        t.s = 1.0;
-
-        t.T = CCVector3d(0, 0, 0);
-
-        t.R.toIdentity();
-
-
-
-        CCVector3 P(3, 4, 5);
-
-        CCVector3d result = t.apply(P);
-
-        CCVector3d expected(3, 4, 5);
-
-        QVERIFY(Vec3dEqual(result, expected, 1e-12));
-
-    }
-
-
-
-    void testTransformationScaleOnly_data()
-
-    {
-
-        QTest::addColumn<double>("scale");
-
-        QTest::addColumn<CCVector3>("input");
-
-        QTest::addColumn<CCVector3d>("expected");
-
-
-
-        QTest::newRow("scale_2") << 2.0 << CCVector3(1, 2, 3) << CCVector3d(2, 4, 6);
-
-        QTest::newRow("scale_0p5") << 0.5 << CCVector3(2, 4, 6) << CCVector3d(1, 2, 3);
-
-    }
-
-
-
-    void testTransformationScaleOnly()
-
-    {
-
-        QFETCH(double, scale);
-
-        QFETCH(CCVector3, input);
-
-        QFETCH(CCVector3d, expected);
-
-
-
-        PointProjectionTools::Transformation t;
-
-        t.s = scale;
-
-        t.R.toIdentity();
-
-        t.T = CCVector3d(0, 0, 0);
-
-
-
-        CCVector3d result = t.apply(input);
-
-        QVERIFY(Vec3dEqual(result, expected, 1e-9));
-
-    }
-
-
-
-    // --- HornRegistrationTools: scale estimation (fixedScale=false) ---
-
-
-
-    void testHornScaleEstimation_data()
-
-    {
-
-        QTest::addColumn<std::vector<CCVector3>>("moving");
-
-        QTest::addColumn<std::vector<CCVector3>>("reference");
-
-        QTest::addColumn<double>("expectedScale");
-
-
-
-        // Reference: tetrahedron
-
-        std::vector<CCVector3> ref = {
-
-            CCVector3(0, 0, 0),
-
-            CCVector3(1, 0, 0),
-
-            CCVector3(0, 1, 0),
-
-            CCVector3(0, 0, 1),
-
-        };
-
-        // Moving: same geometry scaled by 2
-
-        std::vector<CCVector3> moving = {
-
-            CCVector3(0, 0, 0),
-
-            CCVector3(2, 0, 0),
-
-            CCVector3(0, 2, 0),
-
-            CCVector3(0, 0, 2),
-
-        };
-
-        // Horn scale = s_aligned / sqrt(s_ref) ~= 0.5 for 2x scaled cloud
-        // (not 2.0 — the scale factor is RMS_aligned / sqrt(RMS_ref))
-        QTest::newRow("scale_2x") << moving << ref << 0.5;
-
-    }
-
-
-
-    void testHornScaleEstimation()
-
-    {
-
-        QFETCH(std::vector<CCVector3>, moving);
-
-        QFETCH(std::vector<CCVector3>, reference);
-
-        QFETCH(double, expectedScale);
-
-
-
-        std::unique_ptr<ccPointCloud> movingCloud(MakeCloud(moving));
-
-        std::unique_ptr<ccPointCloud> refCloud(MakeCloud(reference));
-
-
-
-        PointProjectionTools::Transformation trans;
-
-        // fixedScale=false → scale is estimated by Horn's algorithm
-
-        bool ok = HornRegistrationTools::FindAbsoluteOrientation(movingCloud.get(), refCloud.get(), trans, false);
-
-        QVERIFY(ok);
-
-
-
-        QVERIFY2(std::abs(trans.s - expectedScale) < 0.05,
-
-                 qPrintable(QString("scale=%1 expected ~%2").arg(trans.s).arg(expectedScale)));
-
-    }
-
+		         qPrintable(QString("scale=%1 expected ~%2").arg(trans.s).arg(expectedScale)));
+	}
 };
-
-
 
 QTEST_MAIN(TestRegistration)
 
 #include "TestRegistration.moc"
-

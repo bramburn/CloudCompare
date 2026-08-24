@@ -67,12 +67,12 @@ constexpr unsigned s_opCount = 22;
 constexpr char s_opNames[s_opCount][8]{"add", "sub", "mult", "div", "min", "max", "sqrt", "pow2", "pow3", "exp", "log", "log10", "cos", "sin", "tan", "acos", "asin", "atan", "int", "inverse", "set", "abs"};
 
 // semi persitent
-static int    s_previouslySelectedOperationIndex = 1;
-static bool   s_applyInPlace                     = false;
-static double s_previousConstValue               = 1.0;
+static int s_previouslySelectedOperationIndex = 1;
+static bool s_applyInPlace = false;
+static double s_previousConstValue = 1.0;
 
 ccScalarFieldArithmeticsDlg::ccScalarFieldArithmeticsDlg(ccPointCloud* cloud,
-                                                         QWidget*      parent /*=nullptr*/)
+                                                         QWidget* parent /*=nullptr*/)
     : QDialog(parent, Qt::Tool)
     , m_ui(new Ui::SFArithmeticsDlg)
 {
@@ -81,7 +81,7 @@ ccScalarFieldArithmeticsDlg::ccScalarFieldArithmeticsDlg(ccPointCloud* cloud,
 	m_ui->setupUi(this);
 
 	QStringList sfLabels;
-	unsigned    sfCount = cloud ? cloud->getNumberOfScalarFields() : 0;
+	unsigned sfCount = cloud ? cloud->getNumberOfScalarFields() : 0;
 	if (sfCount < 1)
 	{
 		m_ui->sf1ComboBox->setEnabled(false);
@@ -212,29 +212,29 @@ QString ccScalarFieldArithmeticsDlg::GetOperationName(Operation op, const QStrin
 
 bool ccScalarFieldArithmeticsDlg::apply(ccPointCloud* cloud)
 {
-	Operation op     = getOperation();
-	int       sf1Idx = getSF1Index();
-	int       sf2Idx = getSF2Index();
+	Operation op = getOperation();
+	int sf1Idx = getSF1Index();
+	int sf2Idx = getSF2Index();
 
 	// save persistent parameters
 	s_previouslySelectedOperationIndex = m_ui->operationComboBox->currentIndex();
-	s_previousConstValue               = m_ui->constantDoubleSpinBox->value();
-	s_applyInPlace                     = m_ui->updateSF1CheckBox->isChecked();
+	s_previousConstValue = m_ui->constantDoubleSpinBox->value();
+	s_applyInPlace = m_ui->updateSF1CheckBox->isChecked();
 
 	SF2 sf2Desc;
 	sf2Desc.isConstantValue = m_ui->constantDoubleSpinBox->isEnabled() || (sf1Idx == Operation::SET);
-	sf2Desc.constantValue   = m_ui->constantDoubleSpinBox->value();
-	sf2Desc.sfIndex         = sf2Desc.isConstantValue ? -1 : sf2Idx;
+	sf2Desc.constantValue = m_ui->constantDoubleSpinBox->value();
+	sf2Desc.sfIndex = sf2Desc.isConstantValue ? -1 : sf2Idx;
 
 	return Apply(cloud, op, sf1Idx, s_applyInPlace, &sf2Desc, this);
 }
 
 bool ccScalarFieldArithmeticsDlg::Apply(ccPointCloud* cloud,
-                                        Operation     op,
-                                        int           sf1Idx,
-                                        bool          inplace,
-                                        SF2*          sf2Desc /*=nullptr*/,
-                                        QWidget*      parent /*=nullptr*/)
+                                        Operation op,
+                                        int sf1Idx,
+                                        bool inplace,
+                                        SF2* sf2Desc /*=nullptr*/,
+                                        QWidget* parent /*=nullptr*/)
 {
 	assert(cloud);
 
@@ -252,8 +252,8 @@ bool ccScalarFieldArithmeticsDlg::Apply(ccPointCloud* cloud,
 		return false;
 	}
 
-	unsigned                sfCount = cloud->getNumberOfScalarFields();
-	CCCoreLib::ScalarField* sf1     = nullptr;
+	unsigned sfCount = cloud->getNumberOfScalarFields();
+	CCCoreLib::ScalarField* sf1 = nullptr;
 	{
 		if (sf1Idx >= static_cast<int>(sfCount))
 		{
@@ -296,7 +296,7 @@ bool ccScalarFieldArithmeticsDlg::Apply(ccPointCloud* cloud,
 		QString sf2Name;
 		if (sf2)
 		{
-			sf2Name        = QString::fromStdString(sf2->getName());
+			sf2Name = QString::fromStdString(sf2->getName());
 			QString sfName = GetOperationName(op, sf1Name, sf2Name);
 			if (sfName.length() > 24)
 			{

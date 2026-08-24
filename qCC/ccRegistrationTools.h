@@ -60,16 +60,16 @@ class ccRegistrationTools
 	 * @param[in] parent Parent widget
 	 * @return true if successful
 	 */
-	static bool ICP(ccHObject*                                         data,
-	                ccHObject*                                         model,
-	                ccGLMatrix&                                        transMat,
-	                double&                                            finalScale,
-	                double&                                            finalRMS,
-	                unsigned&                                          finalPointCount,
+	static bool ICP(ccHObject* data,
+	                ccHObject* model,
+	                ccGLMatrix& transMat,
+	                double& finalScale,
+	                double& finalRMS,
+	                unsigned& finalPointCount,
 	                const CCCoreLib::ICPRegistrationTools::Parameters& inputParameters,
-	                bool                                               useDataSFAsWeights  = false,
-	                bool                                               useModelSFAsWeights = false,
-	                QWidget*                                           parent              = nullptr);
+	                bool useDataSFAsWeights = false,
+	                bool useModelSFAsWeights = false,
+	                QWidget* parent = nullptr);
 };
 
 #endif // CC_REGISTRATION_TOOLS_HEADER

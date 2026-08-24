@@ -65,10 +65,10 @@ class ccViewer : public QMainWindow
 
 	//! Adds entity to display db
 	void addToDB(ccHObject* entity,
-	             bool       updateZoom       = false,
-	             bool       autoExpandDBTree = true,
-	             bool       checkDimensions  = false,
-	             bool       autoRedraw       = true) override;
+	             bool updateZoom = false,
+	             bool autoExpandDBTree = true,
+	             bool checkDimensions = false,
+	             bool autoRedraw = true) override;
 
 	//! Removes an entity from display db
 	void removeFromDB(ccHObject* obj, bool autoDelete = true) override;
@@ -103,14 +103,14 @@ class ccViewer : public QMainWindow
 	{
 	}
 	const ccHObject::Container& getSelectedEntities() const override;
-	void                        dispToConsole(QString message, ConsoleMessageLevel level = STD_CONSOLE_MESSAGE) override;
-	ccHObject*                  dbRootObject() override;
-	void                        redrawAll(bool only2D = false) override;
-	void                        refreshAll(bool only2D = false) override;
-	void                        enableAll() override;
-	void                        disableAll() override;
-	void                        disableAllBut(ccGLWindowInterface* win) override;
-	void                        updateUI() override
+	void dispToConsole(QString message, ConsoleMessageLevel level = STD_CONSOLE_MESSAGE) override;
+	ccHObject* dbRootObject() override;
+	void redrawAll(bool only2D = false) override;
+	void refreshAll(bool only2D = false) override;
+	void enableAll() override;
+	void disableAll() override;
+	void disableAllBut(ccGLWindowInterface* win) override;
+	void updateUI() override
 	{
 	}
 	void freezeUI(bool state) override
@@ -125,8 +125,8 @@ class ccViewer : public QMainWindow
 	{
 		zoomOnSelectedEntity();
 	}
-	void                        increasePointSize() override;
-	void                        decreasePointSize() override;
+	void increasePointSize() override;
+	void decreasePointSize() override;
 	ccUniqueIDGenerator::Shared getUniqueIDGenerator() override;
 
   protected:

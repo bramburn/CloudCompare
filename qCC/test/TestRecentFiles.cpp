@@ -36,8 +36,8 @@
  *
  * @see ccRecentFiles.cpp
  */
-#include <QDir>
 #include <QAction>
+#include <QDir>
 #include <QMenu>
 #include <QObject>
 #include <QString>
@@ -62,8 +62,11 @@ class ccRecentFiles : public QObject
 
 	~ccRecentFiles() = default;
 
-	QMenu* menu() { return m_menu; }
-	void   addFilePath(const QString& filePath)
+	QMenu* menu()
+	{
+		return m_menu;
+	}
+	void addFilePath(const QString& filePath)
 	{
 		m_list.removeAll(filePath);
 		m_list.prepend(filePath);
@@ -75,12 +78,15 @@ class ccRecentFiles : public QObject
 	}
 
   private:
-	void        updateMenu();
-	QStringList listRecent() { return m_list; }
-	QString     contractFilePath(const QString& filePath)
+	void updateMenu();
+	QStringList listRecent()
 	{
-		QString homePath    = QDir::toNativeSeparators(QDir::homePath());
-		QString nativePath  = QDir::toNativeSeparators(filePath);
+		return m_list;
+	}
+	QString contractFilePath(const QString& filePath)
+	{
+		QString homePath = QDir::toNativeSeparators(QDir::homePath());
+		QString nativePath = QDir::toNativeSeparators(filePath);
 		if (nativePath.startsWith(homePath))
 		{
 			return nativePath.replace(0, QDir::homePath().length(), QLatin1Char('~'));
@@ -88,8 +94,8 @@ class ccRecentFiles : public QObject
 		return filePath;
 	}
 
-	QMenu*   m_menu              = nullptr;
-	QAction* m_actionClearMenu   = nullptr;
+	QMenu* m_menu = nullptr;
+	QAction* m_actionClearMenu = nullptr;
 	QStringList m_list;
 };
 

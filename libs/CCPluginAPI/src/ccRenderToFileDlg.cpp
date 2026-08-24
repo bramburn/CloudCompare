@@ -83,18 +83,18 @@ ccRenderToFileDlg::ccRenderToFileDlg(ccGLWindowInterface* win, QWidget* parent /
 		if (i == 0 || QString(list[i].data()) == "jpg")
 		{
 			firstExtension = list[i].data();
-			firstFilter    = filter;
+			firstFilter = filter;
 		}
 	}
 
 	QSettings settings;
 	settings.beginGroup("RenderToFile");
-	m_selectedFilter             = settings.value("selectedFilter", firstFilter).toString();
-	QString currentPath          = settings.value("currentPath", QStandardPaths::writableLocation(QStandardPaths::StandardLocation::DocumentsLocation)).toString();
-	QString selectedExtension    = settings.value("selectedExtension", firstExtension).toString();
-	QString baseFilename         = settings.value("baseFilename", "capture").toString();
-	bool    dontScale            = settings.value("dontScaleFeatures", dontScalePoints()).toBool();
-	bool    doRenderOverlayItems = settings.value("renderOverlayItems", renderOverlayItems()).toBool();
+	m_selectedFilter = settings.value("selectedFilter", firstFilter).toString();
+	QString currentPath = settings.value("currentPath", QStandardPaths::writableLocation(QStandardPaths::StandardLocation::DocumentsLocation)).toString();
+	QString selectedExtension = settings.value("selectedExtension", firstExtension).toString();
+	QString baseFilename = settings.value("baseFilename", "capture").toString();
+	bool dontScale = settings.value("dontScaleFeatures", dontScalePoints()).toBool();
+	bool doRenderOverlayItems = settings.value("renderOverlayItems", renderOverlayItems()).toBool();
 	settings.endGroup();
 
 	m_ui->dontScaleFeaturesCheckBox->setChecked(dontScale);
@@ -128,9 +128,9 @@ void ccRenderToFileDlg::saveSettings()
 {
 	// we update current file path
 	QFileInfo fi(m_ui->filenameLineEdit->text());
-	QString   currentPath       = fi.absolutePath();
-	QString   selectedExtension = fi.suffix();
-	QString   baseFilename      = fi.completeBaseName();
+	QString currentPath = fi.absolutePath();
+	QString selectedExtension = fi.suffix();
+	QString baseFilename = fi.completeBaseName();
 
 	QSettings settings;
 	settings.beginGroup("RenderToFile");

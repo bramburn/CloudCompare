@@ -70,17 +70,17 @@ void BundlerImportDlg::initFromPersistentSettings()
 	settings.beginGroup("BundlerImport");
 
 	// read parameters
-	double scaleFactor         = settings.value("scaleFactor", imageScaleDoubleSpinBox->value()).toDouble();
-	bool   orthoRectifyAsCloud = settings.value("orthoRectifyAsClouds", orthoRectifyAsCloudCheckBox->isChecked()).toBool();
-	bool   orthoRectifyAsImage = settings.value("orthoRectifyAsImages", orthoRectifyAsImageCheckBox->isChecked()).toBool();
-	bool   undistortImages     = settings.value("undistortImages", undistortImagesCheckBox->isChecked()).toBool();
-	bool   generateColoredDTM  = settings.value("generateColoredDTM", generateColoredDTMGroupBox->isChecked()).toBool();
-	bool   keepImagesInMemory  = settings.value("keepImagesInMemory", keepImagesInMemoryCheckBox->isChecked()).toBool();
-	bool   importImages        = settings.value("importImages", imagesGroupBox->isChecked()).toBool();
-	bool   useAltKeypoints     = /*settings.value("useAltKeypoints", altKeypointsCheckBox->isChecked()).toBool()*/ false; // DGM: if we don't handle the filename, it's too dangerous
-	bool   importKeypoints     = settings.value("importKeypoints", importKeypointsGroupBox->isChecked()).toBool();
-	int    dtmVerticesCount    = settings.value("dtmVerticesCount", dtmVerticesSpinBox->value()).toInt();
-	int    orthoRectMethod     = settings.value("orthoRectMethod", orthoRectMethodComboBox->currentIndex()).toInt();
+	double scaleFactor = settings.value("scaleFactor", imageScaleDoubleSpinBox->value()).toDouble();
+	bool orthoRectifyAsCloud = settings.value("orthoRectifyAsClouds", orthoRectifyAsCloudCheckBox->isChecked()).toBool();
+	bool orthoRectifyAsImage = settings.value("orthoRectifyAsImages", orthoRectifyAsImageCheckBox->isChecked()).toBool();
+	bool undistortImages = settings.value("undistortImages", undistortImagesCheckBox->isChecked()).toBool();
+	bool generateColoredDTM = settings.value("generateColoredDTM", generateColoredDTMGroupBox->isChecked()).toBool();
+	bool keepImagesInMemory = settings.value("keepImagesInMemory", keepImagesInMemoryCheckBox->isChecked()).toBool();
+	bool importImages = settings.value("importImages", imagesGroupBox->isChecked()).toBool();
+	bool useAltKeypoints = /*settings.value("useAltKeypoints", altKeypointsCheckBox->isChecked()).toBool()*/ false; // DGM: if we don't handle the filename, it's too dangerous
+	bool importKeypoints = settings.value("importKeypoints", importKeypointsGroupBox->isChecked()).toBool();
+	int dtmVerticesCount = settings.value("dtmVerticesCount", dtmVerticesSpinBox->value()).toInt();
+	int orthoRectMethod = settings.value("orthoRectMethod", orthoRectMethodComboBox->currentIndex()).toInt();
 
 	// apply parameters
 	imageScaleDoubleSpinBox->setValue(scaleFactor);
@@ -275,9 +275,9 @@ bool BundlerImportDlg::getOptionalTransfoMatrix(ccGLMatrix& mat)
 	{
 		// rotation around Y
 		mat.toZero();
-		mat.data()[2]  = -1.0f;
-		mat.data()[5]  = 1.0f;
-		mat.data()[8]  = 1.0f;
+		mat.data()[2] = -1.0f;
+		mat.data()[5] = 1.0f;
+		mat.data()[8] = 1.0f;
 		mat.data()[15] = 1.0f;
 		return true;
 	}
@@ -285,16 +285,16 @@ bool BundlerImportDlg::getOptionalTransfoMatrix(ccGLMatrix& mat)
 	{
 		// rotation around X
 		mat.toZero();
-		mat.data()[0]  = 1.0f;
-		mat.data()[6]  = -1.0f;
-		mat.data()[9]  = -1.0f;
+		mat.data()[0] = 1.0f;
+		mat.data()[6] = -1.0f;
+		mat.data()[9] = -1.0f;
 		mat.data()[15] = 1.0f;
 		return true;
 	}
 	else if (customVertAxisRadioButton->isChecked())
 	{
 		bool success = false;
-		mat          = ccGLMatrix::FromString(applyTransfoMatrixTextEdit->toPlainText(), success);
+		mat = ccGLMatrix::FromString(applyTransfoMatrixTextEdit->toPlainText(), success);
 		return success;
 	}
 

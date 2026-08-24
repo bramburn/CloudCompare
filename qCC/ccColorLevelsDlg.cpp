@@ -41,8 +41,8 @@
 #include <string.h>
 
 // persistent parameters
-static int  s_inputLevels[2]      = {0, 255};
-static int  s_outputLevels[2]     = {0, 255};
+static int s_inputLevels[2] = {0, 255};
+static int s_outputLevels[2] = {0, 255};
 static bool s_outputLevelsEnabled = false;
 
 /**
@@ -186,10 +186,10 @@ void ccColorLevelsDlg::onChannelChanged(int channel)
 void ccColorLevelsDlg::onApply()
 {
 	// save parameters
-	s_inputLevels[0]      = minInputSpinBox->value();
-	s_inputLevels[1]      = maxInputSpinBox->value();
-	s_outputLevels[0]     = minOutputSpinBox->value();
-	s_outputLevels[1]     = maxOutputSpinBox->value();
+	s_inputLevels[0] = minInputSpinBox->value();
+	s_inputLevels[1] = maxInputSpinBox->value();
+	s_outputLevels[0] = minOutputSpinBox->value();
+	s_outputLevels[1] = maxOutputSpinBox->value();
 	s_outputLevelsEnabled = outputLevelsCheckBox->isChecked();
 
 	if (m_cloud
@@ -252,24 +252,24 @@ bool ccColorLevelsDlg::ScaleColorFields(ccGenericPointCloud* cloud, int inputLev
 	ccPointCloud* pc = ccHObjectCaster::ToPointCloud(cloud);
 
 	unsigned pointCount = cloud->size();
-	int      qIn        = inputLevelMax - inputLevelMin;
+	int qIn = inputLevelMax - inputLevelMin;
 	if (qIn == 0)
 	{
 		ccLog::Warning("(ccColorLevelsDlg::ScaleColorFields] Flat input range (input range can't be 0)");
 		return false;
 	}
 
-	int    pOut      = outputLevelMax - outputLevelMin;
+	int pOut = outputLevelMax - outputLevelMin;
 	double convRatio = pOut / static_cast<double>(qIn);
 	for (unsigned i = 0; i < pointCount; ++i)
 	{
-		const ccColor::Rgba& col    = cloud->getPointColor(i);
-		ccColor::Rgba        newRgb = col;
+		const ccColor::Rgba& col = cloud->getPointColor(i);
+		ccColor::Rgba newRgb = col;
 		for (unsigned c = 0; c < 3; ++c)
 		{
 			if (applyRGB[c])
 			{
-				double newC    = outputLevelMin + (static_cast<int>(col.rgba[c]) - inputLevelMin) * convRatio;
+				double newC = outputLevelMin + (static_cast<int>(col.rgba[c]) - inputLevelMin) * convRatio;
 				newRgb.rgba[c] = static_cast<ColorCompType>(std::max(std::min(newC, static_cast<double>(ccColor::MAX)), 0.0));
 			}
 		}

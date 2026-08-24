@@ -160,7 +160,7 @@ namespace ccEntityAction
 				}
 				else
 				{
-					ccMesh*              mesh     = static_cast<ccMesh*>(ent);
+					ccMesh* mesh = static_cast<ccMesh*>(ent);
 					ccGenericPointCloud* vertices = mesh->getAssociatedCloud();
 					if (!vertices
 					    || !vertices->isA(CC_TYPES::POINT_CLOUD)
@@ -201,9 +201,9 @@ namespace ccEntityAction
 			else if (ent->isKindOf(CC_TYPES::PRIMITIVE))
 			{
 				ccGenericPrimitive* prim = ccHObjectCaster::ToPrimitive(ent);
-				ccColor::Rgb        col(static_cast<ColorCompType>(colour.red()),
-                                 static_cast<ColorCompType>(colour.green()),
-                                 static_cast<ColorCompType>(colour.blue()));
+				ccColor::Rgb col(static_cast<ColorCompType>(colour.red()),
+				                 static_cast<ColorCompType>(colour.green()),
+				                 static_cast<ColorCompType>(colour.blue()));
 				prim->setColor(col);
 				ent->showColors(true);
 				ent->showSF(false); // just in case
@@ -243,8 +243,8 @@ namespace ccEntityAction
 	{
 		for (ccHObject* ent : selectedEntities)
 		{
-			bool          lockedVertices = false;
-			ccPointCloud* pc             = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
+			bool lockedVertices = false;
+			ccPointCloud* pc = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
 
 			if (nullptr == pc)
 			{
@@ -279,7 +279,7 @@ namespace ccEntityAction
 		if (!dlg.exec())
 			return false;
 
-		unsigned char                    dim  = dlg.getDimension();
+		unsigned char dim = dlg.getDimension();
 		ccColorGradientDlg::GradientType ramp = dlg.getType();
 
 		ccColorScale::Shared colorScale(nullptr);
@@ -303,8 +303,8 @@ namespace ccEntityAction
 
 		for (ccHObject* ent : selectedEntities)
 		{
-			bool          lockedVertices = false;
-			ccPointCloud* pc             = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
+			bool lockedVertices = false;
+			ccPointCloud* pc = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
 
 			if (nullptr == pc)
 			{
@@ -347,8 +347,8 @@ namespace ccEntityAction
 			return false;
 		}
 
-		bool          lockedVertices = false;
-		ccPointCloud* pc             = ccHObjectCaster::ToPointCloud(selectedEntities[0], &lockedVertices);
+		bool lockedVertices = false;
+		ccPointCloud* pc = ccHObjectCaster::ToPointCloud(selectedEntities[0], &lockedVertices);
 
 		if (nullptr == pc)
 		{
@@ -410,7 +410,7 @@ namespace ccEntityAction
 		}
 
 		ccGenericPointCloud* source = cloud1;
-		ccGenericPointCloud* dest   = cloud2;
+		ccGenericPointCloud* dest = cloud2;
 
 		if (cloud2->hasColors())
 		{
@@ -488,7 +488,7 @@ namespace ccEntityAction
 		}
 
 		ccPointCloud* source = cloud1;
-		ccPointCloud* dest   = cloud2;
+		ccPointCloud* dest = cloud2;
 
 		// show the list of scalar fields available on the source point cloud
 		std::vector<int> sfIndexes;
@@ -502,7 +502,7 @@ namespace ccEntityAction
 			else if (sfCount > 1)
 			{
 				ccItemSelectionDlg isDlg(true, app->getMainWindow(), QObject::tr("entity"));
-				QStringList        scalarFields;
+				QStringList scalarFields;
 				{
 					for (unsigned i = 0; i < sfCount; ++i)
 					{
@@ -534,10 +534,10 @@ namespace ccEntityAction
 		}
 
 		// semi-persistent parameters
-		static ccPointCloudInterpolator::Parameters::Method s_interpMethod    = ccPointCloudInterpolator::Parameters::RADIUS;
-		static ccPointCloudInterpolator::Parameters::Algo   s_interpAlgo      = ccPointCloudInterpolator::Parameters::NORMAL_DIST;
-		static int                                          s_interpKNN       = 6;
-		static bool                                         s_noNormalization = false;
+		static ccPointCloudInterpolator::Parameters::Method s_interpMethod = ccPointCloudInterpolator::Parameters::RADIUS;
+		static ccPointCloudInterpolator::Parameters::Algo s_interpAlgo = ccPointCloudInterpolator::Parameters::NORMAL_DIST;
+		static int s_interpKNN = 6;
+		static bool s_noNormalization = false;
 
 		ccInterpolationDlg iDlg(app->getMainWindow());
 		iDlg.setInterpolationMethod(s_interpMethod);
@@ -558,11 +558,11 @@ namespace ccEntityAction
 		params.algo = s_interpAlgo = iDlg.getInterpolationAlgorithm();
 		params.knn = s_interpKNN = iDlg.knnSpinBox->value();
 		params.noNormalization = s_noNormalization = iDlg.noNormalization();
-		params.radius                              = iDlg.radiusDoubleSpinBox->value();
-		params.sigma                               = iDlg.kernelDoubleSpinBox->value();
+		params.radius = iDlg.radiusDoubleSpinBox->value();
+		params.sigma = iDlg.kernelDoubleSpinBox->value();
 
 		ccProgressDialog pDlg(true, app->getMainWindow());
-		unsigned         sfCountBefore = dest->getNumberOfScalarFields();
+		unsigned sfCountBefore = dest->getNumberOfScalarFields();
 
 		if (ccPointCloudInterpolator::InterpolateScalarFieldsFrom(dest, source, sfIndexes, params, &pDlg))
 		{
@@ -662,9 +662,9 @@ namespace ccEntityAction
 	{
 		QString defaultSFName("Intensity");
 
-		bool          useCustomIntensityRange = false;
-		static double s_minI                  = 0.0;
-		static double s_maxI                  = 1.0;
+		bool useCustomIntensityRange = false;
+		static double s_minI = 0.0;
+		static double s_maxI = 1.0;
 		if (QMessageBox::question(parent, QObject::tr("Intensity range"), QObject::tr("Do you want to define the theoretical intensity range (yes)\nor use the actual one (no)?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
 		{
 			ccAskTwoDoubleValuesDlg atdvDlg(QObject::tr("Min"), QObject::tr("Max"), -1000000.0, 1000000.0, s_minI, s_maxI, 3, QObject::tr("Theroetical intensity"), parent);
@@ -673,15 +673,15 @@ namespace ccEntityAction
 				// process cancelled by the user
 				return false;
 			}
-			s_minI                  = atdvDlg.doubleSpinBox1->value();
-			s_maxI                  = atdvDlg.doubleSpinBox2->value();
+			s_minI = atdvDlg.doubleSpinBox1->value();
+			s_maxI = atdvDlg.doubleSpinBox2->value();
 			useCustomIntensityRange = true;
 		}
 
 		for (ccHObject* ent : selectedEntities)
 		{
-			bool          lockedVertices = false;
-			ccPointCloud* pc             = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
+			bool lockedVertices = false;
+			ccPointCloud* pc = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
 
 			if (nullptr == pc)
 			{
@@ -734,7 +734,7 @@ namespace ccEntityAction
 						// process cancelled by the user
 						return false;
 					}
-					sfIdx         = poeDlg.getSelectedIndex();
+					sfIdx = poeDlg.getSelectedIndex();
 					defaultSFName = QString::fromStdString(pc->getScalarField(sfIdx)->getName());
 				}
 			}
@@ -768,12 +768,12 @@ namespace ccEntityAction
 
 		// select only the clouds (or vertices) with RGB colors
 		std::vector<std::pair<ccHObject*, ccPointCloud*>> selectedCloudsWithColors;
-		double                                            spatialSigma = std::numeric_limits<double>::max();
+		double spatialSigma = std::numeric_limits<double>::max();
 
 		for (ccHObject* ent : selectedEntities)
 		{
-			bool          lockedVertices = false;
-			ccPointCloud* pc             = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
+			bool lockedVertices = false;
+			ccPointCloud* pc = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
 
 			if (nullptr == pc)
 			{
@@ -825,7 +825,7 @@ namespace ccEntityAction
 			if (sf)
 			{
 				ScalarType sfRange = sf->getMax() - sf->getMin();
-				sigmaSF            = sfRange / 4; // using 1/4 of total range
+				sigmaSF = sfRange / 4; // using 1/4 of total range
 			}
 			if (filterParams.sigmaSF > 0)
 			{
@@ -863,8 +863,8 @@ namespace ccEntityAction
 				}
 
 				// get values
-				spatialSigma                        = dlg.doubleSpinBox1->value();
-				sigmaSF                             = dlg.doubleSpinBox2->value();
+				spatialSigma = dlg.doubleSpinBox1->value();
+				sigmaSF = dlg.doubleSpinBox2->value();
 				filterParams.burntOutColorThreshold = dlg.doubleSpinBox3->value();
 			}
 			else
@@ -888,7 +888,7 @@ namespace ccEntityAction
 				}
 
 				// get values
-				spatialSigma                        = dlg.doubleSpinBox1->value();
+				spatialSigma = dlg.doubleSpinBox1->value();
 				filterParams.burntOutColorThreshold = dlg.doubleSpinBox2->value();
 			}
 		}
@@ -1053,7 +1053,7 @@ namespace ccEntityAction
 					return false;
 
 				// get values
-				spatialSigma     = dlg.doubleSpinBox1->value();
+				spatialSigma = dlg.doubleSpinBox1->value();
 				scalarFieldSigma = dlg.doubleSpinBox2->value();
 			}
 			else
@@ -1083,8 +1083,8 @@ namespace ccEntityAction
 
 		for (ccHObject* ent : selectedEntities)
 		{
-			bool          lockedVertices = false;
-			ccPointCloud* pc             = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
+			bool lockedVertices = false;
+			ccPointCloud* pc = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
 
 			if (nullptr == pc)
 			{
@@ -1195,8 +1195,8 @@ namespace ccEntityAction
 
 		for (ccHObject* ent : selectedEntities)
 		{
-			bool          lockedVertices = false;
-			ccPointCloud* pc             = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
+			bool lockedVertices = false;
+			ccPointCloud* pc = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
 
 			if (nullptr == pc)
 			{
@@ -1228,7 +1228,7 @@ namespace ccEntityAction
 	{
 		static int s_randomColorsNumber = 256;
 
-		bool ok              = false;
+		bool ok = false;
 		s_randomColorsNumber = QInputDialog::getInt(parent,
 		                                            QObject::tr("Random colors"),
 		                                            QObject::tr("Number of random colors (will be regularly sampled over the SF interval):"),
@@ -1258,8 +1258,8 @@ namespace ccEntityAction
 		// apply random colors
 		for (ccHObject* ent : selectedEntities)
 		{
-			bool          lockedVertices = false;
-			ccPointCloud* pc             = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
+			bool lockedVertices = false;
+			ccPointCloud* pc = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
 
 			if (nullptr == pc)
 			{
@@ -1291,8 +1291,8 @@ namespace ccEntityAction
 
 					for (unsigned i = 0; i < pc->size(); ++i)
 					{
-						ScalarType val      = sf->getValue(i);
-						unsigned   colIndex = static_cast<unsigned>((val - minSF) / step);
+						ScalarType val = sf->getValue(i);
+						unsigned colIndex = static_cast<unsigned>((val - minSF) / step);
 						if (colIndex == s_randomColorsNumber)
 							--colIndex;
 
@@ -1326,14 +1326,14 @@ namespace ccEntityAction
 				}
 				else
 				{
-					const std::string& sfName  = sf->getName();
-					bool               ok      = false;
-					QString            newName = QInputDialog::getText(parent,
-                                                            QObject::tr("SF name"),
-                                                            QObject::tr("name:"),
-                                                            QLineEdit::Normal,
-                                                            QString(!sfName.empty() ? QString::fromStdString(sfName) : QObject::tr("unknown")),
-                                                            &ok);
+					const std::string& sfName = sf->getName();
+					bool ok = false;
+					QString newName = QInputDialog::getText(parent,
+					                                        QObject::tr("SF name"),
+					                                        QObject::tr("name:"),
+					                                        QLineEdit::Normal,
+					                                        QString(!sfName.empty() ? QString::fromStdString(sfName) : QObject::tr("unknown")),
+					                                        &ok);
 					if (ok)
 					{
 						sf->setName(newName.toStdString());
@@ -1382,10 +1382,10 @@ namespace ccEntityAction
 						valuePtr[3] = static_cast<unsigned char>((j >> 24) & 0xff);
 #else
 						unsigned char* valuePtr = (unsigned char*)(&idValue);
-						valuePtr[3]             = static_cast<unsigned char>(j & 0xff);
-						valuePtr[2]             = static_cast<unsigned char>((j >> 8) & 0xff);
-						valuePtr[1]             = static_cast<unsigned char>((j >> 16) & 0xff);
-						valuePtr[0]             = static_cast<unsigned char>((j >> 24) & 0xff);
+						valuePtr[3] = static_cast<unsigned char>(j & 0xff);
+						valuePtr[2] = static_cast<unsigned char>((j >> 8) & 0xff);
+						valuePtr[1] = static_cast<unsigned char>((j >> 16) & 0xff);
+						valuePtr[0] = static_cast<unsigned char>((j >> 24) & 0xff);
 #endif
 					}
 					sf->setValue(j, idValue);
@@ -1422,25 +1422,25 @@ namespace ccEntityAction
 		}
 
 		ScalarType sfValue = 0;
-		bool       ok      = false;
+		bool ok = false;
 		if (integerValue)
 		{
 			static int s_constantIntSFValue = 0;
-			int        iValue               = QInputDialog::getInt(parent, QT_TR_NOOP("Add classification SF"), QT_TR_NOOP("value"), s_constantIntSFValue, -1000000, 1000000, 1, &ok);
+			int iValue = QInputDialog::getInt(parent, QT_TR_NOOP("Add classification SF"), QT_TR_NOOP("value"), s_constantIntSFValue, -1000000, 1000000, 1, &ok);
 			if (ok)
 			{
 				s_constantIntSFValue = iValue;
-				sfValue              = static_cast<ScalarType>(iValue);
+				sfValue = static_cast<ScalarType>(iValue);
 			}
 		}
 		else
 		{
 			static double s_constantDoubleSFValue = 0.0;
-			double        dValue                  = static_cast<ScalarType>(QInputDialog::getDouble(parent, QT_TR_NOOP("Add constant value"), QT_TR_NOOP("value"), s_constantDoubleSFValue, -1.0e9, 1.0e9, 8, &ok));
+			double dValue = static_cast<ScalarType>(QInputDialog::getDouble(parent, QT_TR_NOOP("Add constant value"), QT_TR_NOOP("value"), s_constantDoubleSFValue, -1.0e9, 1.0e9, 8, &ok));
 			if (ok)
 			{
 				s_constantDoubleSFValue = dValue;
-				sfValue                 = static_cast<ScalarType>(dValue);
+				sfValue = static_cast<ScalarType>(dValue);
 			}
 		}
 
@@ -1498,7 +1498,7 @@ namespace ccEntityAction
 			}
 
 			// count integer values
-			size_t        N = sf->size();
+			size_t N = sf->size();
 			std::set<int> classes;
 			for (size_t i = 0; i < sf->size(); ++i)
 			{
@@ -1615,7 +1615,7 @@ namespace ccEntityAction
 
 	static PointCoordinateType GetDefaultValueForNaN(PointCoordinateType minSFValue, QWidget* parent)
 	{
-		bool   ok  = false;
+		bool ok = false;
 		double out = QInputDialog::getDouble(parent,
 		                                     QObject::tr("SF --> coordinate"),
 		                                     QObject::tr("Enter the coordinate equivalent to NaN values:"),
@@ -1657,9 +1657,9 @@ namespace ccEntityAction
 		dlg.setWindowTitle(QObject::tr("Set SFs as coords"));
 
 		static bool s_firstTime = true;
-		static int  xIndex      = ccSetSFsAsVec3Dialog::SF_INDEX_UNCHANGED;
-		static int  yIndex      = ccSetSFsAsVec3Dialog::SF_INDEX_UNCHANGED;
-		static int  zIndex      = ccSetSFsAsVec3Dialog::SF_INDEX_UNCHANGED;
+		static int xIndex = ccSetSFsAsVec3Dialog::SF_INDEX_UNCHANGED;
+		static int yIndex = ccSetSFsAsVec3Dialog::SF_INDEX_UNCHANGED;
+		static int zIndex = ccSetSFsAsVec3Dialog::SF_INDEX_UNCHANGED;
 
 		// restore the previous parameters
 		dlg.setSFIndexes(xIndex, yIndex, zIndex);
@@ -1828,9 +1828,9 @@ namespace ccEntityAction
 		dlg.setWindowTitle(QObject::tr("Set SFs as normals"));
 
 		static bool s_firstTime = true;
-		static int  nxIndex     = ccSetSFsAsVec3Dialog::SF_INDEX_ZERO;
-		static int  nyIndex     = ccSetSFsAsVec3Dialog::SF_INDEX_ZERO;
-		static int  nzIndex     = ccSetSFsAsVec3Dialog::SF_INDEX_ZERO;
+		static int nxIndex = ccSetSFsAsVec3Dialog::SF_INDEX_ZERO;
+		static int nyIndex = ccSetSFsAsVec3Dialog::SF_INDEX_ZERO;
+		static int nzIndex = ccSetSFsAsVec3Dialog::SF_INDEX_ZERO;
 
 		if (s_firstTime)
 		{
@@ -1959,9 +1959,9 @@ namespace ccEntityAction
 	{
 		Q_ASSERT(!selectedEntities.empty());
 
-		ccHObject*    entity         = selectedEntities[0];
-		bool          lockedVertices = false;
-		ccPointCloud* pc             = ccHObjectCaster::ToPointCloud(entity, &lockedVertices);
+		ccHObject* entity = selectedEntities[0];
+		bool lockedVertices = false;
+		ccPointCloud* pc = ccHObjectCaster::ToPointCloud(entity, &lockedVertices);
 
 		if (nullptr == pc)
 		{
@@ -1997,10 +1997,10 @@ namespace ccEntityAction
 		if (!dialog.exec())
 			return false;
 
-		const bool exportR         = dialog.getRStatus();
-		const bool exportG         = dialog.getGStatus();
-		const bool exportB         = dialog.getBStatus();
-		const bool exportAlpha     = dialog.getAlphaStatus();
+		const bool exportR = dialog.getRStatus();
+		const bool exportG = dialog.getGStatus();
+		const bool exportB = dialog.getBStatus();
+		const bool exportAlpha = dialog.getAlphaStatus();
 		const bool exportComposite = dialog.getCompositeStatus();
 
 		return sfFromColor(selectedEntities, exportR, exportG, exportB, exportAlpha, exportComposite);
@@ -2165,10 +2165,10 @@ namespace ccEntityAction
 
 		// look for clouds and meshes
 		std::vector<ccPointCloud*> clouds;
-		bool                       withScanGrid = false;
-		bool                       withSensor   = false;
-		std::vector<ccMesh*>       meshes;
-		PointCoordinateType        defaultRadius = 0;
+		bool withScanGrid = false;
+		bool withSensor = false;
+		std::vector<ccMesh*> meshes;
+		PointCoordinateType defaultRadius = 0;
 
 		try
 		{
@@ -2199,7 +2199,7 @@ namespace ccEntityAction
 					// does the cloud have a former radius value saved as meta-data?
 					if (cloud->hasMetaData(s_NormalScaleKey))
 					{
-						bool   ok           = false;
+						bool ok = false;
 						double formerRadius = cloud->getMetaData(s_NormalScaleKey).toDouble(&ok);
 						if (ok)
 						{
@@ -2242,11 +2242,11 @@ namespace ccEntityAction
 		// compute normals for each selected cloud
 		if (!clouds.empty())
 		{
-			static CCCoreLib::LOCAL_MODEL_TYPES s_lastModelType         = CCCoreLib::LS;
+			static CCCoreLib::LOCAL_MODEL_TYPES s_lastModelType = CCCoreLib::LS;
 			static ccNormalVectors::Orientation s_lastNormalOrientation = ccNormalVectors::UNDEFINED;
-			static int                          s_lastMSTNeighborCount  = 6;
-			static double                       s_lastMinGridAngle_deg  = 1.0;
-			static bool                         s_orientNormals         = true;
+			static int s_lastMSTNeighborCount = 6;
+			static double s_lastMinGridAngle_deg = 1.0;
+			static bool s_orientNormals = true;
 
 			ccNormalComputationDlg ncDlg(withScanGrid, withSensor, parent);
 			ncDlg.setLocalModel(s_lastModelType);
@@ -2267,17 +2267,17 @@ namespace ccEntityAction
 
 			// normals computation
 			CCCoreLib::LOCAL_MODEL_TYPES model = s_lastModelType = ncDlg.getLocalModel();
-			bool                         useGridStructure        = withScanGrid && ncDlg.useScanGridsForComputation();
-			defaultRadius                                        = ncDlg.getRadius();
+			bool useGridStructure = withScanGrid && ncDlg.useScanGridsForComputation();
+			defaultRadius = ncDlg.getRadius();
 			double minGridAngle_deg = s_lastMinGridAngle_deg = ncDlg.getMinGridAngle_deg();
 
 			// normals orientation
-			s_orientNormals                                       = ncDlg.orientNormals();
-			bool                         orientNormalsWithGrids   = withScanGrid && ncDlg.useScanGridsForOrientation();
-			bool                         orientNormalsWithSensors = withSensor && ncDlg.useSensorsForOrientation();
+			s_orientNormals = ncDlg.orientNormals();
+			bool orientNormalsWithGrids = withScanGrid && ncDlg.useScanGridsForOrientation();
+			bool orientNormalsWithSensors = withSensor && ncDlg.useSensorsForOrientation();
 			ccNormalVectors::Orientation preferredOrientation = s_lastNormalOrientation = ncDlg.getPreferredOrientation();
-			bool                         orientNormalsMST                               = ncDlg.useMSTOrientation();
-			int                          mstNeighbors = s_lastMSTNeighborCount = ncDlg.getMSTNeighborCount();
+			bool orientNormalsMST = ncDlg.useMSTOrientation();
+			int mstNeighbors = s_lastMSTNeighborCount = ncDlg.getMSTNeighborCount();
 
 			ccProgressDialog pDlg(true, parent);
 			pDlg.setAutoClose(false);
@@ -2288,7 +2288,7 @@ namespace ccEntityAction
 			{
 				Q_ASSERT(cloud != nullptr);
 
-				bool result                 = false;
+				bool result = false;
 				bool normalsAlreadyOriented = false;
 
 				if (useGridStructure && cloud->gridCount())
@@ -2339,14 +2339,14 @@ namespace ccEntityAction
 						{
 							ccLog::Print("[computeNormals] Compute normals with grids, preferred orientation: " + QString::number(preferredOrientation) + " (255 = undefined)");
 							normalsAlreadyOriented = preferredOrientation != ccNormalVectors::UNDEFINED;
-							result                 = cloud->computeNormalsWithGrids(minGridAngle_deg, &pDlg, preferredOrientation); // the previous normals are overwritten if any
+							result = cloud->computeNormalsWithGrids(minGridAngle_deg, &pDlg, preferredOrientation); // the previous normals are overwritten if any
 						}
 					}
 					else
 					{
 						ccLog::Print("[computeNormals] Compute + orient normals with grids");
 						normalsAlreadyOriented = true;
-						result                 = cloud->computeNormalsWithGrids(minGridAngle_deg, &pDlg, ccNormalVectors::UNDEFINED);
+						result = cloud->computeNormalsWithGrids(minGridAngle_deg, &pDlg, ccNormalVectors::UNDEFINED);
 					}
 				}
 				else
@@ -2354,7 +2354,7 @@ namespace ccEntityAction
 					// compute normals with the octree
 					ccLog::Print("[computeNormals] compute normals with octree, preferred orientation: " + QString::number(preferredOrientation) + " (255 = undefined)");
 					normalsAlreadyOriented = s_orientNormals && (preferredOrientation != ccNormalVectors::UNDEFINED);
-					result                 = cloud->computeNormalsWithOctree(model, s_orientNormals ? preferredOrientation : ccNormalVectors::UNDEFINED, defaultRadius, &pDlg);
+					result = cloud->computeNormalsWithOctree(model, s_orientNormals ? preferredOrientation : ccNormalVectors::UNDEFINED, defaultRadius, &pDlg);
 					if (result)
 					{
 						// save the normal computation radius as meta-data
@@ -2431,7 +2431,7 @@ namespace ccEntityAction
 			                     QMessageBox::NoButton,
 			                     parent);
 
-			QPushButton* perVertexButton   = question.addButton(QObject::tr("Per-vertex"), QMessageBox::YesRole);
+			QPushButton* perVertexButton = question.addButton(QObject::tr("Per-vertex"), QMessageBox::YesRole);
 			QPushButton* perTriangleButton = question.addButton(QObject::tr("Per-triangle"), QMessageBox::NoRole);
 
 			question.exec();
@@ -2443,7 +2443,7 @@ namespace ccEntityAction
 				Q_ASSERT(mesh != nullptr);
 
 				// we remove temporarily the mesh as its normals may be removed (and they can be a child object)
-				ccMainAppInterface*                  instance = dynamic_cast<ccMainAppInterface*>(parent);
+				ccMainAppInterface* instance = dynamic_cast<ccMainAppInterface*>(parent);
 				ccMainAppInterface::ccHObjectContext objContext;
 				if (instance)
 					objContext = instance->removeObjectTemporarilyFromDBTree(mesh);
@@ -2480,7 +2480,7 @@ namespace ccEntityAction
 			}
 
 			// is it a cloud?
-			bool          lockedVertices;
+			bool lockedVertices;
 			ccPointCloud* pc = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
 
 			if (nullptr == pc)
@@ -2513,16 +2513,16 @@ namespace ccEntityAction
 			return false;
 		}
 
-		bool      ok             = false;
+		bool ok = false;
 		const int s_defaultLevel = 6;
-		int       value          = QInputDialog::getInt(parent,
-                                         QObject::tr("Orient normals (FM)"),
-                                         QObject::tr("Octree level"),
-                                         s_defaultLevel,
-                                         1,
-                                         CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL,
-                                         1,
-                                         &ok);
+		int value = QInputDialog::getInt(parent,
+		                                 QObject::tr("Orient normals (FM)"),
+		                                 QObject::tr("Octree level"),
+		                                 s_defaultLevel,
+		                                 1,
+		                                 CCCoreLib::DgmOctree::MAX_OCTREE_LEVEL,
+		                                 1,
+		                                 &ok);
 		if (!ok)
 			return false;
 
@@ -2578,16 +2578,16 @@ namespace ccEntityAction
 			return false;
 		}
 
-		bool            ok           = false;
+		bool ok = false;
 		static unsigned s_defaultKNN = 6;
-		unsigned        kNN          = static_cast<unsigned>(QInputDialog::getInt(parent,
-                                                                  QObject::tr("Neighborhood size"),
-                                                                  QObject::tr("Neighbors"),
-                                                                  s_defaultKNN,
-                                                                  1,
-                                                                  1000,
-                                                                  1,
-                                                                  &ok));
+		unsigned kNN = static_cast<unsigned>(QInputDialog::getInt(parent,
+		                                                          QObject::tr("Neighborhood size"),
+		                                                          QObject::tr("Neighbors"),
+		                                                          s_defaultKNN,
+		                                                          1,
+		                                                          1000,
+		                                                          1,
+		                                                          &ok));
 		if (!ok)
 			return false;
 
@@ -2636,15 +2636,15 @@ namespace ccEntityAction
 
 	bool convertNormalsTo(ccHObject::Container selectedEntities, NORMAL_CONVERSION_DEST dest)
 	{
-		size_t errorCount   = 0;
+		size_t errorCount = 0;
 		size_t successCount = 0;
 
 		size_t selNum = selectedEntities.size();
 		for (size_t i = 0; i < selNum; ++i)
 		{
-			ccHObject*    ent            = selectedEntities[i];
-			bool          lockedVertices = false;
-			ccPointCloud* pc             = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
+			ccHObject* ent = selectedEntities[i];
+			bool lockedVertices = false;
+			ccPointCloud* pc = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
 
 			if (nullptr == pc)
 			{
@@ -2700,7 +2700,7 @@ namespace ccEntityAction
 						break;
 					}
 
-					ccScalarField* dipSF    = static_cast<ccScalarField*>(pc->getScalarField(dipSFIndex));
+					ccScalarField* dipSF = static_cast<ccScalarField*>(pc->getScalarField(dipSFIndex));
 					ccScalarField* dipDirSF = static_cast<ccScalarField*>(pc->getScalarField(dipDirSFIndex));
 					Q_ASSERT(dipSF && dipDirSF);
 
@@ -2709,7 +2709,7 @@ namespace ccEntityAction
 					if (success)
 					{
 						// apply default 360 degrees color scale!
-						ccColorScale::Shared dipScale    = ccColorScalesManager::GetDefaultScale(ccColorScalesManager::DIP_BRYW);
+						ccColorScale::Shared dipScale = ccColorScalesManager::GetDefaultScale(ccColorScalesManager::DIP_BRYW);
 						ccColorScale::Shared dipDirScale = ccColorScalesManager::GetDefaultScale(ccColorScalesManager::DIP_DIR_REPEAT);
 						dipSF->setColorScale(dipScale);
 						dipDirSF->setColorScale(dipDirScale);
@@ -2729,7 +2729,7 @@ namespace ccEntityAction
 					Q_ASSERT(false);
 					ccLog::Warning(QObject::tr("[ccEntityAction::convertNormalsTo] Internal error: unhandled destination!"));
 					success = false;
-					i       = selNum; // no need to process the selected entities anymore!
+					i = selNum; // no need to process the selected entities anymore!
 					break;
 				}
 
@@ -2758,14 +2758,14 @@ namespace ccEntityAction
 
 	bool computeOctree(ccHObject::Container selectedEntities, QWidget* parent /*=nullptr*/)
 	{
-		ccBBox                                   bbox;
+		ccBBox bbox;
 		std::unordered_set<ccGenericPointCloud*> clouds;
-		PointCoordinateType                      maxBoxSize = -1;
+		PointCoordinateType maxBoxSize = -1;
 		for (ccHObject* ent : selectedEntities)
 		{
 			// specific test for locked vertices
-			bool                 lockedVertices = false;
-			ccGenericPointCloud* cloud          = ccHObjectCaster::ToGenericPointCloud(ent, &lockedVertices);
+			bool lockedVertices = false;
+			ccGenericPointCloud* cloud = ccHObjectCaster::ToGenericPointCloud(ent, &lockedVertices);
 
 			if (cloud == nullptr)
 			{
@@ -2782,7 +2782,7 @@ namespace ccEntityAction
 			const ccBBox thisBBox = cloud->getOwnBB();
 			if (thisBBox.isValid())
 			{
-				CCVector3           dd   = thisBBox.maxCorner() - thisBBox.minCorner();
+				CCVector3 dd = thisBBox.maxCorner() - thisBBox.minCorner();
 				PointCoordinateType maxd = std::max(dd.x, std::max(dd.y, dd.z));
 				if (maxBoxSize < 0.0 || maxd > maxBoxSize)
 					maxBoxSize = maxd;
@@ -2818,7 +2818,7 @@ namespace ccEntityAction
 		{
 			// we temporarily detach entity, as it may undergo
 			//'severe' modifications (octree deletion, etc.) --> see ccPointCloud::computeOctree
-			ccMainAppInterface*                  instance = dynamic_cast<ccMainAppInterface*>(parent);
+			ccMainAppInterface* instance = dynamic_cast<ccMainAppInterface*>(parent);
 			ccMainAppInterface::ccHObjectContext objContext;
 			if (instance)
 			{
@@ -2840,13 +2840,13 @@ namespace ccEntityAction
 				// for a cell-size based custom box, we must update it for each cloud!
 				if (coDlg.getMode() == ccComputeOctreeDlg::MIN_CELL_SIZE)
 				{
-					double              cellSize     = coDlg.getMinCellSize();
+					double cellSize = coDlg.getMinCellSize();
 					PointCoordinateType halfBoxWidth = static_cast<PointCoordinateType>(cellSize * (1 << ccOctree::MAX_OCTREE_LEVEL) / 2.0);
-					ccBBox              bbBox        = cloud->getOwnBB();
-					CCVector3           C            = bbBox.getCenter();
-					bbox                             = ccBBox(C - CCVector3(halfBoxWidth, halfBoxWidth, halfBoxWidth),
-                                  C + CCVector3(halfBoxWidth, halfBoxWidth, halfBoxWidth),
-                                  bbBox.isValid());
+					ccBBox bbBox = cloud->getOwnBB();
+					CCVector3 C = bbBox.getCenter();
+					bbox = ccBBox(C - CCVector3(halfBoxWidth, halfBoxWidth, halfBoxWidth),
+					              C + CCVector3(halfBoxWidth, halfBoxWidth, halfBoxWidth),
+					              bbBox.isValid());
 				}
 				cloud->deleteOctree();
 				octree = ccOctree::Shared(new ccOctree(cloud));
@@ -2913,7 +2913,7 @@ namespace ccEntityAction
 				{
 					mesh->showNormals(false);
 
-					ccMainAppInterface*                  instance = dynamic_cast<ccMainAppInterface*>(parent);
+					ccMainAppInterface* instance = dynamic_cast<ccMainAppInterface*>(parent);
 					ccMainAppInterface::ccHObjectContext objContext;
 					if (instance)
 						objContext = instance->removeObjectTemporarilyFromDBTree(mesh);
@@ -2945,8 +2945,8 @@ namespace ccEntityAction
 				}
 			}
 
-			bool          lockedVertices = false;
-			ccPointCloud* pc             = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
+			bool lockedVertices = false;
+			ccPointCloud* pc = ccHObjectCaster::ToPointCloud(ent, &lockedVertices);
 
 			if (nullptr == pc)
 			{
@@ -3100,7 +3100,7 @@ namespace ccEntityAction
 		}
 
 		const double pChi2 = sDlg->getProbability();
-		const int    nn    = sDlg->getNeighborsNumber();
+		const int nn = sDlg->getNeighborsNumber();
 
 		ccProgressDialog pDlg(true, parent);
 		pDlg.setAutoClose(false);
@@ -3241,22 +3241,22 @@ namespace ccEntityAction
 
 			if (sf && distrib->computeParameters(CCCoreLib::GenericDistribution::SFAsScalarContainer(*sf)))
 			{
-				QString        description;
+				QString description;
 				const unsigned precision = ccGui::Parameters().displayedNumPrecision;
 				switch (pDlg.getSelectedIndex())
 				{
 				case 0: // GAUSS
 				{
 					CCCoreLib::NormalDistribution* normal = static_cast<CCCoreLib::NormalDistribution*>(distrib);
-					description                           = QObject::tr("mean = %1 / std.dev. = %2").arg(normal->getMu(), 0, 'f', precision).arg(sqrt(normal->getSigma2()), 0, 'f', precision);
+					description = QObject::tr("mean = %1 / std.dev. = %2").arg(normal->getMu(), 0, 'f', precision).arg(sqrt(normal->getSigma2()), 0, 'f', precision);
 				}
 				break;
 
 				case 1: // WEIBULL
 				{
 					CCCoreLib::WeibullDistribution* weibull = static_cast<CCCoreLib::WeibullDistribution*>(distrib);
-					ScalarType                      a;
-					ScalarType                      b;
+					ScalarType a;
+					ScalarType b;
 					weibull->getParameters(a, b);
 					description = QString("a = %1 / b = %2 / shift = %3").arg(a, 0, 'f', precision).arg(b, 0, 'f', precision).arg(weibull->getValueShift(), 0, 'f', precision);
 					ccLog::Print(QObject::tr("[Distribution fitting] Additional Weibull distrib. parameters: mode = %1 / skewness = %2").arg(weibull->computeMode()).arg(weibull->computeSkewness()));
@@ -3272,9 +3272,9 @@ namespace ccEntityAction
 				description.prepend(QString("%1: ").arg(distrib->getName()));
 				ccConsole::Print(QObject::tr("[Distribution fitting] %1").arg(description));
 
-				const unsigned        numberOfClasses = static_cast<unsigned>(ceil(sqrt(static_cast<double>(sfValidCount))));
+				const unsigned numberOfClasses = static_cast<unsigned>(ceil(sqrt(static_cast<double>(sfValidCount))));
 				std::vector<unsigned> histo;
-				std::vector<double>   npis;
+				std::vector<double> npis;
 				try
 				{
 					histo.resize(numberOfClasses, 0);
@@ -3288,8 +3288,8 @@ namespace ccEntityAction
 
 				// compute the Chi2 distance
 				{
-					unsigned     finalNumberOfClasses = 0;
-					const double chi2dist             = CCCoreLib::StatisticalTestingTools::computeAdaptativeChi2Dist(distrib, pc, numberOfClasses, finalNumberOfClasses, false, nullptr, nullptr, histo.data(), npis.data());
+					unsigned finalNumberOfClasses = 0;
+					const double chi2dist = CCCoreLib::StatisticalTestingTools::computeAdaptativeChi2Dist(distrib, pc, numberOfClasses, finalNumberOfClasses, false, nullptr, nullptr, histo.data(), npis.data());
 
 					if (chi2dist >= 0.0)
 					{
@@ -3304,9 +3304,9 @@ namespace ccEntityAction
 
 				// compute RMS
 				{
-					unsigned n         = pc->size();
-					double   squareSum = 0;
-					double   sum       = 0;
+					unsigned n = pc->size();
+					double squareSum = 0;
+					double sum = 0;
 					for (unsigned i = 0; i < n; ++i)
 					{
 						ScalarType v = pc->getPointScalarValue(i);

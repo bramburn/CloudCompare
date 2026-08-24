@@ -47,13 +47,13 @@
 #include <cassert>
 
 // combo-box items order
-constexpr int COMBO_INDEX_RED_BLUE  = 0;
-constexpr int COMBO_INDEX_BLUE_RED  = 1;
-constexpr int COMBO_INDEX_RED_CYAN  = 2;
-constexpr int COMBO_INDEX_CYAN_RED  = 3;
+constexpr int COMBO_INDEX_RED_BLUE = 0;
+constexpr int COMBO_INDEX_BLUE_RED = 1;
+constexpr int COMBO_INDEX_RED_CYAN = 2;
+constexpr int COMBO_INDEX_CYAN_RED = 3;
 constexpr int COMBO_INDEX_NV_VISION = 4;
-constexpr int COMBO_INDEX_GENERIC   = 5;
-constexpr int COMBO_INDEX_SBS       = 6;
+constexpr int COMBO_INDEX_GENERIC = 5;
+constexpr int COMBO_INDEX_SBS = 6;
 
 ccStereoModeDlg::ccStereoModeDlg(QWidget* parent)
     : QDialog(parent, Qt::Tool)
@@ -144,10 +144,10 @@ ccGLWindowInterface::StereoParams ccStereoModeDlg::getParameters() const
 	}
 
 	// viewport
-	params.screenWidth_mm    = m_ui->screenWidthSpinBox->value();
+	params.screenWidth_mm = m_ui->screenWidthSpinBox->value();
 	params.screenDistance_mm = m_ui->screenDiistanceSpinBox->value();
-	params.eyeSeparation_mm  = m_ui->eyeDistanceSpinBox->value();
-	params.stereoStrength    = m_ui->stereoStrengthHorizontalSlider->sliderPosition();
+	params.eyeSeparation_mm = m_ui->eyeDistanceSpinBox->value();
+	params.stereoStrength = m_ui->stereoStrengthHorizontalSlider->sliderPosition();
 
 	return params;
 }

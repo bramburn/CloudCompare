@@ -71,9 +71,9 @@
 static char s_defaultEmptyCustomListText[] = "(auto)";
 
 ccColorScaleEditorDialog::ccColorScaleEditorDialog(ccColorScalesManager* manager,
-                                                   ccMainAppInterface*   mainApp,
-                                                   ccColorScale::Shared  currentScale /*=ccColorScale::Shared(nullptr)*/,
-                                                   QWidget*              parent /*=nullptr*/)
+                                                   ccMainAppInterface* mainApp,
+                                                   ccColorScale::Shared currentScale /*=ccColorScale::Shared(nullptr)*/,
+                                                   QWidget* parent /*=nullptr*/)
     : QDialog(parent)
     , m_manager(manager)
     , m_colorScale(currentScale)
@@ -181,7 +181,7 @@ void ccColorScaleEditorDialog::updateMainComboBox()
 
 void ccColorScaleEditorDialog::colorScaleChanged(int pos)
 {
-	QString              UUID       = m_ui->rampComboBox->itemData(pos).toString();
+	QString UUID = m_ui->rampComboBox->itemData(pos).toString();
 	ccColorScale::Shared colorScale = ccColorScalesManager::GetUniqueInstance()->getScale(UUID);
 
 	setActiveScale(colorScale);
@@ -318,7 +318,7 @@ void ccColorScaleEditorDialog::setActiveScale(ccColorScale::Shared currentScale)
 		else
 		{
 			QString text;
-			size_t  index = 0;
+			size_t index = 0;
 			for (ccColorScale::LabelSet::const_iterator it = customLabels.begin(); it != customLabels.end(); ++it, ++index)
 			{
 				if (index != 0)
@@ -493,8 +493,8 @@ void ccColorScaleEditorDialog::changeSelectedStepValue(double value)
 		{
 			for (int i = 0; i < m_scaleWidget->getStepCount(); ++i)
 			{
-				const ColorScaleElementSlider* slider      = m_scaleWidget->getStep(i);
-				double                         absolutePos = (i == selectedIndex ? value : m_minAbsoluteVal + slider->getRelativePos() * (m_maxAbsoluteVal - m_minAbsoluteVal));
+				const ColorScaleElementSlider* slider = m_scaleWidget->getStep(i);
+				double absolutePos = (i == selectedIndex ? value : m_minAbsoluteVal + slider->getRelativePos() * (m_maxAbsoluteVal - m_minAbsoluteVal));
 				newSliders->elements().push_back(new ColorScaleElementSlider(absolutePos, slider->getColor()));
 			}
 		}
@@ -534,8 +534,8 @@ QString ccColorScaleEditorDialog::exportCustomLabelsList(ccColorScale::LabelSet&
 	assert(m_ui->customLabelsGroupBox->isChecked());
 	labels.clear();
 
-	QString     fullText = m_ui->customLabelsPlainTextEdit->toPlainText();
-	QStringList lines    = fullText.split(QRegularExpression("[\r\n]"), Qt::SkipEmptyParts);
+	QString fullText = m_ui->customLabelsPlainTextEdit->toPlainText();
+	QStringList lines = fullText.split(QRegularExpression("[\r\n]"), Qt::SkipEmptyParts);
 	if (lines.size() < 2)
 	{
 		return "Need at least 2 custom values";
@@ -546,7 +546,7 @@ QString ccColorScaleEditorDialog::exportCustomLabelsList(ccColorScale::LabelSet&
 		for (QString line : lines)
 		{
 			QString text;
-			int     firstQuoteIndex = line.indexOf('"');
+			int firstQuoteIndex = line.indexOf('"');
 			if (firstQuoteIndex == 0)
 			{
 				return "Expecting a numerical value before the text label";
@@ -566,8 +566,8 @@ QString ccColorScaleEditorDialog::exportCustomLabelsList(ccColorScale::LabelSet&
 				line = line.left(firstQuoteIndex).trimmed();
 			}
 
-			bool   ok = false;
-			double d  = line.toDouble(&ok);
+			bool ok = false;
+			double d = line.toDouble(&ok);
 			if (!ok)
 			{
 				return "Expecting a numerical value first";
@@ -588,7 +588,7 @@ QString ccColorScaleEditorDialog::exportCustomLabelsList(ccColorScale::LabelSet&
 bool ccColorScaleEditorDialog::checkCustomLabelsList(bool showWarnings)
 {
 	ccColorScale::LabelSet labels;
-	QString                error = exportCustomLabelsList(labels);
+	QString error = exportCustomLabelsList(labels);
 
 	if (!error.isEmpty())
 	{
@@ -674,7 +674,7 @@ bool ccColorScaleEditorDialog::saveCurrentScale()
 
 	m_scaleWidget->exportColorScale(m_colorScale);
 	bool wasRelative = m_colorScale->isRelative();
-	bool isRelative  = isRelativeMode();
+	bool isRelative = isRelativeMode();
 	if (isRelative)
 		m_colorScale->setRelative();
 	else

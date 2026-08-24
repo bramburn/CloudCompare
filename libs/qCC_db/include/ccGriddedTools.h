@@ -74,11 +74,11 @@ class QCC_DB_LIB_API ccGriddedTools
 	 * @param[in] cloudToSensorTrans Optional transform
 	 * @return true on success
 	 */
-	static bool DetectParameters(const ccPointCloud*              cloud,
+	static bool DetectParameters(const ccPointCloud* cloud,
 	                             const ccPointCloud::Grid::Shared grid,
-	                             GridParameters&                  parameters,
-	                             bool                             verbose            = false,
-	                             ccGLMatrix*                      cloudToSensorTrans = nullptr);
+	                             GridParameters& parameters,
+	                             bool verbose = false,
+	                             ccGLMatrix* cloudToSensorTrans = nullptr);
 
 	/**
 	 * @brief Compute best sensor from grid
@@ -87,9 +87,9 @@ class QCC_DB_LIB_API ccGriddedTools
 	 * @param[in] cloudToSensorTrans Optional transform
 	 * @return Sensor, or nullptr on failure
 	 */
-	static ccGBLSensor* ComputeBestSensor(ccPointCloud*              cloud,
+	static ccGBLSensor* ComputeBestSensor(ccPointCloud* cloud,
 	                                      ccPointCloud::Grid::Shared grid,
-	                                      ccGLMatrix*                cloudToSensorTrans = nullptr);
+	                                      ccGLMatrix* cloudToSensorTrans = nullptr);
 };
 
 #endif

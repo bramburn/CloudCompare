@@ -48,7 +48,7 @@ class LasPlugin : public QObject
 	 * @param[in] parent Parent object
 	 */
 	explicit LasPlugin(QObject* parent = nullptr);
-	
+
 	/// Destructor
 	~LasPlugin() override = default;
 

@@ -54,29 +54,29 @@ class ccScalarFieldArithmeticsDlg : public QDialog
 	//! Arithmetic operations
 	enum Operation
 	{ /* Operations requiring two SFs */
-	  PLUS     = 0,
-	  MINUS    = 1,
+	  PLUS = 0,
+	  MINUS = 1,
 	  MULTIPLY = 2,
-	  DIVIDE   = 3,
-	  MIN      = 4,
-	  MAX      = 5,
+	  DIVIDE = 3,
+	  MIN = 4,
+	  MAX = 5,
 	  /* Operations requiring only one SF */
-	  SQRT    = 6,
-	  POW2    = 7,
-	  POW3    = 8,
-	  EXP     = 9,
-	  LOG     = 10,
-	  LOG10   = 11,
-	  COS     = 12,
-	  SIN     = 13,
-	  TAN     = 14,
-	  ACOS    = 15,
-	  ASIN    = 16,
-	  ATAN    = 17,
-	  INT     = 18,
+	  SQRT = 6,
+	  POW2 = 7,
+	  POW3 = 8,
+	  EXP = 9,
+	  LOG = 10,
+	  LOG10 = 11,
+	  COS = 12,
+	  SIN = 13,
+	  TAN = 14,
+	  ACOS = 15,
+	  ASIN = 16,
+	  ATAN = 17,
+	  INT = 18,
 	  INVERSE = 19,
-	  SET     = 20,
-	  ABS     = 21,
+	  SET = 20,
+	  ABS = 21,
 	  /* Invalid enum. (always last) */
 	  INVALID = 255
 	};
@@ -101,9 +101,9 @@ class ccScalarFieldArithmeticsDlg : public QDialog
 	//! Secondary SF descriptor
 	struct SF2
 	{
-		bool   isConstantValue = true;
-		double constantValue   = 0.0;
-		int    sfIndex         = -1;
+		bool isConstantValue = true;
+		double constantValue = 0.0;
+		int sfIndex = -1;
 	};
 
 	//! Applies operation on a given cloud
@@ -116,11 +116,11 @@ class ccScalarFieldArithmeticsDlg : public QDialog
 	    \return success
 	**/
 	static bool Apply(ccPointCloud* cloud,
-	                  Operation     op,
-	                  int           sf1Idx,
-	                  bool          inplace,
-	                  SF2*          sf2    = nullptr,
-	                  QWidget*      parent = nullptr);
+	                  Operation op,
+	                  int sf1Idx,
+	                  bool inplace,
+	                  SF2* sf2 = nullptr,
+	                  QWidget* parent = nullptr);
 
   protected:
 	//! Called when the operation combo-box is modified

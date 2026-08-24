@@ -40,8 +40,8 @@ QString FileIO::s_writerInfo;
 void FileIO::setWriterInfo(const QString& applicationName, const QString& version)
 {
 	s_applicationName = applicationName;
-	s_version         = version;
-	s_writerInfo      = QStringLiteral("%1 v%2").arg(applicationName, version);
+	s_version = version;
+	s_writerInfo = QStringLiteral("%1 v%2").arg(applicationName, version);
 }
 
 QString FileIO::writerInfo()

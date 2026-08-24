@@ -55,7 +55,7 @@
 #include <string.h>
 
 double ccGlobalShiftManager::MAX_COORDINATE_ABS_VALUE = 1.0e4;
-double ccGlobalShiftManager::MAX_DIAGONAL_LENGTH      = 1.0e6;
+double ccGlobalShiftManager::MAX_DIAGONAL_LENGTH = 1.0e6;
 
 // default name for the Global Shift 'bookmarks' file
 static QString s_defaultGlobalShiftListFilename("global_shift_list.txt");
@@ -105,15 +105,15 @@ void ccGlobalShiftManager::StoreShift(const CCVector3d& shift, double scale, boo
 	}
 
 	static unsigned lastInputIndex = 0;
-	ShiftInfo       info("Previous input");
+	ShiftInfo info("Previous input");
 	if (lastInputIndex != 0)
 	{
 		info.name += QString(" (%1)").arg(lastInputIndex);
 	}
 	++lastInputIndex;
 
-	info.scale    = scale;
-	info.shift    = shift;
+	info.scale = scale;
+	info.shift = shift;
 	info.preserve = preserve;
 	s_lastInfoBuffer.emplace_back(info);
 }
@@ -133,22 +133,22 @@ bool ccGlobalShiftManager::NeedRescale(double d)
 	return std::abs(d) >= MAX_DIAGONAL_LENGTH;
 }
 
-static bool ShiftAndScaleAreSimilar(double            scale1,
+static bool ShiftAndScaleAreSimilar(double scale1,
                                     const CCVector3d& shift1,
-                                    double            scale2,
+                                    double scale2,
                                     const CCVector3d& shift2)
 {
 	return ((shift1 - shift2).norm() <= CCCoreLib::ZERO_TOLERANCE_D) && (std::abs(scale1 - scale2) <= CCCoreLib::ZERO_TOLERANCE_D);
 }
 
 bool ccGlobalShiftManager::Handle(const CCVector3d& P,
-                                  double            diagonal,
-                                  Mode              mode,
-                                  bool              useInputCoordinatesShiftIfPossible,
-                                  CCVector3d&       coordinatesShift,
-                                  bool*             _preserveCoordinateShift /*=nullptr*/,
-                                  double*           _coordinatesScale /*=nullptr*/,
-                                  bool*             _applyAll /*=nullptr*/)
+                                  double diagonal,
+                                  Mode mode,
+                                  bool useInputCoordinatesShiftIfPossible,
+                                  CCVector3d& coordinatesShift,
+                                  bool* _preserveCoordinateShift /*=nullptr*/,
+                                  double* _coordinatesScale /*=nullptr*/,
+                                  bool* _applyAll /*=nullptr*/)
 {
 	assert(diagonal >= 0.0);
 	bool preserveCoordinateShift = true;
@@ -165,24 +165,24 @@ bool ccGlobalShiftManager::Handle(const CCVector3d& P,
 	// default scale
 	double scale = 1.0;
 
-	bool needShift   = false;
+	bool needShift = false;
 	bool needRescale = false;
 
 	// if shift info was provided as input (typically from a previous entity)
-	bool       canUseInputCoordinatesShift = false;
+	bool canUseInputCoordinatesShift = false;
 	CCVector3d inputCoordinatesShift(0, 0, 0);
-	double     inputScale = 1.0;
+	double inputScale = 1.0;
 	if (useInputCoordinatesShiftIfPossible)
 	{
 		if (nullptr != _coordinatesScale)
 		{
 			// use the input scale if specified
 			*_coordinatesScale = std::max(*_coordinatesScale, CCCoreLib::ZERO_TOLERANCE_D);
-			scale              = *_coordinatesScale;
+			scale = *_coordinatesScale;
 		}
 
 		inputCoordinatesShift = coordinatesShift;
-		inputScale            = scale;
+		inputScale = scale;
 
 		if (mode == NO_DIALOG)
 		{
@@ -192,7 +192,7 @@ bool ccGlobalShiftManager::Handle(const CCVector3d& P,
 		}
 		else
 		{
-			needShift   = NeedShift(P * scale + coordinatesShift);
+			needShift = NeedShift(P * scale + coordinatesShift);
 			needRescale = NeedRescale(diagonal * scale);
 
 			canUseInputCoordinatesShift = (!needShift && !needRescale);
@@ -214,7 +214,7 @@ bool ccGlobalShiftManager::Handle(const CCVector3d& P,
 			return false;
 		}
 
-		needShift   = NeedShift(P);
+		needShift = NeedShift(P);
 		needRescale = NeedRescale(diagonal);
 
 		if (!needShift
@@ -248,9 +248,9 @@ bool ccGlobalShiftManager::Handle(const CCVector3d& P,
 		// try to find an already used Global Shift that would work
 		for (size_t i = 0; i < lastInfoBuffer.size(); ++i)
 		{
-			const ShiftInfo& shiftInfo       = lastInfoBuffer[i];
-			bool             tempNeedShift   = NeedShift(P * shiftInfo.scale + shiftInfo.shift);
-			bool             tempNeedRescale = NeedRescale(diagonal * shiftInfo.scale);
+			const ShiftInfo& shiftInfo = lastInfoBuffer[i];
+			bool tempNeedShift = NeedShift(P * shiftInfo.scale + shiftInfo.shift);
+			bool tempNeedRescale = NeedRescale(diagonal * shiftInfo.scale);
 			if (!tempNeedShift && !tempNeedRescale)
 			{
 				// we found a valid candidate
@@ -259,9 +259,9 @@ bool ccGlobalShiftManager::Handle(const CCVector3d& P,
 				{
 					// use this shift & scale if the input one was not working
 					coordinatesShift = shiftInfo.shift;
-					scale            = shiftInfo.scale;
-					needShift        = tempNeedShift;
-					needRescale      = tempNeedRescale;
+					scale = shiftInfo.scale;
+					needShift = tempNeedShift;
+					needRescale = tempNeedRescale;
 				}
 				break;
 			}
@@ -295,8 +295,8 @@ bool ccGlobalShiftManager::Handle(const CCVector3d& P,
 
 		// always add the "suggested" entry
 		CCVector3d suggestedShift = BestShift(P);
-		double     suggestedScale = BestScale(diagonal);
-		int        index          = sasDlg.addShiftInfo(ShiftInfo("Automatic", suggestedShift, suggestedScale));
+		double suggestedScale = BestScale(diagonal);
+		int index = sasDlg.addShiftInfo(ShiftInfo("Automatic", suggestedShift, suggestedScale));
 
 		// add the input shift if any, and if it's different from the others
 		if (useInputCoordinatesShiftIfPossible)
@@ -405,9 +405,9 @@ CCVector3d ccGlobalShiftManager::BestShift(const CCVector3d& P)
 		}
 
 		double roundOffScale = pow(10.0, 1.0 * roundOffScalePower);
-		shift.x              = static_cast<int>(shift.x / roundOffScale) * roundOffScale;
-		shift.y              = static_cast<int>(shift.y / roundOffScale) * roundOffScale;
-		shift.z              = static_cast<int>(shift.z / roundOffScale) * roundOffScale;
+		shift.x = static_cast<int>(shift.x / roundOffScale) * roundOffScale;
+		shift.y = static_cast<int>(shift.y / roundOffScale) * roundOffScale;
+		shift.z = static_cast<int>(shift.z / roundOffScale) * roundOffScale;
 	}
 
 	return shift;
@@ -425,7 +425,7 @@ bool ccGlobalShiftManager::LoadInfoFromFile(QString filename, std::vector<ShiftI
 		return false;
 
 	QTextStream stream(&file);
-	unsigned    lineNumber = 0;
+	unsigned lineNumber = 0;
 
 	while (true)
 	{
@@ -448,10 +448,10 @@ bool ccGlobalShiftManager::LoadInfoFromFile(QString filename, std::vector<ShiftI
 		}
 
 		// decode items
-		bool                            ok     = true;
-		unsigned                        errors = 0;
+		bool ok = true;
+		unsigned errors = 0;
 		ccGlobalShiftManager::ShiftInfo info;
-		info.name    = tokens[0].trimmed();
+		info.name = tokens[0].trimmed();
 		info.shift.x = tokens[1].toDouble(&ok);
 		if (!ok)
 			++errors;

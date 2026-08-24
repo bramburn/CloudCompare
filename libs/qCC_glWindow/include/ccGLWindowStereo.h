@@ -79,7 +79,7 @@ class CCGLWINDOW_LIB_API ccGLWindowStereo : public QOpenGLWidget
 	{
 		setCursor(cursor);
 	}
-	void            doMakeCurrent() override;
+	void doMakeCurrent() override;
 	inline QObject* asQObject() override
 	{
 		return this;
@@ -221,8 +221,9 @@ class CCGLWINDOW_LIB_API ccGLWindowStereo : public QOpenGLWidget
 	//! use doMakeCurrent() from ccGLWindowInterface instead
 
   protected: // other methods
-	//! Reacts to the itemPickedFast signal (shortcut)
-	protected Q_SLOTS: void onItemPickedFastSlot(ccHObject* pickedEntity, int pickedItemIndex, int x, int y)
+	         //! Reacts to the itemPickedFast signal (shortcut)
+  protected Q_SLOTS:
+	void onItemPickedFastSlot(ccHObject* pickedEntity, int pickedItemIndex, int x, int y)
 	{
 		onItemPickedFast(pickedEntity, pickedItemIndex, x, y);
 	}
@@ -268,7 +269,7 @@ class CCGLWINDOW_LIB_API ccGLWindowStereo : public QOpenGLWidget
 	bool preInitialize(bool& firstTime) override;
 	bool postInitialize(bool firstTime) override;
 
-	void         resizeGL(int w, int h);
+	void resizeGL(int w, int h);
 	virtual void dragEnterEvent(QDragEnterEvent* event)
 	{
 		doDragEnterEvent(event);

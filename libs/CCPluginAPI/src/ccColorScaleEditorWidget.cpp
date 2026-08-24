@@ -31,17 +31,17 @@
 #include <cmath>
 
 constexpr int DEFAULT_SLIDER_SYMBOL_SIZE = 8;
-constexpr int DEFAULT_MARGIN             = DEFAULT_SLIDER_SYMBOL_SIZE / 2 + 1;
-constexpr int DEFAULT_TEXT_MARGIN        = 2;
-constexpr int DEFAULT_LABEL_HEIGHT       = 12;
+constexpr int DEFAULT_MARGIN = DEFAULT_SLIDER_SYMBOL_SIZE / 2 + 1;
+constexpr int DEFAULT_TEXT_MARGIN = 2;
+constexpr int DEFAULT_LABEL_HEIGHT = 12;
 
 /*******************************/
 /*** ColorScaleElementSlider ***/
 /*******************************/
 
-ColorScaleElementSlider::ColorScaleElementSlider(double          relativePos /*=0.0*/,
-                                                 QColor          color /*=Qt::black*/,
-                                                 QWidget*        parent /*=nullptr*/,
+ColorScaleElementSlider::ColorScaleElementSlider(double relativePos /*=0.0*/,
+                                                 QColor color /*=Qt::black*/,
+                                                 QWidget* parent /*=nullptr*/,
                                                  Qt::Orientation orientation /*=Qt::Horizontal*/)
     : QWidget(parent)
     , ccColorScaleElement(relativePos, color)
@@ -61,7 +61,7 @@ void ColorScaleElementSlider::paintEvent(QPaintEvent* e)
 	painter.setPen(m_selected ? Qt::red : Qt::black);
 	painter.setBrush(m_color);
 
-	QRect    box(0, 0, DEFAULT_SLIDER_SYMBOL_SIZE - 1, DEFAULT_SLIDER_SYMBOL_SIZE - 1);
+	QRect box(0, 0, DEFAULT_SLIDER_SYMBOL_SIZE - 1, DEFAULT_SLIDER_SYMBOL_SIZE - 1);
 	QPolygon pointyHead;
 	if (m_orientation == Qt::Horizontal)
 	{
@@ -225,9 +225,9 @@ void ColorBarWidget::paintEvent(QPaintEvent* e)
 
 			int length = (m_orientation == Qt::Horizontal ? colorMap.width() : colorMap.height());
 
-			ColorScaleElementSlider* previousStep  = m_sliders->element(0);
-			int                      nextStepIndex = 0;
-			ColorScaleElementSlider* nextStep      = m_sliders->element(nextStepIndex);
+			ColorScaleElementSlider* previousStep = m_sliders->element(0);
+			int nextStepIndex = 0;
+			ColorScaleElementSlider* nextStep = m_sliders->element(nextStepIndex);
 			for (int i = 0; i < length; ++i)
 			{
 				double p = (i + 0.5) / length;
@@ -246,12 +246,12 @@ void ColorBarWidget::paintEvent(QPaintEvent* e)
 				QColor interpColor;
 				if (previousStep->getRelativePos() < nextStep->getRelativePos())
 				{
-					QColor nextColor      = nextStep->getColor();
+					QColor nextColor = nextStep->getColor();
 					double distToPrevious = p - previousStep->getRelativePos();
-					double ratio          = std::min(distToPrevious / (nextStep->getRelativePos() - previousStep->getRelativePos()), 1.0);
-					interpColor           = qRgb(InterpColorValue(previousColor.red(), nextColor.red(), ratio),
-                                       InterpColorValue(previousColor.green(), nextColor.green(), ratio),
-                                       InterpColorValue(previousColor.blue(), nextColor.blue(), ratio));
+					double ratio = std::min(distToPrevious / (nextStep->getRelativePos() - previousStep->getRelativePos()), 1.0);
+					interpColor = qRgb(InterpColorValue(previousColor.red(), nextColor.red(), ratio),
+					                   InterpColorValue(previousColor.green(), nextColor.green(), ratio),
+					                   InterpColorValue(previousColor.blue(), nextColor.blue(), ratio));
 				}
 				else
 				{
@@ -383,7 +383,7 @@ void SlidersWidget::updateAllSlidersPos()
 	for (auto it = m_sliders->elements().begin(); it != m_sliders->elements().end(); ++it)
 	{
 		ColorScaleElementSlider* slider = *it;
-		int                      pos    = static_cast<int>(slider->getRelativePos() * rectLength);
+		int pos = static_cast<int>(slider->getRelativePos() * rectLength);
 
 		if (m_orientation == Qt::Horizontal)
 		{
@@ -444,7 +444,7 @@ void SlidersWidget::mouseMoveEvent(QMouseEvent* e)
 	if (!m_sliders || m_sliders->size() <= 2)
 		return;
 
-	int    pos         = (m_orientation == Qt::Horizontal ? e->pos().x() : e->pos().y());
+	int pos = (m_orientation == Qt::Horizontal ? e->pos().x() : e->pos().y());
 	double relativePos = static_cast<double>(pos - DEFAULT_MARGIN) / static_cast<double>(length());
 
 	if (relativePos > 0.0 && relativePos < 1.0)
@@ -539,9 +539,9 @@ void SliderLabelWidget::paintEvent(QPaintEvent* e)
 			for (int i = 0; i < m_sliders->size(); i++)
 			{
 				ColorScaleElementSlider* slider = m_sliders->element(i);
-				int                      pos    = slider->pos().x();
+				int pos = slider->pos().x();
 
-				double  val   = slider->getRelativePos();
+				double val = slider->getRelativePos();
 				QString label = QString("%1 %").arg(val * 100.0, 0, 'f', std::max(m_precision - 2, 0)); // display as a percentage
 
 				int labelWidth = fm.horizontalAdvance(label);
@@ -556,8 +556,8 @@ void SliderLabelWidget::paintEvent(QPaintEvent* e)
 			// adjust width if necessary
 			{
 				QString firstLabel = QString::number(m_sliders->elements().first()->getRelativePos(), 'f', m_precision);
-				QString lastLabel  = QString::number(m_sliders->elements().last()->getRelativePos(), 'f', m_precision);
-				int     labelWidth = std::max(fm.horizontalAdvance(firstLabel), fm.horizontalAdvance(lastLabel)) + 2 * DEFAULT_TEXT_MARGIN;
+				QString lastLabel = QString::number(m_sliders->elements().last()->getRelativePos(), 'f', m_precision);
+				int labelWidth = std::max(fm.horizontalAdvance(firstLabel), fm.horizontalAdvance(lastLabel)) + 2 * DEFAULT_TEXT_MARGIN;
 				setMinimumSize(labelWidth, 0);
 			}
 			// draw the text for vertical orientation
@@ -567,7 +567,7 @@ void SliderLabelWidget::paintEvent(QPaintEvent* e)
 
 				int pos = slider->pos().y();
 
-				double  val   = slider->getRelativePos();
+				double val = slider->getRelativePos();
 				QString label = QString("%1 %").arg(val * 100.0, 0, 'f', std::max(m_precision - 2, 0)); // display as a percentage
 
 				painter.drawText(DEFAULT_TEXT_MARGIN, pos + slider->height(), label);
@@ -667,7 +667,7 @@ void ccColorScaleEditorWidget::onPointClicked(double relativePos)
 			gradient.setColorAt(slider->getRelativePos(), slider->getColor());
 		}
 		// generate fake color bar (1 pixel high)
-		QPixmap  pix(256, 1);
+		QPixmap pix(256, 1);
 		QPainter painter(&pix);
 		painter.fillRect(pix.rect(), gradient);
 		color = pix.toImage().pixel(static_cast<int>(relativePos * 255), 0);
@@ -740,8 +740,8 @@ void ccColorScaleEditorWidget::importColorScale(ccColorScale::Shared scale)
 		assert(scale->stepCount() >= 2);
 		for (int i = 0; i < scale->stepCount(); ++i)
 		{
-			double        relativePos = scale->step(i).getRelativePos();
-			const QColor& color       = scale->step(i).getColor();
+			double relativePos = scale->step(i).getRelativePos();
+			const QColor& color = scale->step(i).getColor();
 			m_slidersWidget->addNewSlider(relativePos, color);
 		}
 	}

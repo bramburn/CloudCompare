@@ -37,13 +37,13 @@
 //'Delta' character
 static const QChar MathSymbolDelta(0x0394);
 
-static const QString CENTER_STRING    = QObject::tr("Center");
-static const char    POINT_INDEX_0[]  = "pi0";
-static const char    POINT_INDEX_1[]  = "pi1";
-static const char    POINT_INDEX_2[]  = "pi2";
-static const char    ENTITY_INDEX_0[] = "ei0";
-static const char    ENTITY_INDEX_1[] = "ei1";
-static const char    ENTITY_INDEX_2[] = "ei2";
+static const QString CENTER_STRING = QObject::tr("Center");
+static const char POINT_INDEX_0[] = "pi0";
+static const char POINT_INDEX_1[] = "pi1";
+static const char POINT_INDEX_2[] = "pi2";
+static const char ENTITY_INDEX_0[] = "ei0";
+static const char ENTITY_INDEX_1[] = "ei1";
+static const char ENTITY_INDEX_2[] = "ei2";
 
 QString cc2DLabel::PickedPoint::itemTitle() const
 {
@@ -199,7 +199,7 @@ QString cc2DLabel::GetSFValueAsString(const LabelInfo1& info, int precision)
 QString cc2DLabel::getTitle(int precision) const
 {
 	QString title;
-	size_t  count = m_pickedPoints.size();
+	size_t count = m_pickedPoints.size();
 	if (count == 1)
 	{
 		title = m_name;
@@ -213,7 +213,7 @@ QString cc2DLabel::getTitle(int precision) const
 		if (info.hasSF)
 		{
 			QString sfVal = GetSFValueAsString(info, precision);
-			title         = QString("%1 = %2").arg(info.sfName, sfVal);
+			title = QString("%1 = %2").arg(info.sfName, sfVal);
 		}
 	}
 	else if (count == 2)
@@ -222,7 +222,7 @@ QString cc2DLabel::getTitle(int precision) const
 		getLabelInfo2(info);
 		// display distance by default
 		double dist = info.diff.normd();
-		title       = QString("Distance: %1").arg(dist, 0, 'f', precision);
+		title = QString("Distance: %1").arg(dist, 0, 'f', precision);
 	}
 	else if (count == 3)
 	{
@@ -296,7 +296,7 @@ void cc2DLabel::clear(bool ignoreDependencies)
 	}
 
 	m_lastScreenPos[0] = m_lastScreenPos[1] = -1;
-	m_labelROI                              = QRect(0, 0, 0, 0);
+	m_labelROI = QRect(0, 0, 0, 0);
 	setVisible(false);
 	setName("Label");
 }
@@ -400,8 +400,8 @@ bool cc2DLabel::addPickedPoint(ccGenericPointCloud* cloud, unsigned pointIndex, 
 		return false;
 
 	PickedPoint pp;
-	pp._cloud            = cloud;
-	pp.index             = pointIndex;
+	pp._cloud = cloud;
+	pp.index = pointIndex;
 	pp.entityCenterPoint = entityCenter;
 
 	return addPickedPoint(pp);
@@ -415,9 +415,9 @@ bool cc2DLabel::addPickedPoint(ccGenericMesh* mesh, unsigned triangleIndex, cons
 		return false;
 
 	PickedPoint pp;
-	pp._mesh             = mesh;
-	pp.index             = triangleIndex;
-	pp.uv                = uv;
+	pp._mesh = mesh;
+	pp.index = triangleIndex;
+	pp.uv = uv;
 	pp.entityCenterPoint = entityCenter;
 
 	return addPickedPoint(pp);
@@ -575,7 +575,7 @@ bool cc2DLabel::fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedI
 				{
 					m_pickedPoints.resize(m_pickedPoints.size() + 1);
 					m_pickedPoints.back().index = static_cast<unsigned>(index);
-					m_pickedPoints.back().uv    = uv;
+					m_pickedPoints.back().uv = uv;
 					//[DIRTY] WARNING: temporarily, we set the mesh unique ID in the 'PickedPoint::_mesh' pointer!!!
 					*(uint32_t*)(&m_pickedPoints.back()._mesh) = meshID;
 				}
@@ -642,15 +642,15 @@ void AddPointCoordinates(QStringList& body, QString pointShortName, const CCVect
 
 	if (isShifted)
 	{
-		CCVector3d Pg           = shiftedObject.toGlobal3d(P);
-		QString    globCoordStr = QString("  [original] (%1;%2;%3)").arg(Pg.x, 0, 'f', precision).arg(Pg.y, 0, 'f', precision).arg(Pg.z, 0, 'f', precision);
+		CCVector3d Pg = shiftedObject.toGlobal3d(P);
+		QString globCoordStr = QString("  [original] (%1;%2;%3)").arg(Pg.x, 0, 'f', precision).arg(Pg.y, 0, 'f', precision).arg(Pg.z, 0, 'f', precision);
 		body << globCoordStr;
 	}
 }
 
 void AddPointCoordinates(QStringList& body, const cc2DLabel::PickedPoint& pp, int precision, QString pointName = QString())
 {
-	QString          pointShortName;
+	QString pointShortName;
 	ccShiftedObject* shiftedObject = nullptr;
 
 	if (pp._cloud)
@@ -724,27 +724,27 @@ void cc2DLabel::getLabelInfo1(LabelInfo1& info) const
 				if (sf)
 				{
 					info.sfValue = sf->getValue(pp.index);
-					info.sfName  = QString::fromStdString(sf->getName());
+					info.sfName = QString::fromStdString(sf->getName());
 				}
 				else
 				{
 					info.sfValue = pp._cloud->getPointScalarValue(pp.index);
-					info.sfName  = "Scalar";
+					info.sfName = "Scalar";
 				}
 			}
 
 			// all scalar fields (not just the displayed one)
 			if (pp._cloud->isA(CC_TYPES::POINT_CLOUD))
 			{
-				ccPointCloud* pc      = static_cast<ccPointCloud*>(pp._cloud);
-				unsigned      sfCount = pc->getNumberOfScalarFields();
+				ccPointCloud* pc = static_cast<ccPointCloud*>(pp._cloud);
+				unsigned sfCount = pc->getNumberOfScalarFields();
 				for (unsigned i = 0; i < sfCount; ++i)
 				{
 					const CCCoreLib::ScalarField* sf = pc->getScalarField(static_cast<int>(i));
 					if (!sf)
 						continue;
 					SFValue sfVal;
-					sfVal.name  = QString::fromStdString(sf->getName());
+					sfVal.name = QString::fromStdString(sf->getName());
 					sfVal.value = sf->getValue(pp.index);
 					info.sfValues.push_back(sfVal);
 				}
@@ -819,8 +819,8 @@ void cc2DLabel::getLabelInfo1(LabelInfo1& info) const
 				// all scalar fields (not just the displayed one), interpolated on the triangle
 				if (vertices->isA(CC_TYPES::POINT_CLOUD))
 				{
-					ccPointCloud* pc      = static_cast<ccPointCloud*>(vertices);
-					unsigned      sfCount = pc->getNumberOfScalarFields();
+					ccPointCloud* pc = static_cast<ccPointCloud*>(vertices);
+					unsigned sfCount = pc->getNumberOfScalarFields();
 					for (unsigned i = 0; i < sfCount; ++i)
 					{
 						const CCCoreLib::ScalarField* asf = pc->getScalarField(static_cast<int>(i));
@@ -829,7 +829,7 @@ void cc2DLabel::getLabelInfo1(LabelInfo1& info) const
 						ScalarType v1 = asf->getValue(vi->i1);
 						ScalarType v2 = asf->getValue(vi->i2);
 						ScalarType v3 = asf->getValue(vi->i3);
-						SFValue    sfVal;
+						SFValue sfVal;
 						sfVal.name = QString::fromStdString(asf->getName());
 						if (ccScalarField::ValidValue(v1) && ccScalarField::ValidValue(v2) && ccScalarField::ValidValue(v3))
 						{
@@ -880,8 +880,8 @@ void cc2DLabel::getLabelInfo3(LabelInfo3& info) const
 	CCVector3 P1P2 = P2 - P1;
 	CCVector3 P1P3 = P3 - P1;
 	CCVector3 P2P3 = P3 - P2;
-	CCVector3 N    = P1P2.cross(P1P3); // N = ABxAC
-	info.area      = N.norm() / 2;
+	CCVector3 N = P1P2.cross(P1P3); // N = ABxAC
+	info.area = N.norm() / 2;
 
 	// normal
 	N.normalize();
@@ -1073,7 +1073,7 @@ void cc2DLabel::drawMeOnly3D(CC_DRAW_CONTEXT& context)
 	}
 
 	// color-based entity picking
-	bool         entityPickingMode = MACRO_EntityPicking(context);
+	bool entityPickingMode = MACRO_EntityPicking(context);
 	ccColor::Rgb pickingColor;
 	if (entityPickingMode)
 	{
@@ -1200,9 +1200,9 @@ void cc2DLabel::drawMeOnly3D(CC_DRAW_CONTEXT& context)
 				if (viewportParams.perspectiveView && viewportParams.zFar > 0)
 				{
 					// in perspective view, the actual scale depends on the distance to the camera!
-					double d     = (camera.modelViewMat * P).norm();
-					double unitD = viewportParams.zFar / 2;                     // we consider that the 'standard' scale is at half the depth
-					scale        = static_cast<float>(scale * sqrt(d / unitD)); // sqrt = empirical (probably because the marker size is already partly compensated by ccGLWindowInterface::computeActualPixelSize())
+					double d = (camera.modelViewMat * P).norm();
+					double unitD = viewportParams.zFar / 2;              // we consider that the 'standard' scale is at half the depth
+					scale = static_cast<float>(scale * sqrt(d / unitD)); // sqrt = empirical (probably because the marker size is already partly compensated by ccGLWindowInterface::computeActualPixelSize())
 				}
 				scale = static_cast<float>(scale * context.devicePixelRatio);
 				glFunc->glScalef(scale, scale, scale);
@@ -1216,9 +1216,9 @@ void cc2DLabel::drawMeOnly3D(CC_DRAW_CONTEXT& context)
 }
 
 // display parameters
-static const int c_margin        = 5;
-static const int c_tabMarginX    = 5;
-static const int c_tabMarginY    = 2;
+static const int c_margin = 5;
+static const int c_tabMarginX = 5;
+static const int c_tabMarginY = 2;
 static const int c_arrowBaseSize = 3;
 // static const int c_buttonSize = 10;
 
@@ -1309,7 +1309,7 @@ void cc2DLabel::drawMeOnly2D(CC_DRAW_CONTEXT& context)
 	}
 
 	// color-based entity picking
-	bool         entityPickingMode = MACRO_EntityPicking(context);
+	bool entityPickingMode = MACRO_EntityPicking(context);
 	ccColor::Rgb pickingColor;
 	if (entityPickingMode)
 	{
@@ -1412,7 +1412,7 @@ void cc2DLabel::drawMeOnly2D(CC_DRAW_CONTEXT& context)
 
 	// label title
 	const int precision = context.dispNumberPrecision;
-	QString   title     = getTitle(precision);
+	QString title = getTitle(precision);
 
 #define DRAW_CONTENT_AS_TAB
 #ifdef DRAW_CONTENT_AS_TAB
@@ -1425,19 +1425,19 @@ void cc2DLabel::drawMeOnly2D(CC_DRAW_CONTEXT& context)
 #endif
 
 	// render zoom
-	int margin        = static_cast<int>(c_margin * context.renderZoom);
-	int tabMarginX    = static_cast<int>(c_tabMarginX * context.renderZoom);
-	int tabMarginY    = static_cast<int>(c_tabMarginY * context.renderZoom);
+	int margin = static_cast<int>(c_margin * context.renderZoom);
+	int tabMarginX = static_cast<int>(c_tabMarginX * context.renderZoom);
+	int tabMarginY = static_cast<int>(c_tabMarginY * context.renderZoom);
 	int arrowBaseSize = static_cast<int>(c_arrowBaseSize * context.renderZoom);
 
-	int   titleHeight = 0;
+	int titleHeight = 0;
 	QFont bodyFont;
 	QFont titleFont;
 	if (!entityPickingMode)
 	{
 		/*** label border ***/
-		bodyFont  = context.display->getLabelDisplayFont(); // takes rendering zoom into account!
-		titleFont = bodyFont;                               // takes rendering zoom into account!
+		bodyFont = context.display->getLabelDisplayFont(); // takes rendering zoom into account!
+		titleFont = bodyFont;                              // takes rendering zoom into account!
 		// titleFont.setBold(true);
 
 		QFontMetrics titleFontMetrics(titleFont);
@@ -1468,11 +1468,11 @@ void cc2DLabel::drawMeOnly2D(CC_DRAW_CONTEXT& context)
 
 						ccGenericPointCloud* cloud = m_pickedPoints[0].cloudOrVertices();
 						assert(cloud);
-						bool      isShifted = cloud->isShifted();
-						CCVector3 P         = m_pickedPoints[0].getPointPosition();
+						bool isShifted = cloud->isShifted();
+						CCVector3 P = m_pickedPoints[0].getPointPosition();
 						// 1st block: X, Y, Z (local)
 						{
-							int   c = tab.add2x3Block();
+							int c = tab.add2x3Block();
 							QChar suffix;
 							if (isShifted)
 							{
@@ -1488,7 +1488,7 @@ void cc2DLabel::drawMeOnly2D(CC_DRAW_CONTEXT& context)
 						// next block:  X, Y, Z (global)
 						if (isShifted)
 						{
-							int        c  = tab.add2x3Block();
+							int c = tab.add2x3Block();
 							CCVector3d Pd = cloud->toGlobal3d(P);
 							tab.colContent[c] << "Xg";
 							tab.colContent[c + 1] << QString::number(Pd.x, 'f', precision);
@@ -1538,7 +1538,7 @@ void cc2DLabel::drawMeOnly2D(CC_DRAW_CONTEXT& context)
 						}
 						// 2nd block: dXY, dXZ, dZY
 						{
-							int                 c   = tab.add2x3Block();
+							int c = tab.add2x3Block();
 							PointCoordinateType dXY = sqrt(info.diff.x * info.diff.x + info.diff.y * info.diff.y);
 							PointCoordinateType dXZ = sqrt(info.diff.x * info.diff.x + info.diff.z * info.diff.z);
 							PointCoordinateType dZY = sqrt(info.diff.z * info.diff.z + info.diff.y * info.diff.y);
@@ -1609,7 +1609,7 @@ void cc2DLabel::drawMeOnly2D(CC_DRAW_CONTEXT& context)
 				int totalWidth = tab.updateColumnsWidthTable(bodyFontMetrics);
 
 				int tabWidth = totalWidth + tab.colCount * (2 * tabMarginX); // add inner margins
-				dx           = std::max(dx, tabWidth);
+				dx = std::max(dx, tabWidth);
 				dy += tab.rowCount * (rowHeight + 2 * tabMarginY); // add inner margins
 				// we also add a margin every 3 rows
 				dy += std::max(0, (tab.rowCount / 3) - 1) * margin;
@@ -1650,7 +1650,7 @@ void cc2DLabel::drawMeOnly2D(CC_DRAW_CONTEXT& context)
 	{
 		// default background color
 		unsigned char alpha = static_cast<unsigned char>((context.labelOpacity / 100.0) * 255);
-		defaultBkgColor     = ccColor::Rgbaub(context.labelDefaultBkgCol, alpha);
+		defaultBkgColor = ccColor::Rgbaub(context.labelDefaultBkgCol, alpha);
 		if (isSelected())
 		{
 			// default border color (mustn't be totally transparent!)
@@ -1660,7 +1660,7 @@ void cc2DLabel::drawMeOnly2D(CC_DRAW_CONTEXT& context)
 		{
 			// apply only half of the transparency
 			unsigned char halfAlpha = static_cast<unsigned char>((50.0 + context.labelOpacity / 200.0) * 255);
-			defaultBorderColor      = ccColor::Rgbaub(context.labelDefaultBkgCol, halfAlpha);
+			defaultBorderColor = ccColor::Rgbaub(context.labelDefaultBkgCol, halfAlpha);
 		}
 
 		glFunc->glPushAttrib(GL_COLOR_BUFFER_BIT);
@@ -1816,13 +1816,13 @@ void cc2DLabel::drawMeOnly2D(CC_DRAW_CONTEXT& context)
 			int xCol = xStartRel;
 			for (int c = 0; c < tab.colCount; ++c)
 			{
-				int width  = tab.colWidth[c] + 2 * tabMarginX;
+				int width = tab.colWidth[c] + 2 * tabMarginX;
 				int height = rowHeight + 2 * tabMarginY;
 
-				int                  yRow           = yStartRel;
-				int                  actualRowCount = std::min(tab.rowCount, static_cast<int>(tab.colContent[c].size()));
-				bool                 labelCol       = ((c & 1) == 0);
-				const ccColor::Rgba* textColor      = labelCol ? &ccColor::white : &defaultTextColor;
+				int yRow = yStartRel;
+				int actualRowCount = std::min(tab.rowCount, static_cast<int>(tab.colContent[c].size()));
+				bool labelCol = ((c & 1) == 0);
+				const ccColor::Rgba* textColor = labelCol ? &ccColor::white : &defaultTextColor;
 
 				for (int r = 0; r < actualRowCount; ++r)
 				{
@@ -1898,10 +1898,10 @@ void cc2DLabel::drawMeOnly2D(CC_DRAW_CONTEXT& context)
 	glFunc->glPopMatrix();
 }
 
-bool cc2DLabel::pointPicking(const CCVector2d&           clickPos,
+bool cc2DLabel::pointPicking(const CCVector2d& clickPos,
                              const ccGLCameraParameters& camera,
-                             int&                        nearestPointIndex,
-                             double&                     nearestSquareDist) const
+                             int& nearestPointIndex,
+                             double& nearestSquareDist) const
 {
 	nearestPointIndex = -1;
 	nearestSquareDist = -1.0;
@@ -1937,10 +1937,10 @@ bool cc2DLabel::pointPicking(const CCVector2d&           clickPos,
 
 			// warning: we have to handle the relative GL transformation!
 			ccGLMatrix trans;
-			bool       noGLTrans = pp.entity() ? !pp.entity()->getAbsoluteGLTransformation(trans) : true;
+			bool noGLTrans = pp.entity() ? !pp.entity()->getAbsoluteGLTransformation(trans) : true;
 
 			CCVector3d Q2D;
-			bool       insideFrustum = false;
+			bool insideFrustum = false;
 			if (noGLTrans)
 			{
 				camera.project(P, Q2D, &insideFrustum);
@@ -1958,8 +1958,8 @@ bool cc2DLabel::pointPicking(const CCVector2d&           clickPos,
 			}
 
 			// closest distance to XY
-			CCVector3d XP         = (P.toDouble() - X);
-			double     squareDist = (XP - XP.dot(xy) * xy).norm2();
+			CCVector3d XP = (P.toDouble() - X);
+			double squareDist = (XP - XP.dot(xy) * xy).norm2();
 
 			if (squareDist <= static_cast<double>(pp.markerScale) * pp.markerScale)
 			{

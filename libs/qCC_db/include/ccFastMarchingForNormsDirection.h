@@ -53,8 +53,8 @@ class ccFastMarchingForNormsDirection : public CCCoreLib::FastMarching
 
   public:
 	//! Static entry point (helper)
-	static int OrientNormals(ccPointCloud*     theCloud,
-	                         unsigned char     octreeLevel,
+	static int OrientNormals(ccPointCloud* theCloud,
+	                         unsigned char octreeLevel,
 	                         ccProgressDialog* progressCb = nullptr);
 	//! Default constructor
 	ccFastMarchingForNormsDirection();
@@ -69,17 +69,17 @@ class ccFastMarchingForNormsDirection : public CCCoreLib::FastMarching
 	    \param gridLevel the level of subdivision
 	    \return a negative value if something went wrong
 	**/
-	int init(ccGenericPointCloud*   cloud,
+	int init(ccGenericPointCloud* cloud,
 	         NormsIndexesTableType* theNorms,
-	         ccOctree*              theOctree,
-	         unsigned char          gridLevel);
+	         ccOctree* theOctree,
+	         unsigned char gridLevel);
 
 	//! Updates a list of point flags, indicating the points already processed
 	/** \return the number of resolved points
 	 **/
-	unsigned updateResolvedTable(ccGenericPointCloud*        theCloud,
+	unsigned updateResolvedTable(ccGenericPointCloud* theCloud,
 	                             std::vector<unsigned char>& resolved,
-	                             NormsIndexesTableType*      theNorms);
+	                             NormsIndexesTableType* theNorms);
 
 	// inherited methods (see FastMarchingAlgorithm)
 	int propagate() override;
@@ -121,9 +121,9 @@ class ccFastMarchingForNormsDirection : public CCCoreLib::FastMarching
 
 	// inherited methods (see FastMarchingAlgorithm)
 	float computeTCoefApprox(CCCoreLib::FastMarching::Cell* currentCell, CCCoreLib::FastMarching::Cell* neighbourCell) const override;
-	int   step() override;
-	void  initTrialCells() override;
-	bool  instantiateGrid(unsigned size) override
+	int step() override;
+	void initTrialCells() override;
+	bool instantiateGrid(unsigned size) override
 	{
 		return instantiateGridTpl<DirectionCell*>(size);
 	}

@@ -175,9 +175,9 @@ struct QCC_DB_LIB_API ccRasterGrid
 	 */
 	static bool ComputeGridSize(unsigned char Z,
 	                            const ccBBox& box,
-	                            double        gridStep,
-	                            unsigned&     width,
-	                            unsigned&     height);
+	                            double gridStep,
+	                            unsigned& width,
+	                            unsigned& height);
 
 	/**
 	 * @brief Initialize empty grid.
@@ -206,10 +206,10 @@ struct QCC_DB_LIB_API ccRasterGrid
 	 * @return true if successful.
 	 */
 	bool fillWithPoints(ccGenericPointCloud& cloud,
-	                    unsigned             Z,
-	                    double               gridStep,
-	                    const ccBBox&        bbox,
-	                    ccProgressDialog*    progress = nullptr);
+	                    unsigned Z,
+	                    double gridStep,
+	                    const ccBBox& bbox,
+	                    ccProgressDialog* progress = nullptr);
 
 	//! Grid width.
 	unsigned width;

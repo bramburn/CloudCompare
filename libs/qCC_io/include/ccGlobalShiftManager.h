@@ -54,10 +54,10 @@ class QCC_IO_LIB_API ccGlobalShiftManager
 	/// Dialog mode for shift handling
 	enum Mode
 	{
-		NO_DIALOG,           //!< No dialog, no shift
-		NO_DIALOG_AUTO_SHIFT,//!< Auto shift without dialog
-		DIALOG_IF_NECESSARY, //!< Show dialog if needed
-		ALWAYS_DISPLAY_DIALOG//!< Always show dialog
+		NO_DIALOG,            //!< No dialog, no shift
+		NO_DIALOG_AUTO_SHIFT, //!< Auto shift without dialog
+		DIALOG_IF_NECESSARY,  //!< Show dialog if needed
+		ALWAYS_DISPLAY_DIALOG //!< Always show dialog
 	};
 
 	/**
@@ -73,13 +73,13 @@ class QCC_IO_LIB_API ccGlobalShiftManager
 	 * @return true if handled
 	 */
 	static bool Handle(const CCVector3d& P,
-	                   double            diagonal,
-	                   Mode              mode,
-	                   bool              useInputCoordinatesShiftIfPossible,
-	                   CCVector3d&       coordinatesShift,
-	                   bool*             _preserveCoordinateShift = nullptr,
-	                   double*           _coordinatesScale        = nullptr,
-	                   bool*             _applyAll                = nullptr);
+	                   double diagonal,
+	                   Mode mode,
+	                   bool useInputCoordinatesShiftIfPossible,
+	                   CCVector3d& coordinatesShift,
+	                   bool* _preserveCoordinateShift = nullptr,
+	                   double* _coordinatesScale = nullptr,
+	                   bool* _applyAll = nullptr);
 
 	/**
 	 * @brief Check if point needs shifting
@@ -87,14 +87,14 @@ class QCC_IO_LIB_API ccGlobalShiftManager
 	 * @return true if shift needed
 	 */
 	static bool NeedShift(const CCVector3d& P);
-	
+
 	/**
 	 * @brief Check if coordinate needs shifting
 	 * @param[in] d Coordinate value
 	 * @return true if shift needed
 	 */
 	static bool NeedShift(double d);
-	
+
 	/**
 	 * @brief Check if dimension needs rescaling
 	 * @param[in] d Dimension value
@@ -108,7 +108,7 @@ class QCC_IO_LIB_API ccGlobalShiftManager
 	 * @return Recommended shift vector
 	 */
 	static CCVector3d BestShift(const CCVector3d& P);
-	
+
 	/**
 	 * @brief Get best scale for dimension
 	 * @param[in] d Dimension value
@@ -121,7 +121,7 @@ class QCC_IO_LIB_API ccGlobalShiftManager
 	{
 		return MAX_COORDINATE_ABS_VALUE;
 	}
-	
+
 	/// Set max coordinate absolute value
 	static void SetMaxCoordinateAbsValue(double value)
 	{
@@ -133,7 +133,7 @@ class QCC_IO_LIB_API ccGlobalShiftManager
 	{
 		return MAX_DIAGONAL_LENGTH;
 	}
-	
+
 	/// Set max bounding box diagonal
 	static void SetMaxBoundgBoxDiagonal(double value)
 	{
@@ -154,10 +154,10 @@ class QCC_IO_LIB_API ccGlobalShiftManager
 	 */
 	struct ShiftInfo
 	{
-		CCVector3d shift;  //!< Shift vector
-		double     scale;   //!< Scale factor
-		QString    name;    //!< Name
-		bool       preserve;//!< Preserve flag
+		CCVector3d shift; //!< Shift vector
+		double scale;     //!< Scale factor
+		QString name;     //!< Name
+		bool preserve;    //!< Preserve flag
 
 		/**
 		 * @brief Create shift info
@@ -170,7 +170,7 @@ class QCC_IO_LIB_API ccGlobalShiftManager
 		    , preserve(true)
 		{
 		}
-		
+
 		/**
 		 * @brief Create shift info
 		 * @param[in] str Name

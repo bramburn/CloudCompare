@@ -120,7 +120,7 @@ QString ImageFileFilter::GetSaveFilename(const QString& dialogTitle, const QStri
 	QString pngFilter;
 	for (int i = 0; i < formats.size(); ++i)
 	{
-		QString ext    = QString(formats[i].data()).toUpper();
+		QString ext = QString(formats[i].data()).toUpper();
 		QString filter = QString("%1 image (*.%2)").arg(ext, formats[i].data());
 		filters.append(filter + QString("\n"));
 
@@ -144,7 +144,7 @@ QString ImageFileFilter::GetLoadFilename(const QString& dialogTitle, const QStri
 {
 	// we grab the list of supported image file formats (for reading)
 	QList<QByteArray> formats = QImageReader::supportedImageFormats();
-	QStringList       imageExts;
+	QStringList imageExts;
 	for (int i = 0; i < formats.size(); ++i)
 	{
 		imageExts.append(QString("*.%1").arg(formats[i].data()));
@@ -162,7 +162,7 @@ bool ImageFileFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusiv
 {
 	if (type == CC_TYPES::IMAGE)
 	{
-		multiple  = false;
+		multiple = false;
 		exclusive = true;
 		return true;
 	}

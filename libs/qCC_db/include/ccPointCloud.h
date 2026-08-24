@@ -176,10 +176,10 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	//! Warnings for the partialClone method (bit flags)
 	enum CLONE_WARNINGS
 	{
-		WRN_OUT_OF_MEM_FOR_COLORS  = 1,
+		WRN_OUT_OF_MEM_FOR_COLORS = 1,
 		WRN_OUT_OF_MEM_FOR_NORMALS = 2,
-		WRN_OUT_OF_MEM_FOR_SFS     = 4,
-		WRN_OUT_OF_MEM_FOR_FWF     = 8
+		WRN_OUT_OF_MEM_FOR_SFS = 4,
+		WRN_OUT_OF_MEM_FOR_FWF = 8
 	};
 
 	//! Creates a new point cloud object from a ReferenceCloud (selection)
@@ -333,7 +333,7 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	// inherited from base class
 	void deleteScalarField(int index) override;
 	void deleteAllScalarFields() override;
-	int  addScalarField(const std::string& uniqueName) override;
+	int addScalarField(const std::string& uniqueName) override;
 
 	//! Returns whether color scale should be displayed or not
 	bool sfColorScaleShown() const;
@@ -375,8 +375,8 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 		{
 			return true;
 		}
-		bool  toFile(QFile& out, short dataVersion) const override;
-		bool  fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+		bool toFile(QFile& out, short dataVersion) const override;
+		bool fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 		short minimumFileVersion() const override;
 
 		//! Grid width
@@ -443,8 +443,8 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	//! Compute the normals with the associated grid structure(s)
 	/** Can also orient the normals in the same run.
 	 **/
-	bool computeNormalsWithGrids(double                       minTriangleAngle_deg = 1.0,
-	                             ccProgressDialog*            pDlg                 = nullptr,
+	bool computeNormalsWithGrids(double minTriangleAngle_deg = 1.0,
+	                             ccProgressDialog* pDlg = nullptr,
 	                             ccNormalVectors::Orientation preferredOrientation = ccNormalVectors::Orientation::UNDEFINED);
 
 	//! Orient the normals with the associated grid structure(s)
@@ -456,15 +456,15 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	//! Compute the normals by approximating the local surface around each point
 	bool computeNormalsWithOctree(CCCoreLib::LOCAL_MODEL_TYPES model,
 	                              ccNormalVectors::Orientation preferredOrientation,
-	                              PointCoordinateType          defaultRadius,
-	                              ccProgressDialog*            pDlg = nullptr);
+	                              PointCoordinateType defaultRadius,
+	                              ccProgressDialog* pDlg = nullptr);
 
 	//! Orient the normals with a Minimum Spanning Tree
-	bool orientNormalsWithMST(unsigned          kNN  = 6,
+	bool orientNormalsWithMST(unsigned kNN = 6,
 	                          ccProgressDialog* pDlg = nullptr);
 
 	//! Orient normals with Fast Marching
-	bool orientNormalsWithFM(unsigned char     level,
+	bool orientNormalsWithFM(unsigned char level,
 	                         ccProgressDialog* pDlg = nullptr);
 
 	//! Toggle the drawing of normals as small lines
@@ -518,7 +518,7 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	using FWFDescriptorSet = QMap<uint8_t, WaveformDescriptor>;
 
 	//! Waveform data container
-	using FWFDataContainer       = std::vector<uint8_t>;
+	using FWFDataContainer = std::vector<uint8_t>;
 	using SharedFWFDataContainer = QSharedPointer<const FWFDataContainer>;
 
 	//! Gives access to the FWF descriptors
@@ -602,26 +602,26 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	const CCVector3* getNormal(unsigned pointIndex) const override; // equivalent to getPointNormal, but for CCCoreLib
 
 	// inherited from ccGenericPointCloud
-	const ccColor::Rgb*        getScalarValueColor(ScalarType d) const override;
-	const ccColor::Rgb*        getPointScalarValueColor(unsigned pointIndex) const override;
-	ScalarType                 getPointDisplayedDistance(unsigned pointIndex) const override;
-	const ccColor::Rgba&       getPointColor(unsigned pointIndex) const override;
-	const CompressedNormType&  getPointNormalIndex(unsigned pointIndex) const override;
-	const CCVector3&           getPointNormal(unsigned pointIndex) const override;
+	const ccColor::Rgb* getScalarValueColor(ScalarType d) const override;
+	const ccColor::Rgb* getPointScalarValueColor(unsigned pointIndex) const override;
+	ScalarType getPointDisplayedDistance(unsigned pointIndex) const override;
+	const ccColor::Rgba& getPointColor(unsigned pointIndex) const override;
+	const CompressedNormType& getPointNormalIndex(unsigned pointIndex) const override;
+	const CCVector3& getPointNormal(unsigned pointIndex) const override;
 	CCCoreLib::ReferenceCloud* crop(const ccBBox& box, bool inside = true) override;
-	void                       scale(PointCoordinateType fx, PointCoordinateType fy, PointCoordinateType fz, CCVector3 center = CCVector3(0, 0, 0)) override;
+	void scale(PointCoordinateType fx, PointCoordinateType fy, PointCoordinateType fz, CCVector3 center = CCVector3(0, 0, 0)) override;
 	/** \warning if removeSelectedPoints is true, any attached octree will be deleted, as well as the visibility table.
 	    \warning If the visibility table selects all points from this point cloud, the return value will be the original point cloud
 	             rather than a new one.
 	**/
-	ccGenericPointCloud* createNewCloudFromVisibilitySelection(bool                       removeSelectedPoints        = false,
-	                                                           VisibilityTableType*       visTable                    = nullptr,
-	                                                           std::vector<int>*          newIndexesOfRemainingPoints = nullptr,
-	                                                           bool                       silent                      = false,
-	                                                           CCCoreLib::ReferenceCloud* selection                   = nullptr) override;
-	bool                 removeVisiblePoints(VisibilityTableType* visTable = nullptr, std::vector<int>* newIndexes = nullptr) override;
-	void                 applyRigidTransformation(const ccGLMatrix& trans) override;
-	inline void          refreshBB() override
+	ccGenericPointCloud* createNewCloudFromVisibilitySelection(bool removeSelectedPoints = false,
+	                                                           VisibilityTableType* visTable = nullptr,
+	                                                           std::vector<int>* newIndexesOfRemainingPoints = nullptr,
+	                                                           bool silent = false,
+	                                                           CCCoreLib::ReferenceCloud* selection = nullptr) override;
+	bool removeVisiblePoints(VisibilityTableType* visTable = nullptr, std::vector<int>* newIndexes = nullptr) override;
+	void applyRigidTransformation(const ccGLMatrix& trans) override;
+	inline void refreshBB() override
 	{
 		invalidateBoundingBox();
 	}
@@ -641,14 +641,14 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	/** The output (reference) clouds will have as many points as this cloud
 	    (with the indexes pointing on the closest point in the other cloud)
 	**/
-	QSharedPointer<CCCoreLib::ReferenceCloud> computeCPSet(ccGenericPointCloud&                otherCloud,
-	                                                       CCCoreLib::GenericProgressCallback* progressCb  = nullptr,
-	                                                       unsigned char                       octreeLevel = 0);
+	QSharedPointer<CCCoreLib::ReferenceCloud> computeCPSet(ccGenericPointCloud& otherCloud,
+	                                                       CCCoreLib::GenericProgressCallback* progressCb = nullptr,
+	                                                       unsigned char octreeLevel = 0);
 
 	//! Interpolate colors from another cloud (nearest neighbor only)
-	bool interpolateColorsFrom(ccGenericPointCloud*                cloud,
-	                           CCCoreLib::GenericProgressCallback* progressCb  = nullptr,
-	                           unsigned char                       octreeLevel = 0);
+	bool interpolateColorsFrom(ccGenericPointCloud* cloud,
+	                           CCCoreLib::GenericProgressCallback* progressCb = nullptr,
+	                           unsigned char octreeLevel = 0);
 
 	//! Sets a particular point color
 	/** \warning colors must be enabled.
@@ -769,15 +769,15 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 
 	struct RgbFilterOptions
 	{
-		bool             applyToSFduringRGB      = false;
-		RGB_FILTER_TYPES filterType              = RGB_FILTER_TYPES::NONE;
-		unsigned char    burntOutColorThreshold  = 0;
-		bool             commandLine             = false;
-		double           sigmaSF                 = -1;
-		double           spatialSigma            = -1;
-		bool             blendGrayscale          = false;
-		unsigned char    blendGrayscaleThreshold = 0;
-		double           blendGrayscalePercent   = 0.5;
+		bool applyToSFduringRGB = false;
+		RGB_FILTER_TYPES filterType = RGB_FILTER_TYPES::NONE;
+		unsigned char burntOutColorThreshold = 0;
+		bool commandLine = false;
+		double sigmaSF = -1;
+		double spatialSigma = -1;
+		bool blendGrayscale = false;
+		unsigned char blendGrayscaleThreshold = 0;
+		double blendGrayscalePercent = 0.5;
 	};
 
 	//! Applies a spatial Gaussian filter on RGB colors
@@ -794,9 +794,9 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	    \param progressCb the client application can get some notification of the process progress through this callback mechanism (see GenericProgressCallback)
 	    \return success
 	**/
-	bool applyFilterToRGB(PointCoordinateType                 sigma,
-	                      PointCoordinateType                 sigmaSF,
-	                      RgbFilterOptions                    filterParams,
+	bool applyFilterToRGB(PointCoordinateType sigma,
+	                      PointCoordinateType sigmaSF,
+	                      RgbFilterOptions filterParams,
 	                      CCCoreLib::GenericProgressCallback* progressCb = nullptr);
 
 	//! Assigns color to points proportionally to their 'height'
@@ -879,9 +879,9 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	//! Unrolling mode (see ccPointCloud::unroll)
 	enum UnrollMode
 	{
-		CYLINDER                         = 0,
-		CONE_CONICAL                     = 1,
-		CONE_CYLINDRICAL_FIXED_RADIUS    = 2,
+		CYLINDER = 0,
+		CONE_CONICAL = 1,
+		CONE_CYLINDRICAL_FIXED_RADIUS = 2,
 		CONE_CYLINDRICAL_ADAPTIVE_RADIUS = 3
 	};
 
@@ -889,7 +889,7 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	struct UnrollBaseParams
 	{
 		PointCoordinateType radius = 0; //!< Unrolling cylinder radius (or cone base radius)
-		CCVector3           axisDir;    //!< Unrolling cylinder/cone axis direction
+		CCVector3 axisDir;              //!< Unrolling cylinder/cone axis direction
 	};
 
 	//! Cylinder unrolling parameters
@@ -901,9 +901,9 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	//! Cone unrolling parameters
 	struct UnrollConeParams : public UnrollBaseParams
 	{
-		CCVector3 apex;                //!< Cone apex
-		double    coneAngle_deg = 0.0; //!< Cone aperture angle (in degrees)
-		double    spanRatio     = 0.5; //!< Conical projection span ratio
+		CCVector3 apex;             //!< Cone apex
+		double coneAngle_deg = 0.0; //!< Cone aperture angle (in degrees)
+		double spanRatio = 0.5;     //!< Conical projection span ratio
 	};
 
 	//! Unrolls the cloud and its normals on a cylinder or a cone
@@ -918,13 +918,13 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	    \param progressCb for progress notification
 	    \return the unrolled point cloud
 	**/
-	ccPointCloud* unroll(UnrollMode                          mode,
-	                     UnrollBaseParams*                   params,
-	                     bool                                exportDeviationSF = false,
-	                     double                              startAngle_deg    = 0.0,
-	                     double                              stopAngle_deg     = 360.0,
-	                     bool                                arbitraryOutputCS = false,
-	                     CCCoreLib::GenericProgressCallback* progressCb        = nullptr) const;
+	ccPointCloud* unroll(UnrollMode mode,
+	                     UnrollBaseParams* params,
+	                     bool exportDeviationSF = false,
+	                     double startAngle_deg = 0.0,
+	                     double stopAngle_deg = 360.0,
+	                     bool arbitraryOutputCS = false,
+	                     CCCoreLib::GenericProgressCallback* progressCb = nullptr) const;
 
 	//! Adds associated SF color ramp info to current GL context
 	void addColorRampInfo(CC_DRAW_CONTEXT& context);
@@ -1004,12 +1004,12 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 
   protected:
 	// inherited from ccHObject
-	void  drawMeOnly(CC_DRAW_CONTEXT& context) override;
-	void  applyGLTransformation(const ccGLMatrix& trans) override;
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	void drawMeOnly(CC_DRAW_CONTEXT& context) override;
+	void applyGLTransformation(const ccGLMatrix& trans) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	void  notifyGeometryUpdate() override;
+	void notifyGeometryUpdate() override;
 
 	// inherited from PointCloud
 	/** \warning Doesn't handle scan grids!
@@ -1079,10 +1079,10 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 		//! Update flags
 		enum UPDATE_FLAGS
 		{
-			UPDATE_POINTS  = 1,
-			UPDATE_COLORS  = 2,
+			UPDATE_POINTS = 1,
+			UPDATE_COLORS = 2,
 			UPDATE_NORMALS = 4,
-			UPDATE_ALL     = UPDATE_POINTS | UPDATE_COLORS | UPDATE_NORMALS
+			UPDATE_ALL = UPDATE_POINTS | UPDATE_COLORS | UPDATE_NORMALS
 		};
 
 		vboSet()
@@ -1097,12 +1097,12 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 		}
 
 		std::vector<VBO*> vbos;
-		bool              hasColors;
-		bool              colorIsSF;
-		ccScalarField*    sourceSF;
-		bool              hasNormals;
-		size_t            totalMemSizeBytes;
-		int               updateFlags;
+		bool hasColors;
+		bool colorIsSF;
+		ccScalarField* sourceSF;
+		bool hasNormals;
+		size_t totalMemSizeBytes;
+		int updateFlags;
 
 		//! Current state
 		STATES state;
@@ -1158,8 +1158,8 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 
 	struct NormalLineParameters
 	{
-		float         length   = 1.0f;
-		ccColor::Rgba color    = ccColor::yellow;
-		int           colorIdx = YELLOW;
+		float length = 1.0f;
+		ccColor::Rgba color = ccColor::yellow;
+		int colorIdx = YELLOW;
 	} m_normalLineParameters;
 };

@@ -61,7 +61,7 @@ namespace ccLibAlgorithms
 		}
 
 		CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic charac;
-		int                                                     subOption = 0;
+		int subOption = 0;
 	};
 
 	//! Set of GeomCharacteristic instances
@@ -69,19 +69,19 @@ namespace ccLibAlgorithms
 
 	//! Computes geometrical characteristics (see GeometricalAnalysisTools::GeomCharacteristic) on a set of entities
 	bool ComputeGeomCharacteristics(const GeomCharacteristicSet& characteristics,
-	                                PointCoordinateType          radius,
-	                                ccHObject::Container&        entities,
-	                                const CCVector3*             roughnessUpDir = nullptr,
-	                                QWidget*                     parent         = nullptr);
+	                                PointCoordinateType radius,
+	                                ccHObject::Container& entities,
+	                                const CCVector3* roughnessUpDir = nullptr,
+	                                QWidget* parent = nullptr);
 
 	//! Computes a geometrical characteristic (see GeometricalAnalysisTools::GeomCharacteristic) on a set of entities
 	bool ComputeGeomCharacteristic(CCCoreLib::GeometricalAnalysisTools::GeomCharacteristic algo,
-	                               int                                                     subOption,
-	                               PointCoordinateType                                     radius,
-	                               ccHObject::Container&                                   entities,
-	                               const CCVector3*                                        roughnessUpDir = nullptr,
-	                               QWidget*                                                parent         = nullptr,
-	                               ccProgressDialog*                                       progressDialog = nullptr);
+	                               int subOption,
+	                               PointCoordinateType radius,
+	                               ccHObject::Container& entities,
+	                               const CCVector3* roughnessUpDir = nullptr,
+	                               QWidget* parent = nullptr,
+	                               ccProgressDialog* progressDialog = nullptr);
 
 	// CCCoreLib algorithms handled by the 'ApplyCCCoreLibAlgorithm' method
 	enum CC_LIB_ALGORITHM
@@ -90,10 +90,10 @@ namespace ccLibAlgorithms
 	};
 
 	//! Applies a standard CCCoreLib algorithm (see CC_LIB_ALGORITHM) on a set of entities
-	bool ApplyCCLibAlgorithm(CC_LIB_ALGORITHM      algo,
+	bool ApplyCCLibAlgorithm(CC_LIB_ALGORITHM algo,
 	                         ccHObject::Container& entities,
-	                         QWidget*              parent               = nullptr,
-	                         void**                additionalParameters = nullptr);
+	                         QWidget* parent = nullptr,
+	                         void** additionalParameters = nullptr);
 
 	//! Scale matching algorithms
 	enum ScaleMatchingAlgorithm
@@ -106,11 +106,11 @@ namespace ccLibAlgorithms
 
 	//! Applies a standard CCCoreLib algorithm (see CC_LIB_ALGORITHM) on a set of entities
 	bool ApplyScaleMatchingAlgorithm(ScaleMatchingAlgorithm algo,
-	                                 ccHObject::Container&  entities,
-	                                 double                 icpRmsDiff,
-	                                 int                    icpFinalOverlap,
-	                                 unsigned               refEntityIndex = 0,
-	                                 QWidget*               parent         = nullptr);
+	                                 ccHObject::Container& entities,
+	                                 double icpRmsDiff,
+	                                 int icpFinalOverlap,
+	                                 unsigned refEntityIndex = 0,
+	                                 QWidget* parent = nullptr);
 } // namespace ccLibAlgorithms
 
 #endif

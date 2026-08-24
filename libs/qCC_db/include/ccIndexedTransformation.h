@@ -225,12 +225,12 @@ class QCC_DB_LIB_API ccIndexedTransformation : public ccGLMatrix
 	/**
 	 * @brief Save to binary file.
 	 */
-	bool  toFile(QFile& out, short dataVersion) const override;
+	bool toFile(QFile& out, short dataVersion) const override;
 
 	/**
 	 * @brief Load from binary file.
 	 */
-	bool  fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 
 	/**
 	 * @brief Minimum file version.

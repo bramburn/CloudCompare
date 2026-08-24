@@ -219,10 +219,10 @@ class QCC_DB_LIB_API ccGBLSensor : public ccSensor
 	    \param[out] depth distance between the sensor optical center and the 3D point
 	    \param[in] posIndex (optional) sensor position index (see ccIndexedTransformationBuffer)
 	**/
-	void projectPoint(const CCVector3&     sourcePoint,
-	                  CCVector2&           destPoint,
+	void projectPoint(const CCVector3& sourcePoint,
+	                  CCVector2& destPoint,
 	                  PointCoordinateType& depth,
-	                  double               posIndex = 0) const;
+	                  double posIndex = 0) const;
 
 	//! Computes the distance from the sensor to a given 3D point
 	/** \param[in] sourcePoint 3D point to project
@@ -230,7 +230,7 @@ class QCC_DB_LIB_API ccGBLSensor : public ccSensor
 	    \return distance between the sensor optical center and the 3D point
 	**/
 	PointCoordinateType computeDistanceToPoint(const CCVector3& sourcePoint,
-	                                           double           posIndex = 0) const;
+	                                           double posIndex = 0) const;
 
 	//! 2D grid of normals
 	using NormalGrid = std::vector<CCVector3>;
@@ -243,8 +243,8 @@ class QCC_DB_LIB_API ccGBLSensor : public ccSensor
 	    \return a bidimensional array of 3D vectors (same size as the depth buffer)
 	**/
 	NormalGrid* projectNormals(CCCoreLib::GenericCloud* cloud,
-	                           const NormalGrid&        norms,
-	                           double                   posIndex = 0) const;
+	                           const NormalGrid& norms,
+	                           double posIndex = 0) const;
 
 	//! 2D grid of colors
 	using ColorGrid = std::vector<ccColor::Rgb>;
@@ -256,7 +256,7 @@ class QCC_DB_LIB_API ccGBLSensor : public ccSensor
 	    \return a set of RGB colors organized as a bidimensional grid (same size as the depth buffer)
 	**/
 	ColorGrid* projectColors(CCCoreLib::GenericCloud* cloud,
-	                         const ColorGrid&         rgbColors) const;
+	                         const ColorGrid& rgbColors) const;
 
   public: // depth buffer management
 	//! Projects a point cloud along the sensor point of view defined by this instance
@@ -281,10 +281,10 @@ class QCC_DB_LIB_API ccGBLSensor : public ccSensor
 
   protected:
 	// Inherited from ccHObject
-	bool  toFile_MeOnly(QFile& out, short dataVersion) const override;
-	bool  fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
+	bool toFile_MeOnly(QFile& out, short dataVersion) const override;
+	bool fromFile_MeOnly(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion_MeOnly() const override;
-	void  drawMeOnly(CC_DRAW_CONTEXT& context) override;
+	void drawMeOnly(CC_DRAW_CONTEXT& context) override;
 
 	//! Converts 2D angular coordinates (yaw,pitch) in integer depth buffer coordinates
 	bool convertToDepthMapCoords(PointCoordinateType yaw, PointCoordinateType pitch, unsigned& i, unsigned& j) const;

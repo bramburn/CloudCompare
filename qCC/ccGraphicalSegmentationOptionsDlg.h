@@ -60,13 +60,13 @@ class ccGraphicalSegmentationOptionsDlg : public QDialog
 	{
 		return "SegmentationToolOptions";
 	}
-	
+
 	/// Remaining suffix key
 	static QString RemainingSuffixKey()
 	{
 		return "Remaining";
 	}
-	
+
 	/// Segmented suffix key
 	static QString SegmentedSuffixKey()
 	{

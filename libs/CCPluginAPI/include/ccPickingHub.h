@@ -79,10 +79,10 @@ class CCPLUGIN_LIB_API ccPickingHub : public QObject
 	 * @param[in] mode Picking mode
 	 * @return true on success
 	 */
-	bool addListener(ccPickingListener*                listener,
-	                 bool                              exclusive        = false,
-	                 bool                              autoStartPicking = true,
-	                 ccGLWindowInterface::PICKING_MODE mode             = ccGLWindowInterface::POINT_OR_TRIANGLE_PICKING);
+	bool addListener(ccPickingListener* listener,
+	                 bool exclusive = false,
+	                 bool autoStartPicking = true,
+	                 ccGLWindowInterface::PICKING_MODE mode = ccGLWindowInterface::POINT_OR_TRIANGLE_PICKING);
 
 	/**
 	 * @brief Remove a picking listener

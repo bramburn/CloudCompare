@@ -61,14 +61,14 @@ class ccAlignDlg : public QDialog
 	ccAlignDlg(ccGenericPointCloud* data, ccGenericPointCloud* model, QWidget* parent = nullptr);
 	virtual ~ccAlignDlg();
 
-	unsigned                   getNbTries();
-	double                     getOverlap();
-	double                     getDelta();
-	ccGenericPointCloud*       getModelObject();
-	ccGenericPointCloud*       getDataObject();
-	CC_SAMPLING_METHOD         getSamplingMethod();
-	bool                       isNumberOfCandidatesLimited();
-	unsigned                   getMaxNumberOfCandidates();
+	unsigned getNbTries();
+	double getOverlap();
+	double getDelta();
+	ccGenericPointCloud* getModelObject();
+	ccGenericPointCloud* getDataObject();
+	CC_SAMPLING_METHOD getSamplingMethod();
+	bool isNumberOfCandidatesLimited();
+	unsigned getMaxNumberOfCandidates();
 	CCCoreLib::ReferenceCloud* getSampledModel();
 	CCCoreLib::ReferenceCloud* getSampledData();
 

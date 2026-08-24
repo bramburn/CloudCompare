@@ -81,7 +81,7 @@ bool PovFilter::canSave(CC_CLASS_ENUM type, bool& multiple, bool& exclusive) con
 {
 	if (type == CC_TYPES::POINT_CLOUD)
 	{
-		multiple  = true;
+		multiple = true;
 		exclusive = true;
 		return true;
 	}
@@ -101,7 +101,7 @@ CC_FILE_ERROR PovFilter::saveToFile(ccHObject* entity, const QString& filename, 
 	if (hClouds.empty())
 		return CC_FERR_NO_SAVE;
 
-	std::vector<ccGBLSensor*>         sensors;
+	std::vector<ccGBLSensor*> sensors;
 	std::vector<ccGenericPointCloud*> clouds;
 	{
 		for (unsigned i = 0; i < hClouds.size(); ++i)
@@ -174,15 +174,15 @@ CC_FILE_ERROR PovFilter::saveToFile(ccHObject* entity, const QString& filename, 
 			if (result > 0)
 			{
 				ccGBLSensor* gls = sensors[i];
-				const float* C   = gls->getRigidTransformation().getTranslation();
-				result           = fprintf(mainFile, "C %f %f %f\n", C[0], C[1], C[2]);
+				const float* C = gls->getRigidTransformation().getTranslation();
+				result = fprintf(mainFile, "C %f %f %f\n", C[0], C[1], C[2]);
 
 				if (result > 0)
 				{
 					const float* mat = gls->getRigidTransformation().data();
-					result           = fprintf(mainFile, "X %f %f %f\n", mat[0], mat[1], mat[2]);
-					result           = fprintf(mainFile, "Y %f %f %f\n", mat[4], mat[5], mat[6]);
-					result           = fprintf(mainFile, "Z %f %f %f\n", mat[8], mat[9], mat[10]);
+					result = fprintf(mainFile, "X %f %f %f\n", mat[0], mat[1], mat[2]);
+					result = fprintf(mainFile, "Y %f %f %f\n", mat[4], mat[5], mat[6]);
+					result = fprintf(mainFile, "Z %f %f %f\n", mat[8], mat[9], mat[10]);
 				}
 
 				if (result > 0)
@@ -267,7 +267,7 @@ CC_FILE_ERROR PovFilter::loadFile(const QString& filename, ccHObject& container,
 	}
 
 	float base = 0.0f;
-	char  unitsType[3]; // units: ignored in this version
+	char unitsType[3]; // units: ignored in this version
 	if (fscanf(fp, "SENSOR_BASE = %f\n", &base) < 0
 	    || fscanf(fp, "UNITS = %s\n", unitsType) < 0
 	    || !fgets(line, MAX_ASCII_FILE_LINE_LENGTH, fp)
@@ -312,15 +312,15 @@ CC_FILE_ERROR PovFilter::loadFile(const QString& filename, ccHObject& container,
 				return CC_FERR_UNKNOWN_FILE;
 			}
 
-			CC_FILE_ERROR result   = CC_FERR_NO_ERROR;
-			ccHObject*    entities = FileIOFilter::LoadFromFile(QString("%1/%2").arg(path, subFileName), parameters, filter, result);
+			CC_FILE_ERROR result = CC_FERR_NO_ERROR;
+			ccHObject* entities = FileIOFilter::LoadFromFile(QString("%1/%2").arg(path, subFileName), parameters, filter, result);
 			if (entities)
 			{
 				ccGLMatrix rot;
 				rot.toIdentity();
 				CCVector3 sensorCenter(0, 0, 0);
-				float     dPhi   = 1.0f;
-				float     dTheta = 1.0f;
+				float dPhi = 1.0f;
+				float dTheta = 1.0f;
 
 				while (fgets(line, MAX_ASCII_FILE_LINE_LENGTH, fp))
 				{
@@ -339,7 +339,7 @@ CC_FILE_ERROR PovFilter::loadFile(const QString& filename, ccHObject& container,
 
 						assert(line[0] >= 88);
 						unsigned char col = static_cast<unsigned char>(line[0] - 88);
-						float*        mat = rot.data();
+						float* mat = rot.data();
 						assert(col < 3);
 						mat[col + 0] = V[0];
 						mat[col + 4] = V[1];
