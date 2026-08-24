@@ -50,8 +50,8 @@ class qStepCADImport : public QObject
 	explicit qStepCADImport(QObject* parent = nullptr);
 
 	/// Register command line commands
-	void       registerCommands(ccCommandLineInterface* inCmdLine) override;
-	
+	void registerCommands(ccCommandLineInterface* inCmdLine) override;
+
 	/// Get list of supported filters
 	FilterList getFilters() override;
 };

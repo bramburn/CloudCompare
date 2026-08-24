@@ -5,71 +5,15 @@
 // #  This program is free software; you can redistribute it and/or modify  #
 // #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
-// #                                                                        //
+// #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
-// #                                                                        //
+// #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
-
-/**
- * @file ccColorScale.h
- *
- * @brief Color scale for scalar field visualization.
- *
- * @details Color scales map scalar values to colors for visualization
- * of point clouds and meshes.
- *
- * ## Overview
- *
- * A color scale consists of:
- * - **Steps**: Position-color pairs defining key colors
- * - **Interpolation**: Linear interpolation between steps
- * - **Labels**: Optional text labels at specific positions
- *
- * ## Modes
- *
- * ### Relative Mode
- * Values are normalized to [0,1] range.
- * Good for arbitrary scalar fields.
- *
- * ### Absolute Mode
- * Values map to actual scalar ranges.
- * Good for data with known min/max (e.g., elevations).
- *
- * ## Built-in Scales
- *
- * CloudCompare includes several pre-defined scales:
- * - Grey (monochrome)
- * - Fire
- * - Science (viridis-like)
- * - Ice and Fire
- * - Royal
- * - Normalize
- *
- * ## Usage
- *
- * @code
- * // Create a color scale
- * ccColorScale::Shared scale = ccColorScale::Create("My Scale");
- *
- * // Add color stops
- * scale->insert(0.0, Qt::blue);
- * scale->insert(0.5, Qt::yellow);
- * scale->insert(1.0, Qt::red);
- *
- * // Generate lookup table
- * scale->refresh();
- *
- * // Get color for a value
- * QColor color = scale->getColorByValue(0.75);
- * @endcode
- *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- */
 
 #ifndef CC_COLOR_SCALE_HEADER
 #define CC_COLOR_SCALE_HEADER
@@ -85,252 +29,170 @@
 // System
 #include <set>
 
-/**
- * @brief A single element (stop) in a color scale.
- *
- * @details Represents a position-color pair in a color gradient.
- * Position is relative [0.0, 1.0].
- */
+//! Color scale element: one value + one color
 class ccColorScaleElement
 {
   public:
-	/**
-	 * @brief Default constructor.
-	 *
-	 * Creates element at position 0.0 with black color.
-	 */
+	//! Default constructor
 	ccColorScaleElement()
 	    : m_relativePos(0.0)
 	    , m_color(Qt::black)
 	{
 	}
 
-	/**
-	 * @brief Create an element.
-	 *
-	 * @param[in] relativePos Position in scale (0.0 to 1.0).
-	 * @param[in] color Color at this position.
-	 */
+	//! Constructor from a (relative) position and a color
 	ccColorScaleElement(double relativePos, const QColor& color)
 	    : m_relativePos(relativePos)
 	    , m_color(color)
 	{
 	}
 
-	/**
-	 * @brief Set position.
-	 *
-	 * @param[in] pos Relative position (0.0 to 1.0).
-	 */
-	void setRelativePos(double pos)
+	//! Sets associated value (relative to scale boundaries)
+	/** \param pos relative position (always between 0.0 and 1.0!)
+	 **/
+	inline void setRelativePos(double pos)
 	{
 		m_relativePos = pos;
 	}
-
-	/**
-	 * @brief Get position.
-	 *
-	 * @return Relative position (0.0 to 1.0).
-	 */
-	double getRelativePos() const
+	//! Returns step position (relative to scale boundaries)
+	/** \return relative position (always between 0.0 and 1.0!)
+	 **/
+	inline double getRelativePos() const
 	{
 		return m_relativePos;
 	}
 
-	/**
-	 * @brief Set color.
-	 *
-	 * @param[in] color Color value.
-	 */
-	void setColor(const QColor& color)
+	//! Sets color
+	inline void setColor(const QColor& color)
 	{
 		m_color = color;
 	}
-
-	/**
-	 * @brief Get color.
-	 *
-	 * @return Color value.
-	 */
-	const QColor& getColor() const
+	//! Returns color
+	inline const QColor& getColor() const
 	{
 		return m_color;
 	}
 
-	/**
-	 * @brief Compare two elements by position.
-	 */
-	static bool IsSmaller(const ccColorScaleElement& e1, const ccColorScaleElement& e2)
+	//! Comparison operator between two color scale elements
+	inline static bool IsSmaller(const ccColorScaleElement& e1, const ccColorScaleElement& e2)
 	{
 		return e1.getRelativePos() < e2.getRelativePos();
 	}
 
   protected:
-	//! Relative position (0.0 to 1.0).
+	//! Step (relative) position
+	/** Must always be between 0.0 and 1.0!
+	 **/
 	double m_relativePos;
-
-	//! Color at this position.
+	//! Color
 	QColor m_color;
 };
 
-/**
- * @brief Color scale for scalar field visualization.
- *
- * Maps scalar values to RGB colors via color-stop interpolation.
- * Used by ccScalarField to colorize point clouds and meshes.
- *
- * Modes:
- * - Relative: values normalized to [0,1] before lookup
- * - Absolute: values mapped directly via [min,max] bounds
- *
- * Performance: insert() modifies stops, refresh() builds a pre-computed
- * lookup table (m_colorTable) for O(1) getColorByTableIndex() calls.
- *
- * @extends ccSerializableObject
- */
+//! Color scale
+/** A color scale is defined by several 'steps' corresponding to given colors.
+    The color between each step is linearly interpolated. A valid color scale
+    must have at least 2 steps, one at relative position 0.0 (scale start) and
+    one at relative position 1.0 (scale end). Steps can't be defined outside
+    this interval.
+
+    For faster access, an array of interpolated colors is maintained internally.
+    Be sure that the 'refresh' method has been called after any modification
+    of the scale steps (position or color).
+**/
 class QCC_DB_LIB_API ccColorScale : public ccSerializableObject
 {
   public:
-	//! Shared pointer type.
+	//! Shared pointer type
 	using Shared = QSharedPointer<ccColorScale>;
 
-	/**
-	 * @brief Create a new color scale.
-	 *
-	 * @param[in] name Scale name.
-	 *
-	 * @return New color scale (relative by default).
-	 *
-	 * @note UUID is auto-generated.
-	 */
+	//! Creates a new color scale (with auto-generated unique id)
+	/** Warning: color scale is relative by default.
+	 **/
 	static ccColorScale::Shared Create(const QString& name);
 
-	/**
-	 * @brief Construct a color scale.
-	 *
-	 * @param[in] name Scale name.
-	 * @param[in] uuid UUID (auto-generated if empty).
-	 *
-	 * @note Scale is relative by default.
-	 * @note Two extreme steps are created (0.0 and 1.0).
-	 */
+	//! Default constructor
+	/** \param name scale name
+	    \param uuid UUID (automatically generated if none is provided)
+	    Scale are 'relative' by default (can be changed afterwards, see setAbsolute).
+	    On construction they already have the two extreme steps defined (at position
+	    0.0 and 1.0).
+	**/
 	ccColorScale(const QString& name, const QString& uuid = QString());
 
-	/**
-	 * @brief Destructor.
-	 */
+	//! Destructor
 	~ccColorScale() override = default;
 
-	/**
-	 * @brief Create a copy with new UUID.
-	 *
-	 * @param[in] uuid New UUID (auto-generated if empty).
-	 *
-	 * @return Copy of this scale.
-	 */
+	//! Creates a copy of this color scale (with a specified unique id)
 	ccColorScale::Shared copy(const QString& uuid = QString()) const;
 
-	//! Minimum number of steps.
+	//! Minimum number of steps
 	static constexpr unsigned MIN_STEPS = 2;
 
-	//! Default lookup table size.
+	//! Default number of steps for display
 	static constexpr unsigned DEFAULT_STEPS = 256;
 
-	//! Maximum lookup table size.
+	//! Maximum number of steps (internal representation)
 	static constexpr unsigned MAX_STEPS = 1024;
 
-	/**
-	 * @brief Get scale name.
-	 */
-	const QString& getName() const
+	//! Returns name
+	inline const QString& getName() const
 	{
 		return m_name;
 	}
-
-	/**
-	 * @brief Set scale name.
-	 */
+	//! Sets name
 	void setName(const QString& name)
 	{
 		m_name = name;
 	}
 
-	/**
-	 * @brief Get unique ID.
-	 */
+	//! Returns unique ID
 	const QString& getUuid() const
 	{
 		return m_uuid;
 	}
-
-	/**
-	 * @brief Set unique ID.
-	 */
+	//! Sets unique ID
 	void setUuid(const QString& uuid)
 	{
 		m_uuid = uuid;
 	}
-
-	/**
-	 * @brief Generate a new unique ID.
-	 */
+	//! Generates a new unique ID
 	void generateNewUuid();
 
-	/**
-	 * @brief Check if scale is relative.
-	 *
-	 * @return true if relative (0.0-1.0).
-	 */
-	bool isRelative() const
+	//! Returns whether scale is relative or absoute
+	/** Relative means that internal 'values' are percentage.
+	 **/
+	inline bool isRelative() const
 	{
 		return m_relative;
 	}
 
-	/**
-	 * @brief Set scale as relative.
-	 */
-	void setRelative()
+	//! Sets scale as relative
+	inline void setRelative()
 	{
 		m_relative = true;
 	}
 
-	/**
-	 * @brief Set scale as absolute with bounds.
-	 *
-	 * @param[in] minVal Minimum value.
-	 * @param[in] maxVal Maximum value.
-	 */
+	//! Sets scale as absolute
 	void setAbsolute(double minVal, double maxVal);
 
-	/**
-	 * @brief Get absolute scale boundaries.
-	 *
-	 * @param[out] minVal Minimum value.
-	 * @param[out] maxVal Maximum value.
-	 *
-	 * @note Only valid for absolute scales.
-	 */
+	//! Get absolute scale boundaries
+	/** Warning: only valid with absolute scales!
+	 **/
 	void getAbsoluteBoundaries(double& minVal, double& maxVal) const;
 
-	/**
-	 * @brief Check if scale is read-only.
-	 */
-	bool isReadOnly() const
+	//! Returns whether scale is read-only or not
+	inline bool isReadOnly() const
 	{
 		return m_readOnly;
 	}
 
-	/**
-	 * @brief Set read-only state.
-	 */
-	void setReadOnly(bool state)
+	//! Sets whether scale is read-only or not
+	inline void setReadOnly(bool state)
 	{
 		m_readOnly = state;
 	}
 
-	/**
-	 * @brief Label for a position.
-	 */
+	//! Color scale label (value + optional text)
 	struct Label
 	{
 		Label(double v)
@@ -353,213 +215,191 @@ class QCC_DB_LIB_API ccColorScale : public ccSerializableObject
 		}
 	};
 
-	//! Type for custom labels list.
+	//! Type of a list of custom labels
 	using LabelSet = std::set<Label>;
 
-	/**
-	 * @brief Get custom labels.
-	 */
-	const LabelSet& getLabels() const
+	//! Returns the list of custom labels (if any)
+	inline LabelSet& customLabels()
 	{
-		return m_labels;
+		return m_customLabels;
+	}
+	//! Returns the list of custom labels (if any - const version)
+	inline const LabelSet& customLabels() const
+	{
+		return m_customLabels;
 	}
 
-	/**
-	 * @brief Set custom labels.
-	 */
-	void setLabels(const LabelSet& labels);
-
-	/**
-	 * @brief Insert a color stop.
-	 *
-	 * @param[in] relativePos Position (0.0-1.0).
-	 * @param[in] color Color at position.
-	 *
-	 * @return true on success.
-	 */
-	bool insert(double relativePos, const QColor& color);
-
-	/**
-	 * @brief Remove a color stop.
-	 *
-	 * @param[in] index Stop index.
-	 *
-	 * @return true on success.
-	 *
-	 * @note Cannot remove first or last stop.
-	 */
-	bool remove(int index);
-
-	/**
-	 * @brief Get number of color stops.
-	 */
-	unsigned stepCount() const
+	//! Sets the list of custom labels (only if the scale is absolute)
+	/** \warning May throw std::bad_alloc exception)
+	 **/
+	inline void setCustomLabels(const LabelSet& labels)
 	{
-		return static_cast<unsigned>(m_steps.size());
+		m_customLabels = labels;
 	}
 
-	/**
-	 * @brief Get a color stop.
-	 *
-	 * @param[in] index Stop index.
-	 *
-	 * @return Color stop element.
-	 */
-	const ccColorScaleElement& getStep(unsigned index) const;
-
-	/**
-	 * @brief Get interpolated color for position.
-	 *
-	 * @param[in] relativePos Position (0.0-1.0).
-	 *
-	 * @return Interpolated color.
-	 */
-	QColor getColorByRelativePos(double relativePos) const;
-
-	/**
-	 * @brief Get interpolated RGB color for position (pointer-returning overload).
-	 *
-	 * @param[in] relativePos Position (0.0-1.0).
-	 * @param[in] outOfRangeColor Color to return if position is out of [0;1].
-	 *
-	 * @return Pointer to RGB color (or outOfRangeColor if out of range).
-	 *
-	 * @note Compatibility overload: restored to support code that expects
-	 *       const ccColor::Rgb* return type (upstream API).
-	 */
-	inline const ccColor::Rgb* getColorByRelativePos(double relativePos, const ccColor::Rgb* outOfRangeColor) const
+	//! Returns the current number of steps
+	/** A valid scale should always have at least 2 steps!
+	 **/
+	inline int stepCount() const
 	{
+		return m_steps.size();
+	}
+
+	//! Access to a given step
+	inline ccColorScaleElement& step(int index)
+	{
+		return m_steps[index];
+	}
+
+	//! Access to a given step (const)
+	inline const ccColorScaleElement& step(int index) const
+	{
+		return m_steps[index];
+	}
+
+	//! Adds a step
+	/** Scale must not be read-only.
+	 **/
+	void insert(const ccColorScaleElement& step, bool autoUpdate = true);
+
+	//! Deletes a given step
+	/** The first and last index shouldn't be deleted!
+	    Scale must not be read-only.
+	**/
+	void remove(int index, bool autoUpdate = true);
+
+	//! Clears all steps
+	/** There should be at least 2 steps for the scale to be valid!
+	    Scale must not be read-only.
+	**/
+	void clear();
+
+	//! Updates internal representation
+	/** Must be called at least once after any modification
+	    (before using this scale).
+	**/
+	void update();
+
+	//! Returns relative position of a given value (wrt to scale absolute min and max)
+	/** Warning: only valid with absolute scales! Use 'getColorByRelativePos' otherwise.
+	 **/
+	inline double getRelativePosition(double value) const
+	{
+		assert(m_updated && !m_relative);
+		return (value - m_absoluteMinValue) / m_absoluteRange;
+	}
+
+	//! Returns color by value
+	/** Warning: only valid with absolute scales!
+	    \param value value
+	    \param outOfRangeColor default color to return if relativePos if out of [0;1]
+	    \return corresponding color
+	**/
+	inline const ccColor::Rgb* getColorByValue(double value, const ccColor::Rgb* outOfRangeColor = nullptr) const
+	{
+		assert(m_updated && !m_relative);
+		double relativePos = getRelativePosition(value);
+		return (relativePos >= 0.0 && relativePos <= 1.0 ? getColorByRelativePos(relativePos) : outOfRangeColor);
+	}
+
+	//! Returns color by relative position in scale
+	/** \param relativePos relative position (should be in [0;1])
+	    \param outOfRangeColor default color to return if relativePos if out of [0;1]
+	    \return corresponding color
+	**/
+	inline const ccColor::Rgb* getColorByRelativePos(double relativePos, const ccColor::Rgb* outOfRangeColor = nullptr) const
+	{
+		assert(m_updated);
+		if (relativePos >= 0.0 && relativePos <= 1.0)
+			return &getColorByIndex(static_cast<unsigned>(relativePos * (MAX_STEPS - 1)));
+		else
+			return outOfRangeColor;
+	}
+
+	//! Returns color by relative position in scale with a given 'resolution'
+	/** \param relativePos relative position (must be between 0 and 1!)
+	    \param steps desired resolution (must be greater than 1 and smaller than MAX_STEPS)
+	    \param outOfRangeColor default color to return if relativePos if out of [0;1]
+	    \return corresponding color
+	**/
+	inline const ccColor::Rgb* getColorByRelativePos(double relativePos, unsigned steps, const ccColor::Rgb* outOfRangeColor = nullptr) const
+	{
+		assert(m_updated);
 		if (relativePos >= 0.0 && relativePos <= 1.0)
 		{
-			QColor c    = getColorByRelativePos(relativePos);
-			m_tempRgb.r = static_cast<unsigned char>(c.red());
-			m_tempRgb.g = static_cast<unsigned char>(c.green());
-			m_tempRgb.b = static_cast<unsigned char>(c.blue());
-			return &m_tempRgb;
+			// quantized (16 bits) version --> much faster than floor!
+			unsigned index = (static_cast<unsigned>((relativePos * steps) * 65535.0)) >> 16;
+			return &getColorByIndex((index * (MAX_STEPS - 1)) / steps);
 		}
-		return outOfRangeColor;
-	}
-
-	/**
-	 * @brief Get interpolated RGB color with quantization (pointer-returning overload).
-	 *
-	 * @param[in] relativePos Position (0.0-1.0).
-	 * @param[in] steps Quantization steps.
-	 * @param[in] outOfRangeColor Color to return if position is out of [0;1].
-	 *
-	 * @return Pointer to RGB color (or outOfRangeColor if out of range).
-	 *
-	 * @note Compatibility overload: restored to support code that expects
-	 *       const ccColor::Rgb* return type (upstream API).
-	 */
-	inline const ccColor::Rgb* getColorByRelativePos(double relativePos, unsigned steps, const ccColor::Rgb* outOfRangeColor) const
-	{
-		// Quantize to steps — same formula as upstream
-		if (relativePos >= 0.0 && relativePos <= 1.0)
+		else
 		{
-			unsigned      index = (static_cast<unsigned>((relativePos * steps) * 65535.0)) >> 16;
-			const QColor& c     = getColorByTableIndex((index * getTableSize()) / std::max(steps, 1u));
-			m_tempRgb.r         = static_cast<unsigned char>(c.red());
-			m_tempRgb.g         = static_cast<unsigned char>(c.green());
-			m_tempRgb.b         = static_cast<unsigned char>(c.blue());
-			return &m_tempRgb;
+			return outOfRangeColor;
 		}
-		return outOfRangeColor;
 	}
 
-	/**
-	 * @brief Get color for absolute value.
-	 *
-	 * @param[in] value Scalar value.
-	 *
-	 * @return Color at value.
-	 *
-	 * @note For relative scales, value should be normalized.
-	 */
-	QColor getColorByValue(double value) const;
-
-	/**
-	 * @brief Regenerate lookup table.
-	 *
-	 * @param[in] steps Number of steps (256 by default).
-	 *
-	 * @note Must be called after modifying stops.
-	 */
-	void refresh(unsigned steps = DEFAULT_STEPS);
-
-	/**
-	 * @brief Get lookup table size.
-	 */
-	unsigned getTableSize() const
+	//! Returns color by index
+	/** \param index color index in m_rgbaScale array (must be below MAX_STEPS)
+	    \return corresponding color
+	**/
+	inline const ccColor::Rgb& getColorByIndex(unsigned index) const
 	{
-		return m_tableSize;
+		assert(m_updated && index < MAX_STEPS);
+		return m_rgbaScale[index];
 	}
 
-	/**
-	 * @brief Get color from lookup table.
-	 *
-	 * @param[in] index Table index.
-	 *
-	 * @return Color at index.
-	 */
-	const QColor& getColorByTableIndex(unsigned index) const;
+	//! Saves this color scale as an XML file
+	bool saveAsXML(const QString& filename) const;
+	//! Loads a color scale from an XML file
+	static Shared LoadFromXML(const QString& filename);
 
-	/**
-	 * @brief Check if scale is empty.
-	 */
-	bool isEmpty() const
+	// inherited from ccSerializableObject
+	bool isSerializable() const override
 	{
-		return m_steps.empty();
+		return true;
 	}
-
-	// Serialization
-	/**
-	 * @brief Serialize to binary.
-	 */
-	bool toFile(QFile& out, short dataVersion) const override;
-
-	/**
-	 * @brief Deserialize from binary.
-	 */
-	bool fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
-
-	/**
-	 * @brief Minimum file version required to save this instance.
-	 */
+	bool  toFile(QFile& out, short dataVersion) const override;
+	bool  fromFile(QFile& in, short dataVersion, int flags, LoadedIDMap& oldToNewIDMap) override;
 	short minimumFileVersion() const override;
 
   protected:
-	//! Scale name.
+	//! Sort elements
+	void sort();
+
+	//! Name
 	QString m_name;
 
-	//! Unique identifier.
+	//! Unique ID
 	QString m_uuid;
 
-	//! Color stops (sorted by position).
-	std::vector<ccColorScaleElement> m_steps;
+	//! Elements
+	QList<ccColorScaleElement> m_steps;
 
-	//! Custom labels.
-	LabelSet m_labels;
+	//! Internal representation (RGB)
+	ccColor::Rgb m_rgbaScale[MAX_STEPS];
 
-	//! Lookup table (pre-computed colors).
-	std::vector<QColor> m_colorTable;
+	//! Internal representation validity
+	bool m_updated;
 
-	//! Lookup table size.
-	unsigned m_tableSize = 0;
+	//! Whether scale is relative or not
+	bool m_relative;
 
-	//! Temporary RGB storage for compatibility pointer-returning overloads.
-	//! Used by getColorByRelativePos(double, const ccColor::Rgb*) overloads.
-	mutable ccColor::Rgb m_tempRgb;
+	//! Whether scale is read-only or not
+	bool m_readOnly;
 
-	//! Relative mode flag.
-	bool m_relative = true;
+	//! 'Absolute' minimum value
+	/** Only used if scale is 'absolute' (i.e. not relative).
+	    'Absolute' should not be taken in its mathematical meaning!
+	**/
+	double m_absoluteMinValue;
 
-	//! Read-only flag.
-	bool m_readOnly = false;
+	//! 'Absolute' range
+	/** Only used if scale is 'absolute' (i.e. not relative).
+	    'Absolute' should not be taken in its mathematical meaning!
+	**/
+	double m_absoluteRange;
 
-	//! Absolute mode boundaries.
-	double m_minVal = 0.0;
-	double m_maxVal = 1.0;
+	//! List of custom labels
+	LabelSet m_customLabels;
 };
 
 #endif // CC_COLOR_SCALE_HEADER
