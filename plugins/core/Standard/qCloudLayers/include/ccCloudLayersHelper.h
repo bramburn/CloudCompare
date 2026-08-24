@@ -1,58 +1,43 @@
-#pragma once
+﻿#pragma once
 
-//##########################################################################
-//#                                                                        #
-//#                   CLOUDCOMPARE PLUGIN: qCloudLayers                    #
-//#                                                                        #
-//#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU General Public License as published by  #
-//#  the Free Software Foundation; version 2 of the License.               #
-//#                                                                        #
-//#  This program is distributed in the hope that it will be useful,       #
-//#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
-//#  GNU General Public License for more details.                          #
-//#                                                                        #
-//#                     COPYRIGHT: WigginsTech 2022                        #
-//#                                                                        #
-//##########################################################################
+// ##########################################################################
+// #                                                                        #
+// #                   CLOUDCOMPARE PLUGIN: qCloudLayers                    #
+// #                                                                        #
+// #  This program is free software; you can redistribute it and/or modify  #
+// #  it under the terms of the GNU General Public License as published by  #
+// #  the Free Software Foundation; version 2 of the License.               #
+// #                                                                        #
+// #  This program is distributed in the hope that it will be useful,       #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+// #  GNU General Public License for more details.                          #
+// #                                                                        #
+// #                     COPYRIGHT: WigginsTech 2022                        #
+// #                                                                        #
+// ##########################################################################
 
 #include "ccAsprsModel.h"
 
-//CC
-#include <CCTypes.h>
+// CC
 #include <CCGeom.h>
+#include <CCTypes.h>
 #include <ccColorTypes.h>
 #include <ccGenericGLDisplay.h>
 
-//QT
+// QT
 #include <QColor>
 
-//std
+// std
 #include <vector>
 
 class ccPointCloud;
 class ccMainAppInterface;
 class RGBAColorsTableType;
 
-/**
- * @file ccCloudLayersHelper.h
- *
- * @brief Cloud layers helper
- *
- * Helper class for cloud layers management.
- */
-
-/**
- * @class ccCloudLayersHelper
- *
- * @brief Cloud layers helper
- *
- * Helper for managing point cloud layers.
- */
 class ccCloudLayersHelper
 {
-public:
+  public:
 	ccCloudLayersHelper(ccMainAppInterface* app);
 	~ccCloudLayersHelper();
 
@@ -61,7 +46,10 @@ public:
 
 	QStringList getScalarFields();
 	bool setScalarFieldIndexAndStoreValues(int index);
-	int getCurrentScalarFieldIndex() const { return m_scalarFieldIndex; }
+	int getCurrentScalarFieldIndex() const
+	{
+		return m_scalarFieldIndex;
+	}
 
 	// set colors alpha to MAX
 	void setVisible(bool value);
@@ -85,7 +73,10 @@ public:
 	bool projectCloud(const ccGLCameraParameters& camera);
 
 	//! Whether the scalar field values (and currently displayed colors) have been modified
-	bool modified() const { return m_modified; }
+	bool modified() const
+	{
+		return m_modified;
+	}
 
 	struct Parameters
 	{
@@ -97,17 +88,20 @@ public:
 
 	Parameters& getParameters();
 
-	inline ccPointCloud* cloud() { return m_cloud; }
+	inline ccPointCloud* cloud()
+	{
+		return m_cloud;
+	}
 
 	void keepCurrentSFVisible();
 
-private: // methods
+  private: // methods
 	void project(const ccGLCameraParameters& camera, unsigned start, unsigned end);
 
 	//! Save current scalar field values
 	bool saveCurrentSFValues(int sfIndex);
 
-private: // variables
+  private: // variables
 	ccMainAppInterface* m_app;
 	ccPointCloud* m_cloud;
 	int m_scalarFieldIndex;
@@ -134,4 +128,3 @@ private: // variables
 	};
 	std::vector<ProjectedPoint> m_projectedPoints;
 };
-

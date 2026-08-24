@@ -1,21 +1,4 @@
-/**
- * @file qCloudLayers.cpp
- *
- * @brief Cloud Layers plugin entry point
- *
- * Implements terrestrial laser scanner profile/elevation
- * analysis for forestry and infrastructure inspection.
- *
- * ## Features
- *
- * - Height-based layer classification (ground, understory, canopy)
- * - ASPRS LiDAR classification code support
- * - Mouse circle tool for interactive point selection
- *
- * @extends QObject
- * @extends ccStdPluginInterface
- */
-#include "../include/qCloudLayers.h"
+﻿#include "../include/qCloudLayers.h"
 
 #include "../include/ccCloudLayersDlg.h"
 

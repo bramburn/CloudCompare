@@ -1,4 +1,4 @@
-// ##########################################################################
+﻿// ##########################################################################
 // #                                                                        #
 // #                    CLOUDCOMPARE PLUGIN: ccCompass                      #
 // #                                                                        #
@@ -15,22 +15,6 @@
 // #                                                                        #
 // #########################################################################
 
-/**
- * @file ccMouseCircle.cpp
- *
- * @brief Mouse circle tool implementation
- *
- * Interactive circular region selection tool.
- * Click-drag to define a circle on the point cloud;
- * all points inside the circle are selected.
- *
- * ## Use
- *
- * Used by Cloud Layers plugin to define measurement rings
- * and layer boundary circles.
- *
- * @see ccMouseCircle.h
- */
 #include "../include/ccMouseCircle.h"
 
 // Qt
@@ -50,13 +34,13 @@ struct Circle
 		for (unsigned n = 0; n < Resolution; n++)
 		{
 			double heading_rad = n * (2 * M_PI / Resolution); // heading in radians
-			vertices[n][0]     = std::cos(heading_rad);
-			vertices[n][1]     = std::sin(heading_rad);
+			vertices[n][0] = std::cos(heading_rad);
+			vertices[n][1] = std::sin(heading_rad);
 		}
 	}
 
 	static const unsigned Resolution = 64;
-	double                vertices[Resolution][2];
+	double vertices[Resolution][2];
 };
 static Circle s_unitCircle;
 
@@ -128,9 +112,9 @@ void ccMouseCircle::draw(CC_DRAW_CONTEXT& context)
 	m_pixelSize = params.computePixelSize(context.glW, context.glH);
 
 	// get mouse position
-	QPoint p  = m_owner->asWidget()->mapFromGlobal(QCursor::pos()) * context.devicePixelRatio;
-	int    mx = p.x();                   // mouse x-coord
-	int    my = context.glH - 1 - p.y(); // mouse y-coord in OpenGL coordinates (origin at bottom left, not top left)
+	QPoint p = m_owner->asWidget()->mapFromGlobal(QCursor::pos()) * context.devicePixelRatio;
+	int mx = p.x();                   // mouse x-coord
+	int my = context.glH - 1 - p.y(); // mouse y-coord in OpenGL coordinates (origin at bottom left, not top left)
 
 	// calculate circle location
 	int cx = mx - context.glW / 2;

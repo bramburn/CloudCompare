@@ -211,12 +211,11 @@ Before you mark a plugin edit/add/remove as done, all of these must be true:
 ## 5. CI parity
 
 `.github/workflows/build.yml` builds this matrix:
-- **Windows MSVC** (via Conda, full plugin set).
-- **Ubuntu GCC and Clang** (via apt, slim smoke test — same plugin flags as Windows, `qPCL=OFF` to skip the 30-60 min PCL build).
+- **Windows MSVC only** (via Conda, full plugin set).
 
-> ⚠️ **macOS is not in the matrix.** The fork dropped macOS support on 2026-08-24. The `qCC/Mac/` and `ccViewer/Mac/` bundle sources are kept for local macOS builds but are not exercised in CI. See [`AGENTS.md` §CI](AGENTS.md#ci) for the rationale.
+> ⚠️ **macOS and Linux are not in the matrix.** The fork dropped both on 2026-08-24. The `qCC/Mac/` and `ccViewer/Mac/` bundle sources are kept for local macOS builds but are not exercised in CI. See [`AGENTS.md` §CI](AGENTS.md#ci) for the rationale.
 
-For each platform, the CI toggles every plugin explicitly with `-DPLUGIN_*=ON/OFF` — that's the canonical list of plugin flags. When you add a plugin, **also add it to the CI matrix** with the right default (`ON` if no external dep, `OFF` otherwise). Mirror the changes for the three jobs (`Windows MSVC`, `Ubuntu GCC`, `Ubuntu Clang`).
+For each platform, the CI toggles every plugin explicitly with `-DPLUGIN_*=ON/OFF` — that's the canonical list of plugin flags. When you add a plugin, **also add it to the CI matrix** with the right default (`ON` if no external dep, `OFF` otherwise). Mirror the changes for the `Windows MSVC` job.
 
 CI also runs `cmake --build build --target check-format` on Windows — your code must pass.
 

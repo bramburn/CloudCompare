@@ -414,20 +414,20 @@ The short rule: **don't modify `qCC/`, `ccViewer/`, `libs/qCC_db`, `libs/qCC_io`
 
 GitHub Actions on `bramburn/CloudCompare` (the fork). Two workflows remain:
 
-- **`.github/workflows/build.yml`** — fork-owned. Runs the **Windows MSVC** job (Conda-based, full plugin set) and the **Ubuntu GCC + Clang** matrix (system packages, slim smoke test, `qPCL=OFF`). **macOS is not in the matrix** — the fork is Windows-first and the macOS support in upstream is no longer tested here. Plugin flags: see the `PLUGIN_*` lines in the workflow file.
+- **`.github/workflows/build.yml`** — fork-owned. **Windows MSVC only** (Conda-based, full plugin set). Linux + macOS are not in the matrix — the fork is Windows-only and the upstream matrix is no longer tested here. Plugin flags: see the `PLUGIN_*` lines in the workflow file.
 - **`.github/workflows/deploy-docs.yml`** — builds the Docusaurus site under `website/` and publishes to GitHub Pages on the `gh-pages` branch. Triggers on push to `master` when `website/**` or this workflow file change, plus `workflow_dispatch`. Uses the official `actions/deploy-pages@v4`. The site lands at <https://bramburn.github.io/CloudCompare/> within ~1-2 minutes.
 
-### macOS support: dropped (2026-08-24)
+### macOS + Linux support: dropped (2026-08-24)
 
-The fork no longer tests or supports macOS. The `macOS Clang` job in `.github/workflows/build.yml` was removed because:
+The fork no longer tests or supports macOS or Linux. Both were removed from `.github/workflows/build.yml` because:
 
-- The fork is Windows-first (Icelabz surveying on Windows Server 2019 / VS 2022) and the dev team does not run macOS.
-- The macOS conda-based build was slow, fragile, and not actually catching bugs that the Windows build misses.
+- The fork is Windows-only (Icelabz surveying on Windows Server 2019 / VS 2022) and the dev team does not run macOS or Linux.
+- Linux GCC 13.3 was catching many fork-internal `.h`/`.cpp` mismatches that Windows MSVC tolerates; the time spent fixing them locally was high, and the fixes don't unlock any shipping workflow.
 - The `qCC/Mac/` and `ccViewer/Mac/` bundle sources (Info.plist, bundle assembly) are **kept** in tree for any contributor who wants to build locally on macOS, but they are not exercised in CI.
 - `.ci/conda-macos.yml` and `.ci/verify_macos_bundle_identifiers.py` were **removed** (2026-08-24). Anyone wanting to restore macOS CI will need to recreate them or pull from upstream.
-- `qCompass`, `qRANSAC_SD`, `qSRA` remain disabled on all platforms because of the Qt 6.8.3 `ccTrace` namespace collision. None of these were macOS-specific issues.
+- `qCompass`, `qRANSAC_SD`, `qSRA` remain disabled because of the Qt 6.8.3 `ccTrace` namespace collision.
 
-If a future contributor needs macOS CI back, restore the upstream `macOS Clang` matrix entry from `CloudCompare/CloudCompare` and re-enable the `Verify macOS bundle identifiers` step.
+If a future contributor needs Linux/macOS CI back, restore the upstream matrix entry from `CloudCompare/CloudCompare` and re-enable any local-only CI helpers.
 
 ### Windows build CI: removed (best-effort, lean on local)
 
@@ -440,7 +440,7 @@ The fork's standalone slim Windows CI workflow (`.github/workflows/windows.yml`)
 & 'C:\dev\CloudCompare\tools\cc-build.cmd'
 ```
 
-The local build is faster (cached, no checkout), uses the same Qt/CMake/Ninja versions, and produces the same `deployqt\` bundle. The Windows MSVC job in `build.yml` is the cross-platform safety net for Windows; the Ubuntu GCC/Clang jobs are the slim smoke test for Linux portability.
+The local build is faster (cached, no checkout), uses the same Qt/CMake/Ninja versions, and produces the same `deployqt\` bundle. The Windows MSVC job in `build.yml` is the sole CI check — when green, the fork is shippable for the Windows audience.
 
 If you want to re-enable a standalone Windows CI workflow later, the recommended approach is the **Visual Studio generator** (sidesteps the rules.ninja emission bug entirely) or pinning cmake 4.3 explicitly with `lukka/get-cmake@latest` + `version: '4.3.0'`. See [`BUILD-LOCAL.md`](BUILD-LOCAL.md) for the full failure timeline.
 

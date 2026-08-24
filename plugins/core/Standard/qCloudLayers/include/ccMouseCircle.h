@@ -1,79 +1,72 @@
-#pragma once
+﻿#pragma once
 
-//##########################################################################
-//#                                                                        #
-//#                    CLOUDCOMPARE PLUGIN: ccCompass                      #
-//#                                                                        #
-//#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU General Public License as published by  #
-//#  the Free Software Foundation; version 2 of the License.               #
-//#                                                                        #
-//#  This program is distributed in the hope that it will be useful,       #
-//#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
-//#  GNU General Public License for more details.                          #
-//#                                                                        #
-//#                     COPYRIGHT: Sam Thiele  2017                        #
-//#                                                                        #
-//##########################################################################
+// ##########################################################################
+// #                                                                        #
+// #                    CLOUDCOMPARE PLUGIN: ccCompass                      #
+// #                                                                        #
+// #  This program is free software; you can redistribute it and/or modify  #
+// #  it under the terms of the GNU General Public License as published by  #
+// #  the Free Software Foundation; version 2 of the License.               #
+// #                                                                        #
+// #  This program is distributed in the hope that it will be useful,       #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+// #  GNU General Public License for more details.                          #
+// #                                                                        #
+// #                     COPYRIGHT: Sam Thiele  2017                        #
+// #                                                                        #
+// ##########################################################################
 
-/**
- * @file ccMouseCircle.h
- *
- * @brief Mouse circle overlay
- *
- * Visual circle around mouse cursor for measurements.
- */
-
-#include <ccGLWindowInterface.h>
 #include <cc2DViewportObject.h>
+#include <ccGLWindowInterface.h>
 
 class QEvent;
 
-//Qt
+// Qt
 #include <QObject>
 
-/**
- * @class ccMouseCircle
- *
- * @brief Mouse circle overlay
- *
- * Transparent overlay that draws a circle around the mouse cursor.
- */
-class ccMouseCircle : public cc2DViewportObject, public QObject
+//! This is a custom 2DViewportLabel which takes up the entire viewport but is entirely transparent,
+//! except for a circle with radius r around the mouse.
+class ccMouseCircle : public cc2DViewportObject
+    , public QObject
 {
-public:
-	/**
-	 * @brief Create mouse circle
-	 * @param[in] owner Owner window
-	 * @param[in] name Circle name
-	 */
+  public:
+	//! Constructor
 	explicit ccMouseCircle(ccGLWindowInterface* owner, QString name = QString("MouseCircle"));
 
-	/// Destructor
+	//! Destructor
 	~ccMouseCircle() override;
 
-	/// Get circle radius in pixels
-	inline int getRadiusPx() const { return m_radius; }
+	//! Returns the circle radius in px
+	inline int getRadiusPx() const
+	{
+		return m_radius;
+	}
 
-	/**
-	 * @brief Set allow scroll
-	 * @param[in] state Allow state
-	 */
-	inline void setAllowScroll(bool state) { m_allowScroll = state; }
-	
-protected:
-	/// Draw circle
+	//! Sets whether scroll is allowed or not
+	inline void setAllowScroll(bool state)
+	{
+		m_allowScroll = state;
+	}
+
+  protected:
+	//! Draws a circle around the mouse cursor
 	void draw(CC_DRAW_CONTEXT& context) override;
 
-private:
-	/// Event filter for mouse updates
+  private:
+	//! Event filter to get mouse move and repaint events
 	bool eventFilter(QObject* obj, QEvent* event) override;
 
-private:
+  private:
+	//! The ccGLWindowInterface instance this overlay object is attached to
 	ccGLWindowInterface* m_owner;
+
+	//! Pixel size
 	float m_pixelSize;
+	//! Circle radius
 	int m_radius;
+	//! Increments of circle radius (when changed with the mouse wheel)
 	int m_radiusStep;
+	//! Whether to allow 'scrolling' (i.e. changing the circle radius)
 	bool m_allowScroll;
 };

@@ -1,4 +1,4 @@
-// ##########################################################################
+﻿// ##########################################################################
 // #                                                                        #
 // #                   CLOUDCOMPARE PLUGIN: qCloudLayers                    #
 // #                                                                        #
@@ -15,30 +15,6 @@
 // #                                                                        #
 // ##########################################################################
 
-/**
- * @file ccAsprsModel.cpp
- *
- * @brief ASPRS LiDAR classification model
- *
- * Implements the ASPRS (American Society for Photogrammetry
- * and Remote Sensing) LiDAR point classification standard.
- *
- * ## ASPRS Classes
- *
- * - 0: Never classified
- * - 1: Unclassified
- * - 2: Ground
- * - 3: Low vegetation
- * - 4: Medium vegetation
- * - 5: High vegetation
- * - 6: Building
- * - 7: Low point (noise)
- * - 8: Model key-point
- * - 9: Water
- * - ... (up to class 31)
- *
- * @see ccAsprsModel.h
- */
 #include "../include/ccAsprsModel.h"
 
 // CloudCompare
@@ -169,7 +145,7 @@ bool ccAsprsModel::setData(const QModelIndex& index, const QVariant& value, int 
 		if (role == Qt::CheckStateRole)
 		{
 			item.visible = static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked;
-			colorChanged(item);
+			Q_EMIT colorChanged(item);
 		}
 		else
 		{
@@ -189,7 +165,7 @@ bool ccAsprsModel::setData(const QModelIndex& index, const QVariant& value, int 
 		else
 		{
 			item.name = name;
-			classNamedChanged(index.row(), name);
+			emit classNamedChanged(index.row(), name);
 			break;
 		}
 	}
@@ -205,8 +181,8 @@ bool ccAsprsModel::setData(const QModelIndex& index, const QVariant& value, int 
 		else
 		{
 			int oldCode = item.code;
-			item.code   = code;
-			codeChanged(item, oldCode);
+			item.code = code;
+			Q_EMIT codeChanged(item, oldCode);
 			break;
 		}
 	}
@@ -214,7 +190,7 @@ bool ccAsprsModel::setData(const QModelIndex& index, const QVariant& value, int 
 	case COLOR:
 	{
 		item.color = value.value<QColor>();
-		colorChanged(item);
+		Q_EMIT colorChanged(item);
 	}
 	break;
 
@@ -225,7 +201,7 @@ bool ccAsprsModel::setData(const QModelIndex& index, const QVariant& value, int 
 	break;
 	}
 
-	dataChanged(index, index);
+	Q_EMIT dataChanged(index, index);
 
 	return true;
 }
@@ -296,11 +272,11 @@ static void ReadClass(const QSettings& settings, const QString& className, ccAsp
 	QString readableClassName = className;
 	readableClassName.replace(QChar('@'), QChar('/'));
 
-	item.name    = readableClassName;
-	item.code    = settings.value(cleanClassName + "/class", 0).toInt();
-	item.color   = QColor(settings.value(cleanClassName + "/color", 0).toUInt());
+	item.name = readableClassName;
+	item.code = settings.value(cleanClassName + "/class", 0).toInt();
+	item.color = QColor(settings.value(cleanClassName + "/color", 0).toUInt());
 	item.visible = settings.value(cleanClassName + "/visible", true).toBool();
-	item.count   = 0;
+	item.count = 0;
 }
 
 void ccAsprsModel::createDefaultItems()
@@ -384,7 +360,7 @@ void ccAsprsModel::refreshData()
 {
 	QModelIndex a = createIndex(0, COUNT);
 	QModelIndex b = createIndex(m_data.count() - 1, COUNT);
-	dataChanged(a, b);
+	Q_EMIT dataChanged(a, b);
 }
 
 bool ccAsprsModel::removeRows(int position, int rows, const QModelIndex& parent)

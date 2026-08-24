@@ -2,6 +2,11 @@ name: Build
 
 on: [push, pull_request]
 
+# Windows-first. The fork is Icelabz surveying on Windows Server 2019
+# / VS 2022, and the macOS + Linux support was dropped on 2026-08-24.
+# Windows MSVC is the single required job; if it ever needs a
+# matrix variant, add one here. See AGENTS.md "CI" for the rationale.
+
 jobs:
   build:
     name: ${{ matrix.config.name }}
@@ -106,111 +111,3 @@ jobs:
       - name: Install (Windows)
         if: matrix.config.os == 'windows-latest'
         run: cmake --install build
-
-  ubuntu-build:
-    name: Ubuntu ${{ matrix.compiler }}
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-
-    # Slim Linux support: same plugin set as Windows, qPCL OFF (PCL build is
-    # 30-60 min and the fork doesn't use it). This job is a smoke test for
-    # cross-platform issues only.
-    strategy:
-      fail-fast: false
-      matrix:
-        compiler: ["GCC", "Clang"]
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          submodules: recursive
-
-      - name: Install Dependencies
-        run: >
-          sudo apt-get update -qq
-
-          sudo apt-get install -qy cmake ninja-build
-          qt6-base-dev qt6-svg-dev qt6-tools-dev qt6-tools-dev-tools
-          libtbb-dev
-          libavcodec-dev libavformat-dev
-          libdraco-dev
-          libeigen3-dev
-          libcgal-dev libgdal-dev
-          liblaszip-dev
-          libxerces-c-dev
-          zlib1g-dev qt6-5compat-dev
-          libopencv-dev
-          libboost-dev libboost-iostreams-dev libboost-system-dev libpcap-dev libflann-dev
-          libglu1-mesa-dev
-          udev libudev-dev libhidapi-dev libusb-1.0-0-dev
-          xvfb
-
-      - name: Setup GCC
-        if: matrix.compiler == 'GCC'
-        run: |
-          echo "CC=gcc" >> $GITHUB_ENV
-          echo "CXX=g++" >> $GITHUB_ENV
-
-      - name: Setup Clang
-        if: matrix.compiler == 'Clang'
-        run: |
-          echo "CC=clang" >> $GITHUB_ENV
-          echo "CXX=clang++" >> $GITHUB_ENV
-
-      - name: Configure cmake
-        run: >
-          mkdir build
-
-          cmake
-          -B build
-          -S .
-          -G Ninja
-          -DCMAKE_BUILD_TYPE=Release
-          -DEIGEN_ROOT_DIR=/usr/include/eigen3
-          -DJSON_ROOT_DIR=/usr/include/jsoncpp
-          -DCCCORELIB_USE_TBB=ON
-          -DPLUGIN_EXAMPLE_GL=ON
-          -DPLUGIN_EXAMPLE_IO=ON
-          -DPLUGIN_EXAMPLE_STANDARD=ON
-          -DPLUGIN_GL_QEDL=ON
-          -DPLUGIN_GL_QSSAO=ON
-          -DPLUGIN_IO_QADDITIONAL=ON
-          -DPLUGIN_IO_QCORE=ON
-          -DPLUGIN_IO_QE57=ON
-          -DE57_RELEASE_LTO=OFF
-          -DPLUGIN_IO_QPHOTOSCAN=ON
-          -DPLUGIN_IO_QLAS=ON
-          -DPLUGIN_IO_QRDB=ON
-          -DPLUGIN_IO_QRDB_FETCH_DEPENDENCY=ON
-          -DPLUGIN_IO_QRDB_INSTALL_DEPENDENCY=ON
-          -DPLUGIN_STANDARD_QANIMATION=ON
-          -DQANIMATION_WITH_FFMPEG_SUPPORT=OFF
-          -DPLUGIN_STANDARD_QBROOM=ON
-          -DPLUGIN_STANDARD_QCANUPO=ON
-          -DPLUGIN_STANDARD_QCOMPASS=OFF
-          -DPLUGIN_STANDARD_QCSF=ON
-          -DPLUGIN_STANDARD_QFACETS=ON
-          -DPLUGIN_STANDARD_QHOUGH_NORMALS=ON
-          -DPLUGIN_STANDARD_QHPR=ON
-          -DPLUGIN_STANDARD_MASONRY_QMANUAL_SEG=OFF
-          -DPLUGIN_STANDARD_MASONRY_QAUTO_SEG=OFF
-          -DPLUGIN_STANDARD_QM3C2=ON
-          -DPLUGIN_STANDARD_QPCV=ON
-          -DPLUGIN_STANDARD_QPOISSON_RECON=ON
-          -DPLUGIN_STANDARD_QSRA=ON
-          -DPLUGIN_STANDARD_QRANSAC_SD=ON
-          -DPLUGIN_STANDARD_QPCL=OFF
-          -DPLUGIN_STANDARD_QCLOUDLAYERS=ON
-          -DPLUGIN_STANDARD_QVOXFALL=ON
-          -DBUILD_TESTING=ON
-          -DOPTION_SUPPORT_3DMOUSE_WITH_HIDAPI=ON
-
-      - name: Build
-        run: cmake --build build --parallel
-
-      - name: Test
-        run: xvfb-run ctest --test-dir build
-
-      - name: Install
-        run: sudo cmake --install build

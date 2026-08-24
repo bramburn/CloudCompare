@@ -1,48 +1,31 @@
-#pragma once
+﻿#pragma once
 
-//##########################################################################
-//#                                                                        #
-//#                   CLOUDCOMPARE PLUGIN: qCloudLayers                    #
-//#                                                                        #
-//#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU General Public License as published by  #
-//#  the Free Software Foundation; version 2 of the License.               #
-//#                                                                        #
-//#  This program is distributed in the hope that it will be useful,       #
-//#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
-//#  GNU General Public License for more details.                          #
-//#                                                                        #
-//#                     COPYRIGHT: WigginsTech 2022                        #
-//#                                                                        #
-/**
- * @file ccAsprsModel.h
- *
- * @brief ASPRS classification model
- *
- * Table model for ASPRS point cloud classification.
- */
+// ##########################################################################
+// #                                                                        #
+// #                   CLOUDCOMPARE PLUGIN: qCloudLayers                    #
+// #                                                                        #
+// #  This program is free software; you can redistribute it and/or modify  #
+// #  it under the terms of the GNU General Public License as published by  #
+// #  the Free Software Foundation; version 2 of the License.               #
+// #                                                                        #
+// #  This program is distributed in the hope that it will be useful,       #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+// #  GNU General Public License for more details.                          #
+// #                                                                        #
+// #                     COPYRIGHT: WigginsTech 2022                        #
+// #                                                                        #
+// ##########################################################################
 
-//Qt
+// Qt
 #include <QAbstractTableModel>
 #include <QColor>
 
-/**
- * @class ccAsprsModel
- *
- * @brief ASPRS classification model
- *
- * Table model for ASPRS classification codes.
- */
 class ccAsprsModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
-public:
-	/**
-	 * @brief Create model
-	 * @param[in] parent Parent object
-	 */
+  public:
 	ccAsprsModel(QObject* parent = nullptr);
 
 	int rowCount(const QModelIndex& parent) const;
@@ -61,11 +44,6 @@ public:
 	// save asprs items data to qsettings
 	void save() const;
 
-	/**
-	 * @enum Column
-	 *
-	 * @brief Table columns
-	 */
 	enum Column
 	{
 		VISIBLE,
@@ -76,11 +54,6 @@ public:
 		LAST
 	};
 
-	/**
-	 * @struct AsprsItem
-	 *
-	 * @brief ASPRS classification item
-	 */
 	struct AsprsItem
 	{
 		bool visible = false;
@@ -91,27 +64,33 @@ public:
 	};
 
 	void refreshData();
-	
-	inline const QList<AsprsItem>& getData() const { return m_data; }
-	inline QList<AsprsItem>& getData() { return m_data; }
-	
+
+	inline const QList<AsprsItem>& getData() const
+	{
+		return m_data;
+	}
+	inline QList<AsprsItem>& getData()
+	{
+		return m_data;
+	}
+
 	AsprsItem* find(QString name);
 	AsprsItem* find(int code);
-	
+
 	int indexOf(QString name) const;
 
-public Q_SLOTS:
+  public Q_SLOTS:
 	bool removeRows(int position, int rows, const QModelIndex& parent);
 
-signals:
+  Q_SIGNALS:
 	void codeChanged(AsprsItem item, int oldCode);
 	void colorChanged(AsprsItem item);
 	void classNamedChanged(int row, QString newName);
 
-private:
+  private:
 	QList<AsprsItem> m_data;
 
-private:
+  private:
 	bool nameExists(const QString& name) const;
 	bool codeExists(int code) const;
 
@@ -119,4 +98,3 @@ private:
 	void createDefaultItems();
 	int getUnusedCode() const;
 };
-
