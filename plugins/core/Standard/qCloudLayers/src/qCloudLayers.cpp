@@ -2,6 +2,10 @@
 
 #include "../include/ccCloudLayersDlg.h"
 
+// Qt
+#include <QMainWindow>
+#include <QtGui>
+
 // qCC_db
 #include <ccPointCloud.h>
 
