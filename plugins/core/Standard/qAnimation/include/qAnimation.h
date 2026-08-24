@@ -1,21 +1,21 @@
 #pragma once
 
-//##########################################################################
-//#                                                                        #
-//#                   CLOUDCOMPARE PLUGIN: qAnimation                      #
-//#                                                                        #
-//#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU General Public License as published by  #
-//#  the Free Software Foundation; version 2 or later of the License.      #
-//#                                                                        #
-//#  This program is distributed in the hope that it will be useful,       #
-//#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
-//#  GNU General Public License for more details.                          #
-//#                                                                        #
-//#             COPYRIGHT: Ryan Wicks, 2G Robotics Inc., 2015              #
-//#                                                                        #
-//##########################################################################
+// ##########################################################################
+// #                                                                        #
+// #                   CLOUDCOMPARE PLUGIN: qAnimation                      #
+// #                                                                        #
+// #  This program is free software; you can redistribute it and/or modify  #
+// #  it under the terms of the GNU General Public License as published by  #
+// #  the Free Software Foundation; version 2 or later of the License.      #
+// #                                                                        #
+// #  This program is distributed in the hope that it will be useful,       #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
+// #  GNU General Public License for more details.                          #
+// #                                                                        #
+// #             COPYRIGHT: Ryan Wicks, 2G Robotics Inc., 2015              #
+// #                                                                        #
+// ##########################################################################
 
 /**
  * @file qAnimation.h
@@ -38,7 +38,12 @@
  */
 
 #include "ccStdPluginInterface.h"
+
 #include <QObject>
+#include <vector>
+
+// Local
+#include "cc2DViewportObject.h"
 
 /**
  * @class qAnimation
@@ -63,12 +68,20 @@
  * @extends ccStdPluginInterface
  * @implements ccStdPluginInterface
  */
-class qAnimation : public QObject, public ccStdPluginInterface
+class qAnimation : public QObject
+    , public ccStdPluginInterface
 {
 	Q_OBJECT
 	Q_INTERFACES(ccPluginInterface ccStdPluginInterface)
 
 	Q_PLUGIN_METADATA(IID "cccorp.cloudcompare.plugin.qAnimation" FILE "../info.json")
+
+  public:
+	//! Extended viewport (typedef for the dialog's viewports container)
+	typedef std::vector<ExtendedViewport> ViewPortList;
+
+	//! Get selected viewport objects from a selection container
+	static ViewPortList GetSelectedViewPorts(const ccHObject::Container& selectedEntities);
 
   public:
 	/**
