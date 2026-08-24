@@ -15,6 +15,23 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file SalomeHydroFilter.cpp
+ *
+ * @brief SALOME Hydro filter implementation
+ *
+ * Imports/exports SALOME Hydro data format:
+ * - Cross-section profiles
+ * - River axis polyline
+ * - Water level marks
+ *
+ * ## SALOME Hydro
+ *
+ * Open-source hydrology platform. This filter exchanges
+ * terrain profiles and river geometry with SALOME Hydro.
+ *
+ * @see SalomeHydroFilter.h
+ */
 #include "SalomeHydroFilter.h"
 
 // qCC_db

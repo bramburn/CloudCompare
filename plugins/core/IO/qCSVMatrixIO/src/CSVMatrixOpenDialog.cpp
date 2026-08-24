@@ -15,6 +15,18 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file CSVMatrixOpenDialog.cpp
+ *
+ * @brief CSV matrix open dialog implementation
+ *
+ * Dialog for importing a matrix stored as a CSV file:
+ * - Rows × Columns table
+ * - Optional header row/column for labels
+ * - Delimiter detection (comma, semicolon, tab)
+ *
+ * @see CSVMatrixFilter.h
+ */
 #include "CSVMatrixOpenDialog.h"
 
 #include "ccFileUtils.h"

@@ -15,6 +15,19 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file SaveDracoFileDlg.cpp
+ *
+ * @brief Draco save dialog implementation
+ *
+ * Dialog for configuring Draco mesh compression on export:
+ * - **Compression level**: 0 (fastest) to 10 (best)
+ * - **Quantization bits**: vertex position precision
+ * - **Include normals**: store or omit normals
+ * - **Include texture coordinates**: UV precision
+ *
+ * @see DRCFilter.h
+ */
 #include <SaveDracoFileDlg.h>
 
 // Qt

@@ -15,6 +15,25 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file qAdditionalIO.cpp
+ *
+ * @brief Additional I/O plugin entry point
+ *
+ * The qAdditionalIO plugin provides extra I/O formats:
+ * - Bundler (SfM cameras/sparse points)
+ * - ICM (Intergraph CCM)
+ * - POV-Ray scene export
+ * - PN (Points+Normals binary)
+ * - PV (VTK legacy)
+ * - SOI (Sensor Oriented Intensity)
+ * - SINUS-X 3D scanner
+ * - MASCaret hydraulic model
+ * - SALOMEHydro
+ *
+ * @extends QObject
+ * @extends ccIOPluginInterface
+ */
 #include "qAdditionalIO.h"
 
 #include "BundlerCommand.h"

@@ -1,9 +1,24 @@
+/**
+ * @file ccCloudLayersDlg.cpp
+ *
+ * @brief Cloud Layers dialog implementation
+ *
+ * Main dialog for TLS point cloud layer analysis:
+ * - **Layer detection**: automatic ground/canopy separation
+ * - **ASPRS classification**: apply ASPRS class codes
+ * - **Layer statistics**: height distribution, density per layer
+ * - **Elevation histograms**: per-layer analysis
+ *
+ * Uses ccCloudLayersHelper for the core algorithms.
+ *
+ * @see ccCloudLayersDlg.h
+ */
 #include "../include/ccCloudLayersDlg.h"
 
 #include "../include/ccColorStyledDelegate.h"
 #include "../include/ccMouseCircle.h"
 
-//QT
+// QT
 #include <QColorDialog>
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -11,19 +26,19 @@
 #include <QSortFilterProxyModel>
 #include <QWidget>
 
-//CC
+// CC
 #include <ccGLWindowInterface.h>
 #include <ccMainAppInterface.h>
 #include <ccPointCloud.h>
 
-static QStringList s_presets{ QObject::tr("All Points"), QObject::tr("Visible Points") };
+static QStringList s_presets{QObject::tr("All Points"), QObject::tr("Visible Points")};
 
-ccCloudLayersDlg::ccCloudLayersDlg(ccMainAppInterface* app, QWidget* parent/*=nullptr*/)
-	: ccOverlayDialog(parent)
-	, Ui::ccCloudLayersDlg()
-	, m_app(app)
-	, m_helper(nullptr)
-	, m_mouseCircle(new ccMouseCircle(app ? app->getActiveGLWindow() : nullptr))
+ccCloudLayersDlg::ccCloudLayersDlg(ccMainAppInterface* app, QWidget* parent /*=nullptr*/)
+    : ccOverlayDialog(parent)
+    , Ui::ccCloudLayersDlg()
+    , m_app(app)
+    , m_helper(nullptr)
+    , m_mouseCircle(new ccMouseCircle(app ? app->getActiveGLWindow() : nullptr))
 {
 	setupUi(this);
 
@@ -200,7 +215,7 @@ void ccCloudLayersDlg::loadSettings()
 		if (sfIndex < 0)
 		{
 			// previous scalar field not found
-			sfName = "Classification";
+			sfName  = "Classification";
 			sfIndex = m_helper->getScalarFields().indexOf(sfName);
 			if (sfIndex < 0)
 			{
@@ -211,8 +226,8 @@ void ccCloudLayersDlg::loadSettings()
 
 		cbScalarField->setCurrentIndex(sfIndex);
 
-		QString inputName = settings.value("InputClass").toString();
-		const ccAsprsModel::AsprsItem* item = m_asprsModel.find(inputName);
+		QString                        inputName = settings.value("InputClass").toString();
+		const ccAsprsModel::AsprsItem* item      = m_asprsModel.find(inputName);
 
 		if (!item)
 		{
@@ -226,7 +241,7 @@ void ccCloudLayersDlg::loadSettings()
 		}
 
 		QString outputName = settings.value("OutputClass").toString();
-		int outIndex = m_asprsModel.indexOf(outputName);
+		int     outIndex   = m_asprsModel.indexOf(outputName);
 		cbOutput->setCurrentIndex(outIndex == -1 ? 0 : outIndex);
 
 		keepRGBColorsCheckBox->setChecked(settings.value("keepRGBOnExit", false).toBool());
@@ -255,12 +270,12 @@ void ccCloudLayersDlg::deleteClicked()
 	if (!select->hasSelection())
 		return;
 
-	if (QMessageBox::question(	m_associatedWin->asWidget(),
-								tr("Cloud layers"),
-								tr("Are you sure you want to delete this record(s)?"),
-								QMessageBox::Yes,
-								QMessageBox::No)
-		== QMessageBox::No)
+	if (QMessageBox::question(m_associatedWin->asWidget(),
+	                          tr("Cloud layers"),
+	                          tr("Are you sure you want to delete this record(s)?"),
+	                          QMessageBox::Yes,
+	                          QMessageBox::No)
+	    == QMessageBox::No)
 	{
 		return;
 	}
@@ -278,8 +293,8 @@ void ccCloudLayersDlg::deleteClicked()
 	ccAsprsModel::AsprsItem* to = m_asprsModel.getData().size() > 0 ? &(m_asprsModel.getData().front()) : nullptr;
 	for (int i = mapIndices.size(); i > 0; --i)
 	{
-		ccAsprsModel::AsprsItem& from = m_asprsModel.getData()[sourceIndices[i - 1].row()];
-		int affected = m_helper ? m_helper->moveItem(from, to) : 0;
+		ccAsprsModel::AsprsItem& from     = m_asprsModel.getData()[sourceIndices[i - 1].row()];
+		int                      affected = m_helper ? m_helper->moveItem(from, to) : 0;
 		if (to)
 		{
 			to->count += affected;
@@ -302,7 +317,7 @@ void ccCloudLayersDlg::startClicked()
 
 	m_app->getActiveGLWindow()->setPickingMode(ccGLWindowInterface::PICKING_MODE::NO_PICKING);
 
-	//set orthographic view (as this tool doesn't work in perspective mode)
+	// set orthographic view (as this tool doesn't work in perspective mode)
 	m_app->getActiveGLWindow()->setPerspectiveState(false, true);
 	m_app->getActiveGLWindow()->setInteractionMode(ccGLWindowInterface::INTERACT_SEND_ALL_SIGNALS);
 	m_mouseCircle->setVisible(true);
@@ -330,9 +345,9 @@ void ccCloudLayersDlg::pauseClicked()
 void ccCloudLayersDlg::applyClicked()
 {
 	m_asprsModel.save();
-	
+
 	saveSettings();
-	
+
 	if (m_helper)
 	{
 		m_helper->keepCurrentSFVisible();
@@ -356,11 +371,11 @@ void ccCloudLayersDlg::reject()
 		if (m_helper->modified())
 		{
 			if (QMessageBox::question(m_associatedWin->asWidget(),
-				tr("Cloud layers"),
-				tr("The cloud has been modified, are you sure you want exit?"),
-				QMessageBox::Yes,
-				QMessageBox::No)
-				== QMessageBox::No)
+			                          tr("Cloud layers"),
+			                          tr("The cloud has been modified, are you sure you want exit?"),
+			                          QMessageBox::Yes,
+			                          QMessageBox::No)
+			    == QMessageBox::No)
 			{
 				return;
 			}
@@ -393,10 +408,10 @@ void ccCloudLayersDlg::mouseMoved(int x, int y, Qt::MouseButtons buttons)
 		return;
 	}
 
-	QPointF pos2D = m_app->getActiveGLWindow()->toCenteredGLCoordinates(x, y);
+	QPointF   pos2D = m_app->getActiveGLWindow()->toCenteredGLCoordinates(x, y);
 	CCVector2 center(static_cast<PointCoordinateType>(pos2D.x()), static_cast<PointCoordinateType>(pos2D.y()));
 
-	int radius_px = m_mouseCircle->getRadiusPx();
+	int                       radius_px = m_mouseCircle->getRadiusPx();
 	std::map<ScalarType, int> affected;
 	m_helper->mouseMove(center, static_cast<PointCoordinateType>(radius_px * radius_px), affected);
 
@@ -427,7 +442,6 @@ bool ccCloudLayersDlg::eventFilter(QObject* obj, QEvent* event)
 			// to avoid conflicts with the 3D window shortcuts
 			m_mouseCircle->setAllowScroll(false);
 		}
-
 	}
 	else if (event->type() == QEvent::KeyRelease)
 	{
@@ -452,12 +466,12 @@ void ccCloudLayersDlg::scalarFieldIndexChanged(int index)
 		bool proceed = true;
 		if (m_helper->modified())
 		{
-			proceed = (QMessageBox::question(	m_associatedWin->asWidget(),
-												tr("Cloud layers"),
-												tr("Current modifications will be lost. Proceed?"),
-												QMessageBox::Yes,
-												QMessageBox::No)
-						== QMessageBox::Yes);
+			proceed = (QMessageBox::question(m_associatedWin->asWidget(),
+			                                 tr("Cloud layers"),
+			                                 tr("Current modifications will be lost. Proceed?"),
+			                                 QMessageBox::Yes,
+			                                 QMessageBox::No)
+			           == QMessageBox::Yes);
 
 			if (proceed)
 			{
@@ -497,17 +511,17 @@ void ccCloudLayersDlg::inputClassIndexChanged(int index)
 	ccCloudLayersHelper::Parameters& params = m_helper->getParameters();
 	if (cbInput->currentIndex() < 0)
 	{
-		params.anyPoints = false;
+		params.anyPoints     = false;
 		params.visiblePoints = false;
-		params.input = nullptr;
+		params.input         = nullptr;
 
 		return;
 	}
 
-	QString inputName = cbInput->itemText(cbInput->currentIndex());
-	params.anyPoints = (inputName == s_presets[0]);
+	QString inputName    = cbInput->itemText(cbInput->currentIndex());
+	params.anyPoints     = (inputName == s_presets[0]);
 	params.visiblePoints = (inputName == s_presets[1]);
-	params.input = nullptr;
+	params.input         = nullptr;
 
 	if (!(params.anyPoints || params.visiblePoints))
 	{
@@ -529,7 +543,7 @@ void ccCloudLayersDlg::outputClassIndexChanged(int index)
 	}
 
 	QString outputName = cbOutput->itemText(cbOutput->currentIndex());
-	params.output = m_asprsModel.find(outputName);
+	params.output      = m_asprsModel.find(outputName);
 }
 
 void ccCloudLayersDlg::codeChanged(ccAsprsModel::AsprsItem item, int oldCode)
@@ -604,7 +618,7 @@ void ccCloudLayersDlg::updateInputOutput()
 
 void ccCloudLayersDlg::swapInputOutput()
 {
-	int inputIndex = cbInput->currentIndex();
+	int inputIndex  = cbInput->currentIndex();
 	int outputIndex = cbOutput->currentIndex();
 
 	if (inputIndex < 0 || outputIndex < 0)
@@ -612,8 +626,8 @@ void ccCloudLayersDlg::swapInputOutput()
 		return;
 	}
 
-	QString text = cbInput->itemText(cbInput->currentIndex());
-	bool isPreset = s_presets.contains(text);
+	QString text     = cbInput->itemText(cbInput->currentIndex());
+	bool    isPreset = s_presets.contains(text);
 
 	if (!isPreset)
 	{
@@ -621,6 +635,6 @@ void ccCloudLayersDlg::swapInputOutput()
 		cbOutput->setCurrentIndex(inputIndex - s_presets.size());
 	}
 
-	inputIndex = cbInput->currentIndex();
+	inputIndex  = cbInput->currentIndex();
 	outputIndex = cbOutput->currentIndex();
 }

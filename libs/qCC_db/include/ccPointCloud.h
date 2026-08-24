@@ -602,7 +602,7 @@ class QCC_DB_LIB_API ccPointCloud : public CCCoreLib::PointCloudTpl<ccGenericPoi
 	const CCVector3* getNormal(unsigned pointIndex) const override; // equivalent to getPointNormal, but for CCCoreLib
 
 	// inherited from ccGenericPointCloud
-	const ccColor::Rgb*        geScalarValueColor(ScalarType d) const override;
+	const ccColor::Rgb*        getScalarValueColor(ScalarType d) const override;
 	const ccColor::Rgb*        getPointScalarValueColor(unsigned pointIndex) const override;
 	ScalarType                 getPointDisplayedDistance(unsigned pointIndex) const override;
 	const ccColor::Rgba&       getPointColor(unsigned pointIndex) const override;

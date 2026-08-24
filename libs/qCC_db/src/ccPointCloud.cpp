@@ -1540,7 +1540,7 @@ const ccColor::Rgb* ccPointCloud::getPointScalarValueColor(unsigned pointIndex) 
 	return m_currentDisplayedScalarField->getValueColor(pointIndex);
 }
 
-const ccColor::Rgb* ccPointCloud::geScalarValueColor(ScalarType d) const
+const ccColor::Rgb* ccPointCloud::getScalarValueColor(ScalarType d) const
 {
 	assert(m_currentDisplayedScalarField && m_currentDisplayedScalarField->getColorScale());
 

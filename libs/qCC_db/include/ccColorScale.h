@@ -417,6 +417,57 @@ class QCC_DB_LIB_API ccColorScale : public ccSerializableObject
 	QColor getColorByRelativePos(double relativePos) const;
 
 	/**
+	 * @brief Get interpolated RGB color for position (pointer-returning overload).
+	 *
+	 * @param[in] relativePos Position (0.0-1.0).
+	 * @param[in] outOfRangeColor Color to return if position is out of [0;1].
+	 *
+	 * @return Pointer to RGB color (or outOfRangeColor if out of range).
+	 *
+	 * @note Compatibility overload: restored to support code that expects
+	 *       const ccColor::Rgb* return type (upstream API).
+	 */
+	inline const ccColor::Rgb* getColorByRelativePos(double relativePos, const ccColor::Rgb* outOfRangeColor) const
+	{
+		if (relativePos >= 0.0 && relativePos <= 1.0)
+		{
+			QColor c    = getColorByRelativePos(relativePos);
+			m_tempRgb.r = static_cast<unsigned char>(c.red());
+			m_tempRgb.g = static_cast<unsigned char>(c.green());
+			m_tempRgb.b = static_cast<unsigned char>(c.blue());
+			return &m_tempRgb;
+		}
+		return outOfRangeColor;
+	}
+
+	/**
+	 * @brief Get interpolated RGB color with quantization (pointer-returning overload).
+	 *
+	 * @param[in] relativePos Position (0.0-1.0).
+	 * @param[in] steps Quantization steps.
+	 * @param[in] outOfRangeColor Color to return if position is out of [0;1].
+	 *
+	 * @return Pointer to RGB color (or outOfRangeColor if out of range).
+	 *
+	 * @note Compatibility overload: restored to support code that expects
+	 *       const ccColor::Rgb* return type (upstream API).
+	 */
+	inline const ccColor::Rgb* getColorByRelativePos(double relativePos, unsigned steps, const ccColor::Rgb* outOfRangeColor) const
+	{
+		// Quantize to steps — same formula as upstream
+		if (relativePos >= 0.0 && relativePos <= 1.0)
+		{
+			unsigned      index = (static_cast<unsigned>((relativePos * steps) * 65535.0)) >> 16;
+			const QColor& c     = getColorByTableIndex((index * getTableSize()) / std::max(steps, 1u));
+			m_tempRgb.r         = static_cast<unsigned char>(c.red());
+			m_tempRgb.g         = static_cast<unsigned char>(c.green());
+			m_tempRgb.b         = static_cast<unsigned char>(c.blue());
+			return &m_tempRgb;
+		}
+		return outOfRangeColor;
+	}
+
+	/**
 	 * @brief Get color for absolute value.
 	 *
 	 * @param[in] value Scalar value.
@@ -495,6 +546,10 @@ class QCC_DB_LIB_API ccColorScale : public ccSerializableObject
 
 	//! Lookup table size.
 	unsigned m_tableSize = 0;
+
+	//! Temporary RGB storage for compatibility pointer-returning overloads.
+	//! Used by getColorByRelativePos(double, const ccColor::Rgb*) overloads.
+	mutable ccColor::Rgb m_tempRgb;
 
 	//! Relative mode flag.
 	bool m_relative = true;

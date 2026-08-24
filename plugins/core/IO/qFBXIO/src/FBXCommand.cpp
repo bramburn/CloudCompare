@@ -15,6 +15,22 @@
 // #                                                                        #
 // ##########################################################################
 
+/**
+ * @file FBXCommand.cpp
+ *
+ * @brief FBX command-line interface implementation
+ *
+ * Command-line wrapper for the Autodesk FBX SDK import/export.
+ * Allows batch processing of FBX files without the GUI.
+ *
+ * ## Usage
+ *
+ * ```
+ * CloudCompare -SILENT -O input.fbx -GLOBAL_SHIFT 0 0 0
+ * ```
+ *
+ * @see FBXFilter.h
+ */
 #include "FBXCommand.h"
 
 #include "FBXFilter.h"

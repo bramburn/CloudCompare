@@ -1,30 +1,50 @@
-//##########################################################################
-//#                                                                        #
-//#                    CLOUDCOMPARE PLUGIN: ccCompass                      #
-//#                                                                        #
-//#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU General Public License as published by  #
-//#  the Free Software Foundation; version 2 of the License.               #
-//#                                                                        #
-//#  This program is distributed in the hope that it will be useful,       #
-//#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
-//#  GNU General Public License for more details.                          #
-//#                                                                        #
-//#                     COPYRIGHT: Sam Thiele  2017                        #
-//#                                                                        #
-//##########################################################################
+// ##########################################################################
+// #                                                                        #
+// #                    CLOUDCOMPARE PLUGIN: ccCompass                      #
+// #                                                                        #
+// #  This program is free software; you can redistribute it and/or modify  #
+// #  it under the terms of the GNU General Public License as published by  #
+// #  the Free Software Foundation; version 2 of the License.               #
+// #                                                                        #
+// #  This program is distributed in the hope that it will be useful,       #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+// #  GNU General Public License for more details.                          #
+// #                                                                        #
+// #                     COPYRIGHT: Sam Thiele  2017                        #
+// #                                                                        #
+// ##########################################################################
 
+/**
+ * @file ccTrace.cpp
+ *
+ * @brief Compass geological trace implementation
+ *
+ * A polyline digitised on the point cloud surface representing
+ * a geological trace (fold axis, fault trace, vein, contact):
+ * - Stored as a ccPolyline
+ * - Associated with a parent plane (if planar feature)
+ * - Contains metadata: type, name, confidence
+ *
+ * ## Trace Types
+ *
+ * - Fold axis
+ * - Fault trace
+ * - Vein
+ * - Contact
+ * - Foliation trace
+ *
+ * @see ccTrace.h
+ */
 #include "ccCompassTrace.h"
 
 #include <GeometricalAnalysisTools.h>
-
 #include <queue>
 
-int ccCompassTrace::COST_MODE = ccCompassTrace::MODE::DARK; //set default cost mode
+int ccCompassTrace::COST_MODE = ccCompassTrace::MODE::DARK; // set default cost mode
 
-ccCompassTrace::ccCompassTrace(ccPointCloud* associatedCloud/*=nullptr*/)
-	: ccPolyline(associatedCloud)
+ccCompassTrace::ccCompassTrace(ccPointCloud* associatedCloud /*=nullptr*/)
+    : ccPolyline(associatedCloud)
 {
 	setMetaData("class_name", GetClassName());
 	setMetaData("plugin_name", "Compass");
@@ -34,7 +54,7 @@ ccCompassTrace::ccCompassTrace(ccPointCloud* associatedCloud/*=nullptr*/)
 }
 
 ccCompassTrace::ccCompassTrace(ccPolyline* poly)
-	: ccPolyline(nullptr)
+    : ccPolyline(nullptr)
 {
 	setMetaData("class_name", GetClassName());
 	setMetaData("plugin_name", "Compass");
@@ -63,18 +83,18 @@ ccCompassTrace::ccCompassTrace(ccPolyline* poly)
 
 	addChild(cld);
 
-	//load waypoints from metadata
+	// load waypoints from metadata
 	if (poly->hasMetaData("waypoints"))
 	{
 		QString waypoints = poly->getMetaData("waypoints").toString();
 		if (loadWaypointsFrom(waypoints))
 		{
-			//store waypoints metadata
+			// store waypoints metadata
 			setMetaData("waypoints", waypoints);
 		}
 	}
 
-	//load cost function from metadata
+	// load cost function from metadata
 	if (poly->hasMetaData("cost_function"))
 	{
 		COST_MODE = poly->getMetaData("cost_function").toInt();
@@ -82,40 +102,40 @@ ccCompassTrace::ccCompassTrace(ccPolyline* poly)
 
 	setName(poly->getName());
 
-	//recalculate trace if polyline data somehow lost [redundancy thing..]
+	// recalculate trace if polyline data somehow lost [redundancy thing..]
 	if (poly->size() == 0)
 	{
 		optimizePath(); //[slooooow...!]
 	}
 	else
 	{
-		//copy polyline into trace points
+		// copy polyline into trace points
 		std::deque<int> seg;
 		for (unsigned i = 0; i < poly->size(); i++)
 		{
-			//copy into "trace" object
-			unsigned pId = poly->getPointGlobalIndex(i); //get global point ID
+			// copy into "trace" object
+			unsigned pId = poly->getPointGlobalIndex(i); // get global point ID
 			seg.push_back(pId);
 
-			//also copy into polyline object
+			// also copy into polyline object
 			addPointIndex(pId);
 		}
 		m_trace.clear();
 		m_trace.push_back(seg);
 	}
 
-	//load SNE data from metadata (TODO)
+	// load SNE data from metadata (TODO)
 
-	invalidateBoundingBox(); //update bounding box (for picking)
+	invalidateBoundingBox(); // update bounding box (for picking)
 }
 
 void ccCompassTrace::init(ccPointCloud* associatedCloud)
 {
 	ccPolyline::setAssociatedCloud(associatedCloud);
-	m_cloud = associatedCloud; //store pointer ourselves also
-	m_search_r = calculateOptimumSearchRadius(); //estimate the search radius we want to use
+	m_cloud    = associatedCloud;                // store pointer ourselves also
+	m_search_r = calculateOptimumSearchRadius(); // estimate the search radius we want to use
 
-	//store these info as object attributes
+	// store these info as object attributes
 	updateMetadata();
 }
 
@@ -123,7 +143,7 @@ void ccCompassTrace::updateMetadata()
 {
 	setMetaData("search_r", m_search_r);
 	setMetaData("cost_function", ccCompassTrace::COST_MODE);
-	//TODO - write metadata for structure normal estimates
+	// TODO - write metadata for structure normal estimates
 }
 
 int ccCompassTrace::insertWaypoint(int pointId)
@@ -135,29 +155,29 @@ int ccCompassTrace::insertWaypoint(int pointId)
 
 	if (m_waypoints.size() >= 2)
 	{
-		//get location of point to add
-		//const CCVector3* Q = m_cloud->getPoint(pointId);
+		// get location of point to add
+		// const CCVector3* Q = m_cloud->getPoint(pointId);
 		CCVector3 Q = *m_cloud->getPoint(pointId);
 		CCVector3 start;
 		CCVector3 end;
-		//check if point is "inside" any segments
+		// check if point is "inside" any segments
 		for (int i = 1; i < m_waypoints.size(); i++)
 		{
-			//get start and end points
+			// get start and end points
 			m_cloud->getPoint(m_waypoints[i - 1], start);
 			m_cloud->getPoint(m_waypoints[i], end);
 
-			//are we "inside" this segment
+			// are we "inside" this segment
 			if (InCircle(&start, &end, &Q))
 			{
-				//insert waypoint
+				// insert waypoint
 				m_waypoints.insert(m_waypoints.begin() + i, pointId);
 				m_previous.push_back(i);
 				return i;
 			}
 		}
 
-		//check if the point is closer to the start than the end -> i.e. the point should be 'pre-pended'
+		// check if the point is closer to the start than the end -> i.e. the point should be 'pre-pended'
 		CCVector3 sp = Q - start;
 		CCVector3 ep = Q - end;
 		if (sp.norm2() < ep.norm2())
@@ -168,10 +188,10 @@ int ccCompassTrace::insertWaypoint(int pointId)
 		}
 	}
 
-	//add point to end of the trace
+	// add point to end of the trace
 	m_waypoints.push_back(pointId);
 	int id = static_cast<int>(m_waypoints.size()) - 1;
-	m_previous.push_back(id); //store for undo options
+	m_previous.push_back(id); // store for undo options
 	return id;
 }
 
@@ -185,11 +205,11 @@ bool ccCompassTrace::loadWaypointsFrom(const QString& waypoints)
 		{
 			if (!str.isEmpty())
 			{
-				bool ok = false;
-				int pID = str.toInt(&ok);
+				bool ok  = false;
+				int  pID = str.toInt(&ok);
 				if (ok)
 				{
-					m_waypoints.push_back(pID); //add waypoint
+					m_waypoints.push_back(pID); // add waypoint
 				}
 				else
 				{
@@ -200,7 +220,7 @@ bool ccCompassTrace::loadWaypointsFrom(const QString& waypoints)
 	}
 	catch (const std::bad_alloc&)
 	{
-		//not enough memory
+		// not enough memory
 		ccLog::Warning("[ccCompassTrace::loadWaypointsFrom] Not enough memory");
 		return false;
 	}
@@ -208,15 +228,16 @@ bool ccCompassTrace::loadWaypointsFrom(const QString& waypoints)
 	return true;
 }
 
-//test if the query point is within a circle bound by segStart & segEnd
+// test if the query point is within a circle bound by segStart & segEnd
 bool ccCompassTrace::InCircle(const CCVector3* segStart, const CCVector3* segEnd, const CCVector3* query)
 {
-	//calculate vector Query->Start and Query->End
+	// calculate vector Query->Start and Query->End
 	CCVector3 QS(segStart->x - query->x, segStart->y - query->y, segStart->z - query->z);
 	CCVector3 QE(segEnd->x - query->x, segEnd->y - query->y, segEnd->z - query->z);
-	
-	//is angle between these vectors obtuce (i.e. QS dot QE) < 0)? If so we are inside a circle between start&end, otherwise we are not
-	QS.normalize();QE.normalize();
+
+	// is angle between these vectors obtuce (i.e. QS dot QE) < 0)? If so we are inside a circle between start&end, otherwise we are not
+	QS.normalize();
+	QE.normalize();
 
 	return QS.dot(QE) < 0;
 }
@@ -228,65 +249,65 @@ bool ccCompassTrace::optimizePath(int maxIterations)
 	if (m_waypoints.size() < 2)
 	{
 		m_trace.clear();
-		return false; //no segments...
+		return false; // no segments...
 	}
 
-	#ifdef DEBUG_PATH
-	int idx = m_cloud->getScalarFieldIndexByName("Search"); //look for scalar field to write search to
-	if (idx == -1) //doesn't exist - create
-		idx=m_cloud->addScalarField("Search");
+#ifdef DEBUG_PATH
+	int idx = m_cloud->getScalarFieldIndexByName("Search"); // look for scalar field to write search to
+	if (idx == -1)                                          // doesn't exist - create
+		idx = m_cloud->addScalarField("Search");
 	m_cloud->setCurrentScalarField(idx);
-	#endif
+#endif
 
-	//update stored cost function etc.
+	// update stored cost function etc.
 	updateMetadata();
 
-	//update internal vars
+	// update internal vars
 	m_maxIterations = maxIterations;
 
-	//loop through segments and build/rebuild trace
+	// loop through segments and build/rebuild trace
 	int start = 0;
-	int end = 0;
-	int tID = 0;
+	int end   = 0;
+	int tID   = 0;
 	for (unsigned i = 1; i < m_waypoints.size(); i++)
 	{
-		//calculate indices
-		start = m_waypoints[i - 1]; //global point id for the start waypoint
-		end = m_waypoints[i]; //global point id for the end waypoint
-		tID = i - 1; //id of the trace segment id (in m_trace vector)
+		// calculate indices
+		start = m_waypoints[i - 1]; // global point id for the start waypoint
+		end   = m_waypoints[i];     // global point id for the end waypoint
+		tID   = i - 1;              // id of the trace segment id (in m_trace vector)
 
-		//are we adding to the end of the trace?
-		if (tID >= m_trace.size()) 
+		// are we adding to the end of the trace?
+		if (tID >= m_trace.size())
 		{
-			std::deque<int> segment = optimizeSegment(start, end, m_search_r); //calculate segment
-			m_trace.push_back(segment); //store segment
-			success = success && !segment.empty(); //if the queue is empty, we failed
+			std::deque<int> segment = optimizeSegment(start, end, m_search_r); // calculate segment
+			m_trace.push_back(segment);                                        // store segment
+			success = success && !segment.empty();                             // if the queue is empty, we failed
 		}
-		else //no... we're somewhere in the middle - update segment if necessary
+		else // no... we're somewhere in the middle - update segment if necessary
 		{
-			if (!m_trace[tID].empty() && (m_trace[tID][0] == start) &&  (m_trace[tID][m_trace[tID].size() - 1] == end)) //valid trace and start/end match
-				continue; //this trace has already been calculated - we can skip! :)
+			if (!m_trace[tID].empty() && (m_trace[tID][0] == start) && (m_trace[tID][m_trace[tID].size() - 1] == end)) // valid trace and start/end match
+				continue;                                                                                              // this trace has already been calculated - we can skip! :)
 			else
 			{
-				//calculate segment
-				std::deque<int> segment = optimizeSegment(start, end, m_search_r); //calculate segment
-				success = success && !segment.empty(); //if the queue is empty, we failed
+				// calculate segment
+				std::deque<int> segment = optimizeSegment(start, end, m_search_r); // calculate segment
+				success                 = success && !segment.empty();             // if the queue is empty, we failed
 
-				//add trace
-				if (m_trace[tID][m_trace[tID].size() - 1] == end) //end matches - we can replace the current trace & things should be sweet (all prior traces will have been updated already)
-					m_trace[tID] = segment; //end is correct - overwrite this block, then hopefully we will match in the next one
-				else //end doesn't match - we need to insert
-					m_trace.insert(m_trace.begin()+tID, segment);
+				// add trace
+				if (m_trace[tID][m_trace[tID].size() - 1] == end) // end matches - we can replace the current trace & things should be sweet (all prior traces will have been updated already)
+					m_trace[tID] = segment;                       // end is correct - overwrite this block, then hopefully we will match in the next one
+				else                                              // end doesn't match - we need to insert
+					m_trace.insert(m_trace.begin() + tID, segment);
 			}
 		}
 	}
 
-	#ifdef DEBUG_PATH
-	CCCoreLib::ScalarField * f = m_cloud->getScalarField(idx);
+#ifdef DEBUG_PATH
+	CCCoreLib::ScalarField* f = m_cloud->getScalarField(idx);
 	f->computeMinAndMax();
-	#endif
+#endif
 
-	//write control points to property (for reloading)
+	// write control points to property (for reloading)
 	QString waypoints;
 	{
 		for (unsigned i = 0; i < m_waypoints.size(); i++)
@@ -301,7 +322,7 @@ bool ccCompassTrace::optimizePath(int maxIterations)
 
 	setMetaData("waypoints", waypoints);
 
-	//push points onto underlying polyline object (for picking & save/load)
+	// push points onto underlying polyline object (for picking & save/load)
 	finalizePath();
 
 	return success;
@@ -309,10 +330,10 @@ bool ccCompassTrace::optimizePath(int maxIterations)
 
 void ccCompassTrace::finalizePath()
 {
-	//clear existing points in background "polyline"
+	// clear existing points in background "polyline"
 	clear();
 
-	//push trace buffer to said polyline (for save/export etc.)
+	// push trace buffer to said polyline (for save/export etc.)
 	for (const std::deque<int>& seg : m_trace)
 	{
 		for (int p : seg)
@@ -321,7 +342,7 @@ void ccCompassTrace::finalizePath()
 		}
 	}
 
-	//invalidate bb
+	// invalidate bb
 	invalidateBoundingBox();
 }
 
@@ -333,97 +354,105 @@ void ccCompassTrace::recalculatePath()
 
 std::deque<int> ccCompassTrace::optimizeSegment(int start, int end, int offset)
 {
-	//check handle to point cloud
+	// check handle to point cloud
 	if (!m_cloud)
 	{
-		return std::deque<int>(); //error -> no cloud
+		return std::deque<int>(); // error -> no cloud
 	}
 
-	//retrieve and store start & end rgb
+	// retrieve and store start & end rgb
 	if (m_cloud->hasColors())
 	{
 		const ccColor::Rgb& s = m_cloud->getPointColor(start);
 		const ccColor::Rgb& e = m_cloud->getPointColor(end);
-		m_start_rgb[0] = s.r; m_start_rgb[1] = s.g; m_start_rgb[2] = s.b;
-		m_end_rgb[0]   = e.r; m_end_rgb[1]   = e.g; m_end_rgb[2]   = e.b;
+		m_start_rgb[0]        = s.r;
+		m_start_rgb[1]        = s.g;
+		m_start_rgb[2]        = s.b;
+		m_end_rgb[0]          = e.r;
+		m_end_rgb[1]          = e.g;
+		m_end_rgb[2]          = e.b;
 	}
 	else
-	{	//no colour... set to 0 just in case something tries to use these vars
-		m_start_rgb[0] = 0; m_start_rgb[1] = 0; m_start_rgb[2] = 0;
-		m_end_rgb[0]   = 0; m_end_rgb[1]   = 0; m_end_rgb[2]   = 0;
+	{ // no colour... set to 0 just in case something tries to use these vars
+		m_start_rgb[0] = 0;
+		m_start_rgb[1] = 0;
+		m_start_rgb[2] = 0;
+		m_end_rgb[0]   = 0;
+		m_end_rgb[1]   = 0;
+		m_end_rgb[2]   = 0;
 	}
 
-	//get location of target node - used to optimise algorithm to stop searching paths leading away from the target
+	// get location of target node - used to optimise algorithm to stop searching paths leading away from the target
 	const CCVector3* end_v = m_cloud->getPoint(end);
 
-	//code essentially taken from wikipedia page for Djikstra: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
-	std::vector<bool> visited; //an array of bits to check if node has been visited
-	std::priority_queue<Node*,std::vector<Node*>,Compare> openQueue; //priority queue that stores nodes that haven't yet been explored/opened
-	std::vector<Node*> nodes; //list of visited nodes. Used to cleanup memory after re-constructing shortest path.
+	// code essentially taken from wikipedia page for Djikstra: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+	std::vector<bool>                                       visited;   // an array of bits to check if node has been visited
+	std::priority_queue<Node*, std::vector<Node*>, Compare> openQueue; // priority queue that stores nodes that haven't yet been explored/opened
+	std::vector<Node*>                                      nodes;     // list of visited nodes. Used to cleanup memory after re-constructing shortest path.
 
-	//set size of visited such that there is one bit per point in the cloud
-	visited.resize(m_cloud->size(), false); //n.b. for 400 million points, this will still only be ~50Mb =)
+	// set size of visited such that there is one bit per point in the cloud
+	visited.resize(m_cloud->size(), false); // n.b. for 400 million points, this will still only be ~50Mb =)
 
-	//declare variables used in the loop
-	Node* current = nullptr;
-	int current_idx = 0;
-	int cost = 0;
-	int smallest_cost = 999999;
-	int iter_count = 0;
-	float cur_d2 = 0.0f;
-	float next_d2 = 0.0f;
+	// declare variables used in the loop
+	Node* current       = nullptr;
+	int   current_idx   = 0;
+	int   cost          = 0;
+	int   smallest_cost = 999999;
+	int   iter_count    = 0;
+	float cur_d2        = 0.0f;
+	float next_d2       = 0.0f;
 
-	//setup buffer for storing nodes
-	int bufferSize = 500000; //500k node buffer (~1.5-2Mb). This should be enough for most small-medium size traces. More buffers will be created for bigger ones.
-	Node* node_buffer = new Node[bufferSize]; 
-	nodes.push_back(node_buffer); //store buffer in nodes list (for cleanup)
-	int nodeCount = 1; //start node will be added shortly
+	// setup buffer for storing nodes
+	int   bufferSize  = 500000; // 500k node buffer (~1.5-2Mb). This should be enough for most small-medium size traces. More buffers will be created for bigger ones.
+	Node* node_buffer = new Node[bufferSize];
+	nodes.push_back(node_buffer); // store buffer in nodes list (for cleanup)
+	int nodeCount = 1;            // start node will be added shortly
 
-	//setup octree & values for nearest neighbour searches
+	// setup octree & values for nearest neighbour searches
 	ccOctree::Shared oct = m_cloud->getOctree();
 	if (!oct)
 	{
-		oct = m_cloud->computeOctree(); //if the user clicked "no" when asked to compute the octree then tough....
+		oct = m_cloud->computeOctree(); // if the user clicked "no" when asked to compute the octree then tough....
 	}
 	unsigned char level = oct->findBestLevelForAGivenNeighbourhoodSizeExtraction(m_search_r);
 
-	//initialize start node on node_buffer and add to openQueue
+	// initialize start node on node_buffer and add to openQueue
 	node_buffer[0].set(start, 0, nullptr);
 	openQueue.push(&node_buffer[0]);
 
-	//mark start node as visited
+	// mark start node as visited
 	visited[start] = true;
 
-	while (openQueue.size() > 0) //while unvisited nodes exist
+	while (openQueue.size() > 0) // while unvisited nodes exist
 	{
-		//check if we excede max iterations
+		// check if we excede max iterations
 		if (iter_count > m_maxIterations)
 		{
-			//cleanup buffers
+			// cleanup buffers
 			for (Node* n : nodes)
 			{
 				delete[] n;
 			}
 
-			//bail
-			return std::deque<int>(); //bail
+			// bail
+			return std::deque<int>(); // bail
 		}
 
 		iter_count++;
 
-		//get lowest cost node for expansion
-		current = openQueue.top();
+		// get lowest cost node for expansion
+		current     = openQueue.top();
 		current_idx = current->index;
 
-		//remove node from open set
-		openQueue.pop(); //remove node from open set (queue)
+		// remove node from open set
+		openQueue.pop(); // remove node from open set (queue)
 
-		if (current_idx == end) //we've found it!
+		if (current_idx == end) // we've found it!
 		{
 			std::deque<int> path;
-			path.push_back(end); //add end node
+			path.push_back(end); // add end node
 
-			//traverse backwards to reconstruct path
+			// traverse backwards to reconstruct path
 			while (current->index != start)
 			{
 				current = current->previous;
@@ -432,79 +461,75 @@ std::deque<int> ccCompassTrace::optimizeSegment(int start, int end, int offset)
 
 			path.push_front(start);
 
-			//cleanup node buffers
+			// cleanup node buffers
 			for (Node* n : nodes)
 			{
 				delete[] n;
 			}
 
-			//return
+			// return
 			return path;
 		}
 
-		//calculate distance from current nodes parent to end -> avoid going backwards (in euclidean space) [essentially stops fracture turning > 90 degrees)
+		// calculate distance from current nodes parent to end -> avoid going backwards (in euclidean space) [essentially stops fracture turning > 90 degrees)
 		const CCVector3* cur = m_cloud->getPoint(current_idx);
-		cur_d2 =	(cur->x - end_v->x)*(cur->x - end_v->x) +
-					(cur->y - end_v->y)*(cur->y - end_v->y) +
-					(cur->z - end_v->z)*(cur->z - end_v->z);
+		cur_d2               = (cur->x - end_v->x) * (cur->x - end_v->x) + (cur->y - end_v->y) * (cur->y - end_v->y) + (cur->z - end_v->z) * (cur->z - end_v->z);
 
-		//fill "neighbours" with nodes - essentially get results of a "sphere" search around active current point
+		// fill "neighbours" with nodes - essentially get results of a "sphere" search around active current point
 		m_neighbours.clear();
-    
+
 		oct->getPointsInSphericalNeighbourhood(*cur, PointCoordinateType(m_search_r), m_neighbours, level);
 
-		//loop through neighbours
+		// loop through neighbours
 		for (size_t i = 0; i < m_neighbours.size(); i++)
 		{
 			m_p = m_neighbours[i];
-			
-			if (visited[m_p.pointIndex]) //Has this node been visited before? If so then bail.
+
+			if (visited[m_p.pointIndex]) // Has this node been visited before? If so then bail.
 				continue;
 
-			//calculate (squared) distance from this neighbour to the end
-			next_d2 =	(m_p.point->x - end_v->x)*(m_p.point->x - end_v->x) +
-						(m_p.point->y - end_v->y)*(m_p.point->y - end_v->y) +
-						(m_p.point->z - end_v->z)*(m_p.point->z - end_v->z);
+			// calculate (squared) distance from this neighbour to the end
+			next_d2 = (m_p.point->x - end_v->x) * (m_p.point->x - end_v->x) + (m_p.point->y - end_v->y) * (m_p.point->y - end_v->y) + (m_p.point->z - end_v->z) * (m_p.point->z - end_v->z);
 
-			if (next_d2 >= cur_d2) //Bigger than the original distance? If so then bail.
+			if (next_d2 >= cur_d2) // Bigger than the original distance? If so then bail.
 				continue;
 
-			//calculate cost to this neighbour
+			// calculate cost to this neighbour
 			cost = getSegmentCost(current_idx, m_p.pointIndex);
 
-			#ifdef DEBUG_PATH
-			m_cloud->setPointScalarValue(m_p.pointIndex, static_cast<ScalarType>(cost)); //STORE VISITED NODES (AND COST) FOR DEBUG VISUALISATIONS
-			#endif
+#ifdef DEBUG_PATH
+			m_cloud->setPointScalarValue(m_p.pointIndex, static_cast<ScalarType>(cost)); // STORE VISITED NODES (AND COST) FOR DEBUG VISUALISATIONS
+#endif
 
-			//transform into cost from start node
+			// transform into cost from start node
 			cost += current->total_cost;
 
-			//check that the node buffer isn't full
+			// check that the node buffer isn't full
 			if (nodeCount == bufferSize)
 			{
-				//buffer is full - create a new one
+				// buffer is full - create a new one
 				node_buffer = new Node[bufferSize];
 				nodes.push_back(node_buffer);
 				nodeCount = 0;
 			}
 
-			//initialize node on node buffer
+			// initialize node on node buffer
 			node_buffer[nodeCount].set(m_p.pointIndex, cost, current);
 
-			//push node to open set
+			// push node to open set
 			openQueue.push(&node_buffer[nodeCount]);
 
-			//we now have one more node
+			// we now have one more node
 			nodeCount++;
 
-			//mark node as visited
+			// mark node as visited
 			visited[m_p.pointIndex] = true;
 		}
 	}
 
 	// If we're here, then it exhausted all the reachable points without finding the destination point.
 	// This can happen if, for example, the user is asking for a path between two "islands".
-	
+
 	return {};
 }
 
@@ -515,8 +540,8 @@ int ccCompassTrace::getSegmentCost(int p1, int p2)
 		return 0;
 	}
 
-	int cost = 1; //n.b. default value is 1 so that if no cost functions are used, the function doesn't crash (and returns the unweighted shortest path)
-	if (m_cloud->hasColors()) //check cloud has colour data
+	int cost = 1;             // n.b. default value is 1 so that if no cost functions are used, the function doesn't crash (and returns the unweighted shortest path)
+	if (m_cloud->hasColors()) // check cloud has colour data
 	{
 		if (COST_MODE & MODE::RGB)
 			cost += getSegmentCostRGB(p1, p2);
@@ -527,7 +552,7 @@ int ccCompassTrace::getSegmentCost(int p1, int p2)
 		if (COST_MODE & MODE::GRADIENT)
 			cost += getSegmentCostGrad(p1, p2, m_search_r);
 	}
-	if (m_cloud->hasDisplayedScalarField()) //check cloud has scalar field data
+	if (m_cloud->hasDisplayedScalarField()) // check cloud has scalar field data
 	{
 		if (COST_MODE & MODE::SCALAR)
 			cost += getSegmentCostScalar(p1, p2);
@@ -535,7 +560,7 @@ int ccCompassTrace::getSegmentCost(int p1, int p2)
 			cost += getSegmentCostScalarInv(p1, p2);
 	}
 
-	//these cost functions can be used regardless
+	// these cost functions can be used regardless
 	if (COST_MODE & MODE::CURVE)
 		cost += getSegmentCostCurve(p1, p2);
 	if (COST_MODE & MODE::DISTANCE)
@@ -551,33 +576,25 @@ int ccCompassTrace::getSegmentCostRGB(int p1, int p2)
 		return 0;
 	}
 
-	//get colors
+	// get colors
 	const ccColor::Rgb& p1_rgb = m_cloud->getPointColor(p1);
 	const ccColor::Rgb& p2_rgb = m_cloud->getPointColor(p2);
 
-	//cost function: cost = |c1-c2| + 0.25 ( |c1-start| + |c1-end| + |c2-start| + |c2-end| )
-	//IDEA: can we somehow optimize all the square roots here (for speed)? 
+	// cost function: cost = |c1-c2| + 0.25 ( |c1-start| + |c1-end| + |c2-start| + |c2-end| )
+	// IDEA: can we somehow optimize all the square roots here (for speed)?
 	return sqrt(
-		//|c1-c2|
-		(p1_rgb.r - p2_rgb.r) * (p1_rgb.r - p2_rgb.r) +
-		(p1_rgb.g - p2_rgb.g) * (p1_rgb.g - p2_rgb.g) +
-		(p1_rgb.b - p2_rgb.b) * (p1_rgb.b - p2_rgb.b)) + 0.25 * (
-		//|c1-start|
-		sqrt((p1_rgb.r - m_start_rgb[0]) * (p1_rgb.r - m_start_rgb[0]) +
-		(p1_rgb.g - m_start_rgb[1]) * (p1_rgb.g - m_start_rgb[1]) +
-		(p1_rgb.b - m_start_rgb[2]) * (p1_rgb.b - m_start_rgb[2])) +
-		//|c1-end|
-		sqrt((p1_rgb.r - m_end_rgb[0]) * (p1_rgb.r - m_end_rgb[0]) +
-		(p1_rgb.g - m_end_rgb[1]) * (p1_rgb.g - m_end_rgb[1]) +
-		(p1_rgb.b - m_end_rgb[2]) * (p1_rgb.b - m_end_rgb[2])) +
-		//|c2-start|
-		sqrt((p2_rgb.r - m_start_rgb[0]) * (p2_rgb.r - m_start_rgb[0]) +
-		(p2_rgb.g - m_start_rgb[1]) * (p2_rgb.g - m_start_rgb[1]) +
-		(p2_rgb.b - m_start_rgb[2]) * (p2_rgb.b - m_start_rgb[2])) +
-		//|c2-end|
-		sqrt((p2_rgb.r - m_end_rgb[0]) * (p2_rgb.r - m_end_rgb[0]) +
-		(p2_rgb.g - m_end_rgb[1]) * (p2_rgb.g - m_end_rgb[1]) +
-		(p2_rgb.b - m_end_rgb[2]) * (p2_rgb.b - m_end_rgb[2]))) / 3.5; //N.B. the divide by 3.5 scales this cost function to range between 0 & 255
+	           //|c1-c2|
+	           (p1_rgb.r - p2_rgb.r) * (p1_rgb.r - p2_rgb.r) + (p1_rgb.g - p2_rgb.g) * (p1_rgb.g - p2_rgb.g) + (p1_rgb.b - p2_rgb.b) * (p1_rgb.b - p2_rgb.b))
+	       + 0.25 * (
+	             //|c1-start|
+	             sqrt((p1_rgb.r - m_start_rgb[0]) * (p1_rgb.r - m_start_rgb[0]) + (p1_rgb.g - m_start_rgb[1]) * (p1_rgb.g - m_start_rgb[1]) + (p1_rgb.b - m_start_rgb[2]) * (p1_rgb.b - m_start_rgb[2])) +
+	             //|c1-end|
+	             sqrt((p1_rgb.r - m_end_rgb[0]) * (p1_rgb.r - m_end_rgb[0]) + (p1_rgb.g - m_end_rgb[1]) * (p1_rgb.g - m_end_rgb[1]) + (p1_rgb.b - m_end_rgb[2]) * (p1_rgb.b - m_end_rgb[2])) +
+	             //|c2-start|
+	             sqrt((p2_rgb.r - m_start_rgb[0]) * (p2_rgb.r - m_start_rgb[0]) + (p2_rgb.g - m_start_rgb[1]) * (p2_rgb.g - m_start_rgb[1]) + (p2_rgb.b - m_start_rgb[2]) * (p2_rgb.b - m_start_rgb[2])) +
+	             //|c2-end|
+	             sqrt((p2_rgb.r - m_end_rgb[0]) * (p2_rgb.r - m_end_rgb[0]) + (p2_rgb.g - m_end_rgb[1]) * (p2_rgb.g - m_end_rgb[1]) + (p2_rgb.b - m_end_rgb[2]) * (p2_rgb.b - m_end_rgb[2])))
+	             / 3.5; // N.B. the divide by 3.5 scales this cost function to range between 0 & 255
 }
 
 int ccCompassTrace::getSegmentCostDark(int p1, int p2)
@@ -587,17 +604,17 @@ int ccCompassTrace::getSegmentCostDark(int p1, int p2)
 		return 0;
 	}
 
-	//return magnitude of the point p2
-	//const ColorCompType* p1_rgb = m_cloud->getPointColor(p1);
+	// return magnitude of the point p2
+	// const ColorCompType* p1_rgb = m_cloud->getPointColor(p1);
 	const ccColor::Rgb& p2_rgb = m_cloud->getPointColor(p2);
 
-	//return "taxi-cab" length
-	return (p2_rgb.r + p2_rgb.g + p2_rgb.b); //note: this will naturally give a maximum of 765 (=255 + 255 + 255)
+	// return "taxi-cab" length
+	return (p2_rgb.r + p2_rgb.g + p2_rgb.b); // note: this will naturally give a maximum of 765 (=255 + 255 + 255)
 }
 
 int ccCompassTrace::getSegmentCostLight(int p1, int p2)
 {
-	//return the opposite of getCostDark
+	// return the opposite of getCostDark
 	return 765 - getSegmentCostDark(p1, p2);
 }
 
@@ -608,42 +625,41 @@ int ccCompassTrace::getSegmentCostCurve(int p1, int p2)
 		return 0;
 	}
 
-	int idx = m_cloud->getScalarFieldIndexByName("Curvature"); //look for pre-existing gradient SF
-	if (isCurvaturePrecomputed()) //scalar field found - return from precomputed cost]
+	int idx = m_cloud->getScalarFieldIndexByName("Curvature"); // look for pre-existing gradient SF
+	if (isCurvaturePrecomputed())                              // scalar field found - return from precomputed cost]
 	{
-		//activate SF
+		// activate SF
 		m_cloud->setCurrentScalarField(idx);
 
-		//return inverse of p2 value
+		// return inverse of p2 value
 		return m_cloud->getScalarField(idx)->getMax() - m_cloud->getPointScalarValue(p2);
 	}
-	else //scalar field not found - do slow calculation...
+	else // scalar field not found - do slow calculation...
 	{
-		//put neighbourhood in a CCCoreLib::Neighbourhood structure
-		if (m_neighbours.size() > 4) //need at least 4 points to calculate curvature....
+		// put neighbourhood in a CCCoreLib::Neighbourhood structure
+		if (m_neighbours.size() > 4) // need at least 4 points to calculate curvature....
 		{
-			m_neighbours.push_back(m_p); //add center point onto end of neighbourhood
+			m_neighbours.push_back(m_p); // add center point onto end of neighbourhood
 
-			//compute curvature
+			// compute curvature
 			CCCoreLib::DgmOctreeReferenceCloud nCloud(&m_neighbours, static_cast<unsigned>(m_neighbours.size()));
-			CCCoreLib::Neighbourhood Z(&nCloud);
-			float c = Z.computeCurvature(*nCloud.getPoint(0), CCCoreLib::Neighbourhood::CurvatureType::MEAN_CURV);
+			CCCoreLib::Neighbourhood           Z(&nCloud);
+			float                              c = Z.computeCurvature(*nCloud.getPoint(0), CCCoreLib::Neighbourhood::CurvatureType::MEAN_CURV);
 
-			m_neighbours.erase(m_neighbours.end() - 1); //remove center point from neighbourhood (so as not to screw up loops)
+			m_neighbours.erase(m_neighbours.end() - 1); // remove center point from neighbourhood (so as not to screw up loops)
 
-			//curvature tends to range between 0 (high cost) and 10 (low cost), though it can be greater than 10 in extreme cases
-			//hence we need to map to domain 0 - 10 and then transform that to the (integer) domain 0 - 884 to meet the cost function spec
+			// curvature tends to range between 0 (high cost) and 10 (low cost), though it can be greater than 10 in extreme cases
+			// hence we need to map to domain 0 - 10 and then transform that to the (integer) domain 0 - 884 to meet the cost function spec
 			if (c > 10)
 				c = 10;
 
-			//scale curvature to range 0, 765
+			// scale curvature to range 0, 765
 			c *= 76.5;
 
-			//note that high curvature = low cost, hence subtract curvature from 765
+			// note that high curvature = low cost, hence subtract curvature from 765
 			return 765 - c;
-
 		}
-		return 765; //unknown curvature - this point is high cost.
+		return 765; // unknown curvature - this point is high cost.
 	}
 }
 
@@ -654,48 +670,48 @@ int ccCompassTrace::getSegmentCostGrad(int p1, int p2, float search_r)
 		return 0;
 	}
 
-	int idx = m_cloud->getScalarFieldIndexByName("Gradient"); //look for pre-existing gradient SF
-	if (idx != -1) //found precomputed gradient
+	int idx = m_cloud->getScalarFieldIndexByName("Gradient"); // look for pre-existing gradient SF
+	if (idx != -1)                                            // found precomputed gradient
 	{
-		//activate SF
+		// activate SF
 		m_cloud->setCurrentScalarField(idx);
 
-		//return inverse of p2 value
+		// return inverse of p2 value
 		return m_cloud->getScalarField(idx)->getMax() - m_cloud->getPointScalarValue(p2);
 	}
-	else //not found... do expensive calculation
+	else // not found... do expensive calculation
 	{
 
-		CCVector3 p = *m_cloud->getPoint(p2);
-		const ccColor::Rgb p2_rgb = m_cloud->getPointColor(p2);
-		int p_value = p2_rgb.r + p2_rgb.g + p2_rgb.b;
+		CCVector3          p       = *m_cloud->getPoint(p2);
+		const ccColor::Rgb p2_rgb  = m_cloud->getPointColor(p2);
+		int                p_value = p2_rgb.r + p2_rgb.g + p2_rgb.b;
 
-		if (m_neighbours.size() > 2) //need at least 2 points to calculate gradient....
+		if (m_neighbours.size() > 2) // need at least 2 points to calculate gradient....
 		{
-			//N.B. The following code is mostly stolen from the computeGradient function in CloudCompare
-			CCVector3d sum(0, 0, 0);
+			// N.B. The following code is mostly stolen from the computeGradient function in CloudCompare
+			CCVector3d                            sum(0, 0, 0);
 			CCCoreLib::DgmOctree::PointDescriptor n;
 			for (int i = 0; i < m_neighbours.size(); i++)
 			{
 				n = m_neighbours[i];
 
-				//vector from p1 to m_p
+				// vector from p1 to m_p
 				CCVector3 deltaPos = *n.point - p;
-				double norm2 = deltaPos.norm2d();
+				double    norm2    = deltaPos.norm2d();
 
-				//colour
-				const ccColor::Rgb& c = m_cloud->getPointColor(n.pointIndex);
-				int c_value = (static_cast<int>(c.r) + c.g) + c.b;
+				// colour
+				const ccColor::Rgb& c       = m_cloud->getPointColor(n.pointIndex);
+				int                 c_value = (static_cast<int>(c.r) + c.g) + c.b;
 
-				//calculate gradient weighted by distance to the point (i.e. divide by distance^2)
-				if ( CCCoreLib::GreaterThanSquareEpsilon( norm2 ) )
+				// calculate gradient weighted by distance to the point (i.e. divide by distance^2)
+				if (CCCoreLib::GreaterThanSquareEpsilon(norm2))
 				{
-					//color magnitude difference
+					// color magnitude difference
 					double deltaValue = p_value - c_value;
-					//divide by norm^2 to get distance-weighted gradient
-					deltaValue /= norm2; //we divide by 'norm' to get the normalized direction, and by 'norm' again to get the gradient (hence we use the squared norm)
-					//sum stuff
-					sum.x += deltaPos.x * deltaValue; //warning: here 'deltaValue'= deltaValue / squaredNorm(deltaPos) ;)
+					// divide by norm^2 to get distance-weighted gradient
+					deltaValue /= norm2; // we divide by 'norm' to get the normalized direction, and by 'norm' again to get the gradient (hence we use the squared norm)
+					// sum stuff
+					sum.x += deltaPos.x * deltaValue; // warning: here 'deltaValue'= deltaValue / squaredNorm(deltaPos) ;)
 					sum.y += deltaPos.y * deltaValue;
 					sum.z += deltaPos.z * deltaValue;
 				}
@@ -703,13 +719,13 @@ int ccCompassTrace::getSegmentCostGrad(int p1, int p2, float search_r)
 
 			float gradient = sum.norm() / m_neighbours.size();
 
-			//ensure gradient is lass than a case-specific maximum gradient (colour change from white to black across a distance or search_r,
-			//                                                                                  giving a gradient of (255+255+255) / search_r)
+			// ensure gradient is lass than a case-specific maximum gradient (colour change from white to black across a distance or search_r,
+			//                                                                                   giving a gradient of (255+255+255) / search_r)
 			gradient = std::min(gradient, 765 / search_r);
-			gradient *= search_r; //scale between 0 and 765
-			return 765 - gradient; //return inverse gradient (high gradient = low cost)
+			gradient *= search_r;  // scale between 0 and 765
+			return 765 - gradient; // return inverse gradient (high gradient = low cost)
 		}
-		return 765; //no gradient = high cost
+		return 765; // no gradient = high cost
 	}
 }
 
@@ -725,14 +741,14 @@ int ccCompassTrace::getSegmentCostScalar(int p1, int p2)
 		return 0;
 	}
 
-	//m_cloud->getCurrentDisplayedScalarFieldIndex();
+	// m_cloud->getCurrentDisplayedScalarFieldIndex();
 	ccScalarField* sf = static_cast<ccScalarField*>(m_cloud->getCurrentDisplayedScalarField());
 	if (!sf)
 	{
 		assert(false);
 		return 0;
 	}
-	return (sf->getValue(p2)-sf->getMin()) * (765 / (sf->getMax()-sf->getMin())); //return scalar field value mapped to range 0 - 765
+	return (sf->getValue(p2) - sf->getMin()) * (765 / (sf->getMax() - sf->getMin())); // return scalar field value mapped to range 0 - 765
 }
 
 int ccCompassTrace::getSegmentCostScalarInv(int p1, int p2)
@@ -748,10 +764,10 @@ int ccCompassTrace::getSegmentCostScalarInv(int p1, int p2)
 		assert(false);
 		return 0;
 	}
-	return (sf->getMax() - sf->getValue(p2)) * (765 / (sf->getMax() - sf->getMin())); //return inverted scalar field value mapped to range 0 - 765
+	return (sf->getMax() - sf->getValue(p2)) * (765 / (sf->getMax() - sf->getMin())); // return inverted scalar field value mapped to range 0 - 765
 }
 
-//functions for calculating cost SFs
+// functions for calculating cost SFs
 void ccCompassTrace::buildGradientCost(QWidget* parent)
 {
 	if (!m_cloud)
@@ -759,34 +775,34 @@ void ccCompassTrace::buildGradientCost(QWidget* parent)
 		return;
 	}
 
-	//is there already a gradient SF?
-	if (isGradientPrecomputed()) //already done :)
+	// is there already a gradient SF?
+	if (isGradientPrecomputed()) // already done :)
 	{
 		return;
 	}
 
-	//create new SF for greyscale
+	// create new SF for greyscale
 	int idx = m_cloud->addScalarField("Greyscale");
 	m_cloud->setCurrentScalarField(idx);
 
-	//make colours greyscale and push to SF (otherwise copy active SF)
+	// make colours greyscale and push to SF (otherwise copy active SF)
 	for (unsigned i = 0; i < m_cloud->size(); i++)
 	{
 		const ccColor::Rgb& col = m_cloud->getPointColor(i);
 		m_cloud->setPointScalarValue(i, static_cast<ScalarType>((static_cast<int>(col.r) + col.g) + col.b));
 	}
-	//compute min/max
+	// compute min/max
 	m_cloud->getScalarField(idx)->computeMinAndMax();
 
-	//calculate new SF with gradient of the old one
+	// calculate new SF with gradient of the old one
 	float roughnessKernelSize = m_search_r;
-	m_cloud->setCurrentOutScalarField(idx); //set out gradient field - values are read from here for calc
+	m_cloud->setCurrentOutScalarField(idx); // set out gradient field - values are read from here for calc
 
-	//make gradient sf
+	// make gradient sf
 	int gIdx = m_cloud->addScalarField("Gradient");
-	m_cloud->setCurrentInScalarField(gIdx); //set in scalar field - gradient is written here
+	m_cloud->setCurrentInScalarField(gIdx); // set in scalar field - gradient is written here
 
-	//get/build octree
+	// get/build octree
 	ccProgressDialog pDlg(true, parent);
 	pDlg.show();
 
@@ -801,13 +817,13 @@ void ccCompassTrace::buildGradientCost(QWidget* parent)
 		}
 	}
 
-	//calculate gradient
+	// calculate gradient
 	int result = CCCoreLib::ScalarFieldTools::computeScalarFieldGradient(m_cloud,
-		m_search_r, //auto --> FIXME: should be properly set by the user!
-		false,
-		false,
-		&pDlg,
-		octree.data());
+	                                                                     m_search_r, // auto --> FIXME: should be properly set by the user!
+	                                                                     false,
+	                                                                     false,
+	                                                                     &pDlg,
+	                                                                     octree.data());
 
 	pDlg.close();
 
@@ -818,21 +834,21 @@ void ccCompassTrace::buildGradientCost(QWidget* parent)
 		return;
 	}
 
-	//calculate bounds
+	// calculate bounds
 	m_cloud->getScalarField(gIdx)->computeMinAndMax();
-	
-	//normalize and log-transform
+
+	// normalize and log-transform
 	m_cloud->setCurrentScalarField(gIdx);
 	float logMax = log(m_cloud->getScalarField(gIdx)->getMax() + 10);
 	for (unsigned i = 0; i < m_cloud->size(); i++)
 	{
 		int nVal = 765 * log(m_cloud->getPointScalarValue(i) + 10) / logMax;
-		if (nVal < 0) //this is caused by isolated points that were assigned "null" value gradients
-			nVal = 1; //set to low gradient by default
+		if (nVal < 0) // this is caused by isolated points that were assigned "null" value gradients
+			nVal = 1; // set to low gradient by default
 		m_cloud->setPointScalarValue(i, nVal);
 	}
 
-	//recompute min-max...
+	// recompute min-max...
 	m_cloud->getScalarField(gIdx)->computeMinAndMax();
 }
 
@@ -843,18 +859,18 @@ void ccCompassTrace::buildCurvatureCost(QWidget* parent)
 		return;
 	}
 
-	if (isCurvaturePrecomputed()) //already done
+	if (isCurvaturePrecomputed()) // already done
 	{
 		return;
 	}
 
-	//create curvature SF
-	//make gradient sf
+	// create curvature SF
+	// make gradient sf
 	int idx = m_cloud->addScalarField("Curvature");
-	m_cloud->setCurrentInScalarField(idx); //set in scalar field - curvature is written here
+	m_cloud->setCurrentInScalarField(idx); // set in scalar field - curvature is written here
 	m_cloud->setCurrentScalarField(idx);
 
-	//get/build octree
+	// get/build octree
 	ccProgressDialog pDlg(true, parent);
 	pDlg.show();
 
@@ -864,15 +880,15 @@ void ccCompassTrace::buildCurvatureCost(QWidget* parent)
 		octree = m_cloud->computeOctree(&pDlg);
 	}
 
-	//calculate curvature
+	// calculate curvature
 	CCCoreLib::GeometricalAnalysisTools::ErrorCode result = CCCoreLib::GeometricalAnalysisTools::ComputeCharactersitic(
-		CCCoreLib::GeometricalAnalysisTools::Curvature,
-		CCCoreLib::Neighbourhood::CurvatureType::MEAN_CURV,
-		m_cloud,
-		m_search_r,
-		nullptr,
-		&pDlg,
-		octree.data());
+	    CCCoreLib::GeometricalAnalysisTools::Curvature,
+	    CCCoreLib::Neighbourhood::CurvatureType::MEAN_CURV,
+	    m_cloud,
+	    m_search_r,
+	    nullptr,
+	    &pDlg,
+	    octree.data());
 
 	pDlg.close();
 
@@ -883,20 +899,20 @@ void ccCompassTrace::buildCurvatureCost(QWidget* parent)
 		return;
 	}
 
-	//calculate minmax
+	// calculate minmax
 	m_cloud->getScalarField(idx)->computeMinAndMax();
 
-	//normalize and log-transform
+	// normalize and log-transform
 	float logMax = log(m_cloud->getScalarField(idx)->getMax() + 10);
 	for (unsigned i = 0; i < m_cloud->size(); i++)
 	{
 		int nVal = 765 * log(m_cloud->getPointScalarValue(i) + 10) / logMax;
-		if (nVal < 0) //this is caused by isolated points that were assigned "null" value curvatures
-			nVal = 1; //set to low gradient by default
+		if (nVal < 0) // this is caused by isolated points that were assigned "null" value curvatures
+			nVal = 1; // set to low gradient by default
 		m_cloud->setPointScalarValue(i, nVal);
 	}
 
-	//recompute min-max...
+	// recompute min-max...
 	m_cloud->getScalarField(idx)->computeMinAndMax();
 }
 
@@ -907,8 +923,8 @@ bool ccCompassTrace::isGradientPrecomputed()
 		return false;
 	}
 
-	int idx = m_cloud->getScalarFieldIndexByName("Gradient"); //look for pre-existing gradient SF
-	return idx != -1; //was something found?
+	int idx = m_cloud->getScalarFieldIndexByName("Gradient"); // look for pre-existing gradient SF
+	return idx != -1;                                         // was something found?
 }
 
 bool ccCompassTrace::isCurvaturePrecomputed()
@@ -918,8 +934,8 @@ bool ccCompassTrace::isCurvaturePrecomputed()
 		return false;
 	}
 
-	int idx = m_cloud->getScalarFieldIndexByName("Curvature"); //look for pre-existing gradient SF
-	return idx != -1; //was something found?
+	int idx = m_cloud->getScalarFieldIndexByName("Curvature"); // look for pre-existing gradient SF
+	return idx != -1;                                          // was something found?
 }
 
 ccFitPlane* ccCompassTrace::fitPlane(int surface_effect_tolerance, float min_planarity)
@@ -929,29 +945,30 @@ ccFitPlane* ccCompassTrace::fitPlane(int surface_effect_tolerance, float min_pla
 		return nullptr;
 	}
 
-	//put all "trace" points into the cloud
+	// put all "trace" points into the cloud
 	finalizePath();
-	
+
 	if (size() < 3)
 	{
-		return nullptr; //need three points to fit a plane
+		return nullptr; // need three points to fit a plane
 	}
 
-	//check we are not trying to fit a plane to a line
+	// check we are not trying to fit a plane to a line
 	CCCoreLib::Neighbourhood Z(this);
 
-	//calculate eigenvalues of neighbourhood
+	// calculate eigenvalues of neighbourhood
 	CCCoreLib::SquareMatrixd cov = Z.computeCovarianceMatrix();
-	CCCoreLib::SquareMatrixd eigVectors; std::vector<double> eigValues;
+	CCCoreLib::SquareMatrixd eigVectors;
+	std::vector<double>      eigValues;
 	if (CCCoreLib::Jacobi<double>::ComputeEigenValuesAndVectors(cov, eigVectors, eigValues, true))
 	{
-		//sort eigenvalues into decending order
+		// sort eigenvalues into decending order
 		std::sort(eigValues.rbegin(), eigValues.rend());
 
-		float y = eigValues[1]; //middle eigen
-		float z = eigValues[2]; //smallest eigen (parallel to plane normal)
+		float y = eigValues[1]; // middle eigen
+		float z = eigValues[2]; // smallest eigen (parallel to plane normal)
 
-		//calculate planarity (0 = line or random, 1 = plane)
+		// calculate planarity (0 = line or random, 1 = plane)
 		float planarity = 1.0f - z / y;
 		if (planarity < min_planarity)
 		{
@@ -959,41 +976,40 @@ ccFitPlane* ccCompassTrace::fitPlane(int surface_effect_tolerance, float min_pla
 		}
 	}
 
-	//fit plane
-	double rms = 0.0; //output for rms
-	ccFitPlane* p = ccFitPlane::Fit(this, &rms);
+	// fit plane
+	double      rms = 0.0; // output for rms
+	ccFitPlane* p   = ccFitPlane::Fit(this, &rms);
 
 	if (!p)
 	{
-		return nullptr; //return null for invalid planes
+		return nullptr; // return null for invalid planes
 	}
 
 	p->updateAttributes(rms, m_search_r);
 
-	//test for 'surface effect'
+	// test for 'surface effect'
 	if (m_cloud->hasNormals())
 	{
-		//calculate average normal of points on trace
+		// calculate average normal of points on trace
 		CCVector3 n_avg;
 		for (unsigned i = 0; i < size(); i++)
 		{
-			//get normal vector
+			// get normal vector
 			CCVector3 n = ccNormalVectors::GetNormal(m_cloud->getPointNormalIndex(this->getPointGlobalIndex(i)));
 			n_avg += n;
 		}
-		n_avg *= (CCCoreLib::PC_ONE / size()); //turn sum into average
+		n_avg *= (CCCoreLib::PC_ONE / size()); // turn sum into average
 
-
-		//compare to plane normal
+		// compare to plane normal
 		CCVector3 n = p->getNormal();
-		if (acos(n_avg.dot(n)) < 0.01745329251*surface_effect_tolerance) //0.01745329251 converts deg to rad
+		if (acos(n_avg.dot(n)) < 0.01745329251 * surface_effect_tolerance) // 0.01745329251 converts deg to rad
 		{
-			//this is a false (surface) plane - reject
-			return nullptr; //don't return plane
+			// this is a false (surface) plane - reject
+			return nullptr; // don't return plane
 		}
 	}
 
-	//all is good! Return the plane :)
+	// all is good! Return the plane :)
 	return p;
 }
 
@@ -1004,7 +1020,7 @@ void ccCompassTrace::bakePathToScalarField()
 		return;
 	}
 
-	//bake points
+	// bake points
 	int vertexCount = static_cast<int>(m_cloud->size());
 	for (const std::deque<int>& seg : m_trace)
 	{
@@ -1027,73 +1043,73 @@ float ccCompassTrace::calculateOptimumSearchRadius()
 
 	CCCoreLib::DgmOctree::NeighboursSet neighbours;
 
-	//setup octree & values for nearest neighbour searches
+	// setup octree & values for nearest neighbour searches
 	ccOctree::Shared oct = m_cloud->getOctree();
 	if (!oct)
 	{
-		oct = m_cloud->computeOctree(); //if the user clicked "no" when asked to compute the octree then tough....
+		oct = m_cloud->computeOctree(); // if the user clicked "no" when asked to compute the octree then tough....
 	}
 
-	//init vars needed for nearest neighbour search
-	unsigned char level = oct->findBestLevelForAGivenPopulationPerCell(2);
-	CCCoreLib::ReferenceCloud* nCloud = new  CCCoreLib::ReferenceCloud(m_cloud);
+	// init vars needed for nearest neighbour search
+	unsigned char              level  = oct->findBestLevelForAGivenPopulationPerCell(2);
+	CCCoreLib::ReferenceCloud* nCloud = new CCCoreLib::ReferenceCloud(m_cloud);
 
-	//pick 15 random points
+	// pick 15 random points
 	unsigned int npoints = m_cloud->size();
-	double dsum = 0;
-	srand(npoints); //set seed as n for repeatability
+	double       dsum    = 0;
+	srand(npoints); // set seed as n for repeatability
 	for (unsigned int i = 0; i < 30; i++)
 	{
-		//int rn = rand() * rand(); //need to make bigger than rand max...
-		int r = (rand()*rand()) % npoints; //random(ish) number between 0 and n
+		// int rn = rand() * rand(); //need to make bigger than rand max...
+		int r = (rand() * rand()) % npoints; // random(ish) number between 0 and n
 
-		//find nearest neighbour for point
+		// find nearest neighbour for point
 		nCloud->clear(false);
 		double d = -1.0;
 		oct->findPointNeighbourhood(m_cloud->getPoint(r), nCloud, 2, level, d);
 
-		if (d != -1.0) //if a point was found
+		if (d != -1.0) // if a point was found
 		{
 			dsum += sqrt(d);
 		}
 	}
-	
-	//average nearest-neighbour distances
+
+	// average nearest-neighbour distances
 	double d = dsum / 30;
-	
-	//return a number slightly larger than the average distance
+
+	// return a number slightly larger than the average distance
 	return d * 1.5;
 }
 
 static QSharedPointer<ccSphere> c_unitPointMarker(nullptr);
-void ccCompassTrace::drawMeOnly(CC_DRAW_CONTEXT& context)
+void                            ccCompassTrace::drawMeOnly(CC_DRAW_CONTEXT& context)
 {
 	if (!m_cloud)
 	{
 		return;
 	}
 
-	if (!MACRO_Foreground(context)) //2D foreground only
+	if (!MACRO_Foreground(context)) // 2D foreground only
 	{
-		return; //do nothing
+		return; // do nothing
 	}
 
 	if (MACRO_Draw3D(context))
 	{
-		if (m_waypoints.empty()) //no points -> bail!
+		if (m_waypoints.empty()) // no points -> bail!
 		{
 			return;
 		}
 
-		//get the set of OpenGL functions (version 2.1)
-		QOpenGLFunctions_2_1 *glFunc = context.glFunctions<QOpenGLFunctions_2_1>();
+		// get the set of OpenGL functions (version 2.1)
+		QOpenGLFunctions_2_1* glFunc = context.glFunctions<QOpenGLFunctions_2_1>();
 		if (glFunc == nullptr)
 		{
 			assert(false);
 			return;
 		}
 
-		//check sphere exists
+		// check sphere exists
 		if (!c_unitPointMarker)
 		{
 			c_unitPointMarker.reset(new ccSphere(1.0f, nullptr, "PointMarker", 6));
@@ -1106,12 +1122,12 @@ void ccCompassTrace::drawMeOnly(CC_DRAW_CONTEXT& context)
 		glDrawParams glParams;
 		getDrawingParameters(glParams);
 
-		//not sure what this does, but it looks like fun
-		CC_DRAW_CONTEXT markerContext = context; //build-up point maker own 'context'
-		markerContext.display = nullptr;
-		markerContext.drawingFlags &= (~CC_ENTITY_PICKING); //we must remove the 'entity picking flag' so that the sphere doesn't override the picking color!
+		// not sure what this does, but it looks like fun
+		CC_DRAW_CONTEXT markerContext = context; // build-up point maker own 'context'
+		markerContext.display         = nullptr;
+		markerContext.drawingFlags &= (~CC_ENTITY_PICKING); // we must remove the 'entity picking flag' so that the sphere doesn't override the picking color!
 
-		//get camera info
+		// get camera info
 		ccGLCameraParameters camera;
 		glFunc->glGetIntegerv(GL_VIEWPORT, camera.viewport);
 		glFunc->glGetDoublev(GL_PROJECTION_MATRIX, camera.projectionMat.data());
@@ -1119,12 +1135,12 @@ void ccCompassTrace::drawMeOnly(CC_DRAW_CONTEXT& context)
 
 		const ccViewportParameters& viewportParams = context.display->getViewportParameters();
 
-		//color-based entity picking
-		bool entityPickingMode = MACRO_EntityPicking(context);
+		// color-based entity picking
+		bool         entityPickingMode = MACRO_EntityPicking(context);
 		ccColor::Rgb pickingColor;
 		if (entityPickingMode)
 		{
-			//not fast at all!
+			// not fast at all!
 			if (MACRO_FastEntityPicking(context))
 			{
 				return;
@@ -1132,20 +1148,20 @@ void ccCompassTrace::drawMeOnly(CC_DRAW_CONTEXT& context)
 
 			pickingColor = context.entityPicking.registerEntity(this);
 
-			//minimal display for picking mode!
-			glParams.showNorms = false;
+			// minimal display for picking mode!
+			glParams.showNorms  = false;
 			glParams.showColors = false;
 		}
 
-		//set draw colour
+		// set draw colour
 		ccColor::Rgb color = entityPickingMode ? pickingColor : getMeasurementColour();
 		c_unitPointMarker->setTempColor(color);
 
-		//get point size for drawing
+		// get point size for drawing
 		float pSize = 1.0f;
 		glFunc->glGetFloatv(GL_POINT_SIZE, &pSize);
 
-		//draw key-points and structure normals (if assigned)
+		// draw key-points and structure normals (if assigned)
 		if (m_isActive)
 		{
 			for (size_t i = 0; i < m_waypoints.size(); i++)
@@ -1158,19 +1174,19 @@ void ccCompassTrace::drawMeOnly(CC_DRAW_CONTEXT& context)
 				float scale = context.labelMarkerSize * m_relMarkerScale * 0.3 * fmin(pSize, 4);
 				if (viewportParams.perspectiveView && viewportParams.zFar > 0)
 				{
-					//in perspective view, the actual scale depends on the distance to the camera!
-					double d = (camera.modelViewMat * (*P)).norm();
-					double unitD = viewportParams.zFar / 2; //we consider that the 'standard' scale is at half the depth
-					scale = static_cast<float>(scale * sqrt(d / unitD)); //sqrt = empirical (probably because the marker size is already partly compensated by ccGLWindowInterface::computeActualPixelSize())
+					// in perspective view, the actual scale depends on the distance to the camera!
+					double d     = (camera.modelViewMat * (*P)).norm();
+					double unitD = viewportParams.zFar / 2;                     // we consider that the 'standard' scale is at half the depth
+					scale        = static_cast<float>(scale * sqrt(d / unitD)); // sqrt = empirical (probably because the marker size is already partly compensated by ccGLWindowInterface::computeActualPixelSize())
 				}
 				glFunc->glScalef(scale, scale, scale);
 				c_unitPointMarker->draw(markerContext);
 				glFunc->glPopMatrix();
 			}
 		}
-		else //just draw lines
+		else // just draw lines
 		{
-			//draw lines
+			// draw lines
 			for (const std::deque<int>& seg : m_trace)
 			{
 				if (m_width != 0)
@@ -1192,7 +1208,7 @@ void ccCompassTrace::drawMeOnly(CC_DRAW_CONTEXT& context)
 			}
 		}
 
-		//draw trace points if trace is active OR point size is large (otherwise line gets hidden)
+		// draw trace points if trace is active OR point size is large (otherwise line gets hidden)
 		if (m_isActive || pSize > 8)
 		{
 			for (const std::deque<int>& seg : m_trace)
@@ -1207,11 +1223,11 @@ void ccCompassTrace::drawMeOnly(CC_DRAW_CONTEXT& context)
 					double scale = context.labelMarkerSize * (m_relMarkerScale * (fmin(pSize, 4) * 0.2));
 					if (viewportParams.perspectiveView && viewportParams.zFar > 0)
 					{
-						//in perspective view, the actual scale depends on the distance to the camera!
-						const double* M = camera.modelViewMat.data();
-						double d = (camera.modelViewMat * (*P)).norm();
-						double unitD = viewportParams.zFar / 2; //we consider that the 'standard' scale is at half the depth
-						scale *= sqrt(d / unitD); //sqrt = empirical (probably because the marker size is already partly compensated by ccGLWindowInterface::computeActualPixelSize())
+						// in perspective view, the actual scale depends on the distance to the camera!
+						const double* M     = camera.modelViewMat.data();
+						double        d     = (camera.modelViewMat * (*P)).norm();
+						double        unitD = viewportParams.zFar / 2; // we consider that the 'standard' scale is at half the depth
+						scale *= sqrt(d / unitD);                      // sqrt = empirical (probably because the marker size is already partly compensated by ccGLWindowInterface::computeActualPixelSize())
 					}
 
 					glFunc->glScaled(scale, scale, scale);
@@ -1223,7 +1239,7 @@ void ccCompassTrace::drawMeOnly(CC_DRAW_CONTEXT& context)
 	}
 }
 
-bool ccCompassTrace::isTrace(ccHObject* object) //return true if object is a valid trace [regardless of it's class type]
+bool ccCompassTrace::isTrace(ccHObject* object) // return true if object is a valid trace [regardless of it's class type]
 {
 	if (object->hasMetaData("ccCompassType"))
 	{
@@ -1239,7 +1255,7 @@ void ccCompassTrace::onDeletionOf(const ccHObject* obj)
 		m_cloud = nullptr;
 	}
 
-	ccPolyline::onDeletionOf(obj); //remove dependencies, etc.
+	ccPolyline::onDeletionOf(obj); // remove dependencies, etc.
 }
 
 void ccCompassTrace::setAssociatedCloud(GenericIndexedCloudPersist* cloud)
@@ -1257,26 +1273,26 @@ bool ccCompassTrace::fromFile_MeOnly(QFile& in, short dataVersion, int flags, Lo
 		return false;
 	}
 
-	//load waypoints from metadata
+	// load waypoints from metadata
 	if (hasMetaData("waypoints"))
 	{
 		QString waypoints = getMetaData("waypoints").toString();
 		loadWaypointsFrom(waypoints);
 	}
 
-	//load cost function from metadata
+	// load cost function from metadata
 	if (hasMetaData("cost_function"))
 	{
 		COST_MODE = getMetaData("cost_function").toInt();
 	}
 
-	//copy polyline into trace points
+	// copy polyline into trace points
 	{
 		std::deque<int> seg;
 		for (unsigned i = 0; i < size(); i++)
 		{
-			//copy into "trace" object
-			unsigned pId = getPointGlobalIndex(i); //get global point ID
+			// copy into "trace" object
+			unsigned pId = getPointGlobalIndex(i); // get global point ID
 			seg.push_back(static_cast<int>(pId));
 		}
 		m_trace.push_back(seg);

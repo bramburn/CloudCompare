@@ -1,30 +1,54 @@
-//##########################################################################
-//#                                                                        #
-//#                   CLOUDCOMPARE PLUGIN: qCloudLayers                    #
-//#                                                                        #
-//#  This program is free software; you can redistribute it and/or modify  #
-//#  it under the terms of the GNU General Public License as published by  #
-//#  the Free Software Foundation; version 2 of the License.               #
-//#                                                                        #
-//#  This program is distributed in the hope that it will be useful,       #
-//#  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-//#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
-//#  GNU General Public License for more details.                          #
-//#                                                                        #
-//#                     COPYRIGHT: WigginsTech 2022                        #
-//#                                                                        #
-//##########################################################################
+// ##########################################################################
+// #                                                                        #
+// #                   CLOUDCOMPARE PLUGIN: qCloudLayers                    #
+// #                                                                        #
+// #  This program is free software; you can redistribute it and/or modify  #
+// #  it under the terms of the GNU General Public License as published by  #
+// #  the Free Software Foundation; version 2 of the License.               #
+// #                                                                        #
+// #  This program is distributed in the hope that it will be useful,       #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+// #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+// #  GNU General Public License for more details.                          #
+// #                                                                        #
+// #                     COPYRIGHT: WigginsTech 2022                        #
+// #                                                                        #
+// ##########################################################################
 
+/**
+ * @file ccAsprsModel.cpp
+ *
+ * @brief ASPRS LiDAR classification model
+ *
+ * Implements the ASPRS (American Society for Photogrammetry
+ * and Remote Sensing) LiDAR point classification standard.
+ *
+ * ## ASPRS Classes
+ *
+ * - 0: Never classified
+ * - 1: Unclassified
+ * - 2: Ground
+ * - 3: Low vegetation
+ * - 4: Medium vegetation
+ * - 5: High vegetation
+ * - 6: Building
+ * - 7: Low point (noise)
+ * - 8: Model key-point
+ * - 9: Water
+ * - ... (up to class 31)
+ *
+ * @see ccAsprsModel.h
+ */
 #include "../include/ccAsprsModel.h"
 
 // CloudCompare
 #include <ccLog.h>
 
-//QT
+// QT
 #include <QSettings>
 
 ccAsprsModel::ccAsprsModel(QObject* parent)
-	: QAbstractTableModel(parent)
+    : QAbstractTableModel(parent)
 {
 	load();
 
@@ -181,7 +205,7 @@ bool ccAsprsModel::setData(const QModelIndex& index, const QVariant& value, int 
 		else
 		{
 			int oldCode = item.code;
-			item.code = code;
+			item.code   = code;
 			codeChanged(item, oldCode);
 			break;
 		}
@@ -230,7 +254,7 @@ QModelIndex ccAsprsModel::createNewItem()
 {
 	const int rowNumber = m_data.size();
 	beginInsertRows(QModelIndex(), rowNumber, rowNumber);
-	m_data.append({ false, "UNNAMED", getUnusedCode(), Qt::GlobalColor::black, 0 });
+	m_data.append({false, "UNNAMED", getUnusedCode(), Qt::GlobalColor::black, 0});
 	endInsertRows();
 
 	return createIndex(rowNumber, NAME);
@@ -238,13 +262,15 @@ QModelIndex ccAsprsModel::createNewItem()
 
 bool ccAsprsModel::nameExists(const QString& name) const
 {
-	auto item = std::find_if(m_data.begin(), m_data.end(), [name](const AsprsItem& item) { return item.name == name; });
+	auto item = std::find_if(m_data.begin(), m_data.end(), [name](const AsprsItem& item)
+	                         { return item.name == name; });
 	return item != m_data.end();
 }
 
 bool ccAsprsModel::codeExists(int code) const
 {
-	auto item = std::find_if(m_data.begin(), m_data.end(), [code](const AsprsItem& item) { return item.code == code; });
+	auto item = std::find_if(m_data.begin(), m_data.end(), [code](const AsprsItem& item)
+	                         { return item.code == code; });
 	return item != m_data.end();
 }
 
@@ -270,11 +296,11 @@ static void ReadClass(const QSettings& settings, const QString& className, ccAsp
 	QString readableClassName = className;
 	readableClassName.replace(QChar('@'), QChar('/'));
 
-	item.name = readableClassName;
-	item.code = settings.value(cleanClassName + "/class", 0).toInt();
-	item.color = QColor(settings.value(cleanClassName + "/color", 0).toUInt());
+	item.name    = readableClassName;
+	item.code    = settings.value(cleanClassName + "/class", 0).toInt();
+	item.color   = QColor(settings.value(cleanClassName + "/color", 0).toUInt());
 	item.visible = settings.value(cleanClassName + "/visible", true).toBool();
-	item.count = 0;
+	item.count   = 0;
 }
 
 void ccAsprsModel::createDefaultItems()
@@ -282,38 +308,38 @@ void ccAsprsModel::createDefaultItems()
 	QSettings settings;
 	settings.beginGroup("qCloudLayers/ASPRS");
 	{
-		AddClass(settings, "Not classified",				 0, Qt::white);
-		AddClass(settings, "Unclassified",					 1, Qt::lightGray);
-		AddClass(settings, "Ground",						 2, qRgb(166, 116, 4));
-		AddClass(settings, "Low vegetation",				 3, qRgb(38, 114, 0));
-		AddClass(settings, "Medium vegetation",				 4, qRgb(69, 229, 0));
-		AddClass(settings, "High vegetation",				 5, qRgb(204, 240, 123));
-		AddClass(settings, "Building",						 6, Qt::yellow);
-		AddClass(settings, "Low Noise",						 7, Qt::red);
-		AddClass(settings, "Model Keypoint",				 8, Qt::magenta);
-		AddClass(settings, "Water",							 9, Qt::blue);
-		AddClass(settings, "Rail",							10, qRgb(85, 85, 0));
-		AddClass(settings, "Road surface",					11, Qt::darkGray);
-		AddClass(settings, "Overlap",						12, qRgb(255, 170, 255));
-		AddClass(settings, "Wire Shield/Neutral/Com",		13, qRgb(191, 231, 205));
-		AddClass(settings, "Wire Conductors/Phases",		14, qRgb(193, 230, 125));
-		AddClass(settings, "Transmission Tower",			15, Qt::darkBlue);
-		AddClass(settings, "Wire Insulators",				16, Qt::darkYellow);
-		AddClass(settings, "Bridge Deck",					17, Qt::darkCyan);
-		AddClass(settings, "High Noise",					18, Qt::darkRed);
+		AddClass(settings, "Not classified", 0, Qt::white);
+		AddClass(settings, "Unclassified", 1, Qt::lightGray);
+		AddClass(settings, "Ground", 2, qRgb(166, 116, 4));
+		AddClass(settings, "Low vegetation", 3, qRgb(38, 114, 0));
+		AddClass(settings, "Medium vegetation", 4, qRgb(69, 229, 0));
+		AddClass(settings, "High vegetation", 5, qRgb(204, 240, 123));
+		AddClass(settings, "Building", 6, Qt::yellow);
+		AddClass(settings, "Low Noise", 7, Qt::red);
+		AddClass(settings, "Model Keypoint", 8, Qt::magenta);
+		AddClass(settings, "Water", 9, Qt::blue);
+		AddClass(settings, "Rail", 10, qRgb(85, 85, 0));
+		AddClass(settings, "Road surface", 11, Qt::darkGray);
+		AddClass(settings, "Overlap", 12, qRgb(255, 170, 255));
+		AddClass(settings, "Wire Shield/Neutral/Com", 13, qRgb(191, 231, 205));
+		AddClass(settings, "Wire Conductors/Phases", 14, qRgb(193, 230, 125));
+		AddClass(settings, "Transmission Tower", 15, Qt::darkBlue);
+		AddClass(settings, "Wire Insulators", 16, Qt::darkYellow);
+		AddClass(settings, "Bridge Deck", 17, Qt::darkCyan);
+		AddClass(settings, "High Noise", 18, Qt::darkRed);
 
-		AddClass(settings, "Conductor Attachment Points",	64, qRgb(25, 0, 51));
-		AddClass(settings, "Shield Attachment Points",		65, qRgb(51, 0, 102));
-		AddClass(settings, "Midspan Points",				66, qRgb(76, 0, 153));
-		AddClass(settings, "Structure Top Points",			67, qRgb(102, 0, 204));
-		AddClass(settings, "Structure Bottom Points",		68, qRgb(127, 0, 255));
+		AddClass(settings, "Conductor Attachment Points", 64, qRgb(25, 0, 51));
+		AddClass(settings, "Shield Attachment Points", 65, qRgb(51, 0, 102));
+		AddClass(settings, "Midspan Points", 66, qRgb(76, 0, 153));
+		AddClass(settings, "Structure Top Points", 67, qRgb(102, 0, 204));
+		AddClass(settings, "Structure Bottom Points", 68, qRgb(127, 0, 255));
 
-		AddClass(settings, "Guy Wire",						70, qRgb(153, 51, 255));
-		AddClass(settings, "Substation",					75, qRgb(178, 102, 255));
+		AddClass(settings, "Guy Wire", 70, qRgb(153, 51, 255));
+		AddClass(settings, "Substation", 75, qRgb(178, 102, 255));
 
-		AddClass(settings, "Misc Temporary",				81, qRgb(204, 153, 255));
-		AddClass(settings, "Misc Permanent",				82, qRgb(229, 204, 255));
-		AddClass(settings, "Misc Fences",					83, qRgb(204, 204, 255));
+		AddClass(settings, "Misc Temporary", 81, qRgb(204, 153, 255));
+		AddClass(settings, "Misc Permanent", 82, qRgb(229, 204, 255));
+		AddClass(settings, "Misc Fences", 83, qRgb(204, 204, 255));
 	}
 	settings.endGroup();
 	settings.sync();
@@ -377,24 +403,28 @@ bool ccAsprsModel::removeRows(int position, int rows, const QModelIndex& parent)
 
 ccAsprsModel::AsprsItem* ccAsprsModel::find(QString name)
 {
-	auto it = std::find_if(m_data.begin(), m_data.end(), [name](const ccAsprsModel::AsprsItem &item) { return item.name == name; });
+	auto it = std::find_if(m_data.begin(), m_data.end(), [name](const ccAsprsModel::AsprsItem& item)
+	                       { return item.name == name; });
 	return it != m_data.end() ? &(*it) : nullptr;
 }
 
 ccAsprsModel::AsprsItem* ccAsprsModel::find(int code)
 {
-	auto it = std::find_if(m_data.begin(), m_data.end(), [code](const ccAsprsModel::AsprsItem &item) { return item.code == code; });
+	auto it = std::find_if(m_data.begin(), m_data.end(), [code](const ccAsprsModel::AsprsItem& item)
+	                       { return item.code == code; });
 	return it != m_data.end() ? &(*it) : nullptr;
 }
 
 int ccAsprsModel::indexOf(QString name) const
 {
-	auto it = std::find_if(m_data.begin(), m_data.end(), [name](const ccAsprsModel::AsprsItem &item) { return item.name == name; });
+	auto it = std::find_if(m_data.begin(), m_data.end(), [name](const ccAsprsModel::AsprsItem& item)
+	                       { return item.name == name; });
 	return it != m_data.end() ? it - m_data.begin() : -1;
 }
 
 int ccAsprsModel::getUnusedCode() const
 {
-	auto it = std::max_element(m_data.cbegin(), m_data.cend(), [](const AsprsItem &a, const AsprsItem &b) { return a.code < b.code; });
+	auto it = std::max_element(m_data.cbegin(), m_data.cend(), [](const AsprsItem& a, const AsprsItem& b)
+	                           { return a.code < b.code; });
 	return it != m_data.end() ? (*it).code + 1 : 0;
 }
