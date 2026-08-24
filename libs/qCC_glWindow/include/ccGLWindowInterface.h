@@ -37,6 +37,14 @@
 // system
 #include <list>
 
+//! Shared texture type (at namespace scope so the .cpp can use the
+//! short name; deliberately NOT inside the ccGLWindowInterface class
+//! because Q_DECLARE_OPERATORS_FOR_FLAGS(QOpenGLTexture::Feature) in
+//! qopengltexture.h:593 then treats QOpenGLTexture as a nested type of
+//! whichever class the macro is being expanded into — breaking
+//! operator| overload resolution in C++17 for the consumers).
+using SharedTexture = QSharedPointer<QOpenGLTexture>;
+
 class QDragEnterEvent;
 class QDropEvent;
 class QEvent;
