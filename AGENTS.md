@@ -226,8 +226,8 @@ Standard: `qAnimation`, `qBroom`, `qCSF`, `qM3C2`, `qPoissonRecon`, `qHPR`, `qPC
 | `qFBXIO` | FBX SDK | Autodesk FBX |
 | `qStepCADImport` | OpenCASCADE | STEP CAD |
 | `qMeshBoolean` | libigl + Eigen + CGAL | Mesh boolean |
-| `qHoughNormals` | Eigen | Hough normals |
-| `qFacets` | ShapeLib | Facet extraction |
+| `qHoughNormals` | Eigen | Hough normals — **disabled in CI** (build issue) |
+| `qFacets` | ShapeLib | Facet extraction — **disabled in CI** (MSVC/Qt 6.8.3 `StereogramWidget` name collision) |
 | `qCork` | Cork + MPIR | Mesh CSG |
 | `qMasonry` | (none extra) | qAutoSeg / qManualSeg — verify before re-enabling |
 | `q3DMASC` | OpenCV | Multi-scale segmentation |
