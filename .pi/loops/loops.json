@@ -8,12 +8,12 @@
         "type": "cron",
         "schedule": "*/5 * * * *"
       },
-      "status": "active",
+      "status": "paused",
       "recurring": true,
       "createdAt": 1787079158932,
-      "updatedAt": 1787223902816,
+      "updatedAt": 1787320542389,
       "expiresAt": 1787683958932,
-      "fireCount": 151
+      "fireCount": 288
     },
     {
       "id": "2",
@@ -22,10 +22,10 @@
         "type": "cron",
         "schedule": "*/5 * * * *"
       },
-      "status": "active",
+      "status": "paused",
       "recurring": true,
       "createdAt": 1787084752777,
-      "updatedAt": 1787223608244,
+      "updatedAt": 1787320549299,
       "expiresAt": 1787689552777,
       "fireCount": 94,
       "priority": "normal",

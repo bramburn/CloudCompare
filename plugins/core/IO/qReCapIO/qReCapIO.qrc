@@ -1,4 +1,6 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
-    <qresource prefix="/"/>
+    <qresource prefix="/CC/plugin/qReCapIO">
+        <file>info.json</file>
+    </qresource>
 </RCC>

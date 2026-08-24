@@ -116,9 +116,9 @@ namespace
 		settings.setIsReadOnly(true);
 		settings.setDensity(0.0); // 0 = maximum density
 
-		bool hasColors      = scan.hasColors();
+		bool hasColors = scan.hasColors();
 		bool hasIntensities = scan.hasIntensities();
-		bool hasNormals     = scan.hasNormals();
+		bool hasNormals = scan.hasNormals();
 
 		// Create iterator.
 		RCSharedPtr<IRCPointIterator> iter = scan.createPointIterator(settings);
@@ -156,12 +156,12 @@ namespace
 		if (hasIntensities)
 		{
 			intensitySF = new ccScalarField(std::string("Intensity"));
-			int sfIdx   = cloud->addScalarField(intensitySF);
+			int sfIdx = cloud->addScalarField(intensitySF);
 			if (sfIdx < 0)
 			{
 				// addScalarField failed — cloud did not take ownership; release our ref.
 				intensitySF->release();
-				intensitySF    = nullptr;
+				intensitySF = nullptr;
 				hasIntensities = false;
 			}
 		}
@@ -216,7 +216,7 @@ namespace
 			// Normal — compressed and stored in the normals table.
 			if (hasNormals)
 			{
-				RCVector3d          rcNorm       = pt.getNormal();
+				RCVector3d rcNorm = pt.getNormal();
 				PointCoordinateType normalArr[3] = {
 				    static_cast<PointCoordinateType>(rcNorm.x),
 				    static_cast<PointCoordinateType>(rcNorm.y),
@@ -272,18 +272,18 @@ namespace
 
 			// Extract 3x3 rotation column-by-column from the rotation matrix.
 			const Foundation::RCRotationMatrix& rot = rcTransform.getRotation();
-			CCVector3                           col0(static_cast<PointCoordinateType>(rot.getColumn(0).x),
-                           static_cast<PointCoordinateType>(rot.getColumn(1).x),
-                           static_cast<PointCoordinateType>(rot.getColumn(2).x));
-			CCVector3                           col1(static_cast<PointCoordinateType>(rot.getColumn(0).y),
-                           static_cast<PointCoordinateType>(rot.getColumn(1).y),
-                           static_cast<PointCoordinateType>(rot.getColumn(2).y));
-			CCVector3                           col2(static_cast<PointCoordinateType>(rot.getColumn(0).z),
-                           static_cast<PointCoordinateType>(rot.getColumn(1).z),
-                           static_cast<PointCoordinateType>(rot.getColumn(2).z));
-			CCVector3                           col3(static_cast<PointCoordinateType>(t.x),
-                           static_cast<PointCoordinateType>(t.y),
-                           static_cast<PointCoordinateType>(t.z));
+			CCVector3 col0(static_cast<PointCoordinateType>(rot.getColumn(0).x),
+			               static_cast<PointCoordinateType>(rot.getColumn(1).x),
+			               static_cast<PointCoordinateType>(rot.getColumn(2).x));
+			CCVector3 col1(static_cast<PointCoordinateType>(rot.getColumn(0).y),
+			               static_cast<PointCoordinateType>(rot.getColumn(1).y),
+			               static_cast<PointCoordinateType>(rot.getColumn(2).y));
+			CCVector3 col2(static_cast<PointCoordinateType>(rot.getColumn(0).z),
+			               static_cast<PointCoordinateType>(rot.getColumn(1).z),
+			               static_cast<PointCoordinateType>(rot.getColumn(2).z));
+			CCVector3 col3(static_cast<PointCoordinateType>(t.x),
+			               static_cast<PointCoordinateType>(t.y),
+			               static_cast<PointCoordinateType>(t.z));
 
 			ccGLMatrix ccMat(col0, col1, col2, col3);
 			cloud->setGLTransformation(ccMat);
@@ -318,12 +318,12 @@ ReCapFilter::ReCapFilter()
 	ccLog::Warning("[ReCap] ReCapFilter constructed — extensions: rcs rcp");
 }
 
-CC_FILE_ERROR ReCapFilter::loadFile(const QString&  filename,
-                                    ccHObject&      container,
+CC_FILE_ERROR ReCapFilter::loadFile(const QString& filename,
+                                    ccHObject& container,
                                     LoadParameters& parameters)
 {
 	QFileInfo fileInfo(filename);
-	QString   ext = fileInfo.suffix().toLower();
+	QString ext = fileInfo.suffix().toLower();
 
 	ccLog::Warning(QStringLiteral("[ReCap] loadFile called: %1 (ext=%2)").arg(filename, ext));
 
@@ -422,8 +422,8 @@ CC_FILE_ERROR ReCapFilter::loadFile(const QString&  filename,
 }
 
 bool ReCapFilter::canSave(CC_CLASS_ENUM type,
-                          bool&         multiple,
-                          bool&         exclusive) const
+                          bool& multiple,
+                          bool& exclusive) const
 {
 	Q_UNUSED(type);
 	Q_UNUSED(multiple);
@@ -431,8 +431,8 @@ bool ReCapFilter::canSave(CC_CLASS_ENUM type,
 	return false;
 }
 
-CC_FILE_ERROR ReCapFilter::saveToFile(ccHObject*            entity,
-                                      const QString&        filename,
+CC_FILE_ERROR ReCapFilter::saveToFile(ccHObject* entity,
+                                      const QString& filename,
                                       const SaveParameters& parameters)
 {
 	Q_UNUSED(entity);

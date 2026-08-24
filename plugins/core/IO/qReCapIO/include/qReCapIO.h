@@ -16,6 +16,7 @@
 #pragma once
 
 #include "ccIOPluginInterface.h"
+
 #include <QObject>
 
 /**
@@ -41,7 +42,8 @@
  * Dependencies: Autodesk ReCap SDK (locally installed; binaries are not
  * published in the repository).
  */
-class qReCapIO : public QObject, public ccIOPluginInterface
+class qReCapIO : public QObject
+    , public ccIOPluginInterface
 {
 	Q_OBJECT
 	Q_INTERFACES(ccPluginInterface ccIOPluginInterface)

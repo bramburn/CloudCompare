@@ -50,17 +50,17 @@ class ReCapFilter : public FileIOFilter
 
 	/// Load an RCS or RCP file into \a container.
 	/// Returns CC_FERR_NO_ERROR on success.
-	CC_FILE_ERROR loadFile( const QString& filename,
-	                        ccHObject& container,
-	                        LoadParameters& parameters ) override;
+	CC_FILE_ERROR loadFile(const QString& filename,
+	                       ccHObject& container,
+	                       LoadParameters& parameters) override;
 
 	/// Read-only: ReCap files cannot be re-exported via this plugin.
-	bool canSave( CC_CLASS_ENUM type,
-	              bool& multiple,
-	              bool& exclusive ) const override;
+	bool canSave(CC_CLASS_ENUM type,
+	             bool& multiple,
+	             bool& exclusive) const override;
 
 	/// Write is not supported.
-	CC_FILE_ERROR saveToFile( ccHObject* entity,
-	                          const QString& filename,
-	                          const SaveParameters& parameters ) override;
+	CC_FILE_ERROR saveToFile(ccHObject* entity,
+	                         const QString& filename,
+	                         const SaveParameters& parameters) override;
 };

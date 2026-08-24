@@ -117,8 +117,8 @@ void STEPFilter::SetDefaultLinearDeflection(double value)
 	s_defaultLinearDeflection = value;
 }
 
-CC_FILE_ERROR STEPFilter::loadFile(const QString&  fullFilename,
-                                   ccHObject&      container,
+CC_FILE_ERROR STEPFilter::loadFile(const QString& fullFilename,
+                                   ccHObject& container,
                                    LoadParameters& parameters)
 {
 	// check for the file existence
@@ -130,7 +130,7 @@ CC_FILE_ERROR STEPFilter::loadFile(const QString&  fullFilename,
 
 	if (parameters.sessionStart && parameters.parentWidget)
 	{
-		bool   ok               = false;
+		bool ok = false;
 		double linearDeflection = QInputDialog::getDouble(parameters.parentWidget, "Linear deflection", "Linear deflection", s_defaultLinearDeflection, 1.0e-6, 1.0e-2, 6, &ok);
 		if (!ok)
 		{
@@ -157,14 +157,14 @@ CC_FILE_ERROR STEPFilter::loadFile(const QString&  fullFilename,
 	return error;
 }
 
-CC_FILE_ERROR STEPFilter::importStepFile(ccHObject&      container,
-                                         const QString&  fullFileName,
-                                         double          linearDeflection,
+CC_FILE_ERROR STEPFilter::importStepFile(ccHObject& container,
+                                         const QString& fullFileName,
+                                         double linearDeflection,
                                          LoadParameters& parameters)
 {
 	// Interface_Static::SetCVal("xstep.cascade.unit", "M"); // DGM: seems to mess things completely, having various impacts during the next run (smaller scale, etc.)
 
-	STEPControl_Reader    aReader;
+	STEPControl_Reader aReader;
 	IFSelect_ReturnStatus aStatus = aReader.ReadFile(qUtf8Printable(fullFileName));
 	if (aStatus != IFSelect_ReturnStatus::IFSelect_RetDone)
 	{
@@ -217,9 +217,9 @@ CC_FILE_ERROR STEPFilter::importStepFile(ccHObject&      container,
 
 	// Notice that the nodes are duplicated during CAD tesslation : if a node is
 	// belonging to N triangles, it's duplicated N times.
-	unsigned        faceCount = 0;
-	unsigned        triCount  = 0; // Number of triangles of the tesselated CAD shape imported
-	unsigned        vertCount = 0;
+	unsigned faceCount = 0;
+	unsigned triCount = 0; // Number of triangles of the tesselated CAD shape imported
+	unsigned vertCount = 0;
 	TopExp_Explorer expFaces;
 	for (expFaces.Init(aShape, TopAbs_FACE); expFaces.More(); expFaces.Next())
 	{
@@ -227,7 +227,7 @@ CC_FILE_ERROR STEPFilter::importStepFile(ccHObject&      container,
 		++faceCount;
 
 		TopLoc_Location location;
-		const auto&     facing = BRep_Tool::Triangulation(face, location);
+		const auto& facing = BRep_Tool::Triangulation(face, location);
 		if (!facing)
 		{
 			delete mesh;
@@ -248,9 +248,9 @@ CC_FILE_ERROR STEPFilter::importStepFile(ccHObject&      container,
 			return CC_FERR_NOT_ENOUGH_MEMORY;
 		}
 
-		gp_Trsf                      nodeTransformation = location;
-		const Poly_Array1OfTriangle& triangles          = facing->Triangles();
-		TopAbs_Orientation           orientation        = face.Orientation();
+		gp_Trsf nodeTransformation = location;
+		const Poly_Array1OfTriangle& triangles = facing->Triangles();
+		TopAbs_Orientation orientation = face.Orientation();
 
 		for (int j = 1; j <= facing->NbTriangles(); j++)
 		{

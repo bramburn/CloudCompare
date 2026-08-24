@@ -100,6 +100,11 @@ if( PLUGIN_IO_QRECAP )
 	# the required moc_qReCapIO.cpp (metaObject, qt_metacast, qt_metacall).
 	set_target_properties( ${PROJECT_NAME} PROPERTIES AUTOMOC ON )
 
+	# Compile qReCapIO.qrc and embed the resulting .rcc binary in the plugin DLL.
+	# qt_add_resources() with CMAKE_AUTORCC ON automatically adds the generated .cpp to
+	# the target sources, but we add it explicitly to be safe.
+	qt_add_resources( ${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/qReCapIO.qrc )
+
 	# Must be called AFTER AddPlugin so ${PROJECT_NAME} is a defined target.
 	add_subdirectory( include )
 	add_subdirectory( src )

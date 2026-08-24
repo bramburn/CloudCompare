@@ -53,9 +53,9 @@ class STEPFilter : public FileIOFilter
 	 * @param[in] parameters Load parameters
 	 * @return Error code
 	 */
-	CC_FILE_ERROR importStepFile(ccHObject&      container,
-	                             const QString&  fullFilename,
-	                             double          linearDeflection,
+	CC_FILE_ERROR importStepFile(ccHObject& container,
+	                             const QString& fullFilename,
+	                             double linearDeflection,
 	                             LoadParameters& parameters);
 
 	/**
