@@ -14,61 +14,8 @@
 // #                                                                        //
 // ##########################################################################
 
-/**
- * @file ccFacet.h
- *
- * @brief Facet class for planar surface extraction.
- *
- * @details A facet is a composite object representing a planar surface:
- * - Point cloud (origin points)
- * - 2.5D contour polyline
- * - 2.5D surface mesh
- *
- * Facets are created from point clouds and represent flat surfaces
- * like ground planes, walls, or other planar structures.
- *
- * ## Facet Structure
- *
- * A facet consists of:
- * - **Polygon mesh**: Triangulated surface
- * - **Contour polyline**: Boundary of the facet
- * - **Contour vertices**: Shared vertices
- * - **Origin points**: Original points belonging to the facet
- *
- * ## Properties
- *
- * - **Plane equation**: ax + by + cz = d
- * - **Normal vector**: (a, b, c)
- * - **Centroid**: Center point of the facet
- * - **RMS**: Root mean square deviation
- * - **Surface**: Facet area
- *
- * ## Usage
- *
- * @code
- * // Create facet from point cloud
- * ccFacet* facet = ccFacet::Create(cloud, maxEdgeLength);
- *
- * // Get facet properties
- * CCVector3 normal = facet->getNormal();
- * double surface = facet->getSurface();
- * double rms = facet->getRMS();
- *
- * // Get mesh and contour
- * ccMesh* mesh = facet->getPolygon();
- * ccPolyline* contour = facet->getContour();
- *
- * // Clone facet
- * ccFacet* cloned = facet->clone();
- * @endcode
- *
- * @extends ccHObject
- * @extends ccPlanarEntityInterface
- *
- * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccPlanarEntityInterface for planar entity interface
- */
+#ifndef CC_FACET_HEADER
+#define CC_FACET_HEADER
 
 // Local
 #include "ccHObject.h"
@@ -362,4 +309,4 @@ class QCC_DB_LIB_API ccFacet : public ccHObject
 	void applyGLTransformation(const ccGLMatrix& trans) override;
 };
 
-#endif // CC_FACET_PRIMITIVE_HEADER
+#endif // CC_FACET_HEADER
