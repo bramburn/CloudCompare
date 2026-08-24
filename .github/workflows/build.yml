@@ -20,14 +20,6 @@ jobs:
               compile_riegl: "ON",
               conda_dep_file: ".ci/conda-win.yml",
             }
-          - {
-              name: "macOS Clang",
-              os: macos-latest,
-              generator: "Ninja",
-              conda_library_dir: ".",
-              compile_riegl: "OFF",
-              conda_dep_file: ".ci/conda-macos.yml",
-            }
 
     steps:
       - name: Checkout
@@ -39,16 +31,12 @@ jobs:
       - name: Install Dependencies
         uses: conda-incubator/setup-miniconda@v3
         with:
-          architecture: ${{ matrix.config.os == 'macos-latest' && 'arm64' || 'x64' }}
+          architecture: x64
           auto-activate: false
           activate-environment: CloudCompareDev
           environment-file: ${{ matrix.config.conda_dep_file }}
           channels: conda-forge
           conda-remove-defaults: "true"
-
-      - name: Verify macOS bundle identifiers
-        shell: bash -l {0}
-        run: python .ci/verify_macos_bundle_identifiers.py .
 
       - name: Configure MSVC console (Windows)
         if: matrix.config.os == 'windows-latest'
@@ -115,10 +103,6 @@ jobs:
       - name: Build
         run: cmake --build build --parallel
 
-      - name: Install (macOS)
-        if: matrix.config.os == 'macos-latest'
-        run: sudo cmake --install build
-
       - name: Install (Windows)
         if: matrix.config.os == 'windows-latest'
         run: cmake --install build
@@ -128,6 +112,9 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
+    # Slim Linux support: same plugin set as Windows, qPCL OFF (PCL build is
+    # 30-60 min and the fork doesn't use it). This job is a smoke test for
+    # cross-platform issues only.
     strategy:
       fail-fast: false
       matrix:
@@ -171,26 +158,6 @@ jobs:
           echo "CC=clang" >> $GITHUB_ENV
           echo "CXX=clang++" >> $GITHUB_ENV
 
-      - name: Cache PCL Build
-        uses: actions/cache@v5
-        id: cache-pcl
-        with:
-          path: pcl-cached
-          key: pcl-${{ runner.os }}-${{ matrix.compiler }}-v1.15.1-${{ hashFiles('.github/workflows/build.yml') }} #change pcl version to invalidate cache
-
-      - name: Build PCL Without VTK
-        if: steps.cache-pcl.outputs.cache-hit != 'true'
-        run: |
-          git clone https://github.com/PointCloudLibrary/pcl.git
-          cd pcl
-          git checkout pcl-1.15.1
-          mkdir build
-          cmake -S . -B build -G Ninja \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DBUILD_tools=OFF -DBUILD_kdtree=ON -DBUILD_filters=ON -DBUILD_keypoints=ON -DWITH_VTK=OFF \
-            -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/pcl-cached
-          cmake --build build --target install --parallel
-
       - name: Configure cmake
         run: >
           mkdir build
@@ -199,10 +166,9 @@ jobs:
           -B build
           -S .
           -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
           -DEIGEN_ROOT_DIR=/usr/include/eigen3
           -DJSON_ROOT_DIR=/usr/include/jsoncpp
-          -DPCL_DIR=${{ github.workspace }}/pcl-cached/share/pcl-1.15
-          -DDLIB_ROOT=/usr/include
           -DCCCORELIB_USE_TBB=ON
           -DPLUGIN_EXAMPLE_GL=ON
           -DPLUGIN_EXAMPLE_IO=ON
@@ -234,7 +200,7 @@ jobs:
           -DPLUGIN_STANDARD_QPOISSON_RECON=ON
           -DPLUGIN_STANDARD_QSRA=ON
           -DPLUGIN_STANDARD_QRANSAC_SD=ON
-          -DPLUGIN_STANDARD_QPCL=ON
+          -DPLUGIN_STANDARD_QPCL=OFF
           -DPLUGIN_STANDARD_QCLOUDLAYERS=ON
           -DPLUGIN_STANDARD_QVOXFALL=ON
           -DBUILD_TESTING=ON

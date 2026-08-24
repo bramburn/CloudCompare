@@ -80,6 +80,8 @@ adapted to the fork's actual docs):
 | **Getting started** | `getting-started/{index,overview,prerequisites,quick-tour}` | "Getting Started" |
 | **Architecture** | `architecture/{overview,layers,data-model,plugin-system,ui}` | "Architecture" |
 | **Build & deployment** | `build/{index,upstream,windows,linux,macos,troubleshooting}` + `ci/{overview,github-pages,windows-build,upstream-matrix}` | "Guides" (the procedural slot) |
+
+> Note: `build/macos` is kept in the sidebar but is **community-supported, not CI-validated** (the macOS CI leg was dropped on 2026-08-24).
 | **Plugins** | `plugins/{overview,local-set,disabled-priority,standard,io,gl,authoring}` | "Modules" (the subsystem deep-dive slot) |
 | **Reference** | `reference/{coding-standards,naming,build-flags,faq}` | "Reference" |
 

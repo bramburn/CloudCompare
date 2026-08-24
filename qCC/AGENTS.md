@@ -106,11 +106,13 @@ Pattern: `m_app->registerOverlayDialog(this, Qt::TopRightCorner);` + `m_app->fre
 
 The CLI verb implementations live in `ccCommandLineCommands.{h,cpp}`. Plugin-specific CLI commands live in each plugin's `registerCommands(ccCommandLineInterface*)`.
 
-## macOS bundle
+## macOS bundle (not CI-tested)
 
 `qCC/Mac/` holds the macOS bundle resources:
 - `CloudCompare.plist` — Info.plist (bundle identifier is verified by `.ci/verify_macos_bundle_identifiers.py`).
 - `CMakeLists.txt` — bundle assembly glue.
+
+> ⚠️ The fork dropped macOS support on 2026-08-24. These sources are **kept for local macOS builds** but are not exercised in CI. If you change them, verify by building locally on macOS — the CI will not catch regressions. See [`AGENTS.md` §CI](../AGENTS.md#ci).
 
 ## Don't
 

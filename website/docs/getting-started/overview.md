@@ -26,8 +26,9 @@ runs.
 
 The first time you run `CloudCompare.exe`, it creates a `plugins/` folder next
 to itself. Each enabled plugin ships as one `.dll` (Windows), one `.so`
-(Linux), or one `.dylib` (macOS). Disabling a plugin is a matter of removing
-its `.dll` (or using the `PLUGIN_*=OFF` flag at configure time and rebuilding).
+(Linux), or one `.dylib` (macOS, community-supported). Disabling a plugin is a
+matter of removing its `.dll` (or using the `PLUGIN_*=OFF` flag at configure
+time and rebuilding).
 
 The fork ships with **18 plugins enabled** — see
 [Plugins / Local set](/docs/plugins/local-set) for the full list and what each

@@ -89,7 +89,7 @@ The one thing the plugin API doesn't have today is a "this is the active GL wind
 | `plugins/core/Standard/qManualRegistration/ui/qManualRegistrationDlg.ui` | Dialog layout (designer file) | new |
 | `plugins/core/Standard/qManualRegistration/src/CMakeLists.txt` + `include/CMakeLists.txt` | Sub-folder CMake glue | new |
 | `plugins/core/Standard/CMakeLists.txt` | Add `add_subdirectory(qManualRegistration)` | modify (one line) |
-| `.github/workflows/build.yml` | Add `-DPLUGIN_STANDARD_QMANUAL_REGISTRATION=ON` to all 4 jobs | modify |
+| `.github/workflows/build.yml` | Add `-DPLUGIN_STANDARD_QMANUAL_REGISTRATION=ON` to all 3 jobs (Windows MSVC, Ubuntu GCC, Ubuntu Clang — macOS dropped 2026-08-24) | modify |
 | `cc-configure.cmd` (local only) | Add `-DPLUGIN_STANDARD_QMANUAL_REGISTRATION=ON` | modify |
 
 That's it for v1. **Zero files in `qCC/`, `ccViewer/`, or `libs/` are touched.** This is the plugin system's promise being kept.

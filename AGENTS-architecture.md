@@ -164,11 +164,11 @@ endif()
 
 After `cmake --install`:
 
-| OS | Plugin DLL | Plugin metadata |
-|---|---|---|
-| Windows | `<install>/<CLOUDCOMPARE_DEST_FOLDER>/plugins/*.dll` | `<install>/<CLOUDCOMPARE_DEST_FOLDER>/plugins/*.json` (copied from `info.json`) |
-| Linux   | `<prefix>/<LINUX_INSTALL_SHARED_DESTINATION>/cloudcompare/<plugin>.so` | alongside |
-| macOS   | `<app>.app/Contents/PlugIns/ccPlugins/*.dylib` | alongside |
+| OS | Plugin DLL | Plugin metadata | CI tested? |
+|---|---|---|---|
+| Windows | `<install>/<CLOUDCOMPARE_DEST_FOLDER>/plugins/*.dll` | `<install>/<CLOUDCOMPARE_DEST_FOLDER>/plugins/*.json` (copied from `info.json`) | Yes (full, Conda-based) |
+| Linux   | `<prefix>/<LINUX_INSTALL_SHARED_DESTINATION>/cloudcompare/<plugin>.so` | alongside | Yes (slim smoke test, apt) |
+| macOS   | `<app>.app/Contents/PlugIns/ccPlugins/*.dylib` | alongside | **No** (sources kept in tree, not exercised in CI) |
 
 `ccPluginManager::loadPlugins` scans those paths automatically (see `setupPaths()` in `ccApplicationBase`).
 

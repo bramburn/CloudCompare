@@ -58,7 +58,7 @@ You can also check the build output:
 ls build/plugins/*/libq*.so
 # Windows
 Get-ChildItem build\plugins\*\Release\q*.dll
-# macOS
+# macOS (community-supported, not CI-validated)
 ls build/qCC/CloudCompare.app/Contents/PlugIns/
 ```
 

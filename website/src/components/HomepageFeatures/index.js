@@ -123,8 +123,9 @@ const FeatureList = [
     description: (
       <>
         <code>CloudCompare.exe</code> on Windows, .AppImage / .deb on Linux,
-        <code>CloudCompare.app</code> on macOS. Same Qt 6 UI, same code path,
-        same plugin folder. Build scripts for each platform live in this docs
+        <code>CloudCompare.app</code> on macOS (community-supported, not
+        CI-validated since 2026-08-24). Same Qt 6 UI, same code path, same
+        plugin folder. Build scripts for each platform live in this docs
         site.
       </>
     ),

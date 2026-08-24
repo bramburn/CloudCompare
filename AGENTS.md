@@ -414,12 +414,24 @@ The short rule: **don't modify `qCC/`, `ccViewer/`, `libs/qCC_db`, `libs/qCC_io`
 
 GitHub Actions on `bramburn/CloudCompare` (the fork). Two workflows remain:
 
-- **`.github/workflows/build.yml`** — inherited from upstream. Runs the **full** Windows + macOS + Ubuntu matrix with the upstream plugin set (LAS, E57, Photoscan, RDB, qFacets, qHoughNormals, qCloudLayers). Useful as a sanity check before upstreaming a PR.
+- **`.github/workflows/build.yml`** — fork-owned. Runs the **Windows MSVC** job (Conda-based, full plugin set) and the **Ubuntu GCC + Clang** matrix (system packages, slim smoke test, `qPCL=OFF`). **macOS is not in the matrix** — the fork is Windows-first and the macOS support in upstream is no longer tested here. Plugin flags: see the `PLUGIN_*` lines in the workflow file.
 - **`.github/workflows/deploy-docs.yml`** — builds the Docusaurus site under `website/` and publishes to GitHub Pages on the `gh-pages` branch. Triggers on push to `master` when `website/**` or this workflow file change, plus `workflow_dispatch`. Uses the official `actions/deploy-pages@v4`. The site lands at <https://bramburn.github.io/CloudCompare/> within ~1-2 minutes.
+
+### macOS support: dropped (2026-08-24)
+
+The fork no longer tests or supports macOS. The `macOS Clang` job in `.github/workflows/build.yml` was removed because:
+
+- The fork is Windows-first (Icelabz surveying on Windows Server 2019 / VS 2022) and the dev team does not run macOS.
+- The macOS conda-based build was slow, fragile, and not actually catching bugs that the Windows build misses.
+- The `qCC/Mac/` and `ccViewer/Mac/` bundle sources (Info.plist, bundle assembly) are **kept** in tree for any contributor who wants to build locally on macOS, but they are not exercised in CI.
+- `.ci/conda-macos.yml` and `.ci/verify_macos_bundle_identifiers.py` are **kept** for the same reason — they still work for local macOS builds, they just don't gate PRs.
+- `qCompass`, `qRANSAC_SD`, `qSRA` remain disabled on all platforms because of the Qt 6.8.3 `ccTrace` namespace collision. None of these were macOS-specific issues.
+
+If a future contributor needs macOS CI back, restore the upstream `macOS Clang` matrix entry from `CloudCompare/CloudCompare` and re-enable the `Verify macOS bundle identifiers` step.
 
 ### Windows build CI: removed (best-effort, lean on local)
 
-The fork's slim Windows CI workflow (`.github/workflows/windows.yml`) was removed on 2026-08-19 after a structural incompatibility with the GitHub-hosted runner surfaced. Three independent fix attempts (YAML escaping, line-ending normalization, header truncation) all hit the same `ninja: error: CMakeFiles\rules.ninja:31: expected newline, got lexing error` — the runner's pre-installed **cmake 4.4.2** emits unparseable `rules.ninja` for this codebase. Our local **cmake 4.3.0** (pinned at `C:\dev\tools\cmake-4.3.0\`) does not have the problem. Fixing CI would require pinning cmake ≤ 4.3 via the `lukka/get-cmake` action, switching to the Visual Studio generator, or self-hosted runners — none worth the maintenance cost for a fork that already builds cleanly via the local `cc-build.cmd`.
+The fork's standalone slim Windows CI workflow (`.github/workflows/windows.yml`) was removed on 2026-08-19 after a structural incompatibility with the GitHub-hosted runner surfaced. Three independent fix attempts (YAML escaping, line-ending normalization, header truncation) all hit the same `ninja: error: CMakeFiles\rules.ninja:31: expected newline, got lexing error` — the runner's pre-installed **cmake 4.4.2** emits unparseable `rules.ninja` for this codebase. Our local **cmake 4.3.0** (pinned at `C:\dev\tools\cmake-4.3.0\`) does not have the problem. Fixing CI would require pinning cmake ≤ 4.3 via the `lukka/get-cmake` action, switching to the Visual Studio generator, or self-hosted runners — none worth the maintenance cost for a fork that already builds cleanly via the local `cc-build.cmd`.
 
 **For verification, use the local build:**
 
@@ -428,9 +440,9 @@ The fork's slim Windows CI workflow (`.github/workflows/windows.yml`) was remove
 & 'C:\dev\CloudCompare\tools\cc-build.cmd'
 ```
 
-The local build is faster (cached, no checkout), uses the same Qt/CMake/Ninja versions, and produces the same `deployqt\` bundle. Upstream CI (`build.yml`) still runs the full matrix on every push to `master` — that's the cross-platform safety net.
+The local build is faster (cached, no checkout), uses the same Qt/CMake/Ninja versions, and produces the same `deployqt\` bundle. The Windows MSVC job in `build.yml` is the cross-platform safety net for Windows; the Ubuntu GCC/Clang jobs are the slim smoke test for Linux portability.
 
-If you want to re-enable Windows CI later, the recommended approach is the **Visual Studio generator** (sidesteps the rules.ninja emission bug entirely) or pinning cmake 4.3 explicitly with `lukka/get-cmake@latest` + `version: '4.3.0'`. See [`BUILD-LOCAL.md`](BUILD-LOCAL.md) for the full failure timeline.
+If you want to re-enable a standalone Windows CI workflow later, the recommended approach is the **Visual Studio generator** (sidesteps the rules.ninja emission bug entirely) or pinning cmake 4.3 explicitly with `lukka/get-cmake@latest` + `version: '4.3.0'`. See [`BUILD-LOCAL.md`](BUILD-LOCAL.md) for the full failure timeline.
 
 To trigger a build manually: GitHub → Actions → pick the workflow → "Run workflow".
 To see a docs deploy: GitHub → Actions → "Deploy docs site to GitHub Pages" → pick a run → check the environment link.

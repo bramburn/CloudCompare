@@ -101,7 +101,7 @@ Default **ON**: only `qCoreIO` (the BIN/ASCII/PLY filter) — everything else is
 1. Edit the plugin folder in place.
 2. If you added a new source file, append it to `src/CMakeLists.txt` and `include/CMakeLists.txt`.
 3. **Run `cmake --build build --target check-format`** before commit.
-4. **Update the CI matrix** if you change the default-on/off of the plugin (in `.github/workflows/build.yml`, all four jobs: Windows MSVC, macOS Clang, Ubuntu GCC, Ubuntu Clang).
+4. **Update the CI matrix** if you change the default-on/off of the plugin (in `.github/workflows/build.yml`, all three jobs: Windows MSVC, Ubuntu GCC, Ubuntu Clang — macOS is not in the matrix).
 
 ## See also
 

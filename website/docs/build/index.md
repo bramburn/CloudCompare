@@ -6,9 +6,14 @@ sidebar_position: 1
 
 # Build
 
-The fork builds on Windows, Linux, and macOS. The wrapper scripts in
-`C:\dev\tools\` pin the Windows toolchain to known-good versions; the Linux
-and macOS paths follow the upstream `BUILD.md` with the same plugin set.
+The fork is **Windows-first** and the local toolchain is the primary
+build environment. Linux is a slim smoke test in CI. macOS community
+builds are supported but not CI-validated (see the deprecation note in
+[CI overview](/docs/ci/overview#macos-support-dropped-2026-08-24)).
+
+The wrapper scripts in `C:\dev\tools\` pin the Windows toolchain to
+known-good versions; the Linux path follows the upstream `BUILD.md` with
+the same plugin set; the macOS path is community-maintained.
 
 ## Pages in this section
 
@@ -17,7 +22,7 @@ and macOS paths follow the upstream `BUILD.md` with the same plugin set.
 - [Build on Windows](/docs/build/windows) — the local toolchain, wrapper scripts, and
   the gotchas.
 - [Build on Linux](/docs/build/linux) — apt packages and a fresh-Docker recipe.
-- [Build on macOS](/docs/build/macos) — brew packages and the macOS bundle script.
+- [Build on macOS](/docs/build/macos) — brew packages and the macOS bundle script. **Community-supported, not CI-validated.**
 - [Troubleshooting](/docs/build/troubleshooting) — the four or five errors that always
   show up on a clean checkout.
 

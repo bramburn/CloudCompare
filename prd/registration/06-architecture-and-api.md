@@ -532,7 +532,7 @@ The plugin's `src/CMakeLists.txt` lists the source files, links against `CCCoreL
 
 ### 11.2 CI
 
-Add to `.github/workflows/build.yml` (all 4 jobs):
+Add to `.github/workflows/build.yml` (all 3 jobs — Windows MSVC, Ubuntu GCC, Ubuntu Clang; macOS was dropped from the matrix on 2026-08-24):
 
 ```yaml
 -DPLUGIN_STANDARD_QREGISTRATION=ON

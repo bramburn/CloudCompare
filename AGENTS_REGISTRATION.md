@@ -106,7 +106,7 @@ Each milestone is a verification target. An agent should not start the next mile
 | **M5** | "Apply" commits the transform via `applyRigidTransformation` + `m_app->addToDB(...)`. The source cloud is permanently moved; the dialog closes; the db-tree shows the moved entity. | Restart CloudCompare, load the saved `.bin` file — the source cloud is at its new position (transform was committed, not just previewed). |
 | **M6** | CLI mode: a new `-MANUAL_REGISTER` command works. | `CloudCompare -MANUAL_REGISTER -A cloudA.bin -B cloudB.bin -PA 100,200,300 …` performs the registration and saves a transformed `.bin`. |
 | **M7** | `qManualRegistration` appears in **Help → About → Plugins** with the right metadata. | Yes. |
-| **M8** | CI parity: add `-DPLUGIN_STANDARD_QMANUAL_REGISTRATION=ON` to `.github/workflows/build.yml` (all 4 jobs: Windows MSVC, macOS Clang, Ubuntu GCC, Ubuntu Clang). | CI green. |
+| **M8** | CI parity: add `-DPLUGIN_STANDARD_QMANUAL_REGISTRATION=ON` to `.github/workflows/build.yml` (3 jobs: Windows MSVC, Ubuntu GCC, Ubuntu Clang — macOS is not in the matrix). | CI green. |
 
 A "green" milestone is one where the build is clean (`cmake --build build --target check-format` returns 0), the plugin loads, the milestone's verification passes, and the previous milestones still pass.
 

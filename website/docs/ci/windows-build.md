@@ -6,51 +6,41 @@ sidebar_position: 3
 
 # Windows build
 
-The `.github/workflows/windows.yml` workflow builds the fork's slim
-plugin set on Windows and uploads the `deployqt\` bundle as a
-downloadable artifact.
+> ⚠️ **Page retained for historical context.** The standalone
+> `.github/workflows/windows.yml` workflow was removed on 2026-08-19
+> after a structural incompatibility with the GitHub-hosted runner
+> (the runner's pre-installed cmake 4.4.2 emits unparseable
+> `rules.ninja` for this codebase). The Windows MSVC job inside
+> `.github/workflows/build.yml` is now the only Windows CI job. See
+> the [Upstream matrix](/docs/ci/upstream-matrix) page for the current
+> build configuration.
 
-## Triggering
-
-The workflow triggers on:
-
-- Push to `master` (any change to the C++ source, the `windows.yml`
-  file, or the `AGENTS.md`).
-- Pull request targeting `master`.
-- Manual `workflow_dispatch` from the GitHub UI.
+The `.github/workflows/build.yml` `Windows MSVC` job builds the fork
+on Windows using the Conda environment, MSVC 2022, and Ninja.
 
 ## What it does
 
-1. Sets up MSVC 2022 via the `ilammy/msvc-dev-cmd@v1` action
-   (matches the local toolchain).
-2. Sets up Qt 6.8.3 MSVC 2022 64-bit via `jurplel/install-qt-action@v3`.
-3. Configures with `cmake -S . -B build -G Ninja` and the same
-   `-DPLUGIN_*=OFF` flags the local wrapper script uses (no LAS / E57
-   / PCL — keep the slim matrix slim).
-4. Builds with `cmake --build build --config Release --parallel 8`.
-5. Uploads `build/qCC/deployqt/` as the
-   `cloudcompare-windows-x64` artifact.
-
-Cold runs are ~15 minutes; warm runs (ccache hit) are \<5 minutes.
-
-## Downloading the artifact
-
-1. Open the workflow run from **GitHub > Actions > Windows Build**.
-2. Scroll to **Artifacts** at the bottom of the run summary.
-3. Download `cloudcompare-windows-x64` (a `.zip`).
-4. Unzip; the `CloudCompare.exe` inside is the self-contained bundle
-   — no install, no PATH manipulation.
-
-The artifact is retained for 90 days. There's no signature, so
-treat it as a "daily driver" build, not a release artifact.
+1. Sets up MSVC 2022 via the `ilammy/msvc-dev-cmd@v1` action (matches
+   the local toolchain).
+2. Sets up a Conda environment with the full plugin-set dependencies
+   (LAS, E57, Photoscan, RDB, qFacets, qHoughNormals, qCloudLayers,
+   plus all the small standard plugins).
+3. Configures with `cmake -S . -B build -G Ninja` and the
+   `-DPLUGIN_*=ON/OFF` flags listed in the workflow file.
+4. Runs `cmake --build build --target check-format` (clang-format
+   check) and `cmake --build build --parallel` (the full build).
+5. `cmake --install build` into a prefix (no artifact upload).
 
 ## What this build does NOT do
 
-- It does **not** build the LAS / E57 / PCL plugins. For those, run
-  the [upstream matrix](/docs/ci/upstream-matrix).
+- It does **not** upload a downloadable artifact. To get a
+  `deployqt\` bundle, run the local build (see
+  [AGENTS.md — Local setup](/docs/getting-started/overview)).
 - It does **not** run unit tests. `cc-test-lib` is off by default.
 - It does **not** build the docs site. That's a
   [separate workflow](/docs/ci/github-pages).
+- It does **not** run macOS. The macOS support in this fork was
+  dropped on 2026-08-24.
 
 ## Local equivalent
 

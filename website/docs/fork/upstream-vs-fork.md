@@ -15,11 +15,11 @@ fork-specific docs / code.
 | **C++/Qt codebase** (`qCC/`, `ccViewer/`, `libs/`, `plugins/`) | ✓ canonical, full plugin set, sparse Doxygen | identical (synced regularly), + Doxygen pass (~400 commits), slim 16-plugin local set |
 | **Build on Windows** | generic CMake, any modern MSVC | pinned MSVC 14.44, CMake 4.3, Qt 6.8.3, Ninja, vcpkg, all under `C:\dev\tools\`; reproducible via `tools/cc-configure.cmd` and `tools/cc-build.cmd` |
 | **Build on Linux** | generic CMake, any modern GCC | identical to upstream, documented in [Build on Linux](/docs/build/linux) |
-| **Build on macOS** | generic CMake, any modern Clang | identical to upstream, documented in [Build on macOS](/docs/build/macos) |
+| **Build on macOS** | generic CMake, any modern Clang | **Community-supported, not CI-validated** since 2026-08-24. Documented in [Build on macOS](/docs/build/macos) for local builds. |
 | **Self-contained Windows bundle** (`build/qCC/deployqt/CloudCompare.exe`) | no | yes — Qt 6 runtime DLLs, plugin DLLs, and `sentry.dll` all alongside the `.exe`; copy to any Windows x64 box, runs |
 | **Docusaurus docs site** | no (Wiki only) | yes — this site, deployed to GitHub Pages, mirrors the fork's configuration |
 | **Doxygen pass** | sparse `///` comments | extensive — approaching 400 Doxygen-clean commits across `qCC/`, `ccViewer/`, `libs/`, `plugins/` |
-| **CI** (`.github/workflows/`) | full upstream matrix | full upstream matrix + slim Windows matrix that mirrors the local 16-plugin set so the downloadable artifact matches the docs |
+| **CI** (`.github/workflows/`) | full upstream matrix (Windows + macOS + Ubuntu) | fork-owned slim matrix: Windows MSVC + Ubuntu GCC/Clang; macOS dropped 2026-08-24 |
 | **Rust migration** | — (no Rust) | ✓ `cc-rust/` Cargo workspace with Phase 0–4 work, 43 unit tests, end-to-end validated on the brook-avenue 7.5M-point `.las` |
 | **Experimental workspace** | — (no sandbox) | ✓ `experimental/` with 4 templates, ~15 sessions, 4 scenarios, an 8-state lifecycle, a promotion gate |
 | **Sentry crash reporting** | — | ✓ opt-in via `qCC/CC_USE_SENTRY=ON` + `SENTRY_DSN` env var; `sentry.dll` copied to the deploy bundle by CMake POST_BUILD |

@@ -43,11 +43,18 @@ CMake will pick it up and fail with "unknown error" if you don't override
 the make program. The configure wrapper sets
 `-DCMAKE_MAKE_PROGRAM=C:/ProgramData/chocolatey/bin/ninja.exe`.
 
-## Linux / macOS
+## Linux
 
-The upstream `BUILD.md` lists the apt / brew packages. The fork doesn't pin
-specific versions on those platforms; the CI matrix
-(`.github/workflows/build.yml`) tests the upstream set on every push.
+The fork's CI matrix (`.github/workflows/build.yml`) builds on Ubuntu
+22.04 with apt packages. The `ubuntu-build` job uses the same plugin
+flags as the Windows job, minus `qPCL` (skipped to avoid a 30-60 min
+PCL build). For a fresh Docker recipe, see [Build on Linux](/docs/build/linux).
+
+## macOS (community-supported)
+
+The fork dropped macOS CI support on 2026-08-24. The build instructions
+are still documented in [Build on macOS](/docs/build/macos) for
+contributors who want to build locally.
 
 ## What you do NOT need to install
 
