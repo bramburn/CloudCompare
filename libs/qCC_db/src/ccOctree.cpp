@@ -369,7 +369,7 @@ bool ccOctree::DrawCellAsAPoint(const CCCoreLib::DgmOctree::octreeCell& cell,
 	if (glParams->showSF)
 	{
 		ScalarType dist = CCCoreLib::ScalarFieldTools::computeMeanScalarValue(cell.points);
-		const ccColor::Rgb* col = cloud->geScalarValueColor(dist);
+		const ccColor::Rgb* col = cloud->getScalarValueColor(dist);
 		ccGL::Color(glFunc, col ? *col : ccColor::lightGreyRGB);
 	}
 	else if (glParams->showColors)
@@ -413,7 +413,7 @@ bool ccOctree::DrawCellAsAPrimitive(const CCCoreLib::DgmOctree::octreeCell& cell
 	if (glParams->showSF)
 	{
 		ScalarType dist = CCCoreLib::ScalarFieldTools::computeMeanScalarValue(cell.points);
-		const ccColor::Rgb* rgb = cloud->geScalarValueColor(dist);
+		const ccColor::Rgb* rgb = cloud->getScalarValueColor(dist);
 		if (rgb)
 			primitive->setColor(*rgb);
 	}
