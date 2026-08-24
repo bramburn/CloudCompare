@@ -98,3 +98,4 @@ public:
 	 * @param[in] pointId Index of point to add as waypoint
 	 */
 	void pushWaypoint(int pointId) { m_waypoints.push_back(pointId); }
+};
