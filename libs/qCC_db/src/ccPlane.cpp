@@ -39,7 +39,7 @@
 ccPlane::ccPlane(PointCoordinateType xWidth, PointCoordinateType yWidth, const ccGLMatrix* transMat /*=nullptr*/, QString name /*=QString("Plane")*/)
     : ccGenericPrimitive(name, transMat)
     , m_xWidth(xWidth)
-    , m_yWidth(yHeight)
+    , m_yWidth(yWidth)
 {
 	updateRepresentation();
 }
