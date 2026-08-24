@@ -1562,14 +1562,11 @@ class CCGLWINDOW_LIB_API ccGLWindowInterface : public ccGenericGLDisplay
 	//! Locked rotation base matrix
 	ccGLMatrixd m_lockedRotationBaseMat;
 
-	//! Shared texture type
-	using SharedTexture = QSharedPointer<QOpenGLTexture>;
-
 	//! Reserved textures (for renderText)
-	QMap<uint16_t, SharedTexture> m_uniqueTextures;
+	QMap<uint16_t, ::QSharedPointer<::QOpenGLTexture>> m_uniqueTextures;
 
 	//! Texture pool (for renderText)
-	std::vector<SharedTexture> m_texturePool;
+	std::vector<::QSharedPointer<::QOpenGLTexture>> m_texturePool;
 
 	//! Last texture pool index
 	size_t m_texturePoolLastIndex;
