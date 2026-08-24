@@ -70,9 +70,6 @@
  * @see ccPlanarEntityInterface for planar entity interface
  */
 
-#ifndef CC_FACET_HEADER
-#define CC_FACET_HEADER
-
 // Local
 #include "ccHObject.h"
 #include "ccPlanarEntityInterface.h"
