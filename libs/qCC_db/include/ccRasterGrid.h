@@ -1,89 +1,39 @@
+﻿#pragma once
+
 // ##########################################################################
 // #                                                                        #
 // #                              CLOUDCOMPARE                              #
 // #                                                                        #
 // #  This program is free software; you can redistribute it and/or modify  #
+// #  it under the terms of the GNU General Public License as published by  #
 // #  the Free Software Foundation; version 2 or later of the License.      #
 // #                                                                        #
 // #  This program is distributed in the hope that it will be useful,       #
-// #  WITHOUT ANY WARRANTY; without even the implied warranty of            #
+// #  but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 // #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
 // #  GNU General Public License for more details.                          #
 // #                                                                        #
 // #          COPYRIGHT: EDF R&D / TELECOM ParisTech (ENST-TSI)             #
-// #                                                                        //
+// #                                                                        #
 // ##########################################################################
 
 /**
  * @file ccRasterGrid.h
  *
- * @brief Raster grid representation for point clouds.
+ * @brief Raster grid
  *
- * @details Provides 2.5D raster grid structure for discretizing
- * point clouds into a regular grid for elevation models, DSM, DTM,
- * and other raster-based processing.
- *
- * ## Overview
- *
- * A raster grid discretizes 3D space into cells:
- * - Each cell stores height statistics (min, max, mean)
- * - Color can be aggregated per cell
- * - Point indices can be linked for detailed analysis
- *
- * ## Grid Cell
- *
- * Each ccRasterCell stores:
- * - **Height**: Grid elevation value
- * - **Min/Max height**: Height range in cell
- * - **Point count**: Points projected to cell
- * - **Nearest point**: Closest point to cell center
- * - **Color**: Aggregated color
- * - **Point refs**: Linked list of point references
- *
- * ## Interpolation
- *
- * Supports Kriging interpolation for filling gaps:
- * - Ordinary Kriging
- * - Simple Kriging
- * - Automatic variogram fitting
- *
- * ## Usage
- *
- * @code
- * // Compute grid size
- * unsigned width, height;
- * ccRasterGrid::ComputeGridSize(Z, bbox, gridStep, width, height);
- *
- * // Create raster
- * ccRasterGrid raster;
- * raster.init(width, height);
- *
- * // Fill from point cloud
- * FillWithPoints(cloud, raster, gridStep, bbox);
- *
- * // Interpolate gaps
- * OrdinaryKriging(raster, variogram);
- *
- * // Export to mesh
- * ccMesh* mesh = ccRasterGridToMesh(raster, gridStep);
- * @endcode
+ * Raster grid representation for point clouds.
  *
  * @author EDF R&D / TELECOM ParisTech (ENST-TSI)
- *
- * @see ccPointCloud for point cloud source
- * @see ccMesh for mesh export
  */
-
-#pragma once
-
-// Local
+// local
 #include "ccBBox.h"
 #include "qCC_db.h"
 
 // CCCoreLib
 #include <Kriging.h>
 
-// System
+// system
 #include <limits>
 
 class ccGenericPointCloud;
@@ -91,15 +41,11 @@ class ccPointCloud;
 class ccProgressDialog;
 
 /**
- * @brief Raster grid cell.
- *
- * @details Stores statistics for one grid cell.
+ * @brief Raster grid cell
  */
 struct QCC_DB_LIB_API ccRasterCell
 {
-	/**
-	 * @brief Default constructor.
-	 */
+	//! Default constructor
 	ccRasterCell()
 	    : h(std::numeric_limits<double>::quiet_NaN())
 	    , minHeight(0)
@@ -112,161 +58,73 @@ struct QCC_DB_LIB_API ccRasterCell
 	{
 	}
 
-	/**
-	 * @brief Get all point indexes projected to this cell.
-	 *
-	 * @param[out] indexes Point indexes.
-	 * @param[in] pointRefList Point reference list.
-	 */
+	//! Returns the list of all point indexes projected into this cell
 	void getPointIndexes(std::vector<unsigned>& indexes, const std::vector<void*>& pointRefList) const;
 
-	//! Height value (grid elevation).
+	//! Height value
 	double h;
-
-	//! Min height value in cell.
+	//! Min height value
 	PointCoordinateType minHeight;
-
-	//! Max height value in cell.
+	//! Max height value
 	PointCoordinateType maxHeight;
-
-	//! Number of points projected to cell.
+	//! Number of points projected in this cell
 	unsigned nbPoints;
-
-	//! Nearest point index to cell center.
+	//! Nearest point index (if any)
 	unsigned nearestPointIndex;
-
-	//! Aggregated color (RGB).
+	//! Color
 	CCVector3d color;
-
-	//! First point reference in linked list.
+	//! Pointer to first point reference for this cell (used to compute the median)
 	void** pointRefHead;
-
-	//! Last point reference in linked list.
+	//! Pointer to last point reference for this cell (used to compute the median)
 	void** pointRefTail;
 };
 
 /**
- * @brief Raster grid structure.
+ * @brief Raster grid
  *
- * @details 2.5D raster representation for point clouds.
+ * Raster grid representation for 2.5D data.
  */
 struct QCC_DB_LIB_API ccRasterGrid
 {
-	/**
-	 * @brief Default constructor.
-	 */
+	//! Default constructor
 	ccRasterGrid();
 
-	/**
-	 * @brief Destructor.
-	 */
+	//! Destructor
 	virtual ~ccRasterGrid();
 
-	/**
-	 * @brief Compute grid dimensions.
-	 *
-	 * @param[in] Z Projection dimension (0=X, 1=Y, 2=Z).
-	 * @param[in] box Bounding box.
-	 * @param[in] gridStep Cell size.
-	 * @param[out] width Grid width.
-	 * @param[out] height Grid height.
-	 *
-	 * @return true if successful.
-	 */
+	//! Computes the raster size for a given bounding-box
 	static bool ComputeGridSize(unsigned char Z,
 	                            const ccBBox& box,
 	                            double gridStep,
 	                            unsigned& width,
 	                            unsigned& height);
 
-	/**
-	 * @brief Initialize empty grid.
-	 *
-	 * @param[in] width Grid width.
-	 * @param[in] height Grid height.
-	 *
-	 * @return true if successful.
-	 */
-	bool init(unsigned width, unsigned height);
+	//! Initializes / resets the grid
+	/** We use the "Pixel-is-area" convention but 'min corner'
+	    corresponds to the lower left cell CENTER.
+	    -------------------
+	    |     |     |     |
+	    |  U  |  V  |  W  |
+	    |     |     |     |
+	    -------------------
+	    |     |     |     |
+	    |  X  |  Y  |  Z  |
+	    |     |     |     |
+	    -------------------
 
-	/**
-	 * @brief Clear grid.
-	 */
+	    Here, w=3 and h=2, and minCorner=X
+
+	**/
+	bool init(unsigned w,
+	          unsigned h,
+	          double gridStep,
+	          const CCVector3d& minCorner);
+
+	//! Clears the grid
 	void clear();
 
-	/**
-	 * @brief Fill with points from cloud.
-	 *
-	 * @param[in] cloud Point cloud.
-	 * @param[in] Z Projection dimension.
-	 * @param[in] gridStep Cell size.
-	 * @param[in] bbox Bounding box.
-	 * @param[in] progress Progress callback.
-	 *
-	 * @return true if successful.
-	 */
-	bool fillWithPoints(ccGenericPointCloud& cloud,
-	                    unsigned Z,
-	                    double gridStep,
-	                    const ccBBox& bbox,
-	                    ccProgressDialog* progress = nullptr);
-
-	//! Row of cells
-	using Row = std::vector<ccRasterCell>;
-
-	//! All cells (row-major)
-	std::vector<Row> rows;
-
-	//! Delaunay interpolation parameters
-	struct QCC_DB_LIB_API DelaunayInterpolationParams
-	{
-		//! Whether the average colors are available or not
-		bool hasColors;
-
-		//! Max (square) edge length to filter large triangles during interpolation
-		double maxSquareEdgeLength;
-
-		//! Whether to use the average height of the cells as the output value
-		//! for empty cells (if false, the interpolation result is used)
-		bool useAverageHeight;
-
-		//! Default values
-		DelaunayInterpolationParams()
-		    : hasColors(false)
-		    , maxSquareEdgeLength(0.0)
-		    , useAverageHeight(false)
-		{
-		}
-	};
-
-	//! Kriging parameters
-	struct QCC_DB_LIB_API KrigingParams
-	{
-		//! Whether the average colors are available or not
-		bool hasColors;
-
-		//! Kriging model
-		Kriging::Model model;
-
-		//! Kriging sigma (auto if 0)
-		double sigma;
-
-		//! Kriging alpha (auto if 0)
-		double alpha;
-
-		//! Kriging nugget (auto if 0)
-		double nugget;
-
-		//! Default values
-		KrigingParams()
-		    : hasColors(false)
-		    , model(Kriging::Model::Spherical)
-		    , sigma(0.0)
-		    , alpha(0.0)
-		    , nugget(0.0)
-		{
-		}
-	};
+	//! Resets the grid
+	void reset();
 
 	//! Exportable fields
 	enum ExportableFields
@@ -287,39 +145,168 @@ struct QCC_DB_LIB_API ccRasterGrid
 	//! Returns the default name of a given field
 	static QString GetDefaultFieldName(ExportableFields field);
 
-	//! Grid width.
+	//! Converts the grid to a cloud with scalar field(s)
+	ccPointCloud* convertToCloud(bool exportHeightStats,
+	                             bool exportSFStats,
+	                             const std::vector<ExportableFields>& exportedStatistics,
+	                             bool projectSFs,
+	                             bool projectColors,
+	                             bool resampleInputCloudXY,
+	                             bool resampleInputCloudZ, // only considered if resampleInputCloudXY is true!
+	                             ccGenericPointCloud* inputCloud,
+	                             unsigned char Z,
+	                             const ccBBox& box,
+	                             double percentileValue,
+	                             bool exportToOriginalCS,
+	                             bool appendGridSizeToSFNames,
+	                             ccProgressDialog* progressDialog = nullptr) const;
+
+	//! Types of projection
+	enum ProjectionType
+	{
+		PROJ_MINIMUM_VALUE = 0,
+		PROJ_AVERAGE_VALUE = 1,
+		PROJ_MAXIMUM_VALUE = 2,
+		PROJ_MEDIAN_VALUE = 3,
+		PROJ_INVERSE_VAR_VALUE = 4,
+		INVALID_PROJECTION_TYPE = 255,
+	};
+
+	//! Types of interpolation
+	enum class InterpolationType
+	{
+		NONE = 0,
+		DELAUNAY = 1,
+		KRIGING = 2
+	};
+
+	//! Delaunay interpolation parameter(s)
+	struct QCC_DB_LIB_API DelaunayInterpolationParams
+	{
+		double maxEdgeLength = 1.0;
+	};
+
+	//! Kriging parameters
+	struct QCC_DB_LIB_API KrigingParams
+	{
+		Kriging::KrigeParams params;
+		bool autoGuess = true;
+		int kNN = 8;
+	};
+
+	//! Fills the grid with a point cloud
+	/** Since version 2.8, we are using the "PixelIsPoint" convention
+	    (contrarily to what was written in the code comments so far!).
+	    This means that the height is computed at the center of the grid cell.
+	**/
+	bool fillWith(ccGenericPointCloud* cloud,
+	              unsigned char projectionDimension,
+	              ProjectionType projectionType,
+	              InterpolationType emptyCellsInterpolation = InterpolationType::NONE,
+	              void* interpolationParams = nullptr, // either nullptr, DelaunayInterpolationParams* or KrigingParams*
+	              ProjectionType sfProjectionType = INVALID_PROJECTION_TYPE,
+	              ccProgressDialog* progressDialog = nullptr,
+	              int zStdDevSfIndex = -1);
+
+	//! Option for handling empty cells
+	enum EmptyCellFillOption
+	{
+		LEAVE_EMPTY = 0,
+		FILL_MINIMUM_HEIGHT = 1,
+		FILL_MAXIMUM_HEIGHT = 2,
+		FILL_CUSTOM_HEIGHT = 3,
+		FILL_AVERAGE_HEIGHT = 4,
+		INTERPOLATE_DELAUNAY = 5,
+		KRIGING = 6,
+	};
+
+	//! Converts the empty cells fill option to the corresponding interpolation type
+	static InterpolationType InterpolationTypeFromEmptyCellFillOption(EmptyCellFillOption option);
+
+	//! Fills the empty cells
+	void fillEmptyCells(EmptyCellFillOption fillEmptyCellsStrategy,
+	                    double customCellHeight = 0.0);
+
+	//! Updates the number of non-empty cells
+	unsigned updateNonEmptyCellCount();
+
+	//! Updates the statistics about the cells
+	void updateCellStats();
+
+	//! Interpolates the empty cells
+	/** \warning The number of non empty cells must be up-to-date (see updateNonEmptyCellCount)
+	    \param maxSquareEdgeLength Max (square) edge length to filter large triangles during the interpolation process
+	**/
+	bool interpolateEmptyCells(double maxSquareEdgeLength);
+
+	//! Interpolates the empty cells with the Kriging algorithm
+	bool fillGridCellsWithKriging(unsigned char Z,
+	                              int knn,
+	                              Kriging::KrigeParams& krigeParams,
+	                              bool useInputParams,
+	                              ccProgressDialog* progressDialog = nullptr);
+
+	//! Sets valid
+	inline void setValid(bool state)
+	{
+		valid = state;
+	}
+	//! Returns whether the grid is 'valid' or not
+	inline bool isValid() const
+	{
+		return valid;
+	}
+
+	//! Computes the position of the cell that includes a given point
+	inline CCVector2i computeCellPos(const CCVector3& P, unsigned char dimX, unsigned char dimY) const
+	{
+		// minCorner corresponds to the lower left cell CENTER
+		return CCVector2i(static_cast<int>((P.u[dimX] - minCorner.u[dimX]) / gridStep + 0.5),
+		                  static_cast<int>((P.u[dimY] - minCorner.u[dimY]) / gridStep + 0.5));
+	}
+
+	//! Computes the position of the center of a given cell
+	inline CCVector2d computeCellCenter(int i, int j, unsigned char dimX, unsigned char dimY) const
+	{
+		// minCorner corresponds to the lower left cell CENTER
+		return CCVector2d(minCorner.u[dimX] + i * gridStep, minCorner.u[dimY] + j * gridStep);
+	}
+
+	//! Row
+	using Row = std::vector<ccRasterCell>;
+
+	//! All cells
+	std::vector<Row> rows;
+
+	//! Scalar field
+	using SF = std::vector<double>;
+
+	//! Associated scalar fields
+	std::vector<SF> scalarFields;
+
+	//! Array of pointers, each coresponding to a point in the cloud
+	/** 'cloud->getPoint(n)' coresponds to 'pointRefList[n]'
+	    The pointers are used to chain points belonging to the same cell together.
+	**/
+	std::vector<void*> pointRefList;
+
+	//! Number of columns
 	unsigned width;
-
-	//! Grid height.
+	//! Number of rows
 	unsigned height;
-
-	//! Grid cells.
-	std::vector<ccRasterCell> cells;
-
-	//! Bounding box.
-	ccBBox bbox;
-
-	//! Grid step (cell size).
+	//! Grid step ('pixel' size)
 	double gridStep;
-
-	//! Projection dimension.
-	unsigned char Z;
-
-	//! Min corner (lower-left cell CENTER in the chosen projection).
+	//! Min corner (3D)
 	CCVector3d minCorner;
 
 	//! Min height (computed on the NON-EMPTY or FILLED/INTERPOLATED cells)
 	double minHeight;
-
 	//! Max height (computed on the NON-EMPTY or FILLED/INTERPOLATED cells)
 	double maxHeight;
-
 	//! Average height (computed on the NON-EMPTY or FILLED/INTERPOLATED cells)
 	double meanHeight;
-
 	//! Number of NON-EMPTY cells
 	unsigned nonEmptyCellCount;
-
 	//! Number of VALID cells
 	unsigned validCellCount;
 
