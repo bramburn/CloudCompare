@@ -424,7 +424,7 @@ The fork no longer tests or supports macOS. The `macOS Clang` job in `.github/wo
 - The fork is Windows-first (Icelabz surveying on Windows Server 2019 / VS 2022) and the dev team does not run macOS.
 - The macOS conda-based build was slow, fragile, and not actually catching bugs that the Windows build misses.
 - The `qCC/Mac/` and `ccViewer/Mac/` bundle sources (Info.plist, bundle assembly) are **kept** in tree for any contributor who wants to build locally on macOS, but they are not exercised in CI.
-- `.ci/conda-macos.yml` and `.ci/verify_macos_bundle_identifiers.py` are **kept** for the same reason — they still work for local macOS builds, they just don't gate PRs.
+- `.ci/conda-macos.yml` and `.ci/verify_macos_bundle_identifiers.py` were **removed** (2026-08-24). Anyone wanting to restore macOS CI will need to recreate them or pull from upstream.
 - `qCompass`, `qRANSAC_SD`, `qSRA` remain disabled on all platforms because of the Qt 6.8.3 `ccTrace` namespace collision. None of these were macOS-specific issues.
 
 If a future contributor needs macOS CI back, restore the upstream `macOS Clang` matrix entry from `CloudCompare/CloudCompare` and re-enable the `Verify macOS bundle identifiers` step.

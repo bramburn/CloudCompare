@@ -17,10 +17,11 @@ macOS leg that was dropped on 2026-08-24). It runs:
   Linux.
 
 **macOS is not in the matrix.** The `qCC/Mac/` and `ccViewer/Mac/`
-bundle sources and the macOS CI helpers (`.ci/conda-macos.yml`,
-`.ci/verify_macos_bundle_identifiers.py`) are kept in tree for anyone
-who wants to build locally on macOS, but they are not exercised in
-CI. See [AGENTS.md — CI](https://github.com/bramburn/CloudCompare/blob/master/AGENTS.md#ci)
+bundle sources are kept in tree for anyone who wants to build locally
+on macOS, but they are not exercised in CI. The macOS CI helpers
+(`.ci/conda-macos.yml`, `.ci/verify_macos_bundle_identifiers.py`)
+were removed on 2026-08-24. See
+[AGENTS.md — CI](https://github.com/bramburn/CloudCompare/blob/master/AGENTS.md#ci)
 for the rationale.
 
 ## When to use it

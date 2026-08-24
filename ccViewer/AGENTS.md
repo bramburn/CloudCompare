@@ -30,7 +30,7 @@ Same rules as `qCC/`:
 
 ## macOS bundle (not CI-tested)
 
-`ccViewer/Mac/` holds `ccViewer.plist` (Info.plist — bundle identifier verified by `.ci/verify_macos_bundle_identifiers.py`) and bundle assembly glue.
+`ccViewer/Mac/` holds `ccViewer.plist` (Info.plist — bundle identifier was verified by the now-removed `.ci/verify_macos_bundle_identifiers.py`; if you re-enable macOS CI, recreate that script) and bundle assembly glue.
 
 > ⚠️ The fork dropped macOS support on 2026-08-24. These sources are **kept for local macOS builds** but are not exercised in CI. See [`AGENTS.md` §CI](../AGENTS.md#ci).
 

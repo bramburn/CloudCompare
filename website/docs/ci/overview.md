@@ -25,10 +25,11 @@ What changed:
 - The standalone `windows.yml` workflow (slim Windows CI) was already
   removed earlier (2026-08-19) due to a `rules.ninja` parse error from
   the runner's pre-installed cmake 4.4.2.
-- The macOS bundle sources (`qCC/Mac/`, `ccViewer/Mac/`) and the macOS
-  CI helpers (`.ci/conda-macos.yml`,
-  `.ci/verify_macos_bundle_identifiers.py`) are **kept** for anyone who
-  wants to build locally on macOS. They are not exercised in CI.
+- The macOS bundle sources (`qCC/Mac/`, `ccViewer/Mac/`) are **kept** for
+  anyone who wants to build locally on macOS, but are not exercised in
+  CI. The macOS CI helpers (`.ci/conda-macos.yml`,
+  `.ci/verify_macos_bundle_identifiers.py`) were **removed** on
+  2026-08-24.
 
 The [build on macOS](/docs/build/macos) page is retained for that
 audience but is marked as **community-supported, not CI-validated**.
