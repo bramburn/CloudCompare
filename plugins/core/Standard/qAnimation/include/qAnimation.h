@@ -43,7 +43,7 @@
 #include <vector>
 
 // Local
-#include "cc2DViewportObject.h"
+#include "ExtendedViewport.h"
 
 /**
  * @class qAnimation
