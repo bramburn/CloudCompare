@@ -259,7 +259,7 @@ class ccPluginUIManager : public QObject
 	QAction* m_showGLFilterToolbar;
 
 	//! GL filter actions group.
-	QActionGroup* m_glFilterActions;
+	QActionGroup m_glFilterActions;
 
 	//! Additional plugin toolbars.
 	QList<QToolBar*> m_additionalPluginToolbars;
