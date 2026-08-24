@@ -211,6 +211,63 @@ struct QCC_DB_LIB_API ccRasterGrid
 	                    const ccBBox& bbox,
 	                    ccProgressDialog* progress = nullptr);
 
+	//! Row of cells
+	using Row = std::vector<ccRasterCell>;
+
+	//! All cells (row-major)
+	std::vector<Row> rows;
+
+	//! Delaunay interpolation parameters
+	struct QCC_DB_LIB_API DelaunayInterpolationParams
+	{
+		//! Whether the average colors are available or not
+		bool hasColors;
+
+		//! Max (square) edge length to filter large triangles during interpolation
+		double maxSquareEdgeLength;
+
+		//! Whether to use the average height of the cells as the output value
+		//! for empty cells (if false, the interpolation result is used)
+		bool useAverageHeight;
+
+		//! Default values
+		DelaunayInterpolationParams()
+		    : hasColors(false)
+		    , maxSquareEdgeLength(0.0)
+		    , useAverageHeight(false)
+		{
+		}
+	};
+
+	//! Kriging parameters
+	struct QCC_DB_LIB_API KrigingParams
+	{
+		//! Whether the average colors are available or not
+		bool hasColors;
+
+		//! Kriging model
+		Kriging::Model model;
+
+		//! Kriging sigma (auto if 0)
+		double sigma;
+
+		//! Kriging alpha (auto if 0)
+		double alpha;
+
+		//! Kriging nugget (auto if 0)
+		double nugget;
+
+		//! Default values
+		KrigingParams()
+		    : hasColors(false)
+		    , model(Kriging::Model::Spherical)
+		    , sigma(0.0)
+		    , alpha(0.0)
+		    , nugget(0.0)
+		{
+		}
+	};
+
 	//! Exportable fields
 	enum ExportableFields
 	{
@@ -250,4 +307,25 @@ struct QCC_DB_LIB_API ccRasterGrid
 
 	//! Min corner (lower-left cell CENTER in the chosen projection).
 	CCVector3d minCorner;
+
+	//! Min height (computed on the NON-EMPTY or FILLED/INTERPOLATED cells)
+	double minHeight;
+
+	//! Max height (computed on the NON-EMPTY or FILLED/INTERPOLATED cells)
+	double maxHeight;
+
+	//! Average height (computed on the NON-EMPTY or FILLED/INTERPOLATED cells)
+	double meanHeight;
+
+	//! Number of NON-EMPTY cells
+	unsigned nonEmptyCellCount;
+
+	//! Number of VALID cells
+	unsigned validCellCount;
+
+	//! Whether the (average) colors are available or not
+	bool hasColors;
+
+	//! Whether the grid is valid/up-to-date
+	bool valid;
 };
