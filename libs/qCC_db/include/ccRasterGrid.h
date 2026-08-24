@@ -211,6 +211,25 @@ struct QCC_DB_LIB_API ccRasterGrid
 	                    const ccBBox& bbox,
 	                    ccProgressDialog* progress = nullptr);
 
+	//! Exportable fields
+	enum ExportableFields
+	{
+		PER_CELL_VALUE,
+		PER_CELL_COUNT,
+		PER_CELL_MIN_VALUE,
+		PER_CELL_MAX_VALUE,
+		PER_CELL_AVG_VALUE,
+		PER_CELL_VALUE_STD_DEV,
+		PER_CELL_VALUE_RANGE,
+		PER_CELL_MEDIAN_VALUE,
+		PER_CELL_PERCENTILE_VALUE,
+		PER_CELL_UNIQUE_COUNT_VALUE,
+		PER_CELL_INVALID,
+	};
+
+	//! Returns the default name of a given field
+	static QString GetDefaultFieldName(ExportableFields field);
+
 	//! Grid width.
 	unsigned width;
 
@@ -228,8 +247,7 @@ struct QCC_DB_LIB_API ccRasterGrid
 
 	//! Projection dimension.
 	unsigned char Z;
+
+	//! Min corner (lower-left cell CENTER in the chosen projection).
+	CCVector3d minCorner;
 };
-
-// ... (continues in implementation)
-
-#endif // CC_RASTER_GRID_HEADER
