@@ -125,3 +125,4 @@ class ccCloudLayersDlg : public ccOverlayDialog
 
 	/// Output class index changed
 	void outputClassIndexChanged(int index);
+};
