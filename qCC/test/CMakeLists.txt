@@ -76,8 +76,7 @@ find_package(Qt6 REQUIRED COMPONENTS Test)
                                                                                                TestM3C2.cpp)
 
                                                                                 target_include_directories(TestM3C2 PRIVATE
-                                                                                                               ${CMAKE_SOURCE_DIR}
-                                                                                                           / plugins / core / Standard / qM3C2 / include)
+                                                                                                               ${CMAKE_SOURCE_DIR}/plugins/core/Standard/qM3C2/include)
 
                                                                                     target_link_libraries(TestM3C2
                                                                                                               PRIVATE
@@ -96,8 +95,7 @@ find_package(Qt6 REQUIRED COMPONENTS Test)
                                                                                                                TestCSF.cpp)
 
                                                                                                 target_include_directories(TestCSF PRIVATE
-                                                                                                                               ${CMAKE_SOURCE_DIR}
-                                                                                                                           / plugins / core / Standard / qCSF / include)
+                                                                                                                               ${CMAKE_SOURCE_DIR}/plugins/core/Standard/qCSF/include)
 
                                                                                                     target_link_libraries(TestCSF
                                                                                                                               PRIVATE
@@ -215,8 +213,7 @@ find_package(Qt6 REQUIRED COMPONENTS Test)
 #T2 - J : ccInnerRect2DFinder(largest empty rectangle in a point cloud)
                                                                                                                                                                                                                         add_executable(TestInnerRect
                                                                                                                                                                                                                                                TestInnerRect.cpp
-                                                                                                                                                                                                                                               ${CMAKE_SOURCE_DIR}
-                                                                                                                                                                                                                                       / qCC / ccInnerRect2DFinder.cpp)
+                                                                                                                                                                                                                                               ${CMAKE_SOURCE_DIR}/qCC/ccInnerRect2DFinder.cpp)
 
                                                                                                                                                                                                                             target_link_libraries(TestInnerRect
                                                                                                                                                                                                                                                       PRIVATE
@@ -231,8 +228,7 @@ find_package(Qt6 REQUIRED COMPONENTS Test)
                                                                                                                                                                                                                                                        TestPCV.cpp)
 
                                                                                                                                                                                                                                         target_include_directories(TestPCV PRIVATE
-                                                                                                                                                                                                                                                                       ${CMAKE_SOURCE_DIR}
-                                                                                                                                                                                                                                                                   / libs / qCC_db / extern / CCCoreLib / include)
+                                                                                                                                                                                                                                                                       ${CMAKE_SOURCE_DIR}/libs/qCC_db/extern/CCCoreLib/include)
 
                                                                                                                                                                                                                                             target_link_libraries(TestPCV
                                                                                                                                                                                                                                                                       PRIVATE
@@ -248,8 +244,7 @@ find_package(Qt6 REQUIRED COMPONENTS Test)
                                                                                                                                                                                                                                                                        TestVoxFall.cpp)
 
                                                                                                                                                                                                                                                         target_include_directories(TestVoxFall PRIVATE
-                                                                                                                                                                                                                                                                                       ${CMAKE_SOURCE_DIR}
-                                                                                                                                                                                                                                                                                   / plugins / core / Standard / qVoxFall / include)
+                                                                                                                                                                                                                                                                                       ${CMAKE_SOURCE_DIR}/plugins/core/Standard/qVoxFall/include)
 
                                                                                                                                                                                                                                                             target_link_libraries(TestVoxFall
                                                                                                                                                                                                                                                                                       PRIVATE
@@ -330,8 +325,7 @@ find_package(Qt6 REQUIRED COMPONENTS Test)
 #T4 - G : ccConsole(Init, RefreshCycle, QtMessagesEnabled)
                                                                                                                                                                                                                                                                                                                                 add_executable(TestConsole
                                                                                                                                                                                                                                                                                                                                                        TestConsole.cpp
-                                                                                                                                                                                                                                                                                                                                                       ${CMAKE_SOURCE_DIR}
-                                                                                                                                                                                                                                                                                                                                               / qCC / ccConsole.cpp)
+                                                                                                                                                                                                                                                                                                                                                       ${CMAKE_SOURCE_DIR}/qCC/ccConsole.cpp)
 
                                                                                                                                                                                                                                                                                                                                     target_link_libraries(TestConsole
                                                                                                                                                                                                                                                                                                                                                               PRIVATE
