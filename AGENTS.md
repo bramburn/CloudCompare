@@ -208,9 +208,10 @@ npm start          # http://localhost:3000/CloudCompare/
 - `cmake/` — CMake helpers (Qt detection, compiler options, deployqt logic) — see [`cmake/AGENTS.md`](cmake/AGENTS.md)
 - `.ci/` — CI scripts (reference for canonical build invocations)
 
-## Plugin set in this build (16 enabled)
+## Plugin set in this build (15 enabled)
 
-I/O: `qCoreIO` (OBJ/PLY/BIN) — default. **`qLASIO`** (LAS/LAZ via LASzip).
+I/O: `qCoreIO` (OBJ/PLY/BIN) — default.
+**`qLASIO`** (LAS/LAZ via LASzip) — **disabled in CI** (copc library ABI mismatch: `VoxelKey::extractExtent` signature changed; works fine on local build).
 GL: `qEDL`, `qSSAO`.
 Standard: `qAnimation`, `qBroom`, `qCSF`, `qM3C2`, `qPoissonRecon`, `qHPR`, `qPCV`, `qColorimetricSegmenter`, `qMPlane`, `qVoxFall`, `qCanupo`, `3DFin`.
 
