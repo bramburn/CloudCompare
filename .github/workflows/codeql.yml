@@ -80,7 +80,7 @@ jobs:
             -DPLUGIN_IO_QCORE=ON \
             -DPLUGIN_IO_QE57=ON \
             -DPLUGIN_IO_QPHOTOSCAN=ON \
-            -DPLUGIN_IO_QLAS=ON \
+            -DPLUGIN_IO_QLAS=OFF \
             -DPLUGIN_IO_QRDB=ON \
             -DPLUGIN_IO_QRDB_FETCH_DEPENDENCY=ON \
             -DPLUGIN_IO_QRDB_INSTALL_DEPENDENCY=ON \
@@ -88,17 +88,18 @@ jobs:
             -DQANIMATION_WITH_FFMPEG_SUPPORT=OFF \
             -DPLUGIN_STANDARD_QBROOM=ON \
             -DPLUGIN_STANDARD_QCANUPO=ON \
-            -DPLUGIN_STANDARD_QCOMPASS=ON \
+            -DPLUGIN_STANDARD_QCOMPASS=OFF \
             -DPLUGIN_STANDARD_QCSF=ON \
-            -DPLUGIN_STANDARD_QFACETS=ON \
-            -DPLUGIN_STANDARD_QHOUGH_NORMALS=ON \
+            -DPLUGIN_STANDARD_QFACETS=OFF \
+            -DPLUGIN_STANDARD_QHOUGH_NORMALS=OFF \
             -DPLUGIN_STANDARD_QHPR=ON \
             -DPLUGIN_STANDARD_QM3C2=ON \
             -DPLUGIN_STANDARD_QPCV=ON \
-            -DPLUGIN_STANDARD_QPOISSON_RECON=ON \
-            -DPLUGIN_STANDARD_QSRA=ON \
-            -DPLUGIN_STANDARD_QRANSAC_SD=ON \
+            -DPLUGIN_STANDARD_QPOISSON_RECON=OFF \
+            -DPLUGIN_STANDARD_QSRA=OFF \
+            -DPLUGIN_STANDARD_QRANSAC_SD=OFF \
             -DPLUGIN_STANDARD_QCLOUDLAYERS=ON \
+            -DPLUGIN_STANDARD_QPCL=OFF \
       # -DPLUGIN_STANDARD_QPCL=ON remove PCL for now, the one in Ubuntu does not meets our qt6 requirements
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
