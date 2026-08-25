@@ -43,9 +43,10 @@ and adds:
   (`build/qCC/deployqt/CloudCompare.exe` with all Qt 6 runtime
   DLLs and the Sentry DLL bundled) — copy to any Windows x64
   box, runs.
-- **A slim GitHub Actions matrix** (Windows MSVC + Ubuntu GCC/Clang)
-  that mirrors the local 16-plugin set. **macOS was dropped from the
-  matrix on 2026-08-24**; see [CI overview](/docs/ci/overview#macos-support-dropped-2026-08-24).
+- **A slim GitHub Actions matrix** (Windows MSVC only) that mirrors
+  the local 18-plugin set. **macOS and Linux were dropped from the
+  matrix on 2026-08-24**; see
+  [CI overview](/docs/ci/overview#macos--linux-support-dropped-2026-08-24).
 - **An extensive Doxygen pass** — approaching 400 Doxygen-clean
   commits for an AI-readable API surface.
 - **This docs site**, published to GitHub Pages.
@@ -61,8 +62,8 @@ go to [cloudcompare.org](https://cloudcompare.org) and the upstream Wiki.
 
 This **is** the place to look up:
 
-- The exact `cmake` invocation used to build the fork on Windows (primary)
-  and Linux (slim smoke test). macOS is community-supported, not
+- The exact `cmake` invocation used to build the fork on Windows (the
+  sole CI platform). macOS and Linux are community-supported, not
   CI-validated.
 - Which plugins are enabled in this fork, which are deliberately disabled, and
   what external dependency each disabled plugin needs.

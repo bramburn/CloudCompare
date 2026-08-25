@@ -19,7 +19,7 @@ fork-specific docs / code.
 | **Self-contained Windows bundle** (`build/qCC/deployqt/CloudCompare.exe`) | no | yes — Qt 6 runtime DLLs, plugin DLLs, and `sentry.dll` all alongside the `.exe`; copy to any Windows x64 box, runs |
 | **Docusaurus docs site** | no (Wiki only) | yes — this site, deployed to GitHub Pages, mirrors the fork's configuration |
 | **Doxygen pass** | sparse `///` comments | extensive — approaching 400 Doxygen-clean commits across `qCC/`, `ccViewer/`, `libs/`, `plugins/` |
-| **CI** (`.github/workflows/`) | full upstream matrix (Windows + macOS + Ubuntu) | fork-owned slim matrix: Windows MSVC + Ubuntu GCC/Clang; macOS dropped 2026-08-24 |
+| **CI** (`.github/workflows/`) | full upstream matrix (Windows + macOS + Ubuntu) | fork-owned slim matrix: Windows MSVC only; macOS and Linux dropped 2026-08-24 |
 | **Rust migration** | — (no Rust) | ✓ `cc-rust/` Cargo workspace with Phase 0–4 work, 43 unit tests, end-to-end validated on the brook-avenue 7.5M-point `.las` |
 | **Experimental workspace** | — (no sandbox) | ✓ `experimental/` with 4 templates, ~15 sessions, 4 scenarios, an 8-state lifecycle, a promotion gate |
 | **Sentry crash reporting** | — | ✓ opt-in via `qCC/CC_USE_SENTRY=ON` + `SENTRY_DSN` env var; `sentry.dll` copied to the deploy bundle by CMake POST_BUILD |

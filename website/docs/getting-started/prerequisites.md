@@ -43,12 +43,12 @@ CMake will pick it up and fail with "unknown error" if you don't override
 the make program. The configure wrapper sets
 `-DCMAKE_MAKE_PROGRAM=C:/ProgramData/chocolatey/bin/ninja.exe`.
 
-## Linux
+## Linux (community-supported)
 
-The fork's CI matrix (`.github/workflows/build.yml`) builds on Ubuntu
-22.04 with apt packages. The `ubuntu-build` job uses the same plugin
-flags as the Windows job, minus `qPCL` (skipped to avoid a 30-60 min
-PCL build). For a fresh Docker recipe, see [Build on Linux](/docs/build/linux).
+The fork dropped Linux CI support on 2026-08-24. The build
+instructions are still documented in
+[Build on Linux](/docs/build/linux) for contributors who want to
+build locally.
 
 ## macOS (community-supported)
 

@@ -74,8 +74,8 @@ function HomepageHeader() {
                 </span>
               </div>
               <div className={styles.heroStat}>
-                <span className={styles.heroStatValue}>2</span>
-                <span className={styles.heroStatLabel}>CI platforms (Windows + Linux); macOS community-supported</span>
+                <span className={styles.heroStatValue}>1</span>
+                <span className={styles.heroStatLabel}>CI platform (Windows MSVC); macOS + Linux community-supported</span>
               </div>
             </div>
           </div>
