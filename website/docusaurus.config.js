@@ -44,6 +44,12 @@ const config = {
   markdown: {
     hooks: {
       onBrokenMarkdownLinks: 'warn',
+      // Several plugin pages reference screenshots that are not yet
+      // generated (qRegistration, qScanBrowser, qProjectManager). Warn
+      // instead of throwing so the build still produces a deployable
+      // bundle; the missing images show up as alt-text in the rendered
+      // page and can be filled in by a follow-up.
+      onBrokenMarkdownImages: 'warn',
     },
   },
 

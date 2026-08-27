@@ -53,6 +53,7 @@ const sidebars = {
       items: [
         'fork/rust-migration',
         'fork/experimental-workspace',
+        'fork/topview-registration',
         'fork/upstream-vs-fork',
       ],
     },
@@ -132,6 +133,9 @@ const sidebars = {
         'plugins/standard',
         'plugins/io',
         'plugins/gl',
+        'plugins/qProjectManager',
+        'plugins/qRegistration',
+        'plugins/qScanBrowser',
         'plugins/authoring',
       ],
     },
@@ -147,6 +151,15 @@ const sidebars = {
         'reference/db-tree',
         'reference/performance',
         'reference/formats',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Research',
+      collapsed: true,
+      link: {type: 'doc', id: 'research/index'},
+      items: [
+        'research/mobile-slam-postprocessing',
       ],
     },
   ],
